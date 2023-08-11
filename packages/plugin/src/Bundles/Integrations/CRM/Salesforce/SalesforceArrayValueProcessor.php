@@ -15,8 +15,8 @@ namespace Solspace\Freeform\Bundles\Integrations\CRM\Salesforce;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use yii\base\Event;
 
 // TODO: move into integrations and autowire from there
@@ -25,8 +25,8 @@ class SalesforceArrayValueProcessor extends FeatureBundle
     public function __construct()
     {
         Event::on(
-            CRMIntegrationInterface::class,
-            CRMIntegrationInterface::EVENT_PROCESS_VALUE,
+            APIIntegrationInterface::class,
+            APIIntegrationInterface::EVENT_PROCESS_VALUE,
             [$this, 'processValue']
         );
     }

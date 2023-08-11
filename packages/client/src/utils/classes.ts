@@ -2,8 +2,12 @@ type ClassItem = string | number | boolean | null;
 
 export const elementTreeHasClass = (
   element: Element | null,
-  classNames: string[] | string
+  classNames: string[] | string | undefined
 ): boolean => {
+  if (classNames === undefined) {
+    return false;
+  }
+
   if (typeof classNames === 'string') {
     classNames = classNames.split(' ');
   }

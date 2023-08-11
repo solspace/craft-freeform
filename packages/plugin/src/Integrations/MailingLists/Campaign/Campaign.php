@@ -24,6 +24,7 @@ use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
@@ -79,13 +80,14 @@ class Campaign extends MailingListIntegration
     /**
      * {@inheritDoc}
      */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
+    public function push(Form $form, Client $client): void
     {
+        return;
         $mailingListElement = MailingListElement::find()->site('*')->id($mailingList->getId())->one();
         $source = \Craft::$app->getRequest()->getReferrer();
 
         if (null === $mailingListElement) {
-            return false;
+            return;
         }
 
         foreach ($emails as $email) {
@@ -130,8 +132,6 @@ class Campaign extends MailingListIntegration
                 }
             }
         }
-
-        return true;
     }
 
     /**
@@ -142,15 +142,7 @@ class Campaign extends MailingListIntegration
         return '';
     }
 
-    public function generateAuthorizedClient(): Client
-    {
-        return new Client();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function fetchLists(): array
+    public function fetchLists(Client $client): array
     {
         $lists = [];
         $mailingLists = MailingListElement::find()
@@ -172,10 +164,7 @@ class Campaign extends MailingListIntegration
         return $lists;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function fetchFields($listId): array
+    public function fetchFields(ListObject $list, string $category, Client $client): array
     {
         if (null === self::$fieldCache) {
             $allowedFieldTypes = array_keys(self::$fieldTypeMap);

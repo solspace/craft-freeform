@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
@@ -59,10 +60,6 @@ class CampaignMonitor extends MailingListIntegration
         return $this->getProcessedValue($this->clientId);
     }
 
-    public function initiateAuthentication(): void
-    {
-    }
-
     /**
      * Check if it's possible to connect to the API.
      */
@@ -89,9 +86,9 @@ class CampaignMonitor extends MailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
+    public function push(Form $form, Client $client): void
     {
-        $client = $this->generateAuthorizedClient();
+        return;
         $endpoint = $this->getEndpoint("/subscribers/{$mailingList->getId()}.json");
 
         try {
@@ -137,10 +134,9 @@ class CampaignMonitor extends MailingListIntegration
                 $this->getTranslator()->translate('Could not connect to API endpoint')
             );
         }
-
-        return true;
     }
 
+    // TODO: move to event listener
     public function generateAuthorizedClient(): Client
     {
         return new Client([
@@ -158,18 +154,8 @@ class CampaignMonitor extends MailingListIntegration
         return 'https://api.createsend.com/api/v3.1/';
     }
 
-    /**
-     * Makes an API call that fetches mailing lists
-     * Builds ListObject objects based on the results
-     * And returns them.
-     *
-     * @return ListObject[]
-     *
-     * @throws IntegrationException
-     */
-    protected function fetchLists(): array
+    public function fetchLists(Client $client): array
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/clients/'.$this->getClientID().'/lists.json');
 
         try {
@@ -213,18 +199,8 @@ class CampaignMonitor extends MailingListIntegration
         return $lists;
     }
 
-    /**
-     * Fetch all custom fields for each list.
-     *
-     * @param string $listId
-     *
-     * @return FieldObject[]
-     *
-     * @throws IntegrationException
-     */
-    protected function fetchFields($listId): array
+    public function fetchFields(ListObject $list, string $category, Client $client): array
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint("/lists/{$listId}/customfields.json");
 
         try {

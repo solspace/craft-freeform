@@ -130,8 +130,10 @@ class Install extends StreamlinedInstallMigration
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull())
                 ->addField('type', $this->string(50)->notNull())
+                ->addField('category', $this->string(50))
                 ->addField('required', $this->boolean()->defaultValue(false))
                 ->addIndex(['type'])
+                ->addIndex(['mailingListId', 'category'])
                 ->addForeignKey('mailingListId', 'freeform_mailing_lists', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_crm_fields'))

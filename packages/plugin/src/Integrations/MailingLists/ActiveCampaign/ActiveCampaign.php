@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
@@ -55,9 +56,9 @@ class ActiveCampaign extends MailingListIntegration
     /**
      * @throws IntegrationException
      */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
+    public function push(Form $form, Client $client): void
     {
-        $client = $this->generateAuthorizedClient();
+        return;
         $endpoint = $this->getEndpoint('/contact/sync');
 
         $tags = [];
@@ -143,8 +144,6 @@ class ActiveCampaign extends MailingListIntegration
                 }
             }
         }
-
-        return (bool) $contactId;
     }
 
     /**
@@ -171,7 +170,7 @@ class ActiveCampaign extends MailingListIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields($listId): array
+    public function fetchFields(ListObject $list, string $category, Client $client): array
     {
         $fieldList = [
             new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, false),
@@ -180,7 +179,6 @@ class ActiveCampaign extends MailingListIntegration
             new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, false),
         ];
 
-        $client = $this->generateAuthorizedClient();
         $response = $client->get($this->getEndpoint('/fields?limit=999'));
 
         $data = json_decode((string) $response->getBody());
@@ -219,6 +217,7 @@ class ActiveCampaign extends MailingListIntegration
                 $field->id,
                 $field->title,
                 $type,
+                $category,
                 false
             );
 
@@ -233,6 +232,7 @@ class ActiveCampaign extends MailingListIntegration
         return $this->getApiUrl().'/api/3/';
     }
 
+    // TODO: move to event listener
     public function generateAuthorizedClient(): Client
     {
         return new Client([
@@ -240,10 +240,7 @@ class ActiveCampaign extends MailingListIntegration
         ]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function fetchLists(): array
+    public function fetchLists(Client $client): array
     {
         $client = $this->generateAuthorizedClient();
 

@@ -13,9 +13,9 @@
 namespace Solspace\Freeform\Integrations\MailingLists\ConstantContact;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -62,10 +62,9 @@ class ConstantContact3 extends MailingListIntegration implements OAuth2Connector
     /**
      * @throws IntegrationException
      */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
+    public function push(Form $form, Client $client): void
     {
-        $client = $this->generateAuthorizedClient();
-
+        return;
         $values = [];
         foreach ($mappedValues as $key => $value) {
             if (preg_match('/^street_address_(.*)/', $key, $matches)) {
@@ -117,21 +116,13 @@ class ConstantContact3 extends MailingListIntegration implements OAuth2Connector
                 $this->getTranslator()->translate('Could not add emails to lists')
             );
         }
-
-        return 201 === $status;
     }
 
-    /**
-     * Returns the API root url without endpoints specified.
-     */
     public function getApiRootUrl(): string
     {
         return 'https://api.cc.email/v3';
     }
 
-    /**
-     * URL pointing to the OAuth2 authorization endpoint.
-     */
     public function getAuthorizeUrl(): string
     {
         return 'https://authz.constantcontact.com/oauth2/default/v1/authorize';
@@ -145,18 +136,8 @@ class ConstantContact3 extends MailingListIntegration implements OAuth2Connector
         return 'https://authz.constantcontact.com/oauth2/default/v1/token';
     }
 
-    /**
-     * Makes an API call that fetches mailing lists
-     * Builds ListObject objects based on the results
-     * And returns them.
-     *
-     * @return ListObject[]
-     *
-     * @throws IntegrationException
-     */
-    protected function fetchLists(): array
+    public function fetchLists(Client $client): array
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contact_lists');
 
         try {
@@ -202,19 +183,11 @@ class ConstantContact3 extends MailingListIntegration implements OAuth2Connector
         return $lists;
     }
 
-    /**
-     * Fetch all custom fields for each list.
-     *
-     * @return FieldObject[]
-     *
-     * @throws GuzzleException|IntegrationException
-     */
-    protected function fetchFields(string $listId): array
+    public function fetchFields(ListObject $list, string $category, Client $client): array
     {
         static $cachedFields;
 
         if (null === $cachedFields) {
-            $client = $this->generateAuthorizedClient();
             $endpoint = $this->getEndpoint('/contact_custom_fields');
 
             try {

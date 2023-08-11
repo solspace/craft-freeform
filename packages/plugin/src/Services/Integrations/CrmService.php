@@ -36,9 +36,8 @@ class CrmService extends AbstractIntegrationService
             ->all()
         ;
 
-        $client = $this->clientProvider->getAuthorizedClient($integration);
-
         if ($refresh || empty($existingRecords)) {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
             $fields = $integration->fetchFields($category, $client);
 
             $usedHandles = [];
@@ -60,15 +59,16 @@ class CrmService extends AbstractIntegrationService
                 $record->required = $field->isRequired();
                 $record->category = $category;
                 $record->save();
+
+                $existingRecords[$field->getHandle()] = $record;
             }
 
             foreach ($existingRecords as $handle => $record) {
                 if (!\in_array($handle, $usedHandles, true)) {
                     $record->delete();
+                    unset($existingRecords[$handle]);
                 }
             }
-
-            return $fields;
         }
 
         return array_map(

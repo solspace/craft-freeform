@@ -34,15 +34,13 @@ export const PropertyEditor: React.FC = () => {
     <PropertyEditorWrapper>
       <Remove notification={notification} />
       <SettingsWrapper>
-        {properties
-          .sort((a, b) => a.order - b.order)
-          .map((property) => (
-            <FieldComponent
-              key={property.handle}
-              notification={notification}
-              property={property}
-            />
-          ))}
+        {properties.map((property) => (
+          <FieldComponent
+            key={property.handle}
+            notification={notification}
+            property={property}
+          />
+        ))}
       </SettingsWrapper>
     </PropertyEditorWrapper>
   );

@@ -28,7 +28,6 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
       updateValue={generateUpdateHandler(property)}
       errors={errors}
       context={context}
-      animateVisibility={true}
     />
   );
 };

@@ -29,7 +29,6 @@ export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
       property={property}
       updateValue={updateValue}
       context={integration}
-      animateVisibility={false}
     />
   );
 };

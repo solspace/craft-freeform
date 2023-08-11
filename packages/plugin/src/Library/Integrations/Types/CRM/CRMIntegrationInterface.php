@@ -14,13 +14,11 @@ namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
-interface CRMIntegrationInterface extends IntegrationInterface
+interface CRMIntegrationInterface extends APIIntegrationInterface
 {
-    public const EVENT_PROCESS_VALUE = 'process-value';
-
     /**
      * Push objects to the CRM.
      *

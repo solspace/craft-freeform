@@ -19,6 +19,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
@@ -81,11 +82,6 @@ class Dotmailer extends MailingListIntegration
     {
     }
 
-    /**
-     * Check if it's possible to connect to the API.
-     *
-     * @throws IntegrationException
-     */
     public function checkConnection(Client $client): bool
     {
         try {
@@ -100,14 +96,8 @@ class Dotmailer extends MailingListIntegration
         }
     }
 
-    /**
-     * Push emails to a specific mailing list for the service provider.
-     *
-     * @throws IntegrationException
-     */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
+    public function push(Form $form, Client $client): void
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/address-books/'.$mailingList->getId().'/contacts');
 
         try {
@@ -139,8 +129,6 @@ class Dotmailer extends MailingListIntegration
                 $this->getTranslator()->translate('Could not connect to API endpoint')
             );
         }
-
-        return true;
     }
 
     /**
@@ -172,9 +160,6 @@ class Dotmailer extends MailingListIntegration
         throw new IntegrationException('Could not get an API endpoint');
     }
 
-    /**
-     * Returns the API root url without endpoints specified.
-     */
     public function getApiRootUrl(): string
     {
         return rtrim($this->getVarEndpoint(), '/').'/v2/';
@@ -187,16 +172,7 @@ class Dotmailer extends MailingListIntegration
         );
     }
 
-    /**
-     * Makes an API call that fetches mailing lists
-     * Builds ListObject objects based on the results
-     * And returns them.
-     *
-     * @return \Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject[]
-     *
-     * @throws IntegrationException
-     */
-    protected function fetchLists(): array
+    public function fetchLists(Client $client): array
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/address-books');
@@ -239,16 +215,7 @@ class Dotmailer extends MailingListIntegration
         return $lists;
     }
 
-    /**
-     * Fetch all custom fields for each list.
-     *
-     * @param string $listId
-     *
-     * @return FieldObject[]
-     *
-     * @throws IntegrationException
-     */
-    protected function fetchFields($listId): array
+    public function fetchFields(ListObject $list, string $category, Client $client): array
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/data-fields');

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -31,6 +30,18 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     use OAuth2Trait;
 
     protected const LOG_CATEGORY = 'Salesforce';
+
+    protected const CATEGORY_LEAD = 'Lead';
+
+    protected const CATEGORY_OPPORTUNITY = 'Opportunity';
+
+    protected const CATEGORY_ACCOUNT = 'Account';
+
+    protected const CATEGORY_CONTACT = 'Contact';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $instanceUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
@@ -55,14 +66,11 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     )]
     protected bool $sandboxMode = false;
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected string $instanceUrl = '';
-
     public function checkConnection(Client $client): bool
     {
         try {
             $response = $client->get($this->getEndpoint('/'));
+
             $json = json_decode((string) $response->getBody(), false);
 
             return !empty($json);
@@ -98,7 +106,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
         try {
             $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         $json = json_decode((string) $response->getBody());
@@ -208,14 +216,12 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
         return $domain;
     }
 
-    protected function query(string $query, array $params = []): array
+    protected function query(Client $client, string $query, array $params = []): array
     {
         try {
             $params = array_map([$this, 'soqlEscape'], $params);
 
             $query = sprintf($query, ...$params);
-
-            $client = $this->generateAuthorizedClient();
 
             $response = $client->get(
                 $this->getEndpoint('/query'),
@@ -234,13 +240,13 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
             return $result->records;
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
-    protected function querySingle(string $query, array $params = []): mixed
+    protected function querySingle(Client $client, string $query, array $params = []): mixed
     {
-        $data = $this->query($query, $params);
+        $data = $this->query($client, $query, $params);
 
         if (\count($data) >= 1) {
             return reset($data);
@@ -261,35 +267,5 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
         ];
 
         return str_replace($characters, $replacement, $str);
-    }
-
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return parent::getLogger($category ?? self::LOG_CATEGORY);
-    }
-
-    protected function processException(\Exception $exception): void
-    {
-        if (!$exception instanceof RequestException) {
-            parent::processException($exception);
-
-            return;
-        }
-
-        $response = $exception->getResponse();
-        $json = json_decode((string) $response->getBody(), false);
-
-        if ($json->error && $json->error_info) {
-            $usefulErrorMessage = $json->error.', '.$json->error_info;
-        } else {
-            $usefulErrorMessage = (string) $response->getBody();
-        }
-
-        $this->getLogger()->error(
-            $usefulErrorMessage,
-            ['exception' => $exception->getMessage()],
-        );
-
-        throw $exception;
     }
 }

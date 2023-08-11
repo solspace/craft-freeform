@@ -32,9 +32,13 @@ class PipedriveV1 extends BasePipedriveIntegration
 {
     protected const API_VERSION = 'v1';
 
+    // ==========================================
+    //                   Leads
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Leads',
+        label: 'Map to Leads?',
         instructions: 'Should map to leads',
         order: 3,
     )]
@@ -46,42 +50,54 @@ class PipedriveV1 extends BasePipedriveIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Lead fields',
         order: 4,
-        source: 'api/integrations/crm/fields/Deal',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $leadMapping = null;
 
+    // ==========================================
+    //                   Deals
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Deals',
+        label: 'Map to Deals?',
         instructions: 'Should map to deals?',
         order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[VisibilityFilter('Boolean(values.mapDeals)')]
-    #[Input\Text(
-        label: 'Stage ID',
-        instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
-        order: 6,
-    )]
-    protected ?int $stageId = null;
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Deal fields',
-        order: 7,
-        source: 'api/integrations/crm/fields/Deal',
+        order: 6,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
 
+    // ==========================================
+    //                 Stage ID
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(values.mapDeals)')]
+    #[Input\Text(
+        label: 'Stage ID',
+        instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
+        order: 7,
+    )]
+    protected ?int $stageId = null;
+
+    // ==========================================
+    //               Organization
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Organization',
+        label: 'Map to Organization?',
         instructions: 'Should map to organization?',
         order: 8,
     )]
@@ -93,14 +109,18 @@ class PipedriveV1 extends BasePipedriveIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Organization fields',
         order: 9,
-        source: 'api/integrations/crm/fields/Organization',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_ORGANIZATION,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $organizationMapping = null;
 
+    // ==========================================
+    //                 Person
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Person',
+        label: 'Map to Person?',
         instructions: 'Should map to person?',
         order: 10,
     )]
@@ -112,7 +132,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Person fields',
         order: 11,
-        source: 'api/integrations/crm/fields/Person',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_PERSON,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $personMapping = null;
@@ -136,7 +156,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
         $url = rtrim($url, '/');
 
-        return $url.'/api/'.self::API_VERSION.'/';
+        return $url.'/api/'.self::API_VERSION;
     }
 
     public function push(Form $form, Client $client): bool
@@ -160,7 +180,7 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->organizationMapping, 'Organization');
+        $mapping = $this->processMapping($form, $this->organizationMapping, self::CATEGORY_ORGANIZATION);
         if (!$mapping) {
             return;
         }
@@ -173,9 +193,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
             $organizationId = $this->searchForDuplicate(
                 $client,
-                [
-                    'name' => $mapping['name'] ?? null,
-                ],
+                ['name' => $mapping['name'] ?? null],
                 'organization',
             );
 
@@ -185,9 +203,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
             $response = $client->post(
                 $this->getEndpoint('/organizations'),
-                [
-                    'json' => $mapping,
-                ],
+                ['json' => $mapping],
             );
 
             $json = json_decode((string) $response->getBody(), false);
@@ -196,7 +212,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->organizationId = (int) $json->data->id;
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -206,16 +222,14 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->personMapping, 'Person');
+        $mapping = $this->processMapping($form, $this->personMapping, self::CATEGORY_PERSON);
         if (!$mapping) {
             return;
         }
 
         $personId = $this->searchForDuplicate(
             $client,
-            [
-                'email' => $mapping['email'] ?? null,
-            ],
+            ['email' => $mapping['email'] ?? null],
             'person',
         );
 
@@ -234,16 +248,12 @@ class PipedriveV1 extends BasePipedriveIntegration
 
                 $response = $client->put(
                     $this->getEndpoint('/persons/'.$personId),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
             } else {
                 $response = $client->post(
                     $this->getEndpoint('/persons'),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
             }
 
@@ -253,7 +263,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->personId = (int) $json->data->id;
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -263,7 +273,7 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->leadMapping, 'Lead');
+        $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
             return;
         }
@@ -295,9 +305,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
             $response = $client->post(
                 $this->getEndpoint('/leads'),
-                [
-                    'json' => $mapping,
-                ],
+                ['json' => $mapping],
             );
 
             $json = json_decode((string) $response->getBody(), false);
@@ -316,7 +324,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->addNote($client, $json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -326,7 +334,7 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
+        $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
         if (!$mapping) {
             return;
         }
@@ -355,9 +363,7 @@ class PipedriveV1 extends BasePipedriveIntegration
 
             $response = $client->post(
                 $this->getEndpoint('/deals'),
-                [
-                    'json' => $mapping,
-                ],
+                ['json' => $mapping],
             );
 
             $json = json_decode((string) $response->getBody(), false);
@@ -376,7 +382,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->addNote($client, $json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -385,12 +391,10 @@ class PipedriveV1 extends BasePipedriveIntegration
         try {
             $client->post(
                 $this->getEndpoint('/notes'),
-                [
-                    'json' => $json,
-                ],
+                ['json' => $json],
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -430,7 +434,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                         return (int) $json->data->items[0]->item->id;
                     }
                 } catch (\Exception $exception) {
-                    $this->processException($exception);
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             }
         }

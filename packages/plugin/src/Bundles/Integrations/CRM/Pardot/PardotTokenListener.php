@@ -10,18 +10,18 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Bundles\Integrations\CRM\Salesforce;
+namespace Solspace\Freeform\Bundles\Integrations\CRM\Pardot;
 
 use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
-use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
+use Solspace\Freeform\Integrations\CRM\Pardot\PardotIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
 // TODO: move into integrations and autowire from there
-class SalesforceTokenListener extends FeatureBundle
+class PardotTokenListener extends FeatureBundle
 {
     public function __construct()
     {
@@ -41,7 +41,7 @@ class SalesforceTokenListener extends FeatureBundle
     public function onInitAuthentication(InitiateAuthenticationFlowEvent $event): void
     {
         $integration = $event->getIntegration();
-        if (!$integration instanceof SalesforceIntegrationInterface) {
+        if (!$integration instanceof PardotIntegrationInterface) {
             return;
         }
 
@@ -51,14 +51,14 @@ class SalesforceTokenListener extends FeatureBundle
     public function onAfterAuthorize(TokenPayloadEvent $event): void
     {
         $integration = $event->getIntegration();
-        if (!$integration instanceof SalesforceIntegrationInterface) {
+        if (!$integration instanceof PardotIntegrationInterface) {
             return;
         }
 
         $payload = $event->getResponsePayload();
 
         if (!isset($payload->instance_url)) {
-            throw new CRMIntegrationNotFoundException("Salesforce response data doesn't contain the instance URL");
+            throw new CRMIntegrationNotFoundException("Pardot response data doesn't contain the instance URL");
         }
 
         $integration->setInstanceUrl($payload->instance_url);

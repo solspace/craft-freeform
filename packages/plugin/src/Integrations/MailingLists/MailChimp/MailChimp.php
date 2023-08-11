@@ -209,7 +209,7 @@ class MailChimp extends MailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function onBeforeSave()
+    public function onBeforeSave(): void
     {
         if (preg_match('/([a-zA-Z]+[\d]+)$/', $this->getApiKey(), $matches)) {
             $dataCenter = $matches[1];

@@ -37,7 +37,7 @@ abstract class CRMIntegration extends APIIntegration implements CRMIntegrationIn
         $keyValueMap = [];
         foreach ($mapping as $item) {
             $integrationField = $fields[$item->getSource()] ?? null;
-            if (!$integrationField) {
+            if (!$integrationField || '' === $item->getValue()) {
                 continue;
             }
 

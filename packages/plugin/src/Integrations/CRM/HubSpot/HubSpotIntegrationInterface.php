@@ -10,11 +10,8 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
+namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
-interface PipedriveIntegrationInterface
+interface HubSpotIntegrationInterface
 {
-    public function getApiDomain(): ?string;
-
-    public function setApiDomain(?string $apiDomain): self;
 }

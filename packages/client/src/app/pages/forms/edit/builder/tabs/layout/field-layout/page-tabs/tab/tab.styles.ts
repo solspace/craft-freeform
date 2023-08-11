@@ -36,8 +36,10 @@ export const PageTab = styled(animated.div)`
 
   max-width: 160px;
   height: 100%;
-  padding: 4px 14px;
+  padding: 10px 5px;
+  margin: 0 5px;
 
+  color: ${colors.gray400}
   border-bottom: 2px solid ${colors.gray100};
 
   overflow: hidden;
@@ -49,6 +51,7 @@ export const PageTab = styled(animated.div)`
   }
 
   &.active {
+    color: ${colors.gray800}
     border-bottom-color: ${colors.blue600};
   }
 

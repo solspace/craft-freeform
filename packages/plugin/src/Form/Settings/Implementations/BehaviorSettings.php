@@ -78,9 +78,9 @@ class BehaviorSettings extends SettingsNamespace
         instructions: "Select how you'd like the success return of this form to be handled. May also be overridden at the template level.",
         order: 1,
         options: [
-            ['value' => self::SUCCESS_BEHAVIOUR_RELOAD, 'label' => 'Reload'],
-            ['value' => self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, 'label' => 'Redirect'],
+            ['value' => self::SUCCESS_BEHAVIOUR_RELOAD, 'label' => 'Reload form with a Success banner above'],
             ['value' => self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, 'label' => 'Replace form with a Success message'],
+            ['value' => self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, 'label' => 'Redirect to another URL'],
         ],
     )]
     #[Validators\Required]

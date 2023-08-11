@@ -149,13 +149,23 @@
         display: block;
     }
     .freeform-errors {
-        padding: 0 25px;
         margin: 0;
+        padding: 0;
+        list-style: none;
+        display: block;
+        width: 100%;
     }
-    .freeform-errors li {
-        font: 200 16px sans-serif;
+    .freeform-fieldtype-radios .freeform-errors,
+    .freeform-fieldtype-checkboxes .freeform-errors {
+        margin-top: 0;
+    }
+    .freeform-errors > li {
+        font: italic 400 15px sans-serif;
         color: #dc3545;
-        margin-top: 15px;
+        margin-top: 10px;
+    }
+    .freeform-errors > li:not(:first-child) {
+        margin-top: 3px;
     }
     input,
     textarea,

@@ -76,8 +76,8 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div{{ form.attributes.error }}>
-        {{ form.settings.errorMessage | t('freeform') }}
+    <div{{ form.hasErrors }}>
+        {{ form.settings.behavior.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul>

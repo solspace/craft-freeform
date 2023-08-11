@@ -17,7 +17,7 @@ export const Instructions = styled.span`
   display: block;
 
   color: ${colors.gray300};
-  padding-top: 3px;
+  padding-top: 0;
   line-height: 16px;
   font-size: 12px;
   font-style: italic;

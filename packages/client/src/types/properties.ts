@@ -31,6 +31,7 @@ export enum PropertyType {
   RecipientMapping = 'recipientMapping',
   Recipients = 'recipients',
   Select = 'select',
+  DynamicSelect = 'dynamicSelect',
   String = 'string',
   Table = 'table',
   TabularData = 'tabularData',
@@ -88,6 +89,15 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
 };
+export type DynamicSelectProperty = BaseProperty<
+  string,
+  PropertyType.DynamicSelect
+> & {
+  emptyOption?: string;
+  source?: string;
+  parameterFields?: string[];
+  generator?: string;
+};
 export type CheckboxesProperty = BaseProperty<
   Array<string | number>,
   PropertyType.Checkboxes
@@ -121,6 +131,7 @@ export type TabularDataProperty = BaseProperty<
 
 export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
   implements?: string[];
+  emptyOption?: string;
 };
 
 export type LabelProperty = BaseProperty<string, PropertyType.Label>;
@@ -175,6 +186,7 @@ export type Property =
   | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
+  | DynamicSelectProperty
   | FieldMappingProperty
   | FieldProperty
   | HiddenProperty

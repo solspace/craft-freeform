@@ -60,8 +60,6 @@ class RegisterIntegrationTypesEvent extends ArrayableEvent
 
         $type = $type->newInstance();
 
-        $properties = $this->propertyProvider->getEditableProperties($class);
-        $type->setProperties($properties);
         $type->class = $class;
         $type->shortName = $reflectionClass->getShortName();
 

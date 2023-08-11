@@ -12,36 +12,66 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
+use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
 abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface
 {
+    #[Required]
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
+        label: 'Target Email Field',
+        instructions: 'The email field used to push to the mailing list.',
+        order: 0,
+        emptyOption: 'Select a field',
+        implements: [RecipientInterface::class],
+    )]
+    protected ?FieldInterface $emailField = null;
+
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
+        label: 'Opt-in Field (optional)',
+        instructions: 'This field has to be checked to push to the mailing list.',
+        order: 1,
+        emptyOption: 'Select a field',
+        implements: [BooleanInterface::class],
+    )]
+    protected ?FieldInterface $optInField = null;
+
+    #[Required]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(MailingListTransformer::class)]
+    #[Input\DynamicSelect(
+        instructions: 'Select the mailing list to push the emails to',
+        order: 2,
+        emptyOption: 'Select a mailing list',
+        source: 'api/integrations/mailing-lists/lists',
+        parameterFields: ['id' => 'id'],
+        generator: MailingListOptionsGenerator::class,
+    )]
+    protected ?ListObject $mailingList = null;
+
     public function getType(): string
     {
         return self::TYPE_MAILING_LIST;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isInstallable(): bool
     {
         return true;
     }
 
-    /**
-     * Makes an API call that fetches mailing lists
-     * Builds ListObject objects based on the results
-     * And returns them.
-     *
-     * @return ListObject[]
-     */
-    abstract protected function fetchLists(): array;
-
-    /**
-     * @return FieldObject[]
-     */
-    abstract protected function fetchFields(string $category): array;
+    protected function getProcessableFields(string $category): array
+    {
+        return Freeform::getInstance()->mailingLists->getFields($this->mailingList, $this, $category);
+    }
 }

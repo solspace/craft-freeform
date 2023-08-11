@@ -1,14 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldTypeSearch } from '@ff-client/queries/field-types';
-import type {
-  FieldProperty,
-  SelectProperty,
-} from '@ff-client/types/properties';
-
-import Select from '../select/select';
+import { type FieldProperty } from '@ff-client/types/properties';
 
 const Field: React.FC<ControlType<FieldProperty>> = ({
   value,
@@ -19,7 +16,7 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
   const fields = useSelector(fieldSelectors.all);
   const findType = useFieldTypeSearch();
 
-  (property as unknown as SelectProperty).options = fields
+  const options = fields
     .filter((field) => {
       if (!property.implements) {
         return true;
@@ -40,12 +37,14 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
     }));
 
   return (
-    <Select
-      property={property as unknown as SelectProperty}
-      updateValue={updateValue}
-      value={value}
-      errors={errors}
-    />
+    <Control property={property} errors={errors}>
+      <Dropdown
+        onChange={updateValue}
+        value={value}
+        options={options}
+        emptyOption={property.emptyOption}
+      />
+    </Control>
   );
 };
 

@@ -2,22 +2,17 @@
 
 namespace Solspace\Freeform\Attributes\Integration;
 
-use Solspace\Freeform\Attributes\Property\PropertyCollection;
-
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
     public string $class;
     public string $shortName;
 
-    private PropertyCollection $properties;
-
     public function __construct(
         public string $name,
         public ?string $readme = null,
         public ?string $iconPath = null,
     ) {
-        $this->properties = new PropertyCollection();
     }
 
     public function __toString(): string
@@ -32,17 +27,5 @@ class Type
         }
 
         return null;
-    }
-
-    public function setProperties(PropertyCollection $properties): self
-    {
-        $this->properties = $properties;
-
-        return $this;
-    }
-
-    public function getProperties(): PropertyCollection
-    {
-        return $this->properties;
     }
 }

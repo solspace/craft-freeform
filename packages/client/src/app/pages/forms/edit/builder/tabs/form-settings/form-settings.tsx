@@ -54,30 +54,28 @@ export const FormSettings: React.FC = () => {
     <FormSettingsWrapper>
       <Sidebar $lean>
         <SectionWrapper>
-          {data
-            .sort((a, b) => a.order - b.order)
-            .map((namespace, namespaceIdx) =>
-              namespace.sections.map((section, sectionIdx) => (
-                <SectionLink
-                  key={section.handle}
-                  className={classes(
-                    namespaceIndex === namespaceIdx &&
-                      sectionIndex === sectionIdx &&
-                      'active',
-                    sectionsWithErrors.includes(section.handle) && 'errors'
-                  )}
-                  onClick={() => {
-                    setNamespaceIndex(namespaceIdx);
-                    setSectionIndex(sectionIdx);
-                  }}
-                >
-                  <SectionIcon
-                    dangerouslySetInnerHTML={{ __html: section.icon }}
-                  />
-                  {section.label}
-                </SectionLink>
-              ))
-            )}
+          {data.map((namespace, namespaceIdx) =>
+            namespace.sections.map((section, sectionIdx) => (
+              <SectionLink
+                key={section.handle}
+                className={classes(
+                  namespaceIndex === namespaceIdx &&
+                    sectionIndex === sectionIdx &&
+                    'active',
+                  sectionsWithErrors.includes(section.handle) && 'errors'
+                )}
+                onClick={() => {
+                  setNamespaceIndex(namespaceIdx);
+                  setSectionIndex(sectionIdx);
+                }}
+              >
+                <SectionIcon
+                  dangerouslySetInnerHTML={{ __html: section.icon }}
+                />
+                {section.label}
+              </SectionLink>
+            ))
+          )}
         </SectionWrapper>
       </Sidebar>
       <FormSettingsContainer>

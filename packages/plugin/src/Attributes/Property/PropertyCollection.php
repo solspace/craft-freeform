@@ -28,6 +28,8 @@ class PropertyCollection implements \IteratorAggregate
             $this->properties[] = $property;
         }
 
+        usort($this->properties, fn ($a, $b) => $a->order <=> $b->order);
+
         return $this;
     }
 

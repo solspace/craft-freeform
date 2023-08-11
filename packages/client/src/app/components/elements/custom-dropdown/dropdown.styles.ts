@@ -1,5 +1,5 @@
 import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, colors } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Search = styled.input`
@@ -26,6 +26,10 @@ export const ListWrapper = styled.div`
 export const CurrentValue = styled.div`
   cursor: pointer;
   position: relative;
+
+  display: flex;
+  justify-content: start;
+  gap: ${spacings.sm};
 
   background-color: #dfe5ec;
   border-radius: ${borderRadius.lg};
@@ -57,6 +61,14 @@ export const CurrentValue = styled.div`
 
     user-select: none;
     pointer-events: none;
+  }
+`;
+
+export const SpinnerWrapper = styled.div`
+  > svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
   }
 `;
 

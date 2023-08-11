@@ -46,6 +46,11 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
         return $this->value;
     }
 
+    public function getDefaultValue()
+    {
+        return parent::getDefaultValue() ?: 'yes';
+    }
+
     public function isCheckedByDefault(): bool
     {
         return $this->checkedByDefault;

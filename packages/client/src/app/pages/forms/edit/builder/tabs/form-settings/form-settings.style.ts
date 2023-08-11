@@ -14,6 +14,7 @@ export const FormSettingsContainer = styled.div`
   align-items: flex-start;
   justify-content: flex-start;
   flex-direction: column;
+  gap: ${spacings.md};
 
   background: ${colors.white};
   padding: ${spacings.xl};
@@ -70,12 +71,11 @@ export const SectionLink = styled.button`
 `;
 
 export const SectionHeader = styled.h1`
-  padding: 0;
-  width: 100%;
   display: flex;
-  flex-direction: row;
-  margin-top: -11px;
-  margin-bottom: 14px;
+
+  width: 100%;
+  padding: 0;
+  margin: 0;
 `;
 
 export const SectionIcon = styled.div`

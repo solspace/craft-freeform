@@ -30,7 +30,6 @@ export const FieldComponent: React.FC<Props> = ({ notification, property }) => {
       updateValue={updateValue}
       errors={notification.errors?.[property.handle]}
       context={notification}
-      animateVisibility={true}
     />
   );
 };

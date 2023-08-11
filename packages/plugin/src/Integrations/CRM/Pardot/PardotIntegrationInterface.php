@@ -10,11 +10,11 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
+namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
-interface PipedriveIntegrationInterface
+interface PardotIntegrationInterface
 {
-    public function getApiDomain(): ?string;
+    public function getInstanceUrl(): string;
 
-    public function setApiDomain(?string $apiDomain): self;
+    public function setInstanceUrl(string $instanceUrl): self;
 }

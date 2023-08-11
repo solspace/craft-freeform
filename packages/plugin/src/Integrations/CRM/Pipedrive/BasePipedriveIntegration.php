@@ -13,10 +13,8 @@
 namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Client;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -31,6 +29,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
     use OAuth2Trait;
 
     protected const LOG_CATEGORY = 'Pipedrive';
+
+    protected const CATEGORY_LEAD = 'Lead';
+
+    protected const CATEGORY_DEAL = 'Deal';
+
+    protected const CATEGORY_ORGANIZATION = 'Organization';
+
+    protected const CATEGORY_PERSON = 'Person';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
@@ -63,12 +69,34 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         }
     }
 
+    public function getAuthorizeUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/authorize';
+    }
+
+    public function getAccessTokenUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/token';
+    }
+
+    public function getApiDomain(): ?string
+    {
+        return $this->apiDomain;
+    }
+
+    public function setApiDomain(?string $apiDomain): self
+    {
+        $this->apiDomain = $apiDomain;
+
+        return $this;
+    }
+
     public function fetchFields(string $category, Client $client): array
     {
         try {
             $response = $client->get($this->getEndpoint('/'.strtolower($category).'Fields'));
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         $json = json_decode((string) $response->getBody());
@@ -149,7 +177,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
             );
         }
 
-        if ('Organization' === $category) {
+        if (self::CATEGORY_ORGANIZATION === $category) {
             $fieldList[] = new FieldObject(
                 'address',
                 'Address',
@@ -159,7 +187,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
             );
         }
 
-        if ('Deal' === $category || 'Lead' === $category) {
+        if (self::CATEGORY_DEAL === $category || self::CATEGORY_LEAD === $category) {
             $fieldList[] = new FieldObject(
                 'note',
                 'Note',
@@ -172,21 +200,6 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         return $fieldList;
     }
 
-    public function getAuthorizeUrl(): string
-    {
-        return 'https://oauth.pipedrive.com/oauth/authorize';
-    }
-
-    public function getAccessTokenUrl(): string
-    {
-        return 'https://oauth.pipedrive.com/oauth/token';
-    }
-
-    protected function getApiDomain(): string
-    {
-        return $this->apiDomain;
-    }
-
     protected function getUserId(): ?int
     {
         return $this->getProcessedValue($this->userId);
@@ -195,24 +208,5 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
     protected function isDetectDuplicates(): bool
     {
         return $this->detectDuplicates;
-    }
-
-    protected function onAuthentication(array &$payload): void
-    {
-        $payload['scope'] = 'base search:read contacts:full deals:full leads:full';
-    }
-
-    protected function onAfterFetchAccessToken(\stdClass $responseData): void
-    {
-        if (!isset($responseData->api_domain)) {
-            throw new CRMIntegrationNotFoundException("Pipedrive response data doesn't contain the API Domain");
-        }
-
-        $this->apiDomain = $responseData->api_domain;
-    }
-
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return parent::getLogger($category ?? self::LOG_CATEGORY);
     }
 }

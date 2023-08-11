@@ -32,18 +32,37 @@ class ZohoV2 extends BaseZohoIntegration
 {
     protected const API_VERSION = 'v2';
 
+    // ==========================================
+    //                  Stage
+    // ==========================================
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Text(
+        instructions: 'Represents the stage of the deal. It can be: Qualification, Needs Analysis, Value Proposition, Identify Decision Makers, and so on.',
+        order: 3,
+    )]
+    protected ?string $stage = null;
+
+    // ==========================================
+    //          Default Contact Role ID
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Text(
         label: 'Default Contact Role ID',
-        order: 3,
+        order: 4,
     )]
     protected ?string $defaultContactRoleId = null;
+
+    // ==========================================
+    //                   Leads
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Leads',
         instructions: 'Should map to leads?',
-        order: 4,
+        order: 5,
     )]
     protected bool $mapLeads = false;
 
@@ -52,17 +71,21 @@ class ZohoV2 extends BaseZohoIntegration
     #[VisibilityFilter('Boolean(values.mapLeads)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Lead fields',
-        order: 5,
-        source: 'api/integrations/crm/fields/Lead',
+        order: 6,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $leadMapping = null;
+
+    // ==========================================
+    //                   Deals
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Deals',
         instructions: 'Should map to deals?',
-        order: 6,
+        order: 7,
     )]
     protected bool $mapDeals = false;
 
@@ -71,17 +94,21 @@ class ZohoV2 extends BaseZohoIntegration
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Deals fields',
-        order: 7,
-        source: 'api/integrations/crm/fields/Deal',
+        order: 8,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
+
+    // ==========================================
+    //                   Account
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Account',
         instructions: 'Should map to account?',
-        order: 8,
+        order: 9,
     )]
     protected bool $mapAccount = false;
 
@@ -90,17 +117,21 @@ class ZohoV2 extends BaseZohoIntegration
     #[VisibilityFilter('Boolean(values.mapAccount)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Account fields',
-        order: 9,
-        source: 'api/integrations/crm/fields/Account',
+        order: 10,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
+
+    // ==========================================
+    //                   Contact
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Contact',
         instructions: 'Should map to contact?',
-        order: 10,
+        order: 11,
     )]
     protected bool $mapContact = false;
 
@@ -109,11 +140,13 @@ class ZohoV2 extends BaseZohoIntegration
     #[VisibilityFilter('Boolean(values.mapAccount)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Contact fields',
-        order: 11,
-        source: 'api/integrations/crm/fields/Contact',
+        order: 12,
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $contactMapping = null;
+
+    private ?int $accountId = null;
 
     private ?int $contactId = null;
 
@@ -161,6 +194,11 @@ class ZohoV2 extends BaseZohoIntegration
         return true;
     }
 
+    protected function getStage(): ?string
+    {
+        return $this->stage;
+    }
+
     protected function getDefaultContactRoleId(): ?string
     {
         return $this->defaultContactRoleId;
@@ -172,7 +210,7 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->leadMapping, 'Lead');
+        $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
             return;
         }
@@ -191,7 +229,7 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -201,7 +239,7 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->accountMapping, 'Account');
+        $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
         if (!$mapping) {
             return;
         }
@@ -211,12 +249,8 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->getEndpoint('/Accounts/upsert'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
-                        'duplicate_check_fields' => [
-                            'Account_Name',
-                        ],
+                        'data' => [$mapping],
+                        'duplicate_check_fields' => ['Account_Name'],
                     ],
                 ],
             );
@@ -224,8 +258,14 @@ class ZohoV2 extends BaseZohoIntegration
             $json = json_decode((string) $response->getBody(), true);
 
             $this->processZohoResponseError($json);
+
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->accountId = $data['details']['id'];
+            }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -235,22 +275,20 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->contactMapping, 'Contact');
+        $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         if (!$mapping) {
             return;
         }
+
+        $mapping['Account_Name'] = ['id' => $this->accountId];
 
         try {
             $response = $client->post(
                 $this->getEndpoint('/Contacts/upsert'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
-                        'duplicate_check_fields' => [
-                            'Email',
-                        ],
+                        'data' => [$mapping],
+                        'duplicate_check_fields' => ['Email'],
                     ],
                 ],
             );
@@ -259,11 +297,13 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details']['id'])) {
-                $this->contactId = $json['data'][0]['details']['id'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->contactId = $data['details']['id'];
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -273,21 +313,21 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
+        $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
         if (!$mapping) {
             return;
         }
 
-        $mapping['Stage'] = 'Qualification';
+        $mapping['Stage'] = $this->getStage() ?? 'Qualification';
+        $mapping['Account_Name'] = ['id' => $this->accountId];
+        $mapping['Contact_Name'] = ['id' => $this->contactId];
 
         try {
             $response = $client->post(
                 $this->getEndpoint('/Deals'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
+                        'data' => [$mapping],
                     ],
                 ],
             );
@@ -296,8 +336,10 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details']['id'])) {
-                $this->dealId = $json['data'][0]['details']['id'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->dealId = $data['details']['id'];
             }
 
             if ($this->dealId && $this->contactId) {
@@ -306,9 +348,7 @@ class ZohoV2 extends BaseZohoIntegration
                     [
                         'json' => [
                             'data' => [
-                                [
-                                    'Contact_Role' => $this->getDefaultContactRoleId(),
-                                ],
+                                ['Contact_Role' => $this->getDefaultContactRoleId()],
                             ],
                         ],
                     ],
@@ -319,7 +359,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->processZohoResponseError($json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

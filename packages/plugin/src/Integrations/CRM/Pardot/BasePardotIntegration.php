@@ -1,14 +1,22 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
@@ -16,329 +24,323 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-#[Type(
-    name: 'Pardot (v5)',
-    iconPath: __DIR__.'/../Salesforce/icon.svg',
-)]
-class PardotV5 extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface
+abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, PardotIntegrationInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;
 
-    public const LOG_CATEGORY = 'Pardot';
+    protected const LOG_CATEGORY = 'Pardot';
 
-    private const CATEGORY_PROSPECT = 'prospect';
-    private const CATEGORY_CUSTOM = 'custom';
+    protected const CATEGORY_PROSPECT = 'Prospect';
 
-    #[Validators\Required]
+    protected const CATEGORY_CUSTOM = 'Custom';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $instanceUrl = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        label: 'Pardot Business Unit ID',
+        label: 'Business Unit ID',
         instructions: 'Enter your Pardot business unit ID here',
+        order: 1,
     )]
-    protected string $businessUnitId = '';
+    protected ?string $businessUnitId = null;
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Boolean(
+        label: 'Use custom URL?',
+        instructions: 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. "mycompany.my.salesforce.com").',
+        order: 2,
+    )]
+    protected bool $useCustomUrl = false;
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Text(
+        label: 'Custom URL',
+        instructions: 'E.g https://mycompany.develop.my.salesforce.com',
+        order: 3,
+    )]
+    protected ?string $customUrl = null;
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Text(
+        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com" or "mycompany.my.salesforce.com").',
+        order: 4,
+    )]
+    protected bool $sandboxMode = false;
+
+    public function checkConnection(Client $client): bool
+    {
+        try {
+            $response = $client->get(
+                $this->getPardotEndpoint(),
+                [
+                    'query' => [
+                        'limit' => 1,
+                        'format' => 'json',
+                    ],
+                ],
+            );
+
+            $json = json_decode((string) $response->getBody(), true);
+
+            return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
+        } catch (RequestException $exception) {
+            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+        }
+    }
+
+    public function getAuthorizeUrl(): string
+    {
+        return $this->getDomain().'/services/oauth2/authorize';
+    }
+
+    public function getAccessTokenUrl(): string
+    {
+        return $this->getDomain().'/services/oauth2/token';
+    }
+
+    public function getInstanceUrl(): string
+    {
+        return $this->instanceUrl;
+    }
+
+    public function setInstanceUrl(string $instanceUrl): self
+    {
+        $this->instanceUrl = $instanceUrl;
+
+        return $this;
+    }
+
+    public function fetchFields(string $category, Client $client): array
+    {
+        if (self::CATEGORY_PROSPECT === $category) {
+            return $this->getProspectFields($category);
+        }
+
+        return $this->getCustomFields($client, $category);
+    }
 
     public function getBusinessUnitId(): string
     {
         return $this->getProcessedValue($this->businessUnitId);
     }
 
-    /**
-     * Push objects to the CRM.
-     *
-     * @param null $formFields
-     */
-    public function push(Form $form, Client $client): bool
+    protected function isCustomUrl(): bool
     {
-        // TODO: reimplement
-        return false;
-        $email = null;
-        foreach ($keyValueList as $key => $value) {
-            if ('email' === $key) {
-                $email = $value;
-                unset($keyValueList[$key]);
+        return $this->useCustomUrl;
+    }
 
-                continue;
-            }
+    protected function getCustomUrl(): ?string
+    {
+        return $this->customUrl;
+    }
 
-            if (str_starts_with($key, 'custom___')) {
-                unset($keyValueList[$key]);
-                $keyValueList[str_replace('custom___', '', $key)] = $value;
-            }
+    protected function isSandboxMode(): bool
+    {
+        return $this->sandboxMode;
+    }
+
+    protected function getDomain(): string
+    {
+        $domain = 'https://login.salesforce.com';
+
+        if ($this->isSandboxMode()) {
+            $domain = 'https://test.salesforce.com';
         }
 
-        $endpoint = $this->getPardotEndpoint('prospect', 'create/email/'.$email);
-
-        try {
-            $response = $client->post(
-                $endpoint,
-                ['query' => $keyValueList]
-            );
-
-            $this->getHandler()->onAfterResponse($this, $response);
-
-            return true;
-        } catch (RequestException $exception) {
-            $responseBody = (string) $exception->getRequest()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
+        if ($this->isCustomUrl()) {
+            $domain = $this->getCustomUrl();
         }
 
-        return false;
+        return $domain;
     }
 
-    /**
-     * Check if it's possible to connect to the API.
-     */
-    public function checkConnection(Client $client): bool
+    private function getProspectFields(string $category): array
     {
-        $endpoint = $this->getPardotEndpoint();
-
-        try {
-            $response = $client->get($endpoint, ['query' => ['limit' => 1, 'format' => 'json']]);
-
-            $json = json_decode($response->getBody(), true);
-
-            return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
-        } catch (RequestException $e) {
-            return false;
-        }
-    }
-
-    // TODO: no longer exists, use event listener
-    /**
-     * @return array|bool|string
-     */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
-    {
-        $value = parent::convertCustomFieldValue($fieldObject, $field);
-
-        if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
-            $value = \is_array($value) ? implode(';', $value) : $value;
-        }
-
-        return $value;
-    }
-
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
-    public function fetchFields(string $category, Client $client): array
-    {
-        return match ($category) {
-            self::CATEGORY_PROSPECT => $this->fetchProspectFields(),
-            self::CATEGORY_CUSTOM => $this->fetchCustomFields($client),
-            default => [],
-        };
-    }
-
-    public function getApiRootUrl(): string
-    {
-        return 'https://pi.pardot.com/api/';
-    }
-
-    // TODO: move to event listener
-    public function generateAuthorizedClient(): Client
-    {
-        parent::generateAuthorizedClient();
-
-        return new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
-                'Content-Type' => 'application/json',
-            ],
-            'query' => [
-                'format' => 'json',
-            ],
-        ]);
-    }
-
-    public function getAuthorizeUrl(): string
-    {
-        return 'https://login.salesforce.com/services/oauth2/authorize';
-    }
-
-    public function getAccessTokenUrl(): string
-    {
-        return 'https://login.salesforce.com/services/oauth2/token';
-    }
-
-    private function getPardotEndpoint(string $object = 'prospect', string $action = 'query'): string
-    {
-        $root = rtrim($this->getApiRootUrl(), '/');
-        $object = trim($object, '/');
-        $action = ltrim($action, '/');
-
-        return "{$root}/{$object}/version/4/do/{$action}";
-    }
-
-    /**
-     * @return FieldObject[]
-     */
-    private function fetchProspectFields(): array
-    {
-        $category = self::CATEGORY_PROSPECT;
-
         return [
             new FieldObject(
                 'salutation',
                 'Salutation',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'first_name',
                 'First Name',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'last_name',
                 'Last Name',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'email',
                 'Email',
                 FieldObject::TYPE_STRING,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'password',
                 'Password',
                 FieldObject::TYPE_STRING,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'company',
                 'Company',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'prospect_account_id',
                 'Prospect Account Id',
                 FieldObject::TYPE_NUMERIC,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'website',
                 'Website',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'job_title',
                 'Job Title',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'department',
                 'Department',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'country',
                 'Country',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'address_one',
                 'Address One',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'address_two',
                 'Address Two',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'city',
                 'City',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'state',
                 'State',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'territory',
                 'Territory',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'zip',
                 'Zip',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'phone',
                 'Phone',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'fax',
                 'Fax',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'source',
                 'Source',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'annual_revenue',
                 'Annual Revenue',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'employees',
                 'Employees',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'industry',
                 'Industry',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'years_in_business',
                 'Years in Business',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'comments',
                 'Comments',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'notes',
                 'Notes',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
             new FieldObject(
                 'score',
@@ -352,80 +354,77 @@ class PardotV5 extends CRMIntegration implements OAuth2ConnectorInterface, OAuth
                 'Do not email',
                 FieldObject::TYPE_BOOLEAN,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'is_do_not_call',
                 'Do not call',
                 FieldObject::TYPE_BOOLEAN,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'is_reviewed',
                 'Reviewed',
                 FieldObject::TYPE_BOOLEAN,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'is_archived',
                 'Archived',
                 FieldObject::TYPE_BOOLEAN,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'is_starred',
                 'Starred',
                 FieldObject::TYPE_NUMERIC,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'campaign_id',
                 'Campaign',
                 FieldObject::TYPE_NUMERIC,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'profile',
                 'Profile',
                 FieldObject::TYPE_STRING,
                 $category,
-                true
+                true,
             ),
             new FieldObject(
                 'assign_to',
                 'Assign To',
                 FieldObject::TYPE_STRING,
                 $category,
+                false,
             ),
         ];
     }
 
-    /**
-     * @return FieldObject[]
-     */
-    private function fetchCustomFields(Client $client): array
+    private function getCustomFields(Client $client, string $category): array
     {
         try {
             $response = $client->get($this->getPardotEndpoint('customField'));
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-
-            return [];
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
-        $data = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-        if (!$data || !isset($data->result)) {
-            return [];
+        if (!$json || !isset($json->result)) {
+            throw new IntegrationException('Could not fetch fields for Pardot '.$category);
         }
 
         $fieldList = [];
-        foreach ($data->result->customField as $field) {
+
+        foreach ($json->result->customField as $field) {
             if (\is_array($field)) {
                 $field = (object) $field;
             }
@@ -434,26 +433,42 @@ class PardotV5 extends CRMIntegration implements OAuth2ConnectorInterface, OAuth
                 continue;
             }
 
-            $type = match ($field->type) {
-                'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
-                'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
-                'Number' => FieldObject::TYPE_NUMERIC,
-                'Date' => FieldObject::TYPE_DATE,
-                default => null,
-            };
+            $type = null;
+
+            switch ($field->data_type) {
+                case 'Text':
+                case 'Textarea':
+                case 'TextArea':
+                case 'Dropdown':
+                case 'Radio Button':
+                case 'Hidden':
+                    $type = FieldObject::TYPE_STRING;
+
+                    break;
+
+                case 'Checkbox':
+                case 'Multi-Select':
+                    $type = FieldObject::TYPE_ARRAY;
+
+                    break;
+
+                case 'Number':
+                    $type = FieldObject::TYPE_NUMERIC;
+
+                    break;
+            }
 
             if (null === $type) {
                 continue;
             }
 
-            $fieldObject = new FieldObject(
+            $fieldList[] = new FieldObject(
                 $field->field_id,
                 $field->name,
                 $type,
-                self::CATEGORY_CUSTOM,
+                $category,
+                false,
             );
-
-            $fieldList[] = $fieldObject;
         }
 
         return $fieldList;

@@ -10,11 +10,8 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
+namespace Solspace\Freeform\Integrations\CRM\Insightly;
 
-interface PipedriveIntegrationInterface
+interface InsightlyIntegrationInterface
 {
-    public function getApiDomain(): ?string;
-
-    public function setApiDomain(?string $apiDomain): self;
 }

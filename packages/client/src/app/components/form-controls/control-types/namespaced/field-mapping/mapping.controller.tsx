@@ -53,7 +53,7 @@ export const FieldMappingController: React.FC<Props> = ({
 
             <TypeButtonGroup>
               <TypeButton
-                title={translate('Custom template')}
+                title={translate('Twig code')}
                 className={classes(
                   map.type === TargetFieldType.Custom && 'active'
                 )}
@@ -70,7 +70,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 <CustomIcon />
               </TypeButton>
               <TypeButton
-                title={translate('Relationship')}
+                title={translate('Freeform field')}
                 className={classes(
                   map.type === TargetFieldType.Relation && 'active'
                 )}
@@ -108,6 +108,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 <input
                   type="text"
                   className="text small fullwidth code"
+                  placeholder="e.g. {{ yourField }} {{ otherField }}"
                   value={map.value}
                   onChange={(event) => {
                     updateValue({

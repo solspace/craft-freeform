@@ -22,7 +22,7 @@ export const DisplaySend: React.FC<Props> = ({ value, onChange }) => {
       >
         <option value={DisplaySendValue.Send}>{translate('Send')}</option>
         <option value={DisplaySendValue.NotSend}>
-          {translate(`Not send`)}
+          {translate(`Don't send`)}
         </option>
       </select>
     </div>

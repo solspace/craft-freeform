@@ -33,36 +33,15 @@ class ZohoV2 extends BaseZohoIntegration
     protected const API_VERSION = 'v2';
 
     // ==========================================
-    //                  Stage
-    // ==========================================
-
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
-        instructions: 'Represents the stage of the deal. It can be: Qualification, Needs Analysis, Value Proposition, Identify Decision Makers, and so on.',
-        order: 3,
-    )]
-    protected ?string $stage = null;
-
-    // ==========================================
-    //          Default Contact Role ID
-    // ==========================================
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[Input\Text(
-        label: 'Default Contact Role ID',
-        order: 4,
-    )]
-    protected ?string $defaultContactRoleId = null;
-
-    // ==========================================
     //                   Leads
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map Leads',
-        instructions: 'Should map to leads?',
-        order: 5,
+        instructions: 'Should map to the Leads endpoint.',
+        order: 3,
     )]
     protected bool $mapLeads = false;
 
@@ -71,7 +50,7 @@ class ZohoV2 extends BaseZohoIntegration
     #[VisibilityFilter('Boolean(values.mapLeads)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Lead fields',
-        order: 6,
+        order: 4,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
     )]
@@ -82,42 +61,60 @@ class ZohoV2 extends BaseZohoIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map Deals',
-        instructions: 'Should map to deals?',
-        order: 7,
+        instructions: 'Should map to the Deals endpoint.',
+        order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Deals fields',
-        order: 8,
+        order: 6,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
 
     // ==========================================
+    //                  Stage
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapDeals)')]
+    #[Input\Text(
+        label: 'Deal Stage',
+        instructions: 'Represents the stage of the deal. It can be: Qualification, Needs Analysis, Value Proposition, Identify Decision Makers, etc.',
+        order: 7,
+    )]
+    protected ?string $stage = null;
+
+    // ==========================================
     //                   Account
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map Account',
-        instructions: 'Should map to account?',
-        order: 9,
+        instructions: 'Should map to the Account endpoint.',
+        order: 8,
     )]
     protected bool $mapAccount = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapAccount)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Account fields',
-        order: 10,
+        order: 9,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
     )]
@@ -128,23 +125,38 @@ class ZohoV2 extends BaseZohoIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map Contact',
-        instructions: 'Should map to contact?',
-        order: 11,
+        instructions: 'Should map to the Contact endpoint.',
+        order: 10,
     )]
     protected bool $mapContact = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[VisibilityFilter('Boolean(values.mapAccount)')]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapContact)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Contact fields',
-        order: 12,
+        order: 11,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $contactMapping = null;
+
+    // ==========================================
+    //          Default Contact Role ID
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapContact)')]
+    #[Input\Text(
+        label: 'Default Contact Role ID',
+        order: 12,
+    )]
+    protected ?string $defaultContactRoleId = null;
 
     private ?int $accountId = null;
 

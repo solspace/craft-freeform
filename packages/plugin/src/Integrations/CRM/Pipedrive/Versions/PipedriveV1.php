@@ -37,9 +37,10 @@ class PipedriveV1 extends BasePipedriveIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Leads?',
-        instructions: 'Should map to leads',
+        label: 'Map to Leads',
+        instructions: 'Should map to the Leads endpoint.',
         order: 3,
     )]
     protected bool $mapLeads = false;
@@ -60,15 +61,17 @@ class PipedriveV1 extends BasePipedriveIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Deals?',
-        instructions: 'Should map to deals?',
+        label: 'Map to Deals',
+        instructions: 'Should map to the Deals endpoint.',
         order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Deal fields',
@@ -83,6 +86,7 @@ class PipedriveV1 extends BasePipedriveIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Text(
         label: 'Stage ID',
@@ -96,15 +100,17 @@ class PipedriveV1 extends BasePipedriveIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Organization?',
-        instructions: 'Should map to organization?',
+        label: 'Map to Organization',
+        instructions: 'Should map to the Organization endpoint.',
         order: 8,
     )]
     protected bool $mapOrganization = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapOrganization)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Organization fields',
@@ -119,15 +125,17 @@ class PipedriveV1 extends BasePipedriveIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Person?',
-        instructions: 'Should map to person?',
+        label: 'Map to Person',
+        instructions: 'Should map to the Person endpoint.',
         order: 10,
     )]
     protected bool $mapPerson = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapPerson)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Person fields',

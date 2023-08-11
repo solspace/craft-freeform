@@ -40,15 +40,17 @@ class HubSpotV1 extends BaseHubSpotIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Deals?',
-        instructions: 'Should map to deals',
+        label: 'Map to Deals',
+        instructions: 'Should map to the Deals endpoint.',
         order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields',
@@ -63,15 +65,17 @@ class HubSpotV1 extends BaseHubSpotIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Contacts?',
-        instructions: 'Should map to contacts',
+        label: 'Map to Contacts',
+        instructions: 'Should map to the Contacts endpoint.',
         order: 7,
     )]
     protected bool $mapContacts = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapContacts)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields',
@@ -86,15 +90,17 @@ class HubSpotV1 extends BaseHubSpotIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Companies?',
-        instructions: 'Should map to companies',
+        label: 'Map to Companies',
+        instructions: 'Should map to the Companies endpoint.',
         order: 9,
     )]
     protected bool $mapCompanies = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapCompanies)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Company fields',

@@ -28,8 +28,8 @@ class InsightlyV31 extends BaseInsightlyIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Leads?',
-        instructions: 'Should map to leads',
+        label: 'Map to Leads',
+        instructions: 'Should map to the Leads endpoint.',
         order: 2,
     )]
     protected bool $mapLeads = false;

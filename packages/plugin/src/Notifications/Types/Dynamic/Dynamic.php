@@ -17,7 +17,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollec
 
 #[Type(
     name: 'User Select',
-    newInstanceName: 'Dynamic',
+    newInstanceName: 'User Select',
     order: 3,
     icon: __DIR__.'/../Icons/user-select.svg',
 )]

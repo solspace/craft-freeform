@@ -28,15 +28,17 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Prospect?',
-        instructions: 'Should map to prospect?',
+        label: 'Map to Prospect',
+        instructions: 'Should map to the Prospect endpoint.',
         order: 5,
     )]
     protected bool $mapProspect = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapProspect)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Prospect fields',
@@ -51,15 +53,17 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Custom?',
-        instructions: 'Should map to custom?',
+        label: 'Map to Custom',
+        instructions: 'Should map to the Custom endpoint.',
         order: 7,
     )]
     protected bool $mapCustom = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapCustom)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Custom fields',

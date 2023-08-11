@@ -25,7 +25,7 @@ abstract class BaseNotification implements NotificationInterface
     protected string $name;
 
     #[Input\Boolean(
-        label: 'Use notification for this form?',
+        label: 'Enabled',
         order: 2
     )]
     protected bool $enabled = true;

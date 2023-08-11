@@ -38,8 +38,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Contact?',
-        instructions: 'Should map to contact',
+        label: 'Map to Contact',
+        instructions: 'Should map to the Contact endpoint.',
         order: 8,
     )]
     protected bool $mapContact = false;
@@ -62,7 +62,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Deal?',
-        instructions: 'Should map to deal',
+        instructions: 'Should map to the Deal endpoint.',
         order: 10,
     )]
     protected bool $mapDeal = false;
@@ -85,7 +85,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Account?',
-        instructions: 'Should map to account',
+        instructions: 'Should map to the Account endpoint.',
         order: 12,
     )]
     protected bool $mapAccount = false;

@@ -31,7 +31,7 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
           onChange(newValue);
         }}
       >
-        <option value="" label="Optional override template" />
+        <option value="" label="Use default template" />
         {!templates?.database && !templates?.files && (
           <optgroup label="No templates set up" />
         )}

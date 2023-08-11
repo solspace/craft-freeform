@@ -44,32 +44,36 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Leads?',
-        instructions: 'Should map to leads?',
+        label: 'Map to Leads',
+        instructions: 'Should map to the Leads endpoint.',
         order: 4,
     )]
     protected bool $mapLeads = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
-        label: 'Assign Lead Owner?',
+        label: 'Assign Lead Owner',
         instructions: 'Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules.',
         order: 5,
     )]
     protected bool $assignLeadOwner = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
-        label: 'Convert Leads to Contact Tasks for Returning Customers?',
+        label: 'Convert Leads to Contact Tasks for Returning Customers',
         instructions: 'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
         order: 6,
     )]
     protected bool $convertLeadsToTasks = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
@@ -79,6 +83,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     protected string $taskSubject = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
@@ -89,6 +94,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields',
@@ -103,14 +109,16 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Opportunities?',
-        instructions: 'Should map to opportunities?',
+        label: 'Map to Opportunities',
+        instructions: 'Should map to the Opportunities endpoint.',
         order: 10,
     )]
     protected bool $mapOpportunities = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Validators\Required]
     #[Input\Text(
@@ -120,6 +128,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     protected string $closeDate = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Validators\Required]
     #[Input\Text(
@@ -131,6 +140,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields',
@@ -145,17 +155,19 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Accounts?',
-        instructions: 'Should map to accounts?',
+        label: 'Map to Accounts',
+        instructions: 'Should map to the Accounts endpoint.',
         order: 14,
     )]
     protected bool $mapAccounts = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Boolean(
-        label: 'Append checkbox group field values on Account update?',
+        label: 'Append checkbox group field values on Account update',
         instructions: 'If an Account already exists in Salesforce, enabling this will append additional checkbox group field values to the Account inside Salesforce, instead of overwriting the options.',
         order: 15,
     )]
@@ -163,6 +175,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',
@@ -177,14 +190,16 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Contacts?',
-        instructions: 'Should map to contacts?',
+        label: 'Map to Contacts',
+        instructions: 'Should map to the Contacts endpoint.',
         order: 17,
     )]
     protected bool $mapContacts = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
         label: 'Check Contact email address and Account website when checking for duplicates?',
@@ -194,6 +209,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     protected bool $duplicateCheck = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
         label: 'Append checkbox group field values on Contact update?',
@@ -204,6 +220,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',

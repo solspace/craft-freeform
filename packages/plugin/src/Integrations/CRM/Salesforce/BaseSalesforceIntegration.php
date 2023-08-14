@@ -122,53 +122,16 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->type) {
-                case 'string':
-                case 'textarea':
-                case 'email':
-                case 'url':
-                case 'address':
-                case 'picklist':
-                case 'phone':
-                case 'reference':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'boolean':
-                    $type = FieldObject::TYPE_BOOLEAN;
-
-                    break;
-
-                case 'multipicklist':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'int':
-                case 'number':
-                case 'currency':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-
-                case 'double':
-                    $type = FieldObject::TYPE_FLOAT;
-
-                    break;
-
-                case 'date':
-                    $type = FieldObject::TYPE_DATE;
-
-                    break;
-
-                case 'datetime':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-            }
+            $type = match ($field->type) {
+                'string', 'textarea', 'email', 'url', 'address', 'picklist', 'phone', 'reference' => FieldObject::TYPE_STRING,
+                'int', 'number', 'currency' => FieldObject::TYPE_NUMERIC,
+                'boolean' => FieldObject::TYPE_BOOLEAN,
+                'multipicklist' => FieldObject::TYPE_ARRAY,
+                'double' => FieldObject::TYPE_FLOAT,
+                'date' => FieldObject::TYPE_DATE,
+                'datetime' => FieldObject::TYPE_DATETIME,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

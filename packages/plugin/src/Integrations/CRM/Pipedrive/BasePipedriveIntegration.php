@@ -127,37 +127,12 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->field_type) {
-                case 'varchar':
-                case 'varchar_auto':
-                case 'text':
-                case 'date': // Why not FieldObject::TYPE_DATE ??
-                case 'enum':
-                case 'time':
-                case 'timerange':
-                case 'daterange':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'set':
-                case 'phone':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'int':
-                case 'double': // Why not FieldObject::TYPE_FLOAT ??
-                case 'monetary':
-                case 'user':
-                case 'org':
-                case 'people':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->field_type) {
+                'varchar', 'varchar_auto', 'text', 'date', 'enum', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
+                'int', 'double', 'monetary', 'user', 'org', 'people' => FieldObject::TYPE_NUMERIC,
+                'set', 'phone' => FieldObject::TYPE_ARRAY,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

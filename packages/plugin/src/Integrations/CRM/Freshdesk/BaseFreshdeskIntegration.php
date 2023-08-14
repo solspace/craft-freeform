@@ -296,32 +296,13 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->type) {
-                case 'custom_text':
-                case 'custom_dropdown':
-                case 'custom_paragraph':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'custom_date':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'custom_checkbox':
-                    $type = FieldObject::TYPE_BOOLEAN;
-
-                    break;
-
-                case 'custom_decimal':
-                case 'custom_number':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->type) {
+                'custom_text', 'custom_dropdown', 'custom_paragraph' => FieldObject::TYPE_STRING,
+                'custom_decimal', 'custom_number' => FieldObject::TYPE_NUMERIC,
+                'custom_date' => FieldObject::TYPE_DATETIME,
+                'custom_checkbox' => FieldObject::TYPE_BOOLEAN,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

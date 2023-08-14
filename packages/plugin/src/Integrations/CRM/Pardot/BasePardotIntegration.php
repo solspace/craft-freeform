@@ -433,30 +433,12 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->data_type) {
-                case 'Text':
-                case 'Textarea':
-                case 'TextArea':
-                case 'Dropdown':
-                case 'Radio Button':
-                case 'Hidden':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'Checkbox':
-                case 'Multi-Select':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'Number':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->data_type) {
+                'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
+                'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
+                'Number' => FieldObject::TYPE_NUMERIC,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

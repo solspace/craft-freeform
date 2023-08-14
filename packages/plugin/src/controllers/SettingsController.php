@@ -47,7 +47,6 @@ class SettingsController extends BaseController
 
     public function actionDefaultView(): Response
     {
-
         $defaultView = $this->getSettingsModel()->defaultView;
 
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);

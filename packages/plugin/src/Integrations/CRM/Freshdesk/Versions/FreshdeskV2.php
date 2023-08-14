@@ -28,6 +28,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Ticket?',
         instructions: 'Should map to ticket',
@@ -37,6 +38,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapTicket)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Freshdesk Ticket fields',

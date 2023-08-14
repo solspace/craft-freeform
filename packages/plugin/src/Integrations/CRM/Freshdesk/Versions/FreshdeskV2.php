@@ -30,8 +30,8 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Ticket?',
-        instructions: 'Should map to ticket',
+        label: 'Map to Ticket',
+        instructions: 'Should map to the Ticket endpoint.',
         order: 7,
     )]
     protected bool $mapTicket = false;
@@ -41,7 +41,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapTicket)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Freshdesk Ticket fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Freshdesk Ticket fields.',
         order: 8,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_TICKET,
         parameterFields: ['id' => 'id'],

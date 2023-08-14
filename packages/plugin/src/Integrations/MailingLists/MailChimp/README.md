@@ -14,10 +14,10 @@ Mailchimp integration includes support for field mapping to standard and custom 
 * Date
 * Zip
 * Tags
-  * To map *Contact Tags*, in the **Tags** field mapping area in the form builder for the form, select a Freeform field that will contain Tag value(s). This could be a select dropdown, a checkbox group, radio field, hidden field, etc. When specifying multiples, separate by comma.
-    * By default, the Mailchimp integration will replace/overwrite any existing Contact Tags if it finds an existing contact for the email address in Mailchimp. If you'd like it to append/add to the existing Contact Tags instead, enable the **Append Mailchimp Contact Tags on update instead of overwriting?** setting below.
+  * To map *Contact Tags*, in the **Contact Tags** field mapping area in the form builder for the form, select a Freeform field that will contain Tag value(s). This could be a select dropdown, a checkbox group, radio field, hidden field, etc. When specifying multiples, separate by comma.
+    * By default, the Mailchimp integration will replace/overwrite any existing Contact Tags if it finds an existing contact for the email address in Mailchimp. If you'd like it to append/add to the existing Contact Tags instead, enable the **Append Tags on update instead of overwriting?** setting below.
 * Interests/Groups
-  * To map a *Contact Interest/Group*, in the **Group or Interest** field mapping area in the form builder for the form, select a Freeform field that will contain an Interest/Group name value(s). This could be a select dropdown, a checkbox group, radio field, hidden field, etc. This can only accept one value at this time, and it should be entered exactly as it is in Mailchimp, e.g. `My Group Name`.
+  * To map a *Contact Interest/Group*, in the **Contact Groups** field mapping area in the form builder for the form, select a Freeform field that will contain an Interest/Group name value(s). This could be a select dropdown, a checkbox group, radio field, hidden field, etc. This can only accept one value at this time, and it should be entered exactly as it is in Mailchimp, e.g. `My Group Name`.
 * GDPR consent / Marketing settings
   * To map *GDPR consent / Marketing settings* options, in the **GDPR** field mapping area in the form builder for the form, select the Freeform field(s) which will represent opting into the corresponding options. ANY value included in these will be considered an opt in (regardless of whether it's `yes` or `y`, etc). You will need to map a field to each GDPR setting individually, so you'll likely need to use a seperate checkbox field for each.
 

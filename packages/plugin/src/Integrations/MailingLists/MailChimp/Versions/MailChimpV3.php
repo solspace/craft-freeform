@@ -40,11 +40,12 @@ class MailChimpV3 extends BaseMailChimpIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Special\Properties\FieldMapping(
-        label: 'Member Fields',
-        instructions: 'Select the Freeform fields to be mapped to the applicable MailChimp Member fields',
-        order: 5,
+        label: 'Contact Fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Contact fields.',
+        order: 4,
         source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_MEMBERS,
         parameterFields: [
             'id' => 'id',
@@ -55,11 +56,12 @@ class MailChimpV3 extends BaseMailChimpIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Special\Properties\FieldMapping(
-        label: 'GDPR',
-        instructions: 'Select the Freeform fields to be mapped to the applicable MailChimp GDPR fields',
-        order: 6,
+        label: 'Marketing Permissions',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp GDPR marketing permission fields.',
+        order: 8,
         source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_GDPR,
         parameterFields: [
             'id' => 'id',
@@ -70,11 +72,12 @@ class MailChimpV3 extends BaseMailChimpIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Special\Properties\FieldMapping(
-        label: 'Tags',
-        instructions: 'Select the Freeform fields to be mapped to the applicable MailChimp Tags',
-        order: 7,
+        label: 'Contact Tags',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Tags',
+        order: 5,
         source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_TAGS,
         parameterFields: [
             'id' => 'id',
@@ -85,11 +88,12 @@ class MailChimpV3 extends BaseMailChimpIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Special\Properties\FieldMapping(
-        label: 'Groups',
-        instructions: 'Select the Freeform fields to be mapped to the applicable MailChimp Groups',
-        order: 8,
+        label: 'Contact Groups',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Groups',
+        order: 7,
         source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_GROUPS,
         parameterFields: [
             'id' => 'id',

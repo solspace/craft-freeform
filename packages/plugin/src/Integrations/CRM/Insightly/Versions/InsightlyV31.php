@@ -40,7 +40,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapLeads)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Insightly Leads fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Insightly Leads fields.',
         order: 3,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],

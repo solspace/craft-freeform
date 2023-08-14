@@ -280,32 +280,13 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->FIELD_TYPE) {
-                case 'TEXT':
-                case 'DROPDOWN':
-                case 'URL':
-                case 'MULTILINETEXT':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'DATE':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'BIT':
-                    $type = FieldObject::TYPE_BOOLEAN;
-
-                    break;
-
-                case 'NUMERIC':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->FIELD_TYPE) {
+                'TEXT', 'DROPDOWN', 'URL', 'MULTILINETEXT' => FieldObject::TYPE_STRING,
+                'DATE' => FieldObject::TYPE_DATETIME,
+                'BIT' => FieldObject::TYPE_BOOLEAN,
+                'NUMERIC' => FieldObject::TYPE_NUMERIC,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

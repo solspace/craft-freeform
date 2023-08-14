@@ -177,7 +177,7 @@ abstract class IntegrationsController extends BaseController
         $this->OAuth2Bundle->initiateAuthenticationFlow($integration);
     }
 
-    protected function renderEditForm(IntegrationModel $model, string $title): Response
+    protected function renderEditForm(IntegrationModel $model, ?string $title): Response
     {
         $this->view->registerAssetBundle(IntegrationsBundle::class);
         $this->getIntegrationsService()->decryptModelValues($model);

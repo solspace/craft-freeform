@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Integrations\MailingLists\MailChimp\Versions;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
@@ -23,11 +22,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\MailingLists\MailChimp\BaseMailChimp;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Integrations\MailingLists\MailChimp\BaseMailChimpIntegration;
 use yii\base\Event;
 
 #[Type(
@@ -35,12 +30,9 @@ use yii\base\Event;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.png',
 )]
-class MailChimpV3 extends BaseMailChimp
+class MailChimpV3 extends BaseMailChimpIntegration
 {
-    protected const CATEGORY_MEMBERS = 'members';
-    protected const CATEGORY_GDPR = 'gdpr';
-    protected const CATEGORY_TAGS = 'tags';
-    protected const CATEGORY_GROUPS = 'groups';
+    protected const API_VERSION = '3.0';
 
     // ==========================================
     //                   Members
@@ -106,27 +98,30 @@ class MailChimpV3 extends BaseMailChimp
     )]
     protected ?FieldMapping $groupsMapping = null;
 
-    public function checkConnection(Client $client): bool
+    public function getAuthorizeUrl(): string
     {
-        try {
-            $response = $client->get($this->getEndpoint('/'));
-            $json = json_decode((string) $response->getBody());
-
-            if (isset($json->error) && !empty($json->error)) {
-                throw new IntegrationException($json->error);
-            }
-
-            return isset($json->account_id) && !empty($json->account_id);
-        } catch (RequestException $e) {
-            $this->logErrorAndThrow($e);
-        }
+        return 'https://login.mailchimp.com/oauth2/authorize';
     }
 
-    /**
-     * Push emails to a specific mailing list for the service provider.
-     *
-     * @throws IntegrationException
-     */
+    public function getAccessTokenUrl(): string
+    {
+        return 'https://login.mailchimp.com/oauth2/token';
+    }
+
+    public function getApiRootUrl(): string
+    {
+        $url = 'https://us6.api.mailchimp.com';
+
+        $dataCenter = $this->getDataCenter();
+        if ($dataCenter) {
+            $url = 'https://'.$dataCenter.'.api.mailchimp.com';
+        }
+
+        $url = rtrim($url, '/');
+
+        return $url.'/'.self::API_VERSION;
+    }
+
     public function push(Form $form, Client $client): void
     {
         if (!$this->mailingList || !$this->emailField) {
@@ -141,6 +136,7 @@ class MailChimpV3 extends BaseMailChimp
         }
 
         $isDoubleOptIn = $this->isDoubleOptIn();
+
         $listId = $this->mailingList->getResourceId();
 
         $email = $form->get($this->emailField->getUid())->getValue();
@@ -215,8 +211,8 @@ class MailChimpV3 extends BaseMailChimp
 
         try {
             $response = $client->put(
-                $this->getEndpoint("lists/{$listId}/members/{$emailHash}"),
-                ['json' => $memberData]
+                $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash),
+                ['json' => $memberData],
             );
 
             Event::trigger(
@@ -224,17 +220,20 @@ class MailChimpV3 extends BaseMailChimp
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_MEMBERS, $response)
             );
-        } catch (RequestException $exception) {
+        } catch (\Exception $exception) {
             $json = json_decode($exception->getResponse()->getBody());
+
             $is400 = isset($json->status) && 400 === $json->status;
+
             $isComplianceState = isset($json->title) && 'member in compliance state' === strtolower($json->title);
 
             if ($is400 && $isComplianceState) {
                 try {
                     $memberData['status'] = 'pending';
+
                     $response = $client->put(
-                        $this->getEndpoint("lists/{$listId}/members/{$emailHash}"),
-                        ['json' => $memberData]
+                        $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash),
+                        ['json' => $memberData],
                     );
 
                     Event::trigger(
@@ -242,163 +241,14 @@ class MailChimpV3 extends BaseMailChimp
                         self::EVENT_AFTER_RESPONSE,
                         new IntegrationResponseEvent($this, self::CATEGORY_MEMBERS, $response)
                     );
-                } catch (RequestException $e) {
-                    $this->logErrorAndThrow($exception);
+                } catch (\Exception $exception) {
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             } else {
-                $this->logErrorAndThrow($exception);
+                $this->processException($exception, self::LOG_CATEGORY);
             }
         }
 
-        $this->manageTags($client, $email, $tags);
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     *
-     * @throws IntegrationException
-     */
-    public function getApiRootUrl(): string
-    {
-        $dataCenter = $this->getDataCenter();
-
-        if (empty($dataCenter)) {
-            throw new IntegrationException(
-                Freeform::t('Could not detect data center for Mailchimp')
-            );
-        }
-
-        return "https://{$dataCenter}.api.mailchimp.com/3.0/";
-    }
-
-    public function fetchFields(ListObject $list, string $category, Client $client): array
-    {
-        return match ($category) {
-            self::CATEGORY_MEMBERS => $this->fetchMemberFields($list, $client),
-            self::CATEGORY_GDPR => $this->fetchGDPRFields($list, $client),
-            self::CATEGORY_TAGS => $this->fetchTagFields(),
-            self::CATEGORY_GROUPS => $this->fetchGroupFields(),
-        };
-    }
-
-    private function fetchMemberFields(ListObject $list, Client $client): array
-    {
-        try {
-            $response = $client->get(
-                $this->getEndpoint("/lists/{$list->getResourceId()}/merge-fields"),
-                ['query' => ['count' => 999]]
-            );
-        } catch (RequestException $e) {
-            $this->logErrorAndThrow($e);
-        }
-
-        $json = json_decode((string) $response->getBody());
-
-        $fieldList = [];
-        if (isset($json->merge_fields)) {
-            foreach ($json->merge_fields as $field) {
-                $type = match ($field->type) {
-                    'text', 'website', 'url', 'dropdown', 'radio', 'date', 'birthday', 'zip' => FieldObject::TYPE_STRING,
-                    'number', 'phone' => FieldObject::TYPE_NUMERIC,
-                    default => null,
-                };
-
-                if (null === $type) {
-                    continue;
-                }
-
-                $fieldList[] = new FieldObject(
-                    $field->tag,
-                    $field->name,
-                    $type,
-                    $field->required
-                );
-            }
-        }
-
-        return $fieldList;
-    }
-
-    private function fetchGDPRFields(ListObject $list, Client $client): array
-    {
-        $fieldList = [];
-
-        try {
-            $response = $client->get(
-                $this->getEndpoint("/lists/{$list->getResourceId()}/members"),
-                [
-                    'query' => [
-                        'count' => 1,
-                        'fields' => ['members.id', 'members.marketing_permissions'],
-                    ],
-                ]
-            );
-
-            $json = json_decode((string) $response->getBody());
-            $members = $json->members ?? [];
-
-            if (!\count($members)) {
-                try {
-                    $tempResponse = $client->post(
-                        $this->getEndpoint("/lists/{$list->getResourceId()}/members"),
-                        [
-                            'json' => [
-                                'email_address' => rand(10000, 99999).'_temp@test.test',
-                                'status' => 'subscribed',
-                            ],
-                        ]
-                    );
-
-                    $tempJson = json_decode((string) $tempResponse->getBody());
-
-                    $tempSubscriberHash = $tempJson->id;
-                    $marketingPermissions = $tempJson->marketing_permissions ?? [];
-
-                    $client->delete($this->getEndpoint("/lists/{$list->getResourceId()}/members/{$tempSubscriberHash}"));
-                } catch (RequestException $e) {
-                    $marketingPermissions = [];
-                }
-            } else {
-                $marketing = reset($members);
-                $marketingPermissions = $marketing->marketing_permissions ?? [];
-            }
-
-            foreach ($marketingPermissions as $permission) {
-                $fieldList[] = new FieldObject(
-                    $permission->marketing_permission_id,
-                    $permission->text,
-                    FieldObject::TYPE_BOOLEAN,
-                    self::CATEGORY_GDPR,
-                    false
-                );
-            }
-        } catch (RequestException $e) {
-        }
-
-        return $fieldList;
-    }
-
-    private function fetchTagFields(): array
-    {
-        return [
-            new FieldObject(
-                'tags',
-                'Tags',
-                FieldObject::TYPE_STRING,
-                self::CATEGORY_TAGS,
-            ),
-        ];
-    }
-
-    private function fetchGroupFields(): array
-    {
-        return [
-            new FieldObject(
-                'interests',
-                'Group or Interest',
-                FieldObject::TYPE_STRING,
-                self::CATEGORY_GROUPS,
-            ),
-        ];
+        $this->manageTags($client, $listId, $email, $tags);
     }
 }

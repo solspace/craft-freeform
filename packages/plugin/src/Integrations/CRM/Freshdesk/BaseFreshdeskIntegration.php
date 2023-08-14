@@ -56,7 +56,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
         instructions: "Set the default Priority for tickets, e.g. '1' (Low), '2' (Medium), '3' (High), '4' (Urgent).",
         order: 4,
     )]
-    protected ?int $defaultPriority = null;
+    protected ?string $defaultPriority = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
@@ -64,7 +64,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
         instructions: "Set the default Status for tickets, e.g. '2' (Open), '3' (Pending), '4' (Resolved), '5' (Closed).",
         order: 5,
     )]
-    protected ?int $defaultStatus = null;
+    protected ?string $defaultStatus = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
@@ -72,7 +72,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
         instructions: "Set the default Source for tickets, e.g. '1' (Email), '2' (Portal), '3' (Phone), '7' (Chat), '9' (Feedback Widget), '10' (Outbound Email).",
         order: 6,
     )]
-    protected ?int $defaultSource = null;
+    protected ?string $defaultSource = null;
 
     public function checkConnection(Client $client): bool
     {
@@ -95,22 +95,22 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
         return $this->getProcessedValue($this->domain);
     }
 
-    public function getDefaultType(): string
+    public function getDefaultType(): ?string
     {
         return $this->getProcessedValue($this->defaultType);
     }
 
-    public function getDefaultPriority(): int
+    public function getDefaultPriority(): ?string
     {
         return $this->getProcessedValue($this->defaultPriority);
     }
 
-    public function getDefaultStatus(): int
+    public function getDefaultStatus(): ?string
     {
         return $this->getProcessedValue($this->defaultStatus);
     }
 
-    public function getDefaultSource(): int
+    public function getDefaultSource(): ?string
     {
         return $this->getProcessedValue($this->defaultSource);
     }
@@ -296,32 +296,13 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->type) {
-                case 'custom_text':
-                case 'custom_dropdown':
-                case 'custom_paragraph':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'custom_date':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'custom_checkbox':
-                    $type = FieldObject::TYPE_BOOLEAN;
-
-                    break;
-
-                case 'custom_decimal':
-                case 'custom_number':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->type) {
+                'custom_text', 'custom_dropdown', 'custom_paragraph' => FieldObject::TYPE_STRING,
+                'custom_decimal', 'custom_number' => FieldObject::TYPE_NUMERIC,
+                'custom_date' => FieldObject::TYPE_DATETIME,
+                'custom_checkbox' => FieldObject::TYPE_BOOLEAN,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

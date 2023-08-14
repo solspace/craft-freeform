@@ -134,50 +134,21 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
                 continue;
             }
 
-            switch ($field->data_type) {
-                case 'boolean':
-                    $type = FieldObject::TYPE_BOOLEAN;
+            $type = match ($field->data_type) {
+                'integer', 'number', 'bigint', 'currency' => FieldObject::TYPE_NUMERIC,
+                'double', 'decimal' => FieldObject::TYPE_FLOAT,
+                'boolean' => FieldObject::TYPE_BOOLEAN,
+                'date' => FieldObject::TYPE_DATE,
+                'timestamp', 'datetime' => FieldObject::TYPE_DATETIME,
+                default => FieldObject::TYPE_STRING,
+            };
 
-                    break;
-
-                case 'list':
-                case 'picklist':
-                case 'multiselectpicklist':
-                    if ('jsonobject' === $field->json_type || 'jsonarray' === $field->json_type) {
-                        $type = FieldObject::TYPE_ARRAY;
-                    } else {
-                        $type = FieldObject::TYPE_STRING;
-                    }
-
-                    break;
-
-                case 'integer':
-                case 'number':
-                case 'bigint':
-                case 'currency':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-
-                case 'double':
-                case 'decimal':
-                    $type = FieldObject::TYPE_FLOAT;
-
-                    break;
-
-                case 'date':
-                    $type = FieldObject::TYPE_DATE;
-
-                    break;
-
-                case 'timestamp':
-                case 'datetime':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                default:
+            if ('list' === $field->data_type || 'picklist' === $field->data_type || 'multiselectpicklist' === $field->data_type) {
+                if ('jsonobject' === $field->json_type || 'jsonarray' === $field->json_type) {
+                    $type = FieldObject::TYPE_ARRAY;
+                } else {
                     $type = FieldObject::TYPE_STRING;
+                }
             }
 
             $fieldList[] = new FieldObject(

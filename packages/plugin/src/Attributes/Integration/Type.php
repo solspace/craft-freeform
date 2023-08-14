@@ -2,11 +2,14 @@
 
 namespace Solspace\Freeform\Attributes\Integration;
 
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
+
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
     public string $class;
     public string $shortName;
+    public ?PropertyCollection $properties;
 
     public function __construct(
         public string $name,

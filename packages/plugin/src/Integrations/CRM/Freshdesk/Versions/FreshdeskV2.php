@@ -103,15 +103,15 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
         }
 
         if (!isset($values['status']) || !$values['status']) {
-            $values['status'] = ($this->getDefaultStatus() ?? 2);
+            $values['status'] = (int) ($this->getDefaultStatus() ?? 2);
         }
 
         if (!isset($values['priority']) || !$values['priority']) {
-            $values['priority'] = ($this->getDefaultPriority() ?? 1);
+            $values['priority'] = (int) ($this->getDefaultPriority() ?? 1);
         }
 
         if (!isset($values['source']) || !$values['source']) {
-            $values['source'] = ($this->getDefaultSource() ?? 2);
+            $values['source'] = (int) ($this->getDefaultSource() ?? 2);
         }
 
         if (!isset($values['type']) || !$values['type']) {

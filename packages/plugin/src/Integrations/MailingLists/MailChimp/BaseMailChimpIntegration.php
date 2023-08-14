@@ -41,6 +41,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
     #[Input\Text]
     protected string $dataCenter = '';
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Boolean(
         label: 'Use double opt-in?',
@@ -48,6 +49,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
     )]
     protected bool $doubleOptIn = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Boolean(
         label: 'Append Mailchimp Contact Tags on update instead of overwriting?',
@@ -108,11 +110,11 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
                     ],
                 ]
             );
-
-            $json = json_decode((string) $response->getBody());
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
+
+        $json = json_decode((string) $response->getBody());
 
         $lists = [];
 
@@ -375,7 +377,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
                 ],
             );
         } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->processException($exception, $category);
         }
 
         $json = json_decode((string) $response->getBody());
@@ -425,14 +427,10 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
                 ],
             );
         } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->processException($exception, $category);
         }
 
         $json = json_decode((string) $response->getBody());
-
-        if (!isset($json->members) || !$json->members) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
-        }
 
         $fieldList = [];
 
@@ -454,7 +452,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
 
                 $client->delete($this->getEndpoint('/lists/'.$listId.'/members/'.$tempJson->id));
             } catch (\Exception $exception) {
-                $this->processException($exception, self::LOG_CATEGORY);
+                $this->processException($exception, $category);
             }
         } else {
             $marketing = reset($json->members);

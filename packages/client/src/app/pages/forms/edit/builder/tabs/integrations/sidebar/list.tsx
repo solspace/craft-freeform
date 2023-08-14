@@ -10,8 +10,8 @@ import { Wrapper } from './list.styles';
 
 const categoryLabels: Record<string, string> = {
   crm: 'CRM',
-  mailing_list: 'Email Marketing',
-  payment_gateway: 'Payment',
+  'mailing-list': 'Email Marketing',
+  'payment-gateway': 'Payment',
 };
 
 export const List: React.FC = () => {

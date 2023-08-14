@@ -9,6 +9,7 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
@@ -28,6 +29,7 @@ abstract class AbstractIntegrationService extends BaseService
         $config = [],
         protected FormIntegrationsProvider $formIntegrationsProvider,
         protected IntegrationClientProvider $clientProvider,
+        protected PropertyProvider $propertyProvider,
     ) {
         parent::__construct($config);
     }
@@ -53,6 +55,8 @@ abstract class AbstractIntegrationService extends BaseService
                 if (!$reflection->implementsInterface($this->getIntegrationInterface())) {
                     continue;
                 }
+
+                $type->properties = $this->propertyProvider->getEditableProperties($type->class);
 
                 $providers[$type->class] = $type;
             }

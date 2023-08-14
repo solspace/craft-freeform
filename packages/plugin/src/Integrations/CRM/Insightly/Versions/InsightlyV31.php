@@ -27,6 +27,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Leads',
         instructions: 'Should map to the Leads endpoint.',
@@ -36,9 +37,10 @@ class InsightlyV31 extends BaseInsightlyIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapLeads)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Insightly Leads fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Insightly Leads fields.',
         order: 3,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],

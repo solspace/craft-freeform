@@ -42,19 +42,21 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
     protected string $dataCenter = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Boolean(
-        label: 'Use double opt-in?',
+        label: 'Use Double Opt-in',
         order: 3,
     )]
     protected bool $doubleOptIn = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Boolean(
-        label: 'Append Mailchimp Contact Tags on update instead of overwriting?',
+        label: 'Append Tags on Update Instead of Overwriting',
         instructions: 'When updating an existing contact in Mailchimp, have new Contact Tags added to existing ones instead of overwriting them.',
-        order: 4,
+        order: 6,
     )]
     protected bool $appendContactTags = false;
 

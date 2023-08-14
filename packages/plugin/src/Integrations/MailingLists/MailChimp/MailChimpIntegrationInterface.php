@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\MailingLists\MailChimp;
 
-interface MailChimpInterface
+interface MailChimpIntegrationInterface
 {
     public function getDataCenter(): string;
 

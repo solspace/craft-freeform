@@ -46,10 +46,6 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
     )]
     protected ?FieldMapping $ticketMapping = null;
 
-    private array $values = [];
-
-    private array $customValues = [];
-
     public function getApiRootUrl(): string
     {
         $url = $this->getDomain();
@@ -79,6 +75,9 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
 
         $requestType = 'json';
 
+        $values = [];
+        $customValues = [];
+
         foreach ($mapping as $key => $value) {
             if (\is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $value)) {
                 $value = new Carbon($value, 'UTC');
@@ -92,47 +91,47 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
 
             if (str_starts_with($key, 'cf_')) {
                 if (!empty($value)) {
-                    $this->customValues[$key] = $value;
+                    $customValues[$key] = $value;
                 }
             } else {
-                $this->values[$key] = $value;
+                $values[$key] = $value;
             }
         }
 
-        if ($this->customValues) {
-            $this->values['custom_fields'] = $this->customValues;
+        if ($customValues) {
+            $values['custom_fields'] = $customValues;
         }
 
-        if (!isset($this->values['status']) || !$this->values['status']) {
-            $this->values['status'] = ($this->getDefaultStatus() ?? 2);
+        if (!isset($values['status']) || !$values['status']) {
+            $values['status'] = ($this->getDefaultStatus() ?? 2);
         }
 
-        if (!isset($this->values['priority']) || !$this->values['priority']) {
-            $this->values['priority'] = ($this->getDefaultPriority() ?? 1);
+        if (!isset($values['priority']) || !$values['priority']) {
+            $values['priority'] = ($this->getDefaultPriority() ?? 1);
         }
 
-        if (!isset($this->values['source']) || !$this->values['source']) {
-            $this->values['source'] = ($this->getDefaultSource() ?? 2);
+        if (!isset($values['source']) || !$values['source']) {
+            $values['source'] = ($this->getDefaultSource() ?? 2);
         }
 
-        if (!isset($this->values['type']) || !$this->values['type']) {
+        if (!isset($values['type']) || !$values['type']) {
             $defaultType = $this->getDefaultType();
             if ($defaultType) {
-                $this->values['type'] = $defaultType;
+                $values['type'] = $defaultType;
             }
         }
 
-        if (isset($this->values['attachments']) && empty($this->values['attachments'])) {
-            unset($this->values['attachments']);
+        if (empty($values['attachments'])) {
+            unset($values['attachments']);
         }
 
-        if (isset($this->values['description']) && !empty($this->values['description'])) {
-            $this->values['description'] = nl2br($this->values['description']);
+        if (!empty($values['description'])) {
+            $values['description'] = nl2br($values['description']);
         }
 
-        if (isset($this->values['attachments']) && !empty($this->values['attachments'])) {
+        if (!empty($values['attachments'])) {
             $assetData = [];
-            foreach ($this->values['attachments'] as $assetId) {
+            foreach ($values['attachments'] as $assetId) {
                 if (is_numeric($assetId)) {
                     $asset = \Craft::$app->getAssets()->getAssetById($assetId);
                     if ($asset) {
@@ -145,19 +144,19 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
                 }
             }
 
-            unset($this->values['attachments']);
+            unset($values['attachments']);
             if (!empty($assetData)) {
                 $multipartValues = [];
-                foreach ($this->values as $key => $value) {
+                foreach ($values as $key => $value) {
                     $multipartValues[] = [
                         'name' => $key,
                         'contents' => $value,
                         'headers' => ['Content-Type' => 'text'],
                     ];
                 }
-                $this->values = $multipartValues;
+                $values = $multipartValues;
 
-                $this->values = array_merge($this->values, $assetData);
+                $values = array_merge($values, $assetData);
                 $requestType = 'multipart';
             }
         }
@@ -165,7 +164,7 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
         try {
             $client->post(
                 $this->getEndpoint('/tickets'),
-                [$requestType => $this->values],
+                [$requestType => $values],
             );
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);

@@ -27,6 +27,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface
 {
     #[Required]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target Email Field',
@@ -37,6 +38,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     )]
     protected ?FieldInterface $emailField = null;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Opt-in Field (optional)',

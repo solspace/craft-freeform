@@ -282,25 +282,11 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         );
 
         foreach ($json->fields as $field) {
-            switch ($field->type) {
-                case 'dropdown':
-                case 'multiselect':
-                case 'checkbox':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'date':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'currency':
-                    continue 2;
-
-                default:
-                    $type = FieldObject::TYPE_STRING;
-            }
+            $type = match ($field->fieldType) {
+                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
+                'date' => FieldObject::TYPE_DATETIME,
+                default => FieldObject::TYPE_STRING,
+            };
 
             $fieldList[] = new FieldObject(
                 $field->id,
@@ -403,25 +389,11 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         );
 
         foreach ($json->dealCustomFieldMeta as $field) {
-            switch ($field->fieldType) {
-                case 'dropdown':
-                case 'multiselect':
-                case 'checkbox':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'date':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'currency':
-                    continue 2;
-
-                default:
-                    $type = FieldObject::TYPE_STRING;
-            }
+            $type = match ($field->fieldType) {
+                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
+                'date' => FieldObject::TYPE_DATETIME,
+                default => FieldObject::TYPE_STRING,
+            };
 
             $fieldList[] = new FieldObject(
                 $field->id,
@@ -460,25 +432,11 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         );
 
         foreach ($json->accountCustomFieldMeta as $field) {
-            switch ($field->fieldType) {
-                case 'dropdown':
-                case 'multiselect':
-                case 'checkbox':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'date':
-                    $type = FieldObject::TYPE_DATETIME;
-
-                    break;
-
-                case 'currency':
-                    continue 2;
-
-                default:
-                    $type = FieldObject::TYPE_STRING;
-            }
+            $type = match ($field->fieldType) {
+                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
+                'date' => FieldObject::TYPE_DATETIME,
+                default => FieldObject::TYPE_STRING,
+            };
 
             $fieldList[] = new FieldObject(
                 $field->id,

@@ -168,32 +168,13 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 continue;
             }
 
-            $type = null;
-
-            switch ($field->type) {
-                case 'string':
-                case 'enumeration':
-                case 'phone_number':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'datetime':
-                case 'date':
-                    $type = FieldObject::TYPE_MICROTIME;
-
-                    break;
-
-                case 'bool':
-                    $type = FieldObject::TYPE_BOOLEAN;
-
-                    break;
-
-                case 'number':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-            }
+            $type = match ($field->type) {
+                'string', 'enumeration', 'phone_number' => FieldObject::TYPE_STRING,
+                'datetime', 'date' => FieldObject::TYPE_MICROTIME,
+                'bool' => FieldObject::TYPE_BOOLEAN,
+                'number' => FieldObject::TYPE_NUMERIC,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;

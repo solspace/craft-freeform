@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\Integrations\OAuth;
 use craft\helpers\App;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
@@ -27,7 +27,7 @@ trait OAuth2Trait
 
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
-    #[Required]
+    #[Validators\Required]
     #[Input\Text(
         label: 'Client ID',
         instructions: 'Enter the Client ID of your app here.',
@@ -36,7 +36,7 @@ trait OAuth2Trait
 
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
-    #[Required]
+    #[Validators\Required]
     #[Input\Text(
         instructions: 'Enter the Client Secret of your app here.',
     )]

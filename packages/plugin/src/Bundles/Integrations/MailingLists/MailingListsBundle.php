@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Integrations\EmailMarketing;
+namespace Solspace\Freeform\Bundles\Integrations\MailingLists;
 
 use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
@@ -15,7 +15,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegra
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
-class EmailMarketingBundle extends FeatureBundle
+class MailingListsBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,

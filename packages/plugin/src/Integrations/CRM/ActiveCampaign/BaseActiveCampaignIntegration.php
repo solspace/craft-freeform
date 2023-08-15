@@ -15,6 +15,8 @@ namespace Solspace\Freeform\Integrations\CRM\ActiveCampaign;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -31,6 +33,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
     #[Input\Text(
         label: 'API Token',
         instructions: 'Enter your API Token here.',
@@ -40,6 +43,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
     #[Input\Text(
         label: 'API URL',
         instructions: 'Enter your API specific URL (e.g. "https://youraccountname.api-us1.com" or "https://youraccountname.activehosted.com").',
@@ -283,8 +287,9 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         foreach ($json->fields as $field) {
             $type = match ($field->fieldType) {
-                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATETIME,
+                'text', 'textarea', 'hidden', 'radio' => FieldObject::TYPE_STRING,
+                'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
+                'date' => FieldObject::TYPE_DATE,
                 default => FieldObject::TYPE_STRING,
             };
 

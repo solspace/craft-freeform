@@ -83,8 +83,9 @@
     .freeform-page {
         display: block;
         padding: 0 20px 20px;
-        margin: 0;
+        margin: 0 0 10px 0;
         background: #ffffff;
+        border-radius: 10px;
     }
     .freeform-page h3 {
         display: block;
@@ -95,6 +96,8 @@
         font-weight: 400;
         background: #f6f9f9;
         border-bottom: 1px solid #dce3e8;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
     .freeform-page.freeform-page-active {
         background: #d4e5ff;
@@ -104,6 +107,24 @@
         font-weight: 600;
         background: #0d6efd;
         border-bottom: 1px solid #dce3e8;
+    }
+    /* PAGE DATA TABLE */
+    .freeform-page-table {
+        width: 100%;
+        font: 400 14px sans-serif;
+        text-align: left;
+        border-collapse: collapse;
+    }
+    .freeform-page-table tr th {
+        font-weight: bold;
+        vertical-align: top;
+        padding: 10px;
+        border-bottom: 1px solid #d3d3d3;
+    }
+    .freeform-page-table tr td {
+        vertical-align: top;
+        padding: 10px;
+        border-bottom: 1px solid #d3d3d3;
     }
     /* FORM LAYOUT */
     .freeform-row {

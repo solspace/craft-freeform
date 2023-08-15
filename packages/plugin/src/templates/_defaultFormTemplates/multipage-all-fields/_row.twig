@@ -61,14 +61,14 @@
                 {# Show simplified field labels and values (if present) for all other pages #}
                 {% else %}
 
-                    <table class="freeform-table">
+                    <table class="freeform-page-table">
                         {% for row in page %}
 
                             {% for field in row %}
                                 {% if field.type != "submit" and field.type != "save" %}
                                     <tr>
-                                        <th class="text-muted" style="width: 30%;">{{ field.label }}</th>
-                                        <td class="text-muted">
+                                        <th style="width: 30%;">{{ field.label }}</th>
+                                        <td>
                                             {% if field.type == "password" %}
                                                 •••••
                                             {% elseif field.type == "file" or field.type == "file-dnd" %}
@@ -78,13 +78,15 @@
                                                         {% set asset = craft.assets.id(assetId).one() %}
                                                         {% if asset %}
                                                             {% if asset.kind == "image" %}
-                                                                <img src="{{ asset.url }}" class="img-thumbnail img-responsive" style="max-width: 350px; max-height: 350px;" />
+                                                                <img src="{{ asset.url }}" style="max-width: 350px; max-height: 350px;" />
                                                             {% else %}
                                                                 <a href="{{ asset.url }}">{{ asset.filename }}</a>
                                                             {% endif %}
                                                         {% endif %}
                                                     {% endfor %}
                                                 {% endif %}
+                                            {% elseif field.type == "textarea" %}
+                                                {{ field.valueAsString|nl2br }}
                                             {% else %}
                                                 {{ field.valueAsString }}
                                             {% endif %}

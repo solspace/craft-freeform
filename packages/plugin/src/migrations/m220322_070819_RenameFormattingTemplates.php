@@ -14,11 +14,11 @@ class m220322_070819_RenameFormattingTemplates extends Migration
     private static array $renameMap = [
         'flexbox.html' => 'flexbox.twig',
         'grid.html' => 'grid.twig',
-        'bootstrap.html' => 'bootstrap-3.twig',
+        'bootstrap.html' => 'bootstrap-4.twig',
         'bootstrap-4.html' => 'bootstrap-4.twig',
         'bootstrap-5.html' => 'bootstrap-5.twig',
         'foundation.html' => 'foundation-6.twig',
-        'tailwind.html' => 'tailwind-1.twig',
+        'tailwind.html' => 'tailwind-3.twig',
     ];
 
     /**

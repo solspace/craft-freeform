@@ -7,7 +7,7 @@ describe('attributes -> options -> custom', () => {
     it('clears all values with empty label and value', () => {
       expect(
         cleanOptions({
-          source: Source.CustomOptions,
+          source: Source.Custom,
           useCustomValues: true,
           options: [
             { label: '', value: '', checked: false },
@@ -17,7 +17,7 @@ describe('attributes -> options -> custom', () => {
           ],
         })
       ).toEqual({
-        source: Source.CustomOptions,
+        source: Source.Custom,
         useCustomValues: true,
         options: [
           { label: 'Some', value: '', checked: false },

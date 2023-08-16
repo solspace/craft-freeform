@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
@@ -24,7 +24,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     iconPath: __DIR__.'/Icons/radios.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
 )]
-class RadiosField extends AbstractExternalOptionsField implements OneLineInterface
+class RadiosField extends BaseOptionsField implements OneLineInterface
 {
     use OneLineTrait;
 
@@ -49,14 +49,14 @@ class RadiosField extends AbstractExternalOptionsField implements OneLineInterfa
         foreach ($this->getOptions() as $index => $option) {
             $inputAttributes = $attributes
                 ->clone()
-                ->replace('value', $option->value)
-                ->replace('checked', $option->checked)
+                ->replace('value', $option->getValue())
+                ->replace('checked', $option->isChecked())
                 ->replace('id', $this->getIdAttribute()."-{$index}")
             ;
 
             $output .= '<label>';
             $output .= '<input'.$inputAttributes.' />';
-            $output .= $this->translate($option->label);
+            $output .= $this->translate($option->getLabel());
             $output .= '</label>';
         }
 

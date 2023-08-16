@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Library\Factories;
 
 use Solspace\Freeform\Fields\DataContainers\Option;
-use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
 
@@ -37,59 +37,59 @@ class PredefinedOptionsFactory
         $instance = new self($configuration, $selectedValues);
 
         switch ($type) {
-            case ExternalOptionsInterface::PREDEFINED_NUMBERS:
+            case GeneratedOptionsInterface::PREDEFINED_NUMBERS:
                 $options = $instance->getNumberOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_YEARS:
+            case GeneratedOptionsInterface::PREDEFINED_YEARS:
                 $options = $instance->getYearOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_MONTHS:
+            case GeneratedOptionsInterface::PREDEFINED_MONTHS:
                 $options = $instance->getMonthOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_DAYS:
+            case GeneratedOptionsInterface::PREDEFINED_DAYS:
                 $options = $instance->getDayOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_DAYS_OF_WEEK:
+            case GeneratedOptionsInterface::PREDEFINED_DAYS_OF_WEEK:
                 $options = $instance->getDaysOfWeekOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_COUNTRIES:
+            case GeneratedOptionsInterface::PREDEFINED_COUNTRIES:
                 $options = $instance->getCountryOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_LANGUAGES:
+            case GeneratedOptionsInterface::PREDEFINED_LANGUAGES:
                 $options = $instance->getLanguageOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES:
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES_BIL:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES_FR:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES_BIL:
                 $options = $instance->getProvinceOptions($type);
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_STATES:
+            case GeneratedOptionsInterface::PREDEFINED_STATES:
                 $options = $instance->getStateOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_STATES_TERRITORIES:
+            case GeneratedOptionsInterface::PREDEFINED_STATES_TERRITORIES:
                 $options = $instance->getStateTerritoryOptions();
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_CURRENCIES:
+            case GeneratedOptionsInterface::PREDEFINED_CURRENCIES:
                 $options = $instance->getCurrencyOptions();
 
                 break;
@@ -258,17 +258,17 @@ class PredefinedOptionsFactory
     private function getProvinceOptions(string $source = null): array
     {
         switch ($source) {
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES_FR:
                 $path = __DIR__.'/Data/provinces_fr.json';
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES_BIL:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES_BIL:
                 $path = __DIR__.'/Data/provinces_bil.json';
 
                 break;
 
-            case ExternalOptionsInterface::PREDEFINED_PROVINCES:
+            case GeneratedOptionsInterface::PREDEFINED_PROVINCES:
             default:
                 $path = __DIR__.'/Data/provinces.json';
 

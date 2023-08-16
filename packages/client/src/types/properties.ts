@@ -1,5 +1,5 @@
 import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
-import type { Options } from '@components/form-controls/control-types/options/options.types';
+import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 import type {
   ColumnValue,
@@ -114,7 +114,10 @@ export type TableProperty = BaseProperty<
   options: Option[];
 };
 
-export type OptionsProperty = BaseProperty<Options, PropertyType.Options>;
+export type OptionsProperty = BaseProperty<
+  OptionsConfiguration,
+  PropertyType.Options
+>;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime>;
 export type MinMaxProperty = BaseProperty<

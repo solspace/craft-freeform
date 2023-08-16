@@ -11,7 +11,7 @@ import translate from '@ff-client/utils/translations';
 import { generateDefaultValue } from './sources/defaults';
 import { SourceComponent } from './sources/source.component';
 import type { Source } from './options.types';
-import { Options, sourceLabels } from './options.types';
+import { sourceLabels } from './options.types';
 
 const Options: React.FC<ControlType<OptionsProperty>> = ({
   value,
@@ -22,22 +22,27 @@ const Options: React.FC<ControlType<OptionsProperty>> = ({
 
   return (
     <>
-      <ControlWrapper>
+      <ControlWrapper className="field">
         <Label>{translate('Source')}</Label>
-        <div className="select fullwidth">
-          <select
-            id="source"
-            defaultValue={source}
-            className="text fullwidth"
-            onChange={(event) =>
-              updateValue(generateDefaultValue(event.target.value as Source))
-            }
-          >
-            {Object.entries(sourceLabels).map(([key, label]) => (
-              <option key={key} value={key} label={label} />
-            ))}
-          </select>
-        </div>
+        <ul>
+          {Object.entries(sourceLabels).map(([key, label]) => (
+            <li key={key}>
+              <input
+                type="radio"
+                className="radio"
+                value={key}
+                checked={source === key}
+                id={`source-${key}`}
+                onChange={(event) =>
+                  updateValue(
+                    generateDefaultValue(event.target.value as Source)
+                  )
+                }
+              />
+              <label htmlFor={`source-${key}`}>{label}</label>
+            </li>
+          ))}
+        </ul>
       </ControlWrapper>
 
       <SourceComponent value={value} updateValue={updateValue} />

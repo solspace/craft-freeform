@@ -2,18 +2,10 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface ExternalOptionsInterface extends OptionsInterface
-{
-    public const SOURCE_CUSTOM = 'custom';
-    public const SOURCE_ENTRIES = 'entries';
-    public const SOURCE_CATEGORIES = 'categories';
-    public const SOURCE_TAGS = 'tags';
-    public const SOURCE_USERS = 'users';
-    public const SOURCE_ASSETS = 'assets';
-    public const SOURCE_COMMERCE_PRODUCTS = 'commerce_products';
-    public const SOURCE_CALENDAR = 'calendar';
-    public const SOURCE_PREDEFINED = 'predefined';
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 
+interface GeneratedOptionsInterface extends OptionsInterface
+{
     public const PREDEFINED_DAYS = 'days';
     public const PREDEFINED_DAYS_OF_WEEK = 'days_of_week';
     public const PREDEFINED_MONTHS = 'months';
@@ -28,15 +20,5 @@ interface ExternalOptionsInterface extends OptionsInterface
     public const PREDEFINED_LANGUAGES = 'languages';
     public const PREDEFINED_CURRENCIES = 'currencies';
 
-    /**
-     * Returns the option source.
-     */
-    public function getOptionSource(): string;
-
-    /**
-     * @return mixed
-     */
-    public function getOptionTarget();
-
-    public function getOptionConfiguration(): array;
+    public function getOptionConfiguration(): ?OptionsConfigurationInterface;
 }

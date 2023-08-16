@@ -2,14 +2,14 @@ import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
 import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
 
-import type { Options } from '../options.types';
+import type { OptionsConfiguration } from '../options.types';
 import { Source } from '../options.types';
 
 import * as SourceComponents from './index';
 
 type Props = {
-  value: Options;
-  updateValue: (value: Options) => void;
+  value: OptionsConfiguration;
+  updateValue: (value: OptionsConfiguration) => void;
 };
 
 const components: {
@@ -17,7 +17,7 @@ const components: {
 } = SourceComponents;
 
 export const SourceComponent: React.FC<Props> = ({ value, updateValue }) => {
-  const { source = Source.CustomOptions } = value;
+  const { source = Source.Custom } = value;
 
   const SourceComponent = components[source];
   if (SourceComponent === undefined) {

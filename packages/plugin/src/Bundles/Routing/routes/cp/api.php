@@ -41,6 +41,7 @@ return [
 
     // TYPES
     'freeform/api/types/page-buttons' => 'freeform/api/types/page-buttons/get-type',
+    'freeform/api/types/options/elements' => 'freeform/api/types/options/get-element-types',
 
     // GENERAL
     'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',
@@ -51,4 +52,7 @@ return [
     'freeform/api/settings/general' => 'freeform/api/settings/general',
     'freeform/api/settings/spam' => 'freeform/api/settings/spam',
     'freeform/api/settings/reliability' => 'freeform/api/settings/reliability',
+
+    // OPTIONS
+    'freeform/api/options' => 'freeform/api/options/generate-options',
 ];

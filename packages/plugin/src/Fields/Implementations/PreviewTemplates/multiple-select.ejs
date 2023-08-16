@@ -1,6 +1,6 @@
 <div class="fullwidth">
   <select class="fullwidth" multiple>
-    <% options.options.forEach(function(option) { %>
+    <% generatedOptions.forEach(function(option) { %>
         <option value="<%= option.value %>"
                 <% if (option.checked) { %>selected<% } %>
         >

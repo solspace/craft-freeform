@@ -3,15 +3,15 @@ import { Label } from '@components/form-controls/control.styles';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import translate from '@ff-client/utils/translations';
 
-import type { CustomOptions } from '../../options.types';
+import type { CustomOptionsConfiguration } from '../../options.types';
 
 import { CustomEditor } from './custom.editor';
 import { addOption, cleanOptions } from './custom.operations';
 import { CustomPreview } from './custom.preview';
 
 type Props = {
-  value: CustomOptions;
-  updateValue: (value: CustomOptions) => void;
+  value: CustomOptionsConfiguration;
+  updateValue: (value: CustomOptionsConfiguration) => void;
 };
 
 const Custom: React.FC<Props> = ({ value, updateValue }) => {

@@ -36,6 +36,10 @@ export const CurrentValue = styled.div`
 
   padding: 7px 22px 7px 10px;
 
+  > span {
+    min-height: 20px;
+  }
+
   &:hover {
     box-shadow: var(--focus-ring);
     outline-color: transparent;

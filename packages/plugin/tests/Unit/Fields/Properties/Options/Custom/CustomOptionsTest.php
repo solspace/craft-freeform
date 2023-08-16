@@ -4,7 +4,7 @@ namespace Solspace\Tests\Freeform\Unit\Fields\Properties\Options\Custom;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
-use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;
+use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
 
 /**
  * @internal
@@ -26,7 +26,7 @@ class CustomOptionsTest extends TestCase
 
         $output = (new OptionsTransformer())->transform($value);
 
-        $expected = new CustomOptions(
+        $expected = new Custom(
             [
                 ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
                 ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],
@@ -39,7 +39,7 @@ class CustomOptionsTest extends TestCase
 
     public function testReverseTransform()
     {
-        $value = new CustomOptions(
+        $value = new Custom(
             [
                 ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
                 ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],

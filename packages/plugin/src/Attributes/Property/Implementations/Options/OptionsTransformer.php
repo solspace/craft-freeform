@@ -3,37 +3,38 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Options;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
-use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;
-use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Elements;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Fields\Properties\Options\Predefined\Predefined;
 
 class OptionsTransformer extends Transformer
 {
-    public const SOURCE_CUSTOM_OPTIONS = 'customOptions';
-
-    public const DEFAULT_VALUE = [
-        'source' => self::SOURCE_CUSTOM_OPTIONS,
-        'useCustomValues' => false,
-        'options' => [],
-    ];
-
-    public function transform($value): OptionsCollection
+    public function __construct(private PropertyProvider $propertyProvider)
     {
-        $source = $value['source'] ?? self::SOURCE_CUSTOM_OPTIONS;
+    }
+
+    public function transform($value): OptionsConfigurationInterface
+    {
+        $source = $value['source'] ?? null;
 
         return match ($source) {
-            default => new CustomOptions($value['options'] ?? [], $value['useCustomValues'] ?? false),
+            OptionsConfigurationInterface::SOURCE_ELEMENTS => new Elements($value, $this->propertyProvider),
+            OptionsConfigurationInterface::SOURCE_PREDEFINED => new Predefined($value),
+            default => new Custom($value),
         };
     }
 
     /**
-     * @param OptionsCollection $value
+     * @param OptionsConfigurationInterface $value
      */
-    public function reverseTransform($value): array
+    public function reverseTransform($value): mixed
     {
-        if ($value instanceof OptionsCollection) {
-            return $value->jsonSerialize();
+        if (!$value instanceof OptionsConfigurationInterface) {
+            $value = new Custom();
         }
 
-        return self::DEFAULT_VALUE;
+        return $value->toArray();
     }
 }

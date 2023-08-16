@@ -1,0 +1,21 @@
+<div{{ field.attributes.container }}>
+
+{{ field.renderLabel }}
+{% for index, option in field.options %}
+    <div class="flex items-center mb-1">
+        <input type="checkbox"
+                name="{{ field.handle }}[]"
+                value="{{ option.value }}"
+                id="{{ field.idAttribute }}-{{ index }}"
+                class="w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded {{ field.hasErrors ? 'border-red-500' }}"
+                {{ option.checked ? "checked" : "" }}
+        />
+        <label for="{{ field.idAttribute }}-{{ index }}" class="ml-2 font-medium text-slate-700">
+            {{ option.label|t('freeform')|raw }}
+        </label>
+    </div>
+{% endfor %}
+{{ field.renderInstructions }}
+{{ field.renderErrors }}
+
+</div>

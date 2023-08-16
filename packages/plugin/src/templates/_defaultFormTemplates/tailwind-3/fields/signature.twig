@@ -1,0 +1,17 @@
+<div{{ field.attributes.container }}>
+
+{% do field.setParameters({
+    attributes: {
+        input: {
+            class: [
+                "rounded py-1 px-2 mr-1 hover:bg-slate-400"
+            ] },
+    }
+}) %}
+
+{{ field.renderLabel }}
+{{ field.renderInput }}
+{{ field.renderInstructions }}
+{{ field.renderErrors }}
+
+</div>

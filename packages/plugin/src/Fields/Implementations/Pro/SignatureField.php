@@ -138,7 +138,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
         $output .= '<input'.$inputAttributes.' />';
 
         $canvasAttributes = (new Attributes())
-            ->set('style', 'padding: 1px; display: block;')
+            ->set('style', 'padding: 1px; display: block; border-radius: 5px;')
             ->set('width', $this->getWidth())
             ->set('height', $this->getHeight())
             ->set('id', $this->getIdAttribute())

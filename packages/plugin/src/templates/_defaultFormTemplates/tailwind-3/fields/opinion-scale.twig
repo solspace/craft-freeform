@@ -1,0 +1,36 @@
+<div{{ field.attributes.container }}>
+
+{{ field.renderLabel }}
+<ul class="w-full text-sm font-medium border border-slate-400 rounded flex">
+    {% if field.scales %}
+        {% set opinionScaleOptions = field.options|length %}
+        {% for index, option in field.options %}
+        <li class="w-full">
+            <input type="radio" name="{{ field.handle }}"
+                value="{{ option.value }}"
+                id="{{ field.idAttribute }}-{{ index }}"
+                {{ field.value == option.value ? "checked" }}
+                class="hidden peer"
+            />
+            <label for="{{ field.idAttribute }}-{{ index }}" class="inline-flex text-center w-full py-2 px-3 text-slate-800 bg-white cursor-pointer peer-checked:bg-slate-200 hover:bg-slate-100{% if (index + 1) == 1 %} border-r border-slate-400 rounded-tl rounded-bl{% elseif (index + 1) == opinionScaleOptions %} rounded-tr rounded-br{% else %} border-r border-slate-400{% endif %}">
+                {% if option.label %}
+                    {{ option.label }}
+                {% else %}
+                    {{ option.value }}
+                {% endif %}
+            </label>
+        </li>
+        {% endfor %}
+    {% endif %}
+    {#% if field.legends %}
+        <ul>
+            {% for legend in field.legends %}
+                <li>{{ legend.legend }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %#}
+</ul>
+{{ field.renderInstructions }}
+{{ field.renderErrors }}
+
+</div>

@@ -1,0 +1,43 @@
+<style>
+    /* LAYOUT */
+    html, body {
+        font-family: sans-serif;
+    }
+    * {
+        box-sizing: border-box;
+    }
+    .required::after {
+        content: "*";
+        color: #d00;
+        margin-left: 5px;
+    }
+    .StripeElement {
+        height: 36px;
+    }
+    button[type=submit].freeform-loading {
+        display: inline-flex;
+        flex-wrap: nowrap;
+        align-items: center;
+    }
+    button[type=submit].freeform-loading:before {
+        content: "";
+        display: block;
+        flex: 1 0 11px;
+        width: 11px;
+        height: 11px;
+        margin-right: 10px;
+        border-style: solid;
+        border-width: 2px;
+        border-color: transparent transparent #fff #fff;
+        border-radius: 50%;
+        animation: freeform-loading .5s linear infinite;
+    }
+    @keyframes freeform-loading {
+        0% {
+            transform: rotate(0);
+        }
+        100% {
+            transform: rotate(1turn);
+        }
+    }
+</style>

@@ -1,15 +1,15 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Integrations\EmailMarketing\MailChimp;
+namespace Solspace\Freeform\Bundles\Integrations\MailingLists\Mailchimp;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
-use Solspace\Freeform\Integrations\MailingLists\MailChimp\MailChimpIntegrationInterface;
+use Solspace\Freeform\Integrations\MailingLists\MailChimp\MailchimpIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
-class MailChimpTokenListener extends FeatureBundle
+class MailchimpTokenListener extends FeatureBundle
 {
     public function __construct()
     {
@@ -23,7 +23,7 @@ class MailChimpTokenListener extends FeatureBundle
     public function onAfterAuthorize(TokenPayloadEvent $event): void
     {
         $integration = $event->getIntegration();
-        if (!$integration instanceof MailChimpIntegrationInterface) {
+        if (!$integration instanceof MailchimpIntegrationInterface) {
             return;
         }
 

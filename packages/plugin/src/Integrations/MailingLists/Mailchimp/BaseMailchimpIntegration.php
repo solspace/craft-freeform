@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\MailingLists\MailChimp;
+namespace Solspace\Freeform\Integrations\MailingLists\Mailchimp;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -23,19 +23,19 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
-abstract class BaseMailChimpIntegration extends MailingListIntegration implements OAuth2ConnectorInterface, MailChimpIntegrationInterface
+abstract class BaseMailchimpIntegration extends MailingListIntegration implements OAuth2ConnectorInterface, MailchimpIntegrationInterface
 {
     use OAuth2Trait;
 
     protected const LOG_CATEGORY = 'Mailchimp';
 
-    protected const CATEGORY_MEMBERS = 'Members';
+    protected const CATEGORY_CONTACT = 'Contact';
 
     protected const CATEGORY_GDPR = 'GDPR';
 
-    protected const CATEGORY_TAGS = 'Tags';
+    protected const CATEGORY_TAG = 'Tag';
 
-    protected const CATEGORY_GROUPS = 'Groups';
+    protected const CATEGORY_GROUP = 'Group';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Text]
@@ -46,7 +46,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Boolean(
         label: 'Use Double Opt-in',
-        order: 3,
+        order: 4,
     )]
     protected bool $doubleOptIn = false;
 
@@ -56,7 +56,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
     #[Input\Boolean(
         label: 'Append Tags on Update Instead of Overwriting',
         instructions: 'When updating an existing contact in Mailchimp, have new Contact Tags added to existing ones instead of overwriting them.',
-        order: 6,
+        order: 5,
     )]
     protected bool $appendContactTags = false;
 
@@ -92,10 +92,10 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
         $listId = $list->getResourceId();
 
         return match ($category) {
-            self::CATEGORY_MEMBERS => $this->fetchMemberFields($client, $listId, $category),
+            self::CATEGORY_CONTACT => $this->fetchContactFields($client, $listId, $category),
             self::CATEGORY_GDPR => $this->fetchGDPRFields($client, $listId, $category),
-            self::CATEGORY_TAGS => $this->fetchTagFields($category),
-            self::CATEGORY_GROUPS => $this->fetchGroupFields($category),
+            self::CATEGORY_TAG => $this->fetchTagFields($category),
+            self::CATEGORY_GROUP => $this->fetchGroupFields($category),
             default => [],
         };
     }
@@ -367,7 +367,7 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
         }
     }
 
-    private function fetchMemberFields(Client $client, string $listId, string $category): array
+    private function fetchContactFields(Client $client, string $listId, string $category): array
     {
         try {
             $response = $client->get(
@@ -477,27 +477,11 @@ abstract class BaseMailChimpIntegration extends MailingListIntegration implement
 
     private function fetchTagFields(string $category): array
     {
-        return [
-            new FieldObject(
-                'tags',
-                'Tags',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-        ];
+        return [new FieldObject('tags', 'Tags', FieldObject::TYPE_STRING, $category, false)];
     }
 
     private function fetchGroupFields(string $category): array
     {
-        return [
-            new FieldObject(
-                'interests',
-                'Group or Interest',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-        ];
+        return [new FieldObject('interests', 'Group or Interest', FieldObject::TYPE_STRING, $category, false)];
     }
 }

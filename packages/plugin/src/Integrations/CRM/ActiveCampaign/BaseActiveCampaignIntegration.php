@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\ActiveCampaign;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -31,6 +32,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
     #[Input\Text(
         label: 'API Token',
         instructions: 'Enter your API Token here.',
@@ -40,6 +42,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
     #[Input\Text(
         label: 'API URL',
         instructions: 'Enter your API specific URL (e.g. "https://youraccountname.api-us1.com" or "https://youraccountname.activehosted.com").',
@@ -241,50 +244,16 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'listId',
-            'List',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'firstName',
-            'First Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'lastName',
-            'Last Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'email',
-            'Email',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'phone',
-            'Phone',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('listId', 'List', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('lastName', 'Last Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
 
         foreach ($json->fields as $field) {
             $type = match ($field->fieldType) {
-                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATETIME,
+                'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
+                'date' => FieldObject::TYPE_DATE,
                 default => FieldObject::TYPE_STRING,
             };
 
@@ -316,77 +285,15 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'title',
-            'Title',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'description',
-            'Description',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'value',
-            'Value',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'currency',
-            'Currency',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'group',
-            'Group',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'owner',
-            'Owner',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'percent',
-            'Percent',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'stage',
-            'Stage',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'status',
-            'Status',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('title', 'Title', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('description', 'Description', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('value', 'Value', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('currency', 'Currency', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('group', 'Group', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('owner', 'Owner', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('percent', 'Percent', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('stage', 'Stage', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('status', 'Status', FieldObject::TYPE_NUMERIC, $category, false);
 
         foreach ($json->dealCustomFieldMeta as $field) {
             $type = match ($field->fieldType) {
@@ -423,13 +330,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'name',
-            'Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
+        $fieldList[] = new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, true);
 
         foreach ($json->accountCustomFieldMeta as $field) {
             $type = match ($field->fieldType) {

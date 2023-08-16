@@ -159,253 +159,45 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     private function getProspectFields(string $category): array
     {
-        return [
-            new FieldObject(
-                'salutation',
-                'Salutation',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'first_name',
-                'First Name',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'last_name',
-                'Last Name',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'email',
-                'Email',
-                FieldObject::TYPE_STRING,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'password',
-                'Password',
-                FieldObject::TYPE_STRING,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'company',
-                'Company',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'prospect_account_id',
-                'Prospect Account Id',
-                FieldObject::TYPE_NUMERIC,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'website',
-                'Website',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'job_title',
-                'Job Title',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'department',
-                'Department',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'country',
-                'Country',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'address_one',
-                'Address One',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'address_two',
-                'Address Two',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'city',
-                'City',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'state',
-                'State',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'territory',
-                'Territory',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'zip',
-                'Zip',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'phone',
-                'Phone',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'fax',
-                'Fax',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'source',
-                'Source',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'annual_revenue',
-                'Annual Revenue',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'employees',
-                'Employees',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'industry',
-                'Industry',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'years_in_business',
-                'Years in Business',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'comments',
-                'Comments',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'notes',
-                'Notes',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-            new FieldObject(
-                'score',
-                'Score',
-                FieldObject::TYPE_NUMERIC,
-                $category,
-                true
-            ),
-            new FieldObject(
-                'is_do_not_email',
-                'Do not email',
-                FieldObject::TYPE_BOOLEAN,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'is_do_not_call',
-                'Do not call',
-                FieldObject::TYPE_BOOLEAN,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'is_reviewed',
-                'Reviewed',
-                FieldObject::TYPE_BOOLEAN,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'is_archived',
-                'Archived',
-                FieldObject::TYPE_BOOLEAN,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'is_starred',
-                'Starred',
-                FieldObject::TYPE_NUMERIC,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'campaign_id',
-                'Campaign',
-                FieldObject::TYPE_NUMERIC,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'profile',
-                'Profile',
-                FieldObject::TYPE_STRING,
-                $category,
-                true,
-            ),
-            new FieldObject(
-                'assign_to',
-                'Assign To',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-        ];
+        $fieldList = [];
+
+        $fieldList[] = new FieldObject('salutation', 'Salutation', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('first_name', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('password', 'Password', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('company', 'Company', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('prospect_account_id', 'Prospect Account Id', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('website', 'Website', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('job_title', 'Job Title', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('department', 'Department', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('country', 'Country', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('address_one', 'Address One', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('address_two', 'Address Two', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('city', 'City', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('state', 'State', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('territory', 'Territory', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('zip', 'Zip', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('fax', 'Fax', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('source', 'Source', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('annual_revenue', 'Annual Revenue', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('employees', 'Employees', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('industry', 'Industry', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('years_in_business', 'Years in Business', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('comments', 'Comments', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('notes', 'Notes', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('score', 'Score', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('is_do_not_email', 'Do not email', FieldObject::TYPE_BOOLEAN, $category, true);
+        $fieldList[] = new FieldObject('is_do_not_call', 'Do not call', FieldObject::TYPE_BOOLEAN, $category, true);
+        $fieldList[] = new FieldObject('is_reviewed', 'Reviewed', FieldObject::TYPE_BOOLEAN, $category, true);
+        $fieldList[] = new FieldObject('is_archived', 'Archived', FieldObject::TYPE_BOOLEAN, $category, true);
+        $fieldList[] = new FieldObject('is_starred', 'Starred', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('campaign_id', 'Campaign', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('profile', 'Profile', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('assign_to', 'Assign To', FieldObject::TYPE_STRING, $category, false);
+
+        return $fieldList;
     }
 
     private function getCustomFields(Client $client, string $category): array

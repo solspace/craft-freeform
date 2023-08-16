@@ -11,6 +11,9 @@ import axios from 'axios';
 
 import { extractParameter } from '../namespaced/field-mapping/mapping.utilities';
 
+import RefreshIcon from './icons/refresh.svg';
+import { RefreshButton } from './dynamic-select.styles';
+
 const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   value,
   property,
@@ -27,11 +30,11 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
     });
   }
 
-  const { data, isFetching } = useQuery(
+  const { data, isFetching, refetch } = useQuery(
     ['dynamic-select', source, params],
     () =>
       axios.get<OptionCollection>(source, { params }).then((res) => res.data),
-    { staleTime: Infinity }
+    { staleTime: Infinity, cacheTime: Infinity }
   );
 
   return (
@@ -43,6 +46,17 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
         emptyOption={emptyOption}
         options={data}
       />
+      <RefreshButton
+        className="btn"
+        disabled={isFetching}
+        onClick={() => {
+          params['refresh'] = 'true';
+          refetch();
+          delete params['refresh'];
+        }}
+      >
+        <RefreshIcon />
+      </RefreshButton>
     </Control>
   );
 };

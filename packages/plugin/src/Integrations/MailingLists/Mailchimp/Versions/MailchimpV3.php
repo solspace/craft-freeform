@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\MailingLists\MailChimp\Versions;
+namespace Solspace\Freeform\Integrations\MailingLists\Mailchimp\Versions;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
@@ -22,7 +22,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\MailingLists\MailChimp\BaseMailChimpIntegration;
+use Solspace\Freeform\Integrations\MailingLists\Mailchimp\BaseMailchimpIntegration;
 use yii\base\Event;
 
 #[Type(
@@ -30,12 +30,12 @@ use yii\base\Event;
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.png',
 )]
-class MailChimpV3 extends BaseMailChimpIntegration
+class MailchimpV3 extends BaseMailchimpIntegration
 {
     protected const API_VERSION = '3.0';
 
     // ==========================================
-    //                   Members
+    //                   Contact
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -45,14 +45,18 @@ class MailChimpV3 extends BaseMailChimpIntegration
     #[Input\Special\Properties\FieldMapping(
         label: 'Contact Fields',
         instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Contact fields.',
-        order: 4,
-        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_MEMBERS,
+        order: 6,
+        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_CONTACT,
         parameterFields: [
             'id' => 'id',
             'values.mailingList' => 'mailingListId',
         ],
     )]
-    protected ?FieldMapping $memberMapping = null;
+    protected ?FieldMapping $contactMapping = null;
+
+    // ==========================================
+    //                   GDPR
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
@@ -61,7 +65,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
     #[Input\Special\Properties\FieldMapping(
         label: 'Marketing Permissions',
         instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp GDPR marketing permission fields.',
-        order: 8,
+        order: 7,
         source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_GDPR,
         parameterFields: [
             'id' => 'id',
@@ -70,6 +74,10 @@ class MailChimpV3 extends BaseMailChimpIntegration
     )]
     protected ?FieldMapping $gdprMapping = null;
 
+    // ==========================================
+    //                   Tag
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('Boolean(enabled)')]
@@ -77,14 +85,18 @@ class MailChimpV3 extends BaseMailChimpIntegration
     #[Input\Special\Properties\FieldMapping(
         label: 'Contact Tags',
         instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Tags',
-        order: 5,
-        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_TAGS,
+        order: 8,
+        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_TAG,
         parameterFields: [
             'id' => 'id',
             'values.mailingList' => 'mailingListId',
         ],
     )]
-    protected ?FieldMapping $tagsMapping = null;
+    protected ?FieldMapping $tagMapping = null;
+
+    // ==========================================
+    //                   Group
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
@@ -93,14 +105,14 @@ class MailChimpV3 extends BaseMailChimpIntegration
     #[Input\Special\Properties\FieldMapping(
         label: 'Contact Groups',
         instructions: 'Select the Freeform fields to be mapped to the applicable Mailchimp Groups',
-        order: 7,
-        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_GROUPS,
+        order: 9,
+        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_GROUP,
         parameterFields: [
             'id' => 'id',
             'values.mailingList' => 'mailingListId',
         ],
     )]
-    protected ?FieldMapping $groupsMapping = null;
+    protected ?FieldMapping $groupMapping = null;
 
     public function getAuthorizeUrl(): string
     {
@@ -157,7 +169,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
             'status_if_new' => $isDoubleOptIn ? 'pending' : 'subscribed',
         ];
 
-        $mappedValues = $this->processMapping($form, $this->memberMapping, self::CATEGORY_MEMBERS);
+        $mappedValues = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
 
         $gdprData = $this->processMapping($form, $this->gdprMapping, self::CATEGORY_GDPR);
         $marketingPermissions = [];
@@ -168,7 +180,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
             ];
         }
 
-        $tagData = $this->processMapping($form, $this->tagsMapping, self::CATEGORY_TAGS);
+        $tagData = $this->processMapping($form, $this->tagMapping, self::CATEGORY_TAG);
         $tags = reset($tagData);
         if ($tags) {
             if (\is_string($tags)) {
@@ -181,7 +193,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
             $tags = [];
         }
 
-        $groupData = $this->processMapping($form, $this->groupsMapping, self::CATEGORY_GROUPS);
+        $groupData = $this->processMapping($form, $this->groupMapping, self::CATEGORY_GROUP);
         $groups = reset($groupData);
         $interests = [];
         if ($groups) {
@@ -222,7 +234,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
             Event::trigger(
                 $this,
                 self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_MEMBERS, $response)
+                new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
             );
         } catch (\Exception $exception) {
             $json = json_decode($exception->getResponse()->getBody());
@@ -243,7 +255,7 @@ class MailChimpV3 extends BaseMailChimpIntegration
                     Event::trigger(
                         $this,
                         self::EVENT_AFTER_RESPONSE,
-                        new IntegrationResponseEvent($this, self::CATEGORY_MEMBERS, $response)
+                        new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
                     );
                 } catch (\Exception $exception) {
                     $this->processException($exception, self::LOG_CATEGORY);

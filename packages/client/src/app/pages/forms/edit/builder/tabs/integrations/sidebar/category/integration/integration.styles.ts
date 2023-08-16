@@ -42,6 +42,8 @@ export const Icon = styled.div`
 
 export const Name = styled.div`
   flex-grow: 1;
+  max-width: 90%;
+  overflow: hidden;
 `;
 
 type StatusProps = {
@@ -51,6 +53,7 @@ type StatusProps = {
 export const Status = styled.div<StatusProps>`
   content: '';
 
+  flex-shrink: 0;
   justify-self: flex-end;
 
   width: 10px;

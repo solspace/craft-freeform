@@ -153,23 +153,11 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         }
 
         if (self::CATEGORY_ORGANIZATION === $category) {
-            $fieldList[] = new FieldObject(
-                'address',
-                'Address',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            );
+            $fieldList[] = new FieldObject('address', 'Address', FieldObject::TYPE_STRING, $category, false);
         }
 
         if (self::CATEGORY_DEAL === $category || self::CATEGORY_LEAD === $category) {
-            $fieldList[] = new FieldObject(
-                'note',
-                'Note',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            );
+            $fieldList[] = new FieldObject('note', 'Note', FieldObject::TYPE_STRING, $category, false);
         }
 
         return $fieldList;

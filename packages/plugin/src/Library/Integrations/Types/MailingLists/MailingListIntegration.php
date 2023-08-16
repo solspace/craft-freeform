@@ -32,7 +32,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     #[Input\Field(
         label: 'Target Email Field',
         instructions: 'The email field to be subscribed to the mailing list.',
-        order: 0,
+        order: 1,
         emptyOption: 'Select a field...',
         implements: [RecipientInterface::class],
     )]
@@ -43,7 +43,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     #[Input\Field(
         label: 'Opt-in Field (optional)',
         instructions: 'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.',
-        order: 1,
+        order: 2,
         emptyOption: 'Automatically opt-in the user',
         implements: [BooleanInterface::class],
     )]
@@ -54,7 +54,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     #[ValueTransformer(MailingListTransformer::class)]
     #[Input\DynamicSelect(
         instructions: 'The mailing list the user should be subscribed to.',
-        order: 2,
+        order: 3,
         emptyOption: 'Select a mailing list...',
         source: 'api/integrations/mailing-lists/lists',
         parameterFields: ['id' => 'id'],

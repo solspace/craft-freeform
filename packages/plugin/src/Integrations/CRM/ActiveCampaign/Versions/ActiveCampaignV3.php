@@ -37,6 +37,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Contact',
         instructions: 'Should map to the Contact endpoint.',
@@ -46,6 +47,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapContact)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Contact fields',
@@ -60,6 +62,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Deal?',
         instructions: 'Should map to the Deal endpoint.',
@@ -69,6 +72,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeal)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Deal fields',
@@ -83,6 +87,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Account?',
         instructions: 'Should map to the Account endpoint.',
@@ -92,6 +97,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapAccount)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Account fields',

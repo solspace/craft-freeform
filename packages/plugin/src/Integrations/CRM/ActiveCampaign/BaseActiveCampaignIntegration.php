@@ -244,49 +244,14 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'listId',
-            'List',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'firstName',
-            'First Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'lastName',
-            'Last Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'email',
-            'Email',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'phone',
-            'Phone',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('listId', 'List', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('lastName', 'Last Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
 
         foreach ($json->fields as $field) {
             $type = match ($field->fieldType) {
-                'text', 'textarea', 'hidden', 'radio' => FieldObject::TYPE_STRING,
                 'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
                 'date' => FieldObject::TYPE_DATE,
                 default => FieldObject::TYPE_STRING,
@@ -320,77 +285,15 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'title',
-            'Title',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'description',
-            'Description',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'value',
-            'Value',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'currency',
-            'Currency',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'group',
-            'Group',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'owner',
-            'Owner',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'percent',
-            'Percent',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'stage',
-            'Stage',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'status',
-            'Status',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('title', 'Title', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('description', 'Description', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('value', 'Value', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('currency', 'Currency', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('group', 'Group', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('owner', 'Owner', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('percent', 'Percent', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('stage', 'Stage', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('status', 'Status', FieldObject::TYPE_NUMERIC, $category, false);
 
         foreach ($json->dealCustomFieldMeta as $field) {
             $type = match ($field->fieldType) {
@@ -427,13 +330,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'name',
-            'Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
+        $fieldList[] = new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, true);
 
         foreach ($json->accountCustomFieldMeta as $field) {
             $type = match ($field->fieldType) {

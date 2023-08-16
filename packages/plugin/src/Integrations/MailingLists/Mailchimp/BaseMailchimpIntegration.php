@@ -477,27 +477,11 @@ abstract class BaseMailchimpIntegration extends MailingListIntegration implement
 
     private function fetchTagFields(string $category): array
     {
-        return [
-            new FieldObject(
-                'tags',
-                'Tags',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-        ];
+        return [new FieldObject('tags', 'Tags', FieldObject::TYPE_STRING, $category, false)];
     }
 
     private function fetchGroupFields(string $category): array
     {
-        return [
-            new FieldObject(
-                'interests',
-                'Group or Interest',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            ),
-        ];
+        return [new FieldObject('interests', 'Group or Interest', FieldObject::TYPE_STRING, $category, false)];
     }
 }

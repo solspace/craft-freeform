@@ -63,213 +63,32 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
     {
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'SALUTATION',
-            'Salutation',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'FIRST_NAME',
-            'First Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LAST_NAME',
-            'Last Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'TITLE',
-            'Title',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'EMAIL',
-            'Email',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'PHONE',
-            'Phone',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'MOBILE',
-            'Mobile',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'FAX',
-            'Fax',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'WEBSITE',
-            'Website',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ORGANISATION_NAME',
-            'Organization',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'INDUSTRY',
-            'Industry',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'EMPLOYEE_COUNT',
-            'Number of Employees',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'IMAGE_URL',
-            'Image URL',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ADDRESS_STREET',
-            'Address - Street',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ADDRESS_CITY',
-            'Address - City',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ADDRESS_STATE',
-            'Address - State/Province',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ADDRESS_POSTCODE',
-            'Address - Postal Code',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'ADDRESS_COUNTRY',
-            'Address - Country',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LEAD_ID',
-            'Lead ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LEAD_DESCRIPTION',
-            'Lead Description',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LEAD_RATING',
-            'Lead Rating',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LEAD_SOURCE_ID',
-            'Lead Source',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'LEAD_STATUS_ID',
-            'Lead Status',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'DATE_CREATED_UTC',
-            'Lead Created',
-            FieldObject::TYPE_DATETIME,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'OWNER_USER_ID',
-            'Lead Owner',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'RESPONSIBLE_USER_ID',
-            'User Responsible',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('SALUTATION', 'Salutation', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('FIRST_NAME', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('LAST_NAME', 'Last Name', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('TITLE', 'Title', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('EMAIL', 'Email', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('PHONE', 'Phone', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('MOBILE', 'Mobile', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('FAX', 'Fax', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('WEBSITE', 'Website', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ORGANISATION_NAME', 'Organization', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('INDUSTRY', 'Industry', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('EMPLOYEE_COUNT', 'Number of Employees', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('IMAGE_URL', 'Image URL', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ADDRESS_STREET', 'Address - Street', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ADDRESS_CITY', 'Address - City', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ADDRESS_STATE', 'Address - State/Province', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ADDRESS_POSTCODE', 'Address - Postal Code', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('ADDRESS_COUNTRY', 'Address - Country', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('LEAD_ID', 'Lead ID', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('LEAD_DESCRIPTION', 'Lead Description', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('LEAD_RATING', 'Lead Rating', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('LEAD_SOURCE_ID', 'Lead Source', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('LEAD_STATUS_ID', 'Lead Status', FieldObject::TYPE_NUMERIC, $category, true);
+        $fieldList[] = new FieldObject('DATE_CREATED_UTC', 'Lead Created', FieldObject::TYPE_DATETIME, $category, false);
+        $fieldList[] = new FieldObject('OWNER_USER_ID', 'Lead Owner', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('RESPONSIBLE_USER_ID', 'User Responsible', FieldObject::TYPE_NUMERIC, $category, false);
 
         $response = $client->get($this->getEndpoint('/CustomFields/Leads'));
 

@@ -81,41 +81,13 @@ abstract class BaseActiveCampaignIntegration extends MailingListIntegration impl
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'firstName',
-            'First Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'lastName',
-            'Last Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'phone',
-            'Phone',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'tags',
-            'Tags',
-            FieldObject::TYPE_ARRAY,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('lastName', 'Last Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, $category, false);
 
         foreach ($json->fields as $field) {
             $type = match ($field->type) {
-                'text', 'textarea', 'hidden', 'radio' => FieldObject::TYPE_STRING,
                 'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
                 'date' => FieldObject::TYPE_DATE,
                 default => FieldObject::TYPE_STRING,

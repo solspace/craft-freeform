@@ -59,117 +59,20 @@ abstract class BaseConstantContactIntegration extends MailingListIntegration imp
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'first_name',
-            'First Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'last_name',
-            'Last Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'job_title',
-            'Job Title',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'company_name',
-            'Company Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'phone_number',
-            'Phone Number',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'anniversary',
-            'Anniversary',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'birthday_month',
-            'Birthday Month',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'birthday_day',
-            'Birthday Day',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_kind',
-            'Address: Kind',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_street',
-            'Address: Street',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_city',
-            'Address: City',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_state',
-            'Address: State',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_postal_code',
-            'Address: Postal Code',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'street_address_country',
-            'Address: Country',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('first_name', 'First Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('job_title', 'Job Title', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('company_name', 'Company Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('phone_number', 'Phone Number', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('anniversary', 'Anniversary', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('birthday_month', 'Birthday Month', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('birthday_day', 'Birthday Day', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('street_address_kind', 'Address: Kind', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('street_address_street', 'Address: Street', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('street_address_city', 'Address: City', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('street_address_state', 'Address: State', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('street_address_postal_code', 'Address: Postal Code', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('street_address_country', 'Address: Country', FieldObject::TYPE_STRING, $category, false);
 
         foreach ($json->custom_fields as $field) {
             $fieldList[] = new FieldObject(

@@ -131,165 +131,26 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
 
         $fieldList = [];
 
-        $fieldList[] = new FieldObject(
-            'name',
-            'Name',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'email',
-            'Email',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'phone',
-            'Phone',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'unique_external_id',
-            'Unique External ID',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'subject',
-            'Subject',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'type',
-            'Type',
-            FieldObject::TYPE_STRING,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'status',
-            'Status',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'priority',
-            'Priority',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'description',
-            'Description',
-            FieldObject::TYPE_STRING,
-            $category,
-            true,
-        );
-
-        $fieldList[] = new FieldObject(
-            'responder_id',
-            'Responder ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'attachments',
-            'Attachments',
-            FieldObject::TYPE_ARRAY,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'cc_emails',
-            'CC Emails',
-            FieldObject::TYPE_ARRAY,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'due_by',
-            'Due By',
-            FieldObject::TYPE_DATETIME,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'email_config_id',
-            'Email Config ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'fr_due_by',
-            'First Response Due By',
-            FieldObject::TYPE_DATETIME,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'group_id',
-            'Group ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'product_id',
-            'Product ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'source',
-            'Source',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'tags',
-            'Tags',
-            FieldObject::TYPE_ARRAY,
-            $category,
-            false,
-        );
-
-        $fieldList[] = new FieldObject(
-            'company_id',
-            'Company ID',
-            FieldObject::TYPE_NUMERIC,
-            $category,
-            false,
-        );
+        $fieldList[] = new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('unique_external_id', 'Unique External ID', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('subject', 'Subject', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('type', 'Type', FieldObject::TYPE_STRING, $category, false);
+        $fieldList[] = new FieldObject('status', 'Status', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('priority', 'Priority', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('description', 'Description', FieldObject::TYPE_STRING, $category, true);
+        $fieldList[] = new FieldObject('responder_id', 'Responder ID', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('attachments', 'Attachments', FieldObject::TYPE_ARRAY, $category, false);
+        $fieldList[] = new FieldObject('cc_emails', 'CC Emails', FieldObject::TYPE_ARRAY, $category, false);
+        $fieldList[] = new FieldObject('due_by', 'Due By', FieldObject::TYPE_DATETIME, $category, false);
+        $fieldList[] = new FieldObject('email_config_id', 'Email Config ID', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('fr_due_by', 'First Response Due By', FieldObject::TYPE_DATETIME, $category, false);
+        $fieldList[] = new FieldObject('group_id', 'Group ID', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('product_id', 'Product ID', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('source', 'Source', FieldObject::TYPE_NUMERIC, $category, false);
+        $fieldList[] = new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, $category, false);
+        $fieldList[] = new FieldObject('company_id', 'Company ID', FieldObject::TYPE_NUMERIC, $category, false);
 
         foreach ($json as $field) {
             if ($field->default) {

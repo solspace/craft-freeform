@@ -1,17 +1,16 @@
 <?php
 
-namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries;
+namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories;
 
-use craft\elements\Entry;
+use craft\elements\Category;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
-use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
 use Solspace\Freeform\Library\Helpers\ElementHelper;
 
-class Entries implements ElementSourceTypeInterface
+class Categories implements ElementSourceTypeInterface
 {
     #[Input\Select(
         label: 'Site ID',
@@ -21,28 +20,19 @@ class Entries implements ElementSourceTypeInterface
     private ?string $siteId = null;
 
     #[Input\Select(
-        label: 'Section',
-        emptyOption: 'All Sections',
-        options: SectionsOptionsGenerator::class,
+        label: 'Group',
+        emptyOption: 'All Groups',
+        options: CategoryGroupsOptionsGenerator::class,
     )]
-    private ?int $sectionId = null;
-
-    #[VisibilityFilter('Boolean(properties.sectionId)')]
-    #[Input\DynamicSelect(
-        label: 'Entry Type',
-        source: 'api/elements/entries/entry-types',
-        parameterFields: ['properties.sectionId' => 'sectionId'],
-    )]
-    private ?int $entryTypeId = null;
+    private ?string $groupId = null;
 
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
-        source: 'api/elements/entries/fields',
+        source: 'api/elements/categories/fields',
         parameterFields: [
             'properties.siteId' => 'siteId',
-            'properties.sectionId' => 'sectionId',
-            'properties.entryTypeId' => 'entryTypeId',
+            'properties.groupId' => 'groupId',
         ],
     )]
     private string $label = 'title';
@@ -50,22 +40,20 @@ class Entries implements ElementSourceTypeInterface
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Value',
-        source: 'api/elements/entries/fields',
+        source: 'api/elements/categories/fields',
         parameterFields: [
             'properties.siteId' => 'siteId',
-            'properties.sectionId' => 'sectionId',
-            'properties.entryTypeId' => 'entryTypeId',
+            'properties.groupId' => 'groupId',
         ],
     )]
     private string $value = 'id';
 
     #[Input\DynamicSelect(
         label: 'Order By',
-        source: 'api/elements/entries/fields',
+        source: 'api/elements/categories/fields',
         parameterFields: [
             'properties.siteId' => 'siteId',
-            'properties.sectionId' => 'sectionId',
-            'properties.entryTypeId' => 'entryTypeId',
+            'properties.groupId' => 'groupId',
         ],
     )]
     private string $orderBy = 'id';
@@ -80,12 +68,12 @@ class Entries implements ElementSourceTypeInterface
 
     public function getTypeClass(): string
     {
-        return Entry::class;
+        return Category::class;
     }
 
     public function getElementName(): string
     {
-        return 'Entries';
+        return 'Categories';
     }
 
     public function getSiteId(): ?string
@@ -93,14 +81,9 @@ class Entries implements ElementSourceTypeInterface
         return $this->siteId;
     }
 
-    public function getSectionId(): ?int
+    public function getGroupId(): ?string
     {
-        return $this->sectionId;
-    }
-
-    public function getEntryTypeId(): ?int
-    {
-        return $this->entryTypeId;
+        return $this->groupId;
     }
 
     public function getLabel(): string
@@ -127,15 +110,14 @@ class Entries implements ElementSourceTypeInterface
     {
         $collection = new OptionCollection();
 
-        $entries = Entry::find()
+        $categories = Category::find()
             ->siteId($this->getSiteId() ?: null)
-            ->sectionId($this->getSectionId() ?: null)
-            ->typeId($this->getEntryTypeId() ?: null)
+            ->groupId($this->getGroupId() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;
 
-        foreach ($entries as $entry) {
+        foreach ($categories as $entry) {
             $value = ElementHelper::extractFieldValue($entry, $this->getValue());
             $label = ElementHelper::extractFieldValue($entry, $this->getLabel());
 

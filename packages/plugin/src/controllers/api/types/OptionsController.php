@@ -4,7 +4,10 @@ namespace Solspace\Freeform\controllers\api\types;
 
 use Solspace\Freeform\Bundles\Transformers\Options\ElementOptionTypeTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Categories;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
 use yii\web\Response;
 
 class OptionsController extends BaseApiController
@@ -22,6 +25,9 @@ class OptionsController extends BaseApiController
     {
         $types = [
             new Entries(),
+            new Users(),
+            new Categories(),
+            new Tags(),
         ];
 
         $serialized = [];

@@ -25,8 +25,14 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
         return $this;
     }
 
-    public function add(string $value, string $label, bool $checked = false): self
+    public function add(Option|string $value, string $label = '', bool $checked = false): self
     {
+        if ($value instanceof Option) {
+            $this->options[] = $value;
+
+            return $this;
+        }
+
         $this->options[] = new Option(
             $value,
             $label,

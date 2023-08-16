@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Elements;
 
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
@@ -35,9 +36,9 @@ class Elements implements OptionsConfigurationInterface
         return $this->typeClass;
     }
 
-    public function getTypeConfiguration(): ?ElementSourceTypeInterface
+    public function getOptions(): OptionCollection
     {
-        return $this->getTypeConfiguration();
+        return $this->configuration->generateOptions();
     }
 
     public function toArray(): array

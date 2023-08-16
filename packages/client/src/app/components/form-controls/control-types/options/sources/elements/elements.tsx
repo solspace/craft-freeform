@@ -48,6 +48,7 @@ const Elements: React.FC<Props> = ({ value, updateValue }) => {
             updateValue({
               ...value,
               typeClass: selectedValue,
+              properties: {},
             });
           }}
           options={

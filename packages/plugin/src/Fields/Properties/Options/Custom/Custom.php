@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Properties\Options\Custom;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 
 class Custom implements OptionsConfigurationInterface
@@ -34,9 +35,14 @@ class Custom implements OptionsConfigurationInterface
         return $this->useCustomValues;
     }
 
-    public function getOptions(): array
+    public function getOptions(): OptionCollection
     {
-        return $this->options;
+        $collection = new OptionCollection();
+        foreach ($this->options as $option) {
+            $collection->add($option);
+        }
+
+        return $collection;
     }
 
     public function toArray(): array

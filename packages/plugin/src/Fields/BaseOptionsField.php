@@ -29,6 +29,6 @@ abstract class BaseOptionsField extends AbstractField implements GeneratedOption
 
     public function getOptions(): OptionCollection
     {
-        return new OptionCollection();
+        return $this->optionConfiguration->getOptions();
     }
 }

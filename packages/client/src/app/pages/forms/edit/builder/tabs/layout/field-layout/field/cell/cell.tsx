@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
@@ -62,7 +61,6 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>
       )}
-      {isLoadingPreview && <Skeleton />}
       {type.type === Type.Group && (
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}

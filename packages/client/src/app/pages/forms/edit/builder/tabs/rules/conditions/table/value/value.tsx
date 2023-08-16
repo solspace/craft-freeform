@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Option } from '@components/form-controls/control-types/options/options.types';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { useFieldOptions } from '@components/options/use-field-options';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Condition } from '@ff-client/types/rules';
@@ -17,6 +18,8 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
 
   const field = useSelector(fieldSelectors.one(fieldUid));
   const fieldType = useFieldType(field?.typeClass);
+
+  const [options, isFetchingOptions] = useFieldOptions(field, fieldType);
 
   if (!fieldType) {
     return null;
@@ -47,20 +50,13 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
 
   if (fieldType.implements.includes('options')) {
     return (
-      <div className="select fullwidth">
-        <select
-          value={value}
-          onChange={(event) => onChange && onChange(event.target.value)}
-        >
-          {field.properties.options.options.map(
-            (option: Option, idx: number) => (
-              <option key={idx} value={option.value}>
-                {option.label}
-              </option>
-            )
-          )}
-        </select>
-      </div>
+      <Dropdown
+        emptyOption={translate('Select an option')}
+        value={value}
+        options={options}
+        loading={isFetchingOptions}
+        onChange={(selectedValue) => onChange && onChange(selectedValue)}
+      />
     );
   }
 

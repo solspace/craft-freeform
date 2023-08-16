@@ -40,4 +40,8 @@
             transform: rotate(1turn);
         }
     }
+    .input-group-one-line > div {
+        float: left;
+        margin-right: 15px;
+    }
 </style>

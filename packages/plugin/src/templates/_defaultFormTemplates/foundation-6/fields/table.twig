@@ -1,0 +1,18 @@
+{% set tableColumnCount = field.tableLayout|length %}
+
+{{ field.render({
+    instructionsBelowField: true,
+    addButtonLabel: "Add +",
+    removeButtonLabel: "x",
+    tableAttributes: {
+        table: { class: "table-field" },
+        row: { class: "table-row" },
+        column: { class: "table-column" },
+        label: { class: "table-heading-label" },
+        input: { class: "table-input" },
+        select: { class: "table-select" },
+        checkbox: { class: "table-checkbox" },
+        removeButton: { class: "button freeform-table-button-red" },
+        addButton: { class: "button freeform-table-button-green" },
+    },
+}) }}

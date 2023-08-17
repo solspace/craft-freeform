@@ -20,7 +20,6 @@ class Custom implements OptionsConfigurationInterface
             $this->options[] = new Option(
                 $option['value'] ?? '',
                 $option['label'] ?? '',
-                $option['checked'] ?? false,
             );
         }
     }
@@ -54,7 +53,6 @@ class Custom implements OptionsConfigurationInterface
                 fn (Option $option) => [
                     'label' => $option->getLabel(),
                     'value' => $option->getValue(),
-                    'checked' => $option->isChecked(),
                 ],
                 $this->options
             ),

@@ -76,11 +76,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             $value = $row[0] ?? null;
             $label = $row[1] ?? $value;
 
-            $collection->add(
-                $label,
-                $value,
-                $this->getValue() === $value,
-            );
+            $collection->add($label, $value);
         }
 
         return $collection;

@@ -8,10 +8,10 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use Solspace\Freeform\Library\Helpers\ElementHelper;
 
-class Entries implements ElementSourceTypeInterface
+class Entries implements OptionTypeProviderInterface
 {
     #[Input\Select(
         label: 'Site ID',
@@ -78,12 +78,7 @@ class Entries implements ElementSourceTypeInterface
     )]
     private string $sort = 'asc';
 
-    public function getTypeClass(): string
-    {
-        return Entry::class;
-    }
-
-    public function getElementName(): string
+    public function getName(): string
     {
         return 'Entries';
     }

@@ -10,6 +10,13 @@ export const generateDefaultValue = (source: Source): OptionsConfiguration => {
         properties: {},
       };
 
+    case Source.Predefined:
+      return {
+        source: Source.Predefined,
+        typeClass: '',
+        properties: {},
+      };
+
     case Source.Custom:
     default:
       return {

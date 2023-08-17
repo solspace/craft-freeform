@@ -42,6 +42,7 @@ return [
     // TYPES
     'freeform/api/types/page-buttons' => 'freeform/api/types/page-buttons/get-type',
     'freeform/api/types/options/elements' => 'freeform/api/types/options/get-element-types',
+    'freeform/api/types/options/predefined' => 'freeform/api/types/options/get-predefined-types',
 
     // GENERAL
     'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',

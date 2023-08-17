@@ -40,6 +40,13 @@ export type CustomOptionsConfiguration = BaseOptions & {
   options: Option[];
 };
 
+export type PredefinedOptionsConfiguration = BaseOptions & {
+  source: Source.Predefined;
+  typeClass: string;
+  properties: GenericValue;
+};
+
 export type OptionsConfiguration =
   | ElementOptionsConfiguration
-  | CustomOptionsConfiguration;
+  | CustomOptionsConfiguration
+  | PredefinedOptionsConfiguration;

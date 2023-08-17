@@ -4,12 +4,10 @@ import { FormComponent } from '@components/form-controls';
 import { Control } from '@components/form-controls/control';
 import { FlexColumn } from '@components/layout/blocks/flex';
 import { PropertyType } from '@ff-client/types/properties';
-import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
 
 import type { ElementOptionsConfiguration } from '../../options.types';
 
-import type { ElementType } from './elements.types';
+import { useOptionTypesElements } from './elements.queries';
 
 type Props = {
   value: ElementOptionsConfiguration;
@@ -18,14 +16,9 @@ type Props = {
 
 const Elements: React.FC<Props> = ({ value, updateValue }) => {
   const [typeClass, setTypeClass] = useState(value.typeClass);
+  const { data, isFetching } = useOptionTypesElements();
 
-  const { data, isFetching } = useQuery<ElementType[]>(
-    ['elements'],
-    () => axios.get('/api/types/options/elements').then((res) => res.data),
-    { staleTime: Infinity }
-  );
-
-  const selectedElementType = data?.find(
+  const selectedTypeProvider = data?.find(
     (element) => element.typeClass === typeClass
   );
 
@@ -53,16 +46,16 @@ const Elements: React.FC<Props> = ({ value, updateValue }) => {
           }}
           options={
             data &&
-            data.map((element) => ({
-              label: element.label,
-              value: element.typeClass,
+            data.map((typeProvider) => ({
+              label: typeProvider.name,
+              value: typeProvider.typeClass,
             }))
           }
         />
       </Control>
 
-      {selectedElementType &&
-        selectedElementType.properties.map((property) => (
+      {selectedTypeProvider &&
+        selectedTypeProvider.properties.map((property) => (
           <FormComponent
             key={property.handle}
             property={property}

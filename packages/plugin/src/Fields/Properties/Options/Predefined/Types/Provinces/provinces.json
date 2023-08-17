@@ -1,0 +1,67 @@
+{
+  "AB": {
+    "en": "Alberta",
+    "fr": "Alberta",
+    "bi": "Alberta"
+  },
+  "BC": {
+    "en": "British Columbia",
+    "fr": "Colombie-Britannique",
+    "bi": "British Columbia / Colombie-Britannique"
+  },
+  "MB": {
+    "en": "Manitoba",
+    "fr": "Manitoba",
+    "bi": "Manitoba"
+  },
+  "NB": {
+    "en": "New Brunswick",
+    "fr": "Nouveau-Brunswick",
+    "bi": "New Brunswick / Nouveau-Brunswick"
+  },
+  "NL": {
+    "en": "Newfoundland and Labrador",
+    "fr": "Terre-Neuve-et-Labrador",
+    "bi": "Newfoundland and Labrador / Terre-Neuve-et-Labrador"
+  },
+  "NS": {
+    "en": "Nova Scotia",
+    "fr": "Nouvelle-Écosse",
+    "bi": "Nova Scotia / Nouvelle-Écosse"
+  },
+  "NT": {
+    "en": "Northwest Territories",
+    "fr": "Territoires du Nord-Ouest",
+    "bi": "Northwest Territories / Territoires du Nord-Ouest"
+  },
+  "NU": {
+    "en": "Nunavut",
+    "fr": "Nunavut",
+    "bi": "Nunavut"
+  },
+  "ON": {
+    "en": "Ontario",
+    "fr": "Ontario",
+    "bi": "Ontario"
+  },
+  "PE": {
+    "en": "Prince Edward Island",
+    "fr": "Île-du-Prince-Édouard",
+    "bi": "Prince Edward Island / Île-du-Prince-Édouard"
+  },
+  "QC": {
+    "en": "Québec",
+    "fr": "Québec",
+    "bi": "Québec"
+  },
+  "SK": {
+    "en": "Saskatchewan",
+    "fr": "Saskatchewan",
+    "bi": "Saskatchewan"
+  },
+  "YT": {
+    "en": "Yukon",
+    "fr": "Yukon",
+    "bi": "Yukon"
+  }
+}

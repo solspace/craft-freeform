@@ -47,7 +47,9 @@ class MultipleSelectField extends BaseOptionsField implements MultiValueInterfac
         $output = '<select'.$attributes.'>';
 
         foreach ($this->getOptions() as $option) {
-            $output .= '<option value="'.$option->getValue().'"'.($option->isChecked() ? ' selected' : '').'>';
+            $isSelected = \in_array($option->getValue(), $this->getValue());
+
+            $output .= '<option value="'.$option->getValue().'"'.($isSelected ? ' selected' : '').'>';
             $output .= $this->translate($option->getLabel());
             $output .= '</option>';
         }

@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use yii\web\Response;
 
 class OptionsController extends BaseApiController
@@ -25,7 +25,7 @@ class OptionsController extends BaseApiController
         $type = $request->post('typeClass');
         $properties = $request->post('properties');
 
-        /** @var ElementSourceTypeInterface $configuration */
+        /** @var OptionTypeProviderInterface $configuration */
         $configuration = new $type();
         $this->propertyProvider->setObjectProperties($configuration, $properties);
 

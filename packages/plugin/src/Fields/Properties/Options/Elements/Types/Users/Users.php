@@ -2,15 +2,14 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users;
 
-use craft\elements\Entry;
 use craft\elements\User;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use Solspace\Freeform\Library\Helpers\ElementHelper;
 
-class Users implements ElementSourceTypeInterface
+class Users implements OptionTypeProviderInterface
 {
     #[Input\Select(
         label: 'Group',
@@ -47,12 +46,7 @@ class Users implements ElementSourceTypeInterface
     )]
     private string $sort = 'asc';
 
-    public function getTypeClass(): string
-    {
-        return Entry::class;
-    }
-
-    public function getElementName(): string
+    public function getName(): string
     {
         return 'Users';
     }

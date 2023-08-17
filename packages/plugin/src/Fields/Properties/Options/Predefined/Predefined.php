@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Predefined;
 
-use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfiguration;
 
-class Predefined implements OptionsConfigurationInterface
+class Predefined extends OptionsConfiguration
 {
     public function getSource(): string
     {

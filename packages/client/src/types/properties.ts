@@ -79,6 +79,8 @@ export type AttributeProperty = BaseProperty<
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
   min?: number;
   max?: number;
+  step?: number;
+  unsigned?: boolean;
 };
 
 export type StringProperty = BaseProperty<string, PropertyType.String>;

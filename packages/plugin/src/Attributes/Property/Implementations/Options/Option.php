@@ -7,7 +7,6 @@ class Option
     public function __construct(
         private string $value,
         private string $label,
-        private bool $checked,
     ) {
     }
 
@@ -19,10 +18,5 @@ class Option
     public function getLabel(): string
     {
         return $this->label;
-    }
-
-    public function isChecked(): bool
-    {
-        return $this->checked;
     }
 }

@@ -21,7 +21,7 @@ class OptionsTransformer extends Transformer
 
         return match ($source) {
             OptionsConfigurationInterface::SOURCE_ELEMENTS => new Elements($value, $this->propertyProvider),
-            OptionsConfigurationInterface::SOURCE_PREDEFINED => new Predefined($value),
+            OptionsConfigurationInterface::SOURCE_PREDEFINED => new Predefined($value, $this->propertyProvider),
             default => new Custom($value),
         };
     }
@@ -29,7 +29,7 @@ class OptionsTransformer extends Transformer
     /**
      * @param OptionsConfigurationInterface $value
      */
-    public function reverseTransform($value): mixed
+    public function reverseTransform($value): array
     {
         if (!$value instanceof OptionsConfigurationInterface) {
             $value = new Custom();

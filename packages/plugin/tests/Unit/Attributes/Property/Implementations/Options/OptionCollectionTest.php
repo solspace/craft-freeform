@@ -16,11 +16,11 @@ class OptionCollectionTest extends TestCase
     {
         $collection = new OptionCollection();
         $collection->add('one', 'One');
-        $collection->add('two', 'Two', true);
+        $collection->add('two', 'Two');
         $collection->addCollection(
             (new OptionCollection('Nested Collection'))
                 ->add('nested_one', 'Nested One')
-                ->add('nested_two', 'Nested Two', true)
+                ->add('nested_two', 'Nested Two')
         );
         $collection->addCollection(
             (new OptionCollection('Nested Second Collection'))
@@ -34,24 +34,24 @@ class OptionCollectionTest extends TestCase
 
         $this->assertEquals(
             [
-                ['value' => 'one', 'label' => 'One', 'checked' => false],
-                ['value' => 'two', 'label' => 'Two', 'checked' => true],
+                ['value' => 'one', 'label' => 'One'],
+                ['value' => 'two', 'label' => 'Two'],
                 [
                     'label' => 'Nested Collection',
                     'children' => [
-                        ['value' => 'nested_one', 'label' => 'Nested One', 'checked' => false],
-                        ['value' => 'nested_two', 'label' => 'Nested Two', 'checked' => true],
+                        ['value' => 'nested_one', 'label' => 'Nested One'],
+                        ['value' => 'nested_two', 'label' => 'Nested Two'],
                     ],
                 ],
                 [
                     'label' => 'Nested Second Collection',
                     'children' => [
-                        ['value' => 'nested2_one', 'label' => 'Nested 2 One', 'checked' => false],
-                        ['value' => 'nested2_two', 'label' => 'Nested 2 Two', 'checked' => false],
+                        ['value' => 'nested2_one', 'label' => 'Nested 2 One'],
+                        ['value' => 'nested2_two', 'label' => 'Nested 2 Two'],
                         [
                             'label' => 'Sub Nesting',
                             'children' => [
-                                ['value' => 'sub_nesting', 'label' => 'Sub Nesting', 'checked' => false],
+                                ['value' => 'sub_nesting', 'label' => 'Sub Nesting'],
                             ],
                         ],
                     ],

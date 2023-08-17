@@ -7,10 +7,10 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\ElementSourceTypeInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use Solspace\Freeform\Library\Helpers\ElementHelper;
 
-class Tags implements ElementSourceTypeInterface
+class Tags implements OptionTypeProviderInterface
 {
     #[Input\Select(
         label: 'Site ID',
@@ -66,12 +66,7 @@ class Tags implements ElementSourceTypeInterface
     )]
     private string $sort = 'asc';
 
-    public function getTypeClass(): string
-    {
-        return Tag::class;
-    }
-
-    public function getElementName(): string
+    public function getName(): string
     {
         return 'Tags';
     }

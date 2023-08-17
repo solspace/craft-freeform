@@ -25,7 +25,7 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
         return $this;
     }
 
-    public function add(Option|string $value, string $label = '', bool $checked = false): self
+    public function add(Option|string $value, string $label = ''): self
     {
         if ($value instanceof Option) {
             $this->options[] = $value;
@@ -36,7 +36,6 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
         $this->options[] = new Option(
             $value,
             $label,
-            $checked
         );
 
         return $this;
@@ -72,7 +71,6 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
                 $options[] = [
                     'value' => $item->getValue(),
                     'label' => $item->getLabel(),
-                    'checked' => $item->isChecked(),
                 ];
             }
         }
@@ -100,7 +98,6 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
                 $options[] = [
                     'value' => $item->getValue(),
                     'label' => $item->getLabel(),
-                    'checked' => $item->isChecked(),
                 ];
             }
         }

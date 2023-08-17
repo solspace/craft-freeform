@@ -40,7 +40,9 @@ class DropdownField extends BaseOptionsField
 
         $output = '<select'.$attributes.'>';
         foreach ($this->getOptions() as $option) {
-            $output .= '<option value="'.$option->getValue().'"'.($option->isChecked() ? ' selected' : '').'>';
+            $isChecked = $option->getValue() == $this->getValue();
+
+            $output .= '<option value="'.$option->getValue().'"'.($isChecked ? ' selected' : '').'>';
             $output .= $this->translate($option->getLabel());
             $output .= '</option>';
         }

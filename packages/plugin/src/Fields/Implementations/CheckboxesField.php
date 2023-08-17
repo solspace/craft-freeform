@@ -59,11 +59,13 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
                 continue;
             }
 
+            $isChecked = \in_array($option->getValue(), $this->getValue());
+
             $inputAttributes = $attributes
                 ->clone()
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())
-                ->replace('checked', $option->isChecked())
+                ->replace('checked', $isChecked)
             ;
 
             $output .= '<label>';
@@ -83,7 +85,8 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
 
         $labels = [];
         foreach ($this->getOptions() as $option) {
-            if ($option?->isChecked()) {
+            $isChecked = \in_array($option->getValue(), $this->getValue());
+            if ($isChecked) {
                 $labels[] = $option->getLabel();
             }
         }

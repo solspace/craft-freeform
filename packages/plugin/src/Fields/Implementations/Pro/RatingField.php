@@ -74,7 +74,7 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         $collection = new OptionCollection();
 
         for ($i = 1; $i <= $this->getMaxValue(); ++$i) {
-            $collection->add($i, $i, $i === (int) $this->getValue());
+            $collection->add($i, $i);
         }
 
         return $collection;

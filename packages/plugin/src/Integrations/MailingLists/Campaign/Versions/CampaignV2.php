@@ -1,0 +1,142 @@
+<?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
+
+namespace Solspace\Freeform\Integrations\MailingLists\Campaign\Versions;
+
+use GuzzleHttp\Client;
+use putyourlightson\campaign\Campaign;
+use putyourlightson\campaign\elements\ContactElement;
+use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\PendingContactModel;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\MailingLists\Campaign\BaseCampaignIntegration;
+
+#[Type(
+    name: 'Campaign (v2)',
+    readme: __DIR__.'/../README.md',
+    iconPath: __DIR__.'/../icon.svg',
+)]
+class CampaignV2 extends BaseCampaignIntegration
+{
+    // ==========================================
+    //                  Custom
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mailingList)')]
+    #[Input\Special\Properties\FieldMapping(
+        label: 'Custom Fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Campaign Custom fields.',
+        order: 4,
+        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_CUSTOM,
+        parameterFields: [
+            'id' => 'id',
+            'values.mailingList' => 'mailingListId',
+        ],
+    )]
+    protected ?FieldMapping $customMapping = null;
+
+    public function getApiRootUrl(): string
+    {
+        return '';
+    }
+
+    public function push(Form $form, Client $client): void
+    {
+        if (!$this->mailingList || !$this->emailField) {
+            return;
+        }
+
+        $listId = $this->mailingList->getResourceId();
+        if (!$listId) {
+            return;
+        }
+
+        $mailingListElement = MailingListElement::find()->site('*')->id($listId)->one();
+        if (!$mailingListElement) {
+            return;
+        }
+
+        if ($this->optInField) {
+            $optInValue = $form->get($this->optInField->getUid())->getValue();
+            if (!$optInValue) {
+                return;
+            }
+        }
+
+        $email = $form->get($this->emailField->getUid())->getValue();
+        if (!$email) {
+            return;
+        }
+
+        $email = strtolower($email);
+
+        $source = \Craft::$app->getRequest()->getReferrer();
+
+        $mapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
+
+        try {
+            if (method_exists(Campaign::$plugin->forms, 'createAndSubscribeContact')) {
+                Campaign::$plugin->forms->createAndSubscribeContact(
+                    $email,
+                    $mapping,
+                    $mailingListElement,
+                    'Freeform',
+                    $source,
+                );
+            } else {
+                $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+                if (null === $contact) {
+                    $contact = new ContactElement();
+                    $contact->email = $email;
+                }
+
+                $contact->setFieldValues($mapping);
+
+                if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
+                    $pendingContact = new PendingContactModel();
+                    $pendingContact->pid = StringHelper::uniqueId('p');
+                    $pendingContact->email = $email;
+                    $pendingContact->mailingListId = $mailingListElement->id;
+                    $pendingContact->source = $source;
+                    $pendingContact->fieldData = $contact->getSerializedFieldValues();
+
+                    if (Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
+                        Campaign::$plugin->forms->sendVerifySubscribeEmail(
+                            $pendingContact,
+                            $mailingListElement,
+                        );
+                    }
+                } elseif (\Craft::$app->getElements()->saveElement($contact)) {
+                    Campaign::$plugin->forms->subscribeContact(
+                        $contact,
+                        $mailingListElement,
+                        'Freeform',
+                        $source,
+                    );
+                }
+            }
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
+        }
+    }
+}

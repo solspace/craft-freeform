@@ -75,9 +75,12 @@ class ConstantContactV3 extends BaseConstantContactIntegration
 
     public function push(Form $form, Client $client): void
     {
-        $listId = $this->mailingList->getResourceId();
+        if (!$this->mailingList || !$this->emailField) {
+            return;
+        }
 
-        if (!$this->mailingList || !$this->emailField || !$listId) {
+        $listId = $this->mailingList->getResourceId();
+        if (!$listId) {
             return;
         }
 

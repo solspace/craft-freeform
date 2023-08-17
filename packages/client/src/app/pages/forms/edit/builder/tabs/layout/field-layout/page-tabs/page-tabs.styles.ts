@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const PageTabsWrapper = styled.div`
-  margin: 12px 12px 0;
+  margin: 10px 15px;
 `;
 
 export const PageTabsContainer = styled.div`

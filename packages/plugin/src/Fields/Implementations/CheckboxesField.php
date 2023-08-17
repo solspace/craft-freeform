@@ -25,7 +25,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     name: 'Checkboxes',
     typeShorthand: 'checkboxes',
     iconPath: __DIR__.'/Icons/checkboxes.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/checkboxes.ejs',
 )]
 class CheckboxesField extends BaseOptionsField implements MultiValueInterface, OneLineInterface
 {

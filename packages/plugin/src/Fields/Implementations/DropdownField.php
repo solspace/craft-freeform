@@ -20,7 +20,7 @@ use Solspace\Freeform\Fields\BaseOptionsField;
     name: 'Dropdown',
     typeShorthand: 'dropdown',
     iconPath: __DIR__.'/Icons/dropdown.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/dropdown.ejs',
 )]
 class DropdownField extends BaseOptionsField
 {

@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\MailingLists\ConstantContact\Versions;
+namespace Solspace\Freeform\Integrations\MailingLists\CampaignMonitor\Versions;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
@@ -22,20 +22,20 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\MailingLists\ConstantContact\BaseConstantContactIntegration;
+use Solspace\Freeform\Integrations\MailingLists\CampaignMonitor\BaseCampaignMonitorIntegration;
 use yii\base\Event;
 
 #[Type(
-    name: 'Constant Contact (v3)',
+    name: 'Campaign Monitor (v3.3)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class ConstantContactV3 extends BaseConstantContactIntegration
+class CampaignMonitorV33 extends BaseCampaignMonitorIntegration
 {
-    protected const API_VERSION = 'v3';
+    protected const API_VERSION = 'v3.3';
 
     // ==========================================
-    //               Contact Custom
+    //                   Custom
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -43,34 +43,34 @@ class ConstantContactV3 extends BaseConstantContactIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mailingList)')]
     #[Input\Special\Properties\FieldMapping(
-        label: 'Contact Custom Fields',
-        instructions: 'Select the Freeform fields to be mapped to the applicable Constant Contact, Contact Custom fields.',
-        order: 4,
-        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_CONTACT_CUSTOM,
+        label: 'Custom Fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Campaign Monitor Custom fields.',
+        order: 6,
+        source: 'api/integrations/mailing-lists/fields/'.self::CATEGORY_CUSTOM,
         parameterFields: [
             'id' => 'id',
             'values.mailingList' => 'mailingListId',
         ],
     )]
-    protected ?FieldMapping $contactCustomMapping = null;
+    protected ?FieldMapping $customMapping = null;
 
     public function getAuthorizeUrl(): string
     {
-        return 'https://authz.constantcontact.com/oauth2/default/v1/authorize';
+        return 'https://api.createsend.com/oauth';
     }
 
     public function getAccessTokenUrl(): string
     {
-        return 'https://authz.constantcontact.com/oauth2/default/v1/token';
+        return 'https://api.createsend.com/oauth/token';
     }
 
     public function getApiRootUrl(): string
     {
-        $url = 'https://api.cc.email';
+        $url = 'https://api.createsend.com';
 
         $url = rtrim($url, '/');
 
-        return $url.'/'.self::API_VERSION;
+        return $url.'/api/'.self::API_VERSION;
     }
 
     public function push(Form $form, Client $client): void
@@ -95,54 +95,50 @@ class ConstantContactV3 extends BaseConstantContactIntegration
 
         $email = strtolower($email);
 
-        $contactData = [];
+        $customFields = [];
 
-        $mapping = $this->processMapping($form, $this->contactCustomMapping, self::CATEGORY_CONTACT_CUSTOM);
+        $mapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
 
         foreach ($mapping as $key => $value) {
-            if (preg_match('/^street_address_(.*)/', $key, $matches)) {
-                if (empty($contactData['street_address'])) {
-                    $contactData['street_address'] = [];
-                }
+            if ('Name' === $key) {
+                continue;
+            }
 
-                $contactData['street_address'][$matches[1]] = $value;
-            } elseif (preg_match('/^custom_(.*)/', $key, $matches)) {
-                if (empty($contactData['custom_fields'])) {
-                    $contactData['custom_fields'] = [];
+            if (\is_array($value)) {
+                foreach ($value as $subValue) {
+                    $customFields[] = [
+                        'Key' => $key,
+                        'Value' => $subValue,
+                    ];
                 }
-
-                $contactData['custom_fields'][] = [
-                    'custom_field_id' => $matches[1],
-                    'value' => $value,
-                ];
             } else {
-                $contactData[$key] = $value;
+                $customFields[] = [
+                    'Key' => $key,
+                    'Value' => $value,
+                ];
             }
         }
 
-        if (isset($contactData['street_address']) && empty($contactData['street_address']['kind'])) {
-            $contactData['street_address']['kind'] = 'home';
-        }
-
         try {
-            $contactData = array_merge(
-                [
-                    'email_address' => $email,
-                    'create_source' => 'Contact',
-                    'list_memberships' => [$listId],
-                ],
-                $contactData,
-            );
-
             $response = $client->post(
-                $this->getEndpoint('/contacts/sign_up_form'),
-                ['json' => $contactData],
+                $this->getEndpoint('/subscribers/'.$listId.'.json'),
+                [
+                    'json' => [
+                        'EmailAddress' => $email,
+                        'Name' => $mapping['Name'] ?? '',
+                        'CustomFields' => $customFields,
+                        'Resubscribe' => true,
+                        'RestartSubscriptionBasedAutoresponders' => true,
+                        'ConsentToTrack' => 'Yes',
+                        'ConsentToSendSms' => 'Yes',
+                    ],
+                ],
             );
 
             Event::trigger(
                 $this,
                 self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CONTACT_CUSTOM, $response)
+                new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
             );
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);

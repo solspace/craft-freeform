@@ -65,7 +65,9 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
     public function push(Form $form, Client $client): void
     {
-        if (!$this->mailingList || !$this->emailField) {
+        $listId = $this->mailingList->getResourceId();
+
+        if (!$this->mailingList || !$this->emailField || !$listId) {
             return;
         }
 
@@ -76,10 +78,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         }
 
-        $listId = $this->mailingList->getResourceId();
-
         $email = $form->get($this->emailField->getUid())->getValue();
-
         if (!$email) {
             return;
         }

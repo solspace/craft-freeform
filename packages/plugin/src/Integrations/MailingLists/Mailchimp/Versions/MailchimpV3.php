@@ -140,7 +140,9 @@ class MailchimpV3 extends BaseMailchimpIntegration
 
     public function push(Form $form, Client $client): void
     {
-        if (!$this->mailingList || !$this->emailField) {
+        $listId = $this->mailingList->getResourceId();
+
+        if (!$this->mailingList || !$this->emailField || !$listId) {
             return;
         }
 
@@ -151,10 +153,6 @@ class MailchimpV3 extends BaseMailchimpIntegration
             }
         }
 
-        $isDoubleOptIn = $this->isDoubleOptIn();
-
-        $listId = $this->mailingList->getResourceId();
-
         $email = $form->get($this->emailField->getUid())->getValue();
         if (!$email) {
             return;
@@ -163,25 +161,27 @@ class MailchimpV3 extends BaseMailchimpIntegration
         $email = strtolower($email);
         $emailHash = md5($email);
 
+        $isDoubleOptIn = $this->isDoubleOptIn();
+
         $memberData = [
             'email_address' => $email,
             'status' => $isDoubleOptIn ? 'pending' : 'subscribed',
             'status_if_new' => $isDoubleOptIn ? 'pending' : 'subscribed',
         ];
 
-        $mappedValues = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
+        $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
 
-        $gdprData = $this->processMapping($form, $this->gdprMapping, self::CATEGORY_GDPR);
         $marketingPermissions = [];
-        foreach ($gdprData as $key => $value) {
+        $gdprMapping = $this->processMapping($form, $this->gdprMapping, self::CATEGORY_GDPR);
+        foreach ($gdprMapping as $key => $value) {
             $marketingPermissions[] = [
                 'marketing_permission_id' => $key,
                 'enabled' => !empty($value),
             ];
         }
 
-        $tagData = $this->processMapping($form, $this->tagMapping, self::CATEGORY_TAG);
-        $tags = reset($tagData);
+        $tagMapping = $this->processMapping($form, $this->tagMapping, self::CATEGORY_TAG);
+        $tags = reset($tagMapping);
         if ($tags) {
             if (\is_string($tags)) {
                 $tags = explode(',', $tags);
@@ -193,9 +193,9 @@ class MailchimpV3 extends BaseMailchimpIntegration
             $tags = [];
         }
 
-        $groupData = $this->processMapping($form, $this->groupMapping, self::CATEGORY_GROUP);
-        $groups = reset($groupData);
         $interests = [];
+        $groupMapping = $this->processMapping($form, $this->groupMapping, self::CATEGORY_GROUP);
+        $groups = reset($groupMapping);
         if ($groups) {
             if (\is_string($groups)) {
                 $groups = explode(',', $groups);
@@ -212,8 +212,8 @@ class MailchimpV3 extends BaseMailchimpIntegration
             }
         }
 
-        if (!empty($mappedValues)) {
-            $memberData['merge_fields'] = $mappedValues;
+        if (!empty($mapping)) {
+            $memberData['merge_fields'] = $mapping;
         }
 
         if (!empty($marketingPermissions)) {

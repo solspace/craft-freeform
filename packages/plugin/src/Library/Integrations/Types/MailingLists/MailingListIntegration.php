@@ -15,7 +15,7 @@ namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -26,7 +26,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 
 abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface
 {
-    #[Required]
+    #[Validators\Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
@@ -49,7 +49,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     )]
     protected ?FieldInterface $optInField = null;
 
-    #[Required]
+    #[Validators\Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(MailingListTransformer::class)]
     #[Input\DynamicSelect(

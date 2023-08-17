@@ -137,12 +137,12 @@ abstract class BaseMailchimpIntegration extends MailingListIntegration implement
 
     protected function isDoubleOptIn(): bool
     {
-        return $this->doubleOptIn;
+        return $this->getProcessedValue($this->doubleOptIn);
     }
 
     protected function appendContactTags(): bool
     {
-        return $this->appendContactTags;
+        return $this->getProcessedValue($this->appendContactTags);
     }
 
     protected function fetchInterestGroups(Client $client): array

@@ -37,9 +37,6 @@ class ValidateEvent extends CancelableArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['connection', 'element', 'transformers'];

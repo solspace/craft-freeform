@@ -10,9 +10,6 @@ use yii\db\Exception;
  */
 class m190905_113428_FixIntervalCountNotNullColumn extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -27,9 +24,6 @@ class m190905_113428_FixIntervalCountNotNullColumn extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

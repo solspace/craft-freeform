@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m191214_093453_AddExtraPostUrlColumnToForm extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -28,9 +25,6 @@ class m191214_093453_AddExtraPostUrlColumnToForm extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m191214_093453_AddExtraPostUrlColumnToForm cannot be reverted.\n";

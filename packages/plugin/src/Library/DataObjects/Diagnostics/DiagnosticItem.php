@@ -106,7 +106,7 @@ class DiagnosticItem
 
                 $notificationItem = new NotificationItem($heading, $message, $reflection->getShortName());
 
-                switch (\get_class($validator)) {
+                switch ($validator::class) {
                     case WarningValidator::class:
                         $this->warnings[] = $notificationItem;
 

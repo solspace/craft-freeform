@@ -11,9 +11,6 @@ use Solspace\Freeform\FieldTypes\FormFieldType;
  */
 class m180120_140521_CraftUpgrade extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $freeform = (new Query())
@@ -232,9 +229,6 @@ class m180120_140521_CraftUpgrade extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         return false;

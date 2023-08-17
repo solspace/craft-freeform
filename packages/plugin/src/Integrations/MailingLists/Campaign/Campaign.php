@@ -57,9 +57,6 @@ class Campaign extends MailingListIntegration
         Users::class => FieldObject::TYPE_ARRAY,
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isInstallable(): bool
     {
         return \Craft::$app->plugins->isPluginInstalled('campaign');
@@ -69,17 +66,11 @@ class Campaign extends MailingListIntegration
     {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function checkConnection(Client $client): bool
     {
         return self::isInstallable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function push(Form $form, Client $client): void
     {
         return;
@@ -134,9 +125,6 @@ class Campaign extends MailingListIntegration
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getApiRootUrl(): string
     {
         return '';
@@ -180,7 +168,7 @@ class Campaign extends MailingListIntegration
 
             /** @var Field $field */
             foreach ($fieldLayout->getCustomFields() as $field) {
-                $fieldClass = \get_class($field);
+                $fieldClass = $field::class;
 
                 if (!\in_array($fieldClass, $allowedFieldTypes, true)) {
                     continue;

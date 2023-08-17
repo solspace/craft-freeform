@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230301_124411_MoveMailingListIntegrationClasses extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $map = $this->getMap();
@@ -27,9 +24,6 @@ class m230301_124411_MoveMailingListIntegrationClasses extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $map = $this->getMap();

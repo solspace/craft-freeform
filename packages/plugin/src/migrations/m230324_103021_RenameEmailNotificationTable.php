@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230324_103021_RenameEmailNotificationTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->renameTable(
@@ -22,9 +19,6 @@ class m230324_103021_RenameEmailNotificationTable extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $this->renameTable(

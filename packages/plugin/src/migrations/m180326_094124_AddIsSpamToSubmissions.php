@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m180326_094124_AddIsSpamToSubmissions extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->addColumn(
@@ -21,9 +18,6 @@ class m180326_094124_AddIsSpamToSubmissions extends Migration
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropColumn(

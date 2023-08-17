@@ -29,9 +29,6 @@ class SubscriptionModel extends AbstractPaymentModel
     /** @var SubscriptionPlanModel */
     protected $plan;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return PaymentInterface::TYPE_SUBSCRIPTION;

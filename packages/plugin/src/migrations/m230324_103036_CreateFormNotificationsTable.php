@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230324_103036_CreateFormNotificationsTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->createTable(
@@ -39,9 +36,6 @@ class m230324_103036_CreateFormNotificationsTable extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         echo "m230324_103036_CreateFormNotificationsTable cannot be reverted.\n";

@@ -18,9 +18,6 @@ class RenderEmailEvent extends ArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'notification', 'fieldValues', 'submission'];

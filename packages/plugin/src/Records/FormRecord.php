@@ -47,9 +47,6 @@ class FormRecord extends ActiveRecord
         return $form;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

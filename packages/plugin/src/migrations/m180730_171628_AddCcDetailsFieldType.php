@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m180730_171628_AddCcDetailsFieldType extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if ($this->db->getIsPgsql()) {
@@ -30,9 +27,6 @@ class m180730_171628_AddCcDetailsFieldType extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         return true;

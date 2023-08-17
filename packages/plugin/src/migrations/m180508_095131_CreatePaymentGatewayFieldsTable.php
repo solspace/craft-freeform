@@ -10,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m180508_095131_CreatePaymentGatewayFieldsTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->createTable('{{%freeform_payment_gateway_fields}}', [
@@ -36,9 +33,6 @@ class m180508_095131_CreatePaymentGatewayFieldsTable extends Migration
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropTable('{{%freeform_payment_gateway_fields}}');

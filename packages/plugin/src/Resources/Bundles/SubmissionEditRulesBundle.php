@@ -10,9 +10,6 @@ namespace Solspace\Freeform\Resources\Bundles;
 
 class SubmissionEditRulesBundle extends AbstractFreeformAssetBundle
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         return ['js/scripts/cp/submissions/edit.js'];

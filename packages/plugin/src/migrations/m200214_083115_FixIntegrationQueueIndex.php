@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m200214_083115_FixIntegrationQueueIndex extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $indexes = $this->db->schema->getTableIndexes('{{%freeform_integrations_queue}}');
@@ -23,9 +20,6 @@ class m200214_083115_FixIntegrationQueueIndex extends Migration
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropIndex(null, '{{%freeform_integrations_queue}}');

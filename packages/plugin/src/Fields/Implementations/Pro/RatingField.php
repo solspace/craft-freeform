@@ -143,9 +143,6 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         $attributes = $this->attributes->getInput()

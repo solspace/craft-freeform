@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m181129_083939_ChangeIntegrationFieldTypeColumnTypeToString extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if ($this->db->getIsPgsql()) {
@@ -46,9 +43,6 @@ class m181129_083939_ChangeIntegrationFieldTypeColumnTypeToString extends Migrat
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m181129_083939_ChangeCrmFieldTypeColumnTypeToString cannot be reverted.\n";

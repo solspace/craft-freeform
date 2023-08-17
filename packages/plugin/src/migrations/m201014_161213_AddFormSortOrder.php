@@ -10,9 +10,6 @@ use craft\db\Query;
  */
 class m201014_161213_AddFormSortOrder extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -40,9 +37,6 @@ class m201014_161213_AddFormSortOrder extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

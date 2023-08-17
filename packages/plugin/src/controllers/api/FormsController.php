@@ -60,7 +60,8 @@ class FormsController extends BaseApiController
                     ['order' => $order++],
                     ['id' => $id]
                 )
-                ->execute();
+                ->execute()
+            ;
         }
 
         $this->response->statusCode = 204;

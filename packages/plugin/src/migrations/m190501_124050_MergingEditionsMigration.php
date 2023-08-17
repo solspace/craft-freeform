@@ -14,9 +14,6 @@ use yii\db\Query;
  */
 class m190501_124050_MergingEditionsMigration extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->installProTables();
@@ -28,9 +25,6 @@ class m190501_124050_MergingEditionsMigration extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m190501_124050_MergingEditionsMigration cannot be reverted.\n";

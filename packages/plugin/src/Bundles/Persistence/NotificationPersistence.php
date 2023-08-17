@@ -69,7 +69,8 @@ class NotificationPersistence extends FeatureBundle
                 ->db
                 ->createCommand()
                 ->delete(FormNotificationRecord::TABLE, ['uid' => $deletableUIDs])
-                ->execute();
+                ->execute()
+            ;
         }
 
         if ($event->hasErrors()) {

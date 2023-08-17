@@ -29,9 +29,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     /** @var array */
     protected $configuration;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOptionSource(): string
     {
         return $this->source ?? self::SOURCE_CUSTOM;

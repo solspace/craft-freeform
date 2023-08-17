@@ -10,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m201006_065315_AddFeedTables extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if (!$this->db->tableExists('{{%freeform_feeds}}')) {
@@ -91,9 +88,6 @@ class m201006_065315_AddFeedTables extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $keys = $this->db->schema->getTableForeignKeys('{{%freeform_feed_messages}}');

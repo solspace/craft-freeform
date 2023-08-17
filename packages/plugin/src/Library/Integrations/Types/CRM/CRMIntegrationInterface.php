@@ -21,8 +21,6 @@ interface CRMIntegrationInterface extends APIIntegrationInterface
 {
     /**
      * Push objects to the CRM.
-     *
-     * @param null|mixed $formFields
      */
     public function push(Form $form, Client $client): bool;
 

@@ -193,7 +193,8 @@ class IntegrationsService extends BaseService
             $affectedRows = \Craft::$app->getDb()
                 ->createCommand()
                 ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
-                ->execute();
+                ->execute()
+            ;
 
             $transaction?->commit();
 

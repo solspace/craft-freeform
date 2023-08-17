@@ -118,9 +118,6 @@ class FieldModel extends Model implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): array
     {
         $returnArray = [
@@ -412,9 +409,6 @@ class FieldModel extends Model implements \JsonSerializable
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function safeAttributes()
     {
         return [

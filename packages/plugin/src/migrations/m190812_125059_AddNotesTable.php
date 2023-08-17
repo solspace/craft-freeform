@@ -10,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m190812_125059_AddNotesTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->createTable(
@@ -39,9 +36,6 @@ class m190812_125059_AddNotesTable extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropTableIfExists('{{%freeform_submission_notes}}');

@@ -474,9 +474,6 @@ class Stripe extends PaymentGatewayIntegration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function fetchPlans(): array
     {
         $planHandler = $this->getPlanHandler();
@@ -524,9 +521,6 @@ class Stripe extends PaymentGatewayIntegration
         return $plans;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function fetchPlan(string $id)
     {
         $planHandler = $this->getPlanHandler();
@@ -949,7 +943,7 @@ class Stripe extends PaymentGatewayIntegration
     {
         $this->lastError = $exception;
 
-        switch (\get_class($exception)) {
+        switch ($exception::class) {
             case 'Stripe\Exception\CardException':
                 return false;
 

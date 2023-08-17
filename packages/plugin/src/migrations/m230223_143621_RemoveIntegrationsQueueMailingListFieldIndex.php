@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230223_143621_RemoveIntegrationsQueueMailingListFieldIndex extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         // Place migration code here...
@@ -19,9 +16,6 @@ class m230223_143621_RemoveIntegrationsQueueMailingListFieldIndex extends Migrat
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         echo "m230223_143621_RemoveIntegrationsQueueMailingListFieldIndex cannot be reverted.\n";

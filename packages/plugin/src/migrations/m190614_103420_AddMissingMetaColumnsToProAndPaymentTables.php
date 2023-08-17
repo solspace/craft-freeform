@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m190614_103420_AddMissingMetaColumnsToProAndPaymentTables extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $tables = [
@@ -42,9 +39,6 @@ class m190614_103420_AddMissingMetaColumnsToProAndPaymentTables extends Migratio
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m190614_103420_AddMissingMetaColumnsToPaymentTables cannot be reverted.\n";

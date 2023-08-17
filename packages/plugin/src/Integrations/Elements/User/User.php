@@ -156,7 +156,8 @@ class User extends ElementIntegration
                             'app',
                             'User saved, but couldn’t send verification email. Check your email settings.'
                         )
-                    );
+                    )
+                ;
             }
         }
 

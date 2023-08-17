@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230616_083411_AddMetadataToPages extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->addColumn(
@@ -23,9 +20,6 @@ class m230616_083411_AddMetadataToPages extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $this->dropColumn('{{%freeform_forms_pages}}', 'metadata');

@@ -115,17 +115,11 @@ class CheckboxesField extends AbstractExternalOptionsField implements MultiValue
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() ? '</div>' : '';

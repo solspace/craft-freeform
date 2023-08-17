@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230508_104013_CreateNotificationRule extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->createTable('{{%freeform_rules_notifications}}', [
@@ -48,9 +45,6 @@ class m230508_104013_CreateNotificationRule extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $this->dropForeignKey('freeform_rules_notifications_id_fk', '{{%freeform_rules_notifications}}');

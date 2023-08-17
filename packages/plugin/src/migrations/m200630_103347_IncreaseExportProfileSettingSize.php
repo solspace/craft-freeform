@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m200630_103347_IncreaseExportProfileSettingSize extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -26,9 +23,6 @@ class m200630_103347_IncreaseExportProfileSettingSize extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

@@ -31,11 +31,13 @@ class MailchimpTokenListener extends FeatureBundle
 
         $client = new Client([
             'headers' => [
+                'Content-Type' => 'application/json',
                 'Authorization' => 'OAuth '.$payload->access_token,
             ],
         ]);
 
         $response = $client->get('https://login.mailchimp.com/oauth2/metadata');
+
         $metadata = json_decode((string) $response->getBody());
 
         $integration->setDataCenter($metadata->dc);

@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 interface CRMIntegrationInterface extends APIIntegrationInterface
 {
@@ -24,10 +23,5 @@ interface CRMIntegrationInterface extends APIIntegrationInterface
      */
     public function push(Form $form, Client $client): bool;
 
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
     public function fetchFields(string $category, Client $client): array;
 }

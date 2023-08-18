@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
@@ -24,13 +23,7 @@ interface MailingListIntegrationInterface extends IntegrationInterface
 
     public function push(Form $form, Client $client): void;
 
-    /**
-     * @return ListObject[]
-     */
     public function fetchLists(Client $client): array;
 
-    /**
-     * @return FieldObject[]
-     */
     public function fetchFields(ListObject $list, string $category, Client $client): array;
 }

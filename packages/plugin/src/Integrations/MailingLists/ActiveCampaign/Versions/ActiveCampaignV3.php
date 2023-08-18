@@ -69,6 +69,11 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             return;
         }
 
+        $listId = $this->mailingList->getResourceId();
+        if (!$listId) {
+            return;
+        }
+
         if ($this->optInField) {
             $optInValue = $form->get($this->optInField->getUid())->getValue();
             if (!$optInValue) {
@@ -76,10 +81,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         }
 
-        $listId = $this->mailingList->getResourceId();
-
         $email = $form->get($this->emailField->getUid())->getValue();
-
         if (!$email) {
             return;
         }

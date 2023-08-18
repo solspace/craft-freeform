@@ -64,7 +64,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Deal?',
+        label: 'Map to Deal',
         instructions: 'Should map to the Deal endpoint.',
         order: 10,
     )]
@@ -89,7 +89,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Map to Account?',
+        label: 'Map to Account',
         instructions: 'Should map to the Account endpoint.',
         order: 12,
     )]

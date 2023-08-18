@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m200911_130215_AddReplyToNameToNotifications extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -24,9 +21,6 @@ class m200911_130215_AddReplyToNameToNotifications extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

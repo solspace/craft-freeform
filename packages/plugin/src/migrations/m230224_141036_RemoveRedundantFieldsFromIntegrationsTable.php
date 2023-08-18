@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230224_141036_RemoveRedundantFieldsFromIntegrationsTable extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->dropColumn('{{%freeform_integrations}}', 'accessToken');
@@ -22,9 +19,6 @@ class m230224_141036_RemoveRedundantFieldsFromIntegrationsTable extends Migratio
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         echo "m230224_141036_RemoveRedundantFieldsFromIntegrationsTable cannot be reverted.\n";

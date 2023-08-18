@@ -12,9 +12,6 @@ class m200203_180318_AddSpamReasonTable extends Migration
 {
     public const TARGET_TABLE = '{{%freeform_spam_reason}}';
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if (!$this->db->tableExists(self::TARGET_TABLE)) {
@@ -45,9 +42,6 @@ class m200203_180318_AddSpamReasonTable extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $keys = $this->db->schema->getTableForeignKeys(self::TARGET_TABLE);

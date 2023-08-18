@@ -5,6 +5,52 @@ import type {
   OptionGroup,
 } from '@ff-client/types/properties';
 
+export const isInOptions = (
+  options: OptionCollection,
+  value: string
+): boolean => {
+  if (!options) {
+    return false;
+  }
+
+  for (const option of options) {
+    if ('value' in option) {
+      if (option.value === String(value)) {
+        return true;
+      }
+    }
+
+    if ('children' in option) {
+      if (isInOptions(option.children, value)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+export const findFirstValue = (
+  options: OptionCollection
+): string | undefined => {
+  if (!options) {
+    return;
+  }
+
+  for (const option of options) {
+    if ('value' in option) {
+      return option.value;
+    }
+
+    if ('children' in option) {
+      const value = findFirstValue(option.children);
+      if (value !== undefined) {
+        return value;
+      }
+    }
+  }
+};
+
 export const findLabelByValue = (
   options: OptionCollection,
   value: string
@@ -83,7 +129,7 @@ const filterOptions = (
   let index = indexOffset;
 
   let emptyOpt: Option | undefined;
-  if (emptyOption !== undefined && !query) {
+  if (emptyOption !== undefined && emptyOption !== null && !query) {
     emptyOpt = {
       label: emptyOption,
       value: '',

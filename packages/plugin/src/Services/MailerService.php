@@ -166,7 +166,8 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         return \Craft::$app->view->getTwig()
             ->createTemplate($template)
-            ->render($variables);
+            ->render($variables)
+        ;
     }
 
     public function compileMessage(NotificationTemplate $notification, array $values): Message

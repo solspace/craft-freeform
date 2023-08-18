@@ -1,0 +1,11 @@
+<div class="select fullwidth">
+    <select>
+        <% generatedOptions.forEach(function(option) { %>
+            <option value="<%= option.value %>"
+                    <% if (option.checked) { %>selected<% } %>
+            >
+                <%= option.label %>
+            </option>
+        <% }); %>
+    </select>
+</div>

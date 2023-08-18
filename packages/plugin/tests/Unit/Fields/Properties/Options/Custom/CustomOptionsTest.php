@@ -4,7 +4,8 @@ namespace Solspace\Tests\Freeform\Unit\Fields\Properties\Options\Custom;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
-use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
 
 /**
  * @internal
@@ -13,48 +14,55 @@ use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;
  */
 class CustomOptionsTest extends TestCase
 {
+    private PropertyProvider $propertyProvider;
+
+    protected function setUp(): void
+    {
+        $this->propertyProvider = $this->createMock(PropertyProvider::class);
+    }
+
     public function testTransform()
     {
         $value = [
             'source' => 'customOptions',
             'useCustomValues' => true,
             'options' => [
-                ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],
+                ['label' => 'Checked option', 'value' => 'checkedOption'],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
             ],
         ];
 
-        $output = (new OptionsTransformer())->transform($value);
+        $output = (new OptionsTransformer($this->propertyProvider))->transform($value);
 
-        $expected = new CustomOptions(
-            [
-                ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],
+        $expected = new Custom([
+            'useCustomValues' => true,
+            'options' => [
+                ['label' => 'Checked option', 'value' => 'checkedOption'],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
             ],
-            true,
-        );
+        ]);
 
         $this->assertEquals($expected, $output);
     }
 
     public function testReverseTransform()
     {
-        $value = new CustomOptions(
-            [
-                ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],
-            ],
-            true,
-        );
-
-        $output = (new OptionsTransformer())->reverseTransform($value);
-
-        $expected = [
-            'source' => 'customOptions',
+        $value = new Custom([
             'useCustomValues' => true,
             'options' => [
-                ['label' => 'Checked option', 'value' => 'checkedOption', 'checked' => true],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'checked' => false],
+                ['label' => 'Checked option', 'value' => 'checkedOption'],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
+            ],
+        ]);
+
+        $output = (new OptionsTransformer($this->propertyProvider))->reverseTransform($value);
+
+        $expected = [
+            'source' => 'custom',
+            'useCustomValues' => true,
+            'options' => [
+                ['label' => 'Checked option', 'value' => 'checkedOption'],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
             ],
         ];
 

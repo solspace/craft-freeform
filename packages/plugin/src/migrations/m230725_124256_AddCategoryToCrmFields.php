@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230725_124256_AddCategoryToCrmFields extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $table = '{{%freeform_crm_fields}}';
@@ -23,9 +20,6 @@ class m230725_124256_AddCategoryToCrmFields extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $table = '{{%freeform_crm_fields}}';

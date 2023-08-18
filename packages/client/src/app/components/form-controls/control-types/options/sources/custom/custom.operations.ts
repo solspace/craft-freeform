@@ -1,9 +1,9 @@
-import type { CustomOptions, Option } from '../../options.types';
+import type { CustomOptionsConfiguration, Option } from '../../options.types';
 
 export const addOption = (
-  value: CustomOptions,
+  value: CustomOptionsConfiguration,
   atIndex: number
-): CustomOptions => ({
+): CustomOptionsConfiguration => ({
   ...value,
   options: [
     ...value.options.slice(0, atIndex),
@@ -15,8 +15,8 @@ export const addOption = (
 export const updateOption = (
   index: number,
   option: Option,
-  value: CustomOptions
-): CustomOptions => {
+  value: CustomOptionsConfiguration
+): CustomOptionsConfiguration => {
   const options = [...value.options];
   options[index] = option;
 
@@ -28,8 +28,8 @@ export const updateOption = (
 
 export const deleteOption = (
   index: number,
-  value: CustomOptions
-): CustomOptions => {
+  value: CustomOptionsConfiguration
+): CustomOptionsConfiguration => {
   const options = value.options.filter(
     (_, optionIndex) => optionIndex !== index
   );
@@ -43,8 +43,8 @@ export const deleteOption = (
 export const updateChecked = (
   index: number,
   option: Option,
-  value: CustomOptions
-): CustomOptions => {
+  value: CustomOptionsConfiguration
+): CustomOptionsConfiguration => {
   const options = value.options.map((option) => ({
     ...option,
     checked: false,
@@ -58,7 +58,9 @@ export const updateChecked = (
   };
 };
 
-export const cleanOptions = (value: CustomOptions): CustomOptions => {
+export const cleanOptions = (
+  value: CustomOptionsConfiguration
+): CustomOptionsConfiguration => {
   return {
     ...value,
     options: value.options.filter((option) => !!option.label || !!option.value),

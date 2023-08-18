@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m201027_103933_AddExportProfileDateRanges extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         try {
@@ -25,9 +22,6 @@ class m201027_103933_AddExportProfileDateRanges extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

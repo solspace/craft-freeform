@@ -63,7 +63,7 @@ class StripeService extends Component
         }
 
         $integration->prepareApi();
-        if (0 === strpos($token, 'pm_')) {
+        if (str_starts_with($token, 'pm_')) {
             $currency = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();
             $amount = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
 
@@ -417,7 +417,7 @@ class StripeService extends Component
         $subscription = $customer = null;
 
         // If we get a card token, we have to create the customer and subscription
-        if (0 === strpos($token, 'tok_')) {
+        if (str_starts_with($token, 'tok_')) {
             $customerData = CustomerDetails::fromArray($dynamicValues)->toStripeConstructArray();
             $customerData['source'] = $token;
 
@@ -431,7 +431,7 @@ class StripeService extends Component
         }
 
         // If it's a subscription
-        if (0 === strpos($token, 'sub_')) {
+        if (str_starts_with($token, 'sub_')) {
             $subscription = Subscription::retrieve(
                 $token,
                 ['expand' => ['latest_invoice.payment_intent']]

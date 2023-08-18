@@ -10,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m180410_131206_CreateIntegrationsQueue extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->dropTableIfExists('freeform_integrations_queue');
@@ -39,9 +36,6 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropTable('{{%freeform_integrations_queue}}');

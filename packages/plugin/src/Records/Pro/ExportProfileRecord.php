@@ -37,9 +37,6 @@ class ExportProfileRecord extends ActiveRecord
         return $this->hasOne(FormRecord::class, ['id' => 'formId']);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

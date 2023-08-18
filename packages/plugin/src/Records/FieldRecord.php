@@ -100,9 +100,6 @@ class FieldRecord extends ActiveRecord
         return $columnType;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

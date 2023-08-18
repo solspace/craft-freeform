@@ -18,6 +18,9 @@ use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 
 interface CRMIntegrationInterface extends APIIntegrationInterface
 {
+    /**
+     * Push objects to the CRM.
+     */
     public function push(Form $form, Client $client): bool;
 
     public function fetchFields(string $category, Client $client): array;

@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230712_120518_RemoveIntegrationsQueueMailingListFieldIndex extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $foreignKeys = $this->db->schema->getTableForeignKeys('{{%freeform_integrations_queue}}');
@@ -27,9 +24,6 @@ class m230712_120518_RemoveIntegrationsQueueMailingListFieldIndex extends Migrat
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $this->addForeignKey(

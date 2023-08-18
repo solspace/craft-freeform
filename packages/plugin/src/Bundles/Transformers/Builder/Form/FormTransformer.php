@@ -56,7 +56,7 @@ class FormTransformer
 
     private function transformBasic(Form $form): object
     {
-        $typeClass = \get_class($form);
+        $typeClass = $form::class;
         $settings = $form->getSettings();
 
         return (object) [

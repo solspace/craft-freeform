@@ -58,7 +58,6 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
         emptyOption: 'Select a mailing list...',
         source: 'api/integrations/mailing-lists/lists',
         parameterFields: ['id' => 'id'],
-        generator: MailingListOptionsGenerator::class,
     )]
     protected ?ListObject $mailingList = null;
 

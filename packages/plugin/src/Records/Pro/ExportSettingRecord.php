@@ -45,9 +45,6 @@ class ExportSettingRecord extends ActiveRecord
         return $record;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

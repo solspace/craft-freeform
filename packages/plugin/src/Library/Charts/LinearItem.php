@@ -140,9 +140,6 @@ class LinearItem implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize()
     {
         return [

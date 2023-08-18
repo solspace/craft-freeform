@@ -25,7 +25,6 @@ class PlanObject implements \JsonSerializable
      *
      * @param string $id
      * @param string $name
-     * @param string $resourceId
      */
     public function __construct(
         $id,

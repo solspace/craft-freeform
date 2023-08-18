@@ -458,7 +458,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                             UnfinalizedFileRecord::TABLE,
                             ['assetId' => $assetId]
                         )
-                        ->execute();
+                        ->execute()
+                    ;
                 } catch (\Exception $e) {
                 }
             }
@@ -583,7 +584,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             if (
                 '' === $renderedSubpath
                 || trim($renderedSubpath, '/') != $renderedSubpath
-                || false !== strpos($renderedSubpath, '//')
+                || str_contains($renderedSubpath, '//')
             ) {
                 throw new InvalidSubpathException($subpath);
             }

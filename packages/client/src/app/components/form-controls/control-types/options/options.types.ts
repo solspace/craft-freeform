@@ -1,23 +1,15 @@
+import type { GenericValue, Property } from '@ff-client/types/properties';
+
 export enum Source {
-  CustomOptions = 'customOptions',
-  Entries = 'entries',
-  Users = 'users',
-  Categories = 'categories',
-  Tags = 'tags',
-  Assets = 'assets',
-  CommerceProducts = 'commerceProducts',
-  PredefinedOptions = 'predefinedOptions',
+  Custom = 'custom',
+  Elements = 'elements',
+  Predefined = 'predefined',
 }
 
 export const sourceLabels: { [key in Source]: string } = {
-  customOptions: 'Custom Options',
-  entries: 'Entries',
-  users: 'Users',
-  categories: 'Categories',
-  tags: 'Tags',
-  assets: 'Assets',
-  commerceProducts: 'Commerce Products',
-  predefinedOptions: 'Predefined Options',
+  custom: 'Custom Options',
+  elements: 'Elements',
+  predefined: 'Predefined Options',
 };
 
 export type Option = {
@@ -26,18 +18,28 @@ export type Option = {
   checked: boolean;
 };
 
+export type ElementOptionType = {
+  typeClass: string;
+  label: string;
+  properties: Property[];
+};
+
 type BaseOptions = {
   source: Source;
 };
 
-export type EntryOptions = BaseOptions & {
-  source: Source.Entries;
+export type ConfigurableOptionsConfiguration = BaseOptions & {
+  source: Source.Elements | Source.Predefined;
+  typeClass: string;
+  properties: GenericValue;
 };
 
-export type CustomOptions = BaseOptions & {
-  source: Source.CustomOptions;
+export type CustomOptionsConfiguration = BaseOptions & {
+  source: Source.Custom;
   useCustomValues: boolean;
   options: Option[];
 };
 
-export type Options = BaseOptions | EntryOptions | CustomOptions;
+export type OptionsConfiguration =
+  | CustomOptionsConfiguration
+  | ConfigurableOptionsConfiguration;

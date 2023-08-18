@@ -4,14 +4,13 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
-use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
-use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
 use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
 use Solspace\Freeform\Form\Form;
 
@@ -70,31 +69,17 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         return $this->scales;
     }
 
-    public function getOptions(): OptionsCollection
+    public function getOptions(): OptionCollection
     {
-        $collection = new PresetOptions();
+        $collection = new OptionCollection();
         foreach ($this->getScales() as $row) {
             $value = $row[0] ?? null;
             $label = $row[1] ?? $value;
 
-            $collection->add(
-                $label,
-                $value,
-                $this->getValue() === $value,
-            );
+            $collection->add($label, $value);
         }
 
         return $collection;
-    }
-
-    public function getOptionsAsKeyValuePairs(): array
-    {
-        $options = [];
-        foreach ($this->getOptions() as $option) {
-            $options[$option->getValue()] = $option->getLabel();
-        }
-
-        return $options;
     }
 
     public function getLegends(): TabularData
@@ -109,7 +94,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
 
         $values = [];
 
-        foreach ($this->getOptions() as $option) {
+        foreach ($this->getOptionConfiguration() as $option) {
             $values[] = '"'.$option->getValue().'"';
         }
 

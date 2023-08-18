@@ -27,13 +27,15 @@ class NumberField extends TextField
     #[Input\Integer(
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
+        min: 0,
     )]
-    protected ?int $decimalCount = 0;
+    protected int $decimalCount = 0;
 
-    #[Input\FloatingNumber(
+    #[Input\Integer(
         instructions: 'The step',
+        min: 0,
     )]
-    protected float $step = 1;
+    protected int $step = 1;
 
     public function getValue(): mixed
     {

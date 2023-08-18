@@ -10,9 +10,6 @@ use craft\db\Query;
  */
 class m200616_143808_FormPermissionsUpdate extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $permissions = (new Query())
@@ -72,9 +69,6 @@ class m200616_143808_FormPermissionsUpdate extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m200616_143808_FormPermissionsUpdate cannot be reverted.\n";

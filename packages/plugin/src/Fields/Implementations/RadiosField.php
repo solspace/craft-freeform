@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
@@ -22,9 +22,9 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     name: 'Radios',
     typeShorthand: 'radios',
     iconPath: __DIR__.'/Icons/radios.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/radios.ejs',
 )]
-class RadiosField extends AbstractExternalOptionsField implements OneLineInterface
+class RadiosField extends BaseOptionsField implements OneLineInterface
 {
     use OneLineTrait;
 
@@ -43,20 +43,28 @@ class RadiosField extends AbstractExternalOptionsField implements OneLineInterfa
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', 'radio')
             ->set($this->getRequiredAttribute())
+            ->setIfEmpty('value', $this->getValue())
         ;
 
         $output = '';
+
         foreach ($this->getOptions() as $index => $option) {
+            if ($option instanceof OptionCollection) {
+                continue;
+            }
+
+            $isChecked = $option->getValue() == $this->getValue();
+
             $inputAttributes = $attributes
                 ->clone()
-                ->replace('value', $option->value)
-                ->replace('checked', $option->checked)
-                ->replace('id', $this->getIdAttribute()."-{$index}")
+                ->replace('id', $this->getIdAttribute().'-'.$index)
+                ->replace('value', $option->getValue())
+                ->replace('checked', $isChecked)
             ;
 
             $output .= '<label>';
             $output .= '<input'.$inputAttributes.' />';
-            $output .= $this->translate($option->label);
+            $output .= $this->translate($option->getLabel());
             $output .= '</label>';
         }
 
@@ -102,17 +110,11 @@ class RadiosField extends AbstractExternalOptionsField implements OneLineInterfa
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() ? '</div>' : '';

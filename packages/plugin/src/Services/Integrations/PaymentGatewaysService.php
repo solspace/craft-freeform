@@ -60,7 +60,8 @@ class PaymentGatewaysService extends AbstractIntegrationService
                         'resourceId' => $handle,
                     ]
                 )
-                ->execute();
+                ->execute()
+            ;
         }
 
         foreach ($plans as $plan) {
@@ -88,7 +89,8 @@ class PaymentGatewaysService extends AbstractIntegrationService
                             'resourceId' => $plan->getId(),
                         ]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
         }
 
@@ -101,7 +103,8 @@ class PaymentGatewaysService extends AbstractIntegrationService
                 ['forceUpdate' => 0],
                 ['id' => $id]
             )
-            ->execute();
+            ->execute()
+        ;
 
         return true;
     }

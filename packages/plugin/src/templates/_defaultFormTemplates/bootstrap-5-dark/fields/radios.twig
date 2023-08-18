@@ -2,7 +2,7 @@
 
     {{ field.renderLabel }}
     {{ field.renderInstructions }}
-    
+
     {% if field.oneLine %}<div>{% endif %}
 
     {% for index, option in field.options %}
@@ -12,7 +12,7 @@
                    value="{{ option.value }}"
                    id="{{ field.idAttribute }}-{{ index }}"
                    class="form-check-input bg-dark-subtle{{ field.hasErrors ? " is-invalid" }}"
-                    {{ option.checked ? "checked" : "" }}
+                    {{ option.value == field.value ? "checked" }}
             />
             <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
                 {{ option.label|t('freeform')|raw }}

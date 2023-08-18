@@ -10,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m210527_071651_AddDbSessionStorage extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if (!$this->db->tableExists('{{%freeform_session_context}}')) {
@@ -47,9 +44,6 @@ class m210527_071651_AddDbSessionStorage extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $keys = $this->db->schema->getTableForeignKeys('{{%freeform_session_context}}');

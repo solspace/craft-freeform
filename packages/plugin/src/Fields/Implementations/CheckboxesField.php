@@ -14,7 +14,8 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -24,9 +25,9 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     name: 'Checkboxes',
     typeShorthand: 'checkboxes',
     iconPath: __DIR__.'/Icons/checkboxes.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/checkboxes.ejs',
 )]
-class CheckboxesField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
+class CheckboxesField extends BaseOptionsField implements MultiValueInterface, OneLineInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;
@@ -54,16 +55,22 @@ class CheckboxesField extends AbstractExternalOptionsField implements MultiValue
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
+            if ($option instanceof OptionCollection) {
+                continue;
+            }
+
+            $isChecked = \in_array($option->getValue(), $this->getValue());
+
             $inputAttributes = $attributes
                 ->clone()
                 ->replace('id', $this->getIdAttribute().'-'.$index)
-                ->replace('value', $option->value)
-                ->replace('checked', $option->checked)
+                ->replace('value', $option->getValue())
+                ->replace('checked', $isChecked)
             ;
 
             $output .= '<label>';
             $output .= '<input'.$inputAttributes.' />';
-            $output .= $this->translate($option->label);
+            $output .= $this->translate($option->getLabel());
             $output .= '</label>';
         }
 
@@ -78,7 +85,8 @@ class CheckboxesField extends AbstractExternalOptionsField implements MultiValue
 
         $labels = [];
         foreach ($this->getOptions() as $option) {
-            if ($option->isChecked()) {
+            $isChecked = \in_array($option->getValue(), $this->getValue());
+            if ($isChecked) {
                 $labels[] = $option->getLabel();
             }
         }
@@ -115,17 +123,11 @@ class CheckboxesField extends AbstractExternalOptionsField implements MultiValue
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() ? '</div>' : '';

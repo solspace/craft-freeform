@@ -1,5 +1,10 @@
 import type { GenericValue, Property } from './properties';
 
+export enum Implementation {
+  Options = 'options',
+  GeneratedOptions = 'generatedOptions',
+}
+
 export enum Type {
   Group = 'group',
 }

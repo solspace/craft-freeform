@@ -63,6 +63,11 @@ class PropertyProvider
             $accessible = $reflectionProperty->isPublic();
 
             $reflectionProperty->setAccessible(true);
+
+            if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
+                $value = null;
+            }
+
             $reflectionProperty->setValue($object, $value);
 
             if (!$accessible) {
@@ -73,7 +78,7 @@ class PropertyProvider
 
     public function getEditableProperties(string|object $object): PropertyCollection
     {
-        $class = \is_string($object) ? $object : \get_class($object);
+        $class = \is_string($object) ? $object : $object::class;
         $referenceObject = \is_string($object) ? null : $object;
 
         $reflection = $this->getReflection($class);

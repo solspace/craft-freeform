@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
@@ -33,7 +34,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     return active && contextType === FocusType.Field && contextUid === uid;
   }, [active, contextType, contextUid, uid]);
 
-  const preview = useFieldPreview(field, type);
+  const [preview, isLoadingPreview] = useFieldPreview(field, type);
 
   if (field?.properties === undefined || !type) {
     return null;
@@ -52,7 +53,11 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      <Label className="label">{field.properties.label || type?.name}</Label>
+      <Label className="label">
+        <LoadingText loading={isLoadingPreview} spinner>
+          {field.properties.label || type?.name}
+        </LoadingText>
+      </Label>
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>
       )}

@@ -11,7 +11,7 @@
                    value="{{ option.value }}"
                    id="{{ field.idAttribute }}-{{ index }}"
                    class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
-                    {{ option.checked ? "checked" : "" }}
+                    {{ option.value == field.value ? "checked" }}
             />
             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
                 {{ option.label|t('freeform')|raw }}

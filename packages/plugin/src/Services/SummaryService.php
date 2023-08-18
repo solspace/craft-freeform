@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Freeform;
@@ -47,8 +47,8 @@ class SummaryService extends Component
         $system->phpVersion = \PHP_VERSION;
         $system->craftVersion = $craft->version;
         $system->craftEdition = strtolower($craft->getEditionName());
-        $system->formFieldType = ArrayHelper::some($craftFields, fn ($item) => FormFieldType::class === \get_class($item));
-        $system->submissionsFieldType = ArrayHelper::some($craftFields, fn ($item) => SubmissionFieldType::class === \get_class($item));
+        $system->formFieldType = ArrayHelper::some($craftFields, fn ($item) => FormFieldType::class === $item::class);
+        $system->submissionsFieldType = ArrayHelper::some($craftFields, fn ($item) => SubmissionFieldType::class === $item::class);
         $system->userGroups = $craft->userGroups->getAllGroups() > 1;
         $system->multiSite = $craft->sites->getAllSiteIds() > 1;
         $system->languages = $this->hasLanguages();
@@ -297,7 +297,7 @@ class SummaryService extends Component
             $generalSettings = $settings->getGeneral();
             $behaviorSettings = $settings->getBehavior();
 
-            $type = \get_class($form);
+            $type = $form::class;
             if (!\in_array($type, $types, true)) {
                 $types[] = $type;
             }
@@ -375,10 +375,16 @@ class SummaryService extends Component
             foreach ($form->getLayout()->getFields() as $field) {
                 $fieldTypes[] = $field->getType();
 
-                if ($field instanceof AbstractExternalOptionsField) {
+                if ($field instanceof OptionsConfigurationInterface) {
+                    $configuration = $field->getOptionConfiguration();
+                    $source = $configuration->getSource();
+
                     if (!\in_array(
-                        $field->getOptionSource(),
-                        [AbstractExternalOptionsField::SOURCE_CUSTOM, AbstractExternalOptionsField::SOURCE_PREDEFINED],
+                        $source,
+                        [
+                            OptionsConfigurationInterface::SOURCE_CUSTOM,
+                            OptionsConfigurationInterface::SOURCE_PREDEFINED,
+                        ],
                         true
                     )) {
                         $usingSource = true;

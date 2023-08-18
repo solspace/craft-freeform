@@ -16,9 +16,6 @@ class ValidateEvent extends CancelableArrayableEvent implements FormEventInterfa
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['field'];

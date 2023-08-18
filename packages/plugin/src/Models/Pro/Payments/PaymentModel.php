@@ -18,9 +18,6 @@ class PaymentModel extends AbstractPaymentModel
     /** @var int */
     public $last4;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return PaymentInterface::TYPE_SINGLE;

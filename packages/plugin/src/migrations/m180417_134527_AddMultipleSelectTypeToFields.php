@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m180417_134527_AddMultipleSelectTypeToFields extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         if ($this->db->getIsPgsql()) {
@@ -30,9 +27,6 @@ class m180417_134527_AddMultipleSelectTypeToFields extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         return true;

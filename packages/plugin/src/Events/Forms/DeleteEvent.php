@@ -13,9 +13,6 @@ class DeleteEvent extends CancelableArrayableEvent implements FormEventInterface
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['form']);

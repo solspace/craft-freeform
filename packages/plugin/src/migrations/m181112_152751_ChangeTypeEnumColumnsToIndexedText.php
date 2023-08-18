@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m181112_152751_ChangeTypeEnumColumnsToIndexedText extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if ($this->db->getIsPgsql()) {
@@ -41,9 +38,6 @@ class m181112_152751_ChangeTypeEnumColumnsToIndexedText extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m181112_152751_ChangeTypeEnumColumnsToIndexedText cannot be reverted.\n";

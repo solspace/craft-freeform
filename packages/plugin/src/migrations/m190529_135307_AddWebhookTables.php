@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m190529_135307_AddWebhookTables extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->createTable(
@@ -63,9 +60,6 @@ class m190529_135307_AddWebhookTables extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         try {

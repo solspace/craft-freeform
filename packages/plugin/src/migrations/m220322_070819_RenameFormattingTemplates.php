@@ -21,9 +21,6 @@ class m220322_070819_RenameFormattingTemplates extends Migration
         'tailwind.html' => 'tailwind-3.twig',
     ];
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $forms = (new Query())
@@ -72,9 +69,6 @@ class m220322_070819_RenameFormattingTemplates extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $forms = (new Query())

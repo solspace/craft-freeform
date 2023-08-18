@@ -4,9 +4,6 @@ namespace Solspace\Freeform\Resources\Bundles;
 
 class NotificationEditorBundle extends AbstractFreeformAssetBundle
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         return [

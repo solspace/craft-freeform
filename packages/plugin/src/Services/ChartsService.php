@@ -224,8 +224,6 @@ class ChartsService extends BaseService
     }
 
     /**
-     * @param bool $aggregate
-     *
      * @return LinearChartData
      *
      * @throws \Exception

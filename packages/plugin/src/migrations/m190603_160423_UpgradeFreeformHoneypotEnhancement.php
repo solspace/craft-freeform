@@ -10,9 +10,6 @@ use Solspace\Freeform\Models\Settings;
  */
 class m190603_160423_UpgradeFreeformHoneypotEnhancement extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
@@ -39,9 +36,6 @@ class m190603_160423_UpgradeFreeformHoneypotEnhancement extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m190603_160423_UpgradeFreeformHoneypotEnhancement cannot be reverted.\n";

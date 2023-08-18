@@ -23,9 +23,6 @@ class HandleRequestEvent extends CancelableArrayableEvent implements FormEventIn
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'request'];

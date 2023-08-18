@@ -282,7 +282,8 @@ class Freeform extends Plugin
                 ->db
                 ->createCommand()
                 ->dropTableIfExists(Submission::getContentTableName($form))
-                ->execute();
+                ->execute()
+            ;
         }
     }
 

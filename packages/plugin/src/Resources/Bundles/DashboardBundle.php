@@ -4,9 +4,6 @@ namespace Solspace\Freeform\Resources\Bundles;
 
 class DashboardBundle extends AbstractFreeformAssetBundle
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getStylesheets(): array
     {
         return [
@@ -17,9 +14,6 @@ class DashboardBundle extends AbstractFreeformAssetBundle
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         return [

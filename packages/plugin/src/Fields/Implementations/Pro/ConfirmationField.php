@@ -60,9 +60,6 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         $attributes = $this->attributes->getInput()

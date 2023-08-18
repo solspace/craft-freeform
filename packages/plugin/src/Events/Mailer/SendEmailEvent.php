@@ -20,9 +20,6 @@ class SendEmailEvent extends CancelableArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['message', 'form', 'notification', 'fieldValues', 'submission']);

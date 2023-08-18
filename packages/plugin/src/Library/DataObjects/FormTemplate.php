@@ -49,9 +49,6 @@ class FormTemplate implements \JsonSerializable
         return $this->name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize()
     {
         return [

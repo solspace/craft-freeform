@@ -10,9 +10,6 @@ use craft\db\Query;
  */
 class m180606_141402_AddConnectionsToFormProperties extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $forms = (new Query())
@@ -41,9 +38,6 @@ class m180606_141402_AddConnectionsToFormProperties extends Migration
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m180606_141402_AddConnectionsToFormProperties cannot be reverted.\n";

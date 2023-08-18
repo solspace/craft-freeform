@@ -102,17 +102,11 @@ class RadiosField extends AbstractExternalOptionsField implements OneLineInterfa
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() ? '</div>' : '';

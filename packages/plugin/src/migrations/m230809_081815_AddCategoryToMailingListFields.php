@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m230809_081815_AddCategoryToMailingListFields extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $table = '{{%freeform_mailing_list_fields}}';
@@ -23,9 +20,6 @@ class m230809_081815_AddCategoryToMailingListFields extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $table = '{{%freeform_mailing_list_fields}}';

@@ -45,9 +45,6 @@ abstract class AbstractPaymentModel extends Model implements PaymentInterface
         return $this->id;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     abstract public function getType(): string;
 
     /**

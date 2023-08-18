@@ -85,9 +85,6 @@ class StatusModel extends Model implements \JsonSerializable
         return self::$hexMap[$this->color] ?? '#FFFFFF';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function safeAttributes(): array
     {
         return [

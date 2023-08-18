@@ -6,9 +6,6 @@ use craft\helpers\App;
 
 class FreeformClientBundle extends AbstractFreeformAssetBundle
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         $clientPath = App::env('FF_CLIENT_PATH') ?? null;
@@ -22,9 +19,6 @@ class FreeformClientBundle extends AbstractFreeformAssetBundle
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStylesheets(): array
     {
         return [

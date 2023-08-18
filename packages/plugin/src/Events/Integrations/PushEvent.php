@@ -21,9 +21,6 @@ class PushEvent extends CancelableArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['integration', 'values']);

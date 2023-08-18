@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m220304_101448_ChangeAccessTokenColumnType extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         if ($this->db->getIsPgsql()) {
@@ -25,9 +22,6 @@ class m220304_101448_ChangeAccessTokenColumnType extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         if ($this->db->getIsPgsql()) {

@@ -16,7 +16,7 @@ class FieldTransformer
 
     public function transform(FieldInterface $field): object
     {
-        $typeClass = \get_class($field);
+        $typeClass = $field::class;
         $editableProperties = $this->propertyProvider->getEditableProperties($typeClass);
 
         $properties = [];

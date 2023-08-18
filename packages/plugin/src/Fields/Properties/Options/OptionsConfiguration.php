@@ -7,7 +7,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 
 abstract class OptionsConfiguration implements OptionsConfigurationInterface
 {
-    private ?OptionTypeProviderInterface $configuration;
+    private ?OptionTypeProviderInterface $configuration = null;
 
     private string $typeClass;
 
@@ -31,6 +31,10 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
 
     public function getOptions(): OptionCollection
     {
+        if (!$this->configuration) {
+            return new OptionCollection();
+        }
+
         return $this->configuration->generateOptions();
     }
 

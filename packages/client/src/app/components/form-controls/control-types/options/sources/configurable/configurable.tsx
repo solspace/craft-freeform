@@ -5,19 +5,27 @@ import { Control } from '@components/form-controls/control';
 import { FlexColumn } from '@components/layout/blocks/flex';
 import type { GenericValue } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
+import type { UseQueryResult } from '@tanstack/react-query';
 
-import type { ElementOptionsConfiguration } from '../../options.types';
-
-import { useOptionTypesPredefined } from './predefined.queries';
+import type {
+  ConfigurableOptionsConfiguration,
+  OptionsConfiguration,
+} from '../../options.types';
+import type { OptionTypeProvider } from '../sources.types';
 
 type Props = {
-  value: ElementOptionsConfiguration;
-  updateValue: (value: ElementOptionsConfiguration) => void;
+  value: ConfigurableOptionsConfiguration;
+  updateValue: (value: OptionsConfiguration) => void;
+  typeProviderQuery: () => UseQueryResult<OptionTypeProvider[]>;
 };
 
-const Predefined: React.FC<Props> = ({ value, updateValue }) => {
+export const ConfigurableOptions: React.FC<Props> = ({
+  value,
+  updateValue,
+  typeProviderQuery,
+}) => {
   const [typeClass, setTypeClass] = useState(value.typeClass);
-  const { data, isFetching } = useOptionTypesPredefined();
+  const { data, isFetching } = typeProviderQuery();
 
   const selectedTypeProvider = data?.find(
     (type) => type.typeClass === typeClass
@@ -96,5 +104,3 @@ const Predefined: React.FC<Props> = ({ value, updateValue }) => {
     </FlexColumn>
   );
 };
-
-export default Predefined;

@@ -62,11 +62,6 @@ class Entries implements OptionTypeProviderInterface
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/entries/fields',
-        parameterFields: [
-            'properties.siteId' => 'siteId',
-            'properties.sectionId' => 'sectionId',
-            'properties.entryTypeId' => 'entryTypeId',
-        ],
     )]
     private string $orderBy = 'id';
 

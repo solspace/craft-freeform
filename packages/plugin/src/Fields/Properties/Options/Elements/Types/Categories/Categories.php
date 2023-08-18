@@ -51,10 +51,6 @@ class Categories implements OptionTypeProviderInterface
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/categories/fields',
-        parameterFields: [
-            'properties.siteId' => 'siteId',
-            'properties.groupId' => 'groupId',
-        ],
     )]
     private string $orderBy = 'id';
 

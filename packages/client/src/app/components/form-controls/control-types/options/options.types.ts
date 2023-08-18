@@ -28,8 +28,8 @@ type BaseOptions = {
   source: Source;
 };
 
-export type ElementOptionsConfiguration = BaseOptions & {
-  source: Source.Elements;
+export type ConfigurableOptionsConfiguration = BaseOptions & {
+  source: Source.Elements | Source.Predefined;
   typeClass: string;
   properties: GenericValue;
 };
@@ -40,13 +40,6 @@ export type CustomOptionsConfiguration = BaseOptions & {
   options: Option[];
 };
 
-export type PredefinedOptionsConfiguration = BaseOptions & {
-  source: Source.Predefined;
-  typeClass: string;
-  properties: GenericValue;
-};
-
 export type OptionsConfiguration =
-  | ElementOptionsConfiguration
   | CustomOptionsConfiguration
-  | PredefinedOptionsConfiguration;
+  | ConfigurableOptionsConfiguration;

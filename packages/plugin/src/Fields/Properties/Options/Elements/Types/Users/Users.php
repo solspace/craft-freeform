@@ -23,7 +23,7 @@ class Users implements OptionTypeProviderInterface
         label: 'Option Label',
         source: 'api/elements/users/fields',
     )]
-    private string $label = 'name';
+    private string $label = 'fullName';
 
     #[Required]
     #[Input\DynamicSelect(
@@ -34,7 +34,7 @@ class Users implements OptionTypeProviderInterface
 
     #[Input\DynamicSelect(
         label: 'Order By',
-        source: 'api/elements/users/fields',
+        source: 'api/elements/users/fields?order',
     )]
     private string $orderBy = 'id';
 

@@ -51,10 +51,6 @@ class Tags implements OptionTypeProviderInterface
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/tags/fields',
-        parameterFields: [
-            'properties.siteId' => 'siteId',
-            'properties.groupId' => 'groupId',
-        ],
     )]
     private string $orderBy = 'id';
 

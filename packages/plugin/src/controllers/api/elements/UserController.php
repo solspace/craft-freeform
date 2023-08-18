@@ -41,11 +41,15 @@ class UserController extends BaseApiController
         $collection = new OptionCollection();
         $collection
             ->add('id', 'ID')
-            ->add('name', 'Name')
+            ->add('fullName', 'Full Name')
             ->add('firstName', 'First name')
             ->add('lastName', 'Last name')
             ->add('username', 'Username')
         ;
+
+        if (isset($_GET['order'])) {
+            return $this->asSerializedJson($collection);
+        }
 
         $fields = \Craft::$app->user->getIdentity()->getFieldLayout()->getCustomFields();
         foreach ($fields as $field) {

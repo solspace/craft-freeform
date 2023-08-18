@@ -43,15 +43,23 @@ class RadiosField extends BaseOptionsField implements OneLineInterface
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', 'radio')
             ->set($this->getRequiredAttribute())
+            ->setIfEmpty('value', $this->getValue())
         ;
 
         $output = '';
+
         foreach ($this->getOptions() as $index => $option) {
+            if ($option instanceof OptionCollection) {
+                continue;
+            }
+
+            $isChecked = $option->getValue() == $this->getValue();
+
             $inputAttributes = $attributes
                 ->clone()
+                ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())
-                ->replace('checked', $option->isChecked())
-                ->replace('id', $this->getIdAttribute()."-{$index}")
+                ->replace('checked', $isChecked)
             ;
 
             $output .= '<label>';

@@ -142,6 +142,7 @@ class DatabaseStorage implements FormContextStorageInterface
         \Craft::$app->db
             ->createCommand()
             ->delete($table, ['id' => $idsToDelete])
-            ->execute();
+            ->execute()
+        ;
     }
 }

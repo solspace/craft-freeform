@@ -15,7 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
@@ -25,7 +25,7 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     iconPath: __DIR__.'/Icons/multi-select.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/multiple-select.ejs',
 )]
-class MultipleSelectField extends AbstractExternalOptionsField implements MultiValueInterface
+class MultipleSelectField extends BaseOptionsField implements MultiValueInterface
 {
     use MultipleValueTrait;
 
@@ -47,8 +47,10 @@ class MultipleSelectField extends AbstractExternalOptionsField implements MultiV
         $output = '<select'.$attributes.'>';
 
         foreach ($this->getOptions() as $option) {
-            $output .= '<option value="'.$option->value.'"'.($option->checked ? ' selected' : '').'>';
-            $output .= $this->translate($option->label);
+            $isSelected = \in_array($option->getValue(), $this->getValue());
+
+            $output .= '<option value="'.$option->getValue().'"'.($isSelected ? ' selected' : '').'>';
+            $output .= $this->translate($option->getLabel());
             $output .= '</option>';
         }
 

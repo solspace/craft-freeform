@@ -4,20 +4,39 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Options;
 
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 
-class OptionCollection implements CustomNormalizerInterface
+class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
 {
     private array $options = [];
 
-    public function addCollection(string $label, self $collection): self
+    public function __construct(
+        private ?string $label = null
+    ) {
+    }
+
+    public function getLabel(): ?string
     {
-        $this->options[] = ['label' => $label, 'children' => $collection->normalize()];
+        return $this->label;
+    }
+
+    public function addCollection(self $collection): self
+    {
+        $this->options[] = $collection;
 
         return $this;
     }
 
-    public function add(string $value, string $label): self
+    public function add(Option|string $value, string $label = ''): self
     {
-        $this->options[] = ['value' => $value, 'label' => $label];
+        if ($value instanceof Option) {
+            $this->options[] = $value;
+
+            return $this;
+        }
+
+        $this->options[] = new Option(
+            $value,
+            $label,
+        );
 
         return $this;
     }
@@ -29,24 +48,65 @@ class OptionCollection implements CustomNormalizerInterface
 
     public function normalize(): array
     {
-        return $this->options;
+        return $this->toArray();
     }
 
-    public function toTwigArray(): array
+    public function toArray(self $optionCollection = null): array
     {
         $options = [];
 
-        foreach ($this->options as $option) {
-            if (isset($option['children'])) {
-                $options[] = ['optgroup' => $option['label']];
-                foreach ($option['children'] as $child) {
-                    $options[] = ['value' => $child['value'], 'label' => $child['label']];
-                }
-            } else {
-                $options[] = ['value' => $option['value'], 'label' => $option['label']];
+        if (!$optionCollection) {
+            $optionCollection = $this;
+        }
+
+        foreach ($optionCollection->getOptions() as $item) {
+            if ($item instanceof self) {
+                $options[] = [
+                    'label' => $item->getLabel(),
+                    'children' => $this->toArray($item),
+                ];
+            }
+
+            if ($item instanceof Option) {
+                $options[] = [
+                    'value' => $item->getValue(),
+                    'label' => $item->getLabel(),
+                ];
             }
         }
 
         return $options;
+    }
+
+    public function toTwigArray(self $optionCollection = null): array
+    {
+        $options = [];
+
+        if (!$optionCollection) {
+            $optionCollection = $this;
+        }
+
+        foreach ($optionCollection->getOptions() as $item) {
+            if ($item instanceof self) {
+                $options[] = ['optgroup' => $item->getLabel()];
+                $options = array_merge($options, $this->toTwigArray($item));
+
+                continue;
+            }
+
+            if ($item instanceof Option) {
+                $options[] = [
+                    'value' => $item->getValue(),
+                    'label' => $item->getLabel(),
+                ];
+            }
+        }
+
+        return $options;
+    }
+
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->options);
     }
 }

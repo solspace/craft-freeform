@@ -18,7 +18,6 @@ class DynamicSelect extends Property
         public ?string $emptyOption = null,
         public ?string $source = null,
         public ?array $parameterFields = null,
-        public ?string $generator = null,
     ) {
         parent::__construct(
             label: $label,

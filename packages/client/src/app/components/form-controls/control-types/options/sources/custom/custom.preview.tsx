@@ -7,12 +7,12 @@ import {
 } from '@components/form-controls/control-types/table/table.preview.styles';
 import translate from '@ff-client/utils/translations';
 
-import type { CustomOptions } from '../../options.types';
+import type { CustomOptionsConfiguration } from '../../options.types';
 
 import { PreviewRow } from './custom.preview.styles';
 
 type Props = {
-  value: CustomOptions;
+  value: CustomOptionsConfiguration;
 };
 
 export const CustomPreview: React.FC<Props> = ({ value }) => {

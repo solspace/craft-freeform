@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Freeform;
@@ -375,10 +375,16 @@ class SummaryService extends Component
             foreach ($form->getLayout()->getFields() as $field) {
                 $fieldTypes[] = $field->getType();
 
-                if ($field instanceof AbstractExternalOptionsField) {
+                if ($field instanceof OptionsConfigurationInterface) {
+                    $configuration = $field->getOptionConfiguration();
+                    $source = $configuration->getSource();
+
                     if (!\in_array(
-                        $field->getOptionSource(),
-                        [AbstractExternalOptionsField::SOURCE_CUSTOM, AbstractExternalOptionsField::SOURCE_PREDEFINED],
+                        $source,
+                        [
+                            OptionsConfigurationInterface::SOURCE_CUSTOM,
+                            OptionsConfigurationInterface::SOURCE_PREDEFINED,
+                        ],
                         true
                     )) {
                         $usingSource = true;

@@ -63,6 +63,11 @@ class PropertyProvider
             $accessible = $reflectionProperty->isPublic();
 
             $reflectionProperty->setAccessible(true);
+
+            if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
+                $value = null;
+            }
+
             $reflectionProperty->setValue($object, $value);
 
             if (!$accessible) {

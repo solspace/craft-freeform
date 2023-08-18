@@ -4,38 +4,23 @@ namespace Solspace\Freeform\Library\DataObjects;
 
 class Suppressors
 {
-    /** @var bool */
-    private $api = false;
-
-    /** @var bool */
-    private $connections = false;
-
-    /** @var bool */
-    private $adminNotifications = false;
-
-    /** @var bool */
-    private $dynamicRecipients = false;
-
-    /** @var bool */
-    private $submitterNotifications = false;
-
-    /** @var bool */
-    private $payments = false;
-
-    /** @var bool */
-    private $webhooks = false;
-
-    /** @var bool */
-    private $payload = false;
+    private bool $api = false;
+    private bool $connections = false;
+    private bool $adminNotifications = false;
+    private bool $dynamicRecipients = false;
+    private bool $submitterNotifications = false;
+    private bool $payments = false;
+    private bool $webhooks = false;
+    private bool $payload = false;
 
     /**
      * Suppressors constructor.
      *
      * @param mixed $settings
      */
-    public function __construct($settings)
+    public function __construct(bool|array $settings = null)
     {
-        if (\is_bool($settings) && true === $settings) {
+        if (true === $settings) {
             $this->api = true;
             $this->connections = true;
             $this->adminNotifications = true;

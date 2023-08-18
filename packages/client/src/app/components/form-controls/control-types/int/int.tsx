@@ -2,6 +2,7 @@ import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { IntegerProperty } from '@ff-client/types/properties';
+import { parseNumericValue } from '@ff-client/utils/numbers';
 
 const Int: React.FC<ControlType<IntegerProperty>> = ({
   value,
@@ -10,24 +11,14 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   updateValue,
   autoFocus,
 }) => {
-  const { handle, min, max } = property;
+  const { handle, min, max, unsigned, step = 1 } = property;
 
   const onBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
-    let newValue = Number(event.target.value);
-
-    if (min !== null) {
-      newValue = Math.max(newValue, min);
-    }
-
-    if (max !== null) {
-      newValue = Math.min(newValue, max);
-    }
-
-    updateValue(newValue);
+    updateValue(parseNumericValue(event.target.value, { min, max, unsigned }));
   };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    updateValue(Number(event.target.value));
+    updateValue(parseNumericValue(event.target.value));
   };
 
   return (
@@ -38,6 +29,7 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
         className="text fullwidth"
         value={value === undefined || value === null ? '' : value}
         autoFocus={autoFocus}
+        step={step}
         onChange={onChange}
         onBlur={onBlur}
       />

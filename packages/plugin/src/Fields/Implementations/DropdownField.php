@@ -14,15 +14,15 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 
 #[Type(
     name: 'Dropdown',
     typeShorthand: 'dropdown',
     iconPath: __DIR__.'/Icons/dropdown.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/dropdown.ejs',
 )]
-class DropdownField extends AbstractExternalOptionsField
+class DropdownField extends BaseOptionsField
 {
     public function getType(): string
     {
@@ -40,8 +40,10 @@ class DropdownField extends AbstractExternalOptionsField
 
         $output = '<select'.$attributes.'>';
         foreach ($this->getOptions() as $option) {
-            $output .= '<option value="'.$option->value.'"'.($option->checked ? ' selected' : '').'>';
-            $output .= $this->translate($option->label);
+            $isChecked = $option->getValue() == $this->getValue();
+
+            $output .= '<option value="'.$option->getValue().'"'.($isChecked ? ' selected' : '').'>';
+            $output .= $this->translate($option->getLabel());
             $output .= '</option>';
         }
         $output .= '</select>';

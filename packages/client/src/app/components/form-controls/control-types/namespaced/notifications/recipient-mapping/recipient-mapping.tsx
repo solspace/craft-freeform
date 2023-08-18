@@ -31,7 +31,7 @@ const RecipientMapping: React.FC<
   let options: Option[] = [];
   if (optionsProperty) {
     const properties = field.properties[optionsProperty.handle];
-    if (properties.source === Source.CustomOptions) {
+    if (properties.source === Source.Custom) {
       options = (properties.options as Option[]).filter(
         (option) => option.value !== ''
       );

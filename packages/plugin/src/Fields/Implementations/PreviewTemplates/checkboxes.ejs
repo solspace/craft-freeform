@@ -1,0 +1,9 @@
+<% generatedOptions.forEach(function(option) { %>
+    <div>
+        <input type="checkbox"
+               class="checkbox"
+               <% if (option.checked) { %>checked="checked"<% } %>
+        />
+        <label for=""><%= option.label %></label>
+    </div>
+<% }) %>

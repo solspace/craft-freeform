@@ -4,13 +4,12 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
-use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
-use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
@@ -70,12 +69,12 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         return self::TYPE_RATING;
     }
 
-    public function getOptions(): OptionsCollection
+    public function getOptions(): OptionCollection
     {
-        $collection = new PresetOptions();
+        $collection = new OptionCollection();
 
         for ($i = 1; $i <= $this->getMaxValue(); ++$i) {
-            $collection->add($i, $i, $i === (int) $this->getValue());
+            $collection->add($i, $i);
         }
 
         return $collection;

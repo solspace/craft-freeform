@@ -1,0 +1,65 @@
+{% include "freeform/_defaultFormTemplates/foundation-6/_main.css" %}
+{% import "freeform/_defaultFormTemplates/foundation-6/_row.twig" as rowMacro %}
+
+{{ form.renderTag({
+    attributes: {
+        row: { class: "grid-x grid-margin-x" },
+        errors: { class: "callout alert" },
+    }
+}) }}
+
+<script>
+    var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+    if (form) {
+        form.addEventListener("freeform-ready", function (event) {
+            var freeform = event.target.freeform;
+            freeform.setOption("errorClassBanner", ["callout", "alert", "form-errors"]);
+            freeform.setOption("errorClassList", ["errors"]);
+            freeform.setOption("errorClassField", "has-error");
+            freeform.setOption("successClassBanner", ["callout", "success"]);
+        })
+        form.addEventListener("freeform-stripe-styling", function (event) {
+            event.detail.base = {
+                fontSize: "16px",
+                fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+            }
+        })
+    }
+</script>
+
+{% if form.pages|length > 1 %}
+    <ul class="menu freeform-page-tabs">
+        {% for page in form.pages %}
+            <li class="menu-text{{ form.currentPage.index == page.index ? ' is-active' : '' }}">
+                {{ page.label }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if not form.ajaxEnabled and form.submittedSuccessfully %}
+    <div class="callout success">
+        <strong class="font-bold">
+            {{ form.settings.behavior.successMessage | t('freeform') }}
+        </strong>
+    </div>
+{% endif %}
+
+{% if form.hasErrors %}
+    <div{{ form.attributes.errors }}>
+        <strong class="font-bold">
+            {{ form.settings.behavior.errorMessage | t('freeform') }}
+        </strong>
+        {% if form.errors|length %}
+            <ul class="mb-0 ">
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+
+{{ rowMacro.render(form.rows, form) }}
+
+{{ form.renderClosingTag }}

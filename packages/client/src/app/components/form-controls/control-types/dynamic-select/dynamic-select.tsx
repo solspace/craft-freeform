@@ -1,5 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import {
+  findFirstValue,
+  isInOptions,
+} from '@components/elements/custom-dropdown/dropdown.operations';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type {
@@ -30,12 +34,29 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
     });
   }
 
-  const { data, isFetching, refetch } = useQuery(
+  const { data, isFetching, isFetched, refetch } = useQuery(
     ['dynamic-select', source, params],
     () =>
       axios.get<OptionCollection>(source, { params }).then((res) => res.data),
     { staleTime: Infinity, cacheTime: Infinity }
   );
+
+  useEffect(() => {
+    if (isFetching || !isFetched) {
+      return;
+    }
+
+    if (data === undefined) {
+      return;
+    }
+
+    if (isInOptions(data, value)) {
+      return;
+    }
+
+    const firstValue = findFirstValue(data);
+    updateValue(firstValue);
+  }, [data, isFetched]);
 
   return (
     <Control property={property} errors={errors}>

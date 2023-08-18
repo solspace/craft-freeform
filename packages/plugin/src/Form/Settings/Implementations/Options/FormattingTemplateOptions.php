@@ -19,22 +19,22 @@ class FormattingTemplateOptions implements OptionsGeneratorInterface
 
         $base = $this->settingsService->getSolspaceFormTemplates();
         if ($base) {
-            $solspaceTemplates = new OptionCollection();
+            $solspaceTemplates = new OptionCollection('Solspace');
             foreach ($base as $template) {
                 $solspaceTemplates->add($template->getFileName(), $template->getName());
             }
 
-            $options->addCollection('Solspace', $solspaceTemplates);
+            $options->addCollection($solspaceTemplates);
         }
 
         $custom = $this->settingsService->getCustomFormTemplates();
         if ($custom) {
-            $customTemplates = new OptionCollection();
+            $customTemplates = new OptionCollection('Custom');
             foreach ($custom as $template) {
                 $customTemplates->add($template->getFileName(), $template->getName());
             }
 
-            $options->addCollection('Custom', $customTemplates);
+            $options->addCollection($customTemplates);
         }
 
         return $options;

@@ -12,7 +12,7 @@
                    value="{{ option.value }}"
                    id="{{ field.idAttribute }}-{{ index }}"
                    class="form-check-input bg-dark-subtle{{ field.hasErrors ? " is-invalid" }}"
-                    {{ option.checked ? "checked" : "" }}
+                    {{ option.value in field.value ? "checked" }}
             />
 
             <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">

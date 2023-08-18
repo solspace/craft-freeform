@@ -19,6 +19,8 @@ class Integer extends Property
         ?int $width = null,
         public ?int $min = null,
         public ?int $max = null,
+        public ?int $step = null,
+        public ?bool $unsigned = false,
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }

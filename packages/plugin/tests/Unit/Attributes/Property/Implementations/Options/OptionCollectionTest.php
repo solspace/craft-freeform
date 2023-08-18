@@ -18,19 +18,16 @@ class OptionCollectionTest extends TestCase
         $collection->add('one', 'One');
         $collection->add('two', 'Two');
         $collection->addCollection(
-            'Nested Collection',
-            (new OptionCollection())
+            (new OptionCollection('Nested Collection'))
                 ->add('nested_one', 'Nested One')
                 ->add('nested_two', 'Nested Two')
         );
         $collection->addCollection(
-            'Nested Second Collection',
-            (new OptionCollection())
+            (new OptionCollection('Nested Second Collection'))
                 ->add('nested2_one', 'Nested 2 One')
                 ->add('nested2_two', 'Nested 2 Two')
                 ->addCollection(
-                    'Sub Nesting',
-                    (new OptionCollection())
+                    (new OptionCollection('Sub Nesting'))
                         ->add('sub_nesting', 'Sub Nesting'),
                 )
         );
@@ -60,7 +57,7 @@ class OptionCollectionTest extends TestCase
                     ],
                 ],
             ],
-            $collection->normalize()
+            $collection->toArray()
         );
     }
 }

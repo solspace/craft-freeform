@@ -30,6 +30,17 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';
 
+    #[Input\Select(
+        label: 'Type',
+        instructions: 'Choose between using date, time or both.',
+        options: [
+            self::DATETIME_TYPE_BOTH => 'Date & Time',
+            self::DATETIME_TYPE_DATE => 'Date',
+            self::DATETIME_TYPE_TIME => 'Time',
+        ],
+    )]
+    protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
+
     #[Input\Text(
         label: 'Locale (Optional)',
         instructions: "Enter your desired custom locale (e.g. `fr`, `ru`, etc.) to force the datepicker to use that locale. Otherwise leave blank to use the default site's locale set by Craft.",
@@ -48,17 +59,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         order: 4,
     )]
     protected string $placeholder = '';
-
-    #[Input\Select(
-        label: 'Type',
-        instructions: 'Choose between using date, time or both.',
-        options: [
-            self::DATETIME_TYPE_BOTH => 'Date & Time',
-            self::DATETIME_TYPE_DATE => 'Date',
-            self::DATETIME_TYPE_TIME => 'Time',
-        ],
-    )]
-    protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
     #[Section(
         handle: 'date',

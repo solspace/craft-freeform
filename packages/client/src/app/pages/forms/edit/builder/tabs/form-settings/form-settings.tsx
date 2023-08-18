@@ -26,7 +26,7 @@ export const FormSettings: React.FC = () => {
   const [namespace, setNamespace] = useState(null);
 
   useEffect(() => {
-    setNamespace(data[namespaceIndex]?.handle);
+    setNamespace(data?.[namespaceIndex]?.handle);
   }, [namespaceIndex]);
 
   if (!data && isFetching) {

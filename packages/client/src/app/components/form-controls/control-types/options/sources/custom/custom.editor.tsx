@@ -15,7 +15,7 @@ import { PreviewEditor } from '@components/form-controls/preview/previewable-com
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
-import type { CustomOptions } from '../../options.types';
+import type { CustomOptionsConfiguration } from '../../options.types';
 
 import {
   addOption,
@@ -25,8 +25,8 @@ import {
 } from './custom.operations';
 
 type Props = {
-  value: CustomOptions;
-  updateValue: (value: CustomOptions) => void;
+  value: CustomOptionsConfiguration;
+  updateValue: (value: CustomOptionsConfiguration) => void;
 };
 
 export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {

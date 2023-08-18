@@ -137,7 +137,7 @@ abstract class AbstractExport implements ExportInterface
                     }
 
                     if ($this->exportLabels && $field instanceof OptionsInterface) {
-                        $options = $field->getOptionsAsKeyValuePairs();
+                        $options = $field->getOptions();
 
                         if (\is_array($value)) {
                             foreach ($value as $index => $val) {

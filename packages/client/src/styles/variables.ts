@@ -25,6 +25,8 @@ export const shadows = {
   top: 'inset 0 1px 0 0 rgb(154 165 177 / 25%)',
   left: 'inset 1px 0 0 0 rgb(154 165 177 / 25%)',
   right: 'inset -1px 0 0 0 rgb(154 165 177 / 25%)',
+  container:
+    '0 0 0 1px rgba(31, 41, 51, 0.1), 0 5px 20px rgba(31, 41, 51, 0.25)',
 };
 
 export const beziers = {

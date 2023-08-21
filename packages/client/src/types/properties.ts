@@ -43,10 +43,12 @@ export type VisibilityFilter = string;
 export type Option = {
   value: string;
   label: string;
+  icon?: string | JSX.Element;
   shadowIndex?: number;
 };
 export type OptionGroup = {
   label: string;
+  icon?: string | JSX.Element;
   children: OptionCollection;
 };
 

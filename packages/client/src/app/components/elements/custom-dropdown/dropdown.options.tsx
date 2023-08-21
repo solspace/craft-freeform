@@ -1,9 +1,15 @@
 import React, { useEffect, useRef } from 'react';
 import classes from '@ff-client/utils/classes';
 
+import CheckIcon from './check.svg';
 import type { DropdownProps } from './dropdown';
-import { Item, Label, List } from './dropdown.options.styles';
-
+import {
+  CheckMark,
+  Item,
+  Label,
+  LabelContainer,
+  List,
+} from './dropdown.options.styles';
 type Props = DropdownProps & {
   focusIndex: number;
   query?: string;
@@ -33,6 +39,7 @@ export const Options: React.FC<Props> = ({
         options.map((option, idx) => {
           let value: string;
           let shadowIndex: number;
+
           if ('value' in option) {
             value = option.value;
             shadowIndex = option.shadowIndex;
@@ -63,7 +70,20 @@ export const Options: React.FC<Props> = ({
                 shadowIndex === focusIndex && 'focused'
               )}
             >
-              <Label>{option.label}</Label>
+              <Label
+                className={classes(children !== undefined && 'has-children')}
+              >
+                {selectedValue === value && (
+                  <CheckMark>
+                    <CheckIcon />
+                  </CheckMark>
+                )}
+                <LabelContainer>
+                  {option.icon && option.icon}
+                  {option.label}
+                </LabelContainer>
+              </Label>
+
               {children && (
                 <Options
                   options={children}

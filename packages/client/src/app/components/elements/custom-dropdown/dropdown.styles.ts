@@ -1,5 +1,10 @@
 import { scrollBar } from '@ff-client/styles/mixins';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Search = styled.input`
@@ -20,6 +25,7 @@ export const ListWrapper = styled.div`
   max-height: 300px;
   overflow-x: hidden;
   overflow-y: auto;
+
   ${scrollBar};
 `;
 
@@ -80,7 +86,7 @@ export const DropdownRollout = styled.div`
   position: absolute;
   left: 0;
   right: 0;
-  top: 100%;
+  top: 0;
   z-index: 4;
 
   display: none;
@@ -88,7 +94,9 @@ export const DropdownRollout = styled.div`
   background-color: ${colors.gray050};
   border: 1px solid ${colors.gray200};
   border-top: none;
-  border-radius: 0 0 ${borderRadius.lg} ${borderRadius.lg};
+  border-radius: ${borderRadius.lg};
+
+  box-shadow: ${shadows.container};
 
   overflow: hidden;
 `;

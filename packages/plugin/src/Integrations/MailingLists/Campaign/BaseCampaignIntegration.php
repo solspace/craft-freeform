@@ -73,7 +73,7 @@ abstract class BaseCampaignIntegration extends MailingListIntegration implements
         $fieldLayout = \Craft::$app->fields->getLayoutByType(ContactElement::class);
 
         foreach ($fieldLayout->getCustomFields() as $field) {
-            $fieldClass = \get_class($field);
+            $fieldClass = $field::class;
 
             if (!\in_array($fieldClass, array_keys($fieldTypeMap), true)) {
                 continue;

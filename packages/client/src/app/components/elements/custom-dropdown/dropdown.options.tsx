@@ -67,6 +67,7 @@ export const Options: React.FC<Props> = ({
               className={classes(
                 children !== undefined && 'has-children',
                 value === selectedValue && 'selected',
+                value === '' && 'empty',
                 shadowIndex === focusIndex && 'focused'
               )}
             >

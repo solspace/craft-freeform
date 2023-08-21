@@ -31,7 +31,7 @@ export const List = styled.ul`
 export const CheckMark = styled.div`
   position: absolute;
   left: 8px;
-  top: 8px;
+  top: 7px;
 
   width: 16px;
   font-size: 18px;
@@ -116,7 +116,7 @@ export const Item = styled.li`
   &.focused {
     > ${Label} {
       background-color: #616d7b;
-      color: ${colors.gray100};
+      color: ${colors.white};
 
       > ${CheckMark} {
         fill: ${colors.white};
@@ -126,6 +126,23 @@ export const Item = styled.li`
 
   &.has-children {
     > ${Label} {
+    }
+  }
+
+  &.empty {
+    > ${Label} {
+      color: ${colors.gray300};
+      font-style: italic;
+
+      &:hover {
+        color: ${colors.white};
+      }
+    }
+
+    &.focused {
+      > ${Label} {
+        color: ${colors.white};
+      }
     }
   }
 `;

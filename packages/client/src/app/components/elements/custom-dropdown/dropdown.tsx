@@ -11,6 +11,7 @@ import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
+import CloseIcon from './close.svg';
 import {
   findLabelByValue,
   findShadowIndexByValue,
@@ -19,6 +20,7 @@ import {
 } from './dropdown.operations';
 import { Options } from './dropdown.options';
 import {
+  CloseButton,
   CurrentValue,
   DropdownRollout,
   DropdownWrapper,
@@ -145,6 +147,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
         )}
       </CurrentValue>
       <DropdownRollout>
+        <CloseButton>
+          <CloseIcon />
+        </CloseButton>
+
         <Search
           placeholder="Search..."
           ref={searchRef}

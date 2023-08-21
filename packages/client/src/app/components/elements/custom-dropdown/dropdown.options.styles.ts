@@ -1,4 +1,4 @@
-import { colors } from '@ff-client/styles/variables';
+import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 const generatePadding = (level = 1): string => {
@@ -6,7 +6,11 @@ const generatePadding = (level = 1): string => {
 
   return `& > li {
     > label {
-      padding-left: ${level * 24}px;
+      padding-left: ${level * 10 + 20}px;
+
+      &.has-children {
+        padding-left: ${(level + 1) * 12}px;
+      }
     }
 
     > ul {
@@ -24,39 +28,120 @@ export const List = styled.ul`
   }
 `;
 
+export const CheckMark = styled.div`
+  position: absolute;
+  left: 8px;
+  top: 7px;
+
+  width: 16px;
+  font-size: 18px;
+  font-weight: bold;
+
+  fill: ${colors.gray500};
+`;
+
+export const LabelIcon = styled.div``;
+
+export const LabelContainer = styled.div`
+  display: inline-flex;
+  justify-content: start;
+  align-items: center;
+  gap: ${spacings.sm};
+
+  > svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
 export const Label = styled.label`
   display: block;
-  padding: 5px 14px;
+  padding: 5px 14px 5px 30px;
 
   user-select: none;
 
   &:hover {
     cursor: pointer;
-    background-color: ${colors.gray200};
+    background-color: ${colors.gray500};
+    color: ${colors.white};
+
+    ${CheckMark} {
+      fill: ${colors.white};
+    }
+  }
+
+  &.has-children {
+    position: relative;
+
+    padding-left: 12px;
+
+    text-transform: uppercase;
+    font-weight: bold;
+
+    font-size: 12px;
+
+    color: #7d8c9d;
+    fill: currentColor;
+
+    > ${LabelContainer} {
+      position: relative;
+
+      padding: 0 10px;
+      background-color: ${colors.gray050};
+
+      z-index: 1;
+    }
+
+    &:hover {
+      cursor: default;
+      background-color: transparent;
+    }
+
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 13px;
+
+      height: 1px;
+      background-color: ${colors.gray200};
+    }
   }
 `;
 
 export const Item = styled.li`
-  &.selected > ${Label} {
-    background-color: ${colors.gray200};
-  }
+  position: relative;
 
-  &.focused > ${Label} {
-    background-color: ${colors.gray700};
-    color: ${colors.gray100};
+  &.focused {
+    > ${Label} {
+      background-color: #616d7b;
+      color: ${colors.white};
+
+      > ${CheckMark} {
+        fill: ${colors.white};
+      }
+    }
   }
 
   &.has-children {
     > ${Label} {
-      font-weight: bold;
-      font-size: 14px;
+    }
+  }
+
+  &.empty {
+    > ${Label} {
+      color: ${colors.gray300};
       font-style: italic;
 
-      background-color: ${colors.gray100};
-
       &:hover {
-        cursor: default;
-        background-color: ${colors.gray100};
+        color: ${colors.white};
+      }
+    }
+
+    &.focused {
+      > ${Label} {
+        color: ${colors.white};
       }
     }
   }

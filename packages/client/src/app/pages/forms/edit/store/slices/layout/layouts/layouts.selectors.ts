@@ -17,6 +17,22 @@ export const layoutSelectors = {
     (state: RootState): Layout | undefined =>
       state.layout.layouts.find((layout) => layout.uid === page?.layoutUid),
   cartographed: {
+    layoutFieldList: (layoutUid: string) => (state: RootState) => {
+      const layout = layoutSelectors.one(layoutUid)(state);
+
+      const rows = rowSelectors.inLayout(layout)(state);
+
+      const fields: Field[] = [];
+      rows.forEach((row) => {
+        state.layout.fields
+          .filter((field) => field.rowUid === row.uid)
+          .forEach((field) => {
+            fields.push(field);
+          });
+      });
+
+      return fields;
+    },
     pageFieldList: (state: RootState) => {
       const pages = pageSelecors.all(state);
 

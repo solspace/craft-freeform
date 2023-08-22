@@ -57,6 +57,9 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         <LoadingText loading={isLoadingPreview} spinner>
           {field.properties.label || type?.name}
         </LoadingText>
+        {field.properties.required && (
+          <span className="is-required">&#42;</span>
+        )}
       </Label>
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>

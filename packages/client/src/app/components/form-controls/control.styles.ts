@@ -7,10 +7,23 @@ type LabelProps = {
 };
 
 export const Label = styled.label<LabelProps>`
-  display: block;
-
+  display: flex;
+  position: relative;
+  flex-direction: row;
+  align-items: flex-start;
   color: ${colors.gray550};
+  justify-content: flex-start;
   font-weight: ${({ regular }) => (regular ? 'normal' : 'bold')};
+
+  .is-required {
+    display: flex;
+    margin-top: 0;
+    margin-left: 2px;
+    flex-direction: row;
+    color: ${colors.error};
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
 `;
 
 export const Instructions = styled.span`

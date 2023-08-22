@@ -23,7 +23,7 @@ const FormLabel: React.FC<Props> = ({ label, handle, required, title }) => {
           {label}
         </Tooltip>
       )}
-      {required && <span className="required" />}
+      {required && <span className="is-required">&#42;</span>}
     </Label>
   );
 };

@@ -283,7 +283,8 @@ class SettingsService extends BaseService
             'mailing-lists' => ['title' => Freeform::t('Email Marketing')],
             'crm' => ['title' => Freeform::t('CRM')],
             'elements' => ['title' => Freeform::t('Elements')],
-            'payment-gateways' => ['title' => Freeform::t('Payments')],
+            'captchas' => ['title' => Freeform::t('Captchas')],
+            // 'payment-gateways' => ['title' => Freeform::t('Payments')],
             'webhooks' => ['title' => Freeform::t('Webhooks')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
@@ -331,6 +332,8 @@ class SettingsService extends BaseService
             'mailing-lists',
             'crm',
             'payment-gateways',
+            'captchas',
+            'elements',
             'webhooks',
         ];
 

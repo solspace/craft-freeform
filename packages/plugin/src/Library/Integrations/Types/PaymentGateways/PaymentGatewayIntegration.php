@@ -18,11 +18,6 @@ use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\Pla
 
 abstract class PaymentGatewayIntegration extends APIIntegration implements PaymentGatewayIntegrationInterface, \JsonSerializable
 {
-    public function getType(): string
-    {
-        return self::TYPE_PAYMENT_GATEWAY;
-    }
-
     /**
      * Retuns list of available payment plans.
      *

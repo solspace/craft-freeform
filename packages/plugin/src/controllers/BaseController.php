@@ -65,6 +65,11 @@ class BaseController extends Controller
         return Freeform::getInstance()->crm;
     }
 
+    protected function getCaptchasService(): CrmService
+    {
+        return Freeform::getInstance()->captchas;
+    }
+
     protected function getElementsService(): ElementsService
     {
         return Freeform::getInstance()->elements;

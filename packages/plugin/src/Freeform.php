@@ -30,7 +30,6 @@ use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
-use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
@@ -50,7 +49,6 @@ use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
@@ -59,6 +57,7 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
+use Solspace\Freeform\Services\Integrations\CaptchasService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -89,6 +88,7 @@ use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Services\SummaryService;
 use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
+use Solspace\Freeform\Twig\Filters\ImplementsClassFilter;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
@@ -103,6 +103,7 @@ use yii\web\ForbiddenHttpException;
  * Class Plugin.
  *
  * @property CrmService                  $crm
+ * @property CaptchasService             $captchas
  * @property ElementsService             $elements
  * @property FilesService                $files
  * @property FormsService                $forms
@@ -341,8 +342,8 @@ class Freeform extends Plugin
     {
         $this->setComponents(
             [
-                'dashboard' => DashboardService::class,
                 'crm' => CrmService::class,
+                'captchas' => CaptchasService::class,
                 'elements' => ElementsService::class,
                 'charts' => ChartsService::class,
                 'files' => FilesService::class,
@@ -473,6 +474,7 @@ class Freeform extends Plugin
         );
 
         \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
+        \Craft::$app->view->registerTwigExtension(new ImplementsClassFilter());
     }
 
     // TODO: move into a feature bundle
@@ -639,16 +641,6 @@ class Freeform extends Plugin
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
-                }
-            }
-        );
-
-        Event::on(
-            SettingsService::class,
-            SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
-            function (RegisterSettingsNavigationEvent $event) {
-                if ($this->settings->isAllowAdminEdit()) {
-                    $event->addNavigationItem('captchas', self::t('Captchas'), 'spam');
                 }
             }
         );

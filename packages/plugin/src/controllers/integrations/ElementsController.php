@@ -12,48 +12,24 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 
 class ElementsController extends IntegrationsController
 {
-    protected function getIntegrationModels(): array
-    {
-        return $this->getElementsService()->getAllIntegrations();
-    }
-
-    protected function getServiceProviderTypes(): array
-    {
-        return $this->getElementsService()->getAllServiceProviders();
-    }
-
     protected function getTitle(): string
     {
         return 'Elements';
     }
 
-    protected function getType(): string
-    {
-        return 'elements';
-    }
-
-    protected function getIntegrationType(): string
+    protected function getTypeShorthand(): string
     {
         return IntegrationInterface::TYPE_ELEMENTS;
     }
 
-    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
+    protected function getDedicatedService(): AbstractIntegrationService
     {
-        if (is_numeric($id)) {
-            $model = $this->getElementsService()->getIntegrationById($id);
-        } else {
-            $model = $this->getElementsService()->getIntegrationByHandle($id);
-        }
-
-        if (!$model) {
-            $model = IntegrationModel::create(IntegrationInterface::TYPE_ELEMENTS);
-        }
-
-        return $model;
+        return Freeform::getInstance()->elements;
     }
 }

@@ -15,11 +15,6 @@ use yii\base\Event;
 
 abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface
 {
-    public function getType(): string
-    {
-        return self::TYPE_ELEMENTS;
-    }
-
     public function onValidate(Form $form, Element $element): void
     {
     }

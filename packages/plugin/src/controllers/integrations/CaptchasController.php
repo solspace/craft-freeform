@@ -16,20 +16,20 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 
-class CrmController extends IntegrationsController
+class CaptchasController extends IntegrationsController
 {
     protected function getTitle(): string
     {
-        return 'CRM';
+        return 'Captchas';
     }
 
     protected function getTypeShorthand(): string
     {
-        return IntegrationInterface::TYPE_CRM;
+        return IntegrationInterface::TYPE_CAPTCHAS;
     }
 
     protected function getDedicatedService(): AbstractIntegrationService
     {
-        return Freeform::getInstance()->crm;
+        return Freeform::getInstance()->captchas;
     }
 }

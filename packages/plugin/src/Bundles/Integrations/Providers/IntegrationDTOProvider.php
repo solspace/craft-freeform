@@ -10,8 +10,10 @@ use Solspace\Freeform\Models\IntegrationModel;
 
 class IntegrationDTOProvider
 {
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
+    public function __construct(
+        private PropertyProvider $propertyProvider,
+        private IntegrationTypeProvider $typeProvider,
+    ) {
     }
 
     public function convertOne(IntegrationModel $model): ?Integration
@@ -58,7 +60,7 @@ class IntegrationDTOProvider
         $dto->name = $integration->getName();
         $dto->handle = $integration->getHandle();
         $dto->enabled = (bool) $integration->isEnabled();
-        $dto->type = $integration->getType();
+        $dto->type = $this->typeProvider->getTypeShorthand($integration);
         $dto->icon = $icon;
         $dto->properties = $this->propertyProvider->getEditableProperties($integration);
         $dto->properties->removeFlagged(

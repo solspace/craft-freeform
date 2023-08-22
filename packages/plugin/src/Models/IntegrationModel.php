@@ -16,6 +16,7 @@ use craft\base\Model;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
@@ -54,7 +55,7 @@ class IntegrationModel extends Model
     public function getCpEditUrl(): string
     {
         $id = $this->id;
-        $type = $this->getTypeSlug();
+        $type = $this->type;
 
         return UrlHelper::cpUrl("freeform/settings/{$type}/{$id}");
     }
@@ -67,28 +68,22 @@ class IntegrationModel extends Model
             throw new IntegrationNotFoundException(sprintf('"%s" class does not exist', $className));
         }
 
+        $typeProvider = \Craft::$container->get(IntegrationTypeProvider::class);
+        $type = $typeProvider->getTypeDefinition($className);
+
         $object = new $className(
             $this->id,
             (bool) $this->enabled,
             $this->handle ?? '',
             $this->name ?? '',
             $this->lastUpdate,
-            $this->metadata,
+            $type,
         );
 
         $propertyProvider = \Craft::$container->get(PropertyProvider::class);
         $propertyProvider->setObjectProperties($object, $this->metadata, [$this, 'propertyUpdateCallback']);
 
         return $object;
-    }
-
-    public function getTypeSlug(): string
-    {
-        return match ($this->type) {
-            IntegrationInterface::TYPE_PAYMENT_GATEWAY => 'payment-gateways',
-            IntegrationInterface::TYPE_MAILING_LIST => 'mailing-lists',
-            default => 'crm',
-        };
     }
 
     public function propertyUpdateCallback(mixed $value, Property $property): mixed

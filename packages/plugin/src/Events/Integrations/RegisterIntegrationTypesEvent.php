@@ -2,22 +2,20 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
-use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class RegisterIntegrationTypesEvent extends ArrayableEvent
 {
     /** @var Type[] */
     private array $types = [];
-    private PropertyProvider $propertyProvider;
+    private IntegrationTypeProvider $typeProvider;
 
     public function __construct($config = [])
     {
-        $this->propertyProvider = \Craft::$container->get(PropertyProvider::class);
+        $this->typeProvider = \Craft::$container->get(IntegrationTypeProvider::class);
 
         parent::__construct($config);
     }
@@ -41,35 +39,17 @@ class RegisterIntegrationTypesEvent extends ArrayableEvent
             return $this;
         }
 
-        $reflectionClass = new \ReflectionClass($class);
-
         $isPro = Freeform::getInstance()->isPro();
         if (!$isPro) {
             return $this;
         }
 
-        if (!$reflectionClass->implementsInterface(IntegrationInterface::class)) {
-            return $this;
-        }
-
-        $types = $reflectionClass->getAttributes(Type::class);
-        $type = reset($types);
+        $type = $this->typeProvider->getTypeDefinition($class);
         if (!$type) {
             return $this;
         }
 
-        $type = $type->newInstance();
-
-        $type->class = $class;
-        $type->shortName = $reflectionClass->getShortName();
-
         $this->types[$class] = $type;
-
-        $eventListeners = $reflectionClass->getAttributes(EventListener::class);
-        foreach ($eventListeners as $listener) {
-            $listenerClass = $listener->newInstance()->class;
-            \Craft::$container->get($listenerClass);
-        }
 
         return $this;
     }

@@ -126,7 +126,7 @@ class PaymentGatewaysService extends AbstractIntegrationService
      */
     protected function getIntegrationType(): string
     {
-        return IntegrationInterface::TYPE_PAYMENT_GATEWAY;
+        return IntegrationInterface::TYPE_PAYMENT_GATEWAYS;
     }
 
     protected function getIntegrationInterface(): string

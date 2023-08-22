@@ -25,6 +25,7 @@ abstract class BaseIntegration implements IntegrationInterface
         private string $handle,
         private string $name,
         private \DateTime $lastUpdate,
+        private Type $typeDefinition,
     ) {
     }
 
@@ -82,6 +83,11 @@ abstract class BaseIntegration implements IntegrationInterface
      */
     public function onBeforeSave(): void
     {
+    }
+
+    public function getTypeDefinition(): Type
+    {
+        return $this->typeDefinition;
     }
 
     protected function getProcessedValue(mixed $value): bool|string|null

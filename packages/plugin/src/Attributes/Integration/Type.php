@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Attributes\Integration;
 
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
@@ -27,6 +28,16 @@ class Type
     {
         if ($this->readme && file_exists($this->readme)) {
             return file_get_contents($this->readme);
+        }
+
+        return null;
+    }
+
+    #[Ignore]
+    public function getIconUrl(): ?string
+    {
+        if ($this->iconPath && file_exists($this->iconPath)) {
+            return \Craft::$app->assetManager->getPublishedUrl($this->iconPath);
         }
 
         return null;

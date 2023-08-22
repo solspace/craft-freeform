@@ -12,22 +12,24 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+
 interface IntegrationInterface
 {
     public const EVENT_AFTER_RESPONSE = 'after-response';
 
-    public const TYPE_MAILING_LIST = 'mailing-list';
+    public const TYPE_MAILING_LISTS = 'mailing-lists';
     public const TYPE_CRM = 'crm';
-    public const TYPE_PAYMENT_GATEWAY = 'payment-gateway';
+    public const TYPE_PAYMENT_GATEWAYS = 'payment-gateways';
     public const TYPE_ELEMENTS = 'elements';
+    public const TYPE_CAPTCHAS = 'captchas';
+    public const TYPE_OTHER = 'other';
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_INSTANCE_ONLY = 'instance';
     public const FLAG_INTERNAL = 'internal';
     public const FLAG_ENCRYPTED = 'encrypted';
     public const FLAG_READONLY = 'readonly';
-
-    public function getType(): string;
 
     public function getId(): ?int;
 
@@ -46,4 +48,6 @@ interface IntegrationInterface
      * i.e. - MailChimp, Constant Contact, Salesforce, etc...
      */
     public function getServiceProvider(): string;
+
+    public function getTypeDefinition(): Type;
 }

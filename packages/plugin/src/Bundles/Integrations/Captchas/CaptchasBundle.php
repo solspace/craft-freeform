@@ -1,25 +1,23 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Integrations\MailingLists;
+namespace Solspace\Freeform\Bundles\Integrations\Captchas;
 
 use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
-use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
-use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
-class MailingListsBundle extends FeatureBundle
+class CaptchasBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
     ) {
         if (!Freeform::getInstance()->isPro()) {
             return;
@@ -32,15 +30,15 @@ class MailingListsBundle extends FeatureBundle
         );
 
         Event::on(
-            Submission::class,
-            Submission::EVENT_PROCESS_SUBMISSION,
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
             [$this, 'handleIntegrations']
         );
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
-        $path = \Craft::getAlias('@freeform/Integrations/MailingLists');
+        $path = \Craft::getAlias('@freeform/Integrations/Captchas');
 
         $classMap = ClassMapGenerator::createMap($path);
         $classes = array_keys($classMap);
@@ -50,30 +48,24 @@ class MailingListsBundle extends FeatureBundle
         }
     }
 
-    public function handleIntegrations(ProcessSubmissionEvent $event): void
+    public function handleIntegrations(ValidationEvent $event): void
     {
         if (!$event->isValid) {
             return;
         }
 
         $form = $event->getForm();
-        if (!$form->hasOptInPermission()) {
-            return;
-        }
 
-        if ($form->getSuppressors()->isApi()) {
-            return;
-        }
-
-        /** @var MailingListIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_MAILING_LISTS);
+        /** @var CaptchaIntegrationInterface[] $integrations */
+        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CAPTCHAS);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {
                 continue;
             }
 
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+            if (!$integration->validate($form)) {
+                $form->addError($integration->getErrorMessage());
+            }
         }
     }
 }

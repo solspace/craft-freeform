@@ -1,6 +1,10 @@
+{# Pull in CSS and field rendering #}
+<style>
 {% include "freeform/_defaultFormTemplates/basic-light/_main.css" %}
+</style>
 {% import "freeform/_defaultFormTemplates/basic-light/_row.twig" as rowMacro %}
 
+{# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
         row: { class: "freeform-row" },
@@ -8,19 +12,34 @@
     }
 }) }}
 
+{# Pull in JS overrides #}
 <script>
-    var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-    if (form) {
-        form.addEventListener("freeform-stripe-styling", function (event) {
-            event.detail.base = {
-                fontSize: "16px",
-                color: "#464747",
-                fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-            }
-        })
-    }
+{% include "freeform/_defaultFormTemplates/basic-light/_main.js" %}
 </script>
 
+{# Success and error message handling for non-AJAX forms #}
+{% if not form.ajaxEnabled %}
+    {% if form.submittedSuccessfully %}
+        <div class="freeform-alert freeform-alert-success">
+            {{ form.settings.successMessage | t('freeform') }}
+        </div>
+    {% endif %}
+    {% if form.hasErrors %}
+        <div{{ form.hasErrors }}>
+            {{ form.settings.behavior.errorMessage | t('freeform') }}
+
+            {% if form.errors|length %}
+                <ul>
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+{# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
     <ul class="freeform-pages">
         {% for page in form.pages %}
@@ -35,26 +54,8 @@
     </ul>
 {% endif %}
 
-{% if not form.ajaxEnabled and form.submittedSuccessfully %}
-    <div class="freeform-alert freeform-alert-success">
-        {{ form.settings.successMessage | t('freeform') }}
-    </div>
-{% endif %}
-
-{% if form.hasErrors %}
-    <div{{ form.hasErrors }}>
-        {{ form.settings.behavior.errorMessage | t('freeform') }}
-
-        {% if form.errors|length %}
-            <ul>
-                {% for error in form.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-{% endif %}
-
+{# Display form field rows and columns #}
 {{ rowMacro.render(form.rows, form) }}
 
+{# Render the closing form tag #}
 {{ form.renderClosingTag }}

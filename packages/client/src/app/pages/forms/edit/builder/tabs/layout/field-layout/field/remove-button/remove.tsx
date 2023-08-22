@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAppDispatch } from '@editor/store';
+import { contextActions } from '@editor/store/slices/context';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { fieldThunks } from '@editor/store/thunks/fields';
 
@@ -25,7 +26,8 @@ export const Remove: React.FC<Props> = ({ field, active }) => {
       onMouseLeave={() => setHovering(false)}
       onClick={(event) => {
         event.stopPropagation();
-        dispatch(fieldThunks.remove(field));
+        dispatch(contextActions.unfocus());
+        setTimeout(() => dispatch(fieldThunks.remove(field)), 250);
       }}
     >
       <DeleteIcon />

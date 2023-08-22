@@ -11,6 +11,15 @@ export const Label = styled.label<LabelProps>`
 
   color: ${colors.gray550};
   font-weight: ${({ regular }) => (regular ? 'normal' : 'bold')};
+
+  &.is-required {
+    &:after {
+      content: '*';
+      padding-left: 2px;
+
+      color: ${colors.error};
+    }
+  }
 `;
 
 export const Instructions = styled.span`

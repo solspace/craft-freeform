@@ -4,8 +4,18 @@ import styled from 'styled-components';
 export const Label = styled.label`
   display: block;
 
-  color: ${colors.gray550};
   font-weight: bold;
+  color: ${colors.gray550};
+
+  &.is-required {
+    &:after {
+      content: '*';
+      padding-left: 2px;
+      position: absolute;
+
+      color: ${colors.error};
+    }
+  }
 `;
 
 export const Instructions = styled.div`

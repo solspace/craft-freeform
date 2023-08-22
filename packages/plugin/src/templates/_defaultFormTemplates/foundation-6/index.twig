@@ -1,32 +1,46 @@
+{# Pull in CSS and field rendering #}
+<style>
 {% include "freeform/_defaultFormTemplates/foundation-6/_main.css" %}
+</style>
 {% import "freeform/_defaultFormTemplates/foundation-6/_row.twig" as rowMacro %}
 
+{# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
         row: { class: "grid-x grid-margin-x" },
+        success: { class: "callout success" },
         errors: { class: "callout alert" },
     }
 }) }}
 
+{# Pull in JS overrides #}
 <script>
-    var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-    if (form) {
-        form.addEventListener("freeform-ready", function (event) {
-            var freeform = event.target.freeform;
-            freeform.setOption("errorClassBanner", ["callout", "alert", "form-errors"]);
-            freeform.setOption("errorClassList", ["errors"]);
-            freeform.setOption("errorClassField", "has-error");
-            freeform.setOption("successClassBanner", ["callout", "success"]);
-        })
-        form.addEventListener("freeform-stripe-styling", function (event) {
-            event.detail.base = {
-                fontSize: "16px",
-                fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-            }
-        })
-    }
+{% include "freeform/_defaultFormTemplates/foundation-6/_main.js" %}
 </script>
 
+{# Success and error message handling for non-AJAX forms #}
+{% if not form.ajaxEnabled %}
+    {% if form.submittedSuccessfully %}
+        <div{{ form.attributes.success }}>
+            {{ form.settings.behavior.successMessage | t('freeform') }}
+        </div>
+    {% endif %}
+    {% if form.hasErrors %}
+        <div{{ form.attributes.errors }}>
+            {{ form.settings.behavior.errorMessage | t('freeform') }}
+
+            {% if form.errors|length %}
+                <ul class="mb-0">
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+{# Render page tabs if multi-page #}
 {% if form.pages|length > 1 %}
     <ul class="menu freeform-page-tabs">
         {% for page in form.pages %}
@@ -37,29 +51,8 @@
     </ul>
 {% endif %}
 
-{% if not form.ajaxEnabled and form.submittedSuccessfully %}
-    <div class="callout success">
-        <strong class="font-bold">
-            {{ form.settings.behavior.successMessage | t('freeform') }}
-        </strong>
-    </div>
-{% endif %}
-
-{% if form.hasErrors %}
-    <div{{ form.attributes.errors }}>
-        <strong class="font-bold">
-            {{ form.settings.behavior.errorMessage | t('freeform') }}
-        </strong>
-        {% if form.errors|length %}
-            <ul class="mb-0 ">
-                {% for error in form.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-{% endif %}
-
+{# Display form field rows and columns #}
 {{ rowMacro.render(form.rows, form) }}
 
+{# Render the closing form tag #}
 {{ form.renderClosingTag }}

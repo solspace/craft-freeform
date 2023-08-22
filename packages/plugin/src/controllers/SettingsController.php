@@ -247,7 +247,7 @@ class SettingsController extends BaseController
             $formattingTemplateList[] = ['optgroup' => Freeform::t('Solspace Templates')];
             foreach ($this->getSettingsService()->getSolspaceFormTemplates() as $formTemplate) {
                 $formattingTemplateList[] = [
-                    'label' => $formTemplate->getName(),
+                    'label' => ucwords($formTemplate->getName()),
                     'value' => $formTemplate->getFileName(),
                 ];
             }
@@ -256,7 +256,7 @@ class SettingsController extends BaseController
         $formattingTemplateList[] = ['optgroup' => Freeform::t('Custom Templates')];
         foreach ($this->getSettingsService()->getCustomFormTemplates() as $formTemplate) {
             $formattingTemplateList[] = [
-                'label' => $formTemplate->getName(),
+                'label' => ucwords($formTemplate->getName()),
                 'value' => $formTemplate->getFileName(),
             ];
         }

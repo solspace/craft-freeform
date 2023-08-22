@@ -53,13 +53,14 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      <Label className="label">
+      <Label
+        className={classes(
+          field.properties.required ? 'label is-required' : 'label'
+        )}
+      >
         <LoadingText loading={isLoadingPreview} spinner>
           {field.properties.label || type?.name}
         </LoadingText>
-        {field.properties.required && (
-          <span className="is-required">&#42;</span>
-        )}
       </Label>
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>

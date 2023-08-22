@@ -2,8 +2,7 @@ import { animated } from 'react-spring';
 import styled, { keyframes } from 'styled-components';
 
 export const LoadingTextWrapper = styled.span`
-  display: flex;
-  align-items: center;
+  display: inline-flex;
 
   svg {
     width: 1.5em;

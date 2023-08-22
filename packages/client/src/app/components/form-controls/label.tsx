@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip } from 'react-tippy';
+import classes from '@ff-client/utils/classes';
 
 import { Label } from './control.styles';
 
@@ -16,14 +17,13 @@ const FormLabel: React.FC<Props> = ({ label, handle, required, title }) => {
   }
 
   return (
-    <Label htmlFor={handle}>
+    <Label className={classes(required && 'is-required')} htmlFor={handle}>
       {!title && label}
       {title && (
         <Tooltip title={title} position="top" animation="fade">
           {label}
         </Tooltip>
       )}
-      {required && <span className="is-required">&#42;</span>}
     </Label>
   );
 };

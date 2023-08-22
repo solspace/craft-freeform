@@ -2,22 +2,19 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Label = styled.label`
-  display: flex;
-  font-weight: bold;
-  position: relative;
-  flex-direction: row;
-  align-items: flex-start;
-  color: ${colors.gray550};
-  justify-content: flex-start;
+  display: block;
 
-  .is-required {
-    display: flex;
-    margin-top: 0;
-    margin-left: 2px;
-    flex-direction: row;
-    color: ${colors.error};
-    align-items: flex-start;
-    justify-content: flex-start;
+  font-weight: bold;
+  color: ${colors.gray550};
+
+  &.is-required {
+    &:after {
+      content: '*';
+      padding-left: 2px;
+      position: absolute;
+
+      color: ${colors.error};
+    }
   }
 `;
 

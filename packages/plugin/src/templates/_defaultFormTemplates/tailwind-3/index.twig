@@ -19,18 +19,18 @@
 </script>
 
 {# Success and error message handling for non-AJAX forms #}
-{% if not form.ajaxEnabled %}
+{% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
         <div{{ form.attributes.success }}>
             <strong class="font-bold">
-                {{ form.settings.behavior.successMessage | t('freeform') }}
+                {{ form.settings.successMessage | t('freeform') }}
             </strong>
         </div>
     {% endif %}
     {% if form.hasErrors %}
         <div{{ form.attributes.errors }}>
             <strong class="font-bold">
-                {{ form.settings.behavior.errorMessage | t('freeform') }}
+                {{ form.settings.errorMessage | t('freeform') }}
             </strong>
 
             {% if form.errors|length %}

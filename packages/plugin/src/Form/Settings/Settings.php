@@ -14,13 +14,13 @@ class Settings
 {
     private BehaviorSettings $behavior;
     private GeneralSettings $general;
+    private PropertyAccessor $accessor;
 
     public function __construct(array $settings = [], PropertyProvider $propertyProvider)
     {
         $this->behavior = new BehaviorSettings();
         $this->general = new GeneralSettings();
-
-        $access = new PropertyAccessor();
+        $this->accessor = new PropertyAccessor();
 
         $reflection = new \ReflectionClass($this);
         foreach ($settings as $propertyKey => $propertySettings) {
@@ -30,7 +30,7 @@ class Settings
                 continue;
             }
 
-            $object = $access->getValue($this, $property->getName());
+            $object = $this->accessor->getValue($this, $property->getName());
             if (!$object instanceof SettingsNamespace) {
                 continue;
             }
@@ -39,22 +39,36 @@ class Settings
         }
     }
 
+    public function __isset(string $name)
+    {
+        foreach ($this->getProperties() as $property) {
+            if ($this->hasProperty($property, $name)) {
+                return true;
+            }
+        }
+
+        return isset($this->{$name});
+    }
+
     public function __get(string $name)
     {
+        foreach ($this->getProperties() as $property) {
+            if ($this->hasProperty($property, $name)) {
+                return $this->accessor->getValue($property->getValue($this), $name);
+            }
+        }
+
         if (isset($this->{$name})) {
             return $this->{$name};
         }
 
-        return $this->general->{$name};
+        return null;
     }
 
     public function toArray(): array
     {
-        $reflection = new \ReflectionClass($this);
-        $properties = $reflection->getProperties();
-
         $array = [];
-        foreach ($properties as $property) {
+        foreach ($this->getProperties() as $property) {
             $array[$property->getName()] = $property->getValue($this);
         }
 
@@ -69,5 +83,17 @@ class Settings
     public function getGeneral(): GeneralSettings
     {
         return $this->general;
+    }
+
+    private function getProperties(): array
+    {
+        $reflection = new \ReflectionClass($this);
+        return $reflection->getProperties();
+    }
+
+    private function hasProperty($property, string $name): bool
+    {
+        $setting = $property->getValue($this);
+        return isset($setting->{$name});
     }
 }

@@ -14,7 +14,7 @@
         <p>The following example shows how to have a successful submit return to the same page with a success query in the URL. There are other ways to do this, including using AJAX.</p>
     </div>
 
-    {% if form and form.ajaxEnabled is empty %}
+    {% if form and form.settings.ajax is empty %}
     
         {# Detect the query in the URI and display success message #}
         {% if craft.app.request.getQueryParam('success') == 1 %}

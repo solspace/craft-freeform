@@ -113,7 +113,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 4,
         placeholder: 'e.g. Thanks for filling out the form and stuff!',
     )]
-    public string $successMessage = '';
+    public string $successMessage = 'Form has been submitted successfully!';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\TextArea(
@@ -121,7 +121,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 5,
         placeholder: 'e.g. There was an error! Please fix!',
     )]
-    public string $errorMessage = '';
+    public string $errorMessage = 'Sorry, there was an error submitting the form. Please try again.';
 
     #[Section(
         self::SECTION_LIMITS,

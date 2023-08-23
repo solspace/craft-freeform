@@ -22,12 +22,24 @@ use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInte
 )]
 class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 {
-    public const VERSION_V2_CHECKBOX = 'v2-checkbox';
-    public const VERSION_V2_INVISIBLE = 'v2-invisible';
     public const VERSION_V3 = 'v3';
+    public const VERSION_V2_INVISIBLE = 'v2-invisible';
+    public const VERSION_V2_CHECKBOX = 'v2-checkbox';
 
     public const BEHAVIOR_DISPLAY_ERROR = 'display-error';
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
+
+    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
+    #[Input\Select(
+        label: 'Captcha Type',
+        instructions: 'Choose which reCAPTCHA version and type you want to use.',
+        options: [
+            self::VERSION_V3 => 'reCAPTCHA v3',
+            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
+            self::VERSION_V2_CHECKBOX => 'reCAPTCHA v2 Checkbox',
+        ],
+    )]
+    private string $version = self::VERSION_V3;
 
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
@@ -53,18 +65,6 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private bool $triggerOnInteract = false;
 
-    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
-    #[Input\Select(
-        label: 'Captcha Type',
-        instructions: 'Choose which Captcha service and type you want to use',
-        options: [
-            self::VERSION_V2_CHECKBOX => 'reCAPTCHA v2 Checkbox',
-            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
-            self::VERSION_V3 => 'reCAPTCHA v3',
-        ],
-    )]
-    private string $version = self::VERSION_V2_INVISIBLE;
-
     #[VisibilityFilter('values.version === "v2-checkbox"')]
     #[Input\Select(
         options: [
@@ -87,8 +87,8 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Input\Select(
         label: 'Failure Behavior',
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error',
-            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
+            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
@@ -121,6 +121,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $action = 'submit';
 
+    #[VisibilityFilter('values.failureBehavior === "display-error"')]
     #[Input\Text(
         label: 'Error Message',
         instructions: 'The error message to display when the Captcha validation fails.',

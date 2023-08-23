@@ -27,6 +27,17 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     public const BEHAVIOR_DISPLAY_ERROR = 'display-error';
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
 
+    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
+    #[Input\Select(
+        label: 'Captcha Type',
+        instructions: 'Choose which hCaptcha type you want to use.',
+        options: [
+            self::VERSION_INVISIBLE => 'hCaptcha Invisible',
+            self::VERSION_CHECKBOX => 'hCaptcha Checkbox',
+        ],
+    )]
+    private string $version = self::VERSION_INVISIBLE;
+
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
@@ -51,17 +62,6 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private bool $triggerOnInteract = false;
 
-    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
-    #[Input\Select(
-        label: 'Captcha Type',
-        instructions: 'Choose which Captcha service and type you want to use',
-        options: [
-            self::VERSION_CHECKBOX => 'hCaptcha Checkbox',
-            self::VERSION_INVISIBLE => 'hCaptcha Invisible',
-        ],
-    )]
-    private string $version = self::VERSION_INVISIBLE;
-
     #[VisibilityFilter('values.version === "checkbox"')]
     #[Input\Select(
         options: [
@@ -84,12 +84,13 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Input\Select(
         label: 'Failure Behavior',
         options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error',
-            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam',
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
+            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
 
+    #[VisibilityFilter('values.failureBehavior !== "send-to-spam"')]
     #[Input\Text(
         label: 'Error Message',
         instructions: 'The error message to display when the Captcha validation fails.',

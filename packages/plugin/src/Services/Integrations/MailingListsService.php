@@ -160,7 +160,7 @@ class MailingListsService extends AbstractIntegrationService
 
     protected function getIntegrationType(): string
     {
-        return IntegrationInterface::TYPE_MAILING_LIST;
+        return IntegrationInterface::TYPE_MAILING_LISTS;
     }
 
     protected function getIntegrationInterface(): string

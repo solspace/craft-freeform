@@ -1,5 +1,5 @@
 import type { Integration } from '@ff-client/types/integrations';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -23,13 +23,6 @@ const findIntegration = (
   id: number
 ): IntegrationEntry | undefined => {
   return state.find((item) => item.id === id);
-};
-
-const findProperty = (
-  integration: IntegrationEntry,
-  key: string
-): Property | undefined => {
-  return integration.properties.find((property) => property.handle === key);
 };
 
 export const integrationsSlice = createSlice({
@@ -57,20 +50,17 @@ export const integrationsSlice = createSlice({
     modify: (state, action: PayloadAction<IntegrationModificationPayload>) => {
       const { id, key, value } = action.payload;
       const integration = findIntegration(state, id);
-      const property = findProperty(integration, key);
 
       integration.values[key] = value;
       integration.dirtyValues = {
         ...integration.dirtyValues,
         [key]: value,
       };
-
-      if (
-        integration.dirtyValues[key] !== undefined &&
-        integration.dirtyValues[key] === property.value
-      ) {
-        delete integration.dirtyValues[key];
-      }
+    },
+    cleanDirtyValues: (state) => {
+      state.forEach((integration) => {
+        integration.dirtyValues = {};
+      });
     },
   },
 });

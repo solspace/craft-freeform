@@ -3,8 +3,9 @@
 namespace Solspace\Freeform\controllers\integrations\payments;
 
 use Solspace\Freeform\controllers\integrations\IntegrationsController;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 
 class GatewaysController extends IntegrationsController
 {
@@ -13,14 +14,9 @@ class GatewaysController extends IntegrationsController
         return 'Payment Gateways';
     }
 
-    protected function getType(): string
+    protected function getTypeShorthand(): string
     {
-        return 'payment-gateways';
-    }
-
-    protected function getIntegrationType(): string
-    {
-        return IntegrationInterface::TYPE_PAYMENT_GATEWAY;
+        return IntegrationInterface::TYPE_PAYMENT_GATEWAYS;
     }
 
     protected function getAction(): string
@@ -28,33 +24,8 @@ class GatewaysController extends IntegrationsController
         return 'payments/gateways';
     }
 
-    protected function getIntegrationModels(): array
+    protected function getDedicatedService(): AbstractIntegrationService
     {
-        return $this->getPaymentGatewaysService()->getAllIntegrations();
-    }
-
-    protected function getServiceProviderTypes(): array
-    {
-        return $this->getPaymentGatewaysService()->getAllServiceProviders();
-    }
-
-    protected function getRenderVariables(IntegrationModel $model): array
-    {
-        return ['webhookUrl' => $model->id ? $model->getIntegrationObject()->getWebhookUrl() : ''];
-    }
-
-    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
-    {
-        if (is_numeric($id)) {
-            $paymentGateway = $this->getPaymentGatewaysService()->getIntegrationById($id);
-        } else {
-            $paymentGateway = $this->getPaymentGatewaysService()->getIntegrationByHandle($id);
-        }
-
-        if (!$paymentGateway) {
-            $paymentGateway = IntegrationModel::create(IntegrationInterface::TYPE_PAYMENT_GATEWAY);
-        }
-
-        return $paymentGateway;
+        return Freeform::getInstance()->paymentGateways;
     }
 }

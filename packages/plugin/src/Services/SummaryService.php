@@ -135,8 +135,10 @@ class SummaryService extends Component
         $spam->submissionThrottling = (bool) $settingsService->getSettingsModel()->submissionThrottlingCount;
         $spam->minSubmitTime = (bool) $settingsService->getSettingsModel()->minimumSubmitTime;
         $spam->submitExpiration = (bool) $settingsService->getSettingsModel()->formSubmitExpiration;
-        $spam->recaptcha = (bool) $settingsService->getSettingsModel()->recaptchaEnabled;
-        $spam->recaptchaType = $spam->recaptcha ? $settingsService->getSettingsModel()->recaptchaType : '';
+
+        // TODO: reimplement using integrations
+        // $spam->captcha = (bool) $settingsService->getSettingsModel()->recaptchaEnabled;
+        // $spam->captchaType = $spam->captcha ? $settingsService->getSettingsModel()->recaptchaType : '';
 
         $summary->statistics->spam = $spam;
 

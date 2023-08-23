@@ -17,11 +17,6 @@ use Solspace\Freeform\Library\Integrations\APIIntegration;
 
 abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface
 {
-    public function getType(): string
-    {
-        return self::TYPE_CRM;
-    }
-
     protected function getProcessableFields(string $category): array
     {
         return Freeform::getInstance()->crm->getFields($this, $category);

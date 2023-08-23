@@ -219,7 +219,7 @@ class Stripe extends PaymentGatewayIntegration
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         $this->prepareApi();
 
@@ -974,5 +974,10 @@ class Stripe extends PaymentGatewayIntegration
         FreeformLogger::getInstance(FreeformLogger::STRIPE)->error($exception->getMessage());
 
         return false;
+    }
+
+    protected function getProcessableFields(string $category): array
+    {
+        return [];
     }
 }

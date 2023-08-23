@@ -61,11 +61,6 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     )]
     protected ?ListObject $mailingList = null;
 
-    public function getType(): string
-    {
-        return self::TYPE_MAILING_LIST;
-    }
-
     public static function isInstallable(): bool
     {
         return true;

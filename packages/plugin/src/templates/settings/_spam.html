@@ -2,7 +2,7 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set title = "Spam"|t("freeform") %}
+{% set title = "Spam Protection"|t("freeform") %}
 
 {% block content %}
 
@@ -11,9 +11,7 @@
         {{ redirectInput('freeform/settings/spam') }}
         {{ csrfInput() }}
 
-        <h2 class="first">{{ "Spam Settings"|t('freeform') }}</h2>
-
-        <h3>{{ "Honeypot"|t('freeform') }}</h3>
+        <h2 class="first">{{ "Honeypot Test"|t('freeform') }}</h2>
 
         {{ forms.lightswitchField({
             label: "Freeform Honeypot"|t('freeform'),
@@ -58,6 +56,10 @@
             </div>
         </div>
 
+        <hr>
+
+        <h2>{{ "Spam Behavior"|t('freeform') }}</h2>
+
         {{ forms.selectField({
             id: "spam-protection-behaviour",
             label: "Spam Protection Behavior"|t('freeform'),
@@ -80,7 +82,7 @@
 
         <hr>
 
-        <h3>{{ "Spam Folder"|t('freeform') }}</h3>
+        <h2>{{ "Spam Folder"|t('freeform') }}</h2>
 
         {{ forms.lightswitchField({
             label: "Use Spam Folder"|t('freeform'),
@@ -129,7 +131,7 @@
 
         <hr>
 
-        <h3>{{ "Blocking"|t('freeform') }}</h3>
+        <h2>{{ "Spam Blocking"|t('freeform') }}</h2>
 
         {{ forms.textareaField({
             label: "Block Email addresses"|t('freeform'),
@@ -198,7 +200,7 @@
 
         <hr>
 
-        <h3>{{ "Throttling"|t('freeform') }}</h3>
+        <h2>{{ "Form Throttling"|t('freeform') }}</h2>
 
         {% set input %}
             {{ forms.text({

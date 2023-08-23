@@ -10,9 +10,7 @@
     {{ redirectInput('freeform/settings/notices-and-alerts') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Notices & Alerts"|t('freeform') }}</h2>
-
-    <h3>{{ "Email Issues"|t('freeform') }}</h3>
+    <h2 class="first">{{ "Email Alerts"|t('freeform') }}</h2>
 
     {{ forms.textField({
         class: "code",
@@ -26,7 +24,7 @@
 
     <hr>
 
-    <h3>{{ "Digest Emails"|t('freeform') }}</h3>
+    <h2>{{ "Digest Email Notifications"|t('freeform') }}</h2>
 
     {{ forms.textField({
         class: "code",
@@ -94,7 +92,7 @@
 
     <hr>
 
-    <h3>{{ "Control Panel Notices"|t('freeform') }}</h3>
+    <h2>{{ "Control Panel Notices"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Display Update Warnings & Notices"|t('freeform'),

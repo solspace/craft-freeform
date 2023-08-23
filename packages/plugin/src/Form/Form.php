@@ -50,9 +50,7 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
-use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
-use Solspace\Freeform\Models\Settings as SettingsModel;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
@@ -101,7 +99,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public const DATA_SUPPRESS = 'suppress';
     public const DATA_RELATIONS = 'relations';
-    public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
+    public const DATA_DISABLE_CAPTCHA = 'disableCaptcha';
 
     protected FormLayout $layout;
     protected FormAttributesCollection $attributes;
@@ -281,17 +279,13 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->getSettings()->getBehavior()->ajax;
     }
 
-    public function isRecaptchaEnabled(): bool
+    public function isCaptchaEnabled(): bool
     {
-        if (!$this->getSettings()->getGeneral()->captchas) {
-            return false;
-        }
-
         if (\count($this->getLayout()->getFields(PaymentInterface::class))) {
             return false;
         }
 
-        if ($this->getProperties()->get(self::DATA_DISABLE_RECAPTCHA)) {
+        if ($this->getProperties()->get(self::DATA_DISABLE_CAPTCHA)) {
             return false;
         }
 
@@ -741,24 +735,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
                 'general' => $settings->getGeneral(),
             ],
         ];
-
-        $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($this);
-
-        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
-
-        $isHCaptcha = \in_array($settingsModel->getRecaptchaType(), [SettingsModel::RECAPTCHA_TYPE_H_INVISIBLE, SettingsModel::RECAPTCHA_TYPE_H_CHECKBOX], true);
-
-        if ($reCaptchaEnabled) {
-            $object['reCaptcha'] = [
-                'enabled' => true,
-                'handle' => 'reCaptcha',
-                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
-            ];
-        } else {
-            $object['reCaptcha'] = [
-                'enabled' => false,
-            ];
-        }
 
         $event = new OutputAsJsonEvent($this, $object);
         Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);

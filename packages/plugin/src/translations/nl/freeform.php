@@ -416,7 +416,7 @@ return [
     'New Status' => 'Nieuwe Status',
     'Form Type' => 'Formuliertype',
     'Form Types' => 'Formulier Typen',
-    'Spam Settings' => 'Spam Instellingen',
+    'Spam Protection' => 'Spam Instellingen',
     'Honeypot' => 'Honeypot',
     'Freeform Honeypot' => 'Freeform Honeypot',
     "Enable this to use Freeform's built in Honeypot spam protection." => 'Schakel dit in om de ingebouwde Honeypot-spambeveiliging van Freeform te gebruiken.',
@@ -635,7 +635,7 @@ return [
     // Text field
     'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'De toegestane maximale lengte is {{max}} tekens. Huidige grootte is {{difference}} tekens te lang.',
 
-    // reCAPTCHA field
+    // Captcha field
     'Please verify that you are not a robot.' => 'Controleer of u geen robot bent.',
 
     // Confirm field

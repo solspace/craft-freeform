@@ -1,5 +1,5 @@
 import type Freeform from '@components/front-end/plugin/freeform';
-import { EVENT_DND_ON_CHANGE, EVENT_DND_ON_UPLOAD_PROGRESS } from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
 import * as filesize from 'filesize';
@@ -118,7 +118,7 @@ export const handleFileUpload = (
         const { total, loaded } = progress;
         const percent = Math.ceil(loaded / (total / 100));
 
-        dispatchCustomEvent(EVENT_DND_ON_UPLOAD_PROGRESS, { total, loaded, percent }, container);
+        dispatchCustomEvent(events.dragAndDrop.onUploadProgress, { total, loaded, percent }, container);
 
         previewContainer.style.setProperty('--progress', `${percent}%`);
 
@@ -176,5 +176,5 @@ export const handleFileUpload = (
 };
 
 const dispatchChange = (container: HTMLElement) => {
-  dispatchCustomEvent(EVENT_DND_ON_CHANGE, { container }, container);
+  dispatchCustomEvent(events.dragAndDrop.onChange, { container }, container);
 };

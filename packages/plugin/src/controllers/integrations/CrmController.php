@@ -12,48 +12,24 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 
 class CrmController extends IntegrationsController
 {
-    protected function getIntegrationModels(): array
-    {
-        return $this->getCRMService()->getAllIntegrations();
-    }
-
-    protected function getServiceProviderTypes(): array
-    {
-        return $this->getCrmService()->getAllServiceProviders();
-    }
-
     protected function getTitle(): string
     {
         return 'CRM';
     }
 
-    protected function getType(): string
-    {
-        return 'crm';
-    }
-
-    protected function getIntegrationType(): string
+    protected function getTypeShorthand(): string
     {
         return IntegrationInterface::TYPE_CRM;
     }
 
-    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
+    protected function getDedicatedService(): AbstractIntegrationService
     {
-        if (is_numeric($id)) {
-            $model = $this->getCrmService()->getIntegrationById($id);
-        } else {
-            $model = $this->getCrmService()->getIntegrationByHandle($id);
-        }
-
-        if (!$model) {
-            $model = IntegrationModel::create(IntegrationInterface::TYPE_CRM);
-        }
-
-        return $model;
+        return Freeform::getInstance()->crm;
     }
 }

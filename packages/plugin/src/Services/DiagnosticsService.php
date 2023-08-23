@@ -301,8 +301,8 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     'Captcha Service: [color]{{ value.enabled ? value.type : "Disabled" }}[/color]',
                     [
-                        'enabled' => $this->getSummary()->statistics->spam->recaptcha,
-                        'type' => $this->getRecaptchaType(),
+                        'enabled' => $this->getSummary()->statistics->spam->captcha,
+                        'type' => $this->getCaptchaType(),
                     ],
                     [],
                     fn () => DiagnosticItem::COLOR_BASE
@@ -561,14 +561,10 @@ class DiagnosticsService extends BaseService
         return $blockers;
     }
 
-    private function getRecaptchaType(): ?string
+    private function getCaptchaType(): ?string
     {
-        return match ($this->getSummary()->statistics->spam->recaptchaType) {
-            Settings::RECAPTCHA_TYPE_V2_CHECKBOX => 'reCAPTCHA V2 Checkbox',
-            Settings::RECAPTCHA_TYPE_V2_INVISIBLE => 'reCAPTCHA V2 Invisible',
-            Settings::RECAPTCHA_TYPE_V3 => 'reCAPTCHA V3',
-            Settings::RECAPTCHA_TYPE_H_CHECKBOX => 'hCaptcha Checkbox',
-            Settings::RECAPTCHA_TYPE_H_INVISIBLE => 'hCaptcha Invisible',
+        return match ($this->getSummary()->statistics->spam->captchaType) {
+            // TODO: reimplement
             default => null,
         };
     }

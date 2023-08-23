@@ -1,9 +1,5 @@
 import type Freeform from '@components/front-end/plugin/freeform';
-import {
-  EVENT_DND_APPEND_ERRORS,
-  EVENT_DND_CLEAR_ERRORS,
-  EVENT_DND_RENDER_ERROR_CONTAINER,
-} from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 import { addDnDClass } from '@lib/plugin/helpers/classes';
 
 type RenderErrorContainerEvent = Event & {
@@ -19,7 +15,7 @@ export const createErrorContainer = (freeform: Freeform): HTMLElement => {
   addDnDClass(container, 'preview-zone', 'file-preview', 'thumbnail', 'errors');
 
   const event = freeform._dispatchEvent(
-    EVENT_DND_RENDER_ERROR_CONTAINER,
+    events.dragAndDrop.renderErrorContainer,
     { container },
     container
   ) as RenderErrorContainerEvent;
@@ -28,7 +24,7 @@ export const createErrorContainer = (freeform: Freeform): HTMLElement => {
 };
 
 export const clearErrors = (container: HTMLElement, errorContainer: HTMLElement, freeform: Freeform): void => {
-  const event = freeform._dispatchEvent(EVENT_DND_APPEND_ERRORS, {}, container);
+  const event = freeform._dispatchEvent(events.dragAndDrop.appendErrors, {}, container);
   if (event.defaultPrevented) {
     return;
   }
@@ -42,7 +38,7 @@ export const addFieldErrors = (
   errors: string[],
   freeform: Freeform
 ): void => {
-  const event = freeform._dispatchEvent(EVENT_DND_CLEAR_ERRORS, {}, container);
+  const event = freeform._dispatchEvent(events.dragAndDrop.clearErrors, {}, container);
   if (event.defaultPrevented) {
     return;
   }

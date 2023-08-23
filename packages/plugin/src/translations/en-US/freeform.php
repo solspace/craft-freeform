@@ -416,7 +416,7 @@ return [
     'New Status' => 'New Status',
     'Form Type' => 'Form Type',
     'Form Types' => 'Form Types',
-    'Spam Settings' => 'Spam Settings',
+    'Spam Protection' => 'Spam Protection',
     'Honeypot' => 'Honeypot',
     'Freeform Honeypot' => 'Freeform Honeypot',
     "Enable this to use Freeform's built in Honeypot spam protection." => "Enable this to use Freeform's built in Honeypot spam protection.",
@@ -635,7 +635,7 @@ return [
     // Text field
     'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.',
 
-    // reCAPTCHA field
+    // Captcha field
     'Please verify that you are not a robot.' => 'Please verify that you are not a robot.',
 
     // Confirm field

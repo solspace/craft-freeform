@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Integrations;
 
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -18,6 +19,9 @@ class IntegrationsBundle extends FeatureBundle
             APIIntegrationInterface::EVENT_PROCESS_VALUE,
             [$this, 'processValue']
         );
+
+        $path = \Craft::getAlias('@freeform/Integrations');
+        BundleLoader::loadBundles($path);
     }
 
     public function processValue(ProcessValueEvent $event)

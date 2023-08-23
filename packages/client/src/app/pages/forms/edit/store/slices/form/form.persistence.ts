@@ -2,6 +2,7 @@ import type {
   CreatedSubscriber,
   ErrorsSubscriber,
   SaveSubscriber,
+  UpdatedSubscriber,
 } from '@editor/store/middleware/state-persist';
 import {
   TOPIC_CREATED,
@@ -31,7 +32,7 @@ const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
   dispatch(formActions.setErrors(response.errors?.form as FormErrors));
 };
 
-const handleUpsert: ErrorsSubscriber = (_, { dispatch }) => {
+const handleUpsert: UpdatedSubscriber = (_, { dispatch }) => {
   dispatch(formActions.clearErrors());
 };
 

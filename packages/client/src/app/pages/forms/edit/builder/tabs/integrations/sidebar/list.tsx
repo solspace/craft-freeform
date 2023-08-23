@@ -8,12 +8,6 @@ import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';
 import { Wrapper } from './list.styles';
 
-const categoryLabels: Record<string, string> = {
-  crm: 'CRM',
-  'mailing-list': 'Email Marketing',
-  'payment-gateway': 'Payment',
-};
-
 export const List: React.FC = () => {
   const { formId, id } = useParams();
   const navigate = useNavigate();
@@ -53,7 +47,7 @@ export const List: React.FC = () => {
     if (!categories[type]) {
       categories[type] = {
         type,
-        label: categoryLabels[type] ?? 'Other',
+        label: type,
         children: [],
       };
     }

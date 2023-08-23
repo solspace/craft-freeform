@@ -88,12 +88,14 @@ class Settings
     private function getProperties(): array
     {
         $reflection = new \ReflectionClass($this);
+
         return $reflection->getProperties();
     }
 
     private function hasProperty($property, string $name): bool
     {
         $setting = $property->getValue($this);
+
         return isset($setting->{$name});
     }
 }

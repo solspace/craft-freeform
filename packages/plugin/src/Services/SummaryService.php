@@ -340,8 +340,8 @@ class SummaryService extends Component
                 $adminNotifications = true;
             }
 
-            if ($behaviorSettings->showLoadingText || $behaviorSettings->showSpinner) {
-                $loadingIndicators = true;
+            if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingSpinner) {
+                $processingIndicators = true;
             }
 
             if ($form->isGtmEnabled()) {

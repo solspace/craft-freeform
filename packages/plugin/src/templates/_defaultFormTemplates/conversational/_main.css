@@ -543,7 +543,7 @@ input[type="checkbox"]:checked + label span {
     }
 }
 /* SUBMIT LOADING INDICATOR */
-button[type=submit].freeform-loading {
+button[type=submit].freeform-processing {
     display: -ms-inline-flexbox;
     display: inline-flex;
     -ms-flex-wrap: nowrap;
@@ -551,7 +551,7 @@ button[type=submit].freeform-loading {
     -ms-flex-align: center;
     align-items: center;
 }
-button[type=submit].freeform-loading:before {
+button[type=submit].freeform-processing:before {
     content: '';
     display: block;
     -ms-flex: 1 0 11px;
@@ -563,12 +563,12 @@ button[type=submit].freeform-loading:before {
     border-width: 2px;
     border-color: transparent transparent white white;
     border-radius: 50%;
-    animation: freeform-loading .5s linear infinite;
+    animation: freeform-processing .5s linear infinite;
 }
 .mt-n1 {
     margin-top: -0.5rem !important;
 }
-@keyframes freeform-loading {
+@keyframes freeform-processing {
     0% {
         transform: rotate(0);
     }

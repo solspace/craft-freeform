@@ -52,12 +52,12 @@ button[data-freeform-action="back"]:hover {
     background-color: #6c757d;
     border-color: #6c757d;
 }
-button[type=submit].freeform-loading {
+button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-button[type=submit].freeform-loading:before {
+button[type=submit].freeform-processing:before {
     content: "";
     display: block;
     flex: 1 0 11px;
@@ -68,9 +68,9 @@ button[type=submit].freeform-loading:before {
     border-width: 2px;
     border-color: transparent transparent #fff #fff;
     border-radius: 50%;
-    animation: freeform-loading .5s linear infinite;
+    animation: freeform-processing .5s linear infinite;
 }
-@keyframes freeform-loading {
+@keyframes freeform-processing {
     0% {
         transform: rotate(0);
     }

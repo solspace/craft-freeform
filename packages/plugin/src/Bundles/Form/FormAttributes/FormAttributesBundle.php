@@ -72,7 +72,7 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->set('data-handle', $form->getHandle());
         $attributes->set('data-ajax', $form->isAjaxEnabled());
         $attributes->set('data-disable-submit', $formService->isFormSubmitDisable());
-        $attributes->set('data-show-spinner', $behaviorSettings->showSpinner);
+        $attributes->set('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
 
         if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
             $attributes->set('enctype', 'multipart/form-data');
@@ -87,9 +87,9 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->set('data-scroll-to-anchor', true);
         }
 
-        if ($behaviorSettings->showLoadingText) {
-            $attributes->set('data-show-loading-text', true);
-            $attributes->set('data-loading-text', $behaviorSettings->loadingText);
+        if ($behaviorSettings->showProcessingText) {
+            $attributes->set('data-show-processing-text', true);
+            $attributes->set('data-processing-text', $behaviorSettings->processingText);
         }
 
         if ($behaviorSettings->successMessage) {

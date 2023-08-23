@@ -131,20 +131,20 @@ class FormInterface extends AbstractInterface
                 'type' => Type::boolean(),
                 'description' => 'Is the ajax enabled for this form',
             ],
-            'showSpinner' => [
-                'name' => 'showSpinner',
+            'showProcessingSpinner' => [
+                'name' => 'showProcessingSpinner',
                 'type' => Type::boolean(),
                 'description' => 'Should the submit button show a spinner when submitting',
             ],
-            'showLoadingText' => [
-                'name' => 'showLoadingText',
+            'showProcessingText' => [
+                'name' => 'showProcessingText',
                 'type' => Type::boolean(),
                 'description' => 'Should the submit button change the button label while submitting',
             ],
-            'loadingText' => [
-                'name' => 'loadingText',
+            'processingText' => [
+                'name' => 'processingText',
                 'type' => Type::string(),
-                'description' => 'The submit button loading label text',
+                'description' => 'The submit button processing label text',
             ],
             'gtmEnabled' => [
                 'name' => 'gtmEnabled',

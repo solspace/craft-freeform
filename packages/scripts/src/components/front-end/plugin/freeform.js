@@ -34,9 +34,9 @@ export default class Freeform {
     scrollToAnchor: false,
     scrollOffset: 0,
     scrollElement: window,
-    showSpinner: false,
-    showLoadingText: false,
-    loadingText: null,
+    showProcessingSpinner: false,
+    showProcessingText: false,
+    processingText: null,
     prevButtonName: 'form_previous_page_button',
 
     skipHtmlReload: false,
@@ -111,9 +111,9 @@ export default class Freeform {
       autoScroll: form.getAttribute('data-auto-scroll') !== null,
       disableSubmit: form.getAttribute('data-disable-submit') !== null,
       hasRules: form.getAttribute('data-has-rules') !== null,
-      showSpinner: form.getAttribute('data-show-spinner') !== null,
-      showLoadingText: form.getAttribute('data-show-loading-text') !== null,
-      loadingText: form.getAttribute('data-loading-text'),
+      showProcessingSpinner: form.getAttribute('data-show-processing-spinner') !== null,
+      showProcessingText: form.getAttribute('data-show-processing-text') !== null,
+      processingText: form.getAttribute('data-processing-text'),
       successBannerMessage: form.getAttribute('data-success-message'),
       errorBannerMessage: form.getAttribute('data-error-message'),
       skipHtmlReload: form.getAttribute('data-skip-html-reload') !== null,
@@ -158,7 +158,7 @@ export default class Freeform {
     const submitButtons = this.form.querySelectorAll('button[type="submit"]');
     submitButtons.forEach((button) => {
       button.dataset.originalText = button.innerText;
-      button.dataset.loadingText = this.options.loadingText;
+      button.dataset.processingText = this.options.processingText;
     });
   };
 
@@ -235,7 +235,7 @@ export default class Freeform {
   }
 
   lockSubmit = (force = false) => {
-    const { disableSubmit, showSpinner, showLoadingText } = this.options;
+    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
@@ -248,18 +248,18 @@ export default class Freeform {
 
     const lastButton = this._lastButtonPressed;
     if (lastButton) {
-      if (showSpinner) {
-        lastButton.classList.add('freeform-loading');
+      if (showProcessingSpinner) {
+        lastButton.classList.add('freeform-processing');
       }
 
-      if (showLoadingText) {
-        lastButton.innerText = lastButton.dataset.loadingText;
+      if (showProcessingText) {
+        lastButton.innerText = lastButton.dataset.processingText;
       }
     }
   };
 
   unlockSubmit = (force = false) => {
-    const { disableSubmit, showSpinner, showLoadingText } = this.options;
+    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
@@ -269,11 +269,11 @@ export default class Freeform {
         submit.disabled = false;
       }
 
-      if (showSpinner) {
-        submit.classList.remove('freeform-loading');
+      if (showProcessingSpinner) {
+        submit.classList.remove('freeform-processing');
       }
 
-      if (showLoadingText) {
+      if (showProcessingText) {
         submit.innerText = submit.dataset.originalText;
       }
     }

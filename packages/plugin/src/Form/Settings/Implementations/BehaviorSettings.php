@@ -48,7 +48,7 @@ class BehaviorSettings extends SettingsNamespace
         instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
         order: 2,
     )]
-    public bool $showSpinner = false;
+    public bool $showProcessingSpinner = false;
 
     #[Section(self::SECTION_PROCESSING)]
     #[VisibilityFilter('Boolean(ajax)')]
@@ -57,16 +57,17 @@ class BehaviorSettings extends SettingsNamespace
         instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
         order: 3,
     )]
-    public bool $showLoadingText = false;
+    public bool $showProcessingText = false;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(showLoadingText)')]
+    #[VisibilityFilter('Boolean(ajax)')]
+    #[VisibilityFilter('Boolean(showProcessingText)')]
     #[Input\Text(
         'Processing Text',
         instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
         order: 4,
     )]
-    public string $loadingText = 'Processing...';
+    public string $processingText = 'Processing...';
 
     #[Section(
         self::SECTION_SUCCESS_AND_ERRORS,

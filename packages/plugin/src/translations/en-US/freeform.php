@@ -416,7 +416,7 @@ return [
     'New Status' => 'New Status',
     'Form Type' => 'Form Type',
     'Form Types' => 'Form Types',
-    'Spam Settings' => 'Spam Settings',
+    'Spam Protection' => 'Spam Protection',
     'Honeypot' => 'Honeypot',
     'Freeform Honeypot' => 'Freeform Honeypot',
     "Enable this to use Freeform's built in Honeypot spam protection." => "Enable this to use Freeform's built in Honeypot spam protection.",

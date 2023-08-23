@@ -26,7 +26,7 @@ const Spam: React.FC = () => {
         Freeform includes a wide variety of robust spam control features to make managing forms and protecting them
         against spam easier. These can later be adjusted by going to the{' '}
         <Italics>
-          Freeform {'->'} Settings {'->'} Spam Settings
+          Freeform {'->'} Settings {'->'} Spam Protection
         </Italics>{' '}
         page. The following are defaulted to what's recommended...
       </Paragraph>

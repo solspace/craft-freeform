@@ -10,15 +10,7 @@
     {{ redirectInput('freeform/settings/form-behavior') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ title }}</h2>
-
-    {{ forms.lightswitchField({
-        label: "Fill Form Values from the GET Query String?"|t('freeform'),
-        instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
-        name: "settings[fillWithGet]",
-        on: settings.fillWithGet,
-        errors: settings.errors("fillWithGet"),
-    }) }}
+    <h2 class="first">{{ "Submit Behavior"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Disable Submit Button on Form Submit?"|t('freeform'),
@@ -54,6 +46,8 @@
 
     <hr>
 
+    <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
+
     {{ forms.selectField({
         label: "Freeform Script Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
@@ -85,6 +79,8 @@
     }) }}
 
     <hr>
+
+    <h2>{{ "Form Sessions"|t('freeform') }}</h2>
 
     {{ forms.selectField({
         label: "Freeform Session Context"|t('freeform'),
@@ -141,7 +137,7 @@
 
         <hr>
 
-        <h3>{{ "Save & Continue Later"|t('freeform') }}</h3>
+        <h2>{{ "Save & Continue Later"|t('freeform') }}</h2>
 
         {{ forms.selectField({
             label: "Number of Days to Keep Saved Form Data"|t('freeform'),

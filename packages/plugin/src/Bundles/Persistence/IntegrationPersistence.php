@@ -61,7 +61,7 @@ class IntegrationPersistence extends FeatureBundle
             }
 
             // If no changes were made - we skip saving the record
-            if (empty($values) && (bool) $record->enabled === $enabled) {
+            if (empty($values) && !$record->id) {
                 continue;
             }
 

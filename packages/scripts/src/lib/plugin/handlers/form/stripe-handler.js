@@ -1,4 +1,4 @@
-import { EVENT_AJAX_AFTER_SUBMIT, EVENT_ON_SUBMIT } from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 
 class StripeHandler {
   stripeSubmitReady = false;
@@ -43,8 +43,8 @@ class StripeHandler {
 
     // Force AJAX on the payment form
     freeform.setOption('ajax', true);
-    form.addEventListener(EVENT_ON_SUBMIT, this._handleSubmit);
-    form.addEventListener(EVENT_AJAX_AFTER_SUBMIT, this._handleAfterSubmit);
+    form.addEventListener(events.form.onSubmit, this._handleSubmit);
+    form.addEventListener(events.form.ajaxAfterSubmit, this._handleAfterSubmit);
 
     this._loadStripe();
 

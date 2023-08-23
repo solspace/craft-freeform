@@ -68,6 +68,12 @@ class IntegrationDTOProvider
             IntegrationInterface::FLAG_GLOBAL_PROPERTY,
         );
 
+        foreach ($dto->properties as $index => $property) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_AS_HIDDEN_IN_INSTANCE)) {
+                $property->type = 'hidden';
+            }
+        }
+
         return $dto;
     }
 }

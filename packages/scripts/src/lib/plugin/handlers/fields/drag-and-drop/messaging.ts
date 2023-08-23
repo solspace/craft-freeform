@@ -1,4 +1,4 @@
-import { EVENT_DND_SHOW_GLOBAL_MESSAGE } from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 import { addDnDClass } from '@lib/plugin/helpers/classes';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
@@ -12,7 +12,7 @@ export const showError = (container: HTMLElement, message: string, ttl: number =
   addDnDClass(messageItem, 'messages', 'message');
   addDnDClass(messageItem, 'messages', 'message', 'error');
 
-  const event = dispatchCustomEvent(EVENT_DND_SHOW_GLOBAL_MESSAGE, { messageItem }, container);
+  const event = dispatchCustomEvent(events.dragAndDrop.showGlobalMessage, { messageItem }, container);
   appendToErrorList(container, event.messageItem, ttl);
 };
 

@@ -12,5 +12,4 @@ return [
     'freeform/settings/add-email-template' => 'freeform/settings/add-email-template',
     'freeform/settings/add-success-template' => 'freeform/settings/add-success-template',
     'freeform/settings/demo-templates' => 'freeform/codepack/list-contents',
-    'freeform/settings/captchas' => 'freeform/settings/provide-setting',
 ];

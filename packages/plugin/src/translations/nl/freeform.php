@@ -635,7 +635,7 @@ return [
     // Text field
     'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'De toegestane maximale lengte is {{max}} tekens. Huidige grootte is {{difference}} tekens te lang.',
 
-    // reCAPTCHA field
+    // Captcha field
     'Please verify that you are not a robot.' => 'Controleer of u geen robot bent.',
 
     // Confirm field

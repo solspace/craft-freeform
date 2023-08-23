@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform;
 
-use Composer\Autoload\ClassMapGenerator;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
@@ -30,16 +29,13 @@ use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
-use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\PurgeSpamJob;
 use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
 use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
@@ -92,8 +88,6 @@ use Solspace\Freeform\Twig\Filters\ImplementsClassFilter;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
@@ -237,7 +231,6 @@ class Freeform extends Plugin
         // TODO: refactor these into separate bundles
         $this->initControllerMap();
         $this->initServices();
-        $this->initIntegrations();
         $this->initTwigVariables();
         $this->initFieldTypes();
         $this->initPermissions();
@@ -382,81 +375,6 @@ class Freeform extends Plugin
                 'preflight' => PreflightService::class,
                 'formTypes' => TypesService::class,
             ]
-        );
-    }
-
-    // TODO: move into a feature bundle
-    private function initIntegrations(): void
-    {
-        Event::on(
-            MailingListsService::class,
-            MailingListsService::EVENT_FETCH_TYPES,
-            function (FetchMailingListTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Integrations\MailingLists';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
-                    __DIR__.'/Integrations/MailingLists/'
-                );
-
-                foreach ($files as $file) {
-                    $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
-                    $className = $namespace.'\\'.$className;
-                    $event->addType($className);
-                }
-            }
-        );
-
-        Event::on(
-            PaymentGatewaysService::class,
-            PaymentGatewaysService::EVENT_FETCH_TYPES,
-            function (FetchPaymentGatewayTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Integrations\PaymentGateways';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Integrations/PaymentGateways/')
-                ;
-
-                foreach ($files as $file) {
-                    $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
-                    $className = $namespace.'\\'.$className;
-                    $event->addType($className);
-                }
-            }
-        );
-
-        Event::on(
-            WebhooksService::class,
-            WebhooksService::EVENT_FETCH_TYPES,
-            function (FetchWebhookTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Webhooks\Integrations';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Webhooks/Integrations/')
-                ;
-
-                foreach ($files as $file) {
-                    $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
-                    $className = $namespace.'\\'.$className;
-                    $event->addType($className);
-                }
-            }
         );
     }
 
@@ -793,46 +711,6 @@ class Freeform extends Plugin
 
     private function initBundles(): void
     {
-        static $initialized;
-
-        if (null === $initialized) {
-            $classMap = ClassMapGenerator::createMap(__DIR__.'/Bundles');
-
-            /** @var \ReflectionClass[][] $loadableClasses */
-            $loadableClasses = [];
-
-            /** @var BundleInterface $class */
-            foreach ($classMap as $class => $path) {
-                $reflectionClass = new \ReflectionClass($class);
-                if (
-                    $reflectionClass->implementsInterface(BundleInterface::class)
-                    && !$reflectionClass->isAbstract()
-                    && !$reflectionClass->isInterface()
-                ) {
-                    if ($class::isProOnly() && !$this->isPro()) {
-                        continue;
-                    }
-
-                    $priority = $class::getPriority();
-                    $loadableClasses[$priority][] = $class;
-                }
-            }
-
-            ksort($loadableClasses, \SORT_NUMERIC);
-
-            foreach ($loadableClasses as $classes) {
-                foreach ($classes as $class) {
-                    \Craft::$container->set($class);
-                }
-            }
-
-            foreach ($loadableClasses as $classes) {
-                foreach ($classes as $class) {
-                    \Craft::$container->get($class);
-                }
-            }
-
-            $initialized = true;
-        }
+        BundleLoader::loadBundles(__DIR__.'/Bundles');
     }
 }

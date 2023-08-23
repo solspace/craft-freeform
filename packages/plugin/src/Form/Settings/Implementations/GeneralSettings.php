@@ -162,20 +162,6 @@ class GeneralSettings extends SettingsNamespace
     )]
     public ?string $optInCheckbox = null;
 
-    // TODO: Refactor as Integrations
-    #[Section(
-        self::SECTION_CAPTCHAS,
-        label: 'Captchas',
-        icon: __DIR__.'/Icons/'.self::SECTION_CAPTCHAS.'.svg',
-        order: 3,
-    )]
-    #[Input\Boolean(
-        label: 'Enable Captchas',
-        instructions: 'Disabling this option removes the Captcha check for this specific form.',
-        order: 1,
-    )]
-    public bool $captchas = true;
-
     #[Section(
         self::SECTION_GTM,
         label: 'Google Tag Manager',

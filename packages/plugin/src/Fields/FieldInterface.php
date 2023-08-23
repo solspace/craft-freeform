@@ -48,7 +48,6 @@ interface FieldInterface
     public const TYPE_RATING = 'rating';
     public const TYPE_REGEX = 'regex';
     public const TYPE_CONFIRMATION = 'confirm';
-    public const TYPE_RECAPTCHA = 'recaptcha';
     public const TYPE_OPINION_SCALE = 'opinion-scale';
     public const TYPE_SIGNATURE = 'signature';
     public const TYPE_TABLE = 'table';

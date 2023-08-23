@@ -11,7 +11,7 @@ $(() => {
   const updateFieldVisibility = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const values: Record<string, any> = {
-      properties: {},
+      values: {},
     };
     const currentClass = $classSelect.val();
 
@@ -32,7 +32,7 @@ $(() => {
         if (name.startsWith(`properties[${currentClass}]`)) {
           const updatedName = name.replace(`properties[${currentClass}]`, '').replace(/[[\]]/g, '');
 
-          values.properties[updatedName] = value;
+          values.values[updatedName] = value;
         }
       });
 

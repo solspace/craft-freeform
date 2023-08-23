@@ -7,7 +7,7 @@ class SpamReason
     public const TYPE_GENERIC = 'generic';
     public const TYPE_HONEYPOT = 'honeypot';
     public const TYPE_JS_TEST = 'js_test';
-    public const TYPE_RECAPTCHA = 'recaptcha';
+    public const TYPE_CAPTCHA = 'captcha';
     public const TYPE_BLOCKED_KEYWORDS = 'blocked_keywords';
     public const TYPE_BLOCKED_EMAIL_ADDRESS = 'blocked_email_address';
     public const TYPE_BLOCKED_IP = 'blocked_ip';
@@ -35,7 +35,7 @@ class SpamReason
             self::TYPE_GENERIC,
             self::TYPE_HONEYPOT,
             self::TYPE_JS_TEST,
-            self::TYPE_RECAPTCHA,
+            self::TYPE_CAPTCHA,
             self::TYPE_BLOCKED_KEYWORDS,
             self::TYPE_BLOCKED_EMAIL_ADDRESS,
             self::TYPE_BLOCKED_IP,

@@ -635,7 +635,7 @@ return [
     // Text field
     'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.',
 
-    // reCAPTCHA field
+    // Captcha field
     'Please verify that you are not a robot.' => 'Please verify that you are not a robot.',
 
     // Confirm field

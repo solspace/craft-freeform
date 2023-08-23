@@ -28,7 +28,6 @@ use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
-use Solspace\Freeform\Fields\Implementations\RecaptchaField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -66,7 +65,6 @@ class FieldsBundle extends FeatureBundle
             FileUploadField::class,
             FileDragAndDropField::class,
             NumberField::class,
-            RecaptchaField::class,
 
             // Pro fields
             ConfirmationField::class,

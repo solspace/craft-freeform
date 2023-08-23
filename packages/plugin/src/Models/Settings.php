@@ -37,19 +37,6 @@ class Settings extends Model
     public const THROTTLING_TIME_FRAME_MINUTES = 'm';
     public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
-    public const RECAPTCHA_TYPE_V2_CHECKBOX = 'v2_checkbox';
-    public const RECAPTCHA_TYPE_V2_INVISIBLE = 'v2_invisible';
-    public const RECAPTCHA_TYPE_V3 = 'v3';
-    public const RECAPTCHA_TYPE_H_CHECKBOX = 'h_checkbox';
-    public const RECAPTCHA_TYPE_H_INVISIBLE = 'h_invisible';
-
-    public const RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR = 'display_error';
-    public const RECAPTCHA_BEHAVIOUR_SPAM = 'spam';
-
-    public const RECAPTCHA_THEME = 'light';
-    public const RECAPTCHA_SIZE = 'normal';
-    public const RECAPTCHA_ERROR_MESSAGE = 'Please verify that you are not a robot.';
-
     public const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
     public const SCRIPT_INSERT_LOCATION_FORM = 'form';
     public const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
@@ -184,50 +171,8 @@ class Settings extends Model
     /** @var int */
     public $purgableUnfinalizedAssetAgeInMinutes;
 
-    /** @var string */
-    public $salesforce_client_id;
-
-    /** @var string */
-    public $salesforce_client_secret;
-
-    /** @var string */
-    public $salesforce_username;
-
-    /** @var string */
-    public $salesforce_password;
-
     /** @var bool */
     public $spamFolderEnabled;
-
-    /** @var bool */
-    public $recaptchaEnabled;
-
-    /** @var string */
-    public $recaptchaKey;
-
-    /** @var string */
-    public $recaptchaSecret;
-
-    /** @var bool */
-    public $recaptchaLazyLoad;
-
-    /** @var string */
-    public $recaptchaType;
-
-    /** @var float */
-    public $recaptchaMinScore;
-
-    /** @var string */
-    public $recaptchaBehaviour;
-
-    /** @var string */
-    public $recaptchaTheme;
-
-    /** @var string */
-    public $recaptchaSize;
-
-    /** @var string */
-    public $recaptchaErrorMessage;
 
     /** @var bool */
     public $renderFormHtmlInCpViews;
@@ -372,17 +317,6 @@ class Settings extends Model
         $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
         $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
 
-        $this->recaptchaEnabled = false;
-        $this->recaptchaKey = null;
-        $this->recaptchaSecret = null;
-        $this->recaptchaLazyLoad = false;
-        $this->recaptchaType = self::RECAPTCHA_TYPE_V2_CHECKBOX;
-        $this->recaptchaMinScore = 0.5;
-        $this->recaptchaBehaviour = self::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR;
-        $this->recaptchaTheme = self::RECAPTCHA_THEME;
-        $this->recaptchaSize = self::RECAPTCHA_SIZE;
-        $this->recaptchaErrorMessage = self::RECAPTCHA_ERROR_MESSAGE;
-
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
 
@@ -410,13 +344,6 @@ class Settings extends Model
     {
         return [
             ['formTemplateDirectory', 'folderExists'],
-            [
-                ['recaptchaKey', 'recaptchaSecret'],
-                'required',
-                'when' => function (self $model) {
-                    return (bool) $model->recaptchaEnabled;
-                },
-            ],
         ];
     }
 
@@ -602,36 +529,6 @@ class Settings extends Model
     public function getBlockedIpAddresses(): array
     {
         return $this->getArrayFromDelimitedText($this->blockedIpAddresses);
-    }
-
-    public function getRecaptchaType(): string
-    {
-        $type = $this->recaptchaType;
-        if (Freeform::getInstance()->isLite()) {
-            $type = self::RECAPTCHA_TYPE_V2_CHECKBOX;
-        }
-
-        return $type;
-    }
-
-    public function getRecaptchaTheme(): string
-    {
-        return $this->recaptchaTheme;
-    }
-
-    public function getRecaptchaSize(): string
-    {
-        return $this->recaptchaSize;
-    }
-
-    public function isInvisibleRecaptchaSetUp(): bool
-    {
-        return $this->isRecaptchaInvisible($this->getRecaptchaType());
-    }
-
-    public function isRecaptchaInvisible(string $type): bool
-    {
-        return \in_array($type, [self::RECAPTCHA_TYPE_V2_INVISIBLE, self::RECAPTCHA_TYPE_V3, self::RECAPTCHA_TYPE_H_INVISIBLE], true);
     }
 
     public function getSessionContextTimeToLiveMinutes(): int

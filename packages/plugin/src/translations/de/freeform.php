@@ -250,7 +250,7 @@ return [
     // Text field
     'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'Die zulässige maximale Länge beträgt {{max}} Zeichen. Die aktuelle Größe ist {{difference}} Zeichen zu lang.',
 
-    // reCAPTCHA field
+    // Captcha field
     'Please verify that you are not a robot.' => 'Bitte vergewissern Sie sich, dass Sie kein Roboter sind.',
 
     // Confirm field

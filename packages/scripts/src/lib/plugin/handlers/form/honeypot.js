@@ -1,4 +1,4 @@
-import { EVENT_ON_SUBMIT } from '../../constants/event-types';
+import events from '../../constants/event-types';
 
 /* eslint-disable no-undef */
 class HoneypotHandler {
@@ -6,7 +6,7 @@ class HoneypotHandler {
     this.freeform = freeform;
     this.form = freeform.form;
 
-    this.form.addEventListener(EVENT_ON_SUBMIT, (event) => {
+    this.form.addEventListener(events.form.onSubmit, (event) => {
       const { honeypot, honeypotName, honeypotValue } = event.form.dataset;
 
       if (honeypot === undefined) {

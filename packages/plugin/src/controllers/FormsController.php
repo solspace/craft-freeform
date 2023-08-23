@@ -20,7 +20,6 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
-use Solspace\Freeform\Services\FormsService;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -40,28 +39,6 @@ class FormsController extends BaseController
         $this->view->registerAssetBundle(FreeformClientBundle::class);
 
         return $this->renderTemplate('freeform/forms');
-    }
-
-    public function actionDuplicate(): Response
-    {
-        // TODO: refactor
-        return $this->asJson([
-            'errors' => [],
-            'success' => true,
-        ]);
-    }
-
-    public function actionDelete(): Response
-    {
-        $this->requirePostRequest();
-        $formId = \Craft::$app->request->post('id');
-        $this->requireFormManagePermission($formId);
-
-        return $this->asJson(
-            [
-                'success' => $this->getFormService()->deleteById($formId),
-            ]
-        );
     }
 
     public function actionResetSpamCounter(): Response
@@ -91,30 +68,6 @@ class FormsController extends BaseController
         }
 
         return $this->asJson(['success' => true]);
-    }
-
-    public function actionSort(): Response
-    {
-        $this->requirePostRequest();
-
-        if (\Craft::$app->request->isAjax) {
-            $order = \Craft::$app->request->post('order', []);
-
-            foreach ($order as $index => $id) {
-                \Craft::$app->db->createCommand()
-                    ->update(
-                        FormRecord::TABLE,
-                        ['order' => $index + 1],
-                        ['id' => $id]
-                    )
-                    ->execute()
-                ;
-            }
-
-            return $this->asJson(['success' => true]);
-        }
-
-        throw new NotFoundHttpException();
     }
 
     public function actionExport()
@@ -176,11 +129,6 @@ class FormsController extends BaseController
         $exporter = $this->getExportProfileService()->createExporter($type, $form, $data);
 
         $this->getExportProfileService()->export($exporter, $form);
-    }
-
-    private function getFormService(): FormsService
-    {
-        return Freeform::getInstance()->forms;
     }
 
     private function requireFormManagePermission($id): void

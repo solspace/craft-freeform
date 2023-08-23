@@ -1,11 +1,11 @@
 import events from '@lib/plugin/constants/event-types';
 import type { FreeformEvent } from 'types/events';
 
-import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadReCaptcha } from './utils/script-loader';
+import type { hCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
+import { loadHCaptcha } from './utils/script-loader';
 
 const form: HTMLFormElement = document.querySelector('form[data-id="{formAnchor}"]') as HTMLFormElement;
-const config: reCaptchaConfig = {
+const config: hCaptchaConfig = {
   sitekey: '{siteKey}',
   theme: '{theme}' as Theme,
   size: '{size}' as Size,
@@ -13,8 +13,10 @@ const config: reCaptchaConfig = {
   version: '{version}' as Version,
 } as const;
 
+let captchaId: string;
+
 const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
-  const existingElement = form.querySelector<HTMLDivElement>('.g-recaptcha');
+  const existingElement = form.querySelector<HTMLDivElement>('.h-captcha');
   if (existingElement) {
     return existingElement;
   }
@@ -22,7 +24,7 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
   const { sitekey, theme, size } = config;
 
   const captchaElement = document.createElement('div');
-  captchaElement.classList.add('g-recaptcha');
+  captchaElement.classList.add('h-captcha');
 
   const targetElement = event.form.querySelector('[data-freeform-controls]');
   if (targetElement) {
@@ -32,28 +34,26 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
     event.form.appendChild(captchaElement);
   }
 
-  grecaptcha.ready(() => {
-    grecaptcha.render(captchaElement, {
-      sitekey,
-      theme,
-      size,
-    });
+  captchaId = hcaptcha.render(captchaElement, {
+    sitekey,
+    theme,
+    size,
   });
 
   return captchaElement;
 };
 
 form.addEventListener(events.form.ready, (event: FreeformEvent) => {
-  loadReCaptcha(event.form, config).then(() => {
+  loadHCaptcha(event.form, config).then(() => {
     createCaptcha(event);
   });
 });
 
 form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
-  loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
+  loadHCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
     const captchaElement = createCaptcha(event);
     if (captchaElement) {
-      grecaptcha.ready(() => grecaptcha.reset());
+      hcaptcha.reset(captchaId);
     }
   });
 });

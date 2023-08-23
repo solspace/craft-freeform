@@ -6,6 +6,7 @@ use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class IntegrationPersistence extends FeatureBundle
@@ -41,6 +42,11 @@ class IntegrationPersistence extends FeatureBundle
                 continue;
             }
 
+            $integrationRecord = IntegrationRecord::findOne(['id' => $id]);
+            if (!$integrationRecord) {
+                continue;
+            }
+
             /** @var FormIntegrationRecord $record */
             $record = FormIntegrationRecord::find()
                 ->where([
@@ -60,13 +66,14 @@ class IntegrationPersistence extends FeatureBundle
                 $record->integrationId = $id;
             }
 
-            // If no changes were made - we skip saving the record
-            if (empty($values) && !$record->id) {
+            $encodedMetadata = json_encode((object) array_merge($metadata, $values));
+
+            if ((bool) $record->enabled === (bool) $enabled && $encodedMetadata === $record->metadata) {
                 continue;
             }
 
             $record->enabled = (bool) $enabled;
-            $record->metadata = json_encode((object) array_merge($metadata, $values));
+            $record->metadata = $encodedMetadata;
 
             $record->save();
 

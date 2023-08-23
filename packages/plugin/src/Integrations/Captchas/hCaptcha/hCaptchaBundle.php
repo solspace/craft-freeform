@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
+namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
@@ -11,7 +11,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use yii\base\Event;
 
-class ReCaptchaBundle extends FeatureBundle
+class hCaptchaBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
@@ -39,7 +39,7 @@ class ReCaptchaBundle extends FeatureBundle
     {
         $form = $event->getForm();
 
-        $integration = $this->getReCaptchaForForm($form);
+        $integration = $this->getHCaptchaForForm($form);
         if (!$integration) {
             return;
         }
@@ -47,7 +47,7 @@ class ReCaptchaBundle extends FeatureBundle
         $version = $integration->getVersion();
 
         $scriptPath = \Craft::getAlias(
-            '@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js'
+            '@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js'
         );
 
         $script = file_get_contents($scriptPath);
@@ -59,7 +59,6 @@ class ReCaptchaBundle extends FeatureBundle
                 '{size}',
                 '{lazyLoad}',
                 '{version}',
-                '{action}',
             ],
             [
                 $integration->getSiteKey(),
@@ -68,7 +67,6 @@ class ReCaptchaBundle extends FeatureBundle
                 $integration->getSize(),
                 $integration->isTriggerOnInteract() ? '1' : '',
                 $integration->getVersion(),
-                $integration->getAction(),
             ],
             $script
         );
@@ -83,28 +81,28 @@ class ReCaptchaBundle extends FeatureBundle
         }
 
         $form = $event->getForm();
-        $integration = $this->getReCaptchaForForm($form);
+        $integration = $this->getHCaptchaForForm($form);
         $integration?->validate($form);
     }
 
     public function attachToJSON(OutputAsJsonEvent $event): void
     {
-        $integration = $this->getReCaptchaForForm($event->getForm());
+        $integration = $this->getHCaptchaForForm($event->getForm());
         if (!$integration) {
-            $event->add('recaptcha', ['enabled' => false]);
+            $event->add('hcaptcha', ['enabled' => false]);
         }
 
         $event->add(
-            'recaptcha',
+            'hcaptcha',
             [
                 'enabled' => true,
-                'handle' => 'reCaptcha',
-                'name' => 'g-recaptcha-response',
+                'handle' => 'hCaptcha',
+                'name' => 'h-captcha-response',
             ]
         );
     }
 
-    private function getReCaptchaForForm(Form $form): ?ReCaptcha
+    private function getHCaptchaForForm(Form $form): ?hCaptcha
     {
         $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CAPTCHAS);
         foreach ($integrations as $integration) {
@@ -112,7 +110,7 @@ class ReCaptchaBundle extends FeatureBundle
                 continue;
             }
 
-            if ($integration instanceof ReCaptcha) {
+            if ($integration instanceof hCaptcha) {
                 return $integration;
             }
         }

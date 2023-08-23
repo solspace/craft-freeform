@@ -1,12 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
+namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
@@ -16,15 +15,14 @@ use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
 #[Type(
-    name: 'reCAPTCHA',
+    name: 'hCaptcha',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
+class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 {
-    public const VERSION_V2_CHECKBOX = 'v2-checkbox';
-    public const VERSION_V2_INVISIBLE = 'v2-invisible';
-    public const VERSION_V3 = 'v3';
+    public const VERSION_INVISIBLE = 'invisible';
+    public const VERSION_CHECKBOX = 'checkbox';
 
     public const BEHAVIOR_DISPLAY_ERROR = 'display-error';
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
@@ -58,14 +56,13 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         label: 'Captcha Type',
         instructions: 'Choose which Captcha service and type you want to use',
         options: [
-            self::VERSION_V2_CHECKBOX => 'reCAPTCHA v2 Checkbox',
-            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
-            self::VERSION_V3 => 'reCAPTCHA v3',
+            self::VERSION_CHECKBOX => 'hCaptcha Checkbox',
+            self::VERSION_INVISIBLE => 'hCaptcha Invisible',
         ],
     )]
-    private string $version = self::VERSION_V2_INVISIBLE;
+    private string $version = self::VERSION_INVISIBLE;
 
-    #[VisibilityFilter('values.version === "v2-checkbox"')]
+    #[VisibilityFilter('values.version === "checkbox"')]
     #[Input\Select(
         options: [
             'light' => 'Light',
@@ -74,7 +71,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $theme = 'light';
 
-    #[VisibilityFilter('values.version === "v2-checkbox"')]
+    #[VisibilityFilter('values.version === "checkbox"')]
     #[Input\Select(
         options: [
             'normal' => 'Normal',
@@ -83,7 +80,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $size = 'normal';
 
-    #[VisibilityFilter('values.version !== "v2-checkbox"')]
+    #[VisibilityFilter('values.version !== "checkbox"')]
     #[Input\Select(
         label: 'Failure Behavior',
         options: [
@@ -92,34 +89,6 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         ],
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
-
-    #[VisibilityFilter('values.version === "v3"')]
-    #[Input\Select(
-        label: 'Score Threshold',
-        instructions: 'The minimum score required for the Captcha to pass validation. The score is a number between 0 and 1. A score of 0.5 is generally recommended.',
-        options: [
-            '0.0' => '0.0',
-            '0.1' => '0.1',
-            '0.2' => '0.2',
-            '0.3' => '0.3',
-            '0.4' => '0.4',
-            '0.5' => '0.5',
-            '0.6' => '0.6',
-            '0.7' => '0.7',
-            '0.8' => '0.8',
-            '0.9' => '0.9',
-            '1.0' => '1.0',
-        ]
-    )]
-    private string $scoreThreshold = '0.5';
-
-    #[VisibilityFilter('values.version === "v3"')]
-    #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
-    #[Input\Text(
-        instructions: 'The action to use when validating the Captcha. This is only used for reCAPTCHA v3.',
-        placeholder: 'submit',
-    )]
-    private string $action = 'submit';
 
     #[Input\Text(
         label: 'Error Message',
@@ -163,16 +132,6 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         return $this->failureBehavior;
     }
 
-    public function getScoreThreshold(): string
-    {
-        return $this->scoreThreshold;
-    }
-
-    public function getAction(): string
-    {
-        return $this->action;
-    }
-
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
@@ -199,7 +158,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         if (self::BEHAVIOR_DISPLAY_ERROR === $behavior) {
             $form->addError($this->getErrorMessage());
         } elseif (self::BEHAVIOR_SEND_TO_SPAM === $behavior) {
-            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'reCAPTCHA - '.implode(', ', $errors));
+            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'hCaptcha - '.implode(', ', $errors));
         }
     }
 
@@ -209,7 +168,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         $secret = $this->getSecretKey();
         $captchaResponse = $this->getCaptchaResponse($form);
 
-        $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [
+        $response = $client->post('https://hcaptcha.com/siteverify', [
             'form_params' => [
                 'secret' => $secret,
                 'response' => $captchaResponse,
@@ -219,24 +178,12 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
         $result = json_decode((string) $response->getBody(), true);
 
-        $errors = [];
-        if (isset($result['score'])) {
-            $minScore = $this->getScoreThreshold();
-            $minScore = min(1, $minScore);
-            $minScore = max(0, $minScore);
-
-            if ($result['score'] < $minScore) {
-                $errors[] = 'Score check failed with ['.$result['score'].']';
-
-                return $errors;
-            }
-        }
-
         if ($result['success']) {
             return [];
         }
 
-        $errorCodes = $result['error-codes'];
+        $errors = [];
+        $errorCodes = $result['error-codes'] ?? [];
         if (\in_array('missing-input-secret', $errorCodes, true)) {
             $errors[] = 'The secret parameter is missing.';
         }
@@ -273,18 +220,18 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         if ($form->isGraphQLPosted()) {
             $arguments = $form->getGraphQLArguments();
 
-            if (!isset($arguments['reCaptcha'])) {
+            if (!isset($arguments['hCaptcha'])) {
                 return null;
             }
 
-            $property = $arguments['reCaptcha'];
-            if (empty($property['name']) || empty($property['value']) || 'g-recaptcha-response' !== $property['name']) {
+            $property = $arguments['hCaptcha'];
+            if (empty($property['name']) || empty($property['value']) || 'h-captcha-response' !== $property['name']) {
                 return null;
             }
 
             return $property['value'];
         }
 
-        return \Craft::$app->request->post('g-recaptcha-response');
+        return \Craft::$app->request->post('h-captcha-response');
     }
 }

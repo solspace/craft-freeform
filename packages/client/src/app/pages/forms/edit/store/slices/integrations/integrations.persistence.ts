@@ -1,5 +1,13 @@
-import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
+import type {
+  SaveSubscriber,
+  UpdatedSubscriber,
+} from '@editor/store/middleware/state-persist';
+import {
+  TOPIC_SAVE,
+  TOPIC_UPSERTED,
+} from '@editor/store/middleware/state-persist';
+
+import { integrationActions } from '.';
 
 const persistIntegrations: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
@@ -11,4 +19,9 @@ const persistIntegrations: SaveSubscriber = (_, data) => {
   }));
 };
 
+const handleUpsert: UpdatedSubscriber = (_, { dispatch }) => {
+  dispatch(integrationActions.cleanDirtyValues());
+};
+
 PubSub.subscribe(TOPIC_SAVE, persistIntegrations);
+PubSub.subscribe(TOPIC_UPSERTED, handleUpsert);

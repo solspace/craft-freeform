@@ -157,7 +157,7 @@ class GeneralSettings extends SettingsNamespace
         label: 'Opt-in Checkbox',
         instructions: 'Select the checkbox field that will act as the opt-in for the user submitting the form.',
         order: 5,
-        emptyOption: 'Disabled',
+        emptyOption: 'Please select...',
         options: [],
     )]
     public ?string $optInCheckbox = null;

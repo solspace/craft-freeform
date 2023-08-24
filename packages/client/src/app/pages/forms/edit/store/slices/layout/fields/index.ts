@@ -4,7 +4,6 @@ import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import camelCase from 'lodash.camelcase';
-import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
 
 import './fields.persistence';
 
@@ -76,11 +75,10 @@ export const fieldsSlice = createSlice({
       );
 
       if (!properties.label) {
-        const label = uniqueNamesGenerator({
-          dictionaries: [adjectives, [fieldType.name], ['field']],
-          separator: ' ',
-          style: 'capital',
-        });
+        const count = state.filter(
+          (field) => field.typeClass === fieldType.typeClass
+        ).length;
+        const label = `${fieldType.name} ${count + 1}`;
 
         properties.label = label;
         properties.handle = camelCase(label);

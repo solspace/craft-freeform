@@ -22,7 +22,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -216,8 +216,8 @@ class IntegrationsService extends BaseService
             return 'crm';
         }
 
-        if ($reflection->implementsInterface(MailingListIntegrationInterface::class)) {
-            return 'mailing-lists';
+        if ($reflection->implementsInterface(EmailMarketingIntegrationInterface::class)) {
+            return 'email-marketing';
         }
 
         if ($reflection->implementsInterface(PaymentGatewayIntegrationInterface::class)) {

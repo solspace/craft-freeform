@@ -115,7 +115,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('lastUpdate', $this->dateTime())
                 ->addIndex(['type']),
 
-            (new Table('freeform_mailing_lists'))
+            (new Table('freeform_email_marketing_lists'))
                 ->addField('id', $this->primaryKey())
                 ->addField('integrationId', $this->integer()->notNull())
                 ->addField('resourceId', $this->string(255)->notNull())
@@ -124,7 +124,7 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['integrationId', 'resourceId'], true)
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_mailing_list_fields'))
+            (new Table('freeform_email_marketing_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('mailingListId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
@@ -134,7 +134,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('required', $this->boolean()->defaultValue(false))
                 ->addIndex(['type'])
                 ->addIndex(['mailingListId', 'category'])
-                ->addForeignKey('mailingListId', 'freeform_mailing_lists', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('mailingListId', 'freeform_email_marketing_lists', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_crm_fields'))
                 ->addField('id', $this->primaryKey())

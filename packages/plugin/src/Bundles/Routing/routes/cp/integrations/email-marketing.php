@@ -1,13 +1,13 @@
 <?php
 
 return [
-    'freeform/settings/mailing-lists' => 'freeform/integrations/mailing-lists/index',
-    'freeform/settings/mailing-lists/new' => 'freeform/integrations/mailing-lists/create',
-    'freeform/settings/mailing-lists/<id:\d+>' => 'freeform/integrations/mailing-lists/edit',
-    'freeform/settings/mailing-lists/<id:[a-zA-Z0-9\-_]+>' => 'freeform/integrations/mailing-lists/edit',
-    'freeform/mailing-lists/authenticate/<handle:[a-zA-Z0-9\-_]+>' => 'freeform/integrations/mailing-lists/force-authorization',
-    'freeform/mailing-lists/check' => 'freeform/integrations/mailing-lists/check-integration-connection',
+    'freeform/settings/email-marketing' => 'freeform/integrations/email-marketing/index',
+    'freeform/settings/email-marketing/new' => 'freeform/integrations/email-marketing/create',
+    'freeform/settings/email-marketing/<id:\d+>' => 'freeform/integrations/email-marketing/edit',
+    'freeform/settings/email-marketing/<id:[a-zA-Z0-9\-_]+>' => 'freeform/integrations/email-marketing/edit',
+    'freeform/email-marketing/authenticate/<handle:[a-zA-Z0-9\-_]+>' => 'freeform/integrations/email-marketing/force-authorization',
+    'freeform/email-marketing/check' => 'freeform/integrations/email-marketing/check-integration-connection',
 
-    'freeform/api/integrations/mailing-lists/lists' => 'freeform/api/integrations/mailing-lists/lists',
-    'freeform/api/integrations/mailing-lists/fields/<category:[a-zA-Z0-9_\-]+>' => 'freeform/api/integrations/mailing-lists/fields',
+    'freeform/api/integrations/email-marketing/lists' => 'freeform/api/integrations/email-marketing/lists',
+    'freeform/api/integrations/email-marketing/fields/<category:[a-zA-Z0-9_\-]+>' => 'freeform/api/integrations/email-marketing/fields',
 ];

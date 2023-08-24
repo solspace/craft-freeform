@@ -18,7 +18,7 @@ interface IntegrationInterface
 {
     public const EVENT_AFTER_RESPONSE = 'after-response';
 
-    public const TYPE_MAILING_LISTS = 'mailing-lists';
+    public const TYPE_EMAIL_MARKETING = 'email-marketing';
     public const TYPE_CRM = 'crm';
     public const TYPE_PAYMENT_GATEWAYS = 'payment-gateways';
     public const TYPE_ELEMENTS = 'elements';

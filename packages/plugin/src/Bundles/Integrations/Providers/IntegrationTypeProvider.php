@@ -8,7 +8,7 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 
 class IntegrationTypeProvider
 {
@@ -52,8 +52,8 @@ class IntegrationTypeProvider
             return IntegrationInterface::TYPE_CRM;
         }
 
-        if ($reflection->implementsInterface(MailingListIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_MAILING_LISTS;
+        if ($reflection->implementsInterface(EmailMarketingIntegrationInterface::class)) {
+            return IntegrationInterface::TYPE_EMAIL_MARKETING;
         }
 
         if ($reflection->implementsInterface(ElementIntegrationInterface::class)) {

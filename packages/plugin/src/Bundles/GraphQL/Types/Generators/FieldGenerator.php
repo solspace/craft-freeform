@@ -45,9 +45,7 @@ class FieldGenerator extends AbstractGenerator
         $fieldTypes[FreeformFieldInterface::TYPE_SUBMIT] = FreeformFieldInterface::TYPE_SUBMIT;
         $fieldTypes[FreeformFieldInterface::TYPE_SAVE] = FreeformFieldInterface::TYPE_SAVE;
         $fieldTypes[FreeformFieldInterface::TYPE_HTML] = FreeformFieldInterface::TYPE_HTML;
-        $fieldTypes[FreeformFieldInterface::TYPE_MAILING_LIST] = FreeformFieldInterface::TYPE_MAILING_LIST;
         $fieldTypes[FreeformFieldInterface::TYPE_RICH_TEXT] = FreeformFieldInterface::TYPE_RICH_TEXT;
-        $fieldTypes[FreeformFieldInterface::TYPE_RECAPTCHA] = FreeformFieldInterface::TYPE_RECAPTCHA;
         $fieldTypes[FreeformFieldInterface::TYPE_CONFIRMATION] = FreeformFieldInterface::TYPE_CONFIRMATION;
         $fieldTypes[FreeformFieldInterface::TYPE_PASSWORD] = FreeformFieldInterface::TYPE_PASSWORD;
         $fieldTypes[FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS] = FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS;

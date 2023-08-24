@@ -7,14 +7,14 @@ use Twig\TwigFilter;
 
 class FreeformTwigFilters extends AbstractExtension
 {
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('truncater', [$this, 'truncateFilter']),
         ];
     }
 
-    public function truncateFilter($input, $length = 50, $ellipsis = '...')
+    public function truncateFilter($input, $length = 50, $ellipsis = '...'): string
     {
         if (\strlen($input) <= $length) {
             return $input;

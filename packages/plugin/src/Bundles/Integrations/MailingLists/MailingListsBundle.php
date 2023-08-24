@@ -66,7 +66,7 @@ class MailingListsBundle extends FeatureBundle
         }
 
         /** @var MailingListIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_MAILING_LIST);
+        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_MAILING_LISTS);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {
                 continue;

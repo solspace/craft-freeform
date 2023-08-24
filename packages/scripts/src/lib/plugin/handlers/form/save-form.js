@@ -1,5 +1,5 @@
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import { EVENT_HANDLE_ACTIONS, EVENT_SAVE_FORM_HANDLE_TOKEN } from '../../constants/event-types';
+import events from '../../constants/event-types';
 
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
@@ -11,7 +11,7 @@ class SaveForm {
     this.freeform = freeform;
     this.form = freeform.form;
 
-    this.form.addEventListener(EVENT_HANDLE_ACTIONS, (event) => {
+    this.form.addEventListener(events.form.handleActions, (event) => {
       const { actions } = event;
 
       const saveAndContinue = actions.find((action) => action.name === 'save-form');
@@ -21,7 +21,11 @@ class SaveForm {
 
       const { key, token, url } = saveAndContinue.metadata;
 
-      const tokenEvent = dispatchCustomEvent(EVENT_SAVE_FORM_HANDLE_TOKEN, { key, token, url }, this.form);
+      const tokenEvent = dispatchCustomEvent(
+        events.saveAndContinue.saveFormhandleToken,
+        { key, token, url },
+        this.form
+      );
       if (tokenEvent.defaultPrevented) {
         return;
       }

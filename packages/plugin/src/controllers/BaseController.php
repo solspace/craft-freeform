@@ -4,24 +4,19 @@ namespace Solspace\Freeform\controllers;
 
 use craft\web\Controller;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\CrmService;
-use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\Integrations\MailingListsService;
 use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
-use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
-use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
-use Solspace\Freeform\Services\Pro\Payments\StripeService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
@@ -65,11 +60,6 @@ class BaseController extends Controller
         return Freeform::getInstance()->crm;
     }
 
-    protected function getElementsService(): ElementsService
-    {
-        return Freeform::getInstance()->elements;
-    }
-
     protected function getNotificationsService(): NotificationsService
     {
         return Freeform::getInstance()->notifications;
@@ -90,11 +80,6 @@ class BaseController extends Controller
         return Freeform::getInstance()->statuses;
     }
 
-    protected function getIntegrationsQueueService(): IntegrationsQueueService
-    {
-        return Freeform::getInstance()->integrationsQueue;
-    }
-
     protected function getIntegrationsService(): IntegrationsService
     {
         return Freeform::getInstance()->integrations;
@@ -110,11 +95,6 @@ class BaseController extends Controller
         return Freeform::getInstance()->logger;
     }
 
-    protected function getChartsService(): ChartsService
-    {
-        return Freeform::getInstance()->charts;
-    }
-
     protected function getExportProfileService(): ExportProfilesService
     {
         return Freeform::getInstance()->exportProfiles;
@@ -125,19 +105,9 @@ class BaseController extends Controller
         return Freeform::getInstance()->exportNotifications;
     }
 
-    protected function getPaymentsStripeService(): StripeService
-    {
-        return Freeform::getInstance()->stripe;
-    }
-
     protected function getPaymentsNotificationService(): PaymentNotificationsService
     {
         return Freeform::getInstance()->paymentNotifications;
-    }
-
-    protected function getPaymentsPaymentsService(): PaymentsService
-    {
-        return Freeform::getInstance()->payments;
     }
 
     protected function getPaymentsSubscriptionsService(): SubscriptionsService

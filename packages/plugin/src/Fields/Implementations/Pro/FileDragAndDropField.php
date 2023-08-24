@@ -78,7 +78,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->append('class', 'freeform-file-drag-and-drop__input')
             ->replace('div-freeform-file-upload', $this->getHandle())
             ->setIfEmpty('data-error-append-target', $this->getHandle())
-            ->replace('data-file-count', \count($this->getValue()))
+            ->replace('data-file-count', \count($this->getValue() ?? []))
             ->replace('data-max-files', $this->getFileCount())
             ->replace('data-max-size', $this->getMaxFileSizeBytes())
             ->setIfEmpty('data-theme', $this->getTheme())

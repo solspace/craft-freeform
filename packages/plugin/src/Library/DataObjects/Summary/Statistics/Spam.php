@@ -44,8 +44,8 @@ class Spam
     public $submitExpiration = false;
 
     /** @var bool */
-    public $recaptcha = false;
+    public $captcha = false;
 
     /** @var string */
-    public $recaptchaType = '';
+    public $captchaType = '';
 }

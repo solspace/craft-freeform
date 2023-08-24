@@ -1,9 +1,4 @@
-import {
-  EVENT_TABLE_AFTER_REMOVE_ROW,
-  EVENT_TABLE_AFTER_ROW_ADDED,
-  EVENT_TABLE_ON_REMOVE_ROW,
-  EVENT_TABLE_ON_ADD_ROW,
-} from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 
 class Table {
   PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
@@ -73,14 +68,14 @@ class Table {
               removeRowButton.addEventListener('click', this.removeRow);
             }
 
-            this.freeform._dispatchEvent(EVENT_TABLE_ON_ADD_ROW, {
+            this.freeform._dispatchEvent(events.table.onAddRow, {
               table,
               row: cloneRow,
             });
 
             table.querySelector('tbody').appendChild(cloneRow);
 
-            this.freeform._dispatchEvent(EVENT_TABLE_AFTER_ROW_ADDED, {
+            this.freeform._dispatchEvent(events.table.afterRowAdded, {
               table,
               row: cloneRow,
             });
@@ -98,11 +93,11 @@ class Table {
     const table = event.target.closest('table');
     const row = event.target.closest('tr');
 
-    this.freeform._dispatchEvent(EVENT_TABLE_ON_REMOVE_ROW, { table, row });
+    this.freeform._dispatchEvent(events.table.onRemoveRow, { table, row });
 
     row.ffRemove();
 
-    this.freeform._dispatchEvent(EVENT_TABLE_AFTER_REMOVE_ROW, { table });
+    this.freeform._dispatchEvent(events.table.afterRemoveRow, { table });
   };
 }
 

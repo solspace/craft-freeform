@@ -13,6 +13,8 @@ use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
+use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
+use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
@@ -48,7 +50,7 @@ abstract class IntegrationsController extends BaseController
             'freeform/settings/integrations/list',
             [
                 'title' => $this->getTitle(),
-                'type' => $this->getType(),
+                'type' => $this->getTypeShorthand(),
                 'integrations' => $this->getIntegrationModels(),
                 'providers' => $this->getServiceProviderTypes(),
             ]
@@ -59,7 +61,7 @@ abstract class IntegrationsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        $model = IntegrationModel::create($this->getIntegrationType());
+        $model = IntegrationModel::create($this->getTypeShorthand());
         $title = Freeform::t('Create new');
 
         return $this->renderEditForm($model, $title);
@@ -170,7 +172,7 @@ abstract class IntegrationsController extends BaseController
 
         $integration = $model->getIntegrationObject();
         if (!$integration instanceof OAuth2ConnectorInterface) {
-            return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getType().'/'.$model->id));
+            return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getTypeShorthand().'/'.$model->id));
         }
 
         // TODO: move into an event listener flow
@@ -180,40 +182,56 @@ abstract class IntegrationsController extends BaseController
     protected function renderEditForm(IntegrationModel $model, ?string $title): Response
     {
         $this->view->registerAssetBundle(IntegrationsBundle::class);
+        $this->view->registerAssetBundle(IntegrationsEditBundle::class);
+
         $this->getIntegrationsService()->decryptModelValues($model);
 
         $variables = [
             'integration' => $model,
             'blockTitle' => $title,
             'serviceProviderTypes' => $this->getServiceProviderTypes(),
-            'continueEditingUrl' => 'freeform/settings/'.$this->getType().'/{handle}',
+            'continueEditingUrl' => 'freeform/settings/'.$this->getTypeShorthand().'/{handle}',
             'action' => 'freeform/integrations/'.$this->getAction().'/save',
             'title' => $this->getTitle(),
-            'type' => $this->getType(),
+            'type' => $this->getTypeShorthand(),
         ];
 
         return $this->renderTemplate('freeform/settings/integrations/edit', $variables);
     }
 
-    protected function getRenderVariables(IntegrationModel $model): array
-    {
-        return [];
-    }
-
     protected function getAction(): string
     {
-        return $this->getType();
+        return $this->getTypeShorthand();
     }
 
-    abstract protected function getIntegrationModels(): array;
+    protected function getIntegrationModels(): array
+    {
+        return $this->getDedicatedService()->getAllIntegrations();
+    }
 
-    abstract protected function getServiceProviderTypes(): array;
+    protected function getServiceProviderTypes(): array
+    {
+        return $this->getDedicatedService()->getAllServiceProviders();
+    }
+
+    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
+    {
+        if (is_numeric($id)) {
+            $model = $this->getDedicatedService()->getIntegrationById($id);
+        } else {
+            $model = $this->getDedicatedService()->getIntegrationByHandle($id);
+        }
+
+        if (!$model) {
+            $model = IntegrationModel::create($this->getTypeShorthand());
+        }
+
+        return $model;
+    }
+
+    abstract protected function getDedicatedService(): AbstractIntegrationService;
 
     abstract protected function getTitle(): string;
 
-    abstract protected function getType(): string;
-
-    abstract protected function getIntegrationType(): string;
-
-    abstract protected function getNewOrExistingModel(string|int|null $id): IntegrationModel;
+    abstract protected function getTypeShorthand(): string;
 }

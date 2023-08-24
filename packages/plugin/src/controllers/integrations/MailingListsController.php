@@ -12,48 +12,24 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 
 class MailingListsController extends IntegrationsController
 {
-    protected function getIntegrationType(): string
-    {
-        return IntegrationInterface::TYPE_MAILING_LIST;
-    }
-
-    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
-    {
-        if (is_numeric($id)) {
-            $model = $this->getMailingListsService()->getIntegrationById($id);
-        } else {
-            $model = $this->getMailingListsService()->getIntegrationByHandle($id);
-        }
-
-        if (!$model) {
-            $model = IntegrationModel::create(IntegrationInterface::TYPE_MAILING_LIST);
-        }
-
-        return $model;
-    }
-
-    protected function getIntegrationModels(): array
-    {
-        return $this->getMailingListsService()->getAllIntegrations();
-    }
-
-    protected function getServiceProviderTypes(): array
-    {
-        return $this->getMailingListsService()->getAllServiceProviders();
-    }
-
     protected function getTitle(): string
     {
         return 'Mailing Lists';
     }
 
-    protected function getType(): string
+    protected function getTypeShorthand(): string
     {
-        return 'mailing-lists';
+        return IntegrationInterface::TYPE_MAILING_LISTS;
+    }
+
+    protected function getDedicatedService(): AbstractIntegrationService
+    {
+        return Freeform::getInstance()->mailingLists;
     }
 }

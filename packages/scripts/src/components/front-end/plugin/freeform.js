@@ -3,14 +3,13 @@ import 'core-js/features/array/for-each';
 import 'core-js/features/get-iterator';
 import 'core-js/features/object/assign';
 
-import * as EventTypes from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import TableHandler from '@lib/plugin/handlers/fields/table';
-import RecaptchaHandler from '@lib/plugin/handlers/form/recaptcha';
 import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
 import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
@@ -60,7 +59,6 @@ export default class Freeform {
     BackButtonHandler,
     StripeHandler,
     RuleHandler,
-    RecaptchaHandler,
     HoneypotHandler,
     DatePickerHandler,
     InputMaskHandler,
@@ -79,7 +77,6 @@ export default class Freeform {
   _afterAjaxSubmitCallbackStack = [];
   _ruleSet;
   _stripeHandler;
-  _recaptcha;
 
   /**
    * Get a plugin instance
@@ -128,7 +125,7 @@ export default class Freeform {
       if (document.readyState === 'complete') {
         clearInterval(stateCheck);
 
-        const readyEvent = this._dispatchEvent(EventTypes.EVENT_READY, { options: {} });
+        const readyEvent = this._dispatchEvent(events.form.ready, { options: {} });
 
         this.options = {
           ...this.options,
@@ -325,7 +322,7 @@ export default class Freeform {
       );
 
       // Reset the action-input after each submit
-      form.addEventListener(EventTypes.EVENT_AJAX_AFTER_SUBMIT, () => {
+      form.addEventListener(events.form.ajaxAfterSubmit, () => {
         actionInput.value = 'submit';
       });
     }
@@ -359,7 +356,7 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
-    const onSubmitEvent = this._dispatchEvent(EventTypes.EVENT_ON_SUBMIT, { isBackButtonPressed, cancelable: true });
+    const onSubmitEvent = this._dispatchEvent(events.form.onSubmit, { isBackButtonPressed, cancelable: true });
     if (onSubmitEvent.defaultPrevented) {
       event.preventDefault();
       event.stopPropagation();
@@ -401,7 +398,7 @@ export default class Freeform {
    * @private
    */
   _removeMessages = () => {
-    const event = this._dispatchEvent(EventTypes.EVENT_REMOVE_MESSAGES);
+    const event = this._dispatchEvent(events.form.removeMessages);
     if (event.defaultPrevented) {
       return false;
     }
@@ -428,7 +425,7 @@ export default class Freeform {
   };
 
   _removeMessageFrom = (field) => {
-    const event = this._dispatchEvent(EventTypes.EVENT_FIELD_REMOVE_MESSAGES, { field });
+    const event = this._dispatchEvent(events.form.fieldRemoveMessages, { field });
     if (event.defaultPrevented) {
       return false;
     }
@@ -461,7 +458,7 @@ export default class Freeform {
    * @private
    */
   _renderSuccessBanner = () => {
-    const event = this._dispatchEvent(EventTypes.EVENT_RENDER_SUCCESS);
+    const event = this._dispatchEvent(events.form.renderSuccess);
     if (event.defaultPrevented) {
       return false;
     }
@@ -490,7 +487,7 @@ export default class Freeform {
    * @private
    */
   _renderFieldErrors = (errors) => {
-    const event = this._dispatchEvent(EventTypes.EVENT_RENDER_FIELD_ERRORS, { errors });
+    const event = this._dispatchEvent(events.form.renderFieldErrors, { errors });
     if (event.defaultPrevented) {
       return false;
     }
@@ -554,7 +551,7 @@ export default class Freeform {
    * @private
    */
   _renderFormErrors = (errors) => {
-    const event = this._dispatchEvent(EventTypes.EVENT_RENDER_FORM_ERRORS, { errors });
+    const event = this._dispatchEvent(events.form.renderFormErrors, { errors });
     if (event.defaultPrevented) {
       return false;
     }
@@ -674,7 +671,7 @@ export default class Freeform {
         if (!actions.length) {
           if (success) {
             if (finished && response.onSuccess === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL && returnUrl) {
-              this._dispatchEvent(EventTypes.EVENT_AJAX_SUCCESS, { request, response });
+              this._dispatchEvent(events.form.ajaxSuccess, { request, response });
               this._onSuccessfulSubmit(event, form, response);
 
               window.location.href = returnUrl;
@@ -695,7 +692,7 @@ export default class Freeform {
                 // Reset the form so that the user may enter fresh information
                 // if a submission is not being edited
                 form.reset();
-                this._dispatchEvent(EventTypes.EVENT_ON_RESET);
+                this._dispatchEvent(events.form.onReset);
               }
 
               if (response.onSuccess === SUCCESS_BEHAVIOUR_RELOAD) {
@@ -703,16 +700,16 @@ export default class Freeform {
               }
             }
 
-            this._dispatchEvent(EventTypes.EVENT_AJAX_SUCCESS, { request, response });
+            this._dispatchEvent(events.form.ajaxSuccess, { request, response });
             this._onSuccessfulSubmit(event, form, response);
           } else if (errors || formErrors) {
-            this._dispatchEvent(EventTypes.EVENT_AJAX_ERROR, { request, response, errors, formErrors });
+            this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
             this._onFailedSubmit(event, form, response);
             this._renderFieldErrors(errors);
             this._renderFormErrors(formErrors);
           }
         } else {
-          this._dispatchEvent(EventTypes.EVENT_HANDLE_ACTIONS, { response, actions, cancelable: false });
+          this._dispatchEvent(events.form.handleActions, { response, actions, cancelable: false });
         }
 
         const payload = response?.freeform_payload;
@@ -732,7 +729,7 @@ export default class Freeform {
           }
         }
 
-        this._dispatchEvent(EventTypes.EVENT_AJAX_AFTER_SUBMIT, {
+        this._dispatchEvent(events.form.ajaxAfterSubmit, {
           data,
           request,
           response,
@@ -747,14 +744,14 @@ export default class Freeform {
       } else {
         const response = request.response;
 
-        this._dispatchEvent(EventTypes.EVENT_AJAX_ERROR, { request, response });
+        this._dispatchEvent(events.form.ajaxError, { request, response });
         this._onFailedSubmit(event, form, response);
       }
 
       this.unlockSubmit(form);
     };
 
-    const submitEvent = this._dispatchEvent(EventTypes.EVENT_AJAX_BEFORE_SUBMIT, { data, request });
+    const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });
     if (submitEvent.defaultPrevented) {
       return;
     }

@@ -14,14 +14,14 @@ class EntryTypeOptionsGenerator implements OptionsGeneratorInterface
 
         $sections = \Craft::$app->sections->getAllSections();
         foreach ($sections as $section) {
-            $sectionCollection = new OptionCollection();
+            $sectionCollection = new OptionCollection($section->name);
 
             $entryTypes = $section->getEntryTypes();
             foreach ($entryTypes as $entryType) {
                 $sectionCollection->add($entryType->id, $entryType->name);
             }
 
-            $options->addCollection($section->name, $sectionCollection);
+            $options->addCollection($sectionCollection);
         }
 
         return $options;

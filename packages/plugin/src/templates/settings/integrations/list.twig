@@ -38,8 +38,14 @@
                     <td data-title="{{ "Handle"|t('freeform') }}" class="code">
                         {{ integration.handle }}
                     </td>
-                    <td data-title="{{ "Service Provider"|t('freeform') }}" class="code">
-                        {{ integration.integrationObject.serviceProvider }}
+                    <td data-title="{{ "Service Provider"|t('freeform') }}" class="code" style="display: flex; gap: 5px;">
+                        <img
+                                width="16"
+                                height="16"
+                                src="{{ integration.integrationObject.typeDefinition.iconUrl }}"
+                                alt="{{ integration.integrationObject.typeDefinition.name }}"
+                        />
+                        {{ integration.integrationObject.typeDefinition.name }}
                     </td>
                     <td data-title="{{ 'Last Updated'|t('freeform') }}">
                         {{ integration.lastUpdate|date("Y-m-d H:i") }}

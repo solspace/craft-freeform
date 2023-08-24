@@ -1,7 +1,7 @@
 import 'microtip/microtip.css';
 
 import type Freeform from '@components/front-end/plugin/freeform';
-import { EVENT_DND_ON_CHANGE, EVENT_ON_RESET } from '@lib/plugin/constants/event-types';
+import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
 import { handleFileUpload, loadExistingUploads } from './file-upload';
@@ -29,10 +29,10 @@ class DragAndDropFile {
       fileUpload.addEventListener('dragover', this.handleDrag(fileUpload));
       fileUpload.addEventListener('drop', this.handleDrop(fileUpload));
       fileUpload.addEventListener('click', this.handleClick(fileUpload));
-      fileUpload.addEventListener(EVENT_DND_ON_CHANGE, this.handleChanges);
+      fileUpload.addEventListener(events.dragAndDrop.onChange, this.handleChanges);
 
       loadExistingUploads(fileUpload, this.freeform);
-      form.addEventListener(EVENT_ON_RESET, this.handleReset(fileUpload));
+      form.addEventListener(events.form.onReset, this.handleReset(fileUpload));
 
       fileUpload
         .querySelector<HTMLInputElement>(`input[type=file]`)
@@ -150,7 +150,7 @@ class DragAndDropFile {
     return (): void => {
       const items = container.querySelectorAll('[data-file-preview]');
       items.forEach((item) => item.parentNode.removeChild(item));
-      dispatchCustomEvent(EVENT_DND_ON_CHANGE, { container }, container);
+      dispatchCustomEvent(events.dragAndDrop.onChange, { container }, container);
     };
   };
 

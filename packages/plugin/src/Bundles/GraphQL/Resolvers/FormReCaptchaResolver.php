@@ -12,20 +12,23 @@ class FormReCaptchaResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
-        $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($source);
-
-        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
-
-        $isHCaptcha = \in_array($settingsModel->getRecaptchaType(), [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
-
-        if ($reCaptchaEnabled) {
-            return [
-                'enabled' => true,
-                'handle' => 'reCaptcha',
-                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
-            ];
-        }
-
         return null;
+        // TODO: reimplement this part using captcha integrations
+
+        // $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($source);
+        //
+        // $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+        //
+        // $isHCaptcha = \in_array($settingsModel->getRecaptchaType(), [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
+        //
+        // if ($reCaptchaEnabled) {
+        //     return [
+        //         'enabled' => true,
+        //         'handle' => 'reCaptcha',
+        //         'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
+        //     ];
+        // }
+        //
+        // return null;
     }
 }

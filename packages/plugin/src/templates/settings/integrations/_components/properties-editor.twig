@@ -43,7 +43,7 @@
 
     <hr>
 
-    {% if integration.id and integration.type != "elements" %}
+    {% if integration.id and integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
         {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
     {% elseif integration.errors('integration') %}
         <ul class="errors field">
@@ -63,45 +63,55 @@
                     </div>
                 {% endif %}
 
-                {% for property in type.properties|filter((prop) => not prop.hasFlag('internal', 'instance')) %}
-                    {% set handle = property.handle %}
-                    {% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
+                <div class="property-editor" data-class="{{ className }}">
+                    {% for property in type.properties|filter((prop) => not prop.hasFlag('internal', 'instance')) %}
+                        {% set handle = property.handle %}
+                        {% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
 
-                    {% set options = {
-                        label: property.label|t('freeform'),
-                        instructions: property.instructions|t('freeform'),
-                        class: "property-" ~ property.handle,
-                        name: "properties["~className~"]["~property.handle~"]",
-                        value: value,
-                        required: property.required,
-                        errors: integration.errors(className~property.handle),
-                        suggestEnvVars: true,
-                    } %}
 
-                    {% if property.hasFlag('readonly') %}
-                        {% set options = options|merge({ readonly: true }) %}
-                    {% endif %}
+                        <div class="field">
+                            <script type="application/json" class="visibility-filters">
+                                {{- property.visibilityFilters|json_encode|raw -}}
+                            </script>
 
-                    {% if property.type == "bool" %}
+                            {% set options = {
+                                label: property.label|t('freeform'),
+                                instructions: property.instructions|t('freeform'),
+                                class: "property-" ~ property.handle,
+                                name: "properties["~className~"]["~property.handle~"]",
+                                value: value,
+                                required: property.required,
+                                errors: integration.errors(className~property.handle),
+                                suggestEnvVars: true,
+                            } %}
 
-                        {% set options = options|merge({on: value, value: 1}) %}
-                        {{ forms.lightswitchField(options) }}
+                            {% if property.hasFlag('readonly') %}
+                                {% set options = options|merge({ readonly: true }) %}
+                            {% endif %}
 
-                    {% elseif property.type == "select" %}
+                            {% if property.type == "bool" %}
 
-                        {% set opts = property.options ? property.options.toTwigArray() : {} %}
-                        {{ forms.selectField(options|merge({ options: opts })) }}
+                                {% set options = options|merge({on: value, value: 1}) %}
+                                {{ forms.lightswitchField(options) }}
 
-                    {% else %}
+                            {% elseif property.type == "select" %}
 
-                        {% if property.hasFlag('readonly') %}
-                            {{ forms.textField(options) }}
-                        {% else %}
-                            {{ forms.autosuggestField(options) }}
-                        {% endif %}
+                                {% set opts = property.options ? property.options.toTwigArray() : {} %}
+                                {{ forms.selectField(options|merge({ options: opts })) }}
 
-                    {% endif %}
-                {% endfor %}
+                            {% else %}
+
+                                {% if property.hasFlag('readonly') %}
+                                    {{ forms.textField(options) }}
+                                {% else %}
+                                    {{ forms.autosuggestField(options) }}
+                                {% endif %}
+
+                            {% endif %}
+                        </div>
+
+                    {% endfor %}
+                </div>
             </div>
         {% endfor %}
     </div>

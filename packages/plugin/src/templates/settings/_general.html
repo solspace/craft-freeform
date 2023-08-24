@@ -10,9 +10,7 @@
     {{ redirectInput('freeform/settings/general') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "General Settings"|t('freeform') }}</h2>
-
-    <h3>{{ "Control Panel"|t('freeform') }}</h3>
+    <h2 class="first">{{ "Control Panel"|t('freeform') }}</h2>
 
     {% if craft.freeform.pro %}
 
@@ -59,7 +57,7 @@
 
     <hr>
 
-    <h3>{{ "Element Field Type"|t('freeform') }}</h3>
+    <h2>{{ "Element Field Type"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Restrict Form options in Form Field Type to User permissions?"|t('freeform'),
@@ -71,15 +69,7 @@
 
     <hr>
 
-    <h3>{{ "Submission Data"|t('freeform') }}</h3>
-
-    {{ forms.lightswitchField({
-        label: "Enable Search Index Updating on New Submissions?"|t('freeform'),
-        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
-        name: "settings[updateSearchIndexes]",
-        on: settings.updateSearchIndexes,
-        errors: settings.errors("updateSearchIndexes"),
-    }) }}
+    <h2>{{ "Exporting"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
@@ -103,6 +93,26 @@
         name: "settings[exportHandlesAsNames]",
         on: settings.exportHandlesAsNames,
         errors: settings.errors("exportHandlesAsNames"),
+    }) }}
+
+    <hr>
+
+    <h2>{{ "Submission Data"|t('freeform') }}</h2>
+
+    {{ forms.lightswitchField({
+        label: "Fill Form Values from the GET Query String?"|t('freeform'),
+        instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
+        name: "settings[fillWithGet]",
+        on: settings.fillWithGet,
+        errors: settings.errors("fillWithGet"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Enable Search Index Updating on New Submissions?"|t('freeform'),
+        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
+        name: "settings[updateSearchIndexes]",
+        on: settings.updateSearchIndexes,
+        errors: settings.errors("updateSearchIndexes"),
     }) }}
 
     {% if craft.freeform.pro %}

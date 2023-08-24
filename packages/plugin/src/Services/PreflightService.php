@@ -39,7 +39,7 @@ class PreflightService extends BaseService
             ),
             new DiagnosticItem(
                 'Constant Contact',
-                $this->getIntegrationCount('Solspace\Freeform\Integrations\MailingLists\ConstantContact'),
+                $this->getIntegrationCount('Solspace\Freeform\Integrations\EmailMarketing\ConstantContact'),
                 [
                     new WarningValidator(
                         $isEmpty,

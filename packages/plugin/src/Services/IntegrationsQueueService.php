@@ -75,7 +75,7 @@ class IntegrationsQueueService extends BaseService
      */
     public function processMailingListIntegration(IntegrationsQueueModel $task)
     {
-        Freeform::getInstance()->mailingLists->addToMailingList($task);
+        Freeform::getInstance()->emailMarketing->addToMailingList($task);
     }
 
     /**

@@ -87,7 +87,7 @@ class SummaryService extends Component
         $general->exportProfiles = \count($freeform->exportProfiles->getAllProfiles()) > 0;
         $general->gtm = $composer->gtmEnabled;
         $general->crm = $this->getCrmIntegrations();
-        $general->mailingLists = $this->getMailingListIntegrations();
+        $general->mailingLists = $this->getEmailMarketingIntegrations();
         $general->webhooks = $this->getWebhooks();
         $general->paymentGateways = $this->getPaymentGateways();
         $general->payments->single = $composer->paymentsSingle;
@@ -454,10 +454,10 @@ class SummaryService extends Component
         return $integrations;
     }
 
-    private function getMailingListIntegrations(): array
+    private function getEmailMarketingIntegrations(): array
     {
         $integrations = [];
-        foreach (Freeform::getInstance()->mailingLists->getAllIntegrations() as $integration) {
+        foreach (Freeform::getInstance()->emailMarketing->getAllIntegrations() as $integration) {
             $integrations[] = $integration->class;
         }
 

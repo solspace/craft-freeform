@@ -8,8 +8,8 @@ use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\CrmService;
+use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
-use Solspace\Freeform\Services\Integrations\MailingListsService;
 use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
@@ -50,9 +50,9 @@ class BaseController extends Controller
         return Freeform::getInstance()->mailer;
     }
 
-    protected function getMailingListsService(): MailingListsService
+    protected function getEmailMarketingService(): EmailMarketingService
     {
-        return Freeform::getInstance()->mailingLists;
+        return Freeform::getInstance()->emailMarketing;
     }
 
     protected function getCrmService(): CrmService

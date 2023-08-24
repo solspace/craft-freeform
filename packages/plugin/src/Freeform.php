@@ -56,9 +56,10 @@ use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\Integrations\CaptchasService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\ElementsService;
+use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
-use Solspace\Freeform\Services\Integrations\MailingListsService;
 use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
+use Solspace\Freeform\Services\Integrations\WebhooksService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\LoggerService;
@@ -75,7 +76,6 @@ use Solspace\Freeform\Services\Pro\Payments\StripeService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\Pro\RulesService;
-use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
 use Solspace\Freeform\Services\RelationsService;
 use Solspace\Freeform\Services\SettingsService;
@@ -104,7 +104,7 @@ use yii\web\ForbiddenHttpException;
  * @property FieldsService               $fields
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
- * @property MailingListsService         $mailingLists
+ * @property EmailMarketingService       $emailMarketing
  * @property NotificationsService        $notifications
  * @property SettingsService             $settings
  * @property StatusesService             $statuses
@@ -344,7 +344,7 @@ class Freeform extends Plugin
                 'field' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,
                 'mailer' => MailerService::class,
-                'mailingLists' => MailingListsService::class,
+                'emailMarketing' => EmailMarketingService::class,
                 'notifications' => NotificationsService::class,
                 'settings' => SettingsService::class,
                 'statuses' => StatusesService::class,

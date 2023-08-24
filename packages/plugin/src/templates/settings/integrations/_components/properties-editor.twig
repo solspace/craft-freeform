@@ -68,7 +68,6 @@
                         {% set handle = property.handle %}
                         {% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
 
-
                         <div class="field">
                             <script type="application/json" class="visibility-filters">
                                 {{- property.visibilityFilters|json_encode|raw -}}

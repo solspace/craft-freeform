@@ -23,6 +23,7 @@ interface IntegrationInterface
     public const TYPE_PAYMENT_GATEWAYS = 'payment-gateways';
     public const TYPE_ELEMENTS = 'elements';
     public const TYPE_CAPTCHAS = 'captchas';
+    public const TYPE_WEBHOOKS = 'webhooks';
     public const TYPE_OTHER = 'other';
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';

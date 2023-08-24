@@ -8,13 +8,16 @@ export const QKForms = {
   all: ['field-forms'] as const,
 };
 
-type FetchFormsQuery = () => UseQueryResult<FieldForm[], AxiosError>;
+type FetchFormsQuery = (options?: {
+  select?: (data: FieldForm[]) => FieldForm[];
+}) => UseQueryResult<FieldForm[], AxiosError>;
 
-export const useFetchForms: FetchFormsQuery = () =>
+export const useFetchForms: FetchFormsQuery = ({ select }) =>
   useQuery<FieldForm[], AxiosError>(
     QKForms.all,
     () => axios.get<FieldForm[]>(`/api/fields/forms`).then((res) => res.data),
     {
       staleTime: Infinity,
+      select,
     }
   );

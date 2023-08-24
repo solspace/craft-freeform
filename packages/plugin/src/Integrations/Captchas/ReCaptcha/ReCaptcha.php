@@ -13,6 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
+use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
 #[Type(
@@ -22,6 +23,8 @@ use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInte
 )]
 class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 {
+    use EnabledByDefaultTrait;
+
     public const VERSION_V3 = 'v3';
     public const VERSION_V2_INVISIBLE = 'v2-invisible';
     public const VERSION_V2_CHECKBOX = 'v2-checkbox';

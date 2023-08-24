@@ -12,6 +12,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
+use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
 #[Type(
@@ -21,6 +22,8 @@ use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInte
 )]
 class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 {
+    use EnabledByDefaultTrait;
+
     public const VERSION_INVISIBLE = 'invisible';
     public const VERSION_CHECKBOX = 'checkbox';
 

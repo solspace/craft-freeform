@@ -36,14 +36,21 @@ class FormIntegrationsProvider
         $formIntegrationRecords = $query->all();
 
         foreach ($integrations as $integration) {
-            $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
-            if (!$formIntegration) {
-                continue;
+            $enabledByDefault = $integration->metadata['enabledByDefault'] ?? false;
+
+            $metadata = [];
+            $enabled = $enabledByDefault;
+            if (!$enabledByDefault) {
+                $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
+                if (!$formIntegration) {
+                    continue;
+                }
+
+                $metadata = json_decode($formIntegration->metadata ?? '{}', true);
+                $enabled = $formIntegration->enabled;
             }
 
-            $metadata = json_decode($formIntegration->metadata ?? '{}', true);
-
-            $integration->enabled = $formIntegration->enabled;
+            $integration->enabled = $enabled;
             $integration->metadata = array_merge(
                 $integration->metadata,
                 $metadata

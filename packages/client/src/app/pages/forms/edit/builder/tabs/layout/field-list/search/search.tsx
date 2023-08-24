@@ -1,7 +1,6 @@
 import React from 'react';
 import translate from '@ff-client/utils/translations';
 
-import { Filter } from './filter/filter';
 import { useFieldSearch } from './hooks/use-field-search';
 import { SearchBar, SearchBlock, SearchIcon, Wrapper } from './search.style';
 import SearchIconSVG from './search.svg';
@@ -15,7 +14,7 @@ export const Search: React.FC = () => {
         <SearchIcon>
           <SearchIconSVG />
         </SearchIcon>
-        <Filter />
+        {/* <Filter /> */}
         <SearchBar
           type="text"
           placeholder={translate('Search')}

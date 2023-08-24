@@ -10,6 +10,15 @@ export const notificationSelectors = {
       state.notifications.items.find(
         (notification) => notification.uid === uid
       ),
+  count: {
+    all: (state: RootState): number => state.notifications.items.length,
+    ofType:
+      (className: string) =>
+      (state: RootState): number =>
+        state.notifications.items.filter(
+          (notification) => notification.className === className
+        ).length,
+  },
   errors: {
     any: (state: RootState): boolean =>
       Boolean(

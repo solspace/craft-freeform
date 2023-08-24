@@ -21,4 +21,5 @@ export const PropertyEditorWrapper = styled.div`
 export const SettingsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: ${spacings.md};
 `;

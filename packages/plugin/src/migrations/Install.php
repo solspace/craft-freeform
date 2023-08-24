@@ -277,23 +277,6 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('planId', 'freeform_payments_subscription_plans', 'id', ForeignKey::CASCADE)
                 ->addIndex(['integrationId', 'resourceId'], true),
 
-            (new Table('freeform_webhooks'))
-                ->addField('id', $this->primaryKey())
-                ->addField('type', $this->string()->notNull())
-                ->addField('name', $this->string()->notNull())
-                ->addField('webhook', $this->string()->notNull())
-                ->addField('settings', $this->text())
-                ->addIndex(['type']),
-
-            (new Table('freeform_webhooks_form_relations'))
-                ->addField('id', $this->primaryKey())
-                ->addField('webhookId', $this->integer()->notNull())
-                ->addField('formId', $this->integer()->notNull())
-                ->addIndex(['webhookId'])
-                ->addIndex(['formId'])
-                ->addForeignKey('webhookId', 'freeform_webhooks', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
-
             (new Table('freeform_submission_notes'))
                 ->addField('id', $this->primaryKey())
                 ->addField('submissionId', $this->integer()->notNull())

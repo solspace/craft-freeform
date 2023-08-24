@@ -31,6 +31,7 @@ class m230824_111101_ChangeMailingListsToEmailMarketing extends Migration
             ->select(['id', 'class', 'type'])
             ->from('{{%freeform_integrations}}')
             ->where(['type' => 'mailing-lists'])
+            ->orWhere(['type' => 'mailing-list'])
             ->indexBy('id')
             ->all()
         ;

@@ -23,6 +23,10 @@ export const BaseFields: React.FC = () => {
     return <ErrorBlock>{error.message}</ErrorBlock>;
   }
 
+  if (!data.length) {
+    return null;
+  }
+
   return (
     <FieldGroup title={title}>
       {data.map((fieldType) => (

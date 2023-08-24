@@ -5,17 +5,20 @@ import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useFetchForms } from '@ff-client/queries/field-forms';
 import translate from '@ff-client/utils/translations';
 
-import { FieldGroup } from '../../field-group/field-group';
-import { LoaderFieldGroup } from '../../field-group/field-group.loader';
+import { GroupTitle } from '../../field-group/field-group.styles';
+import { useSelectSearchedForms } from '../../hooks/use-select-searched-fields';
 
-import { FieldItem } from './field-item';
+import { FormBlock } from './form-block';
+import { FormFieldsWrapper } from './forms-fields.styles';
 
 export const FormsFields: React.FC = () => {
   const { uid } = useSelector(formSelectors.current);
-  const { data, isFetching, isError, error } = useFetchForms();
+
+  const select = useSelectSearchedForms();
+  const { data, isFetching, isError, error } = useFetchForms({ select });
 
   if (!data && isFetching) {
-    return <LoaderFieldGroup words={[50, 50, 70]} items={6} />;
+    return null;
   }
 
   if (isError) {
@@ -27,23 +30,16 @@ export const FormsFields: React.FC = () => {
   }
 
   const forms = data.filter((form) => form.uid !== uid);
-
   if (!forms.length) {
     return null;
   }
 
   return (
-    <>
+    <FormFieldsWrapper>
+      <GroupTitle>{translate('Fields from other Forms')}</GroupTitle>
       {forms.map((form) => (
-        <FieldGroup
-          key={form.uid}
-          title={translate(`${form.name} Field Types`)}
-        >
-          {form.fields.map((field) => (
-            <FieldItem key={field.uid} field={field} />
-          ))}
-        </FieldGroup>
+        <FormBlock key={form.uid} form={form} />
       ))}
-    </>
+    </FormFieldsWrapper>
   );
 };

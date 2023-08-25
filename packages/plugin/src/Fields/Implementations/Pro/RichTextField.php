@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Input\Wysiwyg;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -24,10 +25,22 @@ use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
     name: 'Rich Text',
     typeShorthand: 'rich-text',
     iconPath: __DIR__.'/../Icons/rich-text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/rich-text.ejs',
 )]
 class RichTextField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface
 {
     use SingleStaticValueTrait;
+
+    #[Wysiwyg(
+        label: 'Content',
+        instructions: 'The HTML content to be rendered',
+    )]
+    protected string $content = '';
+
+    public function getContent(): string
+    {
+        return $this->content;
+    }
 
     /**
      * Return the field TYPE.
@@ -42,7 +55,7 @@ class RichTextField extends AbstractField implements DefaultFieldInterface, Inpu
      */
     public function getInputHtml(): string
     {
-        return $this->getValue();
+        return $this->getContent();
     }
 
     public function includeInGqlSchema(): bool

@@ -14,6 +14,7 @@
             <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
         </div>
 
+        {# Display a message if the form has already been submitted by the user. #}
         {% if form.duplicate %}
 
             <div class="freeform-error">
@@ -25,9 +26,11 @@
 
         {% else %}
 
+            {# Check which duplicate check is applied #}
             {% set duplicateCheck = form.settings.duplicateCheck %}
             {% if duplicateCheck %}
                 <div class="freeform-notice">
+                    {% set duplicateCheckType = false %}
                     {% if duplicateCheck == "no_limit" %}
                         {% set duplicateCheckType = false %}
                     {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
@@ -44,8 +47,10 @@
                         {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
                     {% endif %}
 
+                    {# Display a tip for forms with duplicate check enabled #}
                     {% if duplicateCheckType %}
-                        <p>You currently have a user duplicate check submission settings enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
+                        <h4>Please note...</h4>
+                        <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
                     {% endif %}
                 </div>
             {% endif %}

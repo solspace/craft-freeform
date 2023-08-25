@@ -88,7 +88,9 @@ export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
 
 export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type HiddenProperty = BaseProperty<string, PropertyType.Hidden>;
-export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
+export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
+  rows: number;
+};
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;

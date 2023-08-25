@@ -93,6 +93,10 @@
                                 {% set options = options|merge({on: value, value: 1}) %}
                                 {{ forms.lightswitchField(options) }}
 
+                            {% elseif property.type == "textarea" %}
+
+                                {{ forms.textareaField(options|merge({ rows: property.rows })) }}
+
                             {% elseif property.type == "select" %}
 
                                 {% set opts = property.options ? property.options.toTwigArray() : {} %}

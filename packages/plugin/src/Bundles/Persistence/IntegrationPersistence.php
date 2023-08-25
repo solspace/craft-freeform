@@ -68,8 +68,24 @@ class IntegrationPersistence extends FeatureBundle
 
             $encodedMetadata = json_encode((object) array_merge($metadata, $values));
 
-            if ((bool) $record->enabled === (bool) $enabled && $encodedMetadata === $record->metadata) {
-                continue;
+            $matchEnabled = (bool) $record->enabled === (bool) $enabled;
+            $matchMetadata = $encodedMetadata === $record->metadata;
+
+            if ((bool) $record->id) {
+                if ($matchEnabled && $matchMetadata) {
+                    continue;
+                }
+            } else {
+                $originalMetadata = json_decode($integrationRecord->metadata);
+                $enabledByDefault = $originalMetadata->enabledByDefault ?? null;
+
+                if (\is_bool($enabledByDefault)) {
+                    if ($enabledByDefault === $enabled) {
+                        continue;
+                    }
+                } elseif (!$enabled) {
+                    continue;
+                }
             }
 
             $record->enabled = (bool) $enabled;

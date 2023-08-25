@@ -1,20 +1,24 @@
 <?php
 
-namespace Solspace\Freeform\Webhooks\Integrations;
+namespace Solspace\Freeform\Integrations\Webhooks\Generic;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
+use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
 
-class Generic extends AbstractWebhook
+#[Type(
+    name: 'Generic Webhook',
+    readme: __DIR__.'/README.md',
+    iconPath: __DIR__.'/icon.svg',
+)]
+class Generic extends WebhookIntegration
 {
-    public function triggerWebhook(ProcessSubmissionEvent $event): bool
+    public function trigger(Form $form): void
     {
-        $form = $event->getForm();
         $submission = $form->getSubmission();
-
         $json = [
             'form' => [
                 'id' => $form->getId(),
@@ -34,10 +38,9 @@ class Generic extends AbstractWebhook
         }
 
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
+            $value = $field->getValue();
             if ($field instanceof FileUploadField) {
-                $value = Freeform::getInstance()->files->getAssetUrlsFromIds($field->getValue());
-            } else {
-                $value = $field->getValue();
+                $value = Freeform::getInstance()->files->getAssetUrlsFromIds($value);
             }
 
             $json[$field->getHandle()] = $value;
@@ -46,13 +49,9 @@ class Generic extends AbstractWebhook
         $client = new Client();
 
         try {
-            $client->post($this->getWebhook(), ['json' => $json]);
-
-            return true;
+            $client->post($this->getUrl(), ['json' => $json]);
         } catch (\Exception $e) {
-            Freeform::getInstance()->logger->getLogger($this->getProviderName())->error($e->getMessage());
+            $this->processException($e, self::LOG_CATEGORY);
         }
-
-        return false;
     }
 }

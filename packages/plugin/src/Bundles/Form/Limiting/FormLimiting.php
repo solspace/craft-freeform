@@ -66,7 +66,6 @@ class FormLimiting extends FeatureBundle
 
         if (self::LIMIT_ONCE_PER_EMAIL === $duplicateCheck) {
             $this->limitByEmail($event);
-
         }
 
         if (self::LIMIT_ONCE_PER_USER_OR_COOKIE === $duplicateCheck) {

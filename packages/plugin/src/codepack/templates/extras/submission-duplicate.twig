@@ -31,30 +31,32 @@
 
             {# Check which duplicate check is applied #}
             {% if duplicateCheck %}
-                <div class="freeform-notice">
-                    {% set duplicateCheckType = false %}
-                    {% if duplicateCheck == "no_limit" %}
-                        {% set duplicateCheckType = false %}
-                    {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
-                        {% set duplicateCheckType = false %}
-                    {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
-                        {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
-                    {% elseif duplicateCheck == "limit_once_per_email" %}
-                        {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-                    {% elseif duplicateCheck == "limit_once_per_email" %}
-                        {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-                    {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
-                        {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
-                    {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
-                        {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
-                    {% endif %}
 
-                    {# Display a tip for forms with duplicate check enabled #}
-                    {% if duplicateCheckType %}
+                {% set duplicateCheckType = false %}
+                {% if duplicateCheck == "no_limit" %}
+                    {% set duplicateCheckType = false %}
+                {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
+                    {% set duplicateCheckType = false %}
+                {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
+                    {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
+                {% elseif duplicateCheck == "limit_once_per_email" %}
+                    {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+                {% elseif duplicateCheck == "limit_once_per_email" %}
+                    {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+                {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
+                    {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
+                {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
+                    {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
+                {% endif %}
+
+                {# Display a tip for forms with duplicate check enabled #}
+                {% if duplicateCheckType %}
+                    <div class="freeform-notice">
                         <h4>Please note...</h4>
                         <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
-                    {% endif %}
-                </div>
+                    </div>
+                {% endif %}
+
             {% endif %}
 
             {{ form.render }}

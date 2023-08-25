@@ -14,9 +14,38 @@
         <p>This example shows how to check if the user has already submitted the form when using the <i>Duplicate Check</i> setting.</p>
     </div>
 
-    {% if form and form.settings.duplicateCheck %}
+    {% if form %}
+    
+        <div class="freeform-page-heading">
+            <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
+        </div>
+
+        {# Check which if a duplicate check is applied #}
         {% set duplicateCheck = form.settings.duplicateCheck %}
-        
+        {% if duplicateCheck == "no_limit" %}
+            {% set duplicateCheckType = false %}
+        {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
+            {% set duplicateCheckType = "Logged in Users Only - No Limit" %}
+        {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
+            {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
+        {% elseif duplicateCheck == "limit_once_per_email" %}
+            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+        {% elseif duplicateCheck == "limit_once_per_email" %}
+            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+        {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
+            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
+        {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
+            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
+        {% endif %}
+
+        {# Display a tip for forms with a duplicate check enabled #}
+        {% if duplicateCheckType %}
+            <div class="freeform-notice">
+                <h4>Please note...</h4>
+                <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
+            </div>
+        {% endif %}
+
         {# Display a message if the form has already been submitted by the user. #}
         {% if form.duplicate %}
 
@@ -29,37 +58,9 @@
 
         {% else %}
 
-            {# Check which duplicate check is applied #}
-            {% if duplicateCheck %}
-
-                {% set duplicateCheckType = false %}
-                {% if duplicateCheck == "no_limit" %}
-                    {% set duplicateCheckType = false %}
-                {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
-                    {% set duplicateCheckType = false %}
-                {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
-                    {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
-                {% elseif duplicateCheck == "limit_once_per_email" %}
-                    {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-                {% elseif duplicateCheck == "limit_once_per_email" %}
-                    {% set duplicateCheckType = "Anyone - Once per Email Address" %}
-                {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
-                    {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
-                {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
-                    {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
-                {% endif %}
-
-                {# Display a tip for forms with duplicate check enabled #}
-                {% if duplicateCheckType %}
-                    <div class="freeform-notice">
-                        <h4>Please note...</h4>
-                        <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
-                    </div>
-                {% endif %}
-
-            {% endif %}
-
-            {{ form.render }}
+            {{ form.render({
+                submissionToken: submissionToken|default(null)
+            }) }}
 
         {% endif %}
 

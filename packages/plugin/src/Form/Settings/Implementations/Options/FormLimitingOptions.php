@@ -34,7 +34,7 @@ class FormLimitingOptions implements OptionsGeneratorInterface
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE,
-                'Anyone - Once per Logged in User or Guest IP/Cookie combo',
+                'Anyone - Once per Logged in User or Guest IP or Cookie',
             )
         ;
     }

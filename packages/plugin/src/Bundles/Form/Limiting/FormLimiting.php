@@ -27,7 +27,6 @@ class FormLimiting extends FeatureBundle
     public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'limit_once_per_logged_in_user_only';
     public const LIMIT_ONCE_PER_EMAIL = 'limit_once_per_email';
     public const LIMIT_ONCE_PER_USER_OR_COOKIE = 'limit_once_per_user_or_cookie';
-
     public const LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE = 'limit_once_per_user_or_ip_or_cookie';
 
     private array $formCache = [];

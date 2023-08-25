@@ -105,7 +105,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'finished' => $form->isFinished(),
             'submissionId' => $submission->getId(),
             'submissionToken' => $submission->token,
-            'submissionLimitReached' => $form->isSubmissionLimitReached(),
+            'duplicate' => $form->isDuplicate(),
             'onSuccess' => $settings->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),

@@ -130,12 +130,12 @@ class BehaviorSettings extends SettingsNamespace
         order: 3,
     )]
     #[Input\Select(
-        label: 'Limit Form Submission Rate',
+        label: 'Duplicate Check',
         instructions: 'Select an option for restricting users when submitting this form.',
         order: 1,
         options: FormLimitingOptions::class,
     )]
-    public string $limitSubmissions = FormLimiting::NO_LIMIT;
+    public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
     #[Input\DatePicker(

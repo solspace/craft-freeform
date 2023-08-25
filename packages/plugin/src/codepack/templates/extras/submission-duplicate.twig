@@ -14,10 +14,11 @@
         <p>This example shows how to check if the user has already submitted the form when using the <i>Limit Form Submission Rate</i> setting.</p>
     </div>
 
-    {% if form and form.limitFormSubmissions %}
+    {% set duplicateCheck = form.settings.duplicateCheck %}
+    {% if form and duplicateCheck %}
         
         {# This optional conditional checks if the form has reached its submission limit set above #}
-        {% if form.submissionLimitReached %}
+        {% if form.duplicate %}
 
             <div class="freeform-error">
                 <h4>{{ "Already Submitted!" }}</h4>
@@ -28,31 +29,27 @@
 
         {% else %}
 
-            {% if form.limitFormSubmissions %}
-            {# Display a tip for forms with submit limit setting enabled #}
+            {% if duplicateCheck %}
                 <div class="freeform-notice">
-                    <h4>Please note...</h4>
-                    <p>
-                        You currently have a user submit limit setting enabled (<i>
-                            {%- if form.limitFormSubmissions == "auth_unlimited" -%}
-                                Logged in Users only (no limit)
-                            {%- elseif form.limitFormSubmissions == "cookie" -%}
-                                Once per Cookie
-                            {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
-                                Once per IP/Cookie combo
-                            {%- elseif form.limitFormSubmissions == "auth" -%}
-                                Once per logged in Users
-                            {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
-                                Once per logged in User or Guest Cookie
-                            {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
-                                Once per logged in User or Guest IP/Cookie combo
-                            {%- elseif form.limitFormSubmissions == "once_per_email" -%}
-                                Once per Email Address only
-                            {%- else -%}
-                                '{{ form.limitFormSubmissions }}'
-                            {%- endif -%}
-                        </i>) for this form.
-                    </p>
+                    {% if duplicateCheck == "no_limit" %}
+                        {% set duplicateCheckType = false %}
+                    {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
+                        {% set duplicateCheckType = false %}
+                    {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
+                        {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
+                    {% elseif duplicateCheck == "limit_once_per_email" %}
+                        {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+                    {% elseif duplicateCheck == "limit_once_per_email" %}
+                        {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+                    {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
+                        {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
+                    {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
+                        {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
+                    {% endif %}
+
+                    {% if duplicateCheckType %}
+                        <p>You currently have a user duplicate check submission settings enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
+                    {% endif %}
                 </div>
             {% endif %}
 

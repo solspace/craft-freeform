@@ -4,7 +4,9 @@ namespace Solspace\Freeform\Bundles\Form\Limiting;
 
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\DateTimeHelper;
 use craft\records\Element;
+use craft\records\Session;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
@@ -205,9 +207,15 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitOncePerSession(FormEventInterface $event)
+    private function limitOncePerSession(FormEventInterface $event): void
     {
-        // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
+        $session = Session::find()->orderBy('dateUpdated desc')->one();
+
+        $userSessionDuration = \Craft::$app->getConfig()->getGeneral()->userSessionDuration;
+
+        if ($session && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
+            $this->addMessage($event);
+        }
     }
 
     private function limitByUserId(FormEventInterface $event): void

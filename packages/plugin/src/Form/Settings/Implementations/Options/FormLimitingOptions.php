@@ -14,7 +14,7 @@ class FormLimitingOptions implements OptionsGeneratorInterface
         return (new OptionCollection())
             ->add(
                 FormLimiting::NO_LIMIT,
-                'Do not limit (default - no limits applied)',
+                'Do not limit',
             )
             ->add(
                 FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,

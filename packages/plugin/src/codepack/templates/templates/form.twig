@@ -14,32 +14,6 @@
             <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
         </div>
 
-        {% set limitSubmissions = form.settings.limitSubmissions %}
-        {% if limitSubmissions %}
-            {% set limitType = limitSubmissions %}
-            {% if limitSubmissions == "once_per_email" %}
-                {% set limitType = "Once per Email Address only" %}
-            {% elseif limitSubmissions == "cookie" %}
-                {% set limitType = "Once per Cookie only" %}
-            {% elseif limitSubmissions == "ip_cookie" %}
-                {% set limitType = "Once per IP/Cookie combo" %}
-            {% elseif limitSubmissions == "once_per_logged_in_users_only" %}
-                {% set limitType = "Once per logged in Users only" %}
-            {% elseif limitSubmissions == "auth_cookie" %}
-                {% set limitType = "Once per logged in User or Guest Cookie only" %}
-            {% elseif limitSubmissions == "auth_ip_cookie" %}
-                {% set limitType = "Once per logged in User or Guest IP/Cookie combo" %}
-            {% elseif limitSubmissions == "auth_unlimited" %}
-                {% set limitType = "Logged in Users only (no limit)" %}
-            {% endif %}
-            <div>You currently have a user submit limit setting enabled (<i>{{ limitType }}</i>) for this form.</div>
-        {% endif %}
-
-        {% set submissionLimitReached = form.isSubmissionLimitReached %}
-        {% if submissionLimitReached %}
-            <div>{{ "Submission Limit Reached" }}</div>
-        {% endif %}
-
         {{ form.render({
             submissionToken: submissionToken|default(null)
         }) }}

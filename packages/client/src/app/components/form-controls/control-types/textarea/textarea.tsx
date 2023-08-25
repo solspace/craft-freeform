@@ -11,7 +11,7 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
   updateValue,
   autoFocus,
 }) => {
-  const { handle } = property;
+  const { handle, rows } = property;
 
   return (
     <Control property={property} errors={errors}>
@@ -22,7 +22,7 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
           'fullwidth',
           property.flags.includes('code') && 'code'
         )}
-        rows={2}
+        rows={rows}
         value={value ?? ''}
         placeholder={property.placeholder}
         autoFocus={autoFocus}

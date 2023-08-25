@@ -16,6 +16,7 @@ abstract class WebhookIntegration extends BaseIntegration implements WebhookInte
     #[Input\Text(
         label: 'Webhook URL',
         instructions: 'The URL to send the POST request to.',
+        order: 0,
         placeholder: 'https://example.com/webhook',
     )]
     protected string $url = '';

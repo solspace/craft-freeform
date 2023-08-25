@@ -21,6 +21,7 @@ class Slack extends WebhookIntegration
         label: 'Message',
         instructions: 'The message to send to Slack. You can use Twig syntax to render dynamic content.',
         placeholder: 'A new submission has been received for {{ form.name }}',
+        rows: 10,
     )]
     protected string $message = '';
 

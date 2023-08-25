@@ -14,8 +14,8 @@
         <p>This example shows how to check if the user has already submitted the form when using the <i>Duplicate Check</i> setting.</p>
     </div>
 
-    {% set duplicateCheck = form.settings.duplicateCheck %}
-    {% if form and duplicateCheck %}
+    {% if form and form.settings.duplicateCheck %}
+        {% set duplicateCheck = form.settings.duplicateCheck %}
         
         {# Display a message if the form has already been submitted by the user. #}
         {% if form.duplicate %}

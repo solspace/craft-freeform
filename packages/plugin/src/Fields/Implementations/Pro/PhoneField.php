@@ -54,13 +54,19 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         $pattern = $this->getPattern();
         $pattern = str_replace('x', '0', $pattern);
 
-        $this->attributes
+        $attributes = $this->attributes->getInput()
+            ->clone()
             ->append('class', 'form-phone-pattern-field')
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->customInputType ?? 'text')
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
             ->setIfEmpty('data-masked-input', $pattern)
             ->setIfEmpty('data-pattern', $pattern)
         ;
 
-        return parent::getInputHtml();
+        return '<input'.$attributes.' />';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

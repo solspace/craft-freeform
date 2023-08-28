@@ -56,6 +56,11 @@ class FormLimiting extends FeatureBundle
         }
 
         if (self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
+            $userId = \Craft::$app->user->getId();
+            if (!$userId) {
+                $this->addMessage($event);
+            }
+
             return;
         }
 

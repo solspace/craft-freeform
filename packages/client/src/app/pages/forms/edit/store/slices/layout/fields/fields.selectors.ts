@@ -1,5 +1,6 @@
 import type { Row } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
+import { createSelector } from '@reduxjs/toolkit';
 
 import type { Field } from '.';
 
@@ -14,10 +15,12 @@ export const fieldSelectors = {
   hasErrors: (state: RootState): boolean =>
     Boolean(state.layout.fields.find((field) => field.errors !== undefined)),
 
-  inRow:
-    (row: Row) =>
-    (state: RootState): Field[] =>
-      state.layout.fields
-        .filter((field) => field.rowUid === row.uid)
-        .sort((a, b) => a.order - b.order),
+  inRow: (row: Row) =>
+    createSelector(
+      (state: RootState): Field[] => state.layout.fields,
+      (fields) =>
+        fields
+          .filter((field) => field.rowUid === row.uid)
+          .sort((a, b) => a.order - b.order)
+    ),
 } as const;

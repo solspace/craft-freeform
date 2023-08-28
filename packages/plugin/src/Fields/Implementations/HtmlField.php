@@ -18,7 +18,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Models\Settings;
@@ -27,10 +26,12 @@ use Solspace\Freeform\Models\Settings;
     name: 'HTML',
     typeShorthand: 'html',
     iconPath: __DIR__.'/Icons/html.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/html.ejs',
 )]
 class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {
-    use SingleStaticValueTrait;
+    protected string $instructions = '';
+    protected bool $required = false;
 
     #[Input\Boolean(
         label: 'Allow Twig',
@@ -38,9 +39,20 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
     )]
     protected bool $twig = false;
 
+    #[Input\CodeEditor(
+        label: 'HTML',
+        instructions: 'The HTML content to be rendered',
+    )]
+    protected string $content = '';
+
     public function isTwig(): bool
     {
         return $this->twig;
+    }
+
+    public function getContent(): string
+    {
+        return $this->content;
     }
 
     public function getType(): string
@@ -50,9 +62,11 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
 
     public function getInputHtml(): string
     {
+        $content = $this->getContent();
+
         if ($this->isTwig()) {
             if (\Craft::$app->request->getIsCpRequest()) {
-                return $this->getValue();
+                return $content;
             }
 
             /** @var Settings $settings */
@@ -65,14 +79,14 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
                 ];
 
                 if ($settings->twigInHtmlIsolatedMode) {
-                    return (new IsolatedTwig())->render($this->getValue(), $variables);
+                    return (new IsolatedTwig())->render($content, $variables);
                 }
 
-                return \Craft::$app->view->renderString($this->getValue(), $variables);
+                return \Craft::$app->view->renderString($content, $variables);
             }
         }
 
-        return $this->getValue();
+        return $content;
     }
 
     public function includeInGqlSchema(): bool

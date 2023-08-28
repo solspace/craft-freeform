@@ -57,11 +57,11 @@ class FormLimiting extends FeatureBundle
 
         if (self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
             $userId = \Craft::$app->user->getId();
-            if (!$userId) {
-                $this->addMessage($event);
+            if ($userId) {
+                return;
             }
 
-            return;
+            $this->addMessage($event);
         }
 
         if (self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
@@ -198,11 +198,33 @@ class FormLimiting extends FeatureBundle
 
     private function limitOncePerSession(FormEventInterface $event): void
     {
+        $form = $event->getForm();
+
         $session = Session::find()->orderBy('dateUpdated desc')->one();
+
+        $elements = Element::tableName();
+        $submissions = Submission::TABLE;
+
+        $query = (new Query())
+            ->select(["{$submissions}.[[id]]"])
+            ->from($submissions)
+            ->where([
+                'isSpam' => false,
+                'formId' => $form->getId(),
+                'userId' => $session->userId,
+            ])
+            ->limit(1)
+            ->innerJoin(
+                $elements,
+                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+            )
+        ;
+
+        $isPosted = (bool) $query->scalar();
 
         $userSessionDuration = \Craft::$app->getConfig()->getGeneral()->userSessionDuration;
 
-        if ($session && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
+        if ($isPosted && $session && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
             $this->addMessage($event);
         }
     }

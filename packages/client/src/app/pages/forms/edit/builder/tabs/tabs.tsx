@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
@@ -59,6 +60,8 @@ export const Tabs: React.FC = () => {
 
   return (
     <TabWrapper>
+      <Breadcrumb label={form.name || 'New Form'} url={`/forms/${form.id}`} />
+
       <Heading>
         <FormName>{form.name || translate('New Form')}</FormName>
       </Heading>

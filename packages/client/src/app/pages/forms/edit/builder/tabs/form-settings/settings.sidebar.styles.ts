@@ -1,38 +1,5 @@
-import { scrollBar } from '@ff-client/styles/mixins';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
-
-export const FormSettingsWrapper = styled.div`
-  display: flex;
-  height: 100%;
-  background: ${colors.white};
-`;
-
-export const FormSettingsContainer = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
-  flex-direction: column;
-  gap: ${spacings.md};
-
-  background: ${colors.white};
-  padding: ${spacings.xl};
-  overflow-y: auto;
-  width: calc(100% - 300px);
-
-  ${scrollBar};
-
-  div[class^='ControlWrapper-'] {
-    div[class^='CheckboxWrapper-'] {
-      align-items: start;
-
-      div[class^='CheckboxItem-'] {
-        padding-top: 4px;
-      }
-    }
-  }
-`;
 
 export const SectionWrapper = styled.div`
   display: flex;
@@ -51,6 +18,7 @@ export const SectionLink = styled.button`
   border-radius: ${borderRadius.lg};
 
   color: ${colors.gray700};
+  fill: currentColor;
 
   transition: background-color 0.2s ease-out;
   text-decoration: none;
@@ -62,20 +30,16 @@ export const SectionLink = styled.button`
 
   &.errors {
     color: ${colors.error};
-    fill: ${colors.error};
+  }
+
+  &.active.errors {
+    color: ${colors.white};
+    background-color: ${colors.error};
   }
 
   &:hover:not(.active) {
     background-color: ${colors.gray100};
   }
-`;
-
-export const SectionHeader = styled.h1`
-  display: flex;
-
-  width: 100%;
-  padding: 0;
-  margin: 0;
 `;
 
 export const SectionIcon = styled.div`

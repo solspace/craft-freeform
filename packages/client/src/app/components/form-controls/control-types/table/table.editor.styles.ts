@@ -36,7 +36,11 @@ export const Cell = styled.td<CellProps>`
 
 export const Input = styled.input`
   width: 100%;
+  height: 34px;
+
   padding: 6px 9px;
+
+  background: ${colors.white};
 
   &:focus {
     box-shadow: var(--inner-focus-ring);
@@ -49,7 +53,7 @@ export const Input = styled.input`
 
 export const Select = styled.select`
   width: 100%;
-  height: 100%;
+  height: 34px;
 
   padding: 6px 9px;
 

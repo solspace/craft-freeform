@@ -20,6 +20,7 @@ import type { CustomOptionsConfiguration } from '../../options.types';
 import {
   addOption,
   deleteOption,
+  toggleUseCustomValues,
   updateChecked,
   updateOption,
 } from './custom.operations';
@@ -49,16 +50,13 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
     <PreviewEditor>
       <Bool
         property={{
-          label: 'Use custom values',
+          label: translate('Use custom values'),
           handle: 'useCustomValues',
           type: PropertyType.Boolean,
         }}
         value={useCustomValues}
         updateValue={() =>
-          updateValue({
-            ...value,
-            useCustomValues: !useCustomValues,
-          })
+          updateValue(toggleUseCustomValues(value, !useCustomValues))
         }
       />
       {!!options.length && (
@@ -87,6 +85,7 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                             {
                               ...option,
                               label: event.target.value,
+                              value: event.target.value,
                             },
                             value
                           )
@@ -99,6 +98,7 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                     <Cell>
                       <Input
                         type="text"
+                        className="code"
                         value={option.value}
                         placeholder={translate('Value')}
                         autoFocus={activeCell === `${index}:1`}

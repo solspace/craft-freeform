@@ -15,7 +15,7 @@
     {# Make sure the test Craft entry exists #}
     {% if entry %}
 
-        <div class="freeform-notice">
+        <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>Craft Entry:</p>
             <h4>{{ entry.title }} <small>(#{{ entry.id }})</small></h4>
             <p>Posted on {{ entry.postDate.format('F d, Y') }}</p>
@@ -35,19 +35,19 @@
                     }
                 }) }}
             {% else %}
-                <p class="freeform-error">
+                <p class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                     You currently do not have a form assigned to this Craft Entry.
                 </p>
             {% endif %}
         {% else %}
-            <p class="freeform-error">
+            <p class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 You currently do not have a Freeform Form field type with the handle of <code>freeformForm</code> added to this Craft Section.
             </p>
         {% endif %}
 
     {% else %}
 
-        <div class="freeform-error">
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>You must correctly load an existing Craft Entry with a slug of <code>freeform-test</code> for this part of the demo to work.</p>
         </div>
 

@@ -128,7 +128,7 @@
 
         {% else %}
 
-            <div class="freeform-warning-notice">
+            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 Sorry, no submission was found.
             </div>
 
@@ -136,7 +136,7 @@
 
     {% else %}
 
-        <div class="freeform-warning-notice">
+        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             Sorry, you do not have permission to access this page.
         </div>
 

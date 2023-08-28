@@ -40,7 +40,7 @@
 
         {# Display a tip for forms with a duplicate check enabled #}
         {% if duplicateCheckType %}
-            <div class="freeform-notice">
+            <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <h4>Please note...</h4>
                 <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
             </div>
@@ -49,7 +49,7 @@
         {# Display a message if the form has already been submitted by the user. #}
         {% if form.duplicate %}
 
-            <div class="freeform-error">
+            <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <h4>{{ "Already Submitted!" }}</h4>
                 <p>
                     You have already submitted this form! No duplicates are allowed for this form.
@@ -66,7 +66,7 @@
 
     {% else %}
 
-        <div class="freeform-error">
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and select an option for the <i>Duplicate Check</i> setting (inside the form builder Settings tab) for this part of the demo to work.</p>
         </div>
 

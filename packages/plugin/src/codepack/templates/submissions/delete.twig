@@ -17,18 +17,18 @@
         </div>
 
         {% if craft.freeform.deleteSubmissionByToken(token) %}
-            <div class="freeform-success">
+            <div class="freeform-success{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 The submission has been removed successfully!
             </div>
         {% else %}
-            <div class="freeform-error">
+            <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 Error! The submission you specified cannot be found.
             </div>
         {% endif %}
 
     {% else %}
 
-        <div class="freeform-warning-notice">
+        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             Sorry, you do not have permission to access this page.
         </div>
 

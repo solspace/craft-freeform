@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
@@ -13,6 +13,7 @@ import { CombinatorSelect } from '../conditions/combinator/combinator';
 import { DisplaySelect } from '../conditions/display/display';
 import { ConditionTable } from '../conditions/table/condition-table';
 
+import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field-editor.styles';
 
@@ -20,6 +21,7 @@ export const FieldRulesEditor: React.FC = () => {
   const { formId, uid } = useParams();
   const { isFetching } = useQueryFormRules(Number(formId || 0));
 
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const field = useSelector(fieldSelectors.one(uid));
@@ -56,6 +58,13 @@ export const FieldRulesEditor: React.FC = () => {
 
   return (
     <RulesEditorWrapper>
+      <Remove
+        onClick={() => {
+          dispatch(fieldRuleActions.remove(uid));
+          navigate('..');
+        }}
+      />
+
       <Label>
         <LoadingText
           loadingText={translate('Loading data')}

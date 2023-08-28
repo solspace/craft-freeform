@@ -18,7 +18,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Models\Settings;
@@ -31,7 +30,8 @@ use Solspace\Freeform\Models\Settings;
 )]
 class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {
-    use SingleStaticValueTrait;
+    protected string $instructions = '';
+    protected bool $required = false;
 
     #[Input\Boolean(
         label: 'Allow Twig',

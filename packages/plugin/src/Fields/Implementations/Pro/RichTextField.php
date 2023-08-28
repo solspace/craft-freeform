@@ -19,7 +19,6 @@ use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 
 #[Type(
     name: 'Rich Text',
@@ -29,7 +28,8 @@ use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 )]
 class RichTextField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface
 {
-    use SingleStaticValueTrait;
+    protected string $instructions = '';
+    protected bool $required = false;
 
     #[Wysiwyg(
         label: 'Content',

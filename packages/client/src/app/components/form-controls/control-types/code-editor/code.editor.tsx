@@ -20,7 +20,7 @@ export const CodeEditor: React.FC<Props> = ({
     <PreviewEditor>
       <PreviewContainer>
         <Editor
-          height={600}
+          height={500}
           value={value}
           defaultLanguage={language}
           onChange={updateValue}

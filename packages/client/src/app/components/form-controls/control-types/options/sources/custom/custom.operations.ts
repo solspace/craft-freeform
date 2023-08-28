@@ -66,3 +66,24 @@ export const cleanOptions = (
     options: value.options.filter((option) => !!option.label || !!option.value),
   };
 };
+
+export const toggleUseCustomValues = (
+  value: CustomOptionsConfiguration,
+  useCustomValues: boolean
+): CustomOptionsConfiguration => {
+  if (useCustomValues) {
+    return {
+      ...value,
+      useCustomValues,
+    };
+  }
+
+  return {
+    ...value,
+    useCustomValues,
+    options: value.options.map((option) => ({
+      ...option,
+      value: option.label,
+    })),
+  };
+};

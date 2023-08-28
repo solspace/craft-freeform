@@ -105,9 +105,5 @@ export const FieldWrapper = styled(animated.div)`
       border-bottom: 15px solid transparent;
       border-left: 15px solid ${colors.teal550};
     }
-
-    &.not-equals:after {
-      border-left-color: ${colors.red700};
-    }
   }
 `;

@@ -11,59 +11,71 @@
 
     <div class="freeform-page-heading">
         <h2>Checking Submission Duplicates</h2>
-        <p>This example shows how to check if the user has already submitted the form when using the <i>Limit Form Submission Rate</i> setting.</p>
+        <p>This example shows how to check if the user has already submitted the form when using the <i>Duplicate Check</i> setting.</p>
     </div>
 
-    {% if form and form.limitFormSubmissions %}
-        
-        {# This optional conditional checks if the form has reached its submission limit set above #}
-        {% if form.submissionLimitReached %}
+    {% if form %}
+    
+        <div class="freeform-page-heading">
+            <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
+        </div>
 
-            <div class="freeform-error">
-                <h4>{{ "Already Submitted!" }}</h4>
+        {# Check which if a duplicate check is applied #}
+        {% set duplicateCheck = form.settings.duplicateCheck %}
+        {% if duplicateCheck == "no_limit" %}
+            {% set duplicateCheckType = false %}
+        {% elseif duplicateCheck == "no_limit_logged_in_users_only" %}
+            {% set duplicateCheckType = "Logged in Users Only - No Limit" %}
+        {% elseif duplicateCheck == "limit_once_per_logged_in_user_only" %}
+            {% set duplicateCheckType = "Logged in Users Only - Once per Form" %}
+        {% elseif duplicateCheck == "limit_once_per_email" %}
+            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+        {% elseif duplicateCheck == "limit_once_per_email" %}
+            {% set duplicateCheckType = "Anyone - Once per Email Address" %}
+        {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
+            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
+        {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
+            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP or Cookie" %}
+        {% endif %}
+        
+        {# Handle message content for Guests viewing a Logged-in User only form #}
+        {% if duplicateCheck in ["no_limit_logged_in_users_only", "limit_once_per_logged_in_user_only"] and currentUser == false %}
+            {% set guestUserForLoggedInOnly = true %}
+        {% else %}
+            {% set guestUserForLoggedInOnly = false %}
+        {% endif %}
+
+        {# Display a tip for forms with a duplicate check enabled #}
+        {% if duplicateCheckType %}
+            <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
+                <h4>Please note...</h4>
+                <p>You currently have a duplicate check enabled (<i>{{ duplicateCheckType }}</i>) for this form.</p>
+            </div>
+        {% endif %}
+
+        {# Display a message if the form has already been submitted by the user. #}
+        {% if form.duplicate %}
+
+            <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
+                {# Display special message content for Guests viewing a Logged-in User only form #}
+                <h4>{{ guestUserForLoggedInOnly ? "Not Allowed!" : "Already Submitted!" }}</h4>
                 <p>
-                    You have already submitted this form! No duplicates are allowed for this form.
+                    {{ guestUserForLoggedInOnly ? "You must be logged in to submit this form." : "You have already submitted this form! No duplicates are allowed for this form." }}
                 </p>
             </div>
 
         {% else %}
 
-            {% if form.limitFormSubmissions %}
-            {# Display a tip for forms with submit limit setting enabled #}
-                <div class="freeform-notice">
-                    <h4>Please note...</h4>
-                    <p>
-                        You currently have a user submit limit setting enabled (<i>
-                            {%- if form.limitFormSubmissions == "auth_unlimited" -%}
-                                Logged in Users only (no limit)
-                            {%- elseif form.limitFormSubmissions == "cookie" -%}
-                                Once per Cookie
-                            {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
-                                Once per IP/Cookie combo
-                            {%- elseif form.limitFormSubmissions == "auth" -%}
-                                Once per logged in Users
-                            {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
-                                Once per logged in User or Guest Cookie
-                            {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
-                                Once per logged in User or Guest IP/Cookie combo
-                            {%- elseif form.limitFormSubmissions == "once_per_email" -%}
-                                Once per Email Address only
-                            {%- else -%}
-                                '{{ form.limitFormSubmissions }}'
-                            {%- endif -%}
-                        </i>) for this form.
-                    </p>
-                </div>
-            {% endif %}
-
-            {{ form.render }}
+            {{ form.render({
+                submissionToken: submissionToken|default(null)
+            }) }}
 
         {% endif %}
 
     {% else %}
 
-        <div class="freeform-error">
-            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and set a limit (<i>Limit Form Submission Rate</i> setting inside the <i>Validation</i> tab in the form builder) for this part of the demo to work.</p>
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
+            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and select an option for the <i>Duplicate Check</i> setting (inside the form builder Settings tab) for this part of the demo to work.</p>
         </div>
 
     {% endif %}
@@ -76,7 +88,7 @@
             <ol>
                 <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
                 <li>
-                    Make sure you have the <b>Limit Form Submission Rate</b> setting enabled (inside the <i>Validation</i> tab in the form builder).
+                    Make sure you have the <b>Duplicate Check</b> setting enabled (inside the form builder Settings tab).
                 </li>
                 <li>This page template contains a conditional that will hide the form once it detects that the user has already submitted the form.</li>
             </ol>

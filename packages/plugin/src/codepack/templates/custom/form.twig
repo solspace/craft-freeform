@@ -7,7 +7,7 @@
 
     {% if form %}
 
-        <div class="freeform-notice">
+        <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             Please be aware that no additional CSS, JS, or libraries are loaded in this view. It is meant for troubleshooting issues with rendering forms.
         </div>
     
@@ -19,7 +19,7 @@
 
     {% else %}
 
-        <div class="freeform-warning-notice">
+        <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
         </div>
 

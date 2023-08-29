@@ -126,7 +126,7 @@
 
         {% else %}
 
-            <div class="freeform-warning-notice">
+            <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 Sorry, no forms exist for this site yet.
             </div>
 
@@ -136,7 +136,7 @@
 
 {% else %}
 
-    <div class="freeform-warning-notice">
+    <div class="freeform-warning-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
         Sorry, you do not have permission to access this page.
     </div>
 

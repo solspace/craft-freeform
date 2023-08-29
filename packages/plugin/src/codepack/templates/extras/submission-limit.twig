@@ -22,7 +22,7 @@
         {# This optional conditional checks if the form has reached its submission limit set above #}
         {% if craft.freeform.submissionCount(form) >= submissionLimit %}
 
-            <div class="freeform-notice">
+            <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <h4>{{ "Submission Limit Reached!" }}</h4>
                 <p>
                     This form has a limit of {{ submissionLimit }} submissions, so no more can be submitted.
@@ -31,7 +31,7 @@
 
         {% else %}
 
-            <div class="freeform-notice">
+            <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <p>
                     This form has a limit of {{ submissionLimit }} submissions. There are currently {{ craft.freeform.submissionCount(form) }} submissions for this form.
                 </p>
@@ -45,7 +45,7 @@
 
     {% else %}
 
-        <div class="freeform-error">
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
         </div>
 

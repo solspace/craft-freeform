@@ -16,7 +16,7 @@
 
     {% if form %}
 
-        <div class="freeform-success" style="display:none;">
+        <div class="freeform-success{{ colorMode == "dark" ? " freeform-notice-dark" }}" style="display:none;">
             <h4>Thank you!</h4>
             <p>
                 We have received your submission. You may now <a href="{{ siteUrl('#') }}">download the PDF guide</a>.
@@ -29,7 +29,7 @@
 
     {% else %}
 
-        <div class="freeform-error">
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
         </div>
 

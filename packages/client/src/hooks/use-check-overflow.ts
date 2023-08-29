@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 
 export const useCheckOverflow = <T extends HTMLElement>(): [
   MutableRefObject<T>,
-  boolean
+  boolean,
 ] => {
   const textRef = useRef<T>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);

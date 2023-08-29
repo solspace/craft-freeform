@@ -1,3 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
+
 describe('Number', () => {
   describe('inRange', () => {
     it('is in the middle', () => {

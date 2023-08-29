@@ -82,7 +82,7 @@ export const TableEditor: React.FC<Props> = ({
                     }
                   />
                 </Cell>
-                <Cell width={110}>
+                <Cell $width={110}>
                   <Select
                     defaultValue={column.type}
                     title={translate('Type')}
@@ -140,7 +140,7 @@ export const TableEditor: React.FC<Props> = ({
                 </Cell>
                 {columns.length > 1 && (
                   <>
-                    <Cell tiny>
+                    <Cell $tiny>
                       <Button
                         onClick={() =>
                           updateValue(moveColumn(rowIndex, rowIndex, columns))
@@ -149,7 +149,7 @@ export const TableEditor: React.FC<Props> = ({
                         <DragIcon />
                       </Button>
                     </Cell>
-                    <Cell tiny>
+                    <Cell $tiny>
                       <Button
                         onClick={() => {
                           updateValue(deleteColumn(rowIndex, columns));

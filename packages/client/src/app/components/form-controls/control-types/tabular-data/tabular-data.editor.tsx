@@ -96,7 +96,7 @@ export const TabularDataEditor: React.FC<Props> = ({
 
                 {values.length > 1 && (
                   <>
-                    <Cell tiny>
+                    <Cell $tiny>
                       <Button
                         onClick={() =>
                           updateValue(moveRow(rowIndex, rowIndex, values))
@@ -105,7 +105,7 @@ export const TabularDataEditor: React.FC<Props> = ({
                         <DragIcon />
                       </Button>
                     </Cell>
-                    <Cell tiny>
+                    <Cell $tiny>
                       <Button
                         onClick={() => {
                           updateValue(deleteRow(rowIndex, values));

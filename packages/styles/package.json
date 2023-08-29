@@ -10,11 +10,11 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "devDependencies": {
-    "sass": "^1.49.0",
-    "y18n": ">=4.0.1"
+    "sass": "^1.66.1",
+    "y18n": "^5.0.8"
   },
   "dependencies": {
-    "craftcms-sass": "^3.5.1",
+    "craftcms-sass": "^3.5.7",
     "react-tippy": "^1.4.0"
   }
 }

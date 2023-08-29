@@ -27,8 +27,8 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
         return false;
       }
 
-      return property.implements.every((implementation) =>
-        type.implements?.includes(implementation)
+      return property.implements.every(
+        (implementation) => type.implements?.includes(implementation)
       );
     })
     .map((field) => ({

@@ -36,7 +36,9 @@ export const FieldCellWrapper = styled.div`
   border: 1px solid transparent;
   border-radius: ${borderRadius.md};
 
-  transition: border-color 0.2s ease-out, background-color 0.2s ease-out;
+  transition:
+    border-color 0.2s ease-out,
+    background-color 0.2s ease-out;
 
   &.active {
     border: 1px dashed #5782ef;

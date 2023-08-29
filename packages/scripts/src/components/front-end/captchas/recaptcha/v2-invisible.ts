@@ -48,17 +48,16 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
 };
 
 form.addEventListener(events.form.ready, initRecaptchaInvisible);
-
 form.addEventListener(events.form.onSubmit, async (event: FreeformEvent) => {
   if (isTokenSet) {
     return;
   }
 
   event.preventDefault();
-  grecaptcha.ready(() => grecaptcha.execute());
+  grecaptcha.ready(grecaptcha.execute);
 });
 
-form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
+form.addEventListener(events.form.ajaxAfterSubmit, () => {
   isTokenSet = false;
-  initRecaptchaInvisible(event);
+  grecaptcha.ready(grecaptcha.reset);
 });

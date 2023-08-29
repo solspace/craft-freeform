@@ -4,7 +4,9 @@ namespace Solspace\Freeform\Bundles\Form\Limiting;
 
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\DateTimeHelper;
 use craft\records\Element;
+use craft\records\Session;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
@@ -22,82 +24,63 @@ class FormLimiting extends FeatureBundle
 {
     public const NO_LIMIT = 'no_limit';
     public const NO_LIMIT_LOGGED_IN_USERS_ONLY = 'no_limit_logged_in_users_only';
-
-    public const LIMIT_ONCE_PER_EMAIL = 'once_per_email';
-
-    public const LIMIT_COOKIE = 'cookie';
-
-    public const LIMIT_IP_COOKIE = 'ip_cookie';
-
-    public const LIMIT_AUTH = 'auth';
-    public const LIMIT_AUTH_COOKIE = 'auth_cookie';
-    public const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
-    public const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
-
-    public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'once_per_logged_in_users_only';
-    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY = 'once_per_logged_in_user_or_guest_cookie_only';
-    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO = 'once_per_logged_in_user_or_guest_ip_cookie_combo';
-
-    public const NO_LIMITATIONS = [self::NO_LIMIT, self::NO_LIMIT_LOGGED_IN_USERS_ONLY];
-    public const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
-    public const IP_LIMITATIONS = [self::LIMIT_IP_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
-    public const USER_LIMITATIONS = [self::LIMIT_AUTH, self::LIMIT_AUTH_IP_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_UNLIMITED];
-    public const ONCE_PER_SESSION_LIMITATIONS = [self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO];
-    public const LOGGED_IN_ONLY = [self::LIMIT_AUTH, self::LIMIT_AUTH_UNLIMITED];
+    public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'limit_once_per_logged_in_user_only';
+    public const LIMIT_ONCE_PER_EMAIL = 'limit_once_per_email';
+    public const LIMIT_ONCE_PER_USER_OR_COOKIE = 'limit_once_per_user_or_cookie';
+    public const LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE = 'limit_once_per_user_or_ip_or_cookie';
 
     private array $formCache = [];
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleLimitations']);
-        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleLimitations']);
-        Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleDuplicateCheck']);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleDuplicateCheck']);
+        Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleDuplicateCheck']);
     }
 
-    public function handleLimitations(FormEventInterface $event): void
+    public function handleDuplicateCheck(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $settings = $form->getSettings();
-        $generalSettings = $settings->getGeneral();
         $behaviorSettings = $settings->getBehavior();
 
-        $limiting = $behaviorSettings->limitSubmissions;
+        $duplicateCheck = $behaviorSettings->duplicateCheck;
 
         $token = EditSubmissionContext::getToken($form);
         if ($token) {
             return;
         }
 
-        if (\in_array($limiting, self::NO_LIMITATIONS, true)) {
-            // DO NOTHING ?
+        if (self::NO_LIMIT === $duplicateCheck) {
+            return;
         }
 
-        if (self::LIMIT_AUTH === $limiting) {
-            $this->limitLoggedInOnly($event);
+        if (self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
+            $userId = \Craft::$app->user->getId();
+            if ($userId) {
+                return;
+            }
+
+            $this->addMessage($event);
         }
 
-        if (self::LIMIT_ONCE_PER_EMAIL === $limiting) {
-            $this->limitByEmail($event);
-        }
-
-        if (\in_array($limiting, self::ONCE_PER_SESSION_LIMITATIONS, true)) {
+        if (self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
             $this->limitOncePerSession($event);
         }
 
-        if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
+        if (self::LIMIT_ONCE_PER_EMAIL === $duplicateCheck) {
+            $this->limitByEmail($event);
+        }
+
+        if (self::LIMIT_ONCE_PER_USER_OR_COOKIE === $duplicateCheck) {
             $this->limitByUserId($event);
-        }
-
-        if ($generalSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
-            $this->limitByIp($event);
-        }
-
-        if (\in_array($limiting, self::COOKIE_LIMITATIONS, true)) {
             $this->limitByCookie($event);
         }
 
-        if (\in_array($limiting, self::LOGGED_IN_ONLY, true)) {
-            $this->limitLoggedInOnly($event);
+        if (self::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE === $duplicateCheck) {
+            $this->limitByUserId($event);
+            $this->limitByCookie($event);
+            $this->limitByIp($event);
         }
     }
 
@@ -178,6 +161,14 @@ class FormLimiting extends FeatureBundle
 
     private function limitByIp(FormEventInterface $event): void
     {
+        $form = $event->getForm();
+        $settings = $form->getSettings();
+        $generalSettings = $settings->getGeneral();
+
+        if (!$generalSettings->collectIpAddresses) {
+            return;
+        }
+
         $submissions = Submission::TABLE;
         $query = (new Query())
             ->select(["{$submissions}.[[id]]"])
@@ -205,9 +196,37 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitOncePerSession(FormEventInterface $event)
+    private function limitOncePerSession(FormEventInterface $event): void
     {
-        // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
+        $form = $event->getForm();
+
+        $session = Session::find()->orderBy('dateUpdated desc')->one();
+
+        $elements = Element::tableName();
+        $submissions = Submission::TABLE;
+
+        $query = (new Query())
+            ->select(["{$submissions}.[[id]]"])
+            ->from($submissions)
+            ->where([
+                'isSpam' => false,
+                'formId' => $form->getId(),
+                'userId' => $session->userId,
+            ])
+            ->limit(1)
+            ->innerJoin(
+                $elements,
+                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+            )
+        ;
+
+        $isPosted = (bool) $query->scalar();
+
+        $userSessionDuration = \Craft::$app->getConfig()->getGeneral()->userSessionDuration;
+
+        if ($isPosted && $session && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
+            $this->addMessage($event);
+        }
     }
 
     private function limitByUserId(FormEventInterface $event): void
@@ -243,14 +262,7 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitLoggedInOnly(FormEventInterface $event): void
-    {
-        if (!\Craft::$app->user->id) {
-            $this->addMessage($event, 'You must be logged in to submit this form.');
-        }
-    }
-
-    private function addMessage(FormEventInterface $event, $message = "Sorry, you've already submitted this form."): void
+    private function addMessage(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $formId = $form->getId();
@@ -261,14 +273,14 @@ class FormLimiting extends FeatureBundle
                 return;
             }
 
-            $form->addError(Freeform::t($message));
+            $form->addError(Freeform::t("Sorry, you've already submitted this form."));
 
             $this->formCache[] = $formId;
         }
 
         // Triggered when form is loaded or when form is submitted
         if ($event instanceof FormLoadedEvent || $event instanceof PersistStateEvent) {
-            $form->setSubmissionLimitReached(true);
+            $form->setDuplicate(true);
         }
     }
 }

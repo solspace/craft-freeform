@@ -28,9 +28,9 @@ class Cookies extends FeatureBundle
 
         $form = $event->getForm();
         $behaviorSettings = $form->getSettings()->getBehavior();
-        $limiting = $behaviorSettings->limitSubmissions;
+        $duplicateCheck = $behaviorSettings->duplicateCheck;
 
-        if (!\in_array($limiting, FormLimiting::COOKIE_LIMITATIONS, true)) {
+        if (FormLimiting::LIMIT_ONCE_PER_USER_OR_COOKIE === $duplicateCheck) {
             return;
         }
 

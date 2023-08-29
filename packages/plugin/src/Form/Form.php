@@ -123,7 +123,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
     private bool $formPosted = false;
-    private bool $submissionLimitReached = false;
+    private bool $duplicate = false;
     private bool $graphqlPosted = false;
     private array $graphqlArguments = [];
 
@@ -442,16 +442,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this;
     }
 
-    public function setSubmissionLimitReached(bool $submissionLimitReached): self
+    public function setDuplicate(bool $duplicate): self
     {
-        $this->submissionLimitReached = $submissionLimitReached;
+        $this->duplicate = $duplicate;
 
         return $this;
     }
 
-    public function isSubmissionLimitReached(): bool
+    public function isDuplicate(): bool
     {
-        return $this->submissionLimitReached;
+        return $this->duplicate;
     }
 
     public function isGraphQLPosted(): bool

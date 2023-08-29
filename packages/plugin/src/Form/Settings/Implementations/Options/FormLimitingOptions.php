@@ -18,31 +18,23 @@ class FormLimitingOptions implements OptionsGeneratorInterface
             )
             ->add(
                 FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,
-                'Logged in Users only (no limit)',
-            )
-            ->add(
-                FormLimiting::LIMIT_ONCE_PER_EMAIL,
-                'Once per Email Address only',
-            )
-            ->add(
-                FormLimiting::LIMIT_COOKIE,
-                'Once per Cookie only',
-            )
-            ->add(
-                FormLimiting::LIMIT_IP_COOKIE,
-                'Once per IP/Cookie combo',
+                'Logged in Users Only - No Limit',
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY,
-                'Once per logged in Users only',
+                'Logged in Users Only - Once per Form',
             )
             ->add(
-                FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY,
-                'Once per logged in User or Guest Cookie only',
+                FormLimiting::LIMIT_ONCE_PER_EMAIL,
+                'Anyone - Once per Email Address',
             )
             ->add(
-                FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO,
-                'Once per logged in User or Guest IP/Cookie combo',
+                FormLimiting::LIMIT_ONCE_PER_USER_OR_COOKIE,
+                'Anyone - Once per Logged in User or Guest Cookie',
+            )
+            ->add(
+                FormLimiting::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE,
+                'Anyone - Once per Logged in User or Guest IP or Cookie',
             )
         ;
     }

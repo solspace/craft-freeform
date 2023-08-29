@@ -103,10 +103,10 @@ class SubmissionInterface extends Element
                         'type' => Type::int(),
                         'description' => 'The ID of the submission',
                     ],
-                    'submissionLimitReached' => [
-                        'name' => 'submissionLimitReached',
+                    'duplicate' => [
+                        'name' => 'duplicate',
                         'type' => Type::boolean(),
-                        'description' => 'Whether the form submission rate limit has been reached or not',
+                        'description' => 'Whether the form submission is duplicate or not',
                     ],
                     'submissionToken' => [
                         'name' => 'submissionToken',

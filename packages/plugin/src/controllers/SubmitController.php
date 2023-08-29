@@ -143,7 +143,7 @@ class SubmitController extends BaseController
             'finished' => $form->isFinished(),
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
-            'submissionLimitReached' => $form->isSubmissionLimitReached(),
+            'duplicate' => $form->isDuplicate(),
             'onSuccess' => $form->getSettings()->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),

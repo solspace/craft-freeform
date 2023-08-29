@@ -39,7 +39,7 @@
 
     {% else %}
 
-        <div class="freeform-error">
+        <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
         </div>
 

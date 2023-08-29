@@ -328,7 +328,7 @@ class SummaryService extends Component
                 $optInDataStorage = true;
             }
 
-            if ($behaviorSettings->limitSubmissions) {
+            if ($behaviorSettings->duplicateCheck) {
                 $limitSubmissionRate = true;
             }
 

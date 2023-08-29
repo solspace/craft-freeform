@@ -30,9 +30,16 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';
 
+    #[Section(
+        handle: null,
+        label: 'Configuration',
+        icon: __DIR__.'/../../SectionIcons/gears.svg',
+        order: 1,
+    )]
     #[Input\Select(
         label: 'Type',
         instructions: 'Choose between using date, time or both.',
+        order: 0,
         options: [
             self::DATETIME_TYPE_BOTH => 'Date & Time',
             self::DATETIME_TYPE_DATE => 'Date',
@@ -44,13 +51,20 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     #[Input\Text(
         label: 'Locale (Optional)',
         instructions: "Enter your desired custom locale (e.g. `fr`, `ru`, etc.) to force the datepicker to use that locale. Otherwise leave blank to use the default site's locale set by Craft.",
+        order: 1,
     )]
     protected ?string $locale = null;
 
-    #[Input\Boolean('Use the Freeform datepicker for this field?')]
+    #[Input\Boolean(
+        label: 'Use the Freeform datepicker for this field?',
+        order: 2,
+    )]
     protected bool $useDatepicker = true;
 
-    #[Input\Boolean('Generate placeholder from your date format settings?')]
+    #[Input\Boolean(
+        label: 'Generate placeholder from your date format settings?',
+        order: 3,
+    )]
     protected bool $generatePlaceholder = true;
 
     #[VisibilityFilter('properties.generatePlaceholder === false')]
@@ -64,6 +78,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         handle: 'date',
         label: 'Date Settings',
         icon: __DIR__.'/../../SectionIcons/calendar.svg',
+        order: 2,
     )]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Select(
@@ -125,6 +140,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         handle: 'time',
         label: 'Time settings',
         icon: __DIR__.'/../../SectionIcons/time.svg',
+        order: 3,
     )]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Input\Boolean('24h clock?')]

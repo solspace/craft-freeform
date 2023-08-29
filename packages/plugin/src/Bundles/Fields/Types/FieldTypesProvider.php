@@ -43,15 +43,28 @@ class FieldTypesProvider
         if (null === $this->sections) {
             $types = $this->getRegisteredTypes();
 
-            $list = [
-                new Section(
-                    null,
-                    'Configuration',
-                    file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
-                    50
-                ),
-                ...$this->sectionProvider->getSections(...$types),
-            ];
+            $list = $this->sectionProvider->getSections(...$types);
+
+            $hasDefaultSection = false;
+            foreach ($list as $section) {
+                if (null === $section->handle) {
+                    $hasDefaultSection = true;
+
+                    break;
+                }
+            }
+
+            if (!$hasDefaultSection) {
+                $list = [
+                    new Section(
+                        null,
+                        'Configuration',
+                        file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
+                        0
+                    ),
+                    ...$list,
+                ];
+            }
 
             $this->sections = array_values($list);
         }

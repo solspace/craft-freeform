@@ -7,9 +7,9 @@ export enum Source {
 }
 
 export const sourceLabels: { [key in Source]: string } = {
-  custom: 'Custom Options',
+  custom: 'Custom',
   elements: 'Elements',
-  predefined: 'Predefined Options',
+  predefined: 'Predefined',
 };
 
 export type Option = {

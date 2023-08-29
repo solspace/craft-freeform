@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Hidden',
@@ -23,6 +24,11 @@ use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 )]
 class HiddenField extends TextField implements NoRenderInterface
 {
+    protected string $instructions = '';
+    protected string $placeholder = '';
+    protected bool $required = false;
+    protected FieldAttributesCollection $attributes;
+
     public function getType(): string
     {
         return self::TYPE_HIDDEN;

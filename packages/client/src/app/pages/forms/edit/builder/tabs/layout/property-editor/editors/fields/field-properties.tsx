@@ -40,7 +40,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const searchFieldType = useFieldTypeSearch();
 
   if (!field || !type) {
-    return <div>Not found</div>;
+    return <FieldPropertiesWrapper />;
   }
 
   if (!sections && isFetching) {
@@ -55,24 +55,26 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   }
 
   const sectionBlocks: React.ReactElement[] = [];
-  sections.forEach(({ handle, label, icon }) => {
-    const properties = type.properties.filter(sectionFilter(handle));
-    if (!properties.length) {
-      return;
-    }
+  sections
+    .sort((a, b) => a.order - b.order)
+    .forEach(({ handle, label, icon }) => {
+      const properties = type.properties.filter(sectionFilter(handle));
+      if (!properties.length) {
+        return;
+      }
 
-    sectionBlocks.push(
-      <SectionBlock label={label} icon={icon} key={handle}>
-        {properties.map((property) => (
-          <FieldComponent
-            key={property.handle}
-            field={field}
-            property={property}
-          />
-        ))}
-      </SectionBlock>
-    );
-  });
+      sectionBlocks.push(
+        <SectionBlock label={label} icon={icon} key={handle}>
+          {properties.map((property) => (
+            <FieldComponent
+              key={property.handle}
+              field={field}
+              property={property}
+            />
+          ))}
+        </SectionBlock>
+      );
+    });
 
   return (
     <FieldPropertiesWrapper>

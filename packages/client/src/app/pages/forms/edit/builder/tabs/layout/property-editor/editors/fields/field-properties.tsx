@@ -40,7 +40,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const searchFieldType = useFieldTypeSearch();
 
   if (!field || !type) {
-    return <div>Not found</div>;
+    return <FieldPropertiesWrapper />;
   }
 
   if (!sections && isFetching) {

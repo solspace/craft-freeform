@@ -10,9 +10,9 @@ export const useRemoveAnimation: RemoveAnimation = ({ active, hovering }) => {
   const style = useSpring({
     opacity: active ? 1 : 0,
     background: hovering ? colors.error : 'transparent',
-    color: hovering ? '#fff' : colors.gray300,
+    fill: hovering ? '#fff' : colors.gray300,
     scale: hovering ? 1.2 : 1,
-    rotate: active ? 0 : 50,
+    rotate: active ? 0 : 30,
 
     config: (key) => {
       switch (key) {

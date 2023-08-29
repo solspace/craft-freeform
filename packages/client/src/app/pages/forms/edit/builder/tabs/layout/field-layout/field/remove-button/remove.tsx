@@ -27,7 +27,7 @@ export const Remove: React.FC<Props> = ({ field, active }) => {
       onClick={(event) => {
         event.stopPropagation();
         dispatch(contextActions.unfocus());
-        setTimeout(() => dispatch(fieldThunks.remove(field)), 250);
+        dispatch(fieldThunks.remove(field));
       }}
     >
       <DeleteIcon />

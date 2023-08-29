@@ -28,6 +28,10 @@ class PhoneValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
+        if (!$value) {
+            return;
+        }
+
         $pattern = $field->getPattern();
         $message = 'Invalid phone number';
 

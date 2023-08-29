@@ -63,7 +63,10 @@ export const pageRulesSlice = createSlice({
       modifyRule.conditions = conditions;
     },
     remove: (state, action: PayloadAction<string>) => {
-      state.items = state.items.filter((rule) => rule.uid !== action.payload);
+      state.items.splice(
+        state.items.findIndex((rule) => rule.uid === action.payload),
+        1
+      );
     },
   },
 });

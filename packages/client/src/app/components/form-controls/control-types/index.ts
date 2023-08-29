@@ -1,6 +1,7 @@
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
 export { default as checkboxes } from './checkboxes/checkboxes';
+export { default as codeEditor } from './code-editor/code';
 export { default as colorPicker } from './color-picker/color-picker';
 export { default as datePicker } from './date-picker/date-picker';
 export { default as dynamicSelect } from './dynamic-select/dynamic-select';
@@ -22,3 +23,4 @@ export { default as string } from './string/string';
 export { default as table } from './table/table';
 export { default as tabularData } from './tabular-data/tabular-data';
 export { default as textarea } from './textarea/textarea';
+export { default as wysiwyg } from './wysiwyg/wysiwyg';

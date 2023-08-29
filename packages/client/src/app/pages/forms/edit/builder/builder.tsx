@@ -4,7 +4,8 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Route, Routes } from 'react-router-dom';
 
 import { PortalProvider } from './contexts/portal.context';
-import { FormSettings } from './tabs/form-settings/form-settings';
+import { FormSettings } from './tabs/form-settings/settings';
+import { SettingsEditor } from './tabs/form-settings/settings.editor';
 import { Integrations } from './tabs/integrations/integrations';
 import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/property-editor/empty-editor';
 import { PropertyEditor as IntegrationsEditor } from './tabs/integrations/property-editor/property-editor';
@@ -41,7 +42,10 @@ export const Builder: React.FC = () => {
                 <Route path="field/:uid" element={<FieldRulesEditor />} />
                 <Route path="page/:uid" element={<PageRulesEditor />} />
               </Route>
-              <Route path="settings" element={<FormSettings />} />
+              <Route path="settings" element={<FormSettings />}>
+                <Route index element={<SettingsEditor />} />
+                <Route path=":sectionHandle" element={<SettingsEditor />} />
+              </Route>
             </Routes>
           </BuilderContent>
         </PortalProvider>

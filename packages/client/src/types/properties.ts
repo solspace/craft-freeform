@@ -37,6 +37,8 @@ export enum PropertyType {
   Table = 'table',
   TabularData = 'tabularData',
   Textarea = 'textarea',
+  WYSIWYG = 'wysiwyg',
+  CodeEditor = 'codeEditor',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -189,6 +191,14 @@ export type FieldMappingProperty = BaseProperty<
   parameterFields?: string[];
 };
 
+export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG>;
+export type CodeEditorProperty = BaseProperty<
+  string,
+  PropertyType.CodeEditor
+> & {
+  language: string;
+};
+
 export type Property =
   | AttributeProperty
   | BooleanProperty
@@ -213,7 +223,9 @@ export type Property =
   | StringProperty
   | TableProperty
   | TabularDataProperty
-  | TextareaProperty;
+  | TextareaProperty
+  | WYSIWYGProperty
+  | CodeEditorProperty;
 
 export type FieldType = {
   name: string;

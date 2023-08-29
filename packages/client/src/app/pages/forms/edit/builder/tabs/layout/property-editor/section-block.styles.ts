@@ -7,7 +7,6 @@ import { Icon } from './property-editor.styles';
 export const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
 
   padding: 0 ${spacings.lg} ${spacings.lg};
 
@@ -16,11 +15,19 @@ export const SectionWrapper = styled.div`
   ${scrollBar};
 `;
 
-type SectionBlockContainerProps = {
-  label?: string;
-};
+export const SectionBlockIcon = styled(Icon)`
+  position: absolute;
+  left: 2px;
+  top: 12px;
+  z-index: 1;
 
-export const SectionBlockContainer = styled.section<SectionBlockContainerProps>`
+  width: 14px;
+  height: 14px;
+
+  fill: rgb(154 165 177 / 75%);
+`;
+
+export const SectionBlockContainer = styled.section`
   position: relative;
 
   display: flex;
@@ -29,9 +36,14 @@ export const SectionBlockContainer = styled.section<SectionBlockContainerProps>`
 
   margin-top: ${spacings.lg};
   padding-top: ${spacings.lg};
+  padding-bottom: ${spacings.lg};
 
   &:empty {
     display: none;
+
+    & + ${SectionBlockIcon} {
+      display: none;
+    }
   }
 
   &:before {
@@ -50,20 +62,8 @@ export const SectionBlockContainer = styled.section<SectionBlockContainerProps>`
     box-shadow: ${shadows.bottom};
   }
 
-  > ${Icon} {
-    position: absolute;
-    left: 2px;
-    top: -6px;
-    z-index: 1;
-
-    width: 14px;
-    height: 14px;
-
-    fill: rgb(154 165 177 / 75%);
-  }
-
   &:after {
-    content: '${({ label }) => label}';
+    content: attr(data-label);
 
     position: absolute;
     left: -5px;
@@ -77,13 +77,22 @@ export const SectionBlockContainer = styled.section<SectionBlockContainerProps>`
     ${labelText};
     font-size: 11px;
   }
+`;
+
+export const SectionBlockWrapper = styled.div`
+  position: relative;
 
   &:first-child {
-    margin-top: 0;
+    ${SectionBlockContainer} {
+      margin-top: 0;
 
-    &:before,
-    &:after,
-    > ${Icon} {
+      &:before,
+      &:after {
+        display: none;
+      }
+    }
+
+    ${SectionBlockIcon} {
       display: none;
     }
   }

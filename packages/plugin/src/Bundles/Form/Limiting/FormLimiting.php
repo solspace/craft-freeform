@@ -56,16 +56,11 @@ class FormLimiting extends FeatureBundle
         }
 
         if (self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
-            $userId = \Craft::$app->user->getId();
-            if ($userId) {
-                return;
-            }
-
-            $this->addMessage($event);
+            $this->limitByLoggedInUsersOnly($event);
         }
 
         if (self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY === $duplicateCheck) {
-            $this->limitOncePerSession($event);
+            $this->limitBySession($event);
         }
 
         if (self::LIMIT_ONCE_PER_EMAIL === $duplicateCheck) {
@@ -82,6 +77,16 @@ class FormLimiting extends FeatureBundle
             $this->limitByCookie($event);
             $this->limitByIp($event);
         }
+    }
+
+    private function limitByLoggedInUsersOnly(FormEventInterface $event): void
+    {
+        $userId = \Craft::$app->user->getId();
+        if ($userId) {
+            return;
+        }
+
+        $this->addMessage($event);
     }
 
     private function limitByEmail(FormEventInterface $event): void
@@ -196,11 +201,18 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitOncePerSession(FormEventInterface $event): void
+    private function limitBySession(FormEventInterface $event): void
     {
-        $form = $event->getForm();
+        $userId = \Craft::$app->getUser()->getId();
+        $session = Session::find()->where(['userId' => $userId])->orderBy('dateUpdated desc')->one();
 
-        $session = Session::find()->orderBy('dateUpdated desc')->one();
+        if (!$userId || !$session) {
+            $this->addMessage($event);
+
+            return;
+        }
+
+        $form = $event->getForm();
 
         $elements = Element::tableName();
         $submissions = Submission::TABLE;
@@ -211,7 +223,7 @@ class FormLimiting extends FeatureBundle
             ->where([
                 'isSpam' => false,
                 'formId' => $form->getId(),
-                'userId' => $session->userId,
+                'userId' => $userId,
             ])
             ->limit(1)
             ->innerJoin(
@@ -224,7 +236,7 @@ class FormLimiting extends FeatureBundle
 
         $userSessionDuration = \Craft::$app->getConfig()->getGeneral()->userSessionDuration;
 
-        if ($isPosted && $session && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
+        if ($isPosted && DateTimeHelper::isWithinLast($session->dateUpdated, $userSessionDuration.' seconds')) {
             $this->addMessage($event);
         }
     }

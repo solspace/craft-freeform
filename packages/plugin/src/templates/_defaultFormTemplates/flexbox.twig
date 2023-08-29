@@ -173,12 +173,12 @@ if (form) {
 {# Success and error message handling for non-AJAX forms #}
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
-        <div class="freeform-alert freeform-alert-success">
+        <div{{ form.attributes.success }}>
             {{ form.settings.successMessage | t('freeform') }}
         </div>
     {% endif %}
     {% if form.hasErrors %}
-        <div{{ form.hasErrors }}>
+        <div{{ form.attributes.errors }}>
             {{ form.settings.errorMessage | t('freeform') }}
 
             {% if form.errors|length %}

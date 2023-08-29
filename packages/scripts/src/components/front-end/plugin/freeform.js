@@ -682,6 +682,7 @@ export default class Freeform {
 
             if (!this.options.skipHtmlReload) {
               this._resetHandlers();
+              this._setUp();
             }
 
             if (finished) {
@@ -746,7 +747,6 @@ export default class Freeform {
       }
 
       this.unlockSubmit(form);
-      this._setUp();
     };
 
     const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });

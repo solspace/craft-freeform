@@ -1,5 +1,8 @@
 import React from 'react';
+import { useResolvedPath } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import translate from '@ff-client/utils/translations';
 
 import { FieldLayout } from './field-layout/field-layout';
 import { FieldList } from './field-list/field-list';
@@ -8,8 +11,11 @@ import { DragContextProvider } from './drag.context';
 import { Grid } from './layout.styles';
 
 export const LayoutEditor: React.FC = () => {
+  const currentPath = useResolvedPath('');
+
   return (
     <DragContextProvider>
+      <Breadcrumb label={translate('Layout')} url={currentPath.pathname} />
       <Grid>
         <Sidebar $noPadding>
           <PropertyEditor />

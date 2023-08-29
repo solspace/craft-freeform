@@ -1,35 +1,48 @@
 <div{{ field.attributes.container }}>
 
 {{ field.renderLabel }}
+
 <ul class="w-full text-sm font-medium border border-slate-400 rounded flex">
-    {% if field.scales %}
-        {% set opinionScaleOptions = field.options|length %}
-        {% for index, option in field.options %}
+    {% for scale in field.scales %}
         <li class="w-full">
             <input type="radio" name="{{ field.handle }}"
-                value="{{ option.value }}"
-                id="{{ field.idAttribute }}-{{ index }}"
-                {{ field.value == option.value ? "checked" }}
+                value="{{ scale.value }}"
+                id="{{ field.idAttribute }}-{{ loop.index }}"
+                {{ field.value == scale.value ? "checked" }}
                 class="hidden peer"
-            />
-            <label for="{{ field.idAttribute }}-{{ index }}" class="inline-flex text-center w-full py-2 px-3 text-slate-800 bg-white cursor-pointer peer-checked:bg-slate-200 hover:bg-slate-100{% if (index + 1) == 1 %} border-r border-slate-400 rounded-tl rounded-bl{% elseif (index + 1) == opinionScaleOptions %} rounded-tr rounded-br{% else %} border-r border-slate-400{% endif %}">
-                {% if option.label %}
-                    {{ option.label }}
-                {% else %}
-                    {{ option.value }}
-                {% endif %}
+             />
+            <label for="{{ field.idAttribute }}-{{ loop.index }}"
+                class="inline-flex text-center w-full py-2 px-3 text-slate-800 bg-white cursor-pointer peer-checked:bg-slate-200 hover:bg-slate-100
+                    {% if loop.index == 1 %}
+                        border-r border-slate-400 rounded-tl rounded-bl
+                    {% elseif loop.index == field.scales|length %}
+                        rounded-tr rounded-br
+                    {% else %}
+                        border-r border-slate-400
+                    {% endif %}">
+                {{ scale }}
             </label>
         </li>
-        {% endfor %}
-    {% endif %}
-    {#% if field.legends %}
-        <ul>
-            {% for legend in field.legends %}
-                <li>{{ legend.legend }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %#}
+    {% endfor %}
 </ul>
+
+{% if field.legends %}
+    <ul class="w-full text-sm font-medium flex text-slate-500">
+        {% for legend in field.legends %}
+            <li class="w-full
+                {% if loop.index == 1 %}
+                    text-left
+                {% elseif loop.index == field.legends|length %}
+                    text-right
+                {% else %}
+                    text-center
+                {% endif %}">
+                {{ legend }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
 {{ field.renderInstructions }}
 {{ field.renderErrors }}
 

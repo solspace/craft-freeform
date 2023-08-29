@@ -1,8 +1,9 @@
 import type React from 'react';
 
 import { useBreadcrumbs } from './breadcrumbs.context';
+import type { Breadcrumb as BreadcrumbType } from './breadcrumbs.types';
 
-type Props = Breadcrumb;
+type Props = BreadcrumbType;
 
 export const Breadcrumb: React.FC<Props> = (crumb) => {
   useBreadcrumbs(crumb);

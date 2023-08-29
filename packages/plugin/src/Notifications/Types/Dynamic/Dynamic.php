@@ -10,6 +10,8 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipien
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -29,6 +31,10 @@ class Dynamic extends BaseNotification
         instructions: 'Select which field should be used to determine where to send the notification.',
         order: 3,
         emptyOption: 'Select a field',
+        implements: [
+            OptionsInterface::class,
+            BooleanInterface::class,
+        ],
     )]
     protected ?FieldInterface $field;
 

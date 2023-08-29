@@ -1,7 +1,7 @@
 import type { GenericValue } from '@ff-client/types/properties';
 
 export const extractParameter = (
-  object: any,
+  object: GenericValue,
   parameter: string
 ): GenericValue => {
   const parameterParts = parameter.split('.');

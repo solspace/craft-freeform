@@ -64,7 +64,7 @@ export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
               fields: form.fields.filter((field) =>
                 field.label.toLowerCase().includes(searchQuery)
               ),
-            } as FieldForm)
+            }) as FieldForm
         )
         .filter((form) => form.fields.length > 0);
     },

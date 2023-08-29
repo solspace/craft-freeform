@@ -3,6 +3,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 
+import type { Breadcrumb } from './breadcrumbs.types';
+
 type ContextType = {
   stack: Breadcrumb[];
   pushCrumb: (crumb: Breadcrumb) => void;
@@ -50,8 +52,8 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
       {createPortal(
         <nav aria-label="Breadcrumbs">
           <ul className="breadcrumb-list">
-            {stack.map(({ label, url }) => (
-              <li key={url}>
+            {stack.map(({ label, url }, i) => (
+              <li key={i}>
                 <Link to={url}>{label}</Link>
               </li>
             ))}

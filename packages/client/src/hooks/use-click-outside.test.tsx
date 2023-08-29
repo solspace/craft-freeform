@@ -1,4 +1,5 @@
 import React from 'react';
+import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import { useClickOutside } from './use-click-outside';

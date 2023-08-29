@@ -8,7 +8,7 @@ type DimensionsObserverReturn<T extends HTMLElement> = {
 };
 
 export const useDimensionsObserver = <
-  T extends HTMLElement = HTMLElement
+  T extends HTMLElement = HTMLElement,
 >(): DimensionsObserverReturn<T> => {
   const ref = useRef<T>(null);
 

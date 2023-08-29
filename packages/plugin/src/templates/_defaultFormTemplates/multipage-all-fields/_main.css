@@ -86,7 +86,7 @@ button[type=submit].freeform-processing:before {
     background: #ffffff;
     border-radius: 10px;
 }
-.freeform-page h3 {
+.freeform-page > h3 {
     display: block;
     padding: 15px 20px;
     margin: 0 -20px 15px;
@@ -101,7 +101,7 @@ button[type=submit].freeform-processing:before {
 .freeform-page.freeform-page-active {
     background: #d4e5ff;
 }
-.freeform-page.freeform-page-active h3 {
+.freeform-page.freeform-page-active > h3 {
     color: #ffffff;
     font-weight: 600;
     background: #0d6efd;

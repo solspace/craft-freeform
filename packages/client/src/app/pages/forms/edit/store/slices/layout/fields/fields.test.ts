@@ -1,7 +1,8 @@
 import type { FieldType } from '@ff-client/types/properties';
+import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import reducer from './index';
-import { type FieldStore, fieldActions } from '.';
+import { fieldActions, type FieldStore } from '.';
 
 const testType: FieldType = {
   implements: [],

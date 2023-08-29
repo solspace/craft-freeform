@@ -6,7 +6,11 @@
     "lib": ["ESNext", "DOM"],
     "resolveJsonModule": true,
     "types": ["jest", "node"],
-    "typeRoots": ["config/@types", "node_modules/@types"],
+    "typeRoots": [
+      "config/@types",
+      "./node_modules/@types",
+      "../../node_modules/@types"
+    ],
     "paths": {
       "@editor/*": ["client/src/app/pages/forms/edit/*"],
       "@components/*": ["client/src/app/components/*"],

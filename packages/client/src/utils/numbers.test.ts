@@ -1,3 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
+
 import { parseNumericValue } from './numbers';
 
 describe('numbers', () => {

@@ -24,7 +24,7 @@ export const AttributeTypeTabs = styled(TabsWrapper)`
 export const AttributeTabContent = styled.div`
   padding: ${spacings.md};
 
-  background: ${colors.white}; ;
+  background: ${colors.white};
 `;
 
 export const AttributeContainer = styled(PreviewEditorContainer)``;

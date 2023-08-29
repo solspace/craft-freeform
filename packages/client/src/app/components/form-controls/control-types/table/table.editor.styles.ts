@@ -17,14 +17,14 @@ export const TabularOptions = styled.table`
 export const Row = styled.tr``;
 
 type CellProps = {
-  width?: number;
-  tiny?: boolean;
+  $width?: number;
+  $tiny?: boolean;
 };
 export const Cell = styled.td<CellProps>`
-  width: ${({ tiny, width }) =>
-    tiny ? '32px' : width ? `${width}px` : 'auto'};
+  width: ${({ $tiny, $width }) =>
+    $tiny ? '32px' : $width ? `${$width}px` : 'auto'};
 
-  padding: ${({ tiny }) => (tiny ? '6px 9px !important' : '0 !important')};
+  padding: ${({ $tiny }) => ($tiny ? '6px 9px !important' : '0 !important')};
 
   border: 1px solid rgba(0, 0, 0, 0.1);
 

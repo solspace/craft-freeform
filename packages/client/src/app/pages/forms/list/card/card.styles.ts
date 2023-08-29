@@ -87,7 +87,9 @@ export const CardWrapper = styled.li`
   opacity: 1;
   pointer-events: auto;
 
-  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
+  transition:
+    background-color 0.2s ease-out,
+    border-color 0.2s ease-out;
 
   &.disabled {
     opacity: 0.5;

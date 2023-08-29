@@ -2,7 +2,7 @@
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2021,
+    "ecmaVersion": "latest",
     "sourceType": "module",
     "ecmaFeatures": {
       "jsx": true
@@ -10,7 +10,7 @@
   },
   "settings": {
     "react": {
-      "version": "17.0"
+      "version": "18.0"
     }
   },
   "env": {

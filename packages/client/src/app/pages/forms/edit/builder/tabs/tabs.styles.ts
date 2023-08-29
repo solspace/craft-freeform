@@ -34,7 +34,8 @@ export const TabsWrapper = styled.div`
 
   background-color: ${colors.gray050};
   border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
-  box-shadow: inset 0 -1px 0 0 rgba(154, 165, 177, 0.25),
+  box-shadow:
+    inset 0 -1px 0 0 rgba(154, 165, 177, 0.25),
     0 0 0 1px rgba(154, 165, 177, 0.25);
 
   a {
@@ -67,8 +68,10 @@ export const TabsWrapper = styled.div`
     &.active {
       background: ${colors.white};
       color: ${colors.gray700};
-      box-shadow: inset 0 2px 0 ${colors.gray500},
-        0 0 0 1px rgba(51, 64, 77, 0.1), 0 2px 12px rgba(205, 216, 228, 0.5) !important;
+      box-shadow:
+        inset 0 2px 0 ${colors.gray500},
+        0 0 0 1px rgba(51, 64, 77, 0.1),
+        0 2px 12px rgba(205, 216, 228, 0.5) !important;
     }
 
     &.errors {

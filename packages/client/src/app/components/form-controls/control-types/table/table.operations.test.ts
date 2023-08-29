@@ -1,3 +1,5 @@
+import { describe, expect, it } from '@jest/globals';
+
 import { cleanColumns } from './table.operations';
 
 describe('attributes -> table', () => {

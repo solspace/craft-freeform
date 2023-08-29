@@ -53,21 +53,26 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      <Label
-        className={classes(
-          field.properties.required ? 'label is-required' : 'label'
-        )}
-      >
-        <LoadingText loading={isLoadingPreview} spinner>
-          {field.properties.label || type?.name}
-        </LoadingText>
-      </Label>
+      {!type.implements.includes('inputOnly') && (
+        <Label
+          className={classes(
+            field.properties.required ? 'label is-required' : 'label'
+          )}
+        >
+          <LoadingText loading={isLoadingPreview} spinner>
+            {field.properties.label || type?.name}
+          </LoadingText>
+        </Label>
+      )}
+
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>
       )}
+
       {type.type === Type.Group && (
         <GroupFieldLayout field={field} layoutUid={field.properties?.layout} />
       )}
+
       {type.type !== Type.Group && (
         <div dangerouslySetInnerHTML={{ __html: preview }} />
       )}

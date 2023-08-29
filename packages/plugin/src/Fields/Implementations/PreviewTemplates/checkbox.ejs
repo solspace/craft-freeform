@@ -2,4 +2,4 @@
        class="checkbox"
        <% if (checkedByDefault) { %>checked="checked"<% } %>
 />
-<label for=""><%= label %></label>
+<label for="" class="<%= required ? "required" : "" %>"><%= label %></label>

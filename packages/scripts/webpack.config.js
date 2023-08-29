@@ -5,11 +5,13 @@ const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProd ? 'production' : 'development',
+  context: path.resolve(__dirname, '.'),
   target: ['web', 'es5'],
 
   entry: () =>
     glob.sync('./src/components/**/*.{js,ts}').reduce((obj, el) => {
-      obj[el] = el;
+      obj[`./${el}`] = `./${el}`;
+
       return obj;
     }, {}),
   output: {

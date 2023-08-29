@@ -11,7 +11,6 @@ import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
-import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
@@ -57,7 +56,6 @@ export default class Freeform {
   _initializedHandlers = [];
   _handlers = [
     BackButtonHandler,
-    StripeHandler,
     RuleHandler,
     HoneypotHandler,
     DatePickerHandler,

@@ -1,8 +1,9 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
+import type { AxiosProgressEvent } from 'axios';
 import axios from 'axios';
-import * as filesize from 'filesize';
+import { filesize } from 'filesize';
 
 import { addFieldErrors } from './error-handling';
 import { createInput, createPreviewContainer } from './preview';
@@ -114,7 +115,7 @@ export const handleFileUpload = (
     .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
       headers: { 'content-type': 'multipart/form-data' },
       cancelToken: token,
-      onUploadProgress: (progress: ProgressEvent) => {
+      onUploadProgress: (progress: AxiosProgressEvent) => {
         const { total, loaded } = progress;
         const percent = Math.ceil(loaded / (total / 100));
 

@@ -33,32 +33,38 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
   loadReCaptcha(event.form, config).then(() => {
     const recaptchaElement = createCaptcha(event);
 
-    grecaptcha.ready(() => {
-      grecaptcha.render(recaptchaElement, {
-        sitekey,
-        size: 'invisible',
-        callback: (token) => {
-          isTokenSet = true;
-          recaptchaElement.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
-          event.freeform.triggerResubmit();
-        },
+    if (!recaptchaElement.innerHTML) {
+      grecaptcha.ready(() => {
+        grecaptcha.render(recaptchaElement, {
+          sitekey,
+          size: 'invisible',
+          callback: (token) => {
+            isTokenSet = true;
+            recaptchaElement.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
+            event.freeform.triggerResubmit();
+          },
+        });
       });
-    });
+    } else {
+      grecaptcha.ready(grecaptcha.reset);
+    }
   });
 };
 
 form.addEventListener(events.form.ready, initRecaptchaInvisible);
-
 form.addEventListener(events.form.onSubmit, async (event: FreeformEvent) => {
   if (isTokenSet) {
     return;
   }
 
   event.preventDefault();
-  grecaptcha.ready(() => grecaptcha.execute());
+  loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
+    grecaptcha.ready(grecaptcha.execute);
+  });
 });
 
 form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
   isTokenSet = false;
+
   initRecaptchaInvisible(event);
 });

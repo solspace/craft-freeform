@@ -8,7 +8,7 @@
     "jsx": "react",
     "allowJs": true,
     "baseUrl": "./src",
-    "typeRoots": ["node_modules/@types", "types/"],
+    "typeRoots": ["./node_modules/@types", "../../node_modules/@types", "types/"],
     "paths": {
       "@lib/*": ["lib/*"],
       "@components/*": ["components/*"]

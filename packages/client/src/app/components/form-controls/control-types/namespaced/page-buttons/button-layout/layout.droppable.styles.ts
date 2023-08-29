@@ -12,7 +12,7 @@ export const LayoutElement = styled.div`
   border: 1px dashed #ccc;
   padding: ${spacings.xs} ${spacings.sm};
 
-  text-align: center; ;
+  text-align: center;
 `;
 
 export const SpaceLayoutElement = styled(LayoutElement)`

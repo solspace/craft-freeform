@@ -2,6 +2,7 @@ import type { PropsWithChildren } from 'react';
 import React, { useState } from 'react';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import type { GenericValue } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -16,7 +17,7 @@ type Props = {
   title?: string;
   closeModal: () => void;
   onSave?: () => boolean | Promise<boolean>;
-  style?: any;
+  style?: GenericValue;
 };
 
 export const Modal: React.FC<PropsWithChildren<Props>> = ({

@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 
+import type { GenericValue } from '@ff-client/types/properties';
+
 const urlParams = new URLSearchParams(window.location.search);
 const debugMode = process.env.DEBUG_MODE || urlParams.get('mode') === 'debug';
 
@@ -24,7 +26,7 @@ export const debug: DebugConsole = new Proxy(console as DebugConsole, {
         return () => {};
       }
 
-      return (...messages: any[]) => {
+      return (...messages: GenericValue[]) => {
         target.log('🀄️🔆🔆🔆🀄️', ...messages);
       };
     }

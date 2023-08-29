@@ -25,8 +25,19 @@ export const scrollBar = css`
 `;
 
 export const labelText = css`
-  font-family: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,
-    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-family:
+    system-ui,
+    BlinkMacSystemFont,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    Fira Sans,
+    Droid Sans,
+    Helvetica Neue,
+    sans-serif;
   font-weight: bold;
   text-transform: uppercase;
   color: rgb(154 165 177 / 75%);

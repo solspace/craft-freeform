@@ -1,3 +1,5 @@
+import { describe, expect, it, jest } from '@jest/globals';
+
 import injectInto from './inject-into';
 
 describe('injectInto middleware', () => {

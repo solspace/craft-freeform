@@ -4,15 +4,17 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\LegendsTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\ScalesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
+use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
 use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
-use Solspace\Freeform\Form\Form;
 
 #[Type(
     name: 'Opinion Scale',
@@ -22,7 +24,7 @@ use Solspace\Freeform\Form\Form;
 )]
 class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
-    #[ValueTransformer(TabularDataTransformer::class)]
+    #[ValueTransformer(ScalesTransformer::class)]
     #[Input\TabularData(
         label: 'Scales',
         instructions: '',
@@ -38,9 +40,9 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             ],
         ],
     )]
-    protected TabularData $scales;
+    protected array $scales = [];
 
-    #[ValueTransformer(TabularDataTransformer::class)]
+    #[ValueTransformer(LegendsTransformer::class)]
     #[Input\TabularData(
         label: 'Legends',
         instructions: '',
@@ -49,42 +51,40 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             ['key' => 'label', 'label' => 'Legend'],
         ],
     )]
-    protected TabularData $legends;
-
-    public function __construct(Form $form)
-    {
-        parent::__construct($form);
-
-        $this->scales = new TabularData();
-        $this->legends = new TabularData();
-    }
+    protected array $legends = [];
 
     public function getType(): string
     {
         return self::TYPE_OPINION_SCALE;
     }
 
-    public function getScales(): TabularData
+    /**
+     * @return Scale[]
+     */
+    public function getScales(): array
     {
         return $this->scales;
+    }
+
+    /**
+     * @return Legend[]
+     */
+    public function getLegends(): array
+    {
+        return $this->legends;
     }
 
     public function getOptions(): OptionCollection
     {
         $collection = new OptionCollection();
-        foreach ($this->getScales() as $row) {
-            $value = $row[0] ?? null;
-            $label = $row[1] ?? $value;
+        foreach ($this->getScales() as $scale) {
+            $value = $scale->getValue();
+            $label = $scale->getLabel();
 
             $collection->add($label, $value);
         }
 
         return $collection;
-    }
-
-    public function getLegends(): TabularData
-    {
-        return $this->legends;
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType
@@ -93,9 +93,8 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         $description[] = 'Single option value allowed.';
 
         $values = [];
-
-        foreach ($this->getOptionConfiguration() as $option) {
-            $values[] = '"'.$option->getValue().'"';
+        foreach ($this->getScales() as $scale) {
+            $values[] = '"'.$scale->getValue().'"';
         }
 
         if (!empty($values)) {
@@ -103,9 +102,8 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         }
 
         $legends = [];
-
         foreach ($this->getLegends() as $legend) {
-            $legends[] = '"'.$legend['legend'].'"';
+            $legends[] = '"'.$legend.'"';
         }
 
         if (!empty($legends)) {
@@ -137,7 +135,9 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
 
         $output .= '<ul class="opinion-scale-scales">';
         foreach ($this->getScales() as $index => $scale) {
-            [$value, $label] = $scale;
+            $label = $scale->getLabel();
+            $value = $scale->getValue();
+
             $label = $label ?: $value;
 
             $isSelected = $value == $this->getValue();
@@ -166,7 +166,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             $output .= '<ul class="opinion-scale-legends">';
             foreach ($this->getLegends() as $legend) {
                 $output .= '<li>';
-                $output .= $legend[0];
+                $output .= (string) $legend;
                 $output .= '</li>';
             }
             $output .= '</ul>';

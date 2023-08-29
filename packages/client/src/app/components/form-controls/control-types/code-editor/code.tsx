@@ -13,7 +13,7 @@ const Code: React.FC<ControlType<CodeEditorProperty>> = ({
   errors,
   updateValue,
 }) => {
-  const { handle, language } = property;
+  const { language } = property;
 
   return (
     <Control property={property} errors={errors}>

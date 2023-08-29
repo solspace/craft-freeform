@@ -127,7 +127,7 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
 
                   {options.length > 1 && (
                     <>
-                      <Cell tiny>
+                      <Cell $tiny>
                         <Bool
                           property={{
                             label: '',
@@ -150,7 +150,7 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                         />
                       </Cell>
 
-                      <Cell tiny>
+                      <Cell $tiny>
                         <Button
                           onClick={() => {
                             updateValue(deleteOption(index, value));

@@ -173,7 +173,7 @@ export const AttributesEditor: React.FC<Props> = ({
                     />
                   </Cell>
 
-                  <Cell tiny>
+                  <Cell $tiny>
                     <Button
                       tabIndex={-1}
                       onClick={() => {

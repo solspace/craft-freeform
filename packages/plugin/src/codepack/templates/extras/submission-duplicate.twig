@@ -35,7 +35,14 @@
         {% elseif duplicateCheck == "limit_once_per_user_or_cookie" %}
             {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest Cookie" %}
         {% elseif duplicateCheck == "limit_once_per_user_or_ip_or_cookie" %}
-            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP/Cookie combo" %}
+            {% set duplicateCheckType = "Anyone - Once per Logged in User or Guest IP or Cookie" %}
+        {% endif %}
+        
+        {# Handle message content for Guests viewing a Logged-in User only form #}
+        {% if duplicateCheck in ["no_limit_logged_in_users_only", "limit_once_per_logged_in_user_only"] and currentUser == false %}
+            {% set guestUserForLoggedInOnly = true %}
+        {% else %}
+            {% set guestUserForLoggedInOnly = false %}
         {% endif %}
 
         {# Display a tip for forms with a duplicate check enabled #}
@@ -50,9 +57,10 @@
         {% if form.duplicate %}
 
             <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-                <h4>{{ "Already Submitted!" }}</h4>
+                {# Display special message content for Guests viewing a Logged-in User only form #}
+                <h4>{{ guestUserForLoggedInOnly ? "Not Allowed!" : "Already Submitted!" }}</h4>
                 <p>
-                    You have already submitted this form! No duplicates are allowed for this form.
+                    {{ guestUserForLoggedInOnly ? "You must be logged in to submit this form." : "You have already submitted this form! No duplicates are allowed for this form." }}
                 </p>
             </div>
 

@@ -42,7 +42,6 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(ajax)')]
     #[Input\Boolean(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
@@ -51,7 +50,6 @@ class BehaviorSettings extends SettingsNamespace
     public bool $showProcessingSpinner = false;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(ajax)')]
     #[Input\Boolean(
         label: 'Show Processing Text on Submit',
         instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
@@ -60,7 +58,6 @@ class BehaviorSettings extends SettingsNamespace
     public bool $showProcessingText = false;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[VisibilityFilter('Boolean(ajax)')]
     #[VisibilityFilter('Boolean(showProcessingText)')]
     #[Input\Text(
         'Processing Text',

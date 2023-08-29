@@ -11,6 +11,9 @@ export const fieldRuleSelectors = {
     (state: RootState): boolean =>
       state.rules.fields.items.some((rule) =>
         rule.conditions.some((condition) => condition.field === fieldUid)
+      ) ||
+      state.rules.pages.items.some((rule) =>
+        rule.conditions.some((condition) => condition.field === fieldUid)
       ),
   hasRule:
     (fieldUid: string) =>

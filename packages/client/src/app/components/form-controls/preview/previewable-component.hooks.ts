@@ -36,7 +36,7 @@ export const usePosition = (
     };
 
     if (editor) {
-      const sectionWrapper = document.querySelector(SectionWrapper);
+      const sectionWrapper = document.querySelector(SectionWrapper.toString());
 
       const resizeObserver = new ResizeObserver(resizeCallback);
       resizeObserver.observe(editor);

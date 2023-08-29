@@ -26,8 +26,8 @@ type CheckboxesWrapperProps = {
   $columns?: number;
 };
 
-export const CheckboxesWrapper = styled.div`
-  columns: ${({ $columns }: CheckboxesWrapperProps) => $columns || 1};
+export const CheckboxesWrapper = styled.div<CheckboxesWrapperProps>`
+  columns: ${({ $columns }) => $columns || 1};
 
   label {
     display: block;

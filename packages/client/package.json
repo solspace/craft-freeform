@@ -59,6 +59,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@jest/globals": "^29.6.4",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@redux-devtools/core": "^3.13.1",
     "@svgr/webpack": "^8.1.0",

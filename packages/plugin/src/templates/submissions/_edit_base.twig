@@ -73,7 +73,12 @@
                 {% for row in page %}
                     <div class="fields-row">
                         {%- for field in row.getFields(["confirm", "password", "save", "hidden", "invisible"], "excludes") -%}
-                            <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
+                            {% do field.attributes.container.set("class", [
+                                'fields-column',
+                                field.required ?: 'field-required',
+                            ]) %}
+
+                            <div{{ field.attributes.container }}>
                                 {% set fieldHandle = field.handle %}
 
                                 {% if field.canStoreValues %}

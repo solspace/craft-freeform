@@ -101,9 +101,13 @@ export const FieldWrapper = styled(animated.div)`
       z-index: 2;
 
       width: 0;
-      border-left: 15px solid transparent;
-      border-bottom: 15px solid transparent;
-      border-left: 15px solid ${colors.teal550};
+      border-left: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-left: 10px solid ${colors.gray200};
+    }
+
+    &-active:after {
+      border-left-color: ${colors.teal550};
     }
   }
 `;

@@ -43,7 +43,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
         label: 'HTML',
         instructions: 'The HTML content to be rendered',
     )]
-    protected string $content = '';
+    protected ?string $content = '';
 
     public function isTwig(): bool
     {
@@ -52,7 +52,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
 
     public function getContent(): string
     {
-        return $this->content;
+        return $this->content ?? '';
     }
 
     public function getType(): string

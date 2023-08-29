@@ -35,11 +35,11 @@ class RichTextField extends AbstractField implements DefaultFieldInterface, Inpu
         label: 'Content',
         instructions: 'The HTML content to be rendered',
     )]
-    protected string $content = '';
+    protected ?string $content = '';
 
     public function getContent(): string
     {
-        return $this->content;
+        return $this->content ?? '';
     }
 
     /**

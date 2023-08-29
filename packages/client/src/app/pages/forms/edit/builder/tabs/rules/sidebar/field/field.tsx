@@ -34,7 +34,11 @@ export const Field: React.FC<Props> = ({ field }) => {
   const hasRule = useSelector(fieldRuleSelectors.hasRule(field.uid));
   const hasPageRule = useSelector(pageRuleSelectors.hasRule(field.uid));
 
-  const condition =
+  const isInCondition = useSelector(
+    fieldRuleSelectors.isInCondition(field.uid)
+  );
+
+  const isInActiveCondition =
     activeRule?.conditions.find((condition) => condition.field === field.uid) ||
     activePageRule?.conditions.find(
       (condition) => condition.field === field.uid
@@ -54,8 +58,10 @@ export const Field: React.FC<Props> = ({ field }) => {
         type?.type === 'group' && 'group',
         currentField && 'active',
         (hasRule || hasPageRule) && 'has-rule',
-        condition && 'is-in-condition',
-        operatorTypes.negative.includes(condition?.operator) && 'not-equals'
+        isInCondition && 'is-in-condition',
+        isInActiveCondition && 'is-in-condition-active',
+        operatorTypes.negative.includes(isInActiveCondition?.operator) &&
+          'not-equals'
       )}
     >
       <FieldInfo>

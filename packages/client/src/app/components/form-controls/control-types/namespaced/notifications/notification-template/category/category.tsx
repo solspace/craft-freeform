@@ -6,7 +6,7 @@ import DatabaseIcon from '../icons/database.svg';
 import FilesIcon from '../icons/files.svg';
 import type { NotificationSelectHandler } from '../notification-template';
 
-import { Item } from './item/item';
+import { Item } from './item/Item';
 import {
   TemplateCategoryWrapper,
   TemplateList,

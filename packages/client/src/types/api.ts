@@ -1,7 +1,9 @@
+import type { GenericValue } from './properties';
+
 export const API_ERROR = 'api_error';
 
 export type ErrorList = {
-  [key: string]: any;
+  [key: string]: GenericValue;
 };
 
 type ErrorCollection = {

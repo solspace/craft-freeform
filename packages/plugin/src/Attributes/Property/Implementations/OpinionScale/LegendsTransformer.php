@@ -7,7 +7,7 @@ use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
 
 class LegendsTransformer extends Transformer
 {
-    public function transform($value): mixed
+    public function transform($value): array
     {
         $legends = [];
         if (!\is_array($value)) {
@@ -28,7 +28,7 @@ class LegendsTransformer extends Transformer
             return $data;
         }
 
-        // @var Legend $leged
+        // @var Legend $legend
         foreach ($value as $legend) {
             $data[] = [(string) $legend];
         }

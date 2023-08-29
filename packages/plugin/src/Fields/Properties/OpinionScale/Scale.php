@@ -17,7 +17,7 @@ class Scale
 
     public function getLabel(): string
     {
-        return $this->label;
+        return $this->label ?: $this->getValue();
     }
 
     public function getValue(): string

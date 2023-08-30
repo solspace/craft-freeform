@@ -91,7 +91,7 @@ class Attributes implements \Countable, \JsonSerializable
         if (\is_array($value)) {
             $value = array_map(
                 function ($item) {
-                    if (is_string($item)) {
+                    if (\is_string($item)) {
                         $item = trim($item);
                     }
 

@@ -2,9 +2,14 @@
 
 namespace Solspace\Tests\Freeform\Unit\Library\Attributes;
 
-use Solspace\Freeform\Library\Attributes\Attributes;
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 class NestedAttributesTest extends TestCase
 {
     public function testNestingFieldAttributes()
@@ -18,7 +23,7 @@ class NestedAttributesTest extends TestCase
                         'placeholder' => 'text-placeholder',
                     ],
                 ],
-            ]
+            ],
         ]);
 
         $this->assertEquals(' class="class-name"', (string) $attributes);

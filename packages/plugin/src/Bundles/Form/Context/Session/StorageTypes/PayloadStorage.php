@@ -135,7 +135,7 @@ class PayloadStorage implements FormContextStorageInterface
         }
 
         $cacheKey = md5($payload);
-        if (!array_key_exists($cacheKey, self::$decryptedPayloadCache)) {
+        if (!\array_key_exists($cacheKey, self::$decryptedPayloadCache)) {
             $key = $this->getKey($form);
             $json = \Craft::$app->security->decryptByKey(base64_decode($payload), $key);
             $json = json_decode($json, true);
@@ -159,7 +159,7 @@ class PayloadStorage implements FormContextStorageInterface
     private function getEncryptedBag(Form $form): string
     {
         $cacheKey = $form->getHash();
-        if (!array_key_exists($cacheKey, self::$encryptedPayloadCache)) {
+        if (!\array_key_exists($cacheKey, self::$encryptedPayloadCache)) {
             $key = $this->getKey($form);
 
             $payload = json_encode([

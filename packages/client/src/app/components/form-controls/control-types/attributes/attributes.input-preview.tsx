@@ -16,6 +16,10 @@ type Props = {
 };
 
 export const InputPreview: React.FC<Props> = ({ name, attributes }) => {
+  if ('instructions' == name || 'container' == name || 'error' === name) {
+    name = '...';
+  }
+
   return (
     <CodeBlock>
       {'<'}

@@ -493,6 +493,30 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
     }
 
+    public function extractAttributes(Form $form): void
+    {
+        $attributes = $form->getAttributes();
+
+        $fieldAttributes = $attributes->getNested('fields');
+        if (null === $fieldAttributes) {
+            return;
+        }
+
+        foreach ($fieldAttributes as $key => $value) {
+            if ($key === '#'.$this->getHandle()) {
+                $this->attributes->merge($value);
+                unset($fieldAttributes[$key]);
+            }
+
+            if ($key === '@'.$this->getType()) {
+                $this->attributes->merge($value);
+                unset($fieldAttributes[$key]);
+            }
+        }
+
+        $this->attributes->merge($fieldAttributes);
+    }
+
     /**
      * Assemble the Label HTML string.
      */

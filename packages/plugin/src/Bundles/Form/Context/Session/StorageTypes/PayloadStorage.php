@@ -18,9 +18,10 @@ class PayloadStorage implements FormContextStorageInterface
     public const INPUT_PREFIX = 'freeform_payload';
     public const PROPERTY_KEY = 'payload';
 
-    private static $payloadCache = [];
+    private static array $encryptedPayloadCache = [];
+    private static array $decryptedPayloadCache = [];
 
-    private $secret;
+    private ?string $secret;
 
     public function __construct(string $secret = null)
     {
@@ -33,7 +34,7 @@ class PayloadStorage implements FormContextStorageInterface
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'requirePayload']);
     }
 
-    public function attachProperty(GetCustomPropertyEvent $event)
+    public function attachProperty(GetCustomPropertyEvent $event): void
     {
         if (self::PROPERTY_KEY !== $event->getKey()) {
             return;
@@ -42,7 +43,7 @@ class PayloadStorage implements FormContextStorageInterface
         $event->setValue($this->getEncryptedBag($event->getForm()));
     }
 
-    public function requirePayload(HandleRequestEvent $event)
+    public function requirePayload(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
 
@@ -63,7 +64,7 @@ class PayloadStorage implements FormContextStorageInterface
         }
     }
 
-    public function attachInput(RenderTagEvent $event)
+    public function attachInput(RenderTagEvent $event): void
     {
         $form = $event->getForm();
         $payload = $this->getEncryptedBag($form);
@@ -73,7 +74,7 @@ class PayloadStorage implements FormContextStorageInterface
         $event->addChunk('<input type="hidden" name="'.$name.'" value="'.$payload.'" />');
     }
 
-    public function attachJson(OutputAsJsonEvent $event)
+    public function attachJson(OutputAsJsonEvent $event): void
     {
         $form = $event->getForm();
         $payload = $this->getEncryptedBag($form);
@@ -83,7 +84,7 @@ class PayloadStorage implements FormContextStorageInterface
         $event->add($name, $payload);
     }
 
-    public function attachToAjaxResponse(PrepareAjaxResponsePayloadEvent $event)
+    public function attachToAjaxResponse(PrepareAjaxResponsePayloadEvent $event): void
     {
         $form = $event->getForm();
         $payload = $this->getEncryptedBag($form);
@@ -133,24 +134,32 @@ class PayloadStorage implements FormContextStorageInterface
             return null;
         }
 
-        $key = $this->getKey($form);
-        $json = \Craft::$app->security->decryptByKey(base64_decode($payload), $key);
-        $json = json_decode($json, true);
+        $cacheKey = md5($payload);
+        if (!array_key_exists($cacheKey, self::$decryptedPayloadCache)) {
+            $key = $this->getKey($form);
+            $json = \Craft::$app->security->decryptByKey(base64_decode($payload), $key);
+            $json = json_decode($json, true);
 
-        if (null === $json) {
-            return null;
+            if (null === $json) {
+                return null;
+            }
+
+            $lastUpdate = Carbon::createFromTimestampUTC($json['utime']);
+            $properties = $json['properties'];
+            $attributes = $json['attributes'];
+
+            $bag = new SessionBag($form->getId(), $properties, $attributes, $lastUpdate);
+
+            self::$decryptedPayloadCache[$cacheKey] = $bag;
         }
 
-        $lastUpdate = Carbon::createFromTimestampUTC($json['utime']);
-        $properties = $json['properties'];
-        $attributes = $json['attributes'];
-
-        return new SessionBag($form->getId(), $properties, $attributes, $lastUpdate);
+        return self::$decryptedPayloadCache[$cacheKey];
     }
 
     private function getEncryptedBag(Form $form): string
     {
-        if (!isset(self::$payloadCache[$form->getHash()])) {
+        $cacheKey = $form->getHash();
+        if (!array_key_exists($cacheKey, self::$encryptedPayloadCache)) {
             $key = $this->getKey($form);
 
             $payload = json_encode([
@@ -161,10 +170,10 @@ class PayloadStorage implements FormContextStorageInterface
 
             $encryptedPayload = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
 
-            self::$payloadCache[$form->getHash()] = $encryptedPayload;
+            self::$encryptedPayloadCache[$cacheKey] = $encryptedPayload;
         }
 
-        return self::$payloadCache[$form->getHash()];
+        return self::$encryptedPayloadCache[$cacheKey];
     }
 
     private function getKey(Form $form)

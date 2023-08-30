@@ -28,7 +28,6 @@
                             ],
                         },
                         input: {
-                            novalidate: true,
                             class: [
                                 field.type != "signature" ? "form-control",
                                 "freeform-fieldtype-" ~ field.type,
@@ -40,8 +39,6 @@
                             ]
                         },
                         label: { class: field.required ? "required" },
-                        instructions: { class: ["form-text", "text-muted"] },
-                        error: { class: "invalid-feedback" },
                     }
                 }) %}
 

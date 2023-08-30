@@ -23,7 +23,6 @@
                             ],
                         },
                         input: {
-                            novalidate: true,
                             class: [
                                 "bg-dark-subtle text-white",
                                 field.type != "signature" ? "form-control",
@@ -41,14 +40,6 @@
                                 field.required ? "required"
                             ]
                         },
-                        instructions: {
-                            class: [
-                                "freeform-instructions",
-                                "form-text",
-                                "text-muted"
-                            ]
-                        },
-                        error: { class: "invalid-feedback" },
                     }
                 }) %}
 

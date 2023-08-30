@@ -10,6 +10,19 @@
         row: { class: "row" },
         success: { class: "alert alert-success freeform-alert" },
         errors: { class: "alert alert-danger freeform-alert" },
+        "@fields": {
+            input: { novalidate: true },
+            instructions: { class: "freeform-instructions form-text text-muted" },
+            error: { class: "invalid-feedback" },
+            "@checkbox" : {
+                input: {
+                    "=class": "form-check-input bg-dark-subtle"
+                },
+                label: {
+                    "form-check-label text-white"
+                }
+            },
+        }
     }
 }) }}
 

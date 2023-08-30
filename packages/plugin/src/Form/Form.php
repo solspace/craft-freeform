@@ -719,7 +719,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function jsonSerialize(): array
     {
         $settings = $this->getSettings();
-        $isMultipart = $this->getLayout()->getFields()->hasFieldType(FileUploadInterface::class);
+        $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
 
         $object = [
             'id' => $this->getId(),

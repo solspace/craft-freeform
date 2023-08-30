@@ -8,7 +8,6 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -58,7 +57,7 @@ class FileUploadValidation extends FeatureBundle
     public function uploadFiles(ValidationEvent $event): void
     {
         $form = $event->getForm();
-        $uploadFields = $form->getLayout()->getFields(FileUploadInterface::class);
+        $uploadFields = $form->getLayout()->getFields(FileUploadField::class);
 
         foreach ($uploadFields as $field) {
             $handle = $field->getHandle();

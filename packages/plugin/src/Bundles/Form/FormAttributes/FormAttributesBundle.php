@@ -74,7 +74,7 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->set('data-disable-submit', $formService->isFormSubmitDisable());
         $attributes->set('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
 
-        if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
+        if ($form->getLayout()->hasFields(FileUploadInterface::class)) {
             $attributes->set('enctype', 'multipart/form-data');
         }
 

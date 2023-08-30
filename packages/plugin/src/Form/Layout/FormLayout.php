@@ -27,7 +27,7 @@ class FormLayout implements \IteratorAggregate
 
     public function hasFields(string $implements): bool
     {
-        return !empty($this->getFields($implements));
+        return $this->getFields($implements)->count();
     }
 
     public function getField(int|string $identificator): ?FieldInterface

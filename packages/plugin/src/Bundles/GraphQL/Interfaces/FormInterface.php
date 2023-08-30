@@ -230,7 +230,7 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The form’s enctype',
                 'resolve' => function ($source) {
-                    $isMultipart = $source->getLayout()->getFields()->hasFieldType(FileUploadInterface::class);
+                    $isMultipart = $source->getLayout()->hasFields(FileUploadInterface::class);
 
                     return $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
                 },

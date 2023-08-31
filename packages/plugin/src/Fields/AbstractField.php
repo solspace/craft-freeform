@@ -22,6 +22,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -493,28 +494,63 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
     }
 
-    public function extractAttributes(Form $form): void
+    public function processFormAttributes(): void
     {
-        $attributes = $form->getAttributes();
+        $attributes = $this->getForm()->getAttributes();
 
         $fieldAttributes = $attributes->getNested('fields');
         if (null === $fieldAttributes) {
             return;
         }
 
+        $implementationProvider = new ImplementationProvider();
+        $meta = [
+            ':required' => $this->isRequired(),
+            ':errors' => $this->hasErrors(),
+        ];
+
+        $special = [];
         foreach ($fieldAttributes as $key => $value) {
-            if ($key === '#'.$this->getHandle()) {
-                $this->attributes->merge($value);
+            $targets = array_map('trim', explode(',', $key));
+
+            if (\in_array('#'.$this->getHandle(), $targets, true)) {
+                $special[] = $value;
                 unset($fieldAttributes[$key]);
+
+                continue;
             }
 
-            if ($key === '@'.$this->getType()) {
-                $this->attributes->merge($value);
+            if (\in_array('@'.$this->getType(), $targets, true)) {
+                $special[] = $value;
                 unset($fieldAttributes[$key]);
+
+                continue;
+            }
+
+            $implementations = $implementationProvider->getImplementations($this::class);
+            foreach ($implementations as $implementation) {
+                if (\in_array(':'.$implementation, $targets, true)) {
+                    $special[] = $value;
+                    unset($fieldAttributes[$key]);
+
+                    continue 2;
+                }
+            }
+
+            foreach ($meta as $handle => $shouldTrigger) {
+                if ($shouldTrigger && \in_array($handle, $targets, true)) {
+                    $special[] = $value;
+                    unset($fieldAttributes[$key]);
+
+                    continue 2;
+                }
             }
         }
 
         $this->attributes->merge($fieldAttributes);
+        foreach ($special as $value) {
+            $this->attributes->merge($value);
+        }
     }
 
     /**

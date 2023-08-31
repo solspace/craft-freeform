@@ -118,5 +118,5 @@ interface FieldInterface
 
     public function setParameters(array $parameters = null): void;
 
-    public function extractAttributes(Form $form): void;
+    public function processFormAttributes(): void;
 }

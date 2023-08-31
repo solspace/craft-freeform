@@ -109,7 +109,7 @@ class FieldsService extends BaseService
         /** @var FieldInterface $field */
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
-        $field->extractAttributes($form);
+        $field->processFormAttributes();
 
         return $field;
     }

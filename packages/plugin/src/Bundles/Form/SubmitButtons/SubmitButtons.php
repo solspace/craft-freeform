@@ -52,7 +52,11 @@ class SubmitButtons extends FeatureBundle
                     'back' => $attributes->getBack(),
                 };
 
+                $event->addChunk('<div'.$attributes->getButtonWrapper().'>');
+
                 $event->addChunk($button->render($buttonAttributes));
+
+                $event->addChunk('</div>');
             }
 
             $event->addChunk('</div>');

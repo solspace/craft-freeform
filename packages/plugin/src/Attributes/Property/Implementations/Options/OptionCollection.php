@@ -4,6 +4,9 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Options;
 
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 
+/**
+ * @implements \IteratorAggregate<Option|OptionCollection>
+ */
 class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
 {
     private array $options = [];

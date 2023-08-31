@@ -1,11 +1,5 @@
 {% import "freeform/_defaultFormTemplates/basic-floating-labels/_row.twig" as rowMacro %}
 
-{% do field.setParameters({
-    attributes: {
-        label: { class: "group-label" },
-    }
-}) %}
-
 <div{{ field.attributes.container }}>
     {{ field.renderLabel }}
     {{ field.renderInstructions }}

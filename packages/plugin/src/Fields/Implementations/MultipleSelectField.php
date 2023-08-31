@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -67,7 +68,7 @@ class MultipleSelectField extends BaseOptionsField implements MultiValueInterfac
 
         $labels = [];
         foreach ($this->getOptions() as $option) {
-            if ($option->isChecked()) {
+            if ($option instanceof Option && \in_array($option->getValue(), $this->getValue(), true)) {
                 $labels[] = $option->getLabel();
             }
         }

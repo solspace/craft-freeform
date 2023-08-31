@@ -4,10 +4,10 @@ if (form) {
     form.addEventListener("freeform-ready", function (event) {
         var freeform = event.target.freeform;
 
-        freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors", "freeform-alert"]);
-        freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
-        freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-        freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success", "freeform-alert"]);
+        freeform.setOption("errorClassBanner", ["alert", "alert-danger"]);
+        freeform.setOption("errorClassList", ["list-unstyled", "m-0", "fst-italic", "text-danger"]);
+        freeform.setOption("errorClassField", ["is-invalid"]);
+        freeform.setOption("successClassBanner", ["alert", "alert-success"]);
     })
     // Styling for Stripe Payments field
     form.addEventListener("freeform-stripe-styling", function (event) {

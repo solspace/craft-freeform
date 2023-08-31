@@ -8,20 +8,64 @@
 {{ form.renderTag({
     attributes: {
         row: { class: "row" },
-        success: { class: "alert alert-success freeform-alert" },
-        errors: { class: "alert alert-danger freeform-alert" },
+        success: { class: "alert alert-success" },
+        errors: { class: "alert alert-danger" },
+        "@buttons": {
+            container: {},
+            column: {},
+            buttonWrapper: {},
+            submit: { class: "btn btn-primary" },
+            back: { class: "btn btn-secondary" },
+            save: { class: "btn btn-primary" },
+        },
         "@fields": {
-            input: { novalidate: true },
-            instructions: { class: "freeform-instructions form-text text-muted" },
-            error: { class: "invalid-feedback" },
-            "@checkbox" : {
-                input: {
-                    "=class": "form-check-input bg-dark-subtle"
-                },
+            container: { class: "mb-3 col-12" },
+            input: { 
+                novalidate: true,
+                class: "form-control bg-dark-subtle text-white"
+            },
+            label: { class: "mb-1" },
+            instructions: { class: "form-text text-muted mt-n1 mb-1" },
+            error: { class: "list-unstyled m-0 fst-italic text-danger" },
+            ":required": {
                 label: {
-                    "form-check-label text-white"
+                    "+class": "required"
+                },
+            },
+            ":errors": {
+                input: {
+                    "+class": "is-invalid"
+                },
+            },
+            "@group": {
+                label: {
+                    "+class": "group-label",
                 }
             },
+            "@checkbox" : {
+                input: {
+                    "=class": "form-check-input checkbox bg-dark-subtle"
+                },
+                label: {
+                    "+class": "form-check-label text-white"
+                }
+            },
+            "@dropdown" : {
+                input: {
+                    "+class": "form-select bg-dark-subtle text-white"
+                }
+            },
+            "@file" : {
+                input: {
+                    "+class": "form-control-file"
+                }
+            },
+            "@signature": {
+                input: {
+                    "-class": "form-control",
+                    "+class": "btn btn-light"
+                }
+            }
         }
     }
 }) }}

@@ -17,27 +17,9 @@
                     attributes: {
                         container: {
                             class: [
-                                "mb-3",
-                                "col-12",
                                 "col-sm-" ~ width,
-                            ],
-                        },
-                        input: {
-                            class: [
-                                field.type != "signature" ? "form-control",
                                 "freeform-fieldtype-" ~ field.type,
-                                field.hasErrors ? "is-invalid has-validation",
-                                field.type == "file" ? "form-control-file",
-                                field.type == "dropdown" ? "form-select",
-                                field.type == "signature" ? "btn btn-light",
-                                field.type == "checkbox" ? "checkbox",
-                            ]
-                        },
-                        label: {
-                            class: [
-                                "mb-1",
-                                field.required ? "required"
-                            ]
+                            ],
                         },
                     }
                 }) %}

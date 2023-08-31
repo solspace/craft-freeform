@@ -17,24 +17,12 @@
                     attributes: {
                         container: {
                             class: [
-                                field.type not in ["group"] ? "md:mb-0 mb-4",
-                                field.type in ["checkboxes", "radios"] and field.oneLine ? "input-group-one-line" : "",
                                 columnCount in [2, 3, 4] ? "md:w-1/" ~ columnCount,
                                 columnCount in [2, 3, 4] ? "lg:w-1/" ~ columnCount,
                                 columnCount in [2, 3, 4] ? "xl:w-1/" ~ columnCount,
                                 columnCount == 1 ? "md:w-full lg:w-full xl:w-full"
                             ],
                         },
-                        input: {
-                            class: [
-                                field.type not in ["checkbox", "checkboxes", "radios", "opinion-scale", "signature", "table"] ? "appearance-none block w-full",
-                                field.hasErrors ? "border-red-500",
-                            ]
-                        },
-                        label: { class: [
-                            field.inputOnly ? "freeform-input-only-label",
-                            field.required ? "required",
-                        ]},
                     }
                 }) %}
 

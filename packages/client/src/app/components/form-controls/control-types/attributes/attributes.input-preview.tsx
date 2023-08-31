@@ -16,6 +16,11 @@ type Props = {
 };
 
 export const InputPreview: React.FC<Props> = ({ name, attributes }) => {
+  const showableTags = ['input', 'label', 'select', 'table'];
+  if (!showableTags.includes(name)) {
+    name = '...';
+  }
+
   return (
     <CodeBlock>
       {'<'}

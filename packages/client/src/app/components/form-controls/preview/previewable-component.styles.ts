@@ -38,7 +38,8 @@ export const PreviewContainer = styled.div`
 `;
 
 export const PreviewEditor = styled.div`
-  width: 800px;
+  width: 100%;
+  min-width: 800px;
 
   display: flex;
   flex-direction: column;

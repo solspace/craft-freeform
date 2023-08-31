@@ -8,6 +8,7 @@ class ButtonAttributesCollection extends Attributes
 {
     protected Attributes $container;
     protected Attributes $column;
+    protected Attributes $buttonWrapper;
     protected Attributes $submit;
     protected Attributes $back;
     protected Attributes $save;
@@ -16,6 +17,7 @@ class ButtonAttributesCollection extends Attributes
     {
         $this->container = new Attributes(['data-freeform-controls' => true]);
         $this->column = new Attributes();
+        $this->buttonWrapper = new Attributes();
 
         $this->submit = new Attributes([
             'data-freeform-action' => 'submit',
@@ -45,6 +47,11 @@ class ButtonAttributesCollection extends Attributes
     public function getColumn(): Attributes
     {
         return $this->column;
+    }
+
+    public function getButtonWrapper(): Attributes
+    {
+        return $this->buttonWrapper;
     }
 
     public function getSubmit(): Attributes

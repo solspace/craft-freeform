@@ -139,9 +139,9 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $logger->error($message, $context);
 
                 $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form);
-            } finally {
-                \Craft::$app->view->setTemplateMode($templateMode);
             }
+
+            \Craft::$app->view->setTemplateMode($templateMode);
         }
 
         return $sentMailCount;
@@ -160,11 +160,12 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     public function renderString(string $template, array $variables = []): string
     {
-        if (preg_match('/^\$(\w+)$/', $template, $matches)) {
-            return \Craft::parseEnv($template);
+        if (preg_match('/^\$(\w+)$/', $template)) {
+            return App::parseEnv($template);
         }
 
-        return \Craft::$app->view->getTwig()
+        return \Craft::$app->view
+            ->getTwig()
             ->createTemplate($template)
             ->render($variables)
         ;

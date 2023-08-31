@@ -32,21 +32,7 @@
                                             "freeform-col-" ~ width,
                                             "freeform-fieldtype-" ~ field.type,
                                         ],
-                                    },
-                                    input: {
-                                        novalidate: true,
-                                        class: [
-                                            field.hasErrors ? "is-invalid has-validation",
-                                            field.type not in ["save", "signature"] ? "freeform-input"
-                                        ]
-                                    },
-                                    label: { class: [
-                                        "freeform-label",
-                                        field.inputOnly ? "freeform-input-only-label",
-                                        field.required ? "freeform-required",
-                                    ]},
-                                    instructions: { class: ["freeform-instructions"] },
-                                    error: { class: "freeform-errors" },
+                                    }
                                 }
                             }) %}
 

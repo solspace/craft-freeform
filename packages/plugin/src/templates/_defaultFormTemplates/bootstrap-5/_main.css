@@ -1,6 +1,3 @@
-.freeform-alert p:last-of-type {
-    margin-bottom: 0;
-}
 button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
@@ -32,33 +29,11 @@ label.required:after {
     color: #d00;
     margin-left: 3px;
 }
-.freeform-instructions {
+.alert p:last-of-type {
+    margin-bottom: 0;
+}
+.mt-n1 {
     margin-top: -0.5rem !important;
-    margin-bottom: 0.25rem!important;
-}
-ul.errors {
-    display: block !important;
-}
-.is-invalid {
-    color: #dc3545;
-}
-.submit-align-left {
-    text-align: left;
-}
-.submit-align-right {
-    text-align: right;
-}
-.submit-align-center {
-    text-align: center;
-}
-.submit-align-center button:not(:first-of-type), .submit-align-left button:not(:first-of-type), .submit-align-right button:not(:first-of-type) {
-    margin-left: 5px;
-}
-.submit-align-spread button:first-child {
-    float: left;
-}
-.submit-align-spread button:last-child {
-    float: right;
 }
 .StripeElement {
     height: 36px;

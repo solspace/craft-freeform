@@ -27,7 +27,7 @@ const Field: React.FC<ControlType<FieldProperty>> = ({
         return false;
       }
 
-      return property.implements.every(
+      return property.implements.some(
         (implementation) => type.implements?.includes(implementation)
       );
     })

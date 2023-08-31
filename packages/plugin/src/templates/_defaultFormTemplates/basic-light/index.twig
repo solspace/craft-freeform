@@ -9,7 +9,54 @@
     attributes: {
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success" },
-        errors: { class: "freeform-form-has-errors" },
+        errors: { class: "freeform-form-errors" },
+        "@buttons": {
+            container: {},
+            column: {},
+            buttonWrapper: {},
+            submit: {},
+            back: {},
+            save: {},
+        },
+        "@fields": {
+            input: {
+                novalidate: true,
+                class: "freeform-input",
+            },
+            label: { class: "freeform-label" },
+            instructions: { class: "freeform-instructions" },
+            error: { class: "freeform-errors" },
+            ":required": {
+                label: {
+                    "+class": "freeform-required"
+                },
+            },
+            ":errors": {
+                input: {
+                    "+class": "is-invalid has-validation"
+                },
+            },
+            ":oneLine": {
+                container: {
+                    "+class": "input-group-one-line"
+                },
+            },
+            ":inputOnly": {
+                container: {
+                    "+class": "freeform-input-only-label"
+                },
+            },
+            "@group": {
+                label: {
+                    "+class": "group-label",
+                }
+            },
+            "@signature": {
+                input: {
+                    "-class": "freeform-input",
+                }
+            }
+        }
     }
 }) }}
 

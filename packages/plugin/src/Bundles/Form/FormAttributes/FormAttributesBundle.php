@@ -36,21 +36,7 @@ class FormAttributesBundle extends FeatureBundle
             return;
         }
 
-        $rowAttributes = $attributes['row'] ?? [];
-        $errorAttributes = $attributes['error'] ?? [];
-        unset($attributes['row'], $attributes['error']);
-
-        foreach ($attributes as $key => $value) {
-            $form->getAttributes()->replace($key, $value);
-        }
-
-        foreach ($rowAttributes as $key => $value) {
-            $form->getAttributes()->getRow()->replace($key, $value);
-        }
-
-        foreach ($errorAttributes as $key => $value) {
-            $form->getAttributes()->getErrors()->replace($key, $value);
-        }
+        $form->getAttributes()->merge($attributes);
 
         if (null === $form->getAttributes()->get('method')) {
             $form->getAttributes()->set('method', 'post');

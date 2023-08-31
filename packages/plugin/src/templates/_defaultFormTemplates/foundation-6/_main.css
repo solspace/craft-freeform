@@ -89,40 +89,12 @@ label.required:after {
 .help-text {
     color: gray;
     line-height: 1.8;
-    margin-top: -10px;
+    margin-top: -8px;
     margin-bottom: 2px;
 }
 .has-error {
-    border-color: red;
+    border: 1px solid red;
 }
-.submit {
-    margin-top: 15px;
-}
-.submit-align-left {
-    text-align: left;
-}
-.submit-align-left button:not(:first-of-type) {
-    margin-left: 5px;
-}
-.submit-align-center {
-    text-align: center;
-}
-.submit-align-center button:not(:first-of-type) {
-    margin-left: 5px;
-}
-.submit-align-right {
-    text-align: right;
-}
-.submit-align-right button:not(:first-of-type) {
-    margin-left: 5px;
-}
-.submit-align-spread button:first-child {
-    float: left;
-}
-.submit-align-spread button:last-child {
-    float: right;
-}
-.form-rating-field-wrapper label {
-    margin-left: 0;
-    margin-right: 0;
+.submit-buttons {
+    margin-top: 20px !important;
 }

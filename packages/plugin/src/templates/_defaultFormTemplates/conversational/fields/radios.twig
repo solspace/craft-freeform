@@ -11,7 +11,7 @@
             {{ option.value == field.value ? "checked" }}
         />
         <label class="option-label" for="{{ field.idAttribute }}-{{ index }}">
-            <span>{{ range('A','Z')[loop.index0] }}</span> {{ option.label|t('freeform')|raw }}
+            <span>{% if field.options|length <= 26 %}{{ range('A','Z')[loop.index0] }}{% else %}{{ range('1','999')[loop.index0] }}{% endif %}</span> {{ option.label|t('freeform')|raw }}
         </label>
     {% endfor %}
     {{ field.renderErrors }}

@@ -45,7 +45,7 @@ class ResendNotificationsAction extends ElementAction
                 $field->setValue($value);
             }
 
-            $event = new SendNotificationsEvent($form, $submission, $mailer, $fields);
+            $event = new SendNotificationsEvent($form, $submission, $fields, $mailer);
             Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
         }
 

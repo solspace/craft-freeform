@@ -117,4 +117,6 @@ interface FieldInterface
     public function includeInGqlSchema(): bool;
 
     public function setParameters(array $parameters = null): void;
+
+    public function processFormAttributes(): void;
 }

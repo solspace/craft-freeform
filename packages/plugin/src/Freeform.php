@@ -342,6 +342,7 @@ class Freeform extends Plugin
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
                 'field' => FieldsService::class,
+                'fields' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,
                 'mailer' => MailerService::class,
                 'emailMarketing' => EmailMarketingService::class,

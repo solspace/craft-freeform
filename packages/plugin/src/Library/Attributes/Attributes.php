@@ -2,13 +2,18 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
+use Solspace\Commons\Helpers\StringHelper;
+
 class Attributes implements \Countable, \JsonSerializable
 {
     public const STRATEGY_APPEND = 'append';
     public const STRATEGY_REMOVE = 'remove';
     public const STRATEGY_REPLACE = 'replace';
 
+    private const KEY_NESTED = '__nested';
+
     private array $attributes = [];
+    private array $nestedAttributes = [];
 
     public function __construct(array $attributes = [])
     {
@@ -85,11 +90,17 @@ class Attributes implements \Countable, \JsonSerializable
 
         if (\is_array($value)) {
             $value = array_map(
-                fn ($item) => null === $item ? $item : trim($item),
+                function ($item) {
+                    if (\is_string($item)) {
+                        $item = trim($item);
+                    }
+
+                    return $item;
+                },
                 $value
             );
             $value = array_filter($value);
-            $value = implode(' ', $value);
+            $value = StringHelper::implodeRecursively(' ', $value);
         }
 
         if (\is_string($value)) {
@@ -152,9 +163,27 @@ class Attributes implements \Countable, \JsonSerializable
         return $this->set($key, $value);
     }
 
+    public function getNested(string $key): ?array
+    {
+        return $this->nestedAttributes[$key] ?? null;
+    }
+
     public function merge(array $attributes): self
     {
         $reflection = new \ReflectionClass($this);
+
+        if (isset($attributes[self::KEY_NESTED])) {
+            $this->nestedAttributes = array_merge($this->nestedAttributes, $attributes[self::KEY_NESTED]);
+            unset($attributes[self::KEY_NESTED]);
+        }
+
+        foreach ($attributes as $key => $value) {
+            if (str_starts_with($key, '@')) {
+                $nestedKey = substr($key, 1);
+                $this->nestedAttributes[$nestedKey] = $value;
+                unset($attributes[$key]);
+            }
+        }
 
         foreach ($reflection->getProperties() as $property) {
             if (!\array_key_exists($property->getName(), $attributes)) {
@@ -206,6 +235,9 @@ class Attributes implements \Countable, \JsonSerializable
     {
         $reflection = new \ReflectionClass($this);
         $array = $this->attributes;
+        if (!empty($this->nestedAttributes)) {
+            $array[self::KEY_NESTED] = $this->nestedAttributes;
+        }
 
         foreach ($reflection->getProperties() as $property) {
             $type = $property->getType();

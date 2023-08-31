@@ -8,8 +8,68 @@
 {{ form.renderTag({
     attributes: {
         row: { class: "row" },
-        success: { class: "alert alert-success freeform-alert" },
-        errors: { class: "alert alert-danger freeform-alert" },
+        success: { class: "alert alert-success" },
+        errors: { class: "alert alert-danger" },
+        "@buttons": {
+            container: {},
+            column: {},
+            buttonWrapper: {},
+            submit: { class: "btn btn-primary" },
+            back: { class: "btn btn-secondary" },
+            save: { class: "btn btn-primary" },
+        },
+        "@fields": {
+            container: { class: "mb-3 col-12" },
+            input: { 
+                novalidate: true,
+                class: "form-control"
+            },
+            label: { class: "mb-1" },
+            instructions: { class: "form-text text-muted mt-1" },
+            error: { class: "list-unstyled m-0 fst-italic text-danger" },
+            ":required": {
+                label: {
+                    "+class": "required"
+                },
+            },
+            ":errors": {
+                input: {
+                    "+class": "is-invalid"
+                },
+            },
+            "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @dropdown, @multiple-select, @number, @password, @file-dnd, @signature, @credit-card": {
+                container: { "+class": "form-floating" },
+            },
+            "@group": {
+                label: {
+                    "+class": "group-label",
+                }
+            },
+            "@checkbox" : {
+                input: {
+                    "=class": "form-check-input checkbox"
+                },
+                label: {
+                    "+class": "form-check-label"
+                }
+            },
+            "@dropdown" : {
+                input: {
+                    "+class": "form-select"
+                }
+            },
+            "@file" : {
+                input: {
+                    "+class": "form-control-file"
+                }
+            },
+            "@signature": {
+                input: {
+                    "-class": "form-control",
+                    "+class": "btn btn-light"
+                }
+            }
+        }
     }
 }) }}
 

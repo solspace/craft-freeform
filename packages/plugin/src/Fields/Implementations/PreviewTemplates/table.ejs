@@ -175,11 +175,11 @@
                         </div>
                     <% } else if (column.type === 'checkbox') { %>
                         <div class="checkbox-label">
-                            <input type="checkbox" class="checkbox" <% if (column.value.length > 0) { %>checked="checked"<% }%> />
-                            <label for=""><%= column.value %></label>
+                            <input type="checkbox" class="checkbox" checked="checked" />
+                            <label for=""></label>
                         </div>
                     <% } else { %>
-                        <input type="text" value="<%= column.value %>" />
+                        <input type="text" value="<% if (column.value.length > 0) { %><%= column.value %><% } else { %>Sample data<% } %>" />
                     <% } %>
                 </td>
             <% }); %>
@@ -197,11 +197,11 @@
                         </div>
                     <% } else if (column.type === 'checkbox') { %>
                         <div class="checkbox-label">
-                            <input type="checkbox" class="checkbox" <% if (column.value.length > 0) { %>checked="checked"<% }%> />
-                            <label for=""><%= column.value %></label>
+                            <input type="checkbox" class="checkbox" />
+                            <label for=""></label>
                         </div>
                     <% } else { %>
-                        <input type="text" value="<%= column.value %>" />
+                        <input type="text" value="" />
                     <% } %>
                 </td>
             <% }); %>
@@ -219,11 +219,11 @@
                         </div>
                     <% } else if (column.type === 'checkbox') { %>
                         <div class="checkbox-label">
-                            <input type="checkbox" class="checkbox" <% if (column.value.length > 0) { %>checked="checked"<% }%> />
-                            <label for=""><%= column.value %></label>
+                            <input type="checkbox" class="checkbox" />
+                            <label for=""></label>
                         </div>
                     <% } else { %>
-                        <input type="text" value="<%= column.value %>" />
+                        <input type="text" value="" />
                     <% } %>
                 </td>
             <% }); %>

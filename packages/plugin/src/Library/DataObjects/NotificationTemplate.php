@@ -159,12 +159,12 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->handle;
     }
 
-    public function getDescription(): string
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function getTemplateData(): string
+    public function getTemplateData(): ?string
     {
         return $this->templateData;
     }
@@ -179,22 +179,22 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->fromName;
     }
 
-    public function getCc(): string
+    public function getCc(): ?string
     {
         return $this->cc;
     }
 
-    public function getBcc(): string
+    public function getBcc(): ?string
     {
         return $this->bcc;
     }
 
-    public function getReplyToName(): string
+    public function getReplyToName(): ?string
     {
         return $this->replyToName;
     }
 
-    public function getReplyToEmail(): string
+    public function getReplyToEmail(): ?string
     {
         return $this->replyToEmail;
     }

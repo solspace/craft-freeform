@@ -30,9 +30,9 @@ export const Wrapper = styled.div`
 
 export const Name = styled.span`
   flex: 1;
-  line-height: 12px;
+  line-height: 14px;
 
-  overflow: hidden;
+  overflow-x: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;

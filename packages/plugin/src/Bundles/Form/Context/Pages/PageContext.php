@@ -2,12 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Pages;
 
-use Solspace\Freeform\Events\Bags\BagModificationEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
@@ -23,7 +21,6 @@ class PageContext
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleNavigateBack']);
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleNavigateForward']);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleReset']);
-        Event::on(PropertyBag::class, PropertyBag::EVENT_ON_SET, [$this, 'handleFormPageJump']);
     }
 
     public function onValidate(ValidationEvent $event): void
@@ -113,19 +110,5 @@ class PageContext
 
         $bag->set(Form::PROPERTY_PAGE_INDEX, 0);
         $bag->set(Form::PROPERTY_PAGE_HISTORY, []);
-    }
-
-    public function handleFormPageJump(BagModificationEvent $event): void
-    {
-        $bag = $event->getBag();
-        if (!$bag instanceof PropertyBag) {
-            return;
-        }
-
-        if (Form::PROPERTY_PAGE_INDEX !== $event->getKey()) {
-            return;
-        }
-
-        $bag->getForm()->getPages()->setCurrent($event->getValue());
     }
 }

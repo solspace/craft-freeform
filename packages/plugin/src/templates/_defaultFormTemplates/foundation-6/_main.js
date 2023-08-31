@@ -3,7 +3,7 @@ if (form) {
     // Styling for AJAX responses
     form.addEventListener("freeform-ready", function (event) {
         var freeform = event.target.freeform;
-        freeform.setOption("errorClassBanner", ["callout", "alert", "form-errors"]);
+        freeform.setOption("errorClassBanner", ["callout", "alert"]);
         freeform.setOption("errorClassList", ["errors"]);
         freeform.setOption("errorClassField", "has-error");
         freeform.setOption("successClassBanner", ["callout", "success"]);

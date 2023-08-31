@@ -15,11 +15,10 @@ class OverrideContext
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handlePersistentFields']);
     }
 
-    public function handleOverride(FormEventInterface $event)
+    public function handleOverride(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        $overrideValues = $form->getProperties()->get('overrideValues');
-
+        $overrideValues = $form->getProperties()->get('values');
         if (!\is_array($overrideValues)) {
             return;
         }
@@ -34,7 +33,7 @@ class OverrideContext
         }
     }
 
-    public function handlePersistentFields(FormEventInterface $event)
+    public function handlePersistentFields(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
@@ -42,8 +41,7 @@ class OverrideContext
             return;
         }
 
-        $overrideValues = $form->getProperties()->get('overrideValues');
-
+        $overrideValues = $form->getProperties()->get('values');
         if (!\is_array($overrideValues)) {
             return;
         }

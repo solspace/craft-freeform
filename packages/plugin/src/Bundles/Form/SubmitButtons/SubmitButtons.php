@@ -26,9 +26,16 @@ class SubmitButtons extends FeatureBundle
         $buttons = $page->getButtons();
         $layout = $buttons->getParsedLayout();
 
-        $event->addChunk('<div'.$buttons->getAttributes()->getContainer().'>');
+        $attributes = $buttons->getAttributes()->clone();
+
+        $nestedButtonAttributes = $form->getAttributes()->getNested('buttons');
+        if ($nestedButtonAttributes) {
+            $attributes->merge($nestedButtonAttributes);
+        }
+
+        $event->addChunk('<div'.$attributes->getContainer().'>');
         foreach ($layout as $group) {
-            $event->addChunk('<div'.$buttons->getAttributes()->getColumn().'>');
+            $event->addChunk('<div'.$attributes->getColumn().'>');
 
             foreach ($group as $key => $button) {
                 if (!\in_array($key, ['save', 'submit', 'back'], true)) {
@@ -39,13 +46,13 @@ class SubmitButtons extends FeatureBundle
                     continue;
                 }
 
-                $attributes = match ($key) {
-                    'save' => $buttons->getAttributes()->getSave(),
-                    'submit' => $buttons->getAttributes()->getSubmit(),
-                    'back' => $buttons->getAttributes()->getBack(),
+                $buttonAttributes = match ($key) {
+                    'save' => $attributes->getSave(),
+                    'submit' => $attributes->getSubmit(),
+                    'back' => $attributes->getBack(),
                 };
 
-                $event->addChunk($button->render($attributes));
+                $event->addChunk($button->render($buttonAttributes));
             }
 
             $event->addChunk('</div>');

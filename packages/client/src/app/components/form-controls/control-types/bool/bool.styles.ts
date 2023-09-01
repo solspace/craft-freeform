@@ -18,6 +18,7 @@ export const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
   gap: ${spacings.sm};
 
   label {
+    color: ${colors.gray550};
     font-weight: ${({ $size = 'small' }) =>
       $size === 'small' ? 'normal' : 'bold'};
   }

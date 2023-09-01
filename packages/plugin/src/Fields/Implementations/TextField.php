@@ -62,7 +62,7 @@ class TextField extends AbstractField implements PlaceholderInterface
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())

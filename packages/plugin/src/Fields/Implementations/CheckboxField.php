@@ -84,7 +84,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
 
     public function getSingleInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()->getInput()
+        $attributes = $this->getAttributes()->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', $this->getType())
@@ -119,7 +119,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
 
     protected function onBeforeInputHtml(): string
     {
-        return '<label'.$this->getCompiledAttributes()->getLabel().'>';
+        return '<label'.$this->getAttributes()->getLabel().'>';
     }
 
     protected function onAfterInputHtml(): string

@@ -157,7 +157,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $containerAttributes = $this->getCompiledAttributes()
+        $containerAttributes = $this->getAttributes()
             ->getContainer()
             ->setIfEmpty('data-field-container', $this->getHandle())
         ;
@@ -360,7 +360,71 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getAttributes(): FieldAttributesCollection
     {
-        return $this->attributes;
+        if (null === $this->compiledAttributes) {
+            $this->compiledAttributes = $this->getCompiledAttributes();
+        }
+
+        return $this->compiledAttributes;
+    }
+
+    public function getCompiledAttributes(): FieldAttributesCollection
+    {
+        $attributes = $this->attributes->clone();
+        $formAttributes = $this->getForm()->getAttributes();
+        $fieldAttributes = $formAttributes->getNested('fields');
+        if (null === $fieldAttributes) {
+            return $attributes;
+        }
+
+        $implementationProvider = new ImplementationProvider();
+        $meta = [
+            ':required' => $this->isRequired(),
+            ':errors' => $this->hasErrors(),
+        ];
+
+        $matchedAttributes = [];
+        foreach ($fieldAttributes as $key => $value) {
+            if (preg_match('/^[@#:]/', $key)) {
+                unset($fieldAttributes[$key]);
+            }
+
+            $targets = array_map('trim', explode(',', $key));
+
+            $isMatching = false;
+            if (\in_array('#'.$this->getHandle(), $targets, true)) {
+                $isMatching = true;
+            }
+            if (\in_array('@'.$this->getType(), $targets, true)) {
+                $isMatching = true;
+            }
+            if (\in_array('@'.$this->getType(), $targets, true)) {
+                $isMatching = true;
+            }
+
+            $implementations = $implementationProvider->getImplementations($this::class);
+            foreach ($implementations as $implementation) {
+                if (\in_array(':'.$implementation, $targets, true)) {
+                    $isMatching = true;
+                }
+            }
+
+            foreach ($meta as $handle => $shouldTrigger) {
+                if ($shouldTrigger && \in_array($handle, $targets, true)) {
+                    $isMatching = true;
+                }
+            }
+
+            if ($isMatching) {
+                $matchedAttributes[] = $value;
+            }
+        }
+
+        $attributes->merge($fieldAttributes);
+        foreach ($matchedAttributes as $value) {
+            $attributes->merge($value);
+        }
+
+        return $attributes;
     }
 
     public function getParameters(): Parameters
@@ -496,82 +560,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
     }
 
-    public function getCompiledAttributes(): FieldAttributesCollection
-    {
-        if (null !== $this->compiledAttributes) {
-            return $this->compiledAttributes;
-        }
-
-        $attributes = $this->getAttributes()->clone();
-        $formAttributes = $this->getForm()->getAttributes();
-        $fieldAttributes = $formAttributes->getNested('fields');
-        if (null === $fieldAttributes) {
-            return $attributes;
-        }
-
-        $implementationProvider = new ImplementationProvider();
-        $meta = [
-            ':required' => $this->isRequired(),
-            ':errors' => $this->hasErrors(),
-        ];
-
-        $matchedAttributes = [];
-        foreach ($fieldAttributes as $key => $value) {
-            if (preg_match('/^[@#:]/', $key)) {
-                unset($fieldAttributes[$key]);
-            }
-
-            $targets = array_map('trim', explode(',', $key));
-
-            $isMatching = false;
-            if (\in_array('#'.$this->getHandle(), $targets, true)) {
-                $isMatching = true;
-            }
-            if (\in_array('@'.$this->getType(), $targets, true)) {
-                $isMatching = true;
-            }
-            if (\in_array('@'.$this->getType(), $targets, true)) {
-                $isMatching = true;
-            }
-
-            $implementations = $implementationProvider->getImplementations($this::class);
-            foreach ($implementations as $implementation) {
-                if (\in_array(':'.$implementation, $targets, true)) {
-                    $isMatching = true;
-                }
-            }
-
-            foreach ($meta as $handle => $shouldTrigger) {
-                if ($shouldTrigger && \in_array($handle, $targets, true)) {
-                    $isMatching = true;
-                }
-            }
-
-            if ($isMatching) {
-                $matchedAttributes[] = $value;
-            }
-
-            if ($isMatching) {
-                dump($targets, $value);
-            }
-        }
-
-        $attributes->merge($fieldAttributes);
-        foreach ($matchedAttributes as $value) {
-            $attributes->merge($value);
-        }
-
-        $this->compiledAttributes = $attributes;
-
-        return $this->compiledAttributes;
-    }
-
     /**
      * Assemble the Label HTML string.
      */
     protected function getLabelHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getLabel()
             ->clone()
             ->replace('for', $this->getIdAttribute())
@@ -594,7 +588,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return '';
         }
 
-        $output = '<div'.$this->getCompiledAttributes()->getInstructions().'>';
+        $output = '<div'.$this->getAttributes()->getInstructions().'>';
         $output .= $this->getInstructions();
         $output .= '</div>';
         $output .= \PHP_EOL;
@@ -612,7 +606,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return '';
         }
 
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getError()
             ->clone()
             ->append('class', 'errors')

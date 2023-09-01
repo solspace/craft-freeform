@@ -62,7 +62,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))

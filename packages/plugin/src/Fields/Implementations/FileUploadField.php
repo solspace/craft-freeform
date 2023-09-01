@@ -103,7 +103,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle().'[]')

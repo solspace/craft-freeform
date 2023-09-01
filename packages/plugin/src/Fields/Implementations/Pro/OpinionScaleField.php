@@ -125,7 +125,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             return '';
         }
 
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())

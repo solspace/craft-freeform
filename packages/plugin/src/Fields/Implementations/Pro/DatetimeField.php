@@ -476,7 +476,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         $hasDate = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_DATE], true);
         $locale = $this->locale ?: \Craft::$app->locale->id;
 
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->append('class', 'form-date-time-field')

@@ -134,7 +134,7 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())

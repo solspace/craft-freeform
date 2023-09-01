@@ -37,7 +37,7 @@ class MultipleSelectField extends BaseOptionsField implements MultiValueInterfac
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle().'[]')

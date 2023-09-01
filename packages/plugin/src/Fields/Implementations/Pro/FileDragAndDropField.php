@@ -73,7 +73,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ['maxFileSize' => $this->getMaxFileSizeKB()]
         );
 
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->append('class', 'freeform-file-drag-and-drop__input')

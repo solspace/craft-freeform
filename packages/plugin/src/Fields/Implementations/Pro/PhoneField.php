@@ -54,7 +54,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         $pattern = $this->getPattern();
         $pattern = str_replace('x', '0', $pattern);
 
-        $attributes = $this->getCompiledAttributes()
+        $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->append('class', 'form-phone-pattern-field')

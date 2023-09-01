@@ -29,7 +29,12 @@ class ConfirmationFieldValidation extends FeatureBundle
 
         $form = $event->getForm();
 
-        $targetField = $form->get($field->getTargetField()->getUid());
+        $targetFieldUid = $field->getTargetField()?->getUid();
+        if (!$targetFieldUid) {
+            return;
+        }
+
+        $targetField = $form->get($targetFieldUid);
         if (!$targetField) {
             return;
         }

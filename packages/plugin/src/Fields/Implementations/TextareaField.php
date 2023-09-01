@@ -46,7 +46,8 @@ class TextareaField extends TextField implements PlaceholderInterface
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('id', $this->getIdAttribute())

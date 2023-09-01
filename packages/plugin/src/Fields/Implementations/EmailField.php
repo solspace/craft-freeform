@@ -43,7 +43,8 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', $this->getType())

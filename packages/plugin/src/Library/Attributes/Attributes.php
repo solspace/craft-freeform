@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
+use craft\helpers\ArrayHelper;
 use Solspace\Commons\Helpers\StringHelper;
 
 class Attributes implements \Countable, \JsonSerializable
@@ -74,6 +75,11 @@ class Attributes implements \Countable, \JsonSerializable
         return $this->attributes[$name] ?? $default;
     }
 
+    public function getNested(string $name): ?array
+    {
+        return $this->nestedAttributes[$name] ?? null;
+    }
+
     public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
     {
         preg_match('/^[=+-]/', $key, $matches);
@@ -132,7 +138,7 @@ class Attributes implements \Countable, \JsonSerializable
 
             case self::STRATEGY_APPEND:
             default:
-                if (\array_key_exists($key, $this->attributes)) {
+                if (\array_key_exists($key, $this->attributes) && !\is_bool($value)) {
                     $this->attributes[$key] = trim($this->attributes[$key].' '.$value);
                 } else {
                     $this->attributes[$key] = $value;
@@ -163,24 +169,22 @@ class Attributes implements \Countable, \JsonSerializable
         return $this->set($key, $value);
     }
 
-    public function getNested(string $key): ?array
-    {
-        return $this->nestedAttributes[$key] ?? null;
-    }
-
     public function merge(array $attributes): self
     {
         $reflection = new \ReflectionClass($this);
 
         if (isset($attributes[self::KEY_NESTED])) {
-            $this->nestedAttributes = array_merge($this->nestedAttributes, $attributes[self::KEY_NESTED]);
+            $this->nestedAttributes = ArrayHelper::merge($this->nestedAttributes, $attributes[self::KEY_NESTED]);
             unset($attributes[self::KEY_NESTED]);
         }
 
         foreach ($attributes as $key => $value) {
             if (str_starts_with($key, '@')) {
                 $nestedKey = substr($key, 1);
-                $this->nestedAttributes[$nestedKey] = $value;
+                $this->nestedAttributes[$nestedKey] = ArrayHelper::merge(
+                    $this->nestedAttributes[$nestedKey] ?? [],
+                    $value
+                );
                 unset($attributes[$key]);
             }
         }

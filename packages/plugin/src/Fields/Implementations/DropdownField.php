@@ -32,7 +32,8 @@ class DropdownField extends BaseOptionsField
 
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('id', $this->getIdAttribute())

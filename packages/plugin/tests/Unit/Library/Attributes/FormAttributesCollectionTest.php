@@ -66,9 +66,8 @@ class FormAttributesCollectionTest extends TestCase
         $formMock->method('getAttributes')->willReturn($attributes);
 
         $field = new TextField($formMock);
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getInput();
+        $output = (string) $field->getCompiledAttributes()->getInput();
 
         $this->assertSame(' class="one text-class dropdown-n-text table-n-text" placeholder="text-placeholder dropdown-placeholder"', $output);
     }
@@ -97,9 +96,8 @@ class FormAttributesCollectionTest extends TestCase
         ;
 
         $field->method('getHandle')->willReturn('myTextField');
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getInput();
+        $output = (string) $field->getCompiledAttributes()->getInput();
 
         $this->assertSame(' class="one" id="my-text-field"', $output);
     }
@@ -121,9 +119,8 @@ class FormAttributesCollectionTest extends TestCase
         $formMock->method('getAttributes')->willReturn($attributes);
 
         $field = new DropdownField($formMock);
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getInput();
+        $output = (string) $field->getCompiledAttributes()->getInput();
 
         $this->assertSame(' class="one options-field"', $output);
     }
@@ -157,9 +154,8 @@ class FormAttributesCollectionTest extends TestCase
         $field->method('getHandle')->willReturn('myTextField');
         $field->method('isRequired')->willReturn(true);
         $field->method('hasErrors')->willReturn(true);
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getLabel();
+        $output = (string) $field->getCompiledAttributes()->getLabel();
 
         $this->assertSame(' class="one required has-errors"', $output);
     }
@@ -191,9 +187,8 @@ class FormAttributesCollectionTest extends TestCase
         ;
 
         $field->method('getHandle')->willReturn('myTextField');
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getLabel();
+        $output = (string) $field->getCompiledAttributes()->getLabel();
 
         $this->assertSame(' class="one"', $output);
     }
@@ -223,9 +218,8 @@ class FormAttributesCollectionTest extends TestCase
 
         $field->method('getHandle')->willReturn('myTextField');
         $field->method('hasErrors')->willReturn(true);
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getLabel();
+        $output = (string) $field->getCompiledAttributes()->getLabel();
 
         $this->assertSame(' class="one combined"', $output);
     }
@@ -252,9 +246,8 @@ class FormAttributesCollectionTest extends TestCase
         $formMock->method('getAttributes')->willReturn($attributes);
 
         $field = new TableField($formMock);
-        $field->processFormAttributes();
 
-        $output = (string) $field->getAttributes()->getLabel();
+        $output = (string) $field->getCompiledAttributes()->getLabel();
         $tableOutput = (string) $field->getTableAttributes()->getRow();
 
         $this->assertSame(' class="one two"', $output);

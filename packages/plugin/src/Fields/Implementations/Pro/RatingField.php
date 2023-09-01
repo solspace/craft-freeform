@@ -134,7 +134,8 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->replace('type', 'radio')
@@ -149,7 +150,7 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         $output = $this->getStyles();
 
         $output .= '<div>';
-        $output .= '<span '.$spanAttributes.'>';
+        $output .= '<span'.$spanAttributes.'>';
 
         $maxValue = $this->getMaxValue();
         for ($i = $maxValue; $i >= 1; --$i) {

@@ -88,7 +88,7 @@ class FileUploadBundle extends FeatureBundle
         $fields = $form->getLayout()->getFields(FileUploadField::class);
         $assetIds = [];
         foreach ($fields as $field) {
-            $assetIds = array_merge($assetIds, $field->getValue());
+            $assetIds = array_merge($assetIds, $field->getValue() ?? []);
         }
 
         if (empty($assetIds)) {

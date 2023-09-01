@@ -29,7 +29,7 @@ trait FileUploadTrait
         order: 1,
         options: AssetSourceOptions::class,
     )]
-    protected ?int $assetSourceId;
+    protected ?int $assetSourceId = null;
 
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(

@@ -100,7 +100,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_crm_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('integrationId', $this->integer()->notNull())
-                ->addField('label', $this->string(255)->notNull())
+                ->addField('label', $this->text()->notNull())
                 ->addField('handle', $this->string(255)->notNull())
                 ->addField('type', $this->string(50)->notNull())
                 ->addField('required', $this->boolean()->defaultValue(false))

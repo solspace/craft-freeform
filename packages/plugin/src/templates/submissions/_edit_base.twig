@@ -124,22 +124,22 @@
                                         })) }}
                                     {% elseif field.type == "dropdown" %}
                                         {{ forms.selectField(options|merge({
-                                            options: field.options,
+                                            options: field.options.toTwigArray,
                                         })) }}
                                     {% elseif field.type == "multiple-select" %}
                                         {{ forms.multiselectField(options|merge({
-                                            options: field.optionsAsKeyValuePairs,
+                                            options: field.options.toTwigArray,
                                             values: value,
                                         })) }}
                                     {% elseif field.type == "checkboxes" %}
                                         {{ forms.checkboxSelectField(options|merge({
                                             showAllOption: false,
-                                            options: field.optionsAsKeyValuePairs,
+                                            options: field.options.toTwigArray,
                                             values: value,
                                         })) }}
                                     {% elseif field.type == "radios" %}
                                         {{ forms.radioGroupField(options|merge({
-                                            options: field.optionsAsKeyValuePairs,
+                                            options: field.options.toTwigArray,
                                         })) }}
                                     {% elseif field.type == "rating" %}
 

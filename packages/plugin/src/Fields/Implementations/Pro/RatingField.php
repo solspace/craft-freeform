@@ -80,16 +80,6 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         return $collection;
     }
 
-    public function getOptionsAsKeyValuePairs(): array
-    {
-        $options = [];
-        foreach ($this->getOptions() as $option) {
-            $options[$option->value] = $option->label;
-        }
-
-        return $options;
-    }
-
     public function getMaxValue(): int
     {
         return min(

@@ -106,7 +106,8 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getCompiledAttributes()
+            ->getInput()
             ->clone()
             ->set('type', 'button')
             ->set('data-signature-clear')

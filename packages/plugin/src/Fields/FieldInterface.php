@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields;
 
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Twig\Markup;
 
 interface FieldInterface
@@ -118,5 +119,5 @@ interface FieldInterface
 
     public function setParameters(array $parameters = null): void;
 
-    public function processFormAttributes(): void;
+    public function getCompiledAttributes(): FieldAttributesCollection;
 }

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Fields\Traits;
 
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
-use Solspace\Freeform\Freeform;
 
 trait PlaceholderTrait
 {
@@ -27,6 +26,6 @@ trait PlaceholderTrait
 
     public function getPlaceholder(): string
     {
-        return Freeform::t($this->placeholder);
+        return $this->placeholder;
     }
 }

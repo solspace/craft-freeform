@@ -40,7 +40,8 @@ class CreditCardCvcField extends TextField implements ExtraFieldInterface
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getCompiledAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('id', $this->getIdAttribute())

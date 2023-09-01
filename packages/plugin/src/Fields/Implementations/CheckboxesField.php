@@ -45,7 +45,8 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getCompiledAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle().'[]')
             ->setIfEmpty('type', 'checkbox')

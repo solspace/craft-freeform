@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
@@ -39,7 +39,8 @@ class RadiosField extends BaseOptionsField implements OneLineInterface
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getCompiledAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', 'radio')

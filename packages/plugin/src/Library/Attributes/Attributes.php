@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
-use Solspace\Commons\Helpers\StringHelper;
+use craft\helpers\ArrayHelper;
 
 class Attributes implements \Countable, \JsonSerializable
 {
@@ -180,7 +180,10 @@ class Attributes implements \Countable, \JsonSerializable
         foreach ($attributes as $key => $value) {
             if (str_starts_with($key, '@')) {
                 $nestedKey = substr($key, 1);
-                $this->nestedAttributes[$nestedKey] = $value;
+                $this->nestedAttributes[$nestedKey] = ArrayHelper::merge(
+                    $this->nestedAttributes[$nestedKey] ?? [],
+                    $value
+                );
                 unset($attributes[$key]);
             }
         }

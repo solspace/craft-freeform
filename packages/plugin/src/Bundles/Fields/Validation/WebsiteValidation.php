@@ -30,6 +30,9 @@ class WebsiteValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
+        if (empty($value)) {
+            return;
+        }
 
         if (!preg_match(self::PATTERN, $value)) {
             $field->addError(Freeform::t('Website not valid'));

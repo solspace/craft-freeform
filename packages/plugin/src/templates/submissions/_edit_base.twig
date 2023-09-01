@@ -172,14 +172,14 @@
                                                                     {{ field.value == scale.value ? "checked" }}
                                                             />
                                                             <label for="{{ field.handle ~ '-' ~ index }}">
-                                                                {{ scale.label ?? scale.value }}
+                                                                {{ scale.label }}
                                                             </label>
                                                         </li>
                                                     {% endfor %}
                                                 </ul>
                                                 <ul class="opinion-scale-legends">
                                                     {% for legend in field.legends %}
-                                                        <li>{{ legend.legend|t("app") }}</li>
+                                                        <li>{{ legend|t("app") }}</li>
                                                     {% endfor %}
                                                 </ul>
                                             </div>

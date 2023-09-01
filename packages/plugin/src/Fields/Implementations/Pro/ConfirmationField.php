@@ -70,6 +70,9 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
 
         try {
             $field = $this->getTargetField();
+            if (!$field) {
+                return 'no field chosen';
+            }
 
             $output = $field->getInputHtml();
             $output = str_replace('/>', '', $output);

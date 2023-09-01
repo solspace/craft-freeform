@@ -53,38 +53,39 @@ html, body {
 .freeform-warning code {
     font: monospace;
 }
-#freeform-success-error-banner,
+
+/* ERRORS AND SUCCESS */
 .freeform-form-success,
 .freeform-form-errors {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 20px;
+    padding: 15px 20px;
     width: 100%;
-    position: absolute;
+    border-radius: 5px;
 }
-.freeform-form-success,
 .freeform-form-success p,
-.freeform-form-errors,
 .freeform-form-errors p {
     font: normal 18px sans-serif;
     color: #ffffff;
-    line-height: 1.5;
-    text-align: center;
-    border-radius: 5px;
-    width: 40vw;
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 15px;
-    position: relative;
-    justify-content: center;
+    margin: 0;
 }
-.freeform-form-success,
-.freeform-form-success p {
+.freeform-form-success ul,
+.freeform-form-errors ul {
+    font: italic 15px sans-serif;
+    color: #ffffff;
+    margin: 10px 0 0 0;
+    padding: 0 0 0 25px;
+}
+.freeform-form-success ul li:not(:last-child),
+.freeform-form-errors ul li:not(:last-child) {
+    margin-bottom: 5px;
+}
+.freeform-form-success {
     background-color: #198754;
     border: 1px solid #198754;
 }
-.freeform-form-errors,
-.freeform-form-errors p {
+.freeform-form-errors {
     background-color: #dc3545;
     border: 1px solid #dc3545;
 }

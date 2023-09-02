@@ -43,6 +43,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     #[Input\Checkboxes(
         label: 'File Kinds',
         instructions: 'Select the file kinds that are allowed to be uploaded.',
+        order: 3,
         selectAll: true,
         columns: 2,
         options: FileKindsOptionsGenerator::class,
@@ -52,13 +53,14 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     #[Input\Integer(
         label: 'Maximum File Size',
         instructions: 'Specify the maximum file size, in KB.',
+        order: 4,
     )]
-    protected int $maxFileSizeKB = 2048;
+    protected int $maxFileSizeKB = self::DEFAULT_MAX_FILESIZE_KB;
 
     #[Input\Integer(
         instructions: 'Specify the maximum uploadable file count.',
     )]
-    protected int $fileCount = 1;
+    protected int $fileCount = self::DEFAULT_FILE_COUNT;
 
     /**
      * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
@@ -98,7 +100,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 
     public function getFileCount(): int
     {
-        return $this->fileCount <= 1 ? 1 : (int) $this->fileCount;
+        return $this->fileCount <= 1 ? self::DEFAULT_FILE_COUNT : $this->fileCount;
     }
 
     public function getInputHtml(): string

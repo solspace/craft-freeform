@@ -47,7 +47,7 @@ const Checkboxes: React.FC<ControlType<CheckboxesProperty>> = ({
             type="checkbox"
             className="checkbox"
             checked={isAllSelected}
-            onClick={() => {
+            onChange={() => {
               if (isAllSelected) {
                 updateValue([]);
               } else {
@@ -78,7 +78,7 @@ const Checkboxes: React.FC<ControlType<CheckboxesProperty>> = ({
                 type="checkbox"
                 className="checkbox"
                 checked={value.includes(option.value)}
-                onClick={() => {
+                onChange={() => {
                   if (value.includes(option.value)) {
                     updateValue(value.filter((v) => v !== option.value));
                   } else {

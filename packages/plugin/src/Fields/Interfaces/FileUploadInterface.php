@@ -14,8 +14,9 @@ namespace Solspace\Freeform\Fields\Interfaces;
 
 interface FileUploadInterface
 {
-    /**
-     * @return int
-     */
-    public function getAssetSourceId();
+    public const FLAG_GLOBAL_PROPERTY = 'global-property';
+
+    public function getAssetSourceId(): ?int;
+
+    public function getDefaultUploadLocation(): ?string;
 }

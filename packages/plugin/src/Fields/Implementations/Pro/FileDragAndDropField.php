@@ -24,12 +24,14 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     #[Input\ColorPicker(
         label: 'Accent Color',
         instructions: 'Select accent color',
+        order: 6,
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
     #[Input\Select(
         label: 'Accent Color',
         instructions: 'Select accent color',
+        order: 7,
         options: [
             'light' => 'Light',
             'dark' => 'Dark',
@@ -39,6 +41,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
     #[Input\Text(
         instructions: 'Field placeholder.',
+        order: 8,
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;
 
@@ -76,8 +79,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
-            ->append('class', 'freeform-file-drag-and-drop__input')
-            ->replace('div-freeform-file-upload', $this->getHandle())
+            ->append('class', 'freeform-file-dnd__input')
+            ->replace('data-freeform-file-upload', $this->getHandle())
             ->setIfEmpty('data-error-append-target', $this->getHandle())
             ->replace('data-file-count', \count($this->getValue() ?? []))
             ->replace('data-max-files', $this->getFileCount())
@@ -93,11 +96,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $output = '';
         $output .= '<div'.$attributes.'>';
-        $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
+        $output .= '<div data-placeholder class="freeform-file-dnd__placeholder">';
         $output .= $this->translate($this->getPlaceholder());
         $output .= '</div>';
-        $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
-        $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';
+        $output .= '<div data-preview-zone class="freeform-file-dnd__preview-zone"></div>';
+        $output .= '<ul data-messages class="freeform-file-dnd__messages"></ul>';
         $output .= '<input type="file" id="form-input-'.$this->getHandle().'" multiple />';
         $output .= '</div>';
 

@@ -12,17 +12,17 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\base\Volume;
 use craft\db\Query;
 use craft\elements\Asset;
+use craft\errors\InvalidFsException;
 use craft\errors\InvalidSubpathException;
-use craft\errors\InvalidVolumeException;
 use craft\errors\UploadFailedException;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\UrlHelper;
+use craft\models\Volume;
 use craft\models\VolumeFolder;
 use craft\web\UploadedFile;
 use GuzzleHttp\Exception\GuzzleException;
@@ -31,6 +31,7 @@ use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
@@ -47,8 +48,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
     public const EVENT_BEFORE_UPLOAD = 'beforeUpload';
     public const EVENT_AFTER_UPLOAD = 'afterUpload';
 
-    /** @var array */
-    private static $fileUploadFieldIds;
+    private static array $fileUploadFieldIds = [];
 
     /**
      * Uploads a file and flags it as "unfinalized"
@@ -255,7 +255,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
     /**
      * @throws InvalidSubpathException
      */
-    public function getFileUploadFolder(Form $form, FileUploadField $field): ?VolumeFolder
+    public function getFileUploadFolder(Form $form, FileUploadInterface $field): ?VolumeFolder
     {
         $assetService = \Craft::$app->assets;
 
@@ -562,7 +562,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $assetsService = \Craft::$app->getAssets();
 
         if (null === $volumeId || ($rootFolder = $assetsService->getRootFolderByVolumeId($volumeId)) === null) {
-            throw new InvalidVolumeException();
+            throw new InvalidFsException();
         }
 
         $subpath = \is_string($subpath) ? trim($subpath, '/') : '';

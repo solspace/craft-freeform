@@ -9,7 +9,7 @@ class TableAttributesCollection extends Attributes
     protected Attributes $column;
     protected Attributes $label;
     protected Attributes $input;
-    protected Attributes $select;
+    protected Attributes $dropdown;
     protected Attributes $checkbox;
     protected Attributes $addButton;
     protected Attributes $removeButton;
@@ -21,7 +21,7 @@ class TableAttributesCollection extends Attributes
         $this->column = new Attributes();
         $this->label = new Attributes();
         $this->input = new Attributes();
-        $this->select = new Attributes();
+        $this->dropdown = new Attributes();
         $this->checkbox = new Attributes();
         $this->addButton = new Attributes();
         $this->removeButton = new Attributes();
@@ -54,9 +54,9 @@ class TableAttributesCollection extends Attributes
         return $this->input;
     }
 
-    public function getSelect(): Attributes
+    public function getDropdown(): Attributes
     {
-        return $this->select;
+        return $this->dropdown;
     }
 
     public function getCheckbox(): Attributes

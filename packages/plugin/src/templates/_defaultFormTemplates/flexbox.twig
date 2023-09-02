@@ -104,34 +104,6 @@
         font-size: 13px;
         color: #aba7a7;
     }
-    .freeform-row .freeform-column.freeform-column-content-align-left {
-        display: flex;
-        justify-content: flex-start;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-left > button:not(:first-of-type) {
-        margin-left: 5px;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-center {
-        display: flex;
-        justify-content: center;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-center > button:not(:first-of-type) {
-        margin-left: 5px;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-right {
-        display: flex;
-        justify-content: flex-end;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-right > button:not(:first-of-type) {
-        margin-left: 5px;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-spread {
-        display: flex;
-        justify-content: space-between;
-    }
-    .freeform-row .freeform-column.freeform-column-content-align-spread > button:not(:first-of-type) {
-        margin-left: 5px;
-    }
     .freeform-form-errors {
         padding: 15px;
         border: 1px solid #f5c6cb;
@@ -142,9 +114,6 @@
     .freeform-form-errors>p {
         margin: 0;
     }
-    .freeform-form-has-errors {
-        color: #721c24;
-    }
 </style>
 
 {# Render the opening form tag #}
@@ -152,7 +121,55 @@
     attributes: {
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success" },
-        errors: { class: "freeform-form-has-errors" },
+        errors: { class: "freeform-form-errors" },
+        "@buttons": {
+            container: { class: "freeform-button-container" },
+            column: { class: "freeform-button-column" },
+            buttonWrapper: { class: "freeform-button-wrapper" },
+            submit: { class: "freeform-button-submit" },
+            back: { class: "freeform-button-back" },
+            save: { class: "freeform-button-save" },
+        },
+        "@fields": {
+            container: { class: "freeform-column" },
+            input: {
+                novalidate: true,
+                class: "freeform-input",
+            },
+            label: { class: "freeform-label" },
+            instructions: { class: "freeform-instructions" },
+            error: { class: "freeform-errors" },
+            ":required": {
+                label: {
+                    "+class": "freeform-required"
+                },
+            },
+            ":errors": {
+                input: {
+                    "+class": "is-invalid has-validation"
+                },
+            },
+            ":oneLine": {
+                container: {
+                    "+class": "input-group-one-line"
+                },
+            },
+            ":inputOnly": {
+                container: {
+                    "+class": "freeform-input-only-label"
+                },
+            },
+            "@group": {
+                label: {
+                    "+class": "group-label",
+                }
+            },
+            "@signature": {
+                input: {
+                    "-class": "freeform-input",
+                }
+            }
+        }
     }
 }) }}
 
@@ -174,12 +191,12 @@ if (form) {
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
         <div{{ form.attributes.success }}>
-            {{ form.settings.successMessage | t('freeform') }}
+            <p>{{ form.settings.successMessage | t('freeform') }}</p>
         </div>
     {% endif %}
     {% if form.hasErrors %}
         <div{{ form.attributes.errors }}>
-            {{ form.settings.errorMessage | t('freeform') }}
+            <p>{{ form.settings.errorMessage | t('freeform') }}</p>
 
             {% if form.errors|length %}
                 <ul>
@@ -218,19 +235,9 @@ if (form) {
             {% do field.setParameters({
                 attributes: {
                     container: { class: [
-                        "freeform-column",
                         "freeform-column-" ~ width,
                         "freeform-fieldtype-" ~ field.type,
                     ]},
-                    input: { class: [
-                        field.type != "signature" ? "freeform-input",
-                    ]},
-                    label: { class: [
-                        "freeform-label",
-                        field.inputOnly ? "freeform-input-only-label",
-                        field.required ? "freeform-required",
-                    ]},
-                    errors: { class: "freeform-errors" },
                 },
             }) %}
 

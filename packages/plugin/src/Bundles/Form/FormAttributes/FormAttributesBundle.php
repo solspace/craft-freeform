@@ -36,22 +36,7 @@ class FormAttributesBundle extends FeatureBundle
             return;
         }
 
-        $rowAttributes = $attributes['row'] ?? [];
-        $errorAttributes = $attributes['error'] ?? [];
-        unset($attributes['row'], $attributes['error']);
-
-        foreach ($attributes as $key => $value) {
-            $form->getAttributes()->replace($key, $value);
-        }
-
-        foreach ($rowAttributes as $key => $value) {
-            $form->getAttributes()->getRow()->replace($key, $value);
-        }
-
-        foreach ($errorAttributes as $key => $value) {
-            $form->getAttributes()->getErrors()->replace($key, $value);
-        }
-
+        $form->getAttributes()->merge($attributes);
         if (null === $form->getAttributes()->get('method')) {
             $form->getAttributes()->set('method', 'post');
         }
@@ -66,41 +51,41 @@ class FormAttributesBundle extends FeatureBundle
 
         $behaviorSettings = $form->getSettings()->getBehavior();
 
-        $attributes->set('data-freeform', true);
-        $attributes->set('data-disable-reset', $form->isAjaxResetDisabled());
-        $attributes->set('data-id', $form->getAnchor());
-        $attributes->set('data-handle', $form->getHandle());
-        $attributes->set('data-ajax', $form->isAjaxEnabled());
-        $attributes->set('data-disable-submit', $formService->isFormSubmitDisable());
-        $attributes->set('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
+        $attributes->replace('data-freeform', true);
+        $attributes->replace('data-disable-reset', $form->isAjaxResetDisabled());
+        $attributes->replace('data-id', $form->getAnchor());
+        $attributes->replace('data-handle', $form->getHandle());
+        $attributes->replace('data-ajax', $form->isAjaxEnabled());
+        $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
+        $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
 
-        if ($form->getLayout()->hasFields(FileUploadInterface::class)) {
-            $attributes->set('enctype', 'multipart/form-data');
+        if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
+            $attributes->replace('enctype', 'multipart/form-data');
         }
 
         $autoScroll = Freeform::getInstance()->settings->getSettingsModel()->autoScroll;
         if ($autoScroll) {
-            $attributes->set('data-auto-scroll', $autoScroll);
+            $attributes->replace('data-auto-scroll', $autoScroll);
         }
 
         if ($formService->shouldScrollToAnchor($form)) {
-            $attributes->set('data-scroll-to-anchor', true);
+            $attributes->replace('data-scroll-to-anchor', true);
         }
 
         if ($behaviorSettings->showProcessingText) {
-            $attributes->set('data-show-processing-text', true);
-            $attributes->set('data-processing-text', $behaviorSettings->processingText);
+            $attributes->replace('data-show-processing-text', true);
+            $attributes->replace('data-processing-text', $behaviorSettings->processingText);
         }
 
         if ($behaviorSettings->successMessage) {
-            $attributes->set(
+            $attributes->replace(
                 'data-success-message',
                 \Craft::t('app', $behaviorSettings->successMessage)
             );
         }
 
         if ($behaviorSettings->errorMessage) {
-            $attributes->set(
+            $attributes->replace(
                 'data-error-message',
                 \Craft::t('app', $behaviorSettings->errorMessage)
             );

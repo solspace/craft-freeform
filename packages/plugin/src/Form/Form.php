@@ -253,13 +253,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->getCurrentPage()->getFields();
     }
 
-    public function setCurrentPage(int $index): self
-    {
-        $this->getLayout()->getPages()->setCurrent($index);
-
-        return $this;
-    }
-
     public function getReturnUrl(): string
     {
         return $this->getSettings()->getBehavior()->returnUrl;

@@ -1,12 +1,5 @@
 <div{{ field.attributes.container }}>
 
-{% do field.setParameters({
-    attributes: {
-        input: { class: "w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded" },
-        label: { class: "ml-2 font-medium text-slate-700" }
-    }
-}) %}
-
 <div class="flex items-center">
     {{ field.renderInput }}
     {{ field.renderLabel }}

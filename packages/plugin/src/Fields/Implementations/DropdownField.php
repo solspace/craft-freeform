@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Fields\BaseOptionsField;
 
 #[Type(
@@ -31,7 +32,8 @@ class DropdownField extends BaseOptionsField
 
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('id', $this->getIdAttribute())
@@ -58,7 +60,7 @@ class DropdownField extends BaseOptionsField
         }
 
         foreach ($this->getOptions() as $option) {
-            if ($option->isChecked()) {
+            if ($option instanceof Option && $option->getValue() === $this->getValue()) {
                 return $option->getLabel();
             }
         }

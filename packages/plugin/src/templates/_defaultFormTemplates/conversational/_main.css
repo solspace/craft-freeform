@@ -53,41 +53,43 @@ html, body {
 .freeform-warning code {
     font: monospace;
 }
-#freeform-success-error-banner,
-.freeform-ajax-form-success,
-.freeform-ajax-form-errors {
+
+/* ERRORS AND SUCCESS */
+.freeform-form-success,
+.freeform-form-errors {
     margin-left: auto;
     margin-right: auto;
+    margin-bottom: 20px;
+    padding: 15px 20px;
     width: 100%;
-    position: absolute;
+    border-radius: 5px;
 }
-.freeform-form-success,
-.freeform-ajax-form-success p,
-.freeform-form-errors,
-.freeform-ajax-form-errors p {
+.freeform-form-success p,
+.freeform-form-errors p {
     font: normal 18px sans-serif;
     color: #ffffff;
-    line-height: 1.5;
-    text-align: center;
-    border-radius: 5px;
-    width: 40vw;
-    margin-top: 50px;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 15px;
-    position: relative;
-    justify-content: center;
+    margin: 0;
 }
-.freeform-form-success,
-.freeform-ajax-form-success p {
+.freeform-form-success ul,
+.freeform-form-errors ul {
+    font: italic 15px sans-serif;
+    color: #ffffff;
+    margin: 10px 0 0 0;
+    padding: 0 0 0 25px;
+}
+.freeform-form-success ul li:not(:last-child),
+.freeform-form-errors ul li:not(:last-child) {
+    margin-bottom: 5px;
+}
+.freeform-form-success {
     background-color: #198754;
     border: 1px solid #198754;
 }
-.freeform-form-errors,
-.freeform-ajax-form-errors p {
+.freeform-form-errors {
     background-color: #dc3545;
     border: 1px solid #dc3545;
 }
+
 /* BUTTONS */
 div[data-freeform-controls] {
     display: none;
@@ -134,6 +136,7 @@ button,
     background-color: transparent;
     border-color: #6c757d;
 }
+
 /* BASIC FIELD STYLES */
 label.freeform-required:after {
     color: #dc3545;
@@ -196,6 +199,7 @@ textarea.freeform-has-errors,
 select.freeform-has-errors {
     border-bottom: 2px solid #dc3545;
 }
+
 /* RADIOS, CHECKBOXES & MULTI-SELECT FIELDS */
 input[type="radio"],
 input[type="checkbox"] {
@@ -269,6 +273,7 @@ input[type="checkbox"]:checked + label span {
     border: 1px solid #0d6efd;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
 }
+
 /* OPINION SCALE FIELDS */
 .freeform-fieldtype-opinion-scale .opinion-scale-scales label:not(:first-child) {
     font: normal 18px sans-serif;
@@ -307,6 +312,7 @@ input[type="checkbox"]:checked + label span {
     padding: 10px 0;
     margin-top: 5px;
 }
+
 /* RATING FIELDS */
 .freeform-fieldtype-rating .freeform-has-errors + label:not(:first-child) {
     color: #dc3545;
@@ -319,6 +325,7 @@ input[type="checkbox"]:checked + label span {
     padding: initial;
     margin-right: 15px;
 }
+
 /* FILE UPLOAD DRAG & DROP FIELDS */
 .freeform-file-dnd {
     background-color: #1d1f23 !important;
@@ -337,6 +344,7 @@ input[type="checkbox"]:checked + label span {
 .freeform-file-dnd [data-field-errors]>li {
     color: #dc3545;
 }
+
 /* SIGNATURE FIELDS */
 .freeform-fieldtype-signature button {
     font: 400 16px sans-serif;
@@ -353,6 +361,7 @@ input[type="checkbox"]:checked + label span {
     border: 1px solid #767676;
     border-radius: 5px;
 }
+
 /* TABLE FIELDS */
 .freeform-fieldtype-table table thead tr th {
     font: 400 16px sans-serif;
@@ -408,6 +417,7 @@ input[type="checkbox"]:checked + label span {
     display: block;
     transform: scale(2);
 }
+
 /* CHECKBOX */
 .freeform-fieldtype-checkbox {
     min-height: 75px;
@@ -496,9 +506,9 @@ input[type="checkbox"]:checked + label span {
         width: 50vw;
     }
     .freeform-form-success,
-    .freeform-ajax-form-success p,
+    .freeform-form-success p,
     .freeform-form-errors,
-    .freeform-ajax-form-errors p,
+    .freeform-form-errors p,
     .freeform-warning {
         width: 50vw;
     }
@@ -513,9 +523,9 @@ input[type="checkbox"]:checked + label span {
         width: 70vw;
     }
     .freeform-form-success,
-    .freeform-ajax-form-success p,
+    .freeform-form-success p,
     .freeform-form-errors,
-    .freeform-ajax-form-errors p,
+    .freeform-form-errors p,
     .freeform-warning {
         width: 70vw;
     }
@@ -530,9 +540,9 @@ input[type="checkbox"]:checked + label span {
         width: 90vw;
     }
     .freeform-form-success,
-    .freeform-ajax-form-success p,
+    .freeform-form-success p,
     .freeform-form-errors,
-    .freeform-ajax-form-errors p,
+    .freeform-form-errors p,
     .freeform-warning {
         width: 80vw;
     }
@@ -542,6 +552,7 @@ input[type="checkbox"]:checked + label span {
         width: 70vw;
     }
 }
+
 /* SUBMIT LOADING INDICATOR */
 button[type=submit].freeform-processing {
     display: -ms-inline-flexbox;
@@ -564,9 +575,6 @@ button[type=submit].freeform-processing:before {
     border-color: transparent transparent white white;
     border-radius: 50%;
     animation: freeform-processing .5s linear infinite;
-}
-.mt-n1 {
-    margin-top: -0.5rem !important;
 }
 @keyframes freeform-processing {
     0% {

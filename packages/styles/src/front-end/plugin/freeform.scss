@@ -4,4 +4,11 @@
 [data-freeform-controls] {
   display: flex;
   justify-content: space-between;
+
+  > div {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    gap: 5px;
+  }
 }

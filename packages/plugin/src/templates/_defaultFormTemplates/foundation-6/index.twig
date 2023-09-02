@@ -10,6 +10,49 @@
         row: { class: "grid-x grid-margin-x" },
         success: { class: "callout success" },
         errors: { class: "callout alert" },
+        "@buttons": {
+            container: { class: "cell submit-buttons" },
+            column: {},
+            buttonWrapper: {},
+            submit: { class: "button primary" },
+            back: { class: "button secondary" },
+            save: { class: "button primary" }
+        },
+        "@fields": {
+            container: { class: "cell" },
+            label: { class: "freeform-label" },
+            input: {
+                novalidate: true,
+                class: "freeform-field",
+            },
+            instructions: { class: "help-text" },
+            error: { class: "no-bullet freeform-errors" },
+            ":required": {
+                label: {
+                    "+class": "required"
+                },
+            },
+            ":errors": {
+                input: {
+                    "+class": "has-errors"
+                },
+            },
+            ":oneLine": {
+                container: {
+                    "+class": "input-group-one-line"
+                },
+            },
+            "@group": {
+                label: {
+                    "+class": "h6",
+                }
+            },
+            "@signature": {
+                input: {
+                    "+class": "button small secondary",
+                },
+            },
+        }
     }
 }) }}
 
@@ -22,12 +65,12 @@
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
         <div{{ form.attributes.success }}>
-            {{ form.settings.successMessage | t('freeform') }}
+            <p>{{ form.settings.successMessage | t('freeform') }}</p>
         </div>
     {% endif %}
     {% if form.hasErrors %}
         <div{{ form.attributes.errors }}>
-            {{ form.settings.errorMessage | t('freeform') }}
+            <p>{{ form.settings.errorMessage | t('freeform') }}</p>
 
             {% if form.errors|length %}
                 <ul class="mb-0">

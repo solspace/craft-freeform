@@ -10,6 +10,11 @@ class Option
     ) {
     }
 
+    public function __toString(): string
+    {
+        return $this->getLabel();
+    }
+
     public function getValue(): string
     {
         return $this->value;

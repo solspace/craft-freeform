@@ -76,9 +76,10 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ['maxFileSize' => $this->getMaxFileSizeKB()]
         );
 
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
-            ->append('class', 'freeform-file-drag-and-drop__input')
+            ->append('class', 'freeform-file-dnd__input')
             ->replace('data-freeform-file-upload', $this->getHandle())
             ->setIfEmpty('data-error-append-target', $this->getHandle())
             ->replace('data-file-count', \count($this->getValue() ?? []))
@@ -95,11 +96,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $output = '';
         $output .= '<div'.$attributes.'>';
-        $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
+        $output .= '<div data-placeholder class="freeform-file-dnd__placeholder">';
         $output .= $this->translate($this->getPlaceholder());
         $output .= '</div>';
-        $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
-        $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';
+        $output .= '<div data-preview-zone class="freeform-file-dnd__preview-zone"></div>';
+        $output .= '<ul data-messages class="freeform-file-dnd__messages"></ul>';
         $output .= '<input type="file" id="form-input-'.$this->getHandle().'" multiple />';
         $output .= '</div>';
 

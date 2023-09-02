@@ -31,7 +31,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     use MultipleValueTrait;
 
     public const COLUMN_TYPE_STRING = 'string';
-    public const COLUMN_TYPE_SELECT = 'select';
+    public const COLUMN_TYPE_DROPDOWN = 'select';
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
 
     public array $columns = [];
@@ -39,7 +39,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[ValueTransformer(TableTransformer::class)]
     #[Input\Table(
         label: 'Table Layout',
-        instructions: 'Use semicolon ";" separated values for select options.',
+        instructions: 'Use semicolon ";" separated values for dropdown options.',
         value: [],
         options: [
             [
@@ -51,7 +51,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 'label' => 'Checkbox',
             ],
             [
-                'value' => self::COLUMN_TYPE_SELECT,
+                'value' => self::COLUMN_TYPE_DROPDOWN,
                 'label' => 'Dropdown',
             ],
         ],
@@ -196,24 +196,24 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     {
         $layout = [];
         $textValuesInclude = '';
-        $selectValuesInclude = '';
+        $dropdownValuesInclude = '';
         $checkboxValuesInclude = '';
 
         foreach ($this->getTableLayout() as $column) {
             $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
 
-            if (self::COLUMN_TYPE_SELECT === $type) {
-                $selectValues = [];
+            if (self::COLUMN_TYPE_DROPDOWN === $type) {
+                $dropdownValues = [];
                 $options = explode(';', $column['value']);
 
                 foreach ($options as $option) {
-                    $selectValues[] = '"'.$option.'"';
+                    $dropdownValues[] = '"'.$option.'"';
                 }
 
-                if (!empty($selectValues)) {
-                    $selectValuesInclude .= '- "'.$column['label'].'" column:'."\n";
-                    $selectValuesInclude .= '-- Single option value allowed.'."\n";
-                    $selectValuesInclude .= '-- Options include '.implode(', ', $selectValues).'.';
+                if (!empty($dropdownValues)) {
+                    $dropdownValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                    $dropdownValuesInclude .= '-- Single option value allowed.'."\n";
+                    $dropdownValuesInclude .= '-- Options include '.implode(', ', $dropdownValues).'.';
                 }
 
                 $layout[] = '"'.$column['label'].'"';
@@ -235,7 +235,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $description[] = $this->getInstructions();
         $description[] = 'Expected layout [['.implode(', ', $layout).']].';
         $description[] = $textValuesInclude;
-        $description[] = $selectValuesInclude;
+        $description[] = $dropdownValuesInclude;
         $description[] = $checkboxValuesInclude;
         $description = implode("\n", $description);
 
@@ -321,15 +321,15 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
                         break;
 
-                    case self::COLUMN_TYPE_SELECT:
-                        $selectAttributes = $this->tableAttributes
-                            ->getSelect()
+                    case self::COLUMN_TYPE_DROPDOWN:
+                        $dropdownAttributes = $this->tableAttributes
+                            ->getDropdown()
                             ->clone()
                             ->replace('name', $name)
                         ;
 
                         $options = explode(';', $defaultValue);
-                        $output .= '<select'.$selectAttributes.'>';
+                        $output .= '<select'.$dropdownAttributes.'>';
 
                         foreach ($options as $option) {
                             $optionAttributes = (new Attributes())

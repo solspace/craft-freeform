@@ -80,16 +80,6 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         return $collection;
     }
 
-    public function getOptionsAsKeyValuePairs(): array
-    {
-        $options = [];
-        foreach ($this->getOptions() as $option) {
-            $options[$option->value] = $option->label;
-        }
-
-        return $options;
-    }
-
     public function getMaxValue(): int
     {
         return min(
@@ -144,7 +134,8 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
+        $attributes = $this->getAttributes()
+            ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
             ->replace('type', 'radio')
@@ -159,7 +150,7 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         $output = $this->getStyles();
 
         $output .= '<div>';
-        $output .= '<span '.$spanAttributes.'>';
+        $output .= '<span'.$spanAttributes.'>';
 
         $maxValue = $this->getMaxValue();
         for ($i = $maxValue; $i >= 1; --$i) {

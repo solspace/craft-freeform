@@ -22,6 +22,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -116,6 +117,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     private mixed $defaultValue = null;
     private bool $validated = false;
 
+    private ?FieldAttributesCollection $compiledAttributes = null;
+
     public function __construct(
         #[Ignore] private Form $form
     ) {
@@ -154,7 +157,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $containerAttributes = $this->attributes
+        $containerAttributes = $this->getAttributes()
             ->getContainer()
             ->setIfEmpty('data-field-container', $this->getHandle())
         ;
@@ -357,7 +360,71 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getAttributes(): FieldAttributesCollection
     {
-        return $this->attributes;
+        if (null === $this->compiledAttributes) {
+            $this->compiledAttributes = $this->getCompiledAttributes();
+        }
+
+        return $this->compiledAttributes;
+    }
+
+    public function getCompiledAttributes(): FieldAttributesCollection
+    {
+        $attributes = $this->attributes->clone();
+        $formAttributes = $this->getForm()->getAttributes();
+        $fieldAttributes = $formAttributes->getNested('fields');
+        if (null === $fieldAttributes) {
+            return $attributes;
+        }
+
+        $implementationProvider = new ImplementationProvider();
+        $meta = [
+            ':required' => $this->isRequired(),
+            ':errors' => $this->hasErrors(),
+        ];
+
+        $matchedAttributes = [];
+        foreach ($fieldAttributes as $key => $value) {
+            if (preg_match('/^[@#:]/', $key)) {
+                unset($fieldAttributes[$key]);
+            }
+
+            $targets = array_map('trim', explode(',', $key));
+
+            $isMatching = false;
+            if (\in_array('#'.$this->getHandle(), $targets, true)) {
+                $isMatching = true;
+            }
+            if (\in_array('@'.$this->getType(), $targets, true)) {
+                $isMatching = true;
+            }
+            if (\in_array('@'.$this->getType(), $targets, true)) {
+                $isMatching = true;
+            }
+
+            $implementations = $implementationProvider->getImplementations($this::class);
+            foreach ($implementations as $implementation) {
+                if (\in_array(':'.$implementation, $targets, true)) {
+                    $isMatching = true;
+                }
+            }
+
+            foreach ($meta as $handle => $shouldTrigger) {
+                if ($shouldTrigger && \in_array($handle, $targets, true)) {
+                    $isMatching = true;
+                }
+            }
+
+            if ($isMatching) {
+                $matchedAttributes[] = $value;
+            }
+        }
+
+        $attributes->merge($fieldAttributes);
+        foreach ($matchedAttributes as $value) {
+            $attributes->merge($value);
+        }
+
+        return $attributes;
     }
 
     public function getParameters(): Parameters
@@ -498,7 +565,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     protected function getLabelHtml(): string
     {
-        $attributes = $this->attributes->getLabel()
+        $attributes = $this->getAttributes()
+            ->getLabel()
             ->clone()
             ->replace('for', $this->getIdAttribute())
         ;
@@ -520,7 +588,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return '';
         }
 
-        $output = '<div'.$this->attributes->getInstructions().'>';
+        $output = '<div'.$this->getAttributes()->getInstructions().'>';
         $output .= $this->getInstructions();
         $output .= '</div>';
         $output .= \PHP_EOL;
@@ -538,7 +606,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return '';
         }
 
-        $attributes = clone $this->attributes->getError()
+        $attributes = $this->getAttributes()
+            ->getError()
             ->clone()
             ->append('class', 'errors')
         ;

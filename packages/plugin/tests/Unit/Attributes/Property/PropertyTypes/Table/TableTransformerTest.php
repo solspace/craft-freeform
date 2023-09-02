@@ -28,7 +28,7 @@ class TableTransformerTest extends TestCase
         $expected
             ->add('Col 1', 'one', TableField::COLUMN_TYPE_STRING)
             ->add('Col 2', 'two', TableField::COLUMN_TYPE_CHECKBOX)
-            ->add('Col 3', 'three;four;five', TableField::COLUMN_TYPE_SELECT)
+            ->add('Col 3', 'three;four;five', TableField::COLUMN_TYPE_DROPDOWN)
         ;
 
         $this->assertEquals($expected, $output);
@@ -40,7 +40,7 @@ class TableTransformerTest extends TestCase
         $value
             ->add('Col 1', 'one', TableField::COLUMN_TYPE_STRING)
             ->add('Col 2', 'two', TableField::COLUMN_TYPE_CHECKBOX)
-            ->add('Col 3', 'three;four;five', TableField::COLUMN_TYPE_SELECT)
+            ->add('Col 3', 'three;four;five', TableField::COLUMN_TYPE_DROPDOWN)
         ;
 
         $output = (new TableTransformer())->reverseTransform($value);

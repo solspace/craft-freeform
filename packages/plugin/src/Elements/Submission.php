@@ -72,9 +72,6 @@ class Submission extends Element
     public function __construct($config = [])
     {
         $this->formId = $config['formId'] ?? null;
-        if ($this->formId) {
-            $this->fieldCollection = $this->getForm()->getLayout()->getFields();
-        }
 
         parent::__construct($config);
     }
@@ -776,6 +773,10 @@ class Submission extends Element
 
     private function getFieldCollection(): FieldCollection
     {
+        if (null === $this->fieldCollection && $this->getForm()) {
+            $this->fieldCollection = Freeform::getInstance()->fields->getFieldCollection($this->getForm());
+        }
+
         return $this->fieldCollection;
     }
 

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Services\Form;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 use Solspace\Freeform\Services\FormsService;
@@ -69,6 +70,11 @@ class FieldsService extends BaseService
         return $fields;
     }
 
+    public function getFieldCollection(Form $form): FieldCollection
+    {
+        return new FieldCollection($this->getFields($form));
+    }
+
     public function getFields(Form $form): array
     {
         $fields = [];
@@ -100,6 +106,7 @@ class FieldsService extends BaseService
             return null;
         }
 
+        /** @var FieldInterface $field */
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
 

@@ -1,4 +1,4 @@
-export const DND_PREFIX = 'freeform-file-drag-and-drop';
+export const DND_PREFIX = 'freeform-file-dnd';
 
 type ClassAddType = (element: HTMLElement, ...classNames: string[]) => void;
 

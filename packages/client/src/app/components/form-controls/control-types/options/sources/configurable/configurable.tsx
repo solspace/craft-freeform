@@ -9,13 +9,11 @@ import type { UseQueryResult } from '@tanstack/react-query';
 
 import type {
   ConfigurableOptionsConfiguration,
-  OptionsConfiguration,
+  ConfigurationProps,
 } from '../../options.types';
 import type { OptionTypeProvider } from '../sources.types';
 
-type Props = {
-  value: ConfigurableOptionsConfiguration;
-  updateValue: (value: OptionsConfiguration) => void;
+type Props = ConfigurationProps<ConfigurableOptionsConfiguration> & {
   typeProviderQuery: () => UseQueryResult<OptionTypeProvider[]>;
 };
 

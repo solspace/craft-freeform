@@ -2,7 +2,7 @@
     <div>
         <input type="checkbox"
                class="checkbox"
-               <% if (option.checked) { %>checked="checked"<% } %>
+               <% if (defaultValue.includes(option.value)) { %>checked="checked"<% } %>
         />
         <label for=""><%= option.label %></label>
     </div>

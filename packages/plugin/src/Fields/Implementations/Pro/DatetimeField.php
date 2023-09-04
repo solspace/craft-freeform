@@ -10,11 +10,10 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Fields\Implementations\TextField;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Interfaces\InitialValueInterface;
-use Solspace\Freeform\Fields\Traits\InitialValueTrait;
+use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 
 #[Type(
     name: 'Date & Time',
@@ -22,10 +21,8 @@ use Solspace\Freeform\Fields\Traits\InitialValueTrait;
     iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
-class DatetimeField extends TextField implements InitialValueInterface, DatetimeInterface, ExtraFieldInterface
+class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface
 {
-    use InitialValueTrait;
-
     public const DATETIME_TYPE_BOTH = 'both';
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';
@@ -47,6 +44,12 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         ],
     )]
     protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
+
+    #[Input\Text(
+        label: 'Initial Value',
+        instructions: "You can use 'now', 'today', '5 days ago', '2017-01-01 20:00:00', etc, which will format the default value according to the chosen format.",
+    )]
+    protected string $initialValue = '';
 
     #[Input\Text(
         label: 'Locale (Optional)',
@@ -189,6 +192,11 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return self::TYPE_DATETIME;
     }
 
+    public function getInitialValue(): string
+    {
+        return $this->initialValue;
+    }
+
     public function getDateTimeType(): string
     {
         return $this->dateTimeType;
@@ -239,34 +247,22 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return (bool) $this->useDatepicker;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getMinDate()
+    public function getMinDate(): ?string
     {
         return $this->minDate;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getMaxDate()
+    public function getMaxDate(): ?string
     {
         return $this->maxDate;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getLocale()
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getGeneratedMinDate(string $format = null)
+    public function getGeneratedMinDate(string $format = null): ?string
     {
         if (!$this->minDate) {
             return null;
@@ -275,10 +271,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return date($format ?? 'Y-m-d', strtotime($this->minDate));
     }
 
-    /**
-     * @return null|string
-     */
-    public function getGeneratedMaxDate(string $format = null)
+    public function getGeneratedMaxDate(string $format = null): ?string
     {
         if (!$this->maxDate) {
             return null;
@@ -320,10 +313,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return $value;
     }
 
-    /**
-     * @return null|Carbon
-     */
-    public function getCarbon()
+    public function getCarbon(): ?Carbon
     {
         if ($this->getValue()) {
             try {
@@ -335,10 +325,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return null;
     }
 
-    /**
-     * @return null|Carbon
-     */
-    public function getCarbonUtc()
+    public function getCarbonUtc(): ?Carbon
     {
         if ($this->getValue()) {
             try {

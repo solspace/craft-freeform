@@ -15,7 +15,9 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -28,8 +30,9 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class TextField extends AbstractField implements PlaceholderInterface
+class TextField extends AbstractField implements PlaceholderInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
     use PlaceholderTrait;
 
     #[Ignore]

@@ -15,7 +15,9 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
+use Solspace\Freeform\Attributes\Property\Input\Hidden;
 use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 
 #[Type(
     name: 'Dropdown',
@@ -23,11 +25,19 @@ use Solspace\Freeform\Fields\BaseOptionsField;
     iconPath: __DIR__.'/Icons/dropdown.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/dropdown.ejs',
 )]
-class DropdownField extends BaseOptionsField
+class DropdownField extends BaseOptionsField implements DefaultValueInterface
 {
+    #[Hidden]
+    protected string $defaultValue = '';
+
     public function getType(): string
     {
         return self::TYPE_SELECT;
+    }
+
+    public function getDefaultValue(): string
+    {
+        return $this->defaultValue;
     }
 
     public function getInputHtml(): string
@@ -42,7 +52,7 @@ class DropdownField extends BaseOptionsField
 
         $output = '<select'.$attributes.'>';
         foreach ($this->getOptions() as $option) {
-            $isChecked = $option->getValue() == $this->getValue();
+            $isChecked = $option->getValue() == $this->getDefaultValue();
 
             $output .= '<option value="'.$option->getValue().'"'.($isChecked ? ' selected' : '').'>';
             $output .= $this->translate($option->getLabel());

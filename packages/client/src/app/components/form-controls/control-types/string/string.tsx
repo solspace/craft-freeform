@@ -20,6 +20,7 @@ const String: React.FC<ControlType<StringProperty>> = ({
         type="text"
         autoComplete="off"
         autoFocus={autoFocus}
+        data-1p-ignore
         className={classes(
           'text',
           'fullwidth',

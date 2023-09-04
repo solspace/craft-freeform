@@ -15,8 +15,10 @@ namespace Solspace\Freeform\Fields\Implementations;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Freeform;
 
@@ -26,8 +28,9 @@ use Solspace\Freeform\Freeform;
     iconPath: __DIR__.'/Icons/email.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface
+class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
     use PlaceholderTrait;
 
     /**

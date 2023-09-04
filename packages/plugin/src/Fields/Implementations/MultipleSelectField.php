@@ -16,7 +16,9 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
+use Solspace\Freeform\Attributes\Property\Input\Hidden;
 use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
@@ -26,13 +28,21 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     iconPath: __DIR__.'/Icons/multi-select.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/multiple-select.ejs',
 )]
-class MultipleSelectField extends BaseOptionsField implements MultiValueInterface
+class MultipleSelectField extends BaseOptionsField implements MultiValueInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
+
+    #[Hidden]
+    protected array $defaultValue = [];
 
     public function getType(): string
     {
         return self::TYPE_MULTIPLE_SELECT;
+    }
+
+    public function getDefaultValue(): array
+    {
+        return $this->defaultValue;
     }
 
     public function getInputHtml(): string
@@ -49,7 +59,7 @@ class MultipleSelectField extends BaseOptionsField implements MultiValueInterfac
         $output = '<select'.$attributes.'>';
 
         foreach ($this->getOptions() as $option) {
-            $isSelected = \in_array($option->getValue(), $this->getValue());
+            $isSelected = \in_array($option->getValue(), $this->getDefaultValue());
 
             $output .= '<option value="'.$option->getValue().'"'.($isSelected ? ' selected' : '').'>';
             $output .= $this->translate($option->getLabel());

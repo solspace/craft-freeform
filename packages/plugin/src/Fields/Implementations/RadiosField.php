@@ -15,7 +15,9 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Attributes\Property\Input\Hidden;
 use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
@@ -25,13 +27,21 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     iconPath: __DIR__.'/Icons/radios.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radios.ejs',
 )]
-class RadiosField extends BaseOptionsField implements OneLineInterface
+class RadiosField extends BaseOptionsField implements OneLineInterface, DefaultValueInterface
 {
     use OneLineTrait;
+
+    #[Hidden]
+    protected string $defaultValue = '';
 
     public function getType(): string
     {
         return self::TYPE_RADIO_GROUP;
+    }
+
+    public function getDefaultValue(): string
+    {
+        return $this->defaultValue;
     }
 
     /**
@@ -55,13 +65,11 @@ class RadiosField extends BaseOptionsField implements OneLineInterface
                 continue;
             }
 
-            $isChecked = $option->getValue() == $this->getValue();
-
             $inputAttributes = $attributes
                 ->clone()
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())
-                ->replace('checked', $isChecked)
+                ->replace('checked', $option->getValue() === $this->getDefaultValue())
             ;
 
             $output .= '<label>';

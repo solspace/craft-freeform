@@ -2,7 +2,7 @@
     <select>
         <% generatedOptions.forEach(function(option) { %>
             <option value="<%= option.value %>"
-                    <% if (option.checked) { %>selected<% } %>
+                    <% if (option.value === defaultValue) { %>selected<% } %>
             >
                 <%= option.label %>
             </option>

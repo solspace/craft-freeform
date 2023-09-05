@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Fields\Implementations;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
@@ -28,7 +27,7 @@ use Solspace\Freeform\Models\Settings;
     iconPath: __DIR__.'/Icons/html.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/html.ejs',
 )]
-class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
+class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageInterface
 {
     protected string $instructions = '';
     protected bool $required = false;

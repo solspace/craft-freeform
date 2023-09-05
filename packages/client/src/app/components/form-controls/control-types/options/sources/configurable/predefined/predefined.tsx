@@ -2,22 +2,21 @@ import React from 'react';
 
 import type {
   ConfigurableOptionsConfiguration,
-  OptionsConfiguration,
+  ConfigurationProps,
 } from '../../../options.types';
 import { ConfigurableOptions } from '../configurable';
 
 import { useOptionTypesPredefined } from './predefined.queries';
 
-type Props = {
-  value: ConfigurableOptionsConfiguration;
-  updateValue: (value: OptionsConfiguration) => void;
-};
-
-const Predefined: React.FC<Props> = ({ value, updateValue }) => {
+const Predefined: React.FC<
+  ConfigurationProps<ConfigurableOptionsConfiguration>
+> = ({ value, updateValue }) => {
   return (
     <ConfigurableOptions
       value={value}
       updateValue={updateValue}
+      defaultValue={''}
+      updateDefaultValue={() => {}}
       typeProviderQuery={useOptionTypesPredefined}
     />
   );

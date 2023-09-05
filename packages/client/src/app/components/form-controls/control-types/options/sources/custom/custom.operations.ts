@@ -7,7 +7,7 @@ export const addOption = (
   ...value,
   options: [
     ...value.options.slice(0, atIndex),
-    { label: '', value: '', checked: false },
+    { label: '', value: '' },
     ...value.options.slice(atIndex),
   ],
 });
@@ -45,11 +45,7 @@ export const updateChecked = (
   option: Option,
   value: CustomOptionsConfiguration
 ): CustomOptionsConfiguration => {
-  const options = value.options.map((option) => ({
-    ...option,
-    checked: false,
-  }));
-
+  const options = value.options.map((option) => ({ ...option }));
   options[index] = option;
 
   return {

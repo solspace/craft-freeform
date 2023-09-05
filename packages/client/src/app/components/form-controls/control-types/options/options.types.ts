@@ -15,7 +15,6 @@ export const sourceLabels: { [key in Source]: string } = {
 export type Option = {
   label: string;
   value: string;
-  checked: boolean;
 };
 
 export type ElementOptionType = {
@@ -43,3 +42,13 @@ export type CustomOptionsConfiguration = BaseOptions & {
 export type OptionsConfiguration =
   | CustomOptionsConfiguration
   | ConfigurableOptionsConfiguration;
+
+export type ConfigurationProps<
+  T extends OptionsConfiguration = OptionsConfiguration,
+> = {
+  value: T;
+  updateValue: (value: T) => void;
+  defaultValue: string | string[];
+  updateDefaultValue: (value: string | string[]) => void;
+  isMultiple?: boolean;
+};

@@ -79,7 +79,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
 
             $output = $this->injectAttribute($output, 'name', $this->getHandle());
             $output = $this->injectAttribute($output, 'id', $this->getIdAttribute());
-            $output = $this->injectAttribute($output, 'value', $this->getValue());
+            $output = $this->injectAttribute($output, 'value', $this->getDefaultValue());
 
             $output = str_replace(' required', '', $output);
             $output .= $this->getRequiredAttribute();

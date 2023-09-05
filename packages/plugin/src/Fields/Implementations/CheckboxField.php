@@ -18,7 +18,9 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
 
@@ -31,29 +33,40 @@ use Twig\Markup;
     iconPath: __DIR__.'/Icons/checkbox.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox.ejs',
 )]
-class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface
+class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
+
     #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;
+
+    protected ?bool $checked = null;
 
     public function getType(): string
     {
         return self::TYPE_CHECKBOX;
     }
 
-    public function isChecked(): bool
+    public function getDefaultValue(): string
     {
-        return $this->value;
-    }
-
-    public function getDefaultValue()
-    {
-        return parent::getDefaultValue() ?: 'yes';
+        return $this->defaultValue ?: 'yes';
     }
 
     public function isCheckedByDefault(): bool
     {
         return $this->checkedByDefault;
+    }
+
+    public function isChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    public function setChecked(bool $checked): self
+    {
+        $this->checked = $checked;
+
+        return $this;
     }
 
     public function getValue(): ?string
@@ -90,7 +103,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
             ->setIfEmpty('type', $this->getType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('value', $this->getDefaultValue())
-            ->setIfEmpty('checked', (bool) $this->getValue())
+            ->setIfEmpty('checked', $this->isChecked())
             ->setIfEmpty($this->getRequiredAttribute())
         ;
 

@@ -2,7 +2,7 @@
     <div>
         <input type="radio"
                class="radio"
-               <% if (option.checked) { %>checked="checked"<% } %>
+               <% if (option.value === defaultValue) { %>checked="checked"<% } %>
         />
         <label for=""><%= option.label %></label>
     </div>

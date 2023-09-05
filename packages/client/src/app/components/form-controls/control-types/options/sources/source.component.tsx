@@ -2,34 +2,41 @@ import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
 import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
 
-import type { OptionsConfiguration } from '../options.types';
+import type { ConfigurationProps } from '../options.types';
 import { Source } from '../options.types';
 
 import * as SourceComponents from './index';
 
-type Props = {
-  value: OptionsConfiguration;
-  updateValue: (value: OptionsConfiguration) => void;
-};
-
 const components: {
-  [key in Source]?: ComponentType<Props>;
+  [key in Source]?: ComponentType<ConfigurationProps>;
 } = SourceComponents;
 
-export const SourceComponent: React.FC<Props> = ({ value, updateValue }) => {
+export const SourceComponent: React.FC<ConfigurationProps> = ({
+  value,
+  updateValue,
+  defaultValue,
+  updateDefaultValue,
+  isMultiple,
+}) => {
   const { source = Source.Custom } = value;
 
-  const SourceComponent = components[source];
-  if (SourceComponent === undefined) {
+  const Component = components[source];
+  if (Component === undefined) {
     return <div>{source} not implemented...</div>;
   }
 
-  SourceComponent.displayName = `Source <${source}>`;
+  Component.displayName = `Source <${source}>`;
 
   return (
     <ErrorBoundary message={`...${source} not implemented`}>
       <Suspense>
-        <SourceComponent value={value} updateValue={updateValue} />
+        <Component
+          value={value}
+          updateValue={updateValue}
+          defaultValue={defaultValue}
+          updateDefaultValue={updateDefaultValue}
+          isMultiple={isMultiple}
+        />
       </Suspense>
     </ErrorBoundary>
   );

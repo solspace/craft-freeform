@@ -15,7 +15,9 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Attributes\Property\Input\Hidden;
 use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -27,10 +29,13 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     iconPath: __DIR__.'/Icons/checkboxes.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkboxes.ejs',
 )]
-class CheckboxesField extends BaseOptionsField implements MultiValueInterface, OneLineInterface
+class CheckboxesField extends BaseOptionsField implements MultiValueInterface, OneLineInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;
+
+    #[Hidden]
+    protected array $defaultValue = [];
 
     /**
      * Return the field TYPE.
@@ -38,6 +43,11 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
     public function getType(): string
     {
         return self::TYPE_CHECKBOX_GROUP;
+    }
+
+    public function getDefaultValue(): array
+    {
+        return $this->defaultValue;
     }
 
     /**

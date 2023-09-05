@@ -15,22 +15,21 @@ import { PreviewEditor } from '@components/form-controls/preview/previewable-com
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
-import type { CustomOptionsConfiguration } from '../../options.types';
+import type {
+  ConfigurationProps,
+  CustomOptionsConfiguration,
+} from '../../options.types';
 
 import {
   addOption,
   deleteOption,
   toggleUseCustomValues,
-  updateChecked,
   updateOption,
 } from './custom.operations';
 
-type Props = {
-  value: CustomOptionsConfiguration;
-  updateValue: (value: CustomOptionsConfiguration) => void;
-};
-
-export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
+export const CustomEditor: React.FC<
+  ConfigurationProps<CustomOptionsConfiguration>
+> = ({ value, updateValue, defaultValue, updateDefaultValue, isMultiple }) => {
   const { options = [], useCustomValues = false } = value;
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
@@ -134,19 +133,30 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                             handle: `${index}-check`,
                             type: PropertyType.Boolean,
                           }}
-                          value={option.checked}
-                          updateValue={() =>
-                            updateValue(
-                              updateChecked(
-                                index,
-                                {
-                                  ...option,
-                                  checked: !option.checked,
-                                },
-                                value
-                              )
-                            )
+                          value={
+                            isMultiple
+                              ? defaultValue.includes(option.value)
+                              : option.value === defaultValue
                           }
+                          updateValue={() => {
+                            if (isMultiple) {
+                              const val = defaultValue as string[];
+
+                              updateDefaultValue(
+                                val.includes(option.value)
+                                  ? val.filter(
+                                      (value) => value !== option.value
+                                    )
+                                  : [...val, option.value]
+                              );
+                            } else {
+                              updateDefaultValue(
+                                option.value === defaultValue
+                                  ? ''
+                                  : option.value
+                              );
+                            }
+                          }}
                         />
                       </Cell>
 

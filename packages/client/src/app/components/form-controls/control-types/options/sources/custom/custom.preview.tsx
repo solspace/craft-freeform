@@ -13,6 +13,8 @@ import { PreviewRow } from './custom.preview.styles';
 
 type Props = {
   value: CustomOptionsConfiguration;
+  defaultValue: string | string[];
+  isMultiple: boolean;
 };
 
 export const CustomPreview: React.FC<Props> = ({ value }) => {

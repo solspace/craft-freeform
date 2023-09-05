@@ -59,7 +59,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
         return [];
       }
     },
-    { staleTime: Infinity, cacheTime: Infinity }
+    { staleTime: Infinity, cacheTime: Infinity, enabled: !isCustomOptions }
   );
 
   const isFetchingAsync =

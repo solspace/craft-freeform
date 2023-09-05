@@ -3,23 +3,33 @@ import { Label } from '@components/form-controls/control.styles';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import translate from '@ff-client/utils/translations';
 
-import type { CustomOptionsConfiguration } from '../../options.types';
+import type {
+  ConfigurationProps,
+  CustomOptionsConfiguration,
+} from '../../options.types';
 
 import { CustomEditor } from './custom.editor';
 import { addOption, cleanOptions } from './custom.operations';
 import { CustomPreview } from './custom.preview';
 
-type Props = {
-  value: CustomOptionsConfiguration;
-  updateValue: (value: CustomOptionsConfiguration) => void;
-};
-
-const Custom: React.FC<Props> = ({ value, updateValue }) => {
+const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
+  value,
+  updateValue,
+  defaultValue,
+  updateDefaultValue,
+  isMultiple,
+}) => {
   return (
     <>
       <Label>{translate('Options')}</Label>
       <PreviewableComponent
-        preview={<CustomPreview value={value} />}
+        preview={
+          <CustomPreview
+            value={value}
+            defaultValue={defaultValue}
+            isMultiple={isMultiple}
+          />
+        }
         onAfterEdit={() => updateValue(cleanOptions(value))}
         onEdit={() => {
           if (!value.options.length) {
@@ -27,7 +37,13 @@ const Custom: React.FC<Props> = ({ value, updateValue }) => {
           }
         }}
       >
-        <CustomEditor value={value} updateValue={updateValue} />
+        <CustomEditor
+          value={value}
+          updateValue={updateValue}
+          defaultValue={defaultValue}
+          updateDefaultValue={updateDefaultValue}
+          isMultiple={isMultiple}
+        />
       </PreviewableComponent>
     </>
   );

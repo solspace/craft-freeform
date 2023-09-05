@@ -12,19 +12,19 @@ describe('attributes -> options -> custom', () => {
           source: Source.Custom,
           useCustomValues: true,
           options: [
-            { label: '', value: '', checked: false },
-            { label: 'Some', value: '', checked: false },
-            { label: '', value: 'Value', checked: false },
-            { label: 'Some', value: 'Value', checked: false },
+            { label: '', value: '' },
+            { label: 'Some', value: '' },
+            { label: '', value: 'Value' },
+            { label: 'Some', value: 'Value' },
           ],
         })
       ).toEqual({
         source: Source.Custom,
         useCustomValues: true,
         options: [
-          { label: 'Some', value: '', checked: false },
-          { label: '', value: 'Value', checked: false },
-          { label: 'Some', value: 'Value', checked: false },
+          { label: 'Some', value: '' },
+          { label: '', value: 'Value' },
+          { label: 'Some', value: 'Value' },
         ],
       });
     });

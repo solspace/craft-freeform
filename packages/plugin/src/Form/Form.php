@@ -518,7 +518,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
-    public function registerContext(array $renderProperties = null)
+    public function registerContext(array $renderProperties = null): void
     {
         $this->setProperties($renderProperties);
 

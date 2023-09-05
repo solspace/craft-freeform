@@ -3,8 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Form\Form;
 use yii\base\Event;
 
@@ -19,20 +18,12 @@ class DefaultValuesContext
     public function handleDefaultValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
-
         if ($form->isGraphQLPosted()) {
             return;
         }
 
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
-                continue;
-            }
-
-            if ($field instanceof CheckboxField) {
-                continue;
-            }
-
+        $fields = $form->getLayout()->getFields(DefaultValueInterface::class);
+        foreach ($fields as $field) {
             $field->setValue($field->getDefaultValue());
         }
     }

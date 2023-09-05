@@ -1,12 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import { useFieldOptions } from '@components/options/use-field-options';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
+import { Type } from '@ff-client/types/fields';
 import type { Condition } from '@ff-client/types/rules';
 import { operatorTypes } from '@ff-client/types/rules';
-import translate from '@ff-client/utils/translations';
+
+import { BooleanValueRule } from './boolean/boolean';
+import { GeneratedOptionsRuleValue } from './generated-options/generated-options';
+import { OpinionScaleRuleValue } from './opinion-scale/opinion-scale';
+import { RatingRuleValue } from './rating/rating';
 
 type Props = {
   condition: Condition;
@@ -18,9 +21,6 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
 
   const field = useSelector(fieldSelectors.one(fieldUid));
   const fieldType = useFieldType(field?.typeClass);
-
-  const [options, isFetchingOptions] = useFieldOptions(field, fieldType);
-
   if (!fieldType) {
     return null;
   }
@@ -31,32 +31,28 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
 
   if (isBoolean) {
     return (
-      <div className="checkbox-wrapper">
-        <input
-          id={`${fieldUid}-rule-checkbox`}
-          type="checkbox"
-          className="checkbox"
-          onChange={(event) =>
-            onChange && onChange(event.target.checked ? '1' : '')
-          }
-          checked={Boolean(value)}
-        />
-        <label htmlFor={`${fieldUid}-rule-checkbox`}>
-          {translate(value ? 'Checked' : 'Unchecked')}
-        </label>
-      </div>
+      <BooleanValueRule fieldUid={fieldUid} onChange={onChange} value={value} />
     );
   }
 
-  if (fieldType.implements.includes('options')) {
+  if (fieldType.implements.includes('generatedOptions')) {
     return (
-      <Dropdown
-        emptyOption={translate('Select an option')}
+      <GeneratedOptionsRuleValue
+        field={field}
+        fieldType={fieldType}
         value={value}
-        options={options}
-        loading={isFetchingOptions}
         onChange={(selectedValue) => onChange && onChange(selectedValue)}
       />
+    );
+  }
+
+  if (Type.Rating === (fieldType.type as Type)) {
+    return <RatingRuleValue field={field} value={value} onChange={onChange} />;
+  }
+
+  if (Type.OpinionScale === (fieldType.type as Type)) {
+    return (
+      <OpinionScaleRuleValue field={field} value={value} onChange={onChange} />
     );
   }
 

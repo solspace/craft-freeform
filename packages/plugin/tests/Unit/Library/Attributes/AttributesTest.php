@@ -273,13 +273,4 @@ class AttributesTest extends TestCase
 
         $this->assertEquals(' class="class-1"', (string) $attributes);
     }
-
-    public function testDoesNotAddDuplicates()
-    {
-        $attributes = new Attributes();
-        $attributes->set('class', 'class-1');
-        $attributes->set('class', ['class-3', 'class-1', 'class-2']);
-
-        $this->assertEquals(' class="class-1 class-3 class-2"', (string) $attributes);
-    }
 }

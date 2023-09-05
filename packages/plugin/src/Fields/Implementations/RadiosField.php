@@ -69,7 +69,7 @@ class RadiosField extends BaseOptionsField implements OneLineInterface, DefaultV
                 ->clone()
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())
-                ->replace('checked', $option->getValue() === $this->getDefaultValue())
+                ->replace('checked', $option->getValue() === $this->getValue())
             ;
 
             $output .= '<label>';

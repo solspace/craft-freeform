@@ -23,7 +23,7 @@ class StorageContext
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleReset']);
     }
 
-    public function loadStoredValues(FormEventInterface $event)
+    public function loadStoredValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
@@ -51,7 +51,7 @@ class StorageContext
         }
     }
 
-    public function storeCurrentValues(HandleRequestEvent $event)
+    public function storeCurrentValues(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
         if (!$form->isFormPosted() || !$form->isPagePosted()) {
@@ -72,7 +72,7 @@ class StorageContext
         $bag->set(Form::PROPERTY_STORED_VALUES, $storedValues);
     }
 
-    public function handleReset(ResetEvent $event)
+    public function handleReset(ResetEvent $event): void
     {
         if (!$event->isValid) {
             return;

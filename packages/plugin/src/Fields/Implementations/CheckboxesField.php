@@ -70,7 +70,7 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
                 continue;
             }
 
-            $isChecked = \in_array($option->getValue(), $this->getDefaultValue());
+            $isChecked = \in_array($option->getValue(), $this->getValue());
 
             $inputAttributes = $attributes
                 ->clone()

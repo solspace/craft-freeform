@@ -40,24 +40,33 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
     #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;
 
+    protected ?bool $checked = null;
+
     public function getType(): string
     {
         return self::TYPE_CHECKBOX;
     }
 
-    public function isChecked(): bool
+    public function getDefaultValue(): string
     {
-        return $this->value;
-    }
-
-    public function getDefaultValue(): mixed
-    {
-        return parent::getDefaultValue() ?: 'yes';
+        return $this->defaultValue ?: 'yes';
     }
 
     public function isCheckedByDefault(): bool
     {
         return $this->checkedByDefault;
+    }
+
+    public function isChecked(): ?bool
+    {
+        return $this->checked;
+    }
+
+    public function setChecked(bool $checked): self
+    {
+        $this->checked = $checked;
+
+        return $this;
     }
 
     public function getValue(): ?string
@@ -94,7 +103,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
             ->setIfEmpty('type', $this->getType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('value', $this->getDefaultValue())
-            ->setIfEmpty('checked', (bool) $this->getValue())
+            ->setIfEmpty('checked', $this->isChecked())
             ->setIfEmpty($this->getRequiredAttribute())
         ;
 

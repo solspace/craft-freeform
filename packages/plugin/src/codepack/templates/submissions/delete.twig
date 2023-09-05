@@ -5,7 +5,7 @@
 {% block content %}
 
     {% set formHandle = craft.app.request.segment(4) %}
-    {% set form = craft.freeform.form(formHandle) %}
+    {% set form = freeform.form(formHandle) %}
     {% set token = craft.app.request.segment(5) %}
 
     {# Allow Admins only to modify submission data for Demo Templates by default #}
@@ -16,7 +16,7 @@
             <p>This page will delete any submission sent to it. This action cannot be undone.</p>
         </div>
 
-        {% if craft.freeform.deleteSubmissionByToken(token) %}
+        {% if freeform.deleteSubmissionByToken(token) %}
             <div class="freeform-success{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 The submission has been removed successfully!
             </div>

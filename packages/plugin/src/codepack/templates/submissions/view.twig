@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set form = craft.freeform.form(craft.app.request.segment(3)) %}
+{% set form = freeform.form(craft.app.request.segment(3)) %}
 {% set pageTitle = "Submission #" ~ craft.app.request.segment(4) ~ " for " ~ form.name|default("N/A") %}
 {% set spamMode = craft.app.request.segment(5) ? true : false %}
 
@@ -8,12 +8,12 @@
 
     {% set formHandle = craft.app.request.segment(3) %}
     {% set submissionId = craft.app.request.segment(4) %}
-    {% set form = craft.freeform.form(formHandle) %}
+    {% set form = freeform.form(formHandle) %}
 
     {# Allow Admins only to view submission data for Demo Templates by default #}
     {% if currentUser and currentUser.admin %}
 
-        {% set submission = craft.freeform.submissions({
+        {% set submission = freeform.submissions({
             id: submissionId,
             form: formHandle,
             isSpam: spamMode|default(false)
@@ -26,7 +26,7 @@
 
         {% if submission %}
 
-            {% if craft.freeform.pro and not spamMode %}
+            {% if freeform.pro and not spamMode %}
                 <div class="freeform-submission-controls">
                     <a class="freeform-button orange" href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
                         {{ "Edit"|t("freeform") }}

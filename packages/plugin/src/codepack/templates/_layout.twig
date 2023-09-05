@@ -18,7 +18,7 @@
     {%- set pageTemplate = "basic-dark" %}
 {%- endif -%}
 {%- if formHandle -%}
-    {%- set form = craft.freeform.form(formHandle, {
+    {%- set form = freeform.form(formHandle, {
         formattingTemplate: pageTemplateFile,
     }) -%}
 {%- endif -%}
@@ -223,7 +223,7 @@
                     <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
-                {% set forms = craft.freeform.forms %}
+                {% set forms = freeform.forms %}
                 {% for form in forms %}
                     <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/templates/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }}</a>
                 {% endfor %}
@@ -237,9 +237,9 @@
                     <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
-                {% set forms = craft.freeform.forms %}
+                {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/submissions/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ craft.freeform.submissions({formId: form.id}).count }})</a>
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/submissions/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
                 {% endfor %}
                 </div>
             </div>
@@ -251,9 +251,9 @@
                     <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
-                {% set forms = craft.freeform.forms %}
+                {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/custom/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ craft.freeform.submissions({formId: form.id}).count }})</a>
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/custom/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }} ({{ freeform.submissions({formId: form.id}).count }})</a>
                 {% endfor %}
                 </div>
             </div>

@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    {% set form = craft.freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
+    {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <div class="freeform-page-heading">
         <h2>Twig Template Caching on Forms</h2>
@@ -30,8 +30,8 @@
 
         {# Script for updating the form's Hash, JS Honeypot and CSRF token #}
         <script>
-            // Get a fresh JS Honeypot via `craft.freeform.honeypot()` service (if applicable)
-            var honeypot = JSON.parse('{{ craft.freeform.honeypot(form)|json_encode|raw }}');
+            // Get a fresh JS Honeypot via `freeform.honeypot()` service (if applicable)
+            var honeypot = JSON.parse('{{ freeform.honeypot(form)|json_encode|raw }}');
 
             // Find the corresponding Form
             var form = document.querySelector('form');

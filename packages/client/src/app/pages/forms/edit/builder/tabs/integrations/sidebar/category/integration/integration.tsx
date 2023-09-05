@@ -28,7 +28,7 @@ export const Integration: React.FC<IntegrationType> = ({
         </Icon>
         <Name>{name}</Name>
         <Status
-          enabled={integration.enabled}
+          $enabled={integration.enabled}
           className={classes('status-dot')}
         />
       </NavLink>

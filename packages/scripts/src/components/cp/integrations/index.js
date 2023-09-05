@@ -15,7 +15,7 @@ $(function () {
   $classSelector.trigger('change');
 
   const $name = $('#name');
-  if ($name && !$name.val().length) {
+  if ($name.get(0) && !$name.val().length) {
     $name.on({
       keyup: function () {
         $('#handle')

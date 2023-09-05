@@ -75,10 +75,12 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
                 ->getCompiledAttributes()
                 ->getInput()
                 ->clone()
+                ->merge($this->getAttributes()->getInput()->toArray())
                 ->replace(
                     'placeholder',
-                    $this->getPlaceholder() ? $this->translate($this->getPlaceholder()) : null
+                    $this->getPlaceholder() ? $this->translate($this->getPlaceholder()) : false
                 )
+                ->replace('type', $field->getType())
                 ->replace('name', $this->getHandle())
                 ->replace('id', $this->getIdAttribute())
                 ->replace('value', $this->getValue())

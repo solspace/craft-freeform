@@ -89,6 +89,14 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         $tags = [];
 
         $mapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
+        $newMapping = [];
+        foreach ($mapping as $key => $value) {
+            $key = str_replace('custom__', '', $key);
+            $value = str_replace('custom__', '', $value);
+
+            $newMapping[$key] = $value;
+        }
+        $mapping = $newMapping;
 
         if (!empty($mapping['tags'])) {
             if (!\is_array($mapping['tags'])) {
@@ -104,12 +112,14 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             unset($mapping['tags']);
         }
 
+        $mapping['email'] = $email;
+
         try {
             $response = $client->post(
                 $this->getEndpoint('/contact/sync'),
                 [
                     'json' => [
-                        'contact' => array_merge(['email' => $email], $mapping),
+                        'contact' => $mapping,
                     ],
                 ],
             );

@@ -238,10 +238,6 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $json = json_decode((string) $response->getBody(), false);
 
-        if (!isset($json->fields) || !$json->fields) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
-        }
-
         $fieldList = [];
 
         $fieldList[] = new FieldObject('listId', 'List', FieldObject::TYPE_NUMERIC, $category, false);
@@ -250,20 +246,22 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         $fieldList[] = new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true);
         $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
 
-        foreach ($json->fields as $field) {
-            $type = match ($field->type) {
-                'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATE,
-                default => FieldObject::TYPE_STRING,
-            };
+        if (isset($json->fields)) {
+            foreach ($json->fields as $field) {
+                $type = match ($field->type) {
+                    'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
+                    'date' => FieldObject::TYPE_DATE,
+                    default => FieldObject::TYPE_STRING,
+                };
 
-            $fieldList[] = new FieldObject(
-                'contact__'.$field->id,
-                $field->title,
-                $type,
-                $category,
-                (bool) $field->isrequired,
-            );
+                $fieldList[] = new FieldObject(
+                    'contact__'.$field->id,
+                    $field->title,
+                    $type,
+                    $category,
+                    (bool) $field->isrequired,
+                );
+            }
         }
 
         return $fieldList;
@@ -279,10 +277,6 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $json = json_decode((string) $response->getBody(), false);
 
-        if (!isset($json->dealCustomFieldMeta) || !$json->dealCustomFieldMeta) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
-        }
-
         $fieldList = [];
 
         $fieldList[] = new FieldObject('title', 'Title', FieldObject::TYPE_STRING, $category, true);
@@ -295,20 +289,22 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         $fieldList[] = new FieldObject('stage', 'Stage', FieldObject::TYPE_STRING, $category, true);
         $fieldList[] = new FieldObject('status', 'Status', FieldObject::TYPE_NUMERIC, $category, false);
 
-        foreach ($json->dealCustomFieldMeta as $field) {
-            $type = match ($field->type) {
-                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATETIME,
-                default => FieldObject::TYPE_STRING,
-            };
+        if (isset($json->dealCustomFieldMeta)) {
+            foreach ($json->dealCustomFieldMeta as $field) {
+                $type = match ($field->type) {
+                    'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
+                    'date' => FieldObject::TYPE_DATETIME,
+                    default => FieldObject::TYPE_STRING,
+                };
 
-            $fieldList[] = new FieldObject(
-                'deal__'.$field->id,
-                $field->fieldLabel,
-                $type,
-                $category,
-                (bool) $field->isRequired,
-            );
+                $fieldList[] = new FieldObject(
+                    'deal__'.$field->id,
+                    $field->fieldLabel,
+                    $type,
+                    $category,
+                    (bool) $field->isRequired,
+                );
+            }
         }
 
         return $fieldList;
@@ -324,28 +320,26 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $json = json_decode((string) $response->getBody());
 
-        if (!isset($json->accountCustomFieldMeta) || !$json->accountCustomFieldMeta) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
-        }
-
         $fieldList = [];
 
         $fieldList[] = new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, true);
 
-        foreach ($json->accountCustomFieldMeta as $field) {
-            $type = match ($field->type) {
-                'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATETIME,
-                default => FieldObject::TYPE_STRING,
-            };
+        if (isset($json->accountCustomFieldMeta)) {
+            foreach ($json->accountCustomFieldMeta as $field) {
+                $type = match ($field->type) {
+                    'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
+                    'date' => FieldObject::TYPE_DATETIME,
+                    default => FieldObject::TYPE_STRING,
+                };
 
-            $fieldList[] = new FieldObject(
-                'account__'.$field->id,
-                $field->fieldLabel,
-                $type,
-                $category,
-                (bool) $field->isRequired,
-            );
+                $fieldList[] = new FieldObject(
+                    'account__'.$field->id,
+                    $field->fieldLabel,
+                    $type,
+                    $category,
+                    (bool) $field->isRequired,
+                );
+            }
         }
 
         return $fieldList;

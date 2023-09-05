@@ -37,7 +37,7 @@ type Props = {
 const tooltipProps: Omit<TooltipProps, 'children'> = {
   position: 'top',
   animation: 'fade',
-  delay: [1500, 0] as unknown as number,
+  delay: [100, 0] as unknown as number,
 };
 
 export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {

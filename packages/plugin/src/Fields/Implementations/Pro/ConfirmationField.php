@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -30,7 +31,10 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
         label: 'Target Field',
         instructions: 'Select the field that this field should match',
         emptyOption: 'Select a field',
-        implements: [TextInterface::class],
+        implements: [
+            TextInterface::class,
+            RecipientInterface::class,
+        ],
     )]
     protected ?FieldInterface $targetField = null;
 

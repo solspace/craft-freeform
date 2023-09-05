@@ -144,9 +144,11 @@ class SettingsService extends BaseService
      */
     public function getCustomFormTemplates(): array
     {
+        $templateDirectoryPath = $this->getFormTemplateDirectory();
+
         $templates = [];
         foreach ($this->getSettingsModel()->listTemplatesInFormTemplateDirectory() as $path => $name) {
-            $templates[] = new FormTemplate($path);
+            $templates[] = new FormTemplate($path, $templateDirectoryPath);
         }
 
         return $templates;

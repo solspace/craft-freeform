@@ -147,13 +147,20 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
           data={form.chartData || randomData}
           margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
         >
+          <defs>
+            <linearGradient id={`color${form.id}`} x1={0} y1={0} x2={0} y2={1}>
+              <stop offset="5%" stopColor={color} stopOpacity={0.4} />
+              <stop offset="95%" stopColor={color} stopOpacity={0.3} />
+            </linearGradient>
+          </defs>
           <Area
             type="monotone"
             dataKey={'uv'}
             stroke={color}
-            strokeWidth={2.3}
-            fillOpacity={0.3}
-            fill={color}
+            strokeWidth={0.7}
+            strokeOpacity={1}
+            fillOpacity={1}
+            fill={`url(#color${form.id})`}
             isAnimationActive={false}
           />
         </AreaChart>

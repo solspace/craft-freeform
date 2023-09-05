@@ -157,7 +157,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             type="monotone"
             dataKey={'uv'}
             stroke={color}
-            strokeWidth={0.7}
+            strokeWidth={1}
             strokeOpacity={1}
             fillOpacity={1}
             fill={`url(#color${form.id})`}

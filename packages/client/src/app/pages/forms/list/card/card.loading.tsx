@@ -50,7 +50,7 @@ export const CardLoading: React.FC = () => {
             type="monotone"
             dataKey={'value'}
             stroke={color}
-            strokeWidth={0.7}
+            strokeWidth={1}
             strokeOpacity={1}
             fillOpacity={1}
             fill={`url(#colorGradient)`}

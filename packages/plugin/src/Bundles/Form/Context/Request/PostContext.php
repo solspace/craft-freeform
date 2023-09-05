@@ -16,7 +16,7 @@ class PostContext
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleRequest']);
     }
 
-    public function handleRequest(HandleRequestEvent $event)
+    public function handleRequest(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
         $request = $event->getRequest();

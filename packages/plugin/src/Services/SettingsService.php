@@ -90,7 +90,7 @@ class SettingsService extends BaseService
 
     public function getFormTemplateDirectory(): string
     {
-        return $this->getSettingsModel()->formTemplateDirectory;
+        return $this->getSettingsModel()->getAbsoluteFormTemplateDirectory();
     }
 
     public function getSuccessTemplateDirectory(): ?string
@@ -110,33 +110,7 @@ class SettingsService extends BaseService
      */
     public function getSolspaceFormTemplates(): array
     {
-        $templateDirectoryPath = $this->getSolspaceFormTemplateDirectory();
-        $templates = [];
-
-        $fileIterator = (new Finder())
-            ->files()
-            ->in($templateDirectoryPath)
-            ->sortByName()
-            ->name('index.twig')
-        ;
-
-        foreach ($fileIterator as $file) {
-            $templates[] = new FormTemplate($file->getRealPath(), $templateDirectoryPath);
-        }
-
-        $rootFiles = (new Finder())
-            ->files()
-            ->in($templateDirectoryPath)
-            ->depth(0)
-            ->sortByName()
-            ->name('*.twig')
-        ;
-
-        foreach ($rootFiles as $file) {
-            $templates[] = new FormTemplate($file->getRealPath(), $templateDirectoryPath);
-        }
-
-        return $templates;
+        return $this->getTemplatesIn($this->getSolspaceFormTemplateDirectory());
     }
 
     /**
@@ -144,14 +118,7 @@ class SettingsService extends BaseService
      */
     public function getCustomFormTemplates(): array
     {
-        $templateDirectoryPath = $this->getFormTemplateDirectory();
-
-        $templates = [];
-        foreach ($this->getSettingsModel()->listTemplatesInFormTemplateDirectory() as $path => $name) {
-            $templates[] = new FormTemplate($path, $templateDirectoryPath);
-        }
-
-        return $templates;
+        return $this->getTemplatesIn($this->getFormTemplateDirectory());
     }
 
     /**
@@ -441,5 +408,35 @@ class SettingsService extends BaseService
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
         return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
+    }
+
+    private function getTemplatesIn(string $path): array
+    {
+        $templates = [];
+
+        $fileIterator = (new Finder())
+            ->files()
+            ->in($path)
+            ->sortByName()
+            ->name('index.twig')
+        ;
+
+        foreach ($fileIterator as $file) {
+            $templates[] = new FormTemplate($file->getRealPath(), $path);
+        }
+
+        $rootFiles = (new Finder())
+            ->files()
+            ->in($path)
+            ->depth(0)
+            ->sortByName()
+            ->name('*.twig')
+        ;
+
+        foreach ($rootFiles as $file) {
+            $templates[] = new FormTemplate($file->getRealPath(), $path);
+        }
+
+        return $templates;
     }
 }

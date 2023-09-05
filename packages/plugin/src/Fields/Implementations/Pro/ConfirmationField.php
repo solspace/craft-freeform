@@ -7,23 +7,30 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Interfaces\TextInterface;
+use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 #[Type(
     name: 'Confirm',
     typeShorthand: 'confirm',
     iconPath: __DIR__.'/../Icons/confirm.svg',
-    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/confirmation.ejs',
 )]
-class ConfirmationField extends TextField implements ExtraFieldInterface
+class ConfirmationField extends AbstractField implements ExtraFieldInterface, PlaceholderInterface
 {
+    use PlaceholderTrait;
+
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target Field',
         instructions: 'Select the field that this field should match',
+        emptyOption: 'Select a field',
+        implements: [TextInterface::class],
     )]
     protected ?FieldInterface $targetField = null;
 
@@ -61,11 +68,12 @@ class ConfirmationField extends TextField implements ExtraFieldInterface
         try {
             $field = $this->getTargetField();
             if (!$field) {
-                return 'no field chosen';
+                return 'no target field chosen';
             }
 
             $attributes = $field
                 ->getCompiledAttributes()
+                ->getInput()
                 ->clone()
                 ->replace(
                     'placeholder',
@@ -77,16 +85,10 @@ class ConfirmationField extends TextField implements ExtraFieldInterface
             ;
 
             $output = $field->getInputHtml();
-            $output = preg_replace('/<(\w+)[^\/>]*\/?>/', "<$1{$attributes}>", $output);
 
-            if (preg_match('/^<textarea\S?/', $output)) {
-                $value = htmlspecialchars($this->getValue(), \ENT_QUOTES, 'UTF-8');
-                $output = str_replace('></textarea>', ">{$value}</textarea>", $output);
-            }
-
-            return $output;
+            return preg_replace('/<(\w+)[^\/>]*\/?>/', "<$1{$attributes}>", $output);
         } catch (FreeformException $exception) {
-            return parent::getInputHtml();
+            return '<input'.$this->getAttributes()->getInput().' />';
         }
     }
 }

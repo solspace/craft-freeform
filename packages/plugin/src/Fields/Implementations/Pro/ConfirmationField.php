@@ -7,27 +7,34 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\TextField;
-use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
-use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Fields\Interfaces\TextInterface;
+use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 #[Type(
     name: 'Confirm',
     typeShorthand: 'confirm',
     iconPath: __DIR__.'/../Icons/confirm.svg',
-    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/confirmation.ejs',
 )]
-class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
+class ConfirmationField extends AbstractField implements ExtraFieldInterface, PlaceholderInterface
 {
+    use PlaceholderTrait;
+
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target Field',
         instructions: 'Select the field that this field should match',
+        emptyOption: 'Select a field',
+        implements: [
+            TextInterface::class,
+            RecipientInterface::class,
+        ],
     )]
     protected ?FieldInterface $targetField = null;
 
@@ -62,52 +69,32 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->getAttributes()
-            ->getInput()
-            ->clone()
-            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
-        ;
-
         try {
             $field = $this->getTargetField();
             if (!$field) {
-                return 'no field chosen';
+                return 'no target field chosen';
             }
 
+            $attributes = $field
+                ->getCompiledAttributes()
+                ->getInput()
+                ->clone()
+                ->merge($this->getAttributes()->getInput()->toArray())
+                ->replace(
+                    'placeholder',
+                    $this->getPlaceholder() ? $this->translate($this->getPlaceholder()) : false
+                )
+                ->replace('type', $field->getType())
+                ->replace('name', $this->getHandle())
+                ->replace('id', $this->getIdAttribute())
+                ->replace('value', $this->getValue())
+            ;
+
             $output = $field->getInputHtml();
-            $output = str_replace('/>', '', $output);
 
-            $output = $this->injectAttribute($output, 'name', $this->getHandle());
-            $output = $this->injectAttribute($output, 'id', $this->getIdAttribute());
-            $output = $this->injectAttribute($output, 'value', $this->getDefaultValue());
-
-            $output = str_replace(' required', '', $output);
-            $output .= $this->getRequiredAttribute();
-            $output .= $attributes;
-
-            $output .= ' />';
-
-            return $output;
+            return preg_replace('/<(\w+)[^\/>]*\/?>/', "<$1{$attributes}>", $output);
         } catch (FreeformException $exception) {
-            return parent::getInputHtml();
+            return '<input'.$this->getAttributes()->getInput().' />';
         }
-    }
-
-    private function injectAttribute(string $string, string $name, mixed $value): string
-    {
-        $attributes = new Attributes();
-        $attributes->set($name, $value);
-
-        if (preg_match('/'.$name.'=[\'"][^\'"]*[\'"]/', $string)) {
-            $string = preg_replace(
-                '/'.$name.'=[\'"][^\'"]*[\'"]/',
-                $attributes,
-                $string
-            );
-        } else {
-            $string .= $attributes;
-        }
-
-        return $string;
     }
 }

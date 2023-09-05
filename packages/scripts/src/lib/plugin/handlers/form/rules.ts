@@ -83,7 +83,16 @@ class RuleHandler {
             return;
           }
 
-          listener = 'keyup';
+          switch (input.type) {
+            case 'radio':
+            case 'checkbox':
+              listener = 'change';
+              break;
+
+            default:
+              listener = 'keyup';
+              break;
+          }
 
           break;
 
@@ -151,6 +160,7 @@ class RuleHandler {
 
     switch (condition.operator) {
       case Operator.Equals:
+        console.log(conditionValue, condition.value);
         return `${conditionValue}`.toLowerCase() === `${condition.value}`.toLowerCase();
 
       case Operator.NotEquals:

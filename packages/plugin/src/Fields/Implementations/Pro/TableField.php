@@ -154,12 +154,12 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     {
         $layout = $this->getTableLayout();
 
-        $this->values = $values = [];
+        $this->value = $values = [];
         if (!\is_array($value)) {
             return $this;
         }
 
-        foreach ($value as $rowIndex => $row) {
+        foreach ($value as $row) {
             if (!\is_array($row)) {
                 continue;
             }
@@ -182,7 +182,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             $values[] = $rowValues;
         }
 
-        $this->values = $values;
+        $this->value = $values;
 
         return $this;
     }

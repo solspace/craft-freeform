@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set form = craft.freeform.form(craft.app.request.segment(3)) %}
+{% set form = freeform.form(craft.app.request.segment(3)) %}
 {% set pageTitle = form.name ~ " form with your Custom Template" %}
 
 {% block content %}

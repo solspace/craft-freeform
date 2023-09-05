@@ -83,6 +83,7 @@ use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Services\SummaryService;
+use Solspace\Freeform\Twig\Extensions\FreeformGlobalsExtension;
 use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Twig\Filters\ImplementsClassFilter;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
@@ -394,6 +395,7 @@ class Freeform extends Plugin
 
         \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
         \Craft::$app->view->registerTwigExtension(new ImplementsClassFilter());
+        \Craft::$app->view->registerTwigExtension(new FreeformGlobalsExtension());
     }
 
     // TODO: move into a feature bundle

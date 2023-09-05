@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    {% set form = craft.freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
+    {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <div class="freeform-page-heading">
         <h2>Suppress Notifications when Editing Submissions</h2>
@@ -18,7 +18,7 @@
 
         <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
             <p>Most Recent Submission from this Form:</p>
-            {% for submission in craft.freeform.submissions({
+            {% for submission in freeform.submissions({
                 form: form.handle,
                 orderBy: "dateCreated DESC",
                 limit: 1

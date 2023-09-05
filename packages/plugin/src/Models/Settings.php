@@ -490,7 +490,7 @@ class Settings extends Model
     /**
      * @return array|bool
      */
-    public function listTemplatesInFormTemplateDirectory()
+    public function listTemplatesInFormTemplateDirectory(): array
     {
         return $this->getTemplatesInDirectory($this->getAbsoluteFormTemplateDirectory());
     }
@@ -498,7 +498,7 @@ class Settings extends Model
     /**
      * @return array|bool
      */
-    public function listTemplatesInEmailTemplateDirectory()
+    public function listTemplatesInEmailTemplateDirectory(): array
     {
         return $this->getTemplatesInDirectory($this->getAbsoluteEmailTemplateDirectory());
     }
@@ -506,7 +506,7 @@ class Settings extends Model
     /**
      * @return array|bool
      */
-    public function listTemplatesInSuccessTemplateDirectory()
+    public function listTemplatesInSuccessTemplateDirectory(): array
     {
         return $this->getTemplatesInDirectory($this->getAbsoluteSuccessTemplateDirectory());
     }

@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input\Wysiwyg;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -26,7 +25,7 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
     iconPath: __DIR__.'/../Icons/rich-text.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rich-text.ejs',
 )]
-class RichTextField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface
+class RichTextField extends AbstractField implements InputOnlyInterface, NoStorageInterface, ExtraFieldInterface
 {
     protected string $instructions = '';
     protected bool $required = false;

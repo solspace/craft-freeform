@@ -15,8 +15,11 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
+use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 
 #[Type(
     name: 'Textarea',
@@ -24,8 +27,11 @@ use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
     iconPath: __DIR__.'/Icons/textarea.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/textarea.ejs',
 )]
-class TextareaField extends TextField implements PlaceholderInterface, DefaultValueInterface
+class TextareaField extends AbstractField implements PlaceholderInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
+    use PlaceholderTrait;
+
     #[Input\TextArea(
         instructions: 'The default value of this field.',
     )]
@@ -47,9 +53,6 @@ class TextareaField extends TextField implements PlaceholderInterface, DefaultVa
         return $this->rows;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function getInputHtml(): string
     {
         $attributes = $this->getAttributes()

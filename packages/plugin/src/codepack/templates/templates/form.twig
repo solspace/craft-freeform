@@ -1,6 +1,6 @@
 {% extends "demo/_layout" %}
 
-{% set form = craft.freeform.form(craft.app.request.segment(4)) %}
+{% set form = freeform.form(craft.app.request.segment(4)) %}
 {% set pageTitle = form.name ~ " form with " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
 {% if craft.app.request.segment(5) == "edit" %}
     {% set submissionToken = craft.app.request.segment(6) %}

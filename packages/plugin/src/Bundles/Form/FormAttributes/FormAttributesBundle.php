@@ -32,6 +32,10 @@ class FormAttributesBundle extends FeatureBundle
 
         $event->setProperties($properties);
 
+        if ($form->isFormPosted()) {
+            return;
+        }
+
         if (!\is_array($attributes)) {
             return;
         }

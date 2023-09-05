@@ -149,6 +149,9 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
 
             foreach ($mapping as $key => $value) {
+                $key = str_replace('contact__', '', $key);
+                $value = str_replace('contact__', '', $value);
+
                 if (is_numeric($key)) {
                     if (\is_array($value)) {
                         $value = '||'.implode('||', $value).'||';
@@ -172,6 +175,9 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
 
             foreach ($mapping as $key => $value) {
+                $key = str_replace('deal__', '', $key);
+                $value = str_replace('deal__', '', $value);
+
                 if (is_numeric($key)) {
                     if (\is_array($value)) {
                         $value = '||'.implode('||', $value).'||';
@@ -199,6 +205,9 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
 
             foreach ($mapping as $key => $value) {
+                $key = str_replace('account__', '', $key);
+                $value = str_replace('account__', '', $value);
+
                 $this->account[$key] = $value;
             }
         }

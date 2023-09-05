@@ -1,3 +1,13 @@
+{% do field.setParameters({
+    attributes: {
+        container: {
+            class: [
+                field.oneLine ? "input-group-one-line"
+            ]
+        }
+    }
+}) %}
+
 <div{{ field.attributes.container }}>
 
 {{ field.renderLabel }}

@@ -111,6 +111,7 @@ class Attributes implements \Countable, \JsonSerializable
 
         if (\is_string($value)) {
             $value = trim($value);
+            $value = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
         }
 
         switch ($strategy) {

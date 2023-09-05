@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro\Payments;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -16,7 +15,7 @@ use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHan
     typeShorthand: 'credit-card',
     iconPath: __DIR__.'/../../Icons/text.svg',
 )]
-class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, PaymentInterface, ExtraFieldInterface
+class CreditCardDetailsField extends AbstractField implements PaymentInterface, ExtraFieldInterface
 {
     public const LAYOUT_2_ROWS = 'two_rows';
     public const LAYOUT_3_ROWS = 'three_rows';

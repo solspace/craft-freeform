@@ -115,11 +115,11 @@ export const Item = styled.li`
 
   &.focused {
     > ${Label} {
-      background-color: #616d7b;
-      color: ${colors.white};
+      background-color: #cfd8e3;
+      color: ${colors.gray700};
 
       > ${CheckMark} {
-        fill: ${colors.white};
+        fill: ${colors.gray700};
       }
     }
   }
@@ -141,7 +141,16 @@ export const Item = styled.li`
 
     &.focused {
       > ${Label} {
-        color: ${colors.white};
+        background-color: transparent;
+
+        &:hover {
+          background-color: ${colors.gray500};
+          color: ${colors.white};
+        }
+
+        > ${CheckMark} {
+          fill: transparent;
+        }
       }
     }
   }

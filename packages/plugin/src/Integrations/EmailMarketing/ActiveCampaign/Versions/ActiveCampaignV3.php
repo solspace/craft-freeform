@@ -89,14 +89,6 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         $tags = [];
 
         $mapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
-        $newMapping = [];
-        foreach ($mapping as $key => $value) {
-            $key = str_replace('custom__', '', $key);
-            $value = str_replace('custom__', '', $value);
-
-            $newMapping[$key] = $value;
-        }
-        $mapping = $newMapping;
 
         if (!empty($mapping['tags'])) {
             if (!\is_array($mapping['tags'])) {

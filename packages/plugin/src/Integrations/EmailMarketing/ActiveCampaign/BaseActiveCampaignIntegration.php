@@ -91,7 +91,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
                 };
 
                 $fieldList[] = new FieldObject(
-                    'custom__'.$field->id,
+                    $field->id,
                     $field->title,
                     $type,
                     $category,

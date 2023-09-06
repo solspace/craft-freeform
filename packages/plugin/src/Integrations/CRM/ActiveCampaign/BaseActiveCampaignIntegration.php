@@ -255,7 +255,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
                 };
 
                 $fieldList[] = new FieldObject(
-                    'contact__'.$field->id,
+                    $field->id,
                     $field->title,
                     $type,
                     $category,
@@ -291,14 +291,14 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         if (isset($json->dealCustomFieldMeta)) {
             foreach ($json->dealCustomFieldMeta as $field) {
-                $type = match ($field->type) {
+                $type = match ($field->fieldType) {
                     'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
                     'date' => FieldObject::TYPE_DATETIME,
                     default => FieldObject::TYPE_STRING,
                 };
 
                 $fieldList[] = new FieldObject(
-                    'deal__'.$field->id,
+                    $field->id,
                     $field->fieldLabel,
                     $type,
                     $category,
@@ -326,14 +326,14 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         if (isset($json->accountCustomFieldMeta)) {
             foreach ($json->accountCustomFieldMeta as $field) {
-                $type = match ($field->type) {
+                $type = match ($field->fieldType) {
                     'dropdown', 'multiselect', 'checkbox' => FieldObject::TYPE_ARRAY,
                     'date' => FieldObject::TYPE_DATETIME,
                     default => FieldObject::TYPE_STRING,
                 };
 
                 $fieldList[] = new FieldObject(
-                    'account__'.$field->id,
+                    $field->id,
                     $field->fieldLabel,
                     $type,
                     $category,

@@ -47,7 +47,7 @@ export const Name = styled.div`
 `;
 
 type StatusProps = {
-  enabled?: boolean;
+  $enabled?: boolean;
 };
 
 export const Status = styled.div<StatusProps>`
@@ -60,10 +60,10 @@ export const Status = styled.div<StatusProps>`
   height: 10px;
 
   border: 1px solid
-    ${({ enabled }): string => (enabled ? 'transparent' : colors.gray550)};
+    ${({ $enabled }): string => ($enabled ? 'transparent' : colors.gray550)};
   border-radius: 100%;
 
-  background-color: ${({ enabled }): string =>
+  background-color: ${({ $enabled: enabled }): string =>
     enabled ? colors.teal550 : 'transparent'};
 
   transition: all 0.3s ease-out;

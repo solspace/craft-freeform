@@ -72,7 +72,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row.getFields(["confirm", "password", "save", "hidden", "invisible"], "excludes") -%}
+                        {%- for field in row.getFields(["password", "hidden", "invisible"], "excludes") -%}
                             {% do field.attributes.container.set("class", [
                                 'fields-column',
                                 field.required ?: 'field-required',
@@ -94,7 +94,7 @@
                                         first: loop.index0 == 0,
                                     } %}
 
-                                    {% if field.type in ["text", "email", "datetime", "number", "phone", "regex", "website"] %}
+                                    {% if field.type in ["confirm", "text", "email", "datetime", "number", "phone", "regex", "website"] %}
                                         {{ forms.textField(options|merge({
                                             placeholder: field.placeholder,
                                         })) }}

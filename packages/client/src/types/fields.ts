@@ -7,6 +7,8 @@ export enum Implementation {
 
 export enum Type {
   Group = 'group',
+  Rating = 'rating',
+  OpinionScale = 'opinion-scale',
 }
 
 export type FieldType = {

@@ -13,21 +13,15 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     public const POSITION_BEGINNING = 'beginning';
     public const POSITION_END = 'end';
 
-    /** @var Form */
-    private $form;
-
     /** @var string[] */
-    private $chunks;
+    private array $chunks = [];
 
-    public function __construct(Form $form)
+    public function __construct(private Form $form)
     {
-        $this->form = $form;
-        $this->chunks = [];
-
-        parent::__construct([]);
+        parent::__construct();
     }
 
-    public function fields()
+    public function fields(): array
     {
         return ['form', 'chunks'];
     }
@@ -44,7 +38,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 
     public function addChunk(string $chunk, $position = self::POSITION_END): self
     {
-        if (null === $position || self::POSITION_END === $position || !is_numeric($position)) {
+        if (self::POSITION_END === $position || !is_numeric($position)) {
             $this->chunks[] = $chunk;
         }
 

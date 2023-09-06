@@ -17,13 +17,6 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 )]
 class SignatureField extends AbstractField implements ExtraFieldInterface
 {
-    public const DEFAULT_WIDTH = 400;
-    public const DEFAULT_HEIGHT = 100;
-    public const DEFAULT_BORDER_COLOR = '#999999';
-    public const DEFAULT_BACKGROUND_COLOR = 'rgba(0,0,0,0)';
-    public const DEFAULT_PEN_COLOR = '#000000';
-    public const DEFAULT_PEN_DOT_SIZE = 2.5;
-
     #[Input\Integer]
     protected int $width = 400;
 
@@ -42,7 +35,10 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
     #[Input\ColorPicker]
     protected string $penColor = '#000000';
 
-    #[Input\FloatingNumber]
+    #[Input\Integer(
+        instructions: 'The size of the dot when drawing.',
+        step: 0.1,
+    )]
     protected float $penDotSize = 2.5;
 
     /**

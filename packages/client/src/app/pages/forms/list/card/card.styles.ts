@@ -117,7 +117,7 @@ export const PaddedChartFooter = styled.div<{ $color: string }>`
   background-color: ${({ $color }) => $color};
   opacity: 0.3;
 
-  height: 10px;
+  height: 5px;
 
   font-size: 1px;
   line-height: 1px;

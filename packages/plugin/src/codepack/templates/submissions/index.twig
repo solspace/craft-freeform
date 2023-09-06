@@ -1,7 +1,7 @@
 {% extends "demo/_layout" %}
 
 {% if craft.app.request.segment(3) %}
-    {% set form = craft.freeform.form(craft.app.request.segment(3)) %}
+    {% set form = freeform.form(craft.app.request.segment(3)) %}
     {% set spamMode = craft.app.request.segment(4) ? true : false %}
 {% endif %}
 {% set pageTitle = "Submissions for " ~ form.name|default("-Select a Form-") %}
@@ -12,13 +12,13 @@
 
     {% if craft.app.request.segment(3) %}
 
-        {% set form = craft.freeform.form(formHandle) %}
-        {% set submissions = craft.freeform.submissions({
+        {% set form = freeform.form(formHandle) %}
+        {% set submissions = freeform.submissions({
             form: formHandle,
             isSpam: spamMode|default(false)
         }).all %}
-        {% set submissionCount = craft.freeform.submissions({formId: form.id}).count %}
-        {% set spamCount = craft.freeform.submissions({formId: form.id, isSpam: true}).count %}
+        {% set submissionCount = freeform.submissions({formId: form.id}).count %}
+        {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
 
         <div class="freeform-page-heading">
             <h2{{ spamMode ? ' class="spam-mode-badge"' }}>{{ spamMode ? spamCount ~ " Spams" : submissionCount ~ " Submissions" }} for <a href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}">{{ form.name }}</a></h2>
@@ -44,7 +44,7 @@
                         {% for field in (submissions|first) %}
                             <th>{{ field.label|truncate(20, '...') }}</th>
                         {% endfor %}
-                        {% if craft.freeform.pro %}
+                        {% if freeform.pro %}
                             {% if currentUser and currentUser.admin %}
                                 <th class="table-col-wide-120">{{ "Actions"|t("freeform") }}</th>
                             {% endif %}
@@ -79,7 +79,7 @@
                             <td>{{ submission[field.handle]|truncate(40, '...') }}</td>
                         {% endif %}
                     {% endfor %}
-                    {% if craft.freeform.pro %}
+                    {% if freeform.pro %}
                         {% if currentUser and currentUser.admin %}
                             <td>
                             {% if spamMode %}
@@ -113,8 +113,8 @@
 
             <div class="freeform-form-tiles">
             {% for form in forms %}
-                {% set submissionCount = craft.freeform.submissions({formId: form.id}).count %}
-                {% set spamCount = craft.freeform.submissions({formId: form.id, isSpam: true}).count %}
+                {% set submissionCount = freeform.submissions({formId: form.id}).count %}
+                {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}
                 <style>.freeform-form-tile-item-{{ form.id }}{border-top:7px solid {{ form.color }}!important;}.freeform-form-tile-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
                 <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
                     <h3>{{ form.name }}</h3>

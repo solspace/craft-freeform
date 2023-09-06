@@ -1,189 +1,428 @@
 # Solspace Freeform Changelog
 
-## 4.0.0-beta.18 - 2022-07-26
+## 5.0.0-beta.1 - 2023-09-06
 
-### Fixed
-- Fixed a bug where the `fieldSearch` parameter in `freeform.submissions` was not having any effect.
-- Fixed a bug where the `orderBy` parameter in `freeform.submissions` was not working correctly.
-- Fixed a bug where the amCharts library was not using a local copy for its scripts in the CP.
-- Fixed a bug where there was a warning about failing to load a source map in the CP.
-
-## 4.0.0-beta.17 - 2022-07-25
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
-- Added the ability to map Mailchimp Interests to a form field. Limited to finding and passing a single Interest based on first match within Interest names part of a List.
+- Added **Group** field type, allowing you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
+- Added ability to create **Custom field types**.
+- Added ability to save fields as **Favorites** for quick use in other forms.
+- Added ability to search across other forms to reuse fields in forms.
+- Added an `Attributes` object for the `Form` and `Field`, which is capable of storing the HTML attributes for various elements that each form or field has.
+- Added a `Settings` object to access all of the form's settings assigned to it in the form builder.
+- Added a basic **Multipage All Fields** formatting template (replaces the **Bootstrap 5 Multipage All Fields** template).
+- Added the ability to set complex conditional email notifications inside the form builder.
+- Added global `freeform` variable so that queries can be done shorthand as `freeform.form`, etc.
 
 ### Changed
-- Switched over CP scripts to use local copies of external scripts.
-
-### Fixed
-- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
-- Fixed a bug where the CP submissions detail page would error if it contained Payment subscription data.
-
-### Security
-- Addressed some potential XSS vulnerabilities.
-
-## 4.0.0-beta.16 - 2022-07-19
-
-### Fixed
-- Fixed a bug where exporting submissions from multiple forms (via "Export to CSV") was not working correctly.
-- Fixed a bug where the `Excel` export type was still available in the dashboard. It will be readded later when there is support for it.
-- Fixed a bug where creating new database-based email notification templates would not work.
-- Fixed a bug where quick-creating email templates in the form builder would break when the default was set to database.
-- Fixed a bug where conditional rules would break when applied to multiple select fields.
-- Fixed a bug where the submission table splitting migration script would not correctly account for field handles with a number in them. If you've been affected (migration from v3.x to v4.x between beta 9 and beta 15.1), you may need to manually adjust any column names in submission tables that contain a number, e.g. `home_phone2_99` (where `2` is part of the field handle and `99` is the unique field ID) to `home_phone_2_99` (extra underscore).
-- Adjusted the NL translation word for `any` in the conditional rules feature.
-
-## 4.0.0-beta.15.1 - 2022-07-14
-
-### Fixed
-- Fixed a bug where an incorrect namespace was used for notification controllers.
-
-## 4.0.0-beta.15 - 2022-07-13
-
-### Fixed
-- Fixed a bug where Freeform could error on the `export_notifications` table check when uninstalling the plugin. 
-- Fixed a bug where ordering results on the submission index page would sometimes error.
-- Fixed a bug where Freeform's mutation observer was not attaching to nested forms.
-
-## 4.0.0-beta.14 - 2022-07-12
-
-### Changed
-- Reversed database notifications being removed. You can now continue to create and use email notification templates stored as files, in the database, or a combination of both.
-
-### Fixed
-- Fixed a bug where exporting submissions from the dashboard would result in an error.
-- Fixed a bug where some special field types were showing in the field type dropdown for creating new fields in the form builder.
-- Fixed a bug where Date fields could sometimes error when editing a Craft Entry via Freeform's element connections feature.
-
-## 4.0.0-beta.13 - 2022-06-30
-
-### Changed
-- Updated Dashboard, Forms listing and Survey & Polls dashboard to hide forms for users that do not have any form or submission access permissions to them.
-
-### Fixed
-- Fixed a bug where Dynamic Recipient fields would still send email notifications while hidden via Conditional Rules.
-- Fixed a bug where uploaded file attachments in email notifications showed a full file path instead of just the filename.
-- Fixed a bug where Stripe subscription plan names could possibly show up blank if no price plan description was provided. If so, Freeform will now autogenerate plan names.
-- Fixed a bug where the form builder didn't warn that `author` is a reserved handle name.
-
-## 4.0.0-beta.12 - 2022-06-15
-
-### Added
-- Added support for date fields in the Campaign Monitor integration.
-
-### Changed
-- Upgraded the GrapQL interface calls to use the new Craft GraphQL API.
-
-### Fixed
-- Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
-
-### Security
-- Addressed some potential XSS vulnerabilities.
-
-## 4.0.0-beta.11 - 2022-06-07
-
-### Added
-- Added support for permanently deleting soft-deleted submissions.
-
-### Changed
-- Updated the "Use Return URL" success behavior to skip reloading the form (briefly) when using AJAX.
-
-### Fixed
-- Fixed a bug where the form builder would not show an error message when creating a new notification template if the email notification template directory path was not set.
-- Fixed a bug where the submission and spam purge feature would fail when there were 0 submissions to clear.
-- Fixed a bug where export file headings would remove spaces in between field names ("My Field Label" would become "MyFieldLabel").
-- Fixed a bug where the migration would error when using PostgreSQL.
-
-## 4.0.0-beta.10 - 2022-06-02
-
-### Added
-- Added setting to have CSV exports use field handles for headings instead of field labels.
-- Added `data-skip-html-reload` form attribute option to bypass HTML reload for AJAX forms (when not using render method).
-
-### Fixed
-- Fixed a bug where the Submissions and Spam CP indexes would error if no forms exist.
-- Fixed a bug where the "New Template" button was still visible in the Email Notifications page when the email notification template directory path was not set. Another fix is coming for the form builder.
-
-## 4.0.0-beta.9 - 2022-05-31
-
-### Added
-- Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.
-
-### Fixed
-- Fixed a bug where the OAuth flow for email marketing integrations was not working correctly.
-- Fixed a bug where renaming a form handle (uppercase to lowercase, etc) could result in issues with generating the corresponding submissions database table name.
-- Fixed a bug where the Drag & Drop File Upload field type was requiring a file to be selected even when hidden by the Conditional Rules feature.
-- Fixed a bug where the predefined "Yesterday" option for Export Profiles returned yesterday 0:00 until now instead of yesterday 0:00 to 23:59.
-- Fixed a bug with conditional Post Forwarding options check.
-
-## 4.0.0-beta.8 - 2022-05-18
-
-### Fixed
-- Fixed a SQL error that would occur on PostgreSQL when viewing form submissions.
-- Fixed a bug where sites with database table prefixes could experience an error when saving a form with a very long handle.
-- Fixed a bug with conditional Post Forwarding options check.
-
-## 4.0.0-beta.7 - 2022-05-10
-
-### Changed
-- Updated the sample formatting templates to include `ff-fieldtype-FIELDTYPE` classes to field-surrounding divs.
-
-### Fixed
-- Fixed a bug where sites with database table prefixes could not save forms in the form builder.
-- Fixed a bug where an error could sometimes occur on the Form Behavior settings page.
-- Fixed a bug where the New Form wizard would not show an error if a duplicate form handle was entered.
-- Fixed a bug where Freeform could error when uninstalling.
-
-## 4.0.0-beta.6 - 2022-05-05
-
-### Fixed
-- Fixed a bug where Hidden and Invisible fields were not collecting submission data.
-- Fixed a bug where users with permissions to Create New Forms would encounter issues in the New Form wizard modal.
-- Fixed a bug where users without Create New Forms permission would see the New Form button in the CP Forms page.
-- Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.
-
-## 4.0.0-beta.5 - 2022-05-03
-
-### Added
-- Added a check in the diagnostics, install welcome screen, and settings pages to alert users if the "Freeform Script Insert Type" setting will not work as Static URLs (and needs to be switched to Files).
-
-### Fixed
-- Fixed a bug where POST Forwarding would still send through spammy submissions.
-- Fixed a bug where Checkbox Groups and Multi-Select field types would not show default options in rendered form.
-- Fixed a bug where the form builder tutorial would show an error if the `allowAdminChanges` setting was disabled.
-
-## 4.0.0-beta.4 - 2022-04-28
-
-### Fixed
-- Fixed a bug where Drag & Drop File Upload fields would not respect all site URL setups.
+- **Control Panel**
+    - The **Dashboard** and **Forms** pages have been combined and redesigned.
+    - Renamed the **Email Notifications** subnav menu item to **Notifications**.
+- **Form Builder**
+    - Completely redesigned the form builder.
+        - Settings and other features are now in full-page tabs to allow for lots of room to configure.
+        - Fields are specific to forms and added by dragging fresh field types into the layout.
+    - Reorganized all form settings and behaviors into multiple subsections of a unified **Settings** tab.
+    - Reorganized **Email Marketing**, **CRM**, **Element**, **Stripe**, **Captcha**, **POST Forwarding** and **Google Tag Manager** settings into multiple subsections of a unified **Integrations** tab.
+    - Improved the **Conditional Rules** tab to include a field map along with visual cues, making configuration faster and less confusing.
+    - Changed some of the option values for the **Duplicate Check** (formerly _Limit Form Submission Rate_) setting.
+- **Fields**
+    - Fields are now created and specific to each form (vs. being global to all forms).
+    - Fields can be saved as Favorites or searched upon to be reused in other forms.
+    - Fields can now be changed to other field types at any point, but be aware that data loss could occur when switching incompatible field types.
+    - The **Checkbox Group** field type has been renamed to **Checkboxes** (and `checkboxes` in formatting templates).
+    - The **Radio Group** field type has been renamed to **Radios** (and `radios` in formatting templates).
+    - The **Select** field type has been renamed to **Dropdown** (and `dropdown` in formatting templates).
+    - The field type handles of `cc_details`, `confirmation`, `file_drag_and_drop`, `multiple_select`, `opinion_scale`, and `rich_text` have been renamed to `credit-card`, `confirm`, `file-dnd`, `multiple-select`, `opinion-scale`, and `rich-text`, respectively.
+    - The **Dynamic Recipients** field type has been replaced with the **User Select** feature, which provides the ability to assign a notification layer to any Dropdown, Checkboxes, Radios, or Multi-Select field types.
+    - The **Email Marketing**/**Mailing List** special field type has been replaced with the ability to assign the Email Marketing integration to any existing Checkbox or Hidden field. This will also allow you to keep a record in Freeform of whether the mailing list was subscribed to by the user.
+    - The **reCAPTCHA v2 Checkbox** and **hCaptcha Checkbox** special fields are now inserted into the form automatically (before the Submit button).
+    - The **Submit** and **Save & Continue Later** buttons are now automatically inserted at the end of each form page.
+    - The **Opinion Scale** field type markup for manual templating has been adjusted slightly.
+- **Email Notifications**
+    - Updated the form builder to have a **Notifications** tab dedicated to configuring all types of email notifications (except for template-level ones).
+- **Integrations**
+    - The **Element Connections** feature is now referred simply to **Element** integrations.
+    - **Element** integrations are now set up in the Freeform settings area and then configured per form.
+    - **Webhook** integrations are now configured per form (but still set up initially in the Freeform settings area).
+    - Integrations with more than one type have been unified with expanded functionality:
+        - _Salesforce Leads_ and _Salesforce Opportunities_ are now in a single _Salesforce_ integration.
+        - _Pipedrive Leads_ and _Pipedrive Deals_ are now in a single _Pipedrive_ integration.
+        - _Zoho Leads_ and _Zoho Deals_ are now in a single _Zoho_ integration.
+    - Integrations that map to more than one endpoint allow more flexibility when choosing which endpoints to map to.
+    - The Salesforce integration has been changed to OAuth validation (instead of username/password).
+    - The Pipedrive integration has been changed to OAuth validation.
+    - The **dotmailer** integration has been updated and renamed to **Dotdigital**.
+    - All **MailingList**/**mailing_list**, etc, references in the code and database have been renamed to **EmailMarketing**/**email_marketing**, etc.
+- **Settings**
+    - Combined the _Formatting Templates_, _Email Templates_ and _Success Templates_ settings pages into a single **Template Manager** settings page.
+    - Reorganized and adjusted settings pages.
+    - The **Limit Form Submission Rate** setting has been renamed to **Duplicate Check**. Available options have been revised and renamed for clarity as well.
+- **Spam Protection**
+    - Renamed the **Javascript Enhancement** feature to **Javascript Test**.
+    - **Captchas** are now stored as integrations, can have multiple configured per site, and can be turned on/off and further configured at the form level inside the form builder, e.g. stricter settings, different behavior, etc.
+    - The **reCAPTCHA v2 Checkbox** and **hCaptcha Checkbox** special fields are now inserted into the form automatically (before the Submit button).
+- **Templating**
+    - The `overrideValues` parameter for Form queries has been renamed to `values`.
+    - The `suppress` parameter (for suppressing email notifications and integrations when editing submissions on the front end) has had the `dynamicRecipients`, `submitterNotifications`, `connections` parameter names changed to `userSelectNotifications`, `emailFieldNotifications`, and `elements`, respectively. An additional `conditionalNotifications` parameter has been added to account for the new _Conditional Notifications_ feature.
+    - All formatting templates have been updated and improved.
+    - The **Bootstrap 5 Multipage All Fields** formatting template has been transitioned to a "Basic" non-Bootstrap version, now called **Multipage All Fields**.
+    - Form settings and behaviors can now all be accessed in templates via `freeform.settings.settingName`.
+    - The `option.checked` property has been updated to an approach that compares `option.value` to `field.value`.
+    - The `disableRecaptcha` parameter is now `disableCaptcha`.
+    - All references to `loading` (text and/or spinner indicator displayed on the submit button) are now `processing`.
+    - All references to `spinner` (spinner indicator displayed on submit button) are now `processingSpinner`, etc.
+    - The `limitSubmissions` parameter has been renamed to `duplicateCheck` and the values have been renamed for clarity.
+    - The `submissionLimitReached` property in the Form object has been renamed to `duplicate`.
+    - All references to `freeform-file-drag-and-drop` for CSS overrides have been updated to `freeform-file-dnd`.
+- **Javascript**
+    - The defaults for `errorClassBanner`, `errorClassList`, `errorClassField` and `successClassBanner` plugin options for JS overrides have been adjusted to `freeform-form-errors`, `freeform-errors`, `freeform-has-errors` and `freeform-form-success`, respectively (`ff-` changed to `freeform-`).
 
 ### Removed
-- Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
-- Removed the `league/flysystem` dependency as it is not needed.
+- The **Field Manager** area (**Freeform > Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
+- The **Dashboard** page has been removed in favor of a redesigned **Forms** page.
+- Exporting "shortcuts" from the Dashboard is no longer available with the removal of the **Dashboard** page, but many other exporting options are available.
+- The **What's New** feature has been removed in favor of using Craft's Announcements feature.
+- The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
+- The **Resources** area inside the Freeform control panel has been removed.
+- The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
+- The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
+- The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
+- The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.
+- The `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as they are stored as integrations now.
+- The `freeform/fields/create` field creation console command has been removed as it is no longer applicable.
+- The following attribute control parameters have been removed and replaced by accessing them via the new `attributes` object: `inputClass`, `submitClass`, `rowClass`, `columnClass`, `labelClass`, `errorClass`, `instructionsClass`, `class`, `id`, `name`, `method`, and `action`.
 
-## 4.0.0-beta.3 - 2022-04-26
+## 4.1.6 - 2023-07-20
+
+### Added
+- Exposed all remaining form settings/properties for GraphQL queries, including `successMessage` and `errorMessage`.
 
 ### Changed
-- Updated `league/flysystem`, `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
+- Refactored the Freeform lock service to use Yii's cache to prevent performance issues.
 
-## 4.0.0-beta.2 - 2022-04-20
+### Fixed
+- Fixed issues with reCAPTCHA when querying forms via GraphQL.
 
-> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
+## 4.1.5 - 2023-07-11
+
+### Added
+- Added conditional rule logic for form fields in GraphQL.
+
+## 4.1.4 - 2023-07-05
+
+### Added
+- Added support for mapping to multiple groups/interests in the Mailchimp integration.
+
+### Fixed
+- Fixed a bug where the element query was being executed before Craft was fully initialized.
+
+## 4.1.3 - 2023-06-28
+
+### Fixed
+- Fixed a bug where server-side field validation error messages were replaced with a GraphQL query error in production mode.
+
+## 4.1.2 - 2023-06-26
+
+### Fixed
+- Fixed a bug where forms using reCAPTCHA v2 Checkbox or hCaptcha Checkbox could behave incorrectly.
+
+## 4.1.1 - 2023-06-22
 
 ### Changed
-- Changed the way form submission data is stored. A new table for each form is now created and updated rather than storing all forms' submission data in a single shared database table. This solves several issues, including running out of fields and paves the way for more exciting future improvements to the form builder. Fields are still global and available to every form. No action should be necessary by the admin, as Freeform includes a migration script that automatically converts the data to be split into multiple database tables. This process may take a little longer if you have a very large site.
-- All Freeform fields are now stored as the `TEXT` MySQL type instead of a combination of `TEXT`, `VARCHAR(100)` and `VARCHAR(255)`. This is a changed that is applied to all existing fields as well, since they are recreated in the migration. No action should be necessary here. In the rare case where your site has some kind of customization that relies on a MySQL type other than `TEXT`, you may have to adjust the database manually.
+- Updated the Diagnostics page to still show when the `allowAdminChanges` setting is set to `false`.
 
-## 4.0.0-beta.1 - 2022-03-29
+### Fixed
+- Fixed a bug where the Submission Purge console commands were not working correctly.
+- Fixed a bug where the Submission Purge feature was not removing associated Asset files as well.
+- Fixed a bug where an error would occur when dynamically creating a sub-directory for file uploads upon submission of form.
+
+## 4.1.0 - 2023-06-13
+
+> {warning} If currently using GraphQL and/or headless javascript frameworks such as Vue.js, Next.js, React JS, etc, please proceed carefully and test your forms thoroughly after updating.
+
+### Added
+- Added support for GraphQL Mutations.
+- Added interactive demos for Vue.js, React JS, and Next.js frameworks.
+
+### Changed
+- Changed the way reCAPTCHA is handled in headless setups.
+
+### Deprecated
+- Deprecated `FormInterface` for GraphQL. Please use `FreeformFormInterface` instead.
+- Deprecated `FieldInterface` for GraphQL. Please use `FreeformFieldInterface` instead.
+- Deprecated `PageInterface` for GraphQL. Please use `FreeformPageInterface` instead.
+- Deprecated `RowInterface` for GraphQL. Please use `FreeformRowInterface` instead.
+- Deprecated `OptionsInterface` for GraphQL. Please use `FreeformOptionInterface` instead.
+- Deprecated `ScalesInterface` for GraphQL. Please use `FreeformOpinionScaleInterface` instead.
+- Deprecated `KeyValueMapInterface` for GraphQL. Please use `FreeformAttributeInterface` instead.
+- Deprecated `hash` and `timestamp` in `FreeformHoneypotInterface` for GraphQL. Please do not use.
+
+## 4.0.26 - 2023-06-12
+
+### Fixed
+- Fixed a bug that could cause issues when using the JS Honeypot enhancement.
+- Fixed a bug where an error would sometimes occur when opening the Diagnostics page.
+
+## 4.0.25 - 2023-06-05
+
+### Fixed
+- Fixed a bug where the Field Values Chart widget would error when attempting to add to the dashboard.
+
+## 4.0.24.1 - 2023-05-18
+
+### Fixed
+- Fixed a bug where an error would occur when attempting to submit a form that has the "Store Submission Data" setting disabled on sites using the Freeform 4.0.24 version.
+
+## 4.0.24 - 2023-05-16
+
+### Added
+- Added the ability to limit forms to be submitted once per email address only.
+- Added a setting to the Mailchimp integration to allow choosing between appending existing Contact Tags with new ones when updating an existing contact.
+
+### Fixed
+- Fixed a bug where attempting to Allow a spam submission for a Payment form would result in an error.
+
+## 4.0.23 - 2023-04-28
+
+### Added
+- Added the ability to map submission data to `postDate` and `expiryDate` for Craft Entries.
+- Added the ability to preparse Twig for the "Predefined Assets" setting in email notification templates. This allows for things like dynamically attaching an asset to the email notification based on a user's selection, etc.
+
+### Changed
+- Updated Freeform template path settings to now include template folder autosuggestions.
+
+### Fixed
+- Fixed a bug where the hidden input for File Upload Drag & Drop fields was not getting an ID attribute applied to it.
+- Fixed some minor issues with demo templates.
+
+## 4.0.22 - 2023-04-14
+
+### Added
+- Added a "Floating Labels" basic formatting template. Ready-to-go and does not require any frameworks or toolkits.
+- Added support for `dwg`, `dxf`, `stp`, `step`, `sia` mime types in Freeform's internal file validation helper.
+
+### Changed
+- Overhauled and refreshed demo templates area. Easily try on a wide range of sample formatting templates for your forms, view submission data, check out advanced setups, etc.
+
+### Fixed
+- Fixed a bug where the Submission and Spam Purge features were not always working correctly.
+- Fixed a few minor styling issues in most of the sample formatting templates.
+
+## 4.0.21 - 2023-03-29
+
+### Fixed
+- Fixed a bug where the Honeypot could trigger an unserialization error in some cases.
+
+## 4.0.20 - 2023-03-23
+
+### Changed
+- Updated the JS Honeypot Enhancement feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
+- Various improvements and adjustments to the Basic Light and Dark example formatting template examples.
+
+### Fixed
+- Fixed a bug where the Constant Contact integration could timeout when connecting if there were too many lists.
+
+## 4.0.19 - 2023-03-21
+
+### Added
+- Added two basic formatting template examples (dark and light modes) that are self-contained and complete to be added to any page. Does not require any frameworks or toolkits.
+- Added setup guides directly into API integration settings pages.
+
+### Changed
+- Updated the `form_posted` cookie to only be created for users if a form uses a cookie check for limiting how many times a user can submit the form.
+
+## 4.0.18 - 2023-03-10
+
+### Changed
+- Addressed some minor Craft 4.4 compatibility issues in the control panel.
+- Made some minor adjustments to the CP Submission detail view.
+- Improved Dutch (NL) language translations.
+
+### Fixed
+- Fixed a bug where the "Email Template" dropdowns in the form builder displayed both Database and File groups even if just one was selected.
+
+## 4.0.17 - 2023-03-01
+
+### Added
+- Added support for `.eps` files in the Freeform file helper validation.
+- Added support for `.webp` files in the Freeform file helper validation.
+
+### Changed
+- Updated English and Dutch (NL) translations to include all missing items.
+- Updated default Freeform formatting templates to no longer include `lineHeight` for Stripe fields.
+- Updated Signature field data to be included in exports.
+
+### Fixed
+- Fixed a bug where many items were not translatable in the Freeform control panel.
+- Fixed a bug where using "Database Tables" for session storage context would result in an error when submitting forms.
+- Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
+
+## 4.0.16 - 2023-02-23
+
+### Fixed
+- Fixed a bug where an erroneous database index existed for email marketing integrations that would sometimes cause an error.
+
+## 4.0.15 - 2023-02-14
+
+### Added
+- Added an example Conversational style formatting template that displays one field at a time and smoothly scrolls down to the next question until complete.
+
+### Fixed
+- Fixed a bug where AJAX errors were not displaying correctly for Opinion Scale and Table fields.
+
+## 4.0.14 - 2023-02-08
+
+### Fixed
+- Fixed a bug where unfinalized files were not immediately being cleared upon successful submit of forms that are set not to store submission data.
+- Fixed a bug where POST Forwarding was not being triggered when approving submissions in the Spam Folder.
+- Fixed a bug where the `initHoneypot` function was triggering error warnings about premature initiation.
+- Fixed a bug where Multi-Select fields were missing some styles inside the form builder.
+
+## 4.0.13 - 2023-01-26
+
+### Fixed
+- Fixed a bug where single checkboxes were always being checked by default (as of 4.0.11).
+- Fixed a bug where custom table attributes were firing on all element types.
+
+## 4.0.12 - 2023-01-25
+
+### Added
+- Added additional data to the AJAX submit response payload for multi-page forms.
+- Added an example Bootstrap 5 formatting template that includes a preview/review of all fields across all pages.
+
+## 4.0.11 - 2023-01-19
+
+### Fixed
+- Fixed a bug where the opt-in data storage checkbox was not saving submission data when checked.
+- Fixed a bug where Dynamic Recipient fields would not export with labels when the "Use Option Labels when Exporting" setting was enabled.
+
+## 4.0.10 - 2023-01-17
+
+### Fixed
+- Fixed a bug where the "Once per logged in Users only" option for duplicate checking wasn't preventing guests from submitting the form.
+- Fixed a bug where extra returns were being inserted above H2s inside Rich Text fields (in the builder) when they were clicked on.
+- Fixed a bug where deleting a spam submission from the CP detail view was not working.
+
+## 4.0.9 - 2022-12-09
+
+### Added
+- Added back Excel support for exporting submissions.
+- Added `submissionLimitReached` to the Form object, allowing you to check if the user has already submitted the form when using the **Limit Form Submission Rate** setting (hide form and/or display an error message to the user instead of waiting until they attempt to submit the form).
+
+### Changed
+- Updated to only load reCAPTCHA scripts when form(s) have reCAPTCHA enabled.
+- Updated to support Craft's `sameSiteCookieValue`.
+
+### Fixed
+- Fixed a bug where the Submissions/Spam CP index includes an "Edit Submission" option that isn't usable.
+
+## 4.0.8 - 2022-11-21
+
+### Changed
+- Refactored the submission delete process to use batching.
+
+### Fixed
+- Fixed a bug where links to view/edit individual submissions in the CP disappeared in Craft 4.3.2+.
+- Fixed a bug where the Freeform Form element field type was not sorting form options alphabetically.
+- Fixed a bug where email notifications were sometimes not being fetched when fetched by handle.
+- Fixed a bug where two sets of "set status" actions would appear in CP submissions index.
+- Fixed a bug where fetching existing tags for the ActiveCampaign integration was not working correctly.
+
+## 4.0.7 - 2022-10-25
+
+### Added
+- Verified compatibility with Craft 4.3.
+
+### Fixed
+- Fixed a bug where database notification templates were not being loaded properly in the form builder.
+- Fixed a bug where a warning was output in the Craft logs when loading dashboard widgets.
+- Fixed a bug where the "All Submissions" filter in Submissions and Spam Folder CP indexes would crash when there were more than 60 forms present.
+
+## 4.0.6 - 2022-10-12
+
+### Added
+- Added a "Floating Labels" version of the Bootstrap 5 example formatting template.
+
+### Fixed
+- Fixed a bug where garbage collection was not working on Freeform submissions.
+- Fixed a bug where the "Send Additional Notification" feature was not working correctly.
+- Fixed a bug where searching `freeform.submissions` across multiple forms was not working correctly.
+
+## 4.0.5 - 2022-10-05
+
+### Added
+- Added success events for AJAX forms with `redirect-to-url` behavior.
+
+### Fixed
+- Fixed a bug that would prevent some integrations with OAuth 2.0 from being able to authorize.
+- Fixed a bug where the Email Template dropdown select in the form builder would not show all templates if using a mix of database and file templates.
+- Fixed a bug where users could create file-based email notification templates in the form builder when the setting for it is disabled.
+- Fixed a bug where using the `back` button in multi-page forms could potentially cause issues when using default browser validation.
+
+## 4.0.4 - 2022-09-28
+
+### Added
+- Added a setting to disable the creating and editing of File-based email notification templates.
+
+### Changed
+- Updated the AJAX response payload to include posted values.
+
+### Fixed
+- Fixed a bug where attempting to create a new status would not work.
+- Fixed a bug where some field types would not correctly store updates with empty values in multi-page forms.
+- Fixed a bug where users without permissions to Freeform could add Freeform widgets to the Craft dashboard.
+- Fixed a bug where the `form` reserved keyword was being allowed for field handles.
+
+## 4.0.3 - 2022-09-12
+
+### Changed
+- Updated the Google Tag Manager event to include the AJAX response.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+- Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
+- Fixed a bug where the Tailwind 3 sample formatting template was not including custom input attributes when rendering Select fields.
+
+## 4.0.2 - 2022-08-24
+
+### Fixed
+- Fixed a bug where non-latin characters were being allowed in field handles in the field manager area.
+- Fixed a bug where predefined assets in email notifications showed a full file path instead of just the filename.
+- Fixed a bug where multiple instances of the same form are added when moving the form instance around the DOM.
+
+## 4.0.1 - 2022-08-23
+
+### Added
+- Added a v3 version of the Tailwind example formatting template.
+- Added a new version of the HubSpot API integration to address new Private App token requirement. This is a required change for any existing HubSpot users.
+
+### Changed
+- Updated the Campaign third party plugin email marketing integration to use new `FormsService::createAndSubscribeContact` method.
+
+### Fixed
+- Fixed a bug where attempting to sort submissions in the CP submissions index page was not working.
+- Fixed a bug where non-latin characters were being allowed in field and form handles.
+- Fixed a bug where attempting to view a related Freeform submission element in the slideout in another element could error.
+- Fixed a bug where attempting to attach a _Predefined Asset_ to an email notification template would give an Internal server error.
+
+## 4.0.0 - 2022-08-05
 
 > {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
 
 ### Added
 - Added compatibility with Craft 4.x.
+- Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.
 - Added more information to email notification error logging. It now includes the email notification approach and the Email field name (if applicable) to track down where the issue is coming from.
+- Added setting to have CSV exports use field handles for headings instead of field labels.
+- Added support for permanently deleting soft-deleted submissions.
+- Added `data-skip-html-reload` form attribute option to bypass HTML reload for AJAX forms (when not using render method).
 - Added `EVENT_GET_CUSTOM_PROPERTY` developer event, which lets you inject your own properties on forms to expand their application.
 - Added `EVENT_CONFIGURE_CORS` developer event, which lets you modify the CORS headers that will be sent with the request.
+- Added a check in the diagnostics, install welcome screen, and settings pages to alert users if the "Freeform Script Insert Type" setting will not work as Static URLs (and needs to be switched to Files).
+- Added the ability to map Mailchimp Interests to a form field. Limited to finding and passing a single Interest based on first match within Interest names part of a List.
+- Added support for date fields in the Campaign Monitor integration.
 
 ### Changed
 - Changed all existing forms with the **Success Behavior** setting set to _No Effect_ to now be _Reload Form with Success Message_. This will behave somewhat similarly to old behavior, but will no longer automatically redirect to a different URL upon success. Please review all forms and set the desired behavior for each in the **Success Behavior** setting. If you wish to continue to override the behavior at template level, you can do that as well.
@@ -191,11 +430,173 @@
 - Changed all sample formatting templates use `|t('freeform')` only (instead of a mix of `|t` and `|t('freeform')`). If you're using static translations on sample formatting templates, you'll need to move `site.php` translations over to `freeform.php`.
 - Changed the rendering of single checkboxes to now use the value set inside the form builder. No action should be necessary here. If you have a custom module in place to override this behavior, you can likely undo that now.
 - Changed Email fields to no longer store data as an array. The migration will comb through your database and convert all values of Email field types (e.g. `["test@x.x"]` will become `test@x.x`). If you were relying on this feature to collect more than one email address, only the first email address will be kept (e.g. `["a@x.x","b@x.x"]` will become `a@x.x`). No action is necessary here, but if you relied on this functionality, it is a breaking change with no alternative option currently (aside from adding multiple **Email** fields to your forms, one for each email address). If you have a custom module that is working around this in any way, you should be able to disable it now.
-- Updated newly created email notification templates' "From" email address and name to default to the newer way (via Project Config), e.g. `craft.app.projectConfig.get('email.fromEmail')`). If you are using the older approach in existing email notification templates, be sure to update them. 
+- Updated newly created email notification templates' "From" email address and name to default to the newer way (via Project Config), e.g. `craft.app.projectConfig.get('email.fromEmail')`). If you are using the older approach in existing email notification templates, be sure to update them.
+- Changed the way form submission data is stored. A new table for each form is now created and updated rather than storing all forms' submission data in a single shared database table. This solves several issues, including running out of fields and paves the way for more exciting future improvements to the form builder. Fields are still global and available to every form. No action should be necessary by the admin, as Freeform includes a migration script that automatically converts the data to be split into multiple database tables. This process may take a little longer if you have a very large site.
+- All Freeform fields are now stored as the `TEXT` MySQL type instead of a combination of `TEXT`, `VARCHAR(100)` and `VARCHAR(255)`. This is a change that is applied to all existing fields as well since they are recreated in the migration. No action should be necessary here. In the rare case where your site has some kind of customization that relies on a MySQL type other than `TEXT`, you may have to adjust the database manually.
+- Updated Dashboard, Forms listing and Survey & Polls dashboard to hide forms for users that do not have any form or submission access permissions to them.
+- Switched over CP scripts to use local copies of external scripts.
+- Upgraded the GraphQL interface calls to use the new Craft GraphQL API.
+- Updated the "Use Return URL" success behavior to skip reloading the form (briefly) when using AJAX.
+- Updated the sample formatting templates to include `ff-fieldtype-FIELDTYPE` classes to field-surrounding divs.
+- Updated `league/flysystem`, `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
+
+### Fixed
+- Fixed a bug where POST Forwarding would still send through spammy submissions.
+- Fixed a bug where the form builder tutorial would show an error if the `allowAdminChanges` setting was disabled.
+- Fixed a bug where Drag & Drop File Upload fields would not respect all site URL setups.
+- Fixed a bug where users with permissions to Create New Forms would encounter issues in the New Form wizard modal.
+- Fixed a bug where users without Create New Forms permission would see the New Form button in the CP Forms page.
+- Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.
+- Fixed a bug where an error could sometimes occur on the Form Behavior settings page.
+- Fixed a bug with conditional Post Forwarding options check.
+- Fixed a bug where the Drag & Drop File Upload field type was requiring a file to be selected even when hidden by the Conditional Rules feature.
+- Fixed a bug where the predefined "Yesterday" option for Export Profiles returned yesterday 0:00 until now instead of yesterday 0:00 to 23:59.
+- Fixed a bug where the form builder would not show an error message when creating a new notification template if the email notification template directory path was not set.
+- Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
+- Fixed a bug where Dynamic Recipient fields would still send email notifications while hidden via Conditional Rules.
+- Fixed a bug where uploaded file attachments in email notifications showed a full file path instead of just the filename.
+- Fixed a bug where Stripe subscription plan names could possibly show up blank if no price plan description was provided. If so, Freeform will now autogenerate plan names.
+- Fixed a bug where the form builder didn't warn that `author` is a reserved handle name.
+- Adjusted the NL translation word for `any` in the conditional rules feature.
+- Fixed a bug where incorrectly including a twig file in the Success Template Directory path would break settings and form builder.
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+- Fixed a bug where credit card numbers were not showing up in Stripe's payment methods for customer accounts.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
 
 ### Removed
-- **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+- Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
+- Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.32 - 2023-07-24
+
+### Changed
+- Refactored the Freeform lock service to use Yii's cache to prevent performance issues.
+
+## 3.13.31 - 2023-07-11
+
+### Added
+- Added support for mapping to multiple groups/interests in the Mailchimp integration.
+
+## 3.13.30 - 2023-07-04
+
+### Changed
+- Updated the Diagnostics and Craft 4 Preflight pages to still show when the `allowAdminChanges` setting is set to `false`.
+
+### Fixed
+- Fixed a bug that could cause issues when using the JS Honeypot enhancement.
+- Fixed a bug where an erroneous database index existed for email marketing integrations that would sometimes cause an error.
+
+## 3.13.29 - 2023-05-08
+
+### Changed
+- Updated the JS Honeypot Enhancement feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
+
+## 3.13.28 - 2023-04-04
+
+### Fixed
+- Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
+
+## 3.13.27 - 2023-03-23
+
+### Fixed
+- Fixed a bug where the Constant Contact integration could timeout when connecting if there were too many lists.
+
+## 3.13.26 - 2023-03-10
+
+### Changed
+- Addressed some minor Craft 3.8 compatibility issues in the control panel.
+- Improved Dutch (NL) language translations.
+
+## 3.13.25 - 2023-03-01
+
+### Added
+- Added support for `.eps` files in the Freeform file helper validation.
+- Added support for `.webp` files in the Freeform file helper validation.
+
+### Changed
+- Updated the Dutch (NL) translations to include many missing items.
+
+### Fixed
+- Fixed a bug where many items were not translatable in the Freeform control panel.
+- Fixed a bug where using "Database Tables" for session storage context would result in an error when submitting forms.
+
+## 3.13.24 - 2023-02-14
+
+### Fixed
+- Fixed a bug where the Freeform Form element field type was not sorting form options alphabetically.
+- Fixed a bug where the `freeform_integrations` table's `accessToken` column was not being set to TEXT on fresh installs.
+
+## 3.13.23 - 2023-02-08
+
+### Fixed
+- Fixed a bug where POST Forwarding was not being triggered when approving submissions in the Spam Folder.
+
+## 3.13.22.1 - 2022-12-09
+
+### Fixed
+- Fixed a bug where the `sameSiteCookieValue` fix in 3.13.22 was not compatible with PHP 7.2.x.
+
+## 3.13.22 - 2022-12-06
+
+### Changed
+- Updated to only load reCAPTCHA scripts when form(s) have reCAPTCHA enabled.
+- Updated to support Craft's `sameSiteCookieValue`.
+
+## 3.13.21 - 2022-10-25
+
+### Added
+- Added success events for AJAX forms with `redirect-to-url` behavior.
+
+### Fixed
+- Fixed an error caused by different Craft version API's.
+
+## 3.13.20 - 2022-09-28
+
+### Changed
+- Updated the AJAX response payload to include posted values.
+
+### Fixed
+- Fixed a bug where some field types would not correctly store updates with empty values in multi-page forms.
+- Fixed a bug where users without permissions to Freeform could add Freeform widgets to the Craft dashboard.
+- Fixed a bug where the Diagnostics page could fail on remnants of old plugins.
+- Fixed a bug where the `form` reserved keyword was being allowed for field handles.
+
+## 3.13.19 - 2022-09-12
+
+### Changed
+- Updated the Google Tag Manager event to include the AJAX response.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+- Fixed a bug where non-latin characters were allowed in field handles in the field manager area.
+- Fixed a bug where fetching existing tags for the ActiveCampaign integration was not working correctly.
+- Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
+
+## 3.13.18 - 2022-08-23
+
+### Added
+- Added a new version of the HubSpot API integration to address new Private App token requirement. This is a required change for any existing HubSpot users.
+
+### Fixed
+- Fixed a bug where non-latin characters were being allowed in field and form handles.
+- Fixed a bug where attempting to view a related Freeform submission element in the slideout in another element could error.
+- Fixed a bug where multiple instances of the same form are added when moving the form instance around the DOM.
+
+## 3.13.17 - 2022-08-05
+
+### Fixed
+- Fixed a bug where the amCharts library was not using a local copy for its scripts in the CP.
+- Fixed a bug where there was a warning about failing to load a source map in the CP.
+- Fixed a bug where incorrectly including a twig file in the Success Template Directory path would break settings and form builder.
+- Fixed a bug where some upgrades could encounter an error about the Export Notifications database table.
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+- Fixed a bug where credit card numbers were not showing up in Stripe's payment methods for customer accounts.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
 
 ## 3.13.16 - 2022-07-25
 
@@ -724,13 +1125,13 @@
 - Fixed a bug where session data could sometimes not be written when no custom attributes were passed.
 - Fixed a bug where empty required File Upload fields could sometimes not show an error/halt the form.
 - Fixed a bug where creating new fields in the Field Manager would not show a clear error about a field handle already existing.
-- Fixed a bug where an error could sometimes be incorrectly logged for the MailChimp integration.
+- Fixed a bug where an error could sometimes be incorrectly logged for the Mailchimp integration.
 
 ## 3.10.8 - 2021-02-16
 
 ### Added
 - Added ability to include Twig in the Admin Recipients email textarea in the form builder (for more complex conditional notifications).
-- Added the possibility to re-subscribe people to MailChimp.
+- Added the possibility to re-subscribe people to Mailchimp.
 - Added customization options for the form auto-scroll feature (to account for floating navigation, etc).
 
 ### Fixed
@@ -754,7 +1155,7 @@
 ## 3.10.5 - 2021-02-02
 
 ### Added
-- Added support for Birthday field types in the MailChimp mailing list integration.
+- Added support for Birthday field types in the Mailchimp mailing list integration.
 
 ### Fixed
 - Fixed a bug where adding the sample formatting template through the CP was not working correctly.
@@ -835,7 +1236,7 @@
 - Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
 - Fixed autocomplete not being turned off on datepicker enabled fields.
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
-- Fixed a bug where the MailChimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
+- Fixed a bug where the Mailchimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
 - Fixed a bug where the Weekly Digest and Email Alert email notifications were not respecting the "testToEmailAddress" config setting.
 - Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
 - Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
@@ -1068,7 +1469,7 @@
 - Fixed a bug where the SharpSpring CRM integration was not working correctly for mapping to custom fields.
 - Fixed a bug where removing a Payments setup from a form would not remove all traces and error on the front end when submitting the form.
 - Fixed a bug where clicking on Form filters in the Submissions index page would not update the URL to contain the handle.
-- Fixed a bug where the MailChimp mailing list integration Contact Tags were not being updated when submitting a submission.
+- Fixed a bug where the Mailchimp mailing list integration Contact Tags were not being updated when submitting a submission.
 
 ## 3.6.12 - 2020-06-11
 
@@ -1110,8 +1511,8 @@
 
 ### Added
 - Added Pardot CRM integration.
-- Added ability to map GDPR consent / marketing settings to MailChimp contacts.
-- Added ability to map Tags to MailChimp contacts.
+- Added ability to map GDPR consent / marketing settings to Mailchimp contacts.
+- Added ability to map Tags to Mailchimp contacts.
 - Added AFTER_UPDATE and BEFORE_UPDATE events to the submission save action.
 
 ### Changed
@@ -2001,7 +2402,7 @@
 - Added ability to map submission data to Craft Entries and Users!
 - Added Password fieldtype, meant typically for using with Users connection for registration forms.
 - Added Bootstrap 4 example formatting template (to choose inside Composer).
-- Added support for mapping to website, URL, dropdown, radio, date and zip fields in MailChimp integration.
+- Added support for mapping to website, URL, dropdown, radio, date and zip fields in Mailchimp integration.
 - Added `fieldIdPrefix` parameter to `freeform.form` function to set a prefix value on field output. Helpful if you have more than 1 form on the same template and are sharing fields.
 
 ### Changed
@@ -2288,7 +2689,7 @@
 ## 2.0.0-beta.6 - 2018-02-02
 
 ### Added
-- Added a 'Use Double Opt-in?' setting for MailChimp integrations.
+- Added a 'Use Double Opt-in?' setting for Mailchimp integrations.
 - Added `onBeforeSubmit` and `onAfterSubmit` events.
 - Added an optional `renderSingleInput` method to render single Checkbox fields' input without an additional hidden input.
 

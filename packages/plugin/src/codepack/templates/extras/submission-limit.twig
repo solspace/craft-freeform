@@ -7,7 +7,7 @@
 
 {% block content %}
 
-    {% set form = craft.freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
+    {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <div class="freeform-page-heading">
         <h2>Setting Submission Limits</h2>
@@ -20,7 +20,7 @@
         {% set submissionLimit = 10 %}
         
         {# This optional conditional checks if the form has reached its submission limit set above #}
-        {% if craft.freeform.submissionCount(form) >= submissionLimit %}
+        {% if freeform.submissionCount(form) >= submissionLimit %}
 
             <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <h4>{{ "Submission Limit Reached!" }}</h4>
@@ -33,7 +33,7 @@
 
             <div class="freeform-notice{{ colorMode == "dark" ? " freeform-notice-dark" }}">
                 <p>
-                    This form has a limit of {{ submissionLimit }} submissions. There are currently {{ craft.freeform.submissionCount(form) }} submissions for this form.
+                    This form has a limit of {{ submissionLimit }} submissions. There are currently {{ freeform.submissionCount(form) }} submissions for this form.
                 </p>
             </div>
 

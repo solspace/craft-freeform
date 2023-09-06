@@ -15,8 +15,8 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
+use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
 use yii\filters\Cors;
@@ -48,29 +48,21 @@ class SubmitController extends BaseController
         }
 
         $requestHandled = $form->handleRequest($request);
-        $formsService = $this->getFormsService();
         $submissionsService = $this->getSubmissionsService();
         if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
             $submissionsService->handleSubmission($form);
-
-            $returnUrl = $formsService->getReturnUrl($form);
 
             $form->reset();
             $form->persistState();
 
             if ($isAjaxRequest) {
-                return $this->toAjaxResponse($form, $returnUrl);
+                return $this->toAjaxResponse($form);
             }
 
-            $behavior = $form->getSettings()->getBehavior();
+            $event = new SubmitResponseEvent($form, $this->response);
+            Event::trigger(Form::class, Form::EVENT_ON_SUBMIT_RESPONSE, $event);
 
-            if (BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $behavior->successBehavior) {
-                if ($behavior->successTemplate) {
-                    return $this->redirect($request->getUrl());
-                }
-            }
-
-            return $this->redirect($returnUrl);
+            return $event->getResponse();
         }
 
         $form->persistState();
@@ -116,9 +108,10 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function toAjaxResponse(Form $form, string $returnUrl = null): Response
+    private function toAjaxResponse(Form $form): Response
     {
         $submission = $form->getSubmission();
+        $returnUrl = $this->getFormsService()->getReturnUrl($form);
 
         $fieldErrors = [];
         foreach ($form->getLayout()->getFields() as $field) {
@@ -138,20 +131,20 @@ class SubmitController extends BaseController
 
         $payload = [
             'success' => $success,
-            'hash' => $form->getHash(),
-            'multipage' => $form->isMultiPage(),
             'finished' => $form->isFinished(),
-            'submissionId' => $submission->id ?? null,
-            'submissionToken' => $submission->token ?? null,
-            'duplicate' => $form->isDuplicate(),
             'onSuccess' => $form->getSettings()->getBehavior()->successBehavior,
-            'returnUrl' => $returnUrl,
-            'html' => $form->render(),
             'id' => $submission->getId(),
-            'actions' => $form->getActions(),
+            'hash' => $form->getHash(),
+            'values' => $postedValues,
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),
-            'values' => $postedValues,
+            'returnUrl' => $returnUrl,
+            'submissionId' => $submission->id ?? null,
+            'submissionToken' => $submission->token ?? null,
+            'html' => $form->render(),
+            'actions' => $form->getActions(),
+            'multipage' => $form->isMultiPage(),
+            'duplicate' => $form->isDuplicate(),
         ];
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

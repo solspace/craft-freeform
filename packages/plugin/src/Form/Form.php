@@ -74,6 +74,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     public const EVENT_SET_PROPERTIES = 'set-properties';
     public const EVENT_SUBMIT = 'submit';
+    public const EVENT_ON_SUBMIT_RESPONSE = 'on-submit-response';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
     public const EVENT_AFTER_VALIDATE = 'after-validate';

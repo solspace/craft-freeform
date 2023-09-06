@@ -22,14 +22,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      # Add .npmrc with Font Awesome Pro token
       - name: Set up Font Awesome Pro
         run: |
           echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
           echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" >> .npmrc
-
-      - name: debug .npmrc setup
-        run: cat .npmrc
 
       - name: npm ci
         run: npm ci
@@ -56,7 +52,14 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-      - run: npm ci
+      - name: Set up Font Awesome Pro
+        run: |
+          echo "@fortawesome:registry=https://npm.fontawesome.com/" >> .npmrc
+          echo "//npm.fontawesome.com/:_authToken=${{ secrets.FONTAWESOME_NPM_AUTH_TOKEN }}" >> .npmrc
+
+      - name: npm ci
+        run: npm ci
+
       - name: npm test
         run: |
           cd packages/client

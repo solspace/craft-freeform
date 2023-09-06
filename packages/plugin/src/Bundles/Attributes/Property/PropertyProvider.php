@@ -2,10 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Attributes\Property;
 
+use Carbon\Carbon;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataConfiguration;
+use Solspace\Freeform\Attributes\Property\Input\DatePicker;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
@@ -104,6 +106,7 @@ class PropertyProvider
             $this->processValidators($property, $attribute);
             $this->processMiddleware($property, $attribute);
             $this->processVisibilityFilters($property, $attribute);
+            $this->processDateProperties($attribute);
 
             $value = $property->getDefaultValue() ?? $attribute->value;
             if (null === $referenceObject && $attribute->valueGenerator) {
@@ -283,5 +286,20 @@ class PropertyProvider
     private function processVisibilityFilters(\ReflectionProperty $property, Property $attribute): void
     {
         $attribute->visibilityFilters = AttributeHelper::findAttributes($property, VisibilityFilter::class);
+    }
+
+    private function processDateProperties(Property $attribute): void
+    {
+        if (!$attribute instanceof DatePicker) {
+            return;
+        }
+
+        if ($attribute->minDate) {
+            $attribute->minDate = (new Carbon($attribute->minDate))->toIso8601String();
+        }
+
+        if ($attribute->maxDate) {
+            $attribute->maxDate = (new Carbon($attribute->maxDate))->toIso8601String();
+        }
     }
 }

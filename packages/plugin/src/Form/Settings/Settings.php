@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @mixin GeneralSettings
@@ -14,6 +15,8 @@ class Settings
 {
     private BehaviorSettings $behavior;
     private GeneralSettings $general;
+
+    #[Ignore]
     private PropertyAccessor $accessor;
 
     public function __construct(array $settings = [], PropertyProvider $propertyProvider)

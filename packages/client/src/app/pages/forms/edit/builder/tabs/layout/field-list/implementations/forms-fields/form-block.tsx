@@ -36,7 +36,6 @@ export const FormBlock: React.FC<Props> = ({ form }) => {
   return (
     <FormBlockWrapper className={classes(isOpen && 'open')}>
       <FormTitle onClick={() => setExpanded(!expanded)}>
-        {searchQuery}
         {form.name}
 
         <ExpandedState>

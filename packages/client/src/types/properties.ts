@@ -128,7 +128,11 @@ export type OptionsProperty = BaseProperty<
   PropertyType.Options
 >;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
-export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime>;
+export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
+  dateFormat?: string;
+  minDate?: string;
+  maxDate?: string;
+};
 export type MinMaxProperty = BaseProperty<
   [number, number],
   PropertyType.MinMax

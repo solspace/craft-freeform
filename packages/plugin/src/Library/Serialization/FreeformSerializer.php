@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Serialization;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Solspace\Freeform\Library\Serialization\Normalizers\CarbonNormalizer;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizer;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -26,6 +27,7 @@ class FreeformSerializer extends Serializer
         $normalizers = [
             new IdentificationNormalizer(),
             new CustomNormalizer(),
+            new CarbonNormalizer(),
             new ObjectNormalizer(
                 $classMetadataFactory,
                 $metadataAwareNameConverter,

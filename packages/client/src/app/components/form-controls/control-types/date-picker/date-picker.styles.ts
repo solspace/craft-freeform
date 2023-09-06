@@ -3,6 +3,10 @@ import styled from 'styled-components';
 
 export const DatePickerWrapper = styled.div`
   position: relative;
+
+  .react-datepicker__navigation-icon {
+    top: 4px;
+  }
 `;
 
 export const Icon = styled.div`

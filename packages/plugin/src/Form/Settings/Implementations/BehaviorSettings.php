@@ -3,10 +3,12 @@
 namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\Implementations\Date\DateTimeTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
@@ -135,10 +137,11 @@ class BehaviorSettings extends SettingsNamespace
     public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
+    #[ValueTransformer(DateTimeTransformer::class)]
     #[Input\DatePicker(
         label: 'Stop Submissions After Date',
         instructions: 'Set a date after which this form will no longer accept new submissions.',
         order: 2,
     )]
-    public ?string $stopSubmissionsAfter = null;
+    public ?\DateTime $stopSubmissionsAfter = null;
 }

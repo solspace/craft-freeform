@@ -64,7 +64,7 @@ class CrmService extends AbstractIntegrationService
             }
 
             foreach ($existingRecords as $handle => $record) {
-                if (!\in_array($handle, $usedHandles, true)) {
+                if (!\in_array($handle, $usedHandles)) {
                     $record->delete();
                     unset($existingRecords[$handle]);
                 }

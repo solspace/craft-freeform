@@ -104,12 +104,14 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             unset($mapping['tags']);
         }
 
+        $mapping['email'] = $email;
+
         try {
             $response = $client->post(
                 $this->getEndpoint('/contact/sync'),
                 [
                     'json' => [
-                        'contact' => array_merge(['email' => $email], $mapping),
+                        'contact' => $mapping,
                     ],
                 ],
             );

@@ -74,7 +74,7 @@ class EmailMarketingService extends AbstractIntegrationService
             }
 
             foreach ($existingRecords as $handle => $record) {
-                if (!\in_array($handle, $usedIds, true)) {
+                if (!\in_array($handle, $usedIds)) {
                     $record->delete();
                 }
             }
@@ -139,7 +139,7 @@ class EmailMarketingService extends AbstractIntegrationService
             }
 
             foreach ($existingRecords as $handle => $record) {
-                if (!\in_array($handle, $usedHandles, true)) {
+                if (!\in_array($handle, $usedHandles)) {
                     $record->delete();
                     unset($existingRecords[$handle]);
                 }

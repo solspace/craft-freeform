@@ -75,10 +75,6 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
         $json = json_decode((string) $response->getBody());
 
-        if (!isset($json->fields) || !$json->fields) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
-        }
-
         $fieldList = [];
 
         $fieldList[] = new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, $category, false);
@@ -86,20 +82,22 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
         $fieldList[] = new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category, false);
         $fieldList[] = new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, $category, false);
 
-        foreach ($json->fields as $field) {
-            $type = match ($field->type) {
-                'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
-                'date' => FieldObject::TYPE_DATE,
-                default => FieldObject::TYPE_STRING,
-            };
+        if (isset($json->fields)) {
+            foreach ($json->fields as $field) {
+                $type = match ($field->type) {
+                    'dropdown', 'multiselect', 'checkbox', 'listbox' => FieldObject::TYPE_ARRAY,
+                    'date' => FieldObject::TYPE_DATE,
+                    default => FieldObject::TYPE_STRING,
+                };
 
-            $fieldList[] = new FieldObject(
-                $field->id,
-                $field->title,
-                $type,
-                $category,
-                (bool) $field->isrequired,
-            );
+                $fieldList[] = new FieldObject(
+                    $field->id,
+                    $field->title,
+                    $type,
+                    $category,
+                    (bool) $field->isrequired,
+                );
+            }
         }
 
         return $fieldList;

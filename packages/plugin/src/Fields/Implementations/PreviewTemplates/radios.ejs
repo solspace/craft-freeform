@@ -1,6 +1,13 @@
+<style>
+    .options-one-line {
+        display: inline-block;
+        margin-right: 10px;
+    }
+</style>
+
 <% generatedOptions.forEach(function(option) { %>
 
-    <% if (oneLine) { %><span><% } else { %><div><% } %>
+    <% if (oneLine) { %><span class="options-one-line"><% } else { %><div><% } %>
 
         <input type="radio"
                class="radio"
@@ -8,6 +15,6 @@
         />
         <label for=""><%= option.label %></label>
 
-    <% if (oneLine) { %><span><% } else { %></div><% } %>
+    <% if (oneLine) { %></span><% } else { %></div><% } %>
 
 <% }) %>

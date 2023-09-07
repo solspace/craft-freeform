@@ -9,8 +9,7 @@ import General from './Steps/General/General';
 import Reliability from './Steps/Reliability/Reliability';
 import Spam from './Steps/Spam/Spam';
 import Welcome from './Steps/Welcome/Welcome';
-
-const duration = 500;
+import { useSprings } from 'react-spring';
 
 const App: React.FC = () => {
   const [step, setStep] = useState(0);
@@ -90,26 +89,30 @@ const App: React.FC = () => {
         disabled: !finalized,
         cta: true,
         onClick: (): void => {
-          window.location.href = generateUrl('/dashboard');
+          window.location.href = generateUrl('/forms');
         },
       },
     ],
   ];
 
+  const springs = useSprings(
+    views.length,
+    views.map((_, i) => ({
+      x: i === step ? 0 : -200,
+      opacity: i === step ? 1 : 0,
+      config: {
+        tension: 200,
+      },
+    }))
+  );
+
   return (
     <Wrapper>
       <StepContainer height={containerHeight}>
         {views.map((view, idx) => (
-          <CSSTransition
-            unmountOnExit
-            appear={idx === 0}
-            in={step === idx}
-            key={idx}
-            timeout={duration}
-            classNames="animation"
-          >
-            <Step>{view}</Step>
-          </CSSTransition>
+          <Step key={idx} style={springs[idx]}>
+            {view}
+          </Step>
         ))}
       </StepContainer>
 

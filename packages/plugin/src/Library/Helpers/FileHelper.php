@@ -250,8 +250,6 @@ class FileHelper
      * null - if the mime type is unknown
      * string - file extension based on the mime type provided
      *
-     * @param string $mimeType
-     *
      * @return null|bool|string
      */
     public static function getExtensionByMimeType(string $mimeType = null)

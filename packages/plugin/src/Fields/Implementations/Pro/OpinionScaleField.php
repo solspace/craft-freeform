@@ -14,7 +14,6 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
-use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
 
 #[Type(
     name: 'Opinion Scale',

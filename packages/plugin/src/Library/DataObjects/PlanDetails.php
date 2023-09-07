@@ -34,8 +34,6 @@ class PlanDetails
 
     /**
      * PaymentDetails constructor.
-     *
-     * @param string $name
      */
     public function __construct(
         string $name = null,

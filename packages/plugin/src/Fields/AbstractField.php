@@ -120,7 +120,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     private ?FieldAttributesCollection $compiledAttributes = null;
 
     public function __construct(
-        #[Ignore] private Form $form
+        #[Ignore]
+        private Form $form
     ) {
         $this->attributes = new FieldAttributesCollection();
         $this->parameters = new Parameters();

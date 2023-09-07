@@ -25,7 +25,7 @@ export const NotificationItem: React.FC<Props> = ({
     >
       {icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
       <Name>{name}</Name>
-      <Status enabled={enabled} className={classes('status-dot')} />
+      <Status $enabled={enabled} className={classes('status-dot')} />
     </Link>
   );
 };

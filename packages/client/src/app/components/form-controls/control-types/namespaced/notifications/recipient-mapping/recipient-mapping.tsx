@@ -1,15 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Control } from '@components/form-controls/control';
-import type { Option } from '@components/form-controls/control-types/options/options.types';
-import { Source } from '@components/form-controls/control-types/options/options.types';
 import type { ControlType } from '@components/form-controls/types';
+import { useFieldOptions } from '@components/options/use-field-options';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Notification } from '@ff-client/types/notifications';
 import { RecipientMapping } from '@ff-client/types/notifications';
-import type { RecipientMappingProperty } from '@ff-client/types/properties';
-import { PropertyType } from '@ff-client/types/properties';
+import type {
+  Option,
+  RecipientMappingProperty,
+} from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -24,19 +25,7 @@ const RecipientMapping: React.FC<
   const field = useSelector(fieldSelectors.one(fieldUid));
   const fieldType = useFieldType(field?.typeClass);
 
-  const optionsProperty = fieldType?.properties?.find(
-    (property) => property.type === PropertyType.Options
-  );
-
-  let options: Option[] = [];
-  if (optionsProperty) {
-    const properties = field.properties[optionsProperty.handle];
-    if (properties.source === Source.Custom) {
-      options = (properties.options as Option[]).filter(
-        (option) => option.value !== ''
-      );
-    }
-  }
+  const [generatedOptions] = useFieldOptions(field, fieldType);
 
   const findMapping = (entryValue: string): RecipientMapping | undefined => {
     return value?.find((mapping) => mapping.value === entryValue);
@@ -45,20 +34,26 @@ const RecipientMapping: React.FC<
   return (
     <Control property={property} errors={errors}>
       <RecipientMappingWrapper>
-        {!!optionsProperty &&
-          options.map((option, idx) => (
-            <MappingOption
-              key={idx}
-              option={option}
-              mapping={findMapping(option.value)}
-              allMappings={value}
-              updateValue={updateValue}
-            />
-          ))}
+        {!!generatedOptions &&
+          generatedOptions
+            .filter((option) => 'value' in option)
+            .map((option: Option, idx) => (
+              <MappingOption
+                key={idx}
+                option={option}
+                mapping={findMapping(option.value)}
+                allMappings={value}
+                updateValue={updateValue}
+              />
+            ))}
 
         {!!value &&
           value.map((mapping, idx) => {
-            if (options.find((option) => option.value === mapping.value)) {
+            if (
+              generatedOptions.find(
+                (option: Option) => option?.value === mapping.value
+              )
+            ) {
               return null;
             }
 

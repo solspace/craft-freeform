@@ -1,9 +1,20 @@
+<style>
+    .options-one-line {
+        display: inline-block;
+        margin-right: 10px;
+    }
+</style>
+
 <% generatedOptions.forEach(function(option) { %>
-    <div>
+
+    <% if (oneLine) { %><span class="options-one-line"><% } else { %><div><% } %>
+
         <input type="radio"
                class="radio"
                <% if (option.value === defaultValue) { %>checked="checked"<% } %>
         />
         <label for=""><%= option.label %></label>
-    </div>
+
+    <% if (oneLine) { %></span><% } else { %></div><% } %>
+
 <% }) %>

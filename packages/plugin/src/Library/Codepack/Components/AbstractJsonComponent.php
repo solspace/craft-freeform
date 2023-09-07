@@ -50,8 +50,6 @@ abstract class AbstractJsonComponent implements ComponentInterface
 
     /**
      * Calls the installation of this component.
-     *
-     * @param string $prefix
      */
     abstract public function install(string $prefix = null);
 

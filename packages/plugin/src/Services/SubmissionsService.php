@@ -334,8 +334,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     /**
      * Removes all old submissions according to the submission age set in settings.
      *
-     * @param int $age
-     *
      * @return array [submissions purged, assets purged]
      */
     public function purgeSubmissions(int $age = null): array

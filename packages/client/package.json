@@ -22,9 +22,6 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.4.2",
-    "@fortawesome/pro-regular-svg-icons": "^6.4.2",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@monaco-editor/react": "^4.5.2",
     "@reduxjs/toolkit": "^1.9.5",
     "@tanstack/react-query": "^4.33.0",

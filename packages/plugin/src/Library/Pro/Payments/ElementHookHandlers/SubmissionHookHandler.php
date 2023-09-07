@@ -140,8 +140,6 @@ class SubmissionHookHandler
 
     /**
      * Returns html for submission payments column.
-     *
-     * @param PaymentInterface $payment
      */
     public static function renderColumn(string $attribute, PaymentInterface $payment = null): string
     {

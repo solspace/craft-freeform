@@ -24,7 +24,6 @@ const General: React.FC = () => {
   const canInsertPointers = settingDefaults.general.canInsertPointers;
 
   const defaultViewOptions: Options<DefaultView> = [
-    { value: DefaultView.Dashboard, label: 'Dashboard' },
     { value: DefaultView.Forms, label: 'Forms' },
     { value: DefaultView.Submissions, label: 'Submissions' },
   ];

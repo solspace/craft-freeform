@@ -315,7 +315,7 @@ class Settings extends Model
         $this->allowFileTemplateEdit = true;
         $this->emailTemplateDirectory = null;
         $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
-        $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
+        $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
 
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;

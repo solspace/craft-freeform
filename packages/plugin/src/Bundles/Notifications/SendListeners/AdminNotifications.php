@@ -1,15 +1,15 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
+namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use yii\base\Event;
 
-class DynamicRecipients extends FeatureBundle
+class AdminNotifications extends FeatureBundle
 {
     public function __construct(private NotificationsProvider $notificationsProvider)
     {
@@ -21,29 +21,18 @@ class DynamicRecipients extends FeatureBundle
         $form = $event->getForm();
         $suppressors = $form->getSuppressors();
 
-        if ($suppressors->isDynamicRecipients()) {
+        if ($suppressors->isAdminNotifications()) {
             return;
         }
 
-        $notifications = $this->notificationsProvider->getByFormAndClass($form, Dynamic::class);
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, Admin::class);
 
         $submission = $event->getSubmission();
         $fields = $event->getFields();
 
         foreach ($notifications as $notification) {
-            $fieldHandle = $notification->getField()?->getHandle();
-            if (!$fieldHandle) {
-                continue;
-            }
-
-            $value = $form->get($fieldHandle)->getValue();
-
-            $recipients = $notification->getRecipientsFromValue($value);
-            $template = $notification->getTemplateFromValue($value);
-
-            if (!$recipients->emailsToArray() || !$template) {
-                continue;
-            }
+            $recipients = $notification->getRecipients();
+            $template = $notification->getTemplate();
 
             $event
                 ->getMailer()

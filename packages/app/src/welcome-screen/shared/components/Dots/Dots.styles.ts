@@ -9,8 +9,12 @@ export const Wrapper = styled.div`
   margin: 20px 0;
 `;
 
+interface DotProps {
+  $position?: number;
+}
+
 const radius = 6;
-export const Dot = styled.div`
+export const Dot = styled.div<DotProps>`
   width: ${radius}px;
   height: ${radius}px;
 
@@ -22,15 +26,11 @@ export const Dot = styled.div`
   background: #e8ebee;
 `;
 
-interface ActiveProps {
-  position: number;
-}
-
 export const ActiveDot = styled(Dot)`
   position: absolute;
 
   background: #909caf;
 
   transition: all 200ms ${easings.out.quart};
-  left: ${({ position }: ActiveProps): number => position * 26}px;
+  left: ${({ $position }): number => $position * 26}px;
 `;

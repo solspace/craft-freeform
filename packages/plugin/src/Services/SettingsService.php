@@ -88,7 +88,7 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->fieldDisplayOrder;
     }
 
-    public function getFormTemplateDirectory(): string
+    public function getFormTemplateDirectory(): ?string
     {
         return $this->getSettingsModel()->getAbsoluteFormTemplateDirectory();
     }
@@ -410,8 +410,12 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
     }
 
-    private function getTemplatesIn(string $path): array
+    private function getTemplatesIn(?string $path): array
     {
+        if (!$path || !is_dir($path)) {
+            return [];
+        }
+
         $templates = [];
 
         $fileIterator = (new Finder())

@@ -18,7 +18,7 @@ const Dots: React.FC<Props> = ({ count, step }) => {
 
   return (
     <Wrapper>
-      <ActiveDot position={step} />
+      <ActiveDot $position={step} />
       {renderRows()}
     </Wrapper>
   );

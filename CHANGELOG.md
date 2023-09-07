@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.2 - 2023-09-07
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Fixed
+- Fixed a bug where the Success Behavior of forms was not working correctly with non-AJAX forms.
+- Fixed an issue where fresh installs would encounter an error about the Formatting Template directory not being set.
+- Fixed a bug where fields using Elements or Predefined options in the User Select email notifications feature were not populating values in the list for recipient mapping.
+- Fixed a visual issue where fields set to show on a single line were not showing that way in the form builder.
+- Fixed a visual issue with searching for fields across forms in the builder.
+- Fixed a bug where the New Form modal was not correctly using the default formatting template.
+- Fixed a bug where the "Stop Submissions After Date" setting was not working correctly.
+- Fixed a bug where the ActiveCampaign integrations were not correctly mapped to Contact fields.
+
 ## 5.0.0-beta.1 - 2023-09-06
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.

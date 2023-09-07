@@ -1,9 +1,13 @@
 <% generatedOptions.forEach(function(option) { %>
-    <div>
+
+    <% if (oneLine) { %><span><% } else { %><div><% } %>
+
         <input type="checkbox"
                class="checkbox"
                <% if (defaultValue.includes(option.value)) { %>checked="checked"<% } %>
         />
         <label for=""><%= option.label %></label>
-    </div>
+
+    <% if (oneLine) { %><span><% } else { %></div><% } %>
+
 <% }) %>

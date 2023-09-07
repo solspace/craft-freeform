@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 4.1.7 - Unreleased
+
+### Added
+- Added support for `.stl` files in the Freeform file helper validation.
+
+### Changed
+- Updated the Pipedrive Leads integration to use the new Notes endpoint.
+
+### Fixed
+- Fixed a bug where not all Stripe validation errors were accounted for and could cause the form to break.
+- Fixed a bug where CRM integration errors were sometimes too long to be logged in Freeform. Updated the column size to resolve this.
+
 ## 4.1.6 - 2023-07-20
 
 ### Added

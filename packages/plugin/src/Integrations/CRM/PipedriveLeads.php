@@ -46,7 +46,7 @@ class PipedriveLeads extends AbstractPipedriveIntegration
             }
 
             if ($this->getUserId()) {
-                $fields['owner_id'] = $this->getUserId();
+                $leadFields['owner_id'] = $this->getUserId();
             }
 
             $value = new \stdClass();
@@ -55,6 +55,9 @@ class PipedriveLeads extends AbstractPipedriveIntegration
 
             unset($leadFields['currency']);
             $leadFields['value'] = $value->amount ? $value : null;
+
+            $note = $leadFields['note'];
+            unset($leadFields['note']);
 
             $response = $client->post(
                 $this->getEndpoint('/leads'),
@@ -66,6 +69,7 @@ class PipedriveLeads extends AbstractPipedriveIntegration
 
             $this->getHandler()->onAfterResponse($this, $response);
 
+            $this->addNote('lead', $leadId, $note ?? null);
             $this->addNote('org', $orgId, $keyValueList['note___org'] ?? null);
             $this->addNote('person', $personId, $keyValueList['note___prsn'] ?? null);
         } catch (RequestException $e) {

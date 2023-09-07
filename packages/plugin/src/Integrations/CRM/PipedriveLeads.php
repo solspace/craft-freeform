@@ -56,6 +56,9 @@ class PipedriveLeads extends AbstractPipedriveIntegration
             unset($leadFields['currency']);
             $leadFields['value'] = $value->amount ? $value : null;
 
+            $note = $leadFields['note'];
+            unset($leadFields['note']);
+
             $response = $client->post(
                 $this->getEndpoint('/leads'),
                 ['json' => $leadFields]
@@ -66,6 +69,7 @@ class PipedriveLeads extends AbstractPipedriveIntegration
 
             $this->getHandler()->onAfterResponse($this, $response);
 
+            $this->addNote('lead', $leadId, $note ?? null);
             $this->addNote('org', $orgId, $keyValueList['note___org'] ?? null);
             $this->addNote('person', $personId, $keyValueList['note___prsn'] ?? null);
         } catch (RequestException $e) {

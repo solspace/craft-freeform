@@ -14,14 +14,20 @@ class DefaultTemplateGenerator implements ValueGeneratorInterface
 
     public function generateValue(Property $property, string $class, ?object $referenceObject): ?string
     {
-        $base = $this->settingsService->getSolspaceFormTemplates();
-        if (\count($base)) {
-            return $base[0]->getFileName();
-        }
+        $defaultTemplate = $this->settingsService->getSettingsModel()->formattingTemplate;
 
         $custom = $this->settingsService->getCustomFormTemplates();
-        if (\count($custom)) {
-            return $custom[0]->getFileName();
+        foreach ($custom as $template) {
+            if ($template->getFileName() === $defaultTemplate) {
+                return $defaultTemplate;
+            }
+        }
+
+        $base = $this->settingsService->getSolspaceFormTemplates();
+        foreach ($base as $template) {
+            if ($template->getFileName() === $defaultTemplate) {
+                return $defaultTemplate;
+            }
         }
 
         return null;

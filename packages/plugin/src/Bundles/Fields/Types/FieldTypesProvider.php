@@ -60,7 +60,7 @@ class FieldTypesProvider
                         null,
                         'Configuration',
                         file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
-                        0
+                        1
                     ),
                     ...$list,
                 ];

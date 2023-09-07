@@ -61,9 +61,7 @@
     {% else %}
         <div class="zilch">
             {% if providers|length == 0 %}
-                <a href="{{ cpUrl("plugin-store/freeform") }}">
-                    {{ "Upgrade to the Pro edition of Freeform to get access to integrations."|t('freeform') }}
-                </a>
+                {{ "Upgrade to the Pro edition of Freeform to get access to integrations."|t('freeform') }}
             {% else %}
                 {{ "No integrations exist yet."|t("freeform") }}
             {% endif %}

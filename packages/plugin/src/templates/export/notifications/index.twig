@@ -5,7 +5,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+    {% if craft.freeform.pro and currentUser.can("freeform-pro-exportProfilesManage") %}
 
         <div class="buttons">
             <a class="btn submit add icon" href="{{ url('freeform/export/notifications/new') }}">
@@ -91,7 +91,11 @@
 
         {% else %}
             <div class="zilch">
-                {{ "No export notifications exist yet."|t("freeform") }}
+                {% if craft.freeform.pro %}
+                    {{ "No export notifications exist yet."|t("freeform") }}
+                {% else %}
+                    {{ "Upgrade to the Pro edition of Freeform to get access to Export notifications."|t('freeform') }}
+                {% endif %}
             </div>
         {% endif %}
 

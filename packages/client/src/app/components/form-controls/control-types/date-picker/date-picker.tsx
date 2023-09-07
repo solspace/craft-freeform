@@ -2,14 +2,12 @@ import React from 'react';
 import DatePicker from 'react-datepicker';
 import type { DateTimeProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
-import { faCalendar } from '@fortawesome/pro-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { formatISO, parseISO } from 'date-fns';
 
 import { Control } from '../../control';
 import type { ControlType } from '../../types';
 
-import { DatePickerWrapper, Icon } from './date-picker.styles';
+import { DatePickerWrapper } from './date-picker.styles';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -32,9 +30,6 @@ const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
   return (
     <Control property={property} errors={errors}>
       <DatePickerWrapper>
-        <Icon>
-          <FontAwesomeIcon icon={faCalendar} />
-        </Icon>
         <DatePicker
           id={property.handle}
           minDate={min}

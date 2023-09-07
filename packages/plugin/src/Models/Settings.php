@@ -564,8 +564,6 @@ class Settings extends Model
     /**
      * Takes a comma or newline (or both) separated string
      * and returns a cleaned up, unique value array.
-     *
-     * @param string $value
      */
     private function getArrayFromDelimitedText(string $value = null): array
     {
@@ -605,9 +603,6 @@ class Settings extends Model
         return preg_match('/^(?:\/|\\\\|\w\:\\\\).*$/', $path);
     }
 
-    /**
-     * @param string $templateDirectoryPath
-     */
     private function getTemplatesInDirectory(string $templateDirectoryPath = null): array
     {
         if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath) || !is_dir($templateDirectoryPath)) {

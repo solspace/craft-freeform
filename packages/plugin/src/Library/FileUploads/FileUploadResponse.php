@@ -22,8 +22,6 @@ class FileUploadResponse
 
     /**
      * FileUploadResponse constructor.
-     *
-     * @param array $assetIds
      */
     public function __construct(array $assetIds = null, array $errors = [])
     {

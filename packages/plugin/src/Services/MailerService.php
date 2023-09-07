@@ -283,7 +283,6 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     /**
      * @param FieldInterface[] $fields
-     * @param Submission       $submission
      */
     private function getFieldValues(FieldCollection $fields, Form $form, Submission $submission = null): array
     {

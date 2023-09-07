@@ -47,7 +47,6 @@ class HashHelper
 
     /**
      * @param mixed $value
-     * @param int   $length
      */
     public static function sha1($value, int $length = null, int $offset = 0): string
     {

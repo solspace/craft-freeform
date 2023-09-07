@@ -20,8 +20,6 @@ class RoutesComponent extends AbstractJsonComponent
 {
     /**
      * Calls the installation of this component.
-     *
-     * @param string $prefix
      */
     public function install(string $prefix = null)
     {

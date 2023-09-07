@@ -45,7 +45,7 @@
     "post-update-cmd": "cghooks update"
   },
   "extra": {
-    "schemaVersion": "4.2.6",
+    "schemaVersion": "4.2.7",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

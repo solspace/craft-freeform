@@ -46,7 +46,7 @@ class PipedriveLeads extends AbstractPipedriveIntegration
             }
 
             if ($this->getUserId()) {
-                $fields['owner_id'] = $this->getUserId();
+                $leadFields['owner_id'] = $this->getUserId();
             }
 
             $value = new \stdClass();

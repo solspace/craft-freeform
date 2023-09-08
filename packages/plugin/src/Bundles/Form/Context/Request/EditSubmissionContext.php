@@ -25,7 +25,7 @@ class EditSubmissionContext
         return $form->getProperties()->get(self::TOKEN_KEY);
     }
 
-    public function skipResetOnEdit(ResetEvent $event)
+    public function skipResetOnEdit(ResetEvent $event): void
     {
         if (!$event->isValid) {
             return;
@@ -37,7 +37,7 @@ class EditSubmissionContext
         }
     }
 
-    public function applySubmissionToForm(FormEventInterface $event)
+    public function applySubmissionToForm(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $token = self::getToken($event->getForm());

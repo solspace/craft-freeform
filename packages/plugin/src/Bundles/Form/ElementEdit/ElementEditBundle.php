@@ -4,19 +4,23 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 use yii\base\Event;
 
 class ElementEditBundle extends FeatureBundle
 {
     public const ELEMENT_KEY = 'elementId';
 
-    public function __construct()
-    {
+    public function __construct(
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {
         Event::on(
             Form::class,
             Form::EVENT_REGISTER_CONTEXT,
@@ -34,71 +38,90 @@ class ElementEditBundle extends FeatureBundle
         return $form->getProperties()->get(self::ELEMENT_KEY);
     }
 
-    public function populateFormWithElementValues(FormEventInterface $event)
+    public function populateFormWithElementValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $elementId = self::getElementId($form);
 
-        if (null === $elementId || !Freeform::getInstance()->isPro()) {
+        if (null === $elementId || !$this->plugin()->isPro()) {
             return;
         }
 
         $form->disableAjaxReset();
 
-        $connectionList = $form->getConnectionProperties()->getList();
-        $connection = reset($connectionList);
+        /** @var ElementIntegration[] $integrations */
+        $integrations = $this->integrationsProvider->getForForm($form, IntegrationInterface::TYPE_ELEMENTS);
+        $integration = reset($integrations);
 
-        if (!$elementId || !$connection) {
+        if (!$elementId || !$integration) {
             return;
         }
 
-        $mapping = $connection->getMapping();
+        $attributeMapping = $integration->getAttributeMapping();
+        $fieldMapping = $integration->getFieldMapping();
+
         $element = \Craft::$app->elements->getElementById($elementId);
         if (!$element) {
             return;
         }
 
-        foreach ($mapping as $elementField => $ffField) {
-            $field = $form->get($ffField);
-            if (!$field) {
+        foreach ($attributeMapping as $item) {
+            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
                 continue;
             }
 
-            $hasPostValue = isset($_POST[$ffField]);
-            if (!$hasPostValue && isset($element->{$elementField})) {
-                $value = $element->{$elementField};
-                if ($value instanceof MultiOptionsFieldData) {
-                    $options = $value->getOptions();
+            $value = $element->{$item->getSource()};
+            $field = $form->get($item->getValue());
 
-                    if ($field instanceof MultiValueInterface) {
-                        $values = [];
-                        foreach ($options as $option) {
-                            if ($option->selected) {
-                                $values[] = $option->value;
-                            }
-                        }
+            $field->setValue($value);
+        }
 
-                        $value = $values;
-                    } else {
-                        $firstOption = reset($options);
-                        if ($firstOption) {
-                            $value = $firstOption->selected ? $firstOption->value : '';
-                        } else {
-                            $value = '';
-                        }
+        $customFields = $element->getFieldLayout()->getCustomFields();
+        foreach ($fieldMapping as $item) {
+            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
+                continue;
+            }
+
+            $craftField = null;
+            foreach ($customFields as $field) {
+                if ((int) $field->id === (int) $item->getSource()) {
+                    $craftField = $field;
+
+                    break;
+                }
+            }
+
+            if (!$craftField) {
+                continue;
+            }
+
+            $value = $element->getFieldValue($craftField->handle);
+            $field = $form->get($item->getValue());
+
+            if ($value instanceof MultiOptionsFieldData) {
+                $options = $value->getOptions();
+
+                $values = [];
+                foreach ($options as $option) {
+                    if ($option->selected) {
+                        $values[] = $option->value;
                     }
                 }
 
-                if ($value instanceof ElementQuery) {
-                    $value = $value->ids();
+                if (!$field instanceof MultiValueInterface) {
+                    $value = implode(', ', $values);
                 }
-
-                if ($field instanceof SingleValueInterface && \is_array($value)) {
-                    $value = reset($value);
-                }
-
-                $field->setValue($value);
             }
+
+            if ($value instanceof ElementQuery) {
+                $value = $value->ids();
+            }
+
+            if (!$field instanceof MultiValueInterface && \is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
+            $field->setValue($value);
         }
     }
 }

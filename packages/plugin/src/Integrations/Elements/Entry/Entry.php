@@ -44,7 +44,7 @@ class Entry extends ElementIntegration
     #[VisibilityFilter('!!values.entryTypeId')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable custom Entry fields',
-        source: 'api/elements/entries/fields',
+        source: 'api/elements/entries/custom-fields',
         parameterFields: ['values.entryTypeId' => 'entryTypeId'],
     )]
     protected ?FieldMapping $fieldMapping = null;
@@ -59,12 +59,12 @@ class Entry extends ElementIntegration
         return $this->entryTypeId;
     }
 
-    public function getAttributeMapping(): FieldMapping
+    public function getAttributeMapping(): ?FieldMapping
     {
         return $this->attributeMapping;
     }
 
-    public function getFieldMapping(): FieldMapping
+    public function getFieldMapping(): ?FieldMapping
     {
         return $this->fieldMapping;
     }

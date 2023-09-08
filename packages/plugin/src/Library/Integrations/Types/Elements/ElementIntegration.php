@@ -49,8 +49,17 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
             $fieldLayout = new FieldLayout();
         }
 
+        $customFields = $fieldLayout->getCustomFields();
         foreach ($mapping as $item) {
-            $craftField = $fieldLayout->getFieldByHandle($item->getSource());
+            $craftField = null;
+            foreach ($customFields as $field) {
+                if ((int) $field->id === (int) $item->getSource()) {
+                    $craftField = $field;
+
+                    break;
+                }
+            }
+
             $freeformField = null;
             if (FieldMapItem::TYPE_RELATION === $item->getType()) {
                 $freeformField = $form->get($item->getValue());
@@ -74,18 +83,11 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
                 $event
             );
 
-            $handle = $key;
-            if (is_numeric($key)) {
-                foreach ($fieldLayout->getCustomFields() as $field) {
-                    if ((int) $field->id === (int) $key) {
-                        $handle = $field->handle;
-
-                        break;
-                    }
-                }
+            if ($craftField) {
+                $element->setFieldValue($craftField->handle, $event->getValue());
+            } else {
+                $element->{$key} = $event->getValue();
             }
-
-            $element->{$handle} = $event->getValue();
         }
     }
 }

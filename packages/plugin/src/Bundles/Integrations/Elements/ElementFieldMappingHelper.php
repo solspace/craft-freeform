@@ -80,6 +80,9 @@ class ElementFieldMappingHelper
 
             /** @var FieldMapping $mapping */
             $mapping = $propertyAccess->getValue($integration, $property->getName());
+            if (!$mapping) {
+                continue;
+            }
 
             foreach ($mapping->sourceToFieldUid() as $source => $uid) {
                 $field = $form->get($uid);

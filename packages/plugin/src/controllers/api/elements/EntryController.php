@@ -24,7 +24,7 @@ class EntryController extends BaseApiController
         ]);
     }
 
-    public function actionFields(): Response
+    public function actionCustomFields(): Response
     {
         $entryTypeId = $this->request->get('entryTypeId');
         if (!$entryTypeId) {
@@ -68,7 +68,7 @@ class EntryController extends BaseApiController
         return $this->asSerializedJson($collection);
     }
 
-    public function actionGetFields(): Response
+    public function actionGetFieldOptions(): Response
     {
         $collection = new OptionCollection();
         $collection

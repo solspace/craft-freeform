@@ -4,6 +4,7 @@ import styled from 'styled-components';
 export const Label = styled.label`
   display: block;
 
+  height: 18px;
   font-weight: bold;
   color: ${colors.gray550};
 

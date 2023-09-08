@@ -94,11 +94,11 @@ class StripeService extends Component
             }
 
             try {
-                $paymentIntent = PaymentIntent::create($paymentIntentProperties);
-
                 $customer = Customer::create($customerData);
 
-                PaymentIntent::update($paymentIntent->id, ['customer' => $customer->id]);
+                $paymentIntentProperties['customer'] = $customer->id;
+
+                $paymentIntent = PaymentIntent::create($paymentIntentProperties);
             } catch (\Stripe\Exception\CardException $e) {
                 $form->addError(Freeform::t($e->getMessage()));
 

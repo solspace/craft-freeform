@@ -10,15 +10,17 @@ export const FieldInfo = styled.div`
   gap: ${spacings.sm};
 
   svg {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     fill: currentColor;
   }
 `;
 
 export const Label = styled.label`
   flex: 1;
+  display: block;
 
+  padding: 1px 0;
   line-height: 12px;
   font-size: 12px;
 

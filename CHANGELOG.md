@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 4.1.7 - Unreleased
+## 4.1.7 - 2023-09-08
 
 ### Added
 - Added support for `.stl` files in the Freeform file helper validation.

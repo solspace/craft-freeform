@@ -29,11 +29,7 @@
             {% for integration in integrations %}
                 <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        {% if craft.freeform.pro %}
-                            <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
-                        {% else %}
-                            {{ integration.name }}
-                        {% endif %}
+                        <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
                     </th>
                     <td data-title="{{ "Handle"|t('freeform') }}" class="code">
                         {{ integration.handle }}

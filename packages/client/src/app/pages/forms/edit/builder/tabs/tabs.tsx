@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import { State } from '@editor/store/slices/context';
@@ -76,9 +77,11 @@ export const Tabs: React.FC = () => {
         >
           <span>{translate('Notifications')}</span>
         </NavLink>
-        <NavLink to="rules">
-          <span>{translate('Rules')}</span>
-        </NavLink>
+        {config.editions.is(Edition.Pro) && (
+          <NavLink to="rules">
+            <span>{translate('Rules')}</span>
+          </NavLink>
+        )}
         <NavLink to="integrations">
           <span>{translate('Integrations')}</span>
         </NavLink>

@@ -4,7 +4,7 @@ import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
 
 import { PropertyEditorWrapper } from './property-editor.styles';
 
-export const EmptyEditor: React.FC = () => {
+export const LoadingEditor: React.FC = () => {
   return (
     <PropertyEditorWrapper>
       <ThemedSkeleton>

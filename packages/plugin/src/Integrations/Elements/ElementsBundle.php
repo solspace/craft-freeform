@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Elements;
 
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Elements\ElementFieldMappingHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
@@ -26,10 +26,6 @@ class ElementsBundle extends FeatureBundle
         private FormIntegrationsProvider $integrationsProvider,
         private ElementFieldMappingHelper $mappingHelper,
     ) {
-        if (!Freeform::getInstance()->isPro()) {
-            return;
-        }
-
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
@@ -47,6 +43,11 @@ class ElementsBundle extends FeatureBundle
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'connect']
         );
+    }
+
+    public static function isProOnly(): bool
+    {
+        return true;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void

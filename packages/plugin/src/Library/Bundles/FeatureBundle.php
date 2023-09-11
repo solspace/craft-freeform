@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Bundles;
 
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 
 abstract class FeatureBundle implements BundleInterface
 {
@@ -19,5 +20,10 @@ abstract class FeatureBundle implements BundleInterface
     protected function plugin(): Freeform
     {
         return Freeform::getInstance();
+    }
+
+    protected function edition(): EditionHelper
+    {
+        return $this->plugin()->edition();
     }
 }

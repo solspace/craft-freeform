@@ -62,6 +62,9 @@ export const integrationsSlice = createSlice({
         integration.dirtyValues = {};
       });
     },
+    emptyIntegrations: (state) => {
+      state.length = 0;
+    },
   },
 });
 

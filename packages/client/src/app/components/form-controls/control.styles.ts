@@ -2,15 +2,14 @@ import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 type LabelProps = {
-  regular?: boolean;
-  required?: boolean;
+  $regular?: boolean;
 };
 
 export const Label = styled.label<LabelProps>`
   display: block;
 
   color: ${colors.gray550};
-  font-weight: ${({ regular }) => (regular ? 'normal' : 'bold')};
+  font-weight: ${({ $regular }) => ($regular ? 'normal' : 'bold')} !important;
 
   &.is-required {
     &:after {
@@ -43,12 +42,18 @@ export const FormField = styled.div`
   display: block;
 `;
 
-export const ControlWrapper = styled.div`
+type ControlWrapperProps = {
+  $width?: number;
+};
+
+export const ControlWrapper = styled.div<ControlWrapperProps>`
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
+
+  width: ${({ $width }) => ($width ? `${$width}%` : '100%')};
 
   &.errors {
     ${Label} {

@@ -12,6 +12,7 @@
       "../../node_modules/@types"
     ],
     "paths": {
+      "@config/*": ["client/config/*"],
       "@editor/*": ["client/src/app/pages/forms/edit/*"],
       "@components/*": ["client/src/app/components/*"],
       "@ff-icons/*": ["client/src/assets/icons/*"],

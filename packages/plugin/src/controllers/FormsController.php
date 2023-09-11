@@ -38,7 +38,14 @@ class FormsController extends BaseController
 
         $this->view->registerAssetBundle(FreeformClientBundle::class);
 
-        return $this->renderTemplate('freeform/forms');
+        return $this->renderTemplate('freeform/forms', [
+            'config' => [
+                'editions' => [
+                    'edition' => Freeform::getInstance()->edition,
+                    'tiers' => Freeform::getInstance()->edition()->getEditions(),
+                ],
+            ],
+        ]);
     }
 
     public function actionResetSpamCounter(): Response

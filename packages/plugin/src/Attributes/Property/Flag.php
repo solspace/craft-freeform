@@ -7,6 +7,8 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Flag implements CustomNormalizerInterface
 {
+    public const PRO = 'pro';
+
     public function __construct(public string $name)
     {
     }

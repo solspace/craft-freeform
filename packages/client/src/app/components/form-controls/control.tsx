@@ -23,10 +23,10 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   errors,
 }) => {
   const { size } = useRenderContext();
-  const { label, handle, required, instructions } = property;
+  const { label, handle, required, instructions, width } = property;
 
   return (
-    <ControlWrapper className={classes(!!errors && 'errors')}>
+    <ControlWrapper className={classes(!!errors && 'errors')} $width={width}>
       <FormLabel
         label={label}
         handle={handle}

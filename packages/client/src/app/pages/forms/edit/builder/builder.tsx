@@ -7,11 +7,9 @@ import { PortalProvider } from './contexts/portal.context';
 import { FormSettings } from './tabs/form-settings/settings';
 import { SettingsEditor } from './tabs/form-settings/settings.editor';
 import { Integrations } from './tabs/integrations/integrations';
-import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/property-editor/empty-editor';
 import { PropertyEditor as IntegrationsEditor } from './tabs/integrations/property-editor/property-editor';
 import { LayoutEditor } from './tabs/layout/layout';
 import { Notifications } from './tabs/notifications/notifications';
-import { EmptyEditor as EmptyNotificationsEditor } from './tabs/notifications/property-editor/empty-editor';
 import { PropertyEditor as NotificationsEditor } from './tabs/notifications/property-editor/property-editor';
 import { RulesEmpty } from './tabs/rules/editor/editor.empty';
 import { FieldRulesEditor } from './tabs/rules/editor/field-editor';
@@ -30,12 +28,10 @@ export const Builder: React.FC = () => {
             <Routes>
               <Route index element={<LayoutEditor />} />
               <Route path="notifications" element={<Notifications />}>
-                <Route index element={<EmptyNotificationsEditor />} />
-                <Route path=":uid" element={<NotificationsEditor />} />
+                <Route path=":uid?" element={<NotificationsEditor />} />
               </Route>
               <Route path="integrations" element={<Integrations />}>
-                <Route index element={<EmptyIntegrationsEditor />} />
-                <Route path=":id/:handle" element={<IntegrationsEditor />} />
+                <Route path=":id?/:handle?" element={<IntegrationsEditor />} />
               </Route>
               <Route path="rules" element={<Rules />}>
                 <Route index element={<RulesEmpty />} />

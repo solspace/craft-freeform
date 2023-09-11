@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Widgets;
 
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use craft\base\Widget;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Dashboard;

@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import type {
   Page,
   PageButton,
@@ -6,6 +7,10 @@ import type {
 } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
+import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import classes from '@ff-client/utils/classes';
+
+import { PageFieldLayoutWrapper } from '../../layout/layout.styles';
 
 import { ButtonGroup, ButtonGroupWrapper } from './page-buttons.styles';
 
@@ -15,6 +20,16 @@ type Props = {
 
 export const PageButtons: React.FC<Props> = ({ page }) => {
   const dispatch = useAppDispatch();
+
+  const {
+    active,
+    type: contextType,
+    uid: contextUid,
+  } = useSelector(contextSelectors.focus);
+
+  const isActive = useMemo(() => {
+    return active && contextType === FocusType.Page && contextUid === page.uid;
+  }, [active, contextType, contextUid, page.uid]);
 
   const layout = page.buttons?.layout || 'save back|submit';
   const groups = layout.split(' ');
@@ -40,8 +55,9 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
   });
 
   return (
-    <div>
+    <PageFieldLayoutWrapper>
       <ButtonGroupWrapper
+        className={classes(isActive && 'active')}
         onClick={() => {
           dispatch(
             contextActions.setFocusedItem({
@@ -61,6 +77,6 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
           </ButtonGroup>
         ))}
       </ButtonGroupWrapper>
-    </div>
+    </PageFieldLayoutWrapper>
   );
 };

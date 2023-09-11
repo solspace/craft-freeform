@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\ButtonTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -40,6 +41,7 @@ class PageButtons
     private Button $back;
 
     #[Section('general')]
+    #[Flag(Flag::PRO)]
     #[ValueTransformer(ButtonTransformer::class)]
     #[Input\Special\PageButton(label: 'Save Button', togglable: true, enabled: false)]
     private Button $save;

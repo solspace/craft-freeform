@@ -19,10 +19,11 @@ export const RefreshButton = styled.button`
 `;
 
 export const MappingWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
   align-items: center;
   gap: ${spacings.sm};
+
+  grid-template-columns: 1.5fr min-content 1fr;
 
   padding: 2px 0;
 

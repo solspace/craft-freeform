@@ -13,8 +13,7 @@ type EditorAnimations = (options: {
     top: number;
     left: number;
     opacity: number;
-    x: number;
-    rotate: number;
+    y: number;
   }>;
 };
 
@@ -24,19 +23,28 @@ export const useEditorAnimations: EditorAnimations = ({
   isEditing,
 }) => {
   const { top, left } = usePosition(wrapper, editor, isEditing);
+  const width = wrapper?.offsetWidth;
 
   const [visible, setVisible] = useState(false);
 
   const editorAnimation = useSpring({
+    immediate: (key) => {
+      if (['top', 'left', 'width', 'pointerEvents'].includes(key)) {
+        return true;
+      }
+
+      return false;
+    },
     to: {
       top,
       left,
+      width,
       opacity: isEditing ? 1 : 0,
-      x: isEditing ? 0 : 20,
-      rotate: isEditing ? 0 : 10,
+      y: isEditing ? 0 : 20,
+      pointerEvents: isEditing ? 'initial' : 'none',
     },
     config: {
-      tension: 700,
+      tension: 500,
     },
   });
 

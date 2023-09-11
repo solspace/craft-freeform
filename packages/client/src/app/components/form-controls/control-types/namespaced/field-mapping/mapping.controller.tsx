@@ -107,7 +107,7 @@ export const FieldMappingController: React.FC<Props> = ({
               {map.type === TargetFieldType.Custom && (
                 <input
                   type="text"
-                  className="text small fullwidth code"
+                  className="text fullwidth code"
                   placeholder="e.g. {{ yourField }} {{ otherField }}"
                   value={map.value}
                   onChange={(event) => {

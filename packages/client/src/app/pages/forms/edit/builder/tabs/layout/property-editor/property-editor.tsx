@@ -40,6 +40,7 @@ export const PropertyEditor: React.FC = () => {
       'save-button',
       'main-tabs',
       'editable-content',
+      'dropdown-rollout',
     ],
   });
 

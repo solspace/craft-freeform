@@ -62,12 +62,12 @@ class User extends ElementIntegration
         return $this->userGroupId;
     }
 
-    public function getAttributeMapping(): FieldMapping
+    public function getAttributeMapping(): ?FieldMapping
     {
         return $this->attributeMapping;
     }
 
-    public function getFieldMapping(): FieldMapping
+    public function getFieldMapping(): ?FieldMapping
     {
         return $this->fieldMapping;
     }

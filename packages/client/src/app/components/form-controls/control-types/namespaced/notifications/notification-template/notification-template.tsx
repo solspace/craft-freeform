@@ -39,7 +39,10 @@ const NotificationTemplate: React.FC<
   const { templates, isFetching, selectedTemplate } =
     useNotificationTemplates(value);
 
-  const editorAnimations = useEditorAnimations(open);
+  const editorAnimations = useEditorAnimations(
+    open,
+    templates?.database?.length + templates?.files?.length
+  );
   const selectionAnimations = useSelectionAnimations(open);
 
   const mutation = useNewNotificationMutation();

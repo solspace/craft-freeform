@@ -4,6 +4,8 @@ import styled from 'styled-components';
 export const Label = styled.label`
   display: block;
 
+  height: 18px;
+  margin-bottom: 4px;
   font-weight: bold;
   color: ${colors.gray550};
 
@@ -19,7 +21,8 @@ export const Label = styled.label`
 `;
 
 export const Instructions = styled.div`
-  padding-bottom: 3px;
+  margin-top: -4px;
+  margin-bottom: 4px;
 
   color: ${colors.gray300};
   font-style: italic;

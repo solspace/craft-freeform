@@ -25,7 +25,7 @@ class EditSubmissionContext
         return $form->getProperties()->get(self::TOKEN_KEY);
     }
 
-    public function skipResetOnEdit(ResetEvent $event)
+    public function skipResetOnEdit(ResetEvent $event): void
     {
         if (!$event->isValid) {
             return;
@@ -37,7 +37,7 @@ class EditSubmissionContext
         }
     }
 
-    public function applySubmissionToForm(FormEventInterface $event)
+    public function applySubmissionToForm(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $token = self::getToken($event->getForm());
@@ -51,7 +51,7 @@ class EditSubmissionContext
         }
 
         $form->disableAjaxReset();
-        foreach ($form->getLayout()->getStorableFields() as $field) {
+        foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             if (isset($submission->{$field->getHandle()})) {
                 $value = $submission->{$field->getHandle()}->getValue();
 

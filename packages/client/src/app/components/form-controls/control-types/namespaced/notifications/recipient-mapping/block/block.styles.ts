@@ -6,5 +6,5 @@ export const BlockWrapper = styled.div`
   align-items: center;
   gap: ${spacings.md};
 
-  grid-template-columns: 1fr 1fr 2fr;
+  grid-template-columns: 1.5fr 1fr 1.5fr;
 `;

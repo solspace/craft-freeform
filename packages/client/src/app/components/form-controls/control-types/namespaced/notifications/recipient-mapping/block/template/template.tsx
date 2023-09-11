@@ -1,5 +1,10 @@
 import React from 'react';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import type { OptionCollection } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
+import FilesIcon from '../../../notification-template/icons/files.svg';
+import DatabaseIcon from '../../../notification-template/icons/files.svg';
 import { useNotificationTemplates } from '../../../notification-template/notification-template.hooks';
 
 import { TemplatesWrapper } from './template.styles';
@@ -17,47 +22,44 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
     return <TemplatesWrapper>loading...</TemplatesWrapper>;
   }
 
+  const options: OptionCollection = [];
+
+  if (templates?.database) {
+    options.push({
+      label: 'Database',
+      icon: <DatabaseIcon />,
+      children: templates.database.map((template) => ({
+        label: template.name,
+        value: template.id as string,
+      })),
+    });
+  }
+
+  if (templates?.files) {
+    options.push({
+      label: 'Files',
+      icon: <FilesIcon />,
+      children: templates.files.map((template) => ({
+        label: template.name,
+        value: template.id as string,
+      })),
+    });
+  }
+
   return (
-    <TemplatesWrapper className="select">
-      <select
-        className="select fullwidth"
-        value={selectedTemplate?.id}
-        onChange={(event) => {
-          let newValue: string | number = event.target.value;
-          if (/^[0-9]+$/.test(newValue)) {
-            newValue = Number(newValue);
+    <TemplatesWrapper>
+      <Dropdown
+        value={selectedTemplate?.id as string}
+        options={options}
+        emptyOption={translate('Use default template')}
+        onChange={(selectedValue) => {
+          if (/^[0-9]+$/.test(selectedValue)) {
+            onChange(Number(selectedValue));
           }
 
-          onChange(newValue);
+          onChange(selectedValue);
         }}
-      >
-        <option value="" label="Use default template" />
-        {!templates?.database && !templates?.files && (
-          <optgroup label="No templates set up" />
-        )}
-        {!!templates?.database && (
-          <optgroup label="Database">
-            {templates.database.map((template) => (
-              <option
-                key={template.id}
-                value={template.id}
-                label={template.name}
-              />
-            ))}
-          </optgroup>
-        )}
-        {!!templates?.files && (
-          <optgroup label="Files">
-            {templates.files.map((template) => (
-              <option
-                key={template.id}
-                value={template.id}
-                label={template.name}
-              />
-            ))}
-          </optgroup>
-        )}
-      </select>
+      />
     </TemplatesWrapper>
   );
 };

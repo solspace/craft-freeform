@@ -13,7 +13,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\StatusRecord;
 use yii\db\Expression;
 
@@ -63,7 +62,7 @@ class ExportProfileModel extends Model
         return $model;
     }
 
-    public function getFormModel(): FormModel
+    public function getForm(): Form
     {
         return Freeform::getInstance()->forms->getFormById($this->formId);
     }
@@ -144,7 +143,7 @@ class ExportProfileModel extends Model
 
     public function getFieldSettings(): array
     {
-        $form = $this->getFormModel()->getForm();
+        $form = $this->getForm();
 
         $storedFieldIds = $fieldSettings = [];
         if (!empty($this->fields)) {
@@ -154,7 +153,7 @@ class ExportProfileModel extends Model
 
                 if (is_numeric($fieldId)) {
                     try {
-                        $field = $form->getLayout()->getFieldById($fieldId);
+                        $field = $form->getLayout()->getField($fieldId);
                         if ($field instanceof CreditCardDetailsField) {
                             continue;
                         }
@@ -263,14 +262,16 @@ class ExportProfileModel extends Model
 
     private function buildCommand(): Query
     {
-        $form = $this->getFormModel()->getForm();
+        $form = $this->getForm();
 
-        $paymentProperties = $form->getPaymentProperties();
-        $hasPaymentSingles = $hasPaymentSubscriptions = false;
-        if ($paymentProperties) {
-            $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
-            $hasPaymentSubscriptions = !$hasPaymentSingles;
-        }
+        // TODO: reimplement when implementing payments
+
+        // $paymentProperties = $form->getPaymentProperties();
+        // $hasPaymentSingles = $hasPaymentSubscriptions = false;
+        // if ($paymentProperties) {
+        //     $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
+        //     $hasPaymentSubscriptions = !$hasPaymentSingles;
+        // }
 
         $fieldData = $this->getFieldSettings();
 
@@ -396,11 +397,13 @@ class ExportProfileModel extends Model
             ->where(implode(' AND ', $conditions), $parameters)
         ;
 
-        if ($hasPaymentSingles) {
-            $command->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
-        } elseif ($hasPaymentSubscriptions) {
-            $command->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
-        }
+        // TODO: reimplement with payments
+
+        // if ($hasPaymentSingles) {
+        //     $command->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
+        // } elseif ($hasPaymentSubscriptions) {
+        //     $command->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
+        // }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

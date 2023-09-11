@@ -27,7 +27,7 @@
 
 {% block content %}
 
-        <input type="hidden" name="action" value="freeform/export-profiles/save">
+        <input type="hidden" name="action" value="freeform/export/profiles/save">
         <input type="hidden" name="formId" value="{{ profile.formId }}">
         {{ redirectInput('freeform/export/profiles') }}
         {% if profile.id %}<input type="hidden" name="profileId" value="{{ profile.id }}">{% endif %}

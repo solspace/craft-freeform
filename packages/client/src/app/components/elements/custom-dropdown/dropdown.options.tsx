@@ -74,7 +74,7 @@ export const Options: React.FC<Props> = ({
               <Label
                 className={classes(children !== undefined && 'has-children')}
               >
-                {selectedValue === value && (
+                {!children && selectedValue === value && (
                   <CheckMark>
                     <CheckIcon />
                   </CheckMark>

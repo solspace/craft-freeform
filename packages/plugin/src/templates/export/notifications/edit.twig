@@ -32,7 +32,7 @@
 
     {% if craft.freeform.pro %}
 
-        <input type="hidden" name="action" value="freeform/export-notifications/save">
+        <input type="hidden" name="action" value="freeform/export/notifications/save">
         {{ redirectInput('freeform/export/notifications') }}
         {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
         {{ csrfInput() }}

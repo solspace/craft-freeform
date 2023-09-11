@@ -37,8 +37,8 @@ class ProfilesController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_MANAGE);
 
-        $formModel = $this->getFormsService()->getFormByHandle($formHandle);
-        if (!$formModel) {
+        $form = $this->getFormsService()->getFormByHandle($formHandle);
+        if (!$form) {
             throw new HttpException(
                 404,
                 Freeform::t('Form with handle {handle} not found'),
@@ -46,7 +46,7 @@ class ProfilesController extends BaseController
             );
         }
 
-        $profile = ExportProfileModel::create($formModel->getForm());
+        $profile = ExportProfileModel::create($form);
 
         return $this->renderEditForm($profile, Freeform::t('Create a new Export Profile'));
     }
@@ -75,14 +75,14 @@ class ProfilesController extends BaseController
         $post = \Craft::$app->request->post();
 
         $formId = \Craft::$app->request->post('formId');
-        $formModel = $this->getFormsService()->getFormById($formId);
+        $form = $this->getFormsService()->getFormById($formId);
 
-        if (!$formModel) {
+        if (!$form) {
             throw new HttpException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));
         }
 
         $profileId = \Craft::$app->request->post('profileId');
-        $profile = $this->getNewOrExistingProfile($profileId, $formModel->getForm());
+        $profile = $this->getNewOrExistingProfile($profileId, $form);
 
         $profile->setAttributes($post);
 
@@ -111,7 +111,7 @@ class ProfilesController extends BaseController
         return $this->renderEditForm($profile, $profile->name);
     }
 
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_MANAGE);
@@ -123,7 +123,7 @@ class ProfilesController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    public function actionExport()
+    public function actionExport(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
 
@@ -138,7 +138,7 @@ class ProfilesController extends BaseController
             throw new HttpException(404, Freeform::t('Profile with ID {id} not found'), ['id' => $profileId]);
         }
 
-        $form = $profile->getFormModel()->getForm();
+        $form = $profile->getForm();
         $data = $profile->getSubmissionData();
 
         $exporter = $this->getExportProfileService()->createExporter($type, $form, $data);
@@ -150,7 +150,7 @@ class ProfilesController extends BaseController
     {
         $this->view->registerAssetBundle(ExportProfileBundle::class);
 
-        $title .= " ({$model->getFormModel()->name})";
+        $title .= " ({$model->getForm()->getName()})";
 
         return $this->renderTemplate(
             'freeform/export/profiles/edit',

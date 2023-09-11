@@ -5,11 +5,14 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import { useEditorAnimations } from '@components/form-controls/preview/previewable-component.animations';
 import SpinnerIcon from '@components/loaders/loading-text/spinner.svg';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+
+import { PopUpPortal } from '../pop-up-portal';
 
 import CloseIcon from './close.svg';
 import {
@@ -49,9 +52,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [focusIndex, setFocusIndex] = useState(0);
 
   const searchRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const containerRef = useClickOutside<HTMLDivElement>({
     callback: () => setOpen(false),
     isEnabled: open,
+    excludeClassNames: ['dropdown-rollout'],
+  });
+
+  const { editorAnimation } = useEditorAnimations({
+    wrapper: containerRef.current,
+    editor: dropdownRef.current,
+    isEditing: open,
   });
 
   const toggleOpen = useCallback(() => {
@@ -135,7 +146,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <DropdownWrapper
       ref={containerRef}
       className={classes(open && 'open')}
-      onClick={() => toggleOpen()}
+      onClick={toggleOpen}
     >
       <CurrentValue className={classes(loading && 'disabled')}>
         <span>{selectedValue}</span>
@@ -146,37 +157,45 @@ export const Dropdown: React.FC<DropdownProps> = ({
           </SpinnerWrapper>
         )}
       </CurrentValue>
-      <DropdownRollout>
-        <CloseButton>
-          <CloseIcon />
-        </CloseButton>
+      <PopUpPortal>
+        {open && (
+          <DropdownRollout
+            className="dropdown-rollout"
+            ref={dropdownRef}
+            style={editorAnimation}
+          >
+            <CloseButton>
+              <CloseIcon />
+            </CloseButton>
 
-        <Search
-          placeholder="Search..."
-          ref={searchRef}
-          value={query}
-          onClick={(event) => event.stopPropagation()}
-          onKeyDown={(event) => {
-            if (event.key === 'Escape') {
-              event.preventDefault();
-              setOpen(false);
-            }
+            <Search
+              placeholder="Search..."
+              ref={searchRef}
+              value={query}
+              onClick={(event) => event.stopPropagation()}
+              onKeyDown={(event) => {
+                if (event.key === 'Escape') {
+                  event.preventDefault();
+                  setOpen(false);
+                }
 
-            if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
-              event.preventDefault();
-            }
-          }}
-          onChange={(event) => setQuery(event.target.value)}
-        />
-        <ListWrapper>
-          <Options
-            options={filteredOptions}
-            value={value}
-            focusIndex={focusIndex}
-            onChange={onOptionClick}
-          />
-        </ListWrapper>
-      </DropdownRollout>
+                if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
+                  event.preventDefault();
+                }
+              }}
+              onChange={(event) => setQuery(event.target.value)}
+            />
+            <ListWrapper>
+              <Options
+                options={filteredOptions}
+                value={value}
+                focusIndex={focusIndex}
+                onChange={onOptionClick}
+              />
+            </ListWrapper>
+          </DropdownRollout>
+        )}
+      </PopUpPortal>
     </DropdownWrapper>
   );
 };

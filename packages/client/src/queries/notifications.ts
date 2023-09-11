@@ -37,16 +37,21 @@ export const useQueryNotificationTypes = (): UseQueryResult<
 };
 
 export const useQueryFormNotifications = (
-  formId: number
+  formId?: number
 ): UseQueryResult<Notification[], AxiosError> => {
   const dispatch = useDispatch();
 
   return useQuery<Notification[], AxiosError>(
     QKNotifications.single(formId),
-    () =>
-      axios
+    () => {
+      if (!formId) {
+        return Promise.resolve([]);
+      }
+
+      return axios
         .get<Notification[]>(`/api/forms/${formId}/notifications`)
-        .then((res) => res.data),
+        .then((res) => res.data);
+    },
     {
       staleTime: Infinity,
       cacheTime: Infinity,

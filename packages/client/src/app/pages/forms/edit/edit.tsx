@@ -11,8 +11,10 @@ import {
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
+import { integrationActions } from './store/slices/integrations';
 import { pageActions } from './store/slices/layout/pages';
 import { rowActions } from './store/slices/layout/rows';
+import { notificationActions } from './store/slices/notifications';
 import { addNewPage } from './store/thunks/pages';
 import { useAppDispatch } from './store';
 
@@ -48,6 +50,8 @@ export const Edit: React.FC = () => {
     dispatch(pageActions.set(pages));
     dispatch(layoutActions.set(layouts));
     dispatch(rowActions.set(rows));
+    dispatch(notificationActions.set([]));
+    dispatch(integrationActions.emptyIntegrations());
 
     if (pages.length === 0) {
       dispatch(addNewPage());

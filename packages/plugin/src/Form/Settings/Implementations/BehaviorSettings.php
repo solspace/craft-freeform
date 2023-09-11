@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Date\DateTimeTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
@@ -128,6 +129,7 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_LIMITS.'.svg',
         order: 3,
     )]
+    #[Flag(Flag::PRO)]
     #[Input\Select(
         label: 'Duplicate Check',
         instructions: 'Select an option for restricting users when submitting this form.',

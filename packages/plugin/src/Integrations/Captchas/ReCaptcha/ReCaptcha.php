@@ -32,17 +32,18 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     public const BEHAVIOR_DISPLAY_ERROR = 'display-error';
     public const BEHAVIOR_SEND_TO_SPAM = 'send-to-spam';
 
+    #[Flag(Flag::PRO)]
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
     #[Input\Select(
         label: 'Captcha Type',
         instructions: 'Choose which reCAPTCHA version and type you want to use.',
         options: [
-            self::VERSION_V3 => 'reCAPTCHA v3',
-            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
             self::VERSION_V2_CHECKBOX => 'reCAPTCHA v2 Checkbox',
+            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
+            self::VERSION_V3 => 'reCAPTCHA v3',
         ],
     )]
-    private string $version = self::VERSION_V3;
+    private string $version = self::VERSION_V2_CHECKBOX;
 
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]

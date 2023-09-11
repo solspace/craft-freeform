@@ -23,6 +23,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
 use yii\di\Container;
@@ -130,7 +131,7 @@ class PropertyProvider
 
             $attribute->value = $value;
             $attribute->section = $section?->handle;
-            $attribute->type ??= $this->processType($property);
+            $attribute->type = $this->processType($property, $attribute);
             $attribute->handle = $property->getName();
             $attribute->label ??= $fallbackLabel;
             $attribute->order ??= $collection->getNextOrder();
@@ -150,8 +151,16 @@ class PropertyProvider
         return new \ReflectionClass($class);
     }
 
-    public function processType(\ReflectionProperty $property): string
+    public function processType(\ReflectionProperty $property, Property $attribute): string
     {
+        if ($attribute->hasFlag(Flag::PRO) && !Freeform::getInstance()->isPro()) {
+            return 'hidden';
+        }
+
+        if ($attribute->type) {
+            return $attribute->type;
+        }
+
         $type = $property->getType();
         if ($type->isBuiltin()) {
             return $type->getName();

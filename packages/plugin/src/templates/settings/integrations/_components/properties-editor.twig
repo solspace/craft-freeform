@@ -64,54 +64,65 @@
                 {% endif %}
 
                 <div class="property-editor" data-class="{{ className }}">
-                    {% for property in type.properties|filter((prop) => not prop.hasFlag('internal', 'instance')) %}
+                    {% for property in type.properties | filter((prop) => not prop.hasFlag('internal', 'instance')) %}
+
                         {% set handle = property.handle %}
                         {% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
+                        {% set inputName = "properties["~className~"]["~property.handle~"]" %}
 
-                        <div class="field">
-                            <script type="application/json" class="visibility-filters">
+                        {# Hide PRO only fields as hidden inputs #}
+                        {% if property.hasFlag('pro') and not freeform.pro %}
+
+                            <input type="hidden" name="{{ inputName }}" value="{{ value }}" />
+
+                        {% else %}
+
+                            <div class="field">
+                                <script type="application/json" class="visibility-filters">
                                 {{- property.visibilityFilters|json_encode|raw -}}
                             </script>
 
-                            {% set options = {
-                                label: property.label|t('freeform'),
-                                instructions: property.instructions|t('freeform'),
-                                class: "property-" ~ property.handle,
-                                name: "properties["~className~"]["~property.handle~"]",
-                                value: value,
-                                required: property.required,
-                                errors: integration.errors(className~property.handle),
-                                suggestEnvVars: true,
-                            } %}
-
-                            {% if property.hasFlag('readonly') %}
-                                {% set options = options|merge({ readonly: true }) %}
-                            {% endif %}
-
-                            {% if property.type == "bool" %}
-
-                                {% set options = options|merge({on: value, value: 1}) %}
-                                {{ forms.lightswitchField(options) }}
-
-                            {% elseif property.type == "textarea" %}
-
-                                {{ forms.textareaField(options|merge({ rows: property.rows })) }}
-
-                            {% elseif property.type == "select" %}
-
-                                {% set opts = property.options ? property.options.toTwigArray() : {} %}
-                                {{ forms.selectField(options|merge({ options: opts })) }}
-
-                            {% else %}
+                                {% set options = {
+                                    label: property.label|t('freeform'),
+                                    instructions: property.instructions|t('freeform'),
+                                    class: "property-" ~ property.handle,
+                                    name: inputName,
+                                    value: value,
+                                    required: property.required,
+                                    errors: integration.errors(className~property.handle),
+                                    suggestEnvVars: true,
+                                } %}
 
                                 {% if property.hasFlag('readonly') %}
-                                    {{ forms.textField(options) }}
-                                {% else %}
-                                    {{ forms.autosuggestField(options) }}
+                                    {% set options = options|merge({ readonly: true }) %}
                                 {% endif %}
 
-                            {% endif %}
-                        </div>
+                                {% if property.type == "bool" %}
+
+                                    {% set options = options|merge({on: value, value: 1}) %}
+                                    {{ forms.lightswitchField(options) }}
+
+                                {% elseif property.type == "textarea" %}
+
+                                    {{ forms.textareaField(options|merge({ rows: property.rows })) }}
+
+                                {% elseif property.type == "select" %}
+
+                                    {% set opts = property.options ? property.options.toTwigArray() : {} %}
+                                    {{ forms.selectField(options|merge({ options: opts })) }}
+
+                                {% else %}
+
+                                    {% if property.hasFlag('readonly') %}
+                                        {{ forms.textField(options) }}
+                                    {% else %}
+                                        {{ forms.autosuggestField(options) }}
+                                    {% endif %}
+
+                                {% endif %}
+                            </div>
+
+                        {% endif %}
 
                     {% endfor %}
                 </div>

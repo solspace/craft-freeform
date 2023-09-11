@@ -34,7 +34,7 @@ export const FormComponent: React.FC<Props> = ({
   context,
   autoFocus = false,
 }) => {
-  const { handle, width, type, visibilityFilters } = property;
+  const { handle, type, visibilityFilters } = property;
   const FormControl = types[type];
 
   const isVisible = useVisibility(
@@ -55,16 +55,14 @@ export const FormComponent: React.FC<Props> = ({
   return (
     <ErrorBoundary message={`...${handle} <${type}>`}>
       <Suspense>
-        <div style={{ width: `${width ? width : 100}%` }}>
-          <FormControl
-            value={value as GenericValue}
-            property={property}
-            updateValue={updateValue}
-            errors={errors}
-            context={context}
-            autoFocus={autoFocus}
-          />
-        </div>
+        <FormControl
+          value={value as GenericValue}
+          property={property}
+          updateValue={updateValue}
+          errors={errors}
+          context={context}
+          autoFocus={autoFocus}
+        />
       </Suspense>
     </ErrorBoundary>
   );

@@ -175,6 +175,11 @@ class FreeformVariable
         return Freeform::getInstance()->isPro();
     }
 
+    public function getEdition(): string
+    {
+        return Freeform::getInstance()->edition;
+    }
+
     public function getVersion(int $marks = null): string
     {
         $version = Freeform::getInstance()->version;

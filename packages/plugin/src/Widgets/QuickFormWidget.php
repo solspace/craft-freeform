@@ -57,14 +57,9 @@ class QuickFormWidget extends Widget
     public function getBodyHtml(): string
     {
         $freeform = Freeform::getInstance();
-        $formModel = $freeform->forms->getFormById($this->formId);
 
-        $form = null;
-        $formCss = null;
-        if ($formModel) {
-            $form = $formModel->getForm();
-            $formCss = $freeform->forms->getFormattingTemplateCss('flexbox');
-        }
+        $form = $freeform->forms->getFormById($this->formId);
+        $formCss = $freeform->forms->getFormattingTemplateCss('flexbox');
 
         $successMessage = 'Form submitted successfully';
         if ($this->successMessage) {

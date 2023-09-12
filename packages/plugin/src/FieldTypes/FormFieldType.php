@@ -12,7 +12,6 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Models\FormModel;
 use yii\db\Schema;
 
 class FormFieldType extends Field
@@ -47,16 +46,12 @@ class FormFieldType extends Field
         $formOptions = ['' => Freeform::t('Select a form')];
 
         foreach ($forms as $form) {
-            if (!\is_array($form) && !$form instanceof FormModel) {
+            if (!\is_array($form) && !$form instanceof Form) {
                 continue;
             }
 
-            if (\is_array($form)) {
-                $form = (object) $form;
-            }
-
-            if (\in_array($form->id, $allowedIds, false)) {
-                $formOptions[(int) $form->id] = $form->name;
+            if (\in_array($form->getId(), $allowedIds)) {
+                $formOptions[(int) $form->getId()] = $form->getName();
             }
         }
 

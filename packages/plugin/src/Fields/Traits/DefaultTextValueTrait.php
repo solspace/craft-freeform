@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Input\Text;
 trait DefaultTextValueTrait
 {
     #[Text(
+        label: 'Default value',
         instructions: 'Enter a default value for this field',
     )]
     protected string $defaultValue = '';

@@ -20,13 +20,13 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
     protected string $customInputType = 'tel';
 
     #[Input\Text(
-        instructions: "Custom phone pattern (e.g. '(000) 000-0000' or '+0 0000 000000'), where '0' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + ath the beginning will be validated.",
+        label: "Pattern validation",
+        instructions: "Use '0' (a digit between 0-9) and other characters, e.g. '(000) 000-0000' or '+0 0000 000000'.",
     )]
     protected ?string $pattern = null;
 
     #[Input\Boolean(
-        label: 'Use JS validation',
-        instructions: 'Enable this to force JS to validate the input on this field based on the pattern.',
+        label: 'Use built-in javascript validation on pattern',
     )]
     protected bool $useJsMask = false;
 

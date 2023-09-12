@@ -23,7 +23,7 @@ export const CustomPreview: React.FC<Props> = ({ value }) => {
   return (
     <PreviewWrapper data-edit={translate('Click to edit data')}>
       <PreviewTable>
-        {!options.length && <NoContent>{translate('No content')}</NoContent>}
+        {!options.length && <NoContent>{translate('Not configured yet')}</NoContent>}
         {options.map((option, index) => (
           <PreviewRow key={index}>
             <PreviewData data-empty={translate('empty')}>

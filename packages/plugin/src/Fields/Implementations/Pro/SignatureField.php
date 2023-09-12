@@ -17,26 +17,42 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 )]
 class SignatureField extends AbstractField implements ExtraFieldInterface
 {
-    #[Input\Integer]
+    #[Input\Integer(
+        label: "Width of Pad",
+        instructions: 'Specify a value in pixels.',
+    )]
     protected int $width = 400;
 
-    #[Input\Integer]
+    #[Input\Integer(
+        label: "Height of Pad",
+        instructions: 'Specify a value in pixels.',
+    )]
     protected int $height = 100;
 
-    #[Input\Boolean]
+    #[Input\Boolean(
+        label: "Show 'Clear' button",
+        instructions: 'Allows user to erase and start over.',
+    )]
     protected bool $showClearButton = true;
 
-    #[Input\ColorPicker]
+    #[Input\ColorPicker(
+        label: "Border color of Pad",
+    )]
     protected string $borderColor = '#999999';
 
-    #[Input\ColorPicker]
+    #[Input\ColorPicker(
+        label: "Background color of Pad",
+    )]
     protected string $backgroundColor = 'rgba(0,0,0,0)';
 
-    #[Input\ColorPicker]
+    #[Input\ColorPicker(
+        label: "Pen color",
+    )]
     protected string $penColor = '#000000';
 
     #[Input\Integer(
-        instructions: 'The size of the dot when drawing.',
+        label: "Pen dot size",
+        instructions: 'The size of the dot when drawing on the pad.',
         step: 0.1,
     )]
     protected float $penDotSize = 2.5;

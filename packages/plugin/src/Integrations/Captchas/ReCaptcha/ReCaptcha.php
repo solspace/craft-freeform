@@ -64,7 +64,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private ?string $secretKey = null;
 
     #[Input\Boolean(
-        label: 'Only load Captcha scripts once the user interacts with the form?',
+        label: 'Only load Captcha scripts once the user interacts with the form',
         instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
     )]
     private bool $triggerOnInteract = false;

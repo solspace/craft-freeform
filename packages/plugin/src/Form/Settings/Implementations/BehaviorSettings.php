@@ -16,6 +16,7 @@ use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerat
 use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorValueGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\AjaxToggleGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 
@@ -39,12 +40,13 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_PROCESSING.'.svg',
         order: 1,
     )]
+    #[ValueGenerator(AjaxToggleGenerator::class)]
     #[Input\Boolean(
         label: 'Use AJAX',
         instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
         order: 1,
     )]
-    public bool $ajax = true;
+    public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
     #[Input\Boolean(

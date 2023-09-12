@@ -44,7 +44,7 @@ class BehaviorSettings extends SettingsNamespace
         instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
         order: 1,
     )]
-    public bool $ajax = false;
+    public bool $ajax = true;
 
     #[Section(self::SECTION_PROCESSING)]
     #[Input\Boolean(

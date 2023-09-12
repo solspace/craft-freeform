@@ -4,20 +4,20 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\SubmissionReCaptchaInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 use Solspace\Freeform\Fields\DataContainers\Option;
 
-class SubmissionReCaptchaType extends AbstractObjectType
+class FormCaptchaType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'FreeformSubmissionReCaptchaType';
+        return 'FreeformFormCaptchaType';
     }
 
     public static function getTypeDefinition(): Type
     {
-        return SubmissionReCaptchaInterface::getType();
+        return FormCaptchaInterface::getType();
     }
 
     /**
@@ -30,8 +30,12 @@ class SubmissionReCaptchaType extends AbstractObjectType
             return $source['name'] ?? null;
         }
 
-        if ('value' === $resolveInfo->fieldName) {
-            return $source['value'] ?? null;
+        if ('handle' === $resolveInfo->fieldName) {
+            return $source['handle'] ?? null;
+        }
+
+        if ('enabled' === $resolveInfo->fieldName) {
+            return $source['enabled'] ?? null;
         }
 
         return null;

@@ -5,11 +5,11 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormReCaptchaInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
-use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormReCaptchaResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
@@ -57,51 +57,81 @@ class FormInterface extends AbstractInterface
                 'name' => 'name',
                 'type' => Type::string(),
                 'description' => "The form's name",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->name;
+                },
             ],
             'handle' => [
                 'name' => 'handle',
                 'type' => Type::string(),
                 'description' => "The form's handle",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->handle;
+                },
             ],
             'color' => [
                 'name' => 'color',
                 'type' => Type::string(),
                 'description' => "The form's color hex",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->color;
+                },
             ],
             'description' => [
                 'name' => 'description',
                 'type' => Type::string(),
                 'description' => "The form's handle",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->description;
+                },
             ],
             'returnUrl' => [
                 'name' => 'returnUrl',
                 'type' => Type::string(),
                 'description' => "The form's return URL",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->returnUrl;
+                },
             ],
             'storeData' => [
                 'name' => 'storeData',
                 'type' => Type::boolean(),
                 'description' => 'Whether the form stores submissions or not',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->storeData;
+                },
             ],
             'defaultStatus' => [
                 'name' => 'defaultStatus',
                 'type' => Type::int(),
                 'description' => "The form's default status ID",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->defaultStatus;
+                },
             ],
             'formTemplate' => [
                 'name' => 'formTemplate',
                 'type' => Type::string(),
                 'description' => "The form's formatting template filename",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->formattingTemplate;
+                },
             ],
             'hash' => [
                 'name' => 'hash',
                 'type' => Type::string(),
                 'description' => "The form's hash needed to submit forms",
+                'resolve' => function ($source) {
+                    return $source->getHash();
+                },
             ],
             'submissionTitleFormat' => [
                 'name' => 'submissionTitleFormat',
                 'type' => Type::string(),
                 'description' => 'Title format used for new submission titles',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->submissionTitle;
+                },
             ],
             'submissionMutationName' => [
                 'name' => 'submissionMutationName',
@@ -111,61 +141,112 @@ class FormInterface extends AbstractInterface
                     return Submission::gqlMutationNameByContext($source);
                 },
             ],
+            // @deprecated
             'extraPostUrl' => [
                 'name' => 'extraPostUrl',
                 'type' => Type::string(),
                 'description' => 'An URL that will get a POST call with the submitted data',
+                'resolve' => function () {
+                    return 'Deprecated - Please use postForwardingUrl instead';
+                },
             ],
+            // @deprecated
             'extraPostTriggerPhrase' => [
                 'name' => 'extraPostTriggerPhrase',
                 'type' => Type::string(),
                 'description' => 'A keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
+                'resolve' => function () {
+                    return 'Deprecated - Please use postForwardingErrorTriggerPhrase instead';
+                },
+            ],
+            'postForwardingUrl' => [
+                'name' => 'postForwardingUrl',
+                'type' => Type::string(),
+                'description' => 'An URL that will get a POST call with the submitted data',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->postForwardingUrl;
+                },
+            ],
+            'postForwardingErrorTriggerPhrase' => [
+                'name' => 'postForwardingErrorTriggerPhrase',
+                'type' => Type::string(),
+                'description' => 'A keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->postForwardingErrorTriggerPhrase;
+                },
             ],
             'ipCollectingEnabled' => [
                 'name' => 'ipCollectingEnabled',
                 'type' => Type::boolean(),
                 'description' => 'Are the IP addresses being stored',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->collectIpAddresses;
+                },
             ],
             'ajaxEnabled' => [
                 'name' => 'ajaxEnabled',
                 'type' => Type::boolean(),
                 'description' => 'Is the ajax enabled for this form',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->ajax;
+                },
             ],
             'showProcessingSpinner' => [
                 'name' => 'showProcessingSpinner',
                 'type' => Type::boolean(),
                 'description' => 'Should the submit button show a spinner when submitting',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->showProcessingSpinner;
+                },
             ],
             'showProcessingText' => [
                 'name' => 'showProcessingText',
                 'type' => Type::boolean(),
                 'description' => 'Should the submit button change the button label while submitting',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->showProcessingText;
+                },
             ],
             'processingText' => [
                 'name' => 'processingText',
                 'type' => Type::string(),
                 'description' => 'The submit button processing label text',
+                'resolve' => function ($source) {
+                    return $source->getSettings()->processingText;
+                },
             ],
             'gtmEnabled' => [
                 'name' => 'gtmEnabled',
                 'type' => Type::boolean(),
                 'description' => 'Is Google Tag Manager enabled',
+                'resolve' => function ($source) {
+                    // FIXME
+                    return null;
+                },
             ],
             'gtmId' => [
                 'name' => 'gtmId',
                 'type' => Type::string(),
                 'description' => 'The Google Tag Manager ID',
+                'resolve' => function ($source) {
+                    // FIXME
+                    return null;
+                },
             ],
             'gtmEventName' => [
                 'name' => 'gtmEventName',
                 'type' => Type::string(),
                 'description' => 'The name of the Event that will be added to Google Tag Manager\'s data layer ',
+                'resolve' => function ($source) {
+                    // FIXME
+                    return null;
+                },
             ],
-            'reCaptcha' => [
-                'name' => 'reCaptcha',
-                'type' => FormReCaptchaInterface::getType(),
-                'resolve' => FormReCaptchaResolver::class.'::resolve',
-                'description' => 'The ReCaptcha for this form',
+            'captcha' => [
+                'name' => 'captcha',
+                'type' => FormCaptchaInterface::getType(),
+                'resolve' => FormCaptchaResolver::class.'::resolve',
+                'description' => 'The Captcha for this form',
             ],
             'honeypot' => [
                 'name' => 'honeypot',
@@ -179,7 +260,6 @@ class FormInterface extends AbstractInterface
                 'resolve' => CsrfTokenResolver::class.'::resolve',
                 'description' => 'The CSRF Token for this form',
             ],
-            // Layout
             'pages' => [
                 'name' => 'pages',
                 'type' => Type::listOf(PageInterface::getType()),
@@ -198,7 +278,7 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The form’s success message',
                 'resolve' => function ($source) {
-                    return $source->getSuccessMessage();
+                    return $source->getSettings()->successMessage;
                 },
             ],
             'errorMessage' => [
@@ -206,7 +286,7 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The form’s error message',
                 'resolve' => function ($source) {
-                    return $source->getErrorMessage();
+                    return $source->getSettings()->errorMessage;
                 },
             ],
             'disableSubmit' => [

@@ -111,6 +111,22 @@ class GeneralSettings extends SettingsNamespace
     )]
     public string $color = '';
 
+    #[Section(self::SECTION_GENERAL)]
+    #[Input\Text(
+        label: 'POST Forwarding URL',
+        instructions: 'If you need to have the POST data of this form submitted to an external API, provide that custom URL here.',
+        order: 8,
+    )]
+    public string $postForwardingUrl = '';
+
+    #[Section(self::SECTION_GENERAL)]
+    #[Input\Text(
+        label: 'POST Forwarding Error Trigger Phrase',
+        instructions: 'Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
+        order: 9,
+    )]
+    public string $postForwardingErrorTriggerPhrase = '';
+
     #[Section(
         self::SECTION_DATA_STORAGE,
         label: 'Data Storage',

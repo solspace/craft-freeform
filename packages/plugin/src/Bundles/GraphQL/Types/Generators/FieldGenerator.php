@@ -50,7 +50,7 @@ class FieldGenerator extends AbstractGenerator
         $fieldTypes[FreeformFieldInterface::TYPE_PASSWORD] = FreeformFieldInterface::TYPE_PASSWORD;
         $fieldTypes[FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS] = FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS;
 
-        foreach ($fieldTypes as $fieldType => $fieldTypeName) {
+        foreach ($fieldTypes as $fieldType) {
             $typeName = FieldType::getTypeFromString($fieldType);
             $types[$typeName] = self::generateType($typeName, $fieldType);
         }
@@ -580,14 +580,6 @@ class FieldGenerator extends AbstractGenerator
                 'resolve' => function (TableField $source, $arguments, $context, ResolveInfo $resolveInfo) {
                     return json_encode($source->getTableLayout());
                 },
-            ];
-        }
-
-        if (FreeformFieldInterface::TYPE_MAILING_LIST === $typeName) {
-            $fieldDefinitions['hidden'] = [
-                'name' => 'hidden',
-                'type' => Type::boolean(),
-                'description' => 'Should this field be a hidden field or a checkbox',
             ];
         }
 

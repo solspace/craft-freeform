@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Integrations\Captchas;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
+use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
+use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -21,13 +23,10 @@ class CaptchasBundle extends FeatureBundle
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
-        $path = \Craft::getAlias('@freeform/Integrations/Captchas');
+        $event->addType(ReCaptcha::class);
 
-        $classMap = ClassMapGenerator::createMap($path);
-        $classes = array_keys($classMap);
-
-        foreach ($classes as $class) {
-            $event->addType($class);
+        if ($this->plugin()->isPro()) {
+            $event->addType(hCaptcha::class);
         }
     }
 }

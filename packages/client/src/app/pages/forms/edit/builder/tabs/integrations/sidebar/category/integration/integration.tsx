@@ -15,6 +15,9 @@ export const Integration: React.FC<IntegrationType> = ({
   icon,
 }) => {
   const integration = useSelector(integrationSelectors.one(id));
+  if (!integration) {
+    return null;
+  }
 
   return (
     <Wrapper>

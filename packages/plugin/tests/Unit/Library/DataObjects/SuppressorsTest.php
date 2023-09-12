@@ -17,10 +17,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(false);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -30,10 +30,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(true);
 
         $this->assertTrue($suppressors->isApi());
-        $this->assertTrue($suppressors->isConnections());
+        $this->assertTrue($suppressors->isElements());
         $this->assertTrue($suppressors->isAdminNotifications());
-        $this->assertTrue($suppressors->isDynamicRecipients());
-        $this->assertTrue($suppressors->isSubmitterNotifications());
+        $this->assertTrue($suppressors->isUserSelectNotifications());
+        $this->assertTrue($suppressors->isEmailFieldNotifications());
         $this->assertTrue($suppressors->isPayments());
         $this->assertTrue($suppressors->isWebhooks());
     }
@@ -43,10 +43,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['api' => true]);
 
         $this->assertTrue($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -56,10 +56,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['connections' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertTrue($suppressors->isConnections());
+        $this->assertTrue($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -69,10 +69,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['adminNotifications' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertTrue($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -82,10 +82,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['dynamicRecipients' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertTrue($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertTrue($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -95,10 +95,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['submitterNotifications' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertTrue($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertTrue($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -108,10 +108,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['payments' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertTrue($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }
@@ -121,10 +121,10 @@ class SuppressorsTest extends TestCase
         $suppressors = new Suppressors(['webhooks' => true]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertTrue($suppressors->isWebhooks());
     }
@@ -142,10 +142,10 @@ class SuppressorsTest extends TestCase
         ]);
 
         $this->assertTrue($suppressors->isApi());
-        $this->assertTrue($suppressors->isConnections());
+        $this->assertTrue($suppressors->isElements());
         $this->assertTrue($suppressors->isAdminNotifications());
-        $this->assertTrue($suppressors->isDynamicRecipients());
-        $this->assertTrue($suppressors->isSubmitterNotifications());
+        $this->assertTrue($suppressors->isUserSelectNotifications());
+        $this->assertTrue($suppressors->isEmailFieldNotifications());
         $this->assertTrue($suppressors->isPayments());
         $this->assertTrue($suppressors->isWebhooks());
     }
@@ -159,10 +159,10 @@ class SuppressorsTest extends TestCase
         ]);
 
         $this->assertFalse($suppressors->isApi());
-        $this->assertFalse($suppressors->isConnections());
+        $this->assertFalse($suppressors->isElements());
         $this->assertFalse($suppressors->isAdminNotifications());
-        $this->assertFalse($suppressors->isDynamicRecipients());
-        $this->assertFalse($suppressors->isSubmitterNotifications());
+        $this->assertFalse($suppressors->isUserSelectNotifications());
+        $this->assertFalse($suppressors->isEmailFieldNotifications());
         $this->assertFalse($suppressors->isPayments());
         $this->assertFalse($suppressors->isWebhooks());
     }

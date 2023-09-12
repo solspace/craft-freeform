@@ -23,7 +23,7 @@ class EmailRecipientNotifications extends FeatureBundle
         $form = $event->getForm();
         $suppressors = $form->getSuppressors();
 
-        if ($suppressors->isSubmitterNotifications()) {
+        if ($suppressors->isEmailFieldNotifications()) {
             return;
         }
 

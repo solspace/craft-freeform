@@ -566,7 +566,7 @@ return [
     'Expiry Date' => 'Expiry Date',
     'CVC/CVV' => 'CVC/CVV',
     'Checked by default' => 'Standardmäßig ausgewählt',
-    'Show all options on one line?' => 'Zeige alle Optionen in einer Zeile?',
+    'Show all options on one line' => 'Zeige alle Optionen in einer Zeile?',
     'Enable AJAX' => 'Aktiviere AJAX',
     'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Verwende das automatische AJAX Submit-Feature von Freeform.',
     'Enable Captchas' => 'Aktivieren Sie Captchas',

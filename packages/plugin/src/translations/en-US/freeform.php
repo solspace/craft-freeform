@@ -1048,7 +1048,7 @@ return [
     'CVC/CVV' => 'CVC/CVV',
     'Field label used to describe credit card number field.' => 'Field label used to describe credit card number field.',
     'Checked by default' => 'Checked by default',
-    'Show all options on one line?' => 'Show all options on one line?',
+    'Show all options on one line' => 'Show all options on one line',
     "Show 'Clear' button?" => "Show 'Clear' button?",
     'Width' => 'Width',
     'Canvas width in pixels.' => 'Canvas width in pixels.',

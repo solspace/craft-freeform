@@ -1052,7 +1052,7 @@ return [
     'CVC/CVV' => 'CVC/CVV',
     'Field label used to describe credit card number field.' => 'Veldlabel dat wordt gebruikt om het creditcardnummerveld te beschrijven.',
     'Checked by default' => 'Standaard aangevinkt',
-    'Show all options on one line?' => 'Alle opties op één regel weergeven?',
+    'Show all options on one line' => 'Alle opties op één regel weergeven?',
     "Show 'Clear' button?" => "Knop 'Wissen' tonen?",
     'Width' => 'Breedte',
     'Canvas width in pixels.' => 'Canvasbreedte in pixels.',

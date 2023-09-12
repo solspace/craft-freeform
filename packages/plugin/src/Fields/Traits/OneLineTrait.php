@@ -6,7 +6,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 
 trait OneLineTrait
 {
-    #[Input\Boolean('Show all options in a single line?')]
+    #[Input\Boolean('Show all options on one line?')]
     protected bool $oneLine = false;
 
     public function isOneLine(): bool

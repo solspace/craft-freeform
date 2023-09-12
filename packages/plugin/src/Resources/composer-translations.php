@@ -372,7 +372,7 @@ return [
     'Options Editor',
     'Options',
     'Add an option',
-    'Show all options in a single line?',
+    'Show all options on one line?',
     'Light',
     'Dark',
     'Attribute Editor',

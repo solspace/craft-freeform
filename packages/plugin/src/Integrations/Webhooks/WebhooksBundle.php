@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\Webhooks;
 
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
@@ -29,6 +29,11 @@ class WebhooksBundle extends FeatureBundle
             Form::EVENT_AFTER_SUBMIT,
             [$this, 'triggerWebhooks']
         );
+    }
+
+    public static function isProOnly(): bool
+    {
+        return true;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void

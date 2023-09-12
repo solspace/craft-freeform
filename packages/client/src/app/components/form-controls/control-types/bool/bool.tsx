@@ -22,10 +22,10 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
   updateValue,
 }) => {
   const { size } = useRenderContext();
-  const { handle, label } = property;
+  const { handle, label, width } = property;
 
   return (
-    <ControlWrapper>
+    <ControlWrapper $width={width}>
       <CheckboxWrapper $size={size}>
         <CheckboxItem>
           {size === 'small' && (

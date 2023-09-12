@@ -6,6 +6,7 @@ $(() => {
   const $propertyEditor = $('.property-editor');
   const $classSelect = $('select[name="class"]');
 
+  $classSelect.on('change', () => updateFieldVisibility());
   $propertyEditor.on('change', 'input, select, textarea', () => updateFieldVisibility());
 
   const updateFieldVisibility = () => {

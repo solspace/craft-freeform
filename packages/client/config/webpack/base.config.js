@@ -44,6 +44,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     alias: {
+      '@config': path.resolve(__dirname, '../../config/'),
       '@editor': path.resolve(__dirname, '../../src/app/pages/forms/edit/'),
       '@components': path.resolve(__dirname, '../../src/app/components/'),
       '@ff-icons': path.resolve(__dirname, '../../src/assets/icons/'),

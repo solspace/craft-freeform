@@ -19,7 +19,6 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Session\Honeypot;
-use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
@@ -48,7 +47,7 @@ class FreeformVariable
     }
 
     /**
-     * @return FormModel[]
+     * @return Form[]
      */
     public function forms(): array
     {
@@ -59,7 +58,7 @@ class FreeformVariable
         return $forms ?: [];
     }
 
-    public function submissionCount(Form $form)
+    public function submissionCount(Form $form): int
     {
         return Freeform::getInstance()->submissions->getSubmissionCount([$form->getId()]);
     }
@@ -173,6 +172,11 @@ class FreeformVariable
     public function isPro(): bool
     {
         return Freeform::getInstance()->isPro();
+    }
+
+    public function getEdition(): string
+    {
+        return Freeform::getInstance()->edition;
     }
 
     public function getVersion(int $marks = null): string

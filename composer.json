@@ -24,7 +24,8 @@
     "ext-json": "*",
     "symfony/serializer": "^6.0",
     "doctrine/annotations": "^2.0",
-    "phpoffice/phpspreadsheet": "^1.29"
+    "phpoffice/phpspreadsheet": "^1.29",
+    "composer/class-map-generator": "^1.1"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",

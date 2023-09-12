@@ -8,6 +8,7 @@
 
 {% block main %}
 
+    <script type="application/json" id="freeform-config">{{ config|json_encode|raw }}</script>
     <div id="freeform-client"></div>
 
 {% endblock %}

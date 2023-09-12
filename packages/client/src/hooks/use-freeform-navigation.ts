@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { QKForms } from '@ff-client/queries/forms';
+import { QKIntegrations } from '@ff-client/queries/integrations';
+import { QKNotifications } from '@ff-client/queries/notifications';
 import { useQueryClient } from '@tanstack/react-query';
 
 export const useFreeformNavigation = (): void => {
@@ -18,6 +20,8 @@ export const useFreeformNavigation = (): void => {
 
       if (formId) {
         queryClient.invalidateQueries(QKForms.single(Number(formId)));
+        queryClient.invalidateQueries(QKNotifications.single(Number(formId)));
+        queryClient.invalidateQueries(QKIntegrations.single(Number(formId)));
       }
 
       navigate('/forms');

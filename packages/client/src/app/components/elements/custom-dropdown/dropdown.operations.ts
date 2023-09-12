@@ -15,7 +15,7 @@ export const isInOptions = (
 
   for (const option of options) {
     if ('value' in option) {
-      if (option.value === String(value)) {
+      if (String(option.value) === String(value)) {
         return true;
       }
     }
@@ -61,7 +61,7 @@ export const findLabelByValue = (
 
   for (const option of options) {
     if ('value' in option) {
-      if (option.value === String(value)) {
+      if (String(option.value) === String(value)) {
         return option.label;
       }
     }
@@ -85,7 +85,7 @@ export const findShadowIndexByValue = (
 
   for (const option of options) {
     if ('value' in option) {
-      if (option.value === String(value)) {
+      if (String(option.value) === String(value)) {
         return option.shadowIndex;
       }
     }

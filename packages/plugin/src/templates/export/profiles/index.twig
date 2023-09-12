@@ -62,7 +62,15 @@
                         {% endif %}
                     </th>
                     <td>
-                        {{ profile.formModel.name }}
+                        {% set form = profile.form %}
+                        {% set canManage = currentUser.can("freeform-formsManage") or currentUser.can("freeform-formsManage:"~form.id) %}
+                        {% if canManage %}
+                            <a href="{{ url('freeform/forms/' ~ form.id) }}">
+                                {{ form.name }}
+                            </a>
+                        {% else %}
+                            {{ form.name }}
+                        {% endif %}
                     </td>
                     <td>
                         {% if profile.limit > 0 and profile.submissionCount > profile.limit %}
@@ -81,7 +89,7 @@
                             {{ csrfInput() }}
                             <input type="hidden" name="type" value="csv" />
                             <input type="hidden" name="profileId" value="{{ profile.id }}" />
-                            <input type="hidden" name="action" value="freeform/export-profiles/export" />
+                            <input type="hidden" name="action" value="freeform/export/profiles/export" />
                         </form>
                     </td>
                     <td class="thin">
@@ -95,7 +103,7 @@
         </table>
     {% else %}
         <div class="zilch">
-            {% if craft.freeform.pro %}
+            {% if freeform.pro %}
                 {{ "No export profiles exist yet."|t("freeform") }}
             {% else %}
                 {{ "Upgrade to the Pro edition of Freeform to get access to Export profiles."|t('freeform') }}

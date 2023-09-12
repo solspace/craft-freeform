@@ -16,7 +16,6 @@ use craft\db\Table;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
@@ -38,7 +37,14 @@ class FormsController extends BaseController
 
         $this->view->registerAssetBundle(FreeformClientBundle::class);
 
-        return $this->renderTemplate('freeform/forms');
+        return $this->renderTemplate('freeform/forms', [
+            'config' => [
+                'editions' => [
+                    'edition' => Freeform::getInstance()->edition,
+                    'tiers' => Freeform::getInstance()->edition()->getEditions(),
+                ],
+            ],
+        ]);
     }
 
     public function actionResetSpamCounter(): Response
@@ -82,8 +88,8 @@ class FormsController extends BaseController
             $type = 'csv';
         }
 
-        $formModel = $this->getFormsService()->getFormById($id);
-        if (!$formModel) {
+        $form = $this->getFormsService()->getFormById($id);
+        if (!$form) {
             throw new NotFoundHttpException('Form not found');
         }
 
@@ -96,12 +102,7 @@ class FormsController extends BaseController
 
         $selectFields = ['[[s.id]]', '[[s.ip]]', '[[s.dateCreated]]', '[[c.title]]'];
 
-        $form = $formModel->getForm();
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof NoStorageInterface || !$field->getId()) {
-                continue;
-            }
-
+        foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             $fieldName = Submission::getFieldColumnName($field);
             $fieldHandle = $field->getHandle();
 

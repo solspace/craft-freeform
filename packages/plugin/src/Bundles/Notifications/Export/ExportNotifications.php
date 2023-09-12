@@ -47,7 +47,7 @@ class ExportNotifications extends FeatureBundle
             }
 
             $profile = $notification->getProfile();
-            $form = $profile->getFormModel()->getForm();
+            $form = $profile->getForm();
 
             $variables = [
                 'form' => $form,

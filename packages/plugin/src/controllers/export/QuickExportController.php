@@ -30,20 +30,15 @@ class QuickExportController extends BaseController
         $forms = [];
 
         $fields = [];
-        $formModels = $this->getFormsService()->getAllForms();
-        foreach ($formModels as $form) {
+        $forms = $this->getFormsService()->getAllForms();
+        foreach ($forms as $form) {
             if (null !== $allowedFormIds) {
-                if (!\in_array($form->id, $allowedFormIds, false)) {
+                if (!\in_array($form->getId(), $allowedFormIds)) {
                     continue;
                 }
             }
 
-            $forms[$form->id] = $form->getForm();
-            foreach ($form->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || !$field->getId()) {
-                    continue;
-                }
-
+            foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
                 $fields[$field->getId()] = $field;
             }
         }
@@ -190,8 +185,8 @@ class QuickExportController extends BaseController
         $exportFields = \Craft::$app->request->post('export_fields');
         $isSpam = (bool) \Craft::$app->request->post('spam');
 
-        $formModel = $this->getFormsService()->getFormById($formId);
-        if (!$formModel) {
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
             return;
         }
 
@@ -215,12 +210,13 @@ class QuickExportController extends BaseController
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
-        $form = $formModel->getForm();
         $fieldData = $exportFields[$form->getId()];
 
-        $paymentProperties = $form->getPaymentProperties();
-        $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
-        $hasPaymentSubscriptions = !$hasPaymentSingles && null !== $paymentProperties->getPaymentType();
+        // TODO: reimplement with payments
+
+        // $paymentProperties = $form->getPaymentProperties();
+        // $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
+        // $hasPaymentSubscriptions = !$hasPaymentSingles && null !== $paymentProperties->getPaymentType();
 
         $settings->setting = $exportFields;
         $settings->save();
@@ -266,11 +262,13 @@ class QuickExportController extends BaseController
             ->andWhere(['s.[[isSpam]]' => $isSpam])
         ;
 
-        if ($hasPaymentSingles) {
-            $query->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
-        } elseif ($hasPaymentSubscriptions) {
-            $query->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
-        }
+        // TODO: reimplement with payments
+
+        // if ($hasPaymentSingles) {
+        //     $query->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
+        // } elseif ($hasPaymentSubscriptions) {
+        //     $query->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
+        // }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;
@@ -290,11 +288,7 @@ class QuickExportController extends BaseController
     private function getExportSettings(): ExportSettingRecord
     {
         $userId = \Craft::$app->user->getId();
-        $settings = ExportSettingRecord::findOne(
-            [
-                'userId' => $userId,
-            ]
-        );
+        $settings = ExportSettingRecord::findOne(['userId' => $userId]);
 
         if (!$settings) {
             $settings = ExportSettingRecord::create($userId);

@@ -36,6 +36,7 @@ use Solspace\Freeform\Jobs\PurgeSpamJob;
 use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
 use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
@@ -149,6 +150,7 @@ class Freeform extends Plugin
     public const FIELD_DISPLAY_ORDER_TYPE = 'type';
     public const FIELD_DISPLAY_ORDER_NAME = 'name';
 
+    public const EDITION_EXPRESS = 'express';
     public const EDITION_LITE = 'lite';
     public const EDITION_PRO = 'pro';
 
@@ -280,6 +282,24 @@ class Freeform extends Plugin
                 ->execute()
             ;
         }
+    }
+
+    public function edition(): EditionHelper
+    {
+        static $helper;
+
+        if (null === $helper) {
+            $helper = new EditionHelper(
+                $this->edition,
+                [
+                    self::EDITION_EXPRESS,
+                    self::EDITION_LITE,
+                    self::EDITION_PRO,
+                ]
+            );
+        }
+
+        return $helper;
     }
 
     /**

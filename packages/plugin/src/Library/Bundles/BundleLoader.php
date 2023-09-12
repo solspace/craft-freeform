@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Bundles;
 
-use Composer\Autoload\ClassMapGenerator;
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Freeform;
 
 class BundleLoader

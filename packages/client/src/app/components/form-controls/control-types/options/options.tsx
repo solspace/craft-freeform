@@ -21,6 +21,7 @@ import { sourceLabels } from './options.types';
 const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
   value,
   errors,
+  property,
   updateValue,
   context,
 }) => {
@@ -43,7 +44,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   return (
     <>
-      <ControlWrapper className="field">
+      <ControlWrapper className="field" $width={property.width}>
         <Label>{translate('Source')}</Label>
         <ButtonGroup>
           {Object.entries(sourceLabels).map(([key, label]) => (

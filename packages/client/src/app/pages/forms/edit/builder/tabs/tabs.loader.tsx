@@ -1,5 +1,6 @@
 import React from 'react';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { colors } from '@ff-client/styles/variables';
 
 import {
@@ -35,11 +36,15 @@ export const LoaderTabs: React.FC = () => {
               <Skeleton width={82} />
             </span>
           </a>
-          <a>
-            <span>
-              <Skeleton width={36} />
-            </span>
-          </a>
+
+          {config.editions.is(Edition.Pro) && (
+            <a>
+              <span>
+                <Skeleton width={36} />
+              </span>
+            </a>
+          )}
+
           <a>
             <span>
               <Skeleton width={77} />

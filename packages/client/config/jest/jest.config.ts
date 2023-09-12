@@ -16,6 +16,7 @@ const config: Config = {
       '<rootDir>/config/jest/__mocks__/file-mock.ts',
     '\\.(svg)$': '<rootDir>/config/jest/__mocks__/svg-mock.tsx',
     '^@ff-client/(.*)': '<rootDir>/src/$1',
+    '^@config/(.*)': '<rootDir>/config/$1',
     '^@editor/(.*)': '<rootDir>/src/app/pages/forms/edit/$1',
     '^@components/(.*)': '<rootDir>/src/app/components/$1',
     '^@ff-icons/(.*)': '<rootDir>/src/assets/icons/$1',

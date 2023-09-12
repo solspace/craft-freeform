@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Captchas;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;

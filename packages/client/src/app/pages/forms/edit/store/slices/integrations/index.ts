@@ -29,6 +29,21 @@ export const integrationsSlice = createSlice({
   name: 'integrations',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<Integration[]>) => {
+      state.length = 0;
+      action.payload.forEach((integration) => {
+        const values: { [key: string]: GenericValue } = {};
+        integration.properties.forEach((prop) => {
+          values[prop.handle] = prop.value;
+        });
+
+        state.push({
+          dirtyValues: {},
+          values,
+          ...integration,
+        });
+      });
+    },
     add: (state, action: PayloadAction<Integration[]>) => {
       action.payload.forEach((integration) => {
         const values: { [key: string]: GenericValue } = {};

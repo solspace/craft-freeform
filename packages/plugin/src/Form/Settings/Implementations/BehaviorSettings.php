@@ -12,6 +12,8 @@ use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
+use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerator;
+use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorValueGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
@@ -75,17 +77,14 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_SUCCESS_AND_ERRORS.'.svg',
         order: 2,
     )]
+    #[Validators\Required]
+    #[ValueGenerator(SuccessBehaviorValueGenerator::class)]
     #[Input\Select(
         instructions: "Select how you'd like the success return of this form to be handled. May also be overridden at the template level.",
         order: 1,
-        options: [
-            ['value' => self::SUCCESS_BEHAVIOUR_RELOAD, 'label' => 'Reload form with a Success banner above'],
-            ['value' => self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, 'label' => 'Replace form with a Success message'],
-            ['value' => self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, 'label' => 'Redirect to another URL'],
-        ],
+        options: SuccessBehaviorOptionsGenerator::class,
     )]
-    #[Validators\Required]
-    public string $successBehavior = self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE;
+    public string $successBehavior;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]

@@ -17,14 +17,16 @@ class FormattingTemplateOptions implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        $base = $this->settingsService->getSolspaceFormTemplates();
-        if ($base) {
-            $solspaceTemplates = new OptionCollection('Solspace');
-            foreach ($base as $template) {
-                $solspaceTemplates->add($template->getFileName(), $template->getName());
-            }
+        if ((bool) $this->settingsService->getSettingsModel()->defaultTemplates) {
+            $base = $this->settingsService->getSolspaceFormTemplates();
+            if ($base) {
+                $solspaceTemplates = new OptionCollection('Solspace');
+                foreach ($base as $template) {
+                    $solspaceTemplates->add($template->getFileName(), $template->getName());
+                }
 
-            $options->addCollection($solspaceTemplates);
+                $options->addCollection($solspaceTemplates);
+            }
         }
 
         $custom = $this->settingsService->getCustomFormTemplates();

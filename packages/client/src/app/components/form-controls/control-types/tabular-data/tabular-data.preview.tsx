@@ -22,7 +22,9 @@ export const TabularDataPreview: React.FC<Props> = ({
   return (
     <PreviewWrapper data-edit={translate('Click to edit data')}>
       <PreviewTable>
-        {!values.length && <NoContent>{translate('No content')}</NoContent>}
+        {!values.length && (
+          <NoContent>{translate('Not configured yet')}</NoContent>
+        )}
         {values.map((row, index) => (
           <PreviewRow key={index}>
             {configuration.map((column, columnIndex) => (

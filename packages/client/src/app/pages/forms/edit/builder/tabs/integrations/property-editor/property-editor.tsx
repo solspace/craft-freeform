@@ -26,7 +26,9 @@ export const PropertyEditor: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const { formId } = useParams();
-  const { data, isFetching } = useQueryFormIntegrations(Number(formId ?? 0));
+  const { data, isFetching } = useQueryFormIntegrations(
+    formId && Number(formId)
+  );
 
   const integration = useSelector(
     integrationSelectors.one(Number(integrationId))

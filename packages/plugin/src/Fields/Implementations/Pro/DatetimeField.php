@@ -35,7 +35,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     )]
     #[Input\Select(
         label: 'Type',
-        instructions: 'Choose between using date, time or both.',
+        instructions: 'Use date, time or both.',
         order: 0,
         options: [
             self::DATETIME_TYPE_BOTH => 'Date & Time',
@@ -46,26 +46,26 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
     #[Input\Text(
-        label: 'Initial Value',
-        instructions: "You can use 'now', 'today', '5 days ago', '2017-01-01 20:00:00', etc, which will format the default value according to the chosen format.",
+        label: 'Initial value',
+        instructions: "You can use 'now', 'today', '5 days ago', '2024-01-01 20:00:00', etc.",
     )]
     protected string $initialValue = '';
 
     #[Input\Text(
-        label: 'Locale (Optional)',
-        instructions: "Enter your desired custom locale (e.g. `fr`, `ru`, etc.) to force the datepicker to use that locale. Otherwise leave blank to use the default site's locale set by Craft.",
+        label: 'Force a locale',
+        instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
         order: 1,
     )]
     protected ?string $locale = null;
 
     #[Input\Boolean(
-        label: 'Use the Freeform datepicker for this field?',
+        label: 'Use built-in datepicker',
         order: 2,
     )]
     protected bool $useDatepicker = true;
 
     #[Input\Boolean(
-        label: 'Generate placeholder from your date format settings?',
+        label: 'Use date format as placeholder',
         order: 3,
     )]
     protected bool $generatePlaceholder = true;
@@ -85,7 +85,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     )]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Select(
-        label: 'Date Order',
+        label: 'Date order',
         instructions: 'Choose the order in which to show day, month and year.',
         options: [
             'ymd' => 'Year, Month, Day',
@@ -97,21 +97,21 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
-    #[Input\Boolean('Four digit year?')]
+    #[Input\Boolean('Four digit year')]
     protected bool $date4DigitYear = true;
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Boolean(
-        label: 'Leading zero on date?',
-        instructions: 'If enabled, a leading zero will be used for days and months.'
+        label: 'Leading zero on date',
+        instructions: 'Include a leading zero for day and month numbers.'
     )]
     protected bool $dateLeadingZero = true;
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Select(
-        label: 'Date Separator',
+        label: 'Date separator',
         instructions: 'Used to separate date values.',
         emptyOption: 'None',
         options: [
@@ -126,16 +126,16 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Text(
-        label: 'Min Date',
-        instructions: 'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.',
+        label: 'Minimum date',
+        instructions: "You can use 'now', 'today', '5 days ago', '2024-01-01 20:00:00', etc.",
     )]
     protected ?string $minDate = null;
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Text(
-        label: 'Max Date',
-        instructions: 'Specify a relative textual date string or static date for the latest date available for date picker and field validation.',
+        label: 'Maximum date',
+        instructions: "You can use 'now', 'today', '5 days ago', '2024-01-01 20:00:00', etc.",
     )]
     protected ?string $maxDate = null;
 
@@ -146,7 +146,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
         order: 3,
     )]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
-    #[Input\Boolean('24h clock?')]
+    #[Input\Boolean('24h clock')]
     protected bool $clock24h = false;
 
     #[Section('time')]
@@ -166,7 +166,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
 
     #[Section('time')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
-    #[Input\Boolean('Separate AM/PM with a space?')]
+    #[Input\Boolean('Separate AM/PM with a space')]
     protected bool $clockAMPMSeparate = true;
 
     public static function getSupportedLocale(string $locale): string

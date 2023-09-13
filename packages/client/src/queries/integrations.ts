@@ -12,22 +12,29 @@ export const QKIntegrations = {
 };
 
 export const useQueryFormIntegrations = (
-  formId: number
+  formId?: number
 ): UseQueryResult<Integration[], AxiosError> => {
   const dispatch = useDispatch();
 
   return useQuery<Integration[], AxiosError>(
     QKIntegrations.single(formId),
-    () =>
-      axios
+    () => {
+      if (!formId) {
+        return Promise.resolve([]);
+      }
+
+      return axios
         .get<Integration[]>(`/api/forms/${formId}/integrations`)
-        .then((res) => res.data),
+        .then((res) => res.data)
+        .then((res) => {
+          dispatch(integrationActions.set(res));
+
+          return res;
+        });
+    },
     {
       staleTime: Infinity,
       cacheTime: Infinity,
-      onSuccess: (integrations) => {
-        dispatch(integrationActions.add(integrations));
-      },
     }
   );
 };

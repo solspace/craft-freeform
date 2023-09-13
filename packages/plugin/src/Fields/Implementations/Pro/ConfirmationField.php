@@ -28,8 +28,8 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
 
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
-        label: 'Target Field',
-        instructions: 'Select the field that this field should match',
+        label: 'Target field',
+        instructions: 'The field that should be matched and validated against.',
         emptyOption: 'Select a field',
         implements: [
             TextInterface::class,

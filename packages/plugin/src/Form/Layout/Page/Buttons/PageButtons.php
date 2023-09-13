@@ -21,6 +21,25 @@ class PageButtons
     )]
     #[Input\Special\PageButtonLayout(
         label: 'Button Layout',
+        layouts: [
+            'save back|submit',
+            'back|submit save',
+
+            'back|save submit',
+            'submit back|save',
+
+            'save|back|submit',
+            ' back|submit|save',
+
+            'back|submit|save',
+            ' save|back|submit',
+
+            'submit|back|save',
+            ' submit|back|save',
+
+            ' back|submit|save ',
+            ' save|back|submit ',
+        ],
         elements: [
             ['value' => 'submit', 'label' => 'Submit'],
             ['value' => 'back', 'label' => 'Back'],

@@ -58,7 +58,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected TableLayout $tableLayout;
 
-    #[Input\Boolean('Use built-in Table JS?')]
+    #[Input\Boolean('Use built-in javascript for adding and removing rows')]
     protected bool $useScript = false;
 
     #[Input\Integer(

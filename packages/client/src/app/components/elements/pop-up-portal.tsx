@@ -6,5 +6,9 @@ import { usePortal } from '@editor/builder/contexts/portal.context';
 export const PopUpPortal: React.FC<PropsWithChildren> = ({ children }) => {
   const { element } = usePortal();
 
+  if (!element) {
+    return null;
+  }
+
   return createPortal(children, element);
 };

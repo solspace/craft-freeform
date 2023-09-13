@@ -5,10 +5,13 @@ namespace Solspace\Freeform\Library\DataObjects;
 class Suppressors
 {
     private bool $api = false;
-    private bool $connections = false;
+    private bool $elements = false;
+
     private bool $adminNotifications = false;
-    private bool $dynamicRecipients = false;
-    private bool $submitterNotifications = false;
+    private bool $userSelectNotifications = false;
+    private bool $emailFieldNotifications = false;
+    private bool $conditionalNotifications = false;
+
     private bool $payments = false;
     private bool $webhooks = false;
     private bool $payload = false;
@@ -22,10 +25,11 @@ class Suppressors
     {
         if (true === $settings) {
             $this->api = true;
-            $this->connections = true;
+            $this->elements = true;
             $this->adminNotifications = true;
-            $this->dynamicRecipients = true;
-            $this->submitterNotifications = true;
+            $this->userSelectNotifications = true;
+            $this->emailFieldNotifications = true;
+            $this->conditionalNotifications = true;
             $this->payments = true;
             $this->webhooks = true;
             $this->payload = true;
@@ -45,9 +49,9 @@ class Suppressors
         return $this->api;
     }
 
-    public function isConnections(): bool
+    public function isElements(): bool
     {
-        return $this->connections;
+        return $this->elements;
     }
 
     public function isAdminNotifications(): bool
@@ -55,14 +59,19 @@ class Suppressors
         return $this->adminNotifications;
     }
 
-    public function isDynamicRecipients(): bool
+    public function isUserSelectNotifications(): bool
     {
-        return $this->dynamicRecipients;
+        return $this->userSelectNotifications;
     }
 
-    public function isSubmitterNotifications(): bool
+    public function isEmailFieldNotifications(): bool
     {
-        return $this->submitterNotifications;
+        return $this->emailFieldNotifications;
+    }
+
+    public function isConditionalNotifications(): bool
+    {
+        return $this->conditionalNotifications;
     }
 
     public function isPayments(): bool

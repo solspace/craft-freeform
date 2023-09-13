@@ -15,7 +15,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 )]
 class NumberField extends TextField
 {
-    #[Input\Boolean('Allow negative numbers?')]
+    #[Input\Boolean('Allow negative numbers')]
     protected bool $allowNegative = false;
 
     #[Input\MinMax(

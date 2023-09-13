@@ -26,7 +26,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
     #[ValueTransformer(ScalesTransformer::class)]
     #[Input\TabularData(
         label: 'Scales',
-        instructions: '',
+        instructions: 'The options a user can choose from.',
         value: [],
         configuration: [
             [
@@ -44,7 +44,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
     #[ValueTransformer(LegendsTransformer::class)]
     #[Input\TabularData(
         label: 'Legends',
-        instructions: '',
+        instructions: 'Descriptions of options or ranges of options (does not need to match the number of options available).',
         value: [],
         configuration: [
             ['key' => 'label', 'label' => 'Legend'],

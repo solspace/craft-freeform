@@ -51,7 +51,7 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements OAuth2Co
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
-        label: 'Append checkbox group field values on Contact update?',
+        label: 'Append checkbox group field values on Contact update',
         instructions: 'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
         order: 3,
     )]

@@ -18,7 +18,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipien
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
-use Solspace\Freeform\Library\Rules\Rule;
+use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
@@ -52,7 +52,7 @@ class Conditional extends BaseNotification
         instructions: 'Select a rule to use for this notification.',
         order: 5,
     )]
-    protected ?Rule $rule;
+    protected ?NotificationRule $rule;
 
     public function getTemplate(): ?NotificationTemplate
     {
@@ -64,7 +64,7 @@ class Conditional extends BaseNotification
         return $this->recipients;
     }
 
-    public function getRule(): ?Rule
+    public function getRule(): ?NotificationRule
     {
         return $this->rule;
     }

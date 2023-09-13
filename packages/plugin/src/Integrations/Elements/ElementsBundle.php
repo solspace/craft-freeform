@@ -12,7 +12,6 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
@@ -85,7 +84,7 @@ class ElementsBundle extends FeatureBundle
             return;
         }
 
-        if (!Freeform::getInstance()->isPro() || $form->getSuppressors()->isConnections()) {
+        if ($form->getSuppressors()->isElements()) {
             return;
         }
 

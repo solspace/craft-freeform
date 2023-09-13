@@ -31,7 +31,7 @@ class ReCaptchaBundle extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_OUTPUT_AS_JSON,
-            [$this, 'attachToJSON'],
+            [$this, 'attachToJson'],
         );
     }
 
@@ -87,18 +87,18 @@ class ReCaptchaBundle extends FeatureBundle
         $integration?->validate($form);
     }
 
-    public function attachToJSON(OutputAsJsonEvent $event): void
+    public function attachToJson(OutputAsJsonEvent $event): void
     {
         $integration = $this->getReCaptchaForForm($event->getForm());
         if (!$integration) {
-            $event->add('recaptcha', ['enabled' => false]);
+            return;
         }
 
         $event->add(
-            'recaptcha',
+            'captcha',
             [
                 'enabled' => true,
-                'handle' => 'reCaptcha',
+                'handle' => 'captcha',
                 'name' => 'g-recaptcha-response',
             ]
         );

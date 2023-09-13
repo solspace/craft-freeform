@@ -69,6 +69,14 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->handle;
                 },
             ],
+            'type' => [
+                'name' => 'type',
+                'type' => Type::string(),
+                'description' => "The form's type",
+                'resolve' => function ($source) {
+                    return $source->getSettings()->type;
+                },
+            ],
             'color' => [
                 'name' => 'color',
                 'type' => Type::string(),
@@ -183,8 +191,8 @@ class FormInterface extends AbstractInterface
                     return $source->getSettings()->collectIpAddresses;
                 },
             ],
-            'ajaxEnabled' => [
-                'name' => 'ajaxEnabled',
+            'ajax' => [
+                'name' => 'ajax',
                 'type' => Type::boolean(),
                 'description' => 'Is the ajax enabled for this form',
                 'resolve' => function ($source) {

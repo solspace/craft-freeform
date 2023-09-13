@@ -45,7 +45,7 @@ class FormCaptchaInterface extends AbstractInterface
             'enabled' => [
                 'name' => 'enabled',
                 'type' => Type::boolean(),
-                'description' => 'Is ReCaptcha enabled for this form',
+                'description' => 'Is Captcha enabled for this form',
             ],
         ], static::getName());
     }

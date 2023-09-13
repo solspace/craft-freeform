@@ -18,6 +18,12 @@ type Props = {
   page: Page;
 };
 
+const buttonClasses: Record<string, string> = {
+  back: 'btn',
+  save: 'btn',
+  submit: 'btn submit',
+};
+
 export const PageButtons: React.FC<Props> = ({ page }) => {
   const dispatch = useAppDispatch();
 
@@ -43,7 +49,11 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         return;
       }
 
-      const button = page.buttons[buttonHandle as PageButtonType];
+      const button = {
+        ...page.buttons[buttonHandle as PageButtonType],
+        handle: buttonHandle,
+      };
+
       if (!button || !button.enabled) {
         return;
       }
@@ -70,7 +80,11 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         {buttonGroups.map((group, index) => (
           <ButtonGroup key={index} className="page-buttons">
             {group.map((button, index) => (
-              <button className="btn submit" key={index} type="button">
+              <button
+                className={buttonClasses[button?.handle]}
+                key={index}
+                type="button"
+              >
                 {button.label}
               </button>
             ))}

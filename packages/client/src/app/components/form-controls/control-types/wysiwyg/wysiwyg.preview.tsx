@@ -13,7 +13,7 @@ export const WysiwygPreview: React.FC<Props> = ({ value }) => {
   return (
     <PreviewWrapper data-edit={translate('Click to edit data')}>
       <PreviewContainer>
-        {!value && <NoContent>{translate('No content')}</NoContent>}
+        {!value && <NoContent>{translate('Not configured yet')}</NoContent>}
         <div dangerouslySetInnerHTML={{ __html: value }} />
       </PreviewContainer>
     </PreviewWrapper>

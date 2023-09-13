@@ -15,6 +15,7 @@ enum ButtonAttributeTarget {
 export type PageButton = {
   label: string;
   enabled: boolean;
+  handle?: string;
 };
 
 export type PageButtonType = 'submit' | 'back' | 'save';

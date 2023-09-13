@@ -50,6 +50,8 @@ class EditSubmissionContext
             return;
         }
 
+        $form->setSubmission($submission);
+
         $form->disableAjaxReset();
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             if (isset($submission->{$field->getHandle()})) {

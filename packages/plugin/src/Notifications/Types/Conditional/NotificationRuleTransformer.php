@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Notifications\Types\Conditional;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleProvider;
-use Solspace\Freeform\Library\Rules\Rule;
+use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 
 class NotificationRuleTransformer implements TransformerInterface
 {
@@ -13,7 +13,7 @@ class NotificationRuleTransformer implements TransformerInterface
     ) {
     }
 
-    public function transform($value): ?Rule
+    public function transform($value): ?NotificationRule
     {
         if (\is_string($value)) {
             return $this->ruleProvider->getByUid($value);
@@ -24,7 +24,7 @@ class NotificationRuleTransformer implements TransformerInterface
 
     public function reverseTransform($value): mixed
     {
-        if ($value instanceof Rule) {
+        if ($value instanceof NotificationRule) {
             return $value->getUid();
         }
 

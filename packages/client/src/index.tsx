@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { BreadcrumbProvider } from '@components/breadcrumbs/breadcrumbs.context';
+import { PortalProvider } from '@editor/builder/contexts/portal.context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -36,20 +37,22 @@ root.render(
   <BrowserRouter basename={generateUrl('/', false)}>
     <QueryClientProvider client={queryClient}>
       <BreadcrumbProvider>
-        <Breadcrumb label="Freeform" url="/forms" />
-        <Breadcrumb label="Forms" url="/forms" />
-        <ManualStyles />
-        <ReactQueryDevtools />
-        <CpNavigation />
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route path="forms">
-              <Route path="new/*" element={<Form />} />
-              <Route path=":formId/*" element={<Form />} />
-              <Route index element={<Forms />} />
+        <PortalProvider>
+          <Breadcrumb label="Freeform" url="/forms" />
+          <Breadcrumb label="Forms" url="/forms" />
+          <ManualStyles />
+          <ReactQueryDevtools />
+          <CpNavigation />
+          <Routes>
+            <Route path="/" element={<App />}>
+              <Route path="forms">
+                <Route path="new/*" element={<Form />} />
+                <Route path=":formId/*" element={<Form />} />
+                <Route index element={<Forms />} />
+              </Route>
             </Route>
-          </Route>
-        </Routes>
+          </Routes>
+        </PortalProvider>
       </BreadcrumbProvider>
     </QueryClientProvider>
   </BrowserRouter>

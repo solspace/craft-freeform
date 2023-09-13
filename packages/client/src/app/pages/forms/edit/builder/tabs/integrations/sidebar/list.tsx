@@ -12,7 +12,9 @@ export const List: React.FC = () => {
   const { formId, id } = useParams();
   const navigate = useNavigate();
 
-  const { data, isFetching } = useQueryFormIntegrations(Number(formId ?? 0));
+  const { data, isFetching } = useQueryFormIntegrations(
+    formId && Number(formId)
+  );
 
   useEffect(() => {
     if (!id && data) {

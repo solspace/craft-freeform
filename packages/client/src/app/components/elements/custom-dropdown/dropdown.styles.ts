@@ -88,13 +88,9 @@ export const DropdownRollout = styled(animated.div)`
   left: 0;
   right: 0;
   top: 0;
-  z-index: 4;
 
   background-color: ${colors.gray050};
-  border: 1px solid ${colors.gray200};
-  border-top: none;
   border-radius: ${borderRadius.lg};
-
   box-shadow: ${shadows.container};
 
   overflow: hidden;

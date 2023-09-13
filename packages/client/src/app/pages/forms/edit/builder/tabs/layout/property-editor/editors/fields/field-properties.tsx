@@ -95,7 +95,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
             property={{
               type: PropertyType.Select,
               handle: 'typeClass',
-              label: translate('Type'),
+              label: translate('Field type'),
               instructions: translate('Change the type of this field.'),
               options: types.map((type) => ({
                 label: type.name,

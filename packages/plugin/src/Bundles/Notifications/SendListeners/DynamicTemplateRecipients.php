@@ -25,7 +25,7 @@ class DynamicTemplateRecipients extends FeatureBundle
         $form = $event->getForm();
         $suppressors = $form->getSuppressors();
 
-        if ($suppressors->isDynamicRecipients()) {
+        if ($suppressors->isUserSelectNotifications()) {
             return;
         }
 

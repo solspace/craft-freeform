@@ -43,7 +43,12 @@ export const Icon = styled.div`
 export const Name = styled.div`
   flex-grow: 1;
   max-width: 90%;
+
+  padding: 1px 0;
+
   overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 type StatusProps = {

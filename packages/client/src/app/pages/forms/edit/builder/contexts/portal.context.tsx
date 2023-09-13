@@ -22,7 +22,7 @@ const PortalElement = styled.div`
   left: 0;
   right: 0;
   top: 0;
-  z-index: 10;
+  z-index: 1005;
 `;
 
 export const PortalProvider: React.FC<PropsWithChildren> = ({ children }) => {

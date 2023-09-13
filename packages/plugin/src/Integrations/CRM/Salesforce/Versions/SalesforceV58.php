@@ -202,7 +202,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
-        label: 'Check Contact email address and Account website when checking for duplicates?',
+        label: 'Check Contact email address and Account website when checking for duplicates',
         instructions: 'By default, Freeform will check against Contact first name, last name and email address, as well as and Account name. If enabled, Freeform will instead check against Contact email address only and Account website. If no website is mapped, Freeform will gather the website domain from the Contact email address mapped.',
         order: 18,
     )]
@@ -212,7 +212,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
-        label: 'Append checkbox group field values on Contact update?',
+        label: 'Append checkbox group field values on Contact update',
         instructions: 'If a Contact already exists in Salesforce, enabling this will append additional checkbox group field values to the Contact inside Salesforce, instead of overwriting the options.',
         order: 19,
     )]

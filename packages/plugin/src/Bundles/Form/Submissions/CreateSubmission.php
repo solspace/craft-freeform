@@ -27,9 +27,6 @@ class CreateSubmission extends FeatureBundle
     public function createSubmission(CreateSubmissionEvent $event): void
     {
         $form = $event->getForm();
-
-        $submission = Submission::create($form);
-
-        $form->setSubmission($submission);
+        $form->setSubmission(Submission::create($form));
     }
 }

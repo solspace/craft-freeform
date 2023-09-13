@@ -20,7 +20,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
     protected string $customInputType = 'tel';
 
     #[Input\Text(
-        label: "Pattern validation",
+        label: 'Pattern validation',
         instructions: "Use '0' (a digit between 0-9) and other characters, e.g. '(000) 000-0000' or '+0 0000 000000'.",
     )]
     protected ?string $pattern = null;

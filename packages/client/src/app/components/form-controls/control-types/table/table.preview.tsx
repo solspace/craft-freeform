@@ -27,7 +27,9 @@ export const TablePreview: React.FC<Props> = ({
   return (
     <PreviewWrapper data-edit={translate('Click to edit data')}>
       <PreviewTable>
-        {!options.length && <NoContent>{translate('Not configured yet')}</NoContent>}
+        {!options.length && (
+          <NoContent>{translate('Not configured yet')}</NoContent>
+        )}
         {options.map((option, index) => (
           <PreviewRow
             key={index}

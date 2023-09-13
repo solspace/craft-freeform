@@ -176,6 +176,7 @@ export type PageButtonsLayoutProperty = BaseProperty<
   string,
   PropertyType.PageButtonsLayout
 > & {
+  layouts: string[];
   elements: Array<{
     label: string;
     value: string;

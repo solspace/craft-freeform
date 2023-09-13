@@ -16,17 +16,6 @@ import {
   LayoutBlock,
 } from './layout.styles';
 
-const layouts = [
-  'back|submit|save',
-  'save|back|submit',
-  ' back|submit|save',
-  ' save|back|submit',
-  ' save|back|submit ',
-  ' back|submit|save ',
-  'back|submit save',
-  'save back|submit',
-];
-
 const icons: Record<string, ReactNode> = {
   save: <SaveIcon />,
   back: <BackIcon />,
@@ -36,6 +25,8 @@ const icons: Record<string, ReactNode> = {
 const PageButtonLayout: React.FC<
   ControlType<PageButtonsLayoutProperty, Page>
 > = ({ value, property, errors, updateValue, context }) => {
+  const { layouts } = property;
+
   const buttonState: Record<string, boolean> = {
     save: context?.buttons?.save?.enabled,
     back: context?.buttons?.back?.enabled,

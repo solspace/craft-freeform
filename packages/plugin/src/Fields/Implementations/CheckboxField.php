@@ -76,7 +76,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
 
     public function setValue(mixed $value): self
     {
-        $this->value = (bool) $value;
+        $this->value = $value;
 
         return $this;
     }

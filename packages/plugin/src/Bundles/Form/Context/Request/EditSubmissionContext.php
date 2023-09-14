@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Request;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ResetEvent;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use yii\base\Event;
@@ -56,6 +57,10 @@ class EditSubmissionContext
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             if (isset($submission->{$field->getHandle()})) {
                 $value = $submission->{$field->getHandle()}->getValue();
+
+                if ($field instanceof CheckboxField) {
+                    $field->setChecked((bool) $value);
+                }
 
                 $field->setValue($value);
             }

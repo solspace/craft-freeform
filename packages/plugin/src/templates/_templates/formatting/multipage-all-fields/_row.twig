@@ -1,0 +1,93 @@
+{% macro getFieldTemplate(type) -%}
+    {% set fieldTemplatePath = "freeform/_templates/formatting/multipage-all-fields/fields/" %}
+    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+{%- endmacro %}
+
+{% macro render(rows, form) %}
+    {% import _self as self %}
+
+    {% set totalPages = (form.pages|length) %}
+
+    {% for page in form.pages %}
+
+        <div class="freeform-page{% if form.currentPage.index == page.index %} freeform-page-active{% endif %}">
+            <h3 id="heading-{{ page.index + 1 }}">
+                {{ page.index + 1 }}. {{ page.label }}
+            </h3>
+
+            {# Show form field inputs if currently active page #}
+            {% if form.currentPage.index == page.index %}
+
+                {% for row in rows %}
+
+                    {% set width = (12 / (row|length)) %}
+
+                    <div{{ form.attributes.row }}>
+                        {% for field in row %}
+
+                            {% do field.setParameters({
+                                attributes: {
+                                    container: {
+                                        class: [
+                                            "freeform-col-" ~ width,
+                                            "freeform-fieldtype-" ~ field.type,
+                                        ],
+                                    }
+                                }
+                            }) %}
+
+                            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endfor %}
+
+            {# Show simplified field labels and values (if present) for all other pages #}
+            {% else %}
+
+                <table class="freeform-page-table">
+                    {% for row in page %}
+
+                        {% for field in row %}
+                            {% if field.type != "submit" and field.type != "save" %}
+                                <tr>
+                                    <th style="width: 30%;">{{ field.label }}</th>
+                                    <td>
+                                        {% if field.type == "password" %}
+                                            •••••
+                                        {% elseif field.type == "file" or field.type == "file-dnd" %}
+                                            {% set assetIds = field.value %}
+                                            {% if assetIds %}
+                                                {% for assetId in assetIds %}
+                                                    {% set asset = craft.assets.id(assetId).one() %}
+                                                    {% if asset %}
+                                                        {% if asset.kind == "image" %}
+                                                            <img src="{{ asset.url }}" style="max-width: 350px; max-height: 350px;" />
+                                                        {% else %}
+                                                            <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                                        {% endif %}
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        {% elseif field.type == "textarea" %}
+                                            {{ field.valueAsString|nl2br }}
+                                        {% else %}
+                                            {{ field.valueAsString }}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+
+                    {% endfor %}
+                </table>
+
+            {% endif %}
+
+        </div>
+
+    {% endfor %}
+
+{% endmacro %}

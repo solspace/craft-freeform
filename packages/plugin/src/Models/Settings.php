@@ -437,7 +437,7 @@ class Settings extends Model
 
     public function getDemoTemplateContent(string $name = 'flexbox'): string
     {
-        $path = __DIR__."/../templates/_defaultFormTemplates/{$name}.twig";
+        $path = __DIR__."/../templates/_templates/formatting/{$name}.twig";
         if (!file_exists($path)) {
             throw new FreeformException(
                 Freeform::t('Could not get demo template content. Please contact Solspace.')
@@ -475,7 +475,7 @@ class Settings extends Model
 
     public function getSuccessTemplateContent(): string
     {
-        $path = __DIR__.'/../templates/_successTemplates/default.twig';
+        $path = __DIR__.'/../templates/_templates/success/default.twig';
         if (!file_exists($path)) {
             throw new FreeformException(
                 Freeform::t(

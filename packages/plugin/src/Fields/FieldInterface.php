@@ -119,5 +119,5 @@ interface FieldInterface
 
     public function setParameters(array $parameters = null): void;
 
-    public function getCompiledAttributes(): FieldAttributesCollection;
+    public function getAttributes(): FieldAttributesCollection;
 }

@@ -76,7 +76,7 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
             }
 
             $attributes = $field
-                ->getCompiledAttributes()
+                ->getAttributes()
                 ->getInput()
                 ->clone()
                 ->merge($this->getAttributes()->getInput()->toArray())

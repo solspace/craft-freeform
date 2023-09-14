@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\FormAttributes;
+namespace Solspace\Freeform\Bundles\Form\Attributes;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;

@@ -16,13 +16,12 @@ use craft\helpers\Template;
 use GraphQL\Type\Definition\Type;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -94,7 +93,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
-    #[ValueTransformer(AttributesTransformer::class)]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
     )]
@@ -353,79 +352,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->required;
     }
 
-    // TODO: reimplement this
-    public function isHidden(): bool
-    {
-        return false;
-    }
-
     public function getAttributes(): FieldAttributesCollection
     {
-        if (null === $this->compiledAttributes) {
-            $this->compiledAttributes = $this->getCompiledAttributes();
-        }
-
-        return $this->compiledAttributes;
-    }
-
-    public function getCompiledAttributes(): FieldAttributesCollection
-    {
-        $attributes = $this->attributes->clone();
-        $formAttributes = $this->getForm()->getAttributes();
-        $fieldAttributes = $formAttributes->getNested('fields');
-        if (null === $fieldAttributes) {
-            return $attributes;
-        }
-
-        $implementationProvider = new ImplementationProvider();
-        $meta = [
-            ':required' => $this->isRequired(),
-            ':errors' => $this->hasErrors(),
-        ];
-
-        $matchedAttributes = [];
-        foreach ($fieldAttributes as $key => $value) {
-            if (preg_match('/^[@#:]/', $key)) {
-                unset($fieldAttributes[$key]);
-            }
-
-            $targets = array_map('trim', explode(',', $key));
-
-            $isMatching = false;
-            if (\in_array('#'.$this->getHandle(), $targets, true)) {
-                $isMatching = true;
-            }
-            if (\in_array('@'.$this->getType(), $targets, true)) {
-                $isMatching = true;
-            }
-            if (\in_array('@'.$this->getType(), $targets, true)) {
-                $isMatching = true;
-            }
-
-            $implementations = $implementationProvider->getImplementations($this::class);
-            foreach ($implementations as $implementation) {
-                if (\in_array(':'.$implementation, $targets, true)) {
-                    $isMatching = true;
-                }
-            }
-
-            foreach ($meta as $handle => $shouldTrigger) {
-                if ($shouldTrigger && \in_array($handle, $targets, true)) {
-                    $isMatching = true;
-                }
-            }
-
-            if ($isMatching) {
-                $matchedAttributes[] = $value;
-            }
-        }
-
-        $attributes->merge($fieldAttributes);
-        foreach ($matchedAttributes as $value) {
-            $attributes->merge($value);
-        }
-
-        return $attributes;
+        return $this->attributes;
     }
 
     public function getParameters(): Parameters

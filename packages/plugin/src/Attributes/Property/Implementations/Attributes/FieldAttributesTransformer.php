@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Attributes;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
-class AttributesTransformer implements TransformerInterface
+class FieldAttributesTransformer implements TransformerInterface
 {
     public function transform($value): FieldAttributesCollection
     {

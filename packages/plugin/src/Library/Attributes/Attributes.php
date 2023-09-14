@@ -126,9 +126,13 @@ class Attributes implements \Countable, \JsonSerializable, \IteratorAggregate
 
                 $removable = array_map('trim', $removable);
 
-                $attributes = explode(' ', $this->attributes[$key]);
+                $attributes = explode(' ', $this->attributes[$key] ?? '');
                 $attributes = array_filter($attributes, fn ($attribute) => !\in_array($attribute, $removable, true));
                 $this->attributes[$key] = implode(' ', $attributes);
+
+                if (empty($this->attributes[$key])) {
+                    unset($this->attributes[$key]);
+                }
 
                 break;
 

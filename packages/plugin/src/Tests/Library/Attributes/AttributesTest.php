@@ -211,6 +211,14 @@ class AttributesTest extends TestCase
         $this->assertEquals(' class="class-1 class-2 extra-class append-class"', (string) $attributes);
     }
 
+    public function testRemoveNonExisting()
+    {
+        $attributes = new Attributes();
+
+        $attributes->set('-class', 'extra-class');
+        $this->assertEquals('', (string) $attributes);
+    }
+
     public function testRemoveOneWithMinus()
     {
         $attributes = new Attributes();

@@ -2,12 +2,8 @@
 
 namespace Solspace\Freeform\Library\Processors;
 
-use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Library\Attributes\Attributes;
-use Solspace\Freeform\Library\Helpers\AttributeHelper;
-use yii\di\Container;
 
 class FieldRenderOptionProcessor extends AbstractOptionProcessor
 {

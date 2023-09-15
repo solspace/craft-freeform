@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.3 - 2023-09-15
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- The `labels` and `labelsAsString` methods are now available for all _option_ field types. This allows you to choose between displaying option labels instead of values when loading submission data in front end or email notifications.
+- The `implements` method is available to all fields for Twig-friendly implementation checks, e.g. `field.implements('options')`.
+
+### Changed
+- Improved various features within the form builder.
+- Improved the _Template Overrides_ feature.
+- The `valueAsString` method no longer takes a parameter.
+
+### Fixed
+- Fixed various minor display issues in the form builder.
+- Fixed various default setting issues in the form builder.
+- Fixed various Lite/Pro checks throughout the plugin.
+- Fixed a bug where Export Profiles and Export Notifications areas in the CP were erroring.
+- Fixed a bug where editing existing submissions in the front end was not working.
+
 ## 5.0.0-beta.2 - 2023-09-07
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
@@ -19,28 +39,28 @@
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
-- Added **Group** field type, allowing you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
-- Added ability to create **Custom field types**.
-- Added ability to save fields as **Favorites** for quick use in other forms.
-- Added ability to search across other forms to reuse fields in forms.
-- Added an `Attributes` object for the `Form` and `Field`, which is capable of storing the HTML attributes for various elements that each form or field has.
-- Added a `Settings` object to access all of the form's settings assigned to it in the form builder.
-- Added a basic **Multipage All Fields** formatting template (replaces the **Bootstrap 5 Multipage All Fields** template).
-- Added the ability to set complex conditional email notifications inside the form builder.
-- Added global `freeform` variable so that queries can be done shorthand as `freeform.form`, etc.
+- The **Group** field type allows you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
+- **Custom field types** are available to be created now.
+- Fields can be saved as **Favorites** for quick use in other forms.
+- Fields from other forms can be **searched** and reused in your form.
+- The **Template Overrides** feature enables modification of attributes for the form, fields, and buttons, as well as overriding field labels, values, and instructions at the template-level.
+- The **Settings** object allows you to access all of the form's settings assigned to it in the form builder, e.g. `form.settings.errorMessage`.
+- The **Multipage All Fields** formatting template replaces the **Bootstrap 5 Multipage All Fields** template.
+- Configure email notifications in the form builder using complex conditional rules based on field data.
+- The global `freeform` variable allows shorthand for template queries, e.g. `freeform.form` instead of `craft.freeform.form`.
 
 ### Changed
 - **Control Panel**
     - The **Dashboard** and **Forms** pages have been combined and redesigned.
-    - Renamed the **Email Notifications** subnav menu item to **Notifications**.
+    - The **Email Notifications** subnav menu item has been renamed to **Notifications**.
 - **Form Builder**
     - Completely redesigned the form builder.
         - Settings and other features are now in full-page tabs to allow for lots of room to configure.
         - Fields are specific to forms and added by dragging fresh field types into the layout.
     - Reorganized all form settings and behaviors into multiple subsections of a unified **Settings** tab.
     - Reorganized **Email Marketing**, **CRM**, **Element**, **Stripe**, **Captcha**, **POST Forwarding** and **Google Tag Manager** settings into multiple subsections of a unified **Integrations** tab.
-    - Improved the **Conditional Rules** tab to include a field map along with visual cues, making configuration faster and less confusing.
-    - Changed some of the option values for the **Duplicate Check** (formerly _Limit Form Submission Rate_) setting.
+    - The **Conditional Rules** tab has been greatly improved to include a field map along with visual cues, making configuration faster and less confusing.
+    - Some of the option values for the **Duplicate Check** (formerly _Limit Form Submission Rate_) setting have been changed.
 - **Fields**
     - Fields are now created and specific to each form (vs. being global to all forms).
     - Fields can be saved as Favorites or searched upon to be reused in other forms.
@@ -55,7 +75,7 @@
     - The **Submit** and **Save & Continue Later** buttons are now automatically inserted at the end of each form page.
     - The **Opinion Scale** field type markup for manual templating has been adjusted slightly.
 - **Email Notifications**
-    - Updated the form builder to have a **Notifications** tab dedicated to configuring all types of email notifications (except for template-level ones).
+    - The form builder now has a **Notifications** tab dedicated to configuring all types of email notifications (except for template-level ones).
 - **Integrations**
     - The **Element Connections** feature is now referred simply to **Element** integrations.
     - **Element** integrations are now set up in the Freeform settings area and then configured per form.
@@ -70,15 +90,14 @@
     - The **dotmailer** integration has been updated and renamed to **Dotdigital**.
     - All **MailingList**/**mailing_list**, etc, references in the code and database have been renamed to **EmailMarketing**/**email_marketing**, etc.
 - **Settings**
-    - Combined the _Formatting Templates_, _Email Templates_ and _Success Templates_ settings pages into a single **Template Manager** settings page.
+    - The _Formatting Templates_, _Email Templates_ and _Success Templates_ settings pages have all been combined into a single **Template Manager** settings page.
     - Reorganized and adjusted settings pages.
     - The **Limit Form Submission Rate** setting has been renamed to **Duplicate Check**. Available options have been revised and renamed for clarity as well.
 - **Spam Protection**
-    - Renamed the **Javascript Enhancement** feature to **Javascript Test**.
+    - The **Javascript Enhancement** feature has been renamed to **Javascript Test**.
     - **Captchas** are now stored as integrations, can have multiple configured per site, and can be turned on/off and further configured at the form level inside the form builder, e.g. stricter settings, different behavior, etc.
     - The **reCAPTCHA v2 Checkbox** and **hCaptcha Checkbox** special fields are now inserted into the form automatically (before the Submit button).
 - **Templating**
-    - The `overrideValues` parameter for Form queries has been renamed to `values`.
     - The `suppress` parameter (for suppressing email notifications and integrations when editing submissions on the front end) has had the `dynamicRecipients`, `submitterNotifications`, `connections` parameter names changed to `userSelectNotifications`, `emailFieldNotifications`, and `elements`, respectively. An additional `conditionalNotifications` parameter has been added to account for the new _Conditional Notifications_ feature.
     - All formatting templates have been updated and improved.
     - The **Bootstrap 5 Multipage All Fields** formatting template has been transitioned to a "Basic" non-Bootstrap version, now called **Multipage All Fields**.
@@ -101,6 +120,7 @@
 - The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
 - The **Resources** area inside the Freeform control panel has been removed.
 - The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
+- The `overrideValues` parameter for Form queries has been removed. Please use the `value` parameter in the new **Template Overrides** feature.
 - The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
 - The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
 - The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.

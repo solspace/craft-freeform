@@ -74,7 +74,7 @@
                         </tr>
                         {% for field in submission %}
                             <tr>
-                                <th style="width: 20%;">{{ field.label }}</th>
+                                <th style="width: 20%;">{{ field.label|raw }}</th>
                                 <td>
                                     {% if field.type == "file" %}
 
@@ -117,7 +117,11 @@
                                             <img src="{{ submission[field.handle] }}" alt="">
                                         {% endif %}
                                     {% else %}
-                                        {{ submission[field.handle] }}
+                                        {% if field.implements('options') %}
+                                            {{ submission[field.handle].labelsAsString }}
+                                        {% else %}
+                                            {{ submission[field.handle].valueAsString }}
+                                        {% endif %}
                                     {% endif %}
                                 </td>
                             </tr>

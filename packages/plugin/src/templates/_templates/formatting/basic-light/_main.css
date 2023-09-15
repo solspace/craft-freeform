@@ -216,7 +216,7 @@ button[type=submit].freeform-processing:before {
 .freeform-row [class*="freeform-col-"] input::placeholder,
 .freeform-row [class*="freeform-col-"] textarea::placeholder {
     font: normal 16px sans-serif;
-    color: #6c757d;
+    color: #959ea5;
 }
 .freeform-row [class*="freeform-col-"] input.freeform-has-errors,
 .freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--invalid,

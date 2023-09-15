@@ -14,9 +14,8 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Input\Hidden;
-use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 
 #[Type(
@@ -25,7 +24,7 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
     iconPath: __DIR__.'/Icons/dropdown.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/dropdown.ejs',
 )]
-class DropdownField extends BaseOptionsField implements DefaultValueInterface
+class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInterface
 {
     #[Hidden]
     protected string $defaultValue = '';
@@ -61,21 +60,6 @@ class DropdownField extends BaseOptionsField implements DefaultValueInterface
         $output .= '</select>';
 
         return $output;
-    }
-
-    public function getValueAsString(bool $optionsAsValues = true): string
-    {
-        if (!$optionsAsValues) {
-            return $this->getValue();
-        }
-
-        foreach ($this->getOptions() as $option) {
-            if ($option instanceof Option && $option->getValue() === $this->getValue()) {
-                return $option->getLabel();
-            }
-        }
-
-        return '';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

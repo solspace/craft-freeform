@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     iconPath: __DIR__.'/../Icons/rating.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rating.ejs',
 )]
-class RatingField extends AbstractField implements ExtraFieldInterface, OptionsInterface
+class RatingField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface
 {
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;

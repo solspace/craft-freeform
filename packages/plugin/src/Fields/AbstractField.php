@@ -22,6 +22,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -375,7 +376,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * Gets whatever value is set and returns its string representation.
      */
-    public function getValueAsString(bool $optionsAsValues = true): string
+    public function getValueAsString(): string
     {
         $value = $this->getValue();
 
@@ -488,6 +489,24 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         if (!$event->isValid) {
             $this->errors = [];
         }
+    }
+
+    public function implements(string ...$interfaces): bool
+    {
+        static $provider;
+        if (null === $provider) {
+            $provider = new ImplementationProvider();
+        }
+
+        $implementations = $provider->getImplementations($this::class);
+
+        foreach ($interfaces as $interface) {
+            if (\in_array($interface, $implementations, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -66,9 +66,8 @@
             </div>
 
             <div class="form-field">
-                {# Completely manual - for the value, it uses 'valueAsString' as opposed to 'value' since Email fields are currently stored as an array #}
                 <label>Email Address</label>
-                <input name="email" value="{{ email.valueAsString }}" />
+                <input name="email" value="{{ email.value }}" />
                 {{ form.get("email").renderErrors() }}
             </div>
 

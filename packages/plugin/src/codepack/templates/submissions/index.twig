@@ -76,7 +76,13 @@
                             {% endif %}
                             </td>
                         {% else %}
-                            <td>{{ submission[field.handle]|truncate(40, '...') }}</td>
+                            <td>
+                            {% if field.implements('options') %}
+                                {{ submission[field.handle].labelsAsString|truncate(40, '...') }}
+                            {% else %}
+                                {{ submission[field.handle].valueAsString|truncate(40, '...') }}
+                            {% endif %}
+                            </td>
                         {% endif %}
                     {% endfor %}
                     {% if freeform.pro %}

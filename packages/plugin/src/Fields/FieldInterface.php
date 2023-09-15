@@ -120,4 +120,6 @@ interface FieldInterface
     public function setParameters(array $parameters = null): void;
 
     public function getAttributes(): FieldAttributesCollection;
+
+    public function implements(string ...$interfaces): bool;
 }

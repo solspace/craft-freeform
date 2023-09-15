@@ -54,6 +54,7 @@ export const CUSTOMER_MAPPING_TYPES = [
   FieldTypes.NUMBER,
   FieldTypes.REGEX,
   FieldTypes.CONFIRMATION,
+  FieldTypes.PHONE,
 ];
 
 export const PAYMENT_FIELD_MAPPING_MAP = {

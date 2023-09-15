@@ -17,4 +17,8 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 interface OptionsInterface
 {
     public function getOptions(): OptionCollection;
+
+    public function getLabels(): array;
+
+    public function getLabelsAsString(): string;
 }

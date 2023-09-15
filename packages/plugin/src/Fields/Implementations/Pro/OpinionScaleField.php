@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\ScalesTra
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
@@ -21,7 +21,7 @@ use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
     iconPath: __DIR__.'/../Icons/opinion-scale.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/opinion-scale.ejs',
 )]
-class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
+class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface
 {
     #[ValueTransformer(ScalesTransformer::class)]
     #[Input\TabularData(

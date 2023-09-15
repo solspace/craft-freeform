@@ -116,7 +116,7 @@ class CreditCardDetailsField extends AbstractField implements PaymentInterface, 
         return SubmissionHookHandler::renderColumn(SubmissionHookHandler::COLUMN_STATUS);
     }
 
-    public function getValueAsString(bool $optionsAsValues = true): string
+    public function getValueAsString(): string
     {
         return '';
     }

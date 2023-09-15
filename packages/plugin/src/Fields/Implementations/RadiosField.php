@@ -16,7 +16,7 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Hidden;
-use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
@@ -27,7 +27,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     iconPath: __DIR__.'/Icons/radios.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radios.ejs',
 )]
-class RadiosField extends BaseOptionsField implements OneLineInterface, DefaultValueInterface
+class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface, DefaultValueInterface
 {
     use OneLineTrait;
 
@@ -79,21 +79,6 @@ class RadiosField extends BaseOptionsField implements OneLineInterface, DefaultV
         }
 
         return $output;
-    }
-
-    public function getValueAsString(bool $optionsAsValues = true): string
-    {
-        if (!$optionsAsValues) {
-            return $this->getValue();
-        }
-
-        foreach ($this->getOptions() as $option) {
-            if ($option instanceof Option && $option->getValue() === $this->getValue()) {
-                return $option->getLabel();
-            }
-        }
-
-        return '';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

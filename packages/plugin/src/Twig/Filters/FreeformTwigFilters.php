@@ -17,7 +17,7 @@ class FreeformTwigFilters extends AbstractExtension
     public function truncateFilter($input, $length = 50, $ellipsis = '...'): string
     {
         if (\strlen($input) <= $length) {
-            return $input;
+            return $input ?? '';
         }
 
         return substr($input, 0, $length - \strlen($ellipsis)).'...';

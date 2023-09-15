@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.1.8 - 2023-09-15
+
+### Changed
+- Updated `stripe/stripe-php` dependency to align with Craft Commerce.
+- Updated the Stripe Payments integration to support mapping Phone field types.
+
 ## 4.1.7 - 2023-09-08
 
 ### Added

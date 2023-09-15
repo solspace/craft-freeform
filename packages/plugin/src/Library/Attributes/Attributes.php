@@ -2,19 +2,15 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
-use craft\helpers\ArrayHelper;
 use Solspace\Commons\Helpers\StringHelper;
 
-class Attributes implements \Countable, \JsonSerializable
+class Attributes implements \Countable, \JsonSerializable, \IteratorAggregate
 {
     public const STRATEGY_APPEND = 'append';
     public const STRATEGY_REMOVE = 'remove';
     public const STRATEGY_REPLACE = 'replace';
 
-    private const KEY_NESTED = '__nested';
-
     private array $attributes = [];
-    private array $nestedAttributes = [];
 
     public function __construct(array $attributes = [])
     {
@@ -77,7 +73,7 @@ class Attributes implements \Countable, \JsonSerializable
 
     public function getNested(string $name): ?array
     {
-        return $this->nestedAttributes[$name] ?? null;
+        return null;
     }
 
     public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
@@ -130,9 +126,13 @@ class Attributes implements \Countable, \JsonSerializable
 
                 $removable = array_map('trim', $removable);
 
-                $attributes = explode(' ', $this->attributes[$key]);
+                $attributes = explode(' ', $this->attributes[$key] ?? '');
                 $attributes = array_filter($attributes, fn ($attribute) => !\in_array($attribute, $removable, true));
                 $this->attributes[$key] = implode(' ', $attributes);
+
+                if (empty($this->attributes[$key])) {
+                    unset($this->attributes[$key]);
+                }
 
                 break;
 
@@ -169,24 +169,23 @@ class Attributes implements \Countable, \JsonSerializable
         return $this->set($key, $value);
     }
 
-    public function merge(array $attributes): self
+    public function merge(array|self $attributes): self
     {
         $reflection = new \ReflectionClass($this);
 
-        if (isset($attributes[self::KEY_NESTED])) {
-            $this->nestedAttributes = ArrayHelper::merge($this->nestedAttributes, $attributes[self::KEY_NESTED]);
-            unset($attributes[self::KEY_NESTED]);
-        }
-
-        foreach ($attributes as $key => $value) {
-            if (str_starts_with($key, '@')) {
-                $nestedKey = substr($key, 1);
-                $this->nestedAttributes[$nestedKey] = ArrayHelper::merge(
-                    $this->nestedAttributes[$nestedKey] ?? [],
-                    $value
-                );
-                unset($attributes[$key]);
+        if ($attributes instanceof self) {
+            foreach ($attributes->attributes as $key => $value) {
+                $this->set($key, $value);
             }
+
+            foreach ($this->getSubAttributes() as $name => $nestedAttribute) {
+                $item = $attributes->{$name} ?? null;
+                if ($item instanceof self) {
+                    $nestedAttribute->merge($item);
+                }
+            }
+
+            return $this;
         }
 
         foreach ($reflection->getProperties() as $property) {
@@ -239,9 +238,6 @@ class Attributes implements \Countable, \JsonSerializable
     {
         $reflection = new \ReflectionClass($this);
         $array = $this->attributes;
-        if (!empty($this->nestedAttributes)) {
-            $array[self::KEY_NESTED] = $this->nestedAttributes;
-        }
 
         foreach ($reflection->getProperties() as $property) {
             $type = $property->getType();
@@ -256,5 +252,25 @@ class Attributes implements \Countable, \JsonSerializable
     public function jsonSerialize(): object
     {
         return (object) $this->toArray();
+    }
+
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->attributes);
+    }
+
+    private function getSubAttributes(): array
+    {
+        $reflection = new \ReflectionClass($this);
+        $attributes = [];
+
+        foreach ($reflection->getProperties() as $property) {
+            $type = $property->getType();
+            if ($type && self::class === $type->getName()) {
+                $attributes[$property->getName()] = $this->{$property->getName()};
+            }
+        }
+
+        return $attributes;
     }
 }

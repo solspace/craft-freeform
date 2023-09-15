@@ -35,8 +35,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Solspace\\Freeform\\": "packages/plugin/src/",
-      "Solspace\\Tests\\Freeform\\": "packages/plugin/tests"
+      "Solspace\\Freeform\\": "packages/plugin/src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Solspace\\Freeform\\Tests\\": "packages/plugin/src/Tests/"
     }
   },
   "scripts": {

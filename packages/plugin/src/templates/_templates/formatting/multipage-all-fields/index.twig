@@ -1,0 +1,80 @@
+{# Pull in CSS and field rendering #}
+<style>
+    {% include "freeform/_templates/formatting/multipage-all-fields/_main.css" %}
+</style>
+{% import "freeform/_templates/formatting/multipage-all-fields/_row.twig" as rowMacro %}
+
+{# Render the opening form tag #}
+{{ form.renderTag({
+    attributes: {
+        row: { class: "freeform-row" },
+        success: { class: "freeform-form-success" },
+        errors: { class: "freeform-form-errors" },
+    },
+    fields: {
+        "@global": {
+            attributes: {
+                input: {
+                    novalidate: true,
+                    class: "freeform-input",
+                },
+                label: { class: "freeform-label" },
+                instructions: { class: "freeform-instructions" },
+                error: { class: "freeform-errors" },
+            }
+        },
+        ":required": {
+            attributes: {
+                label: { "+class": "freeform-required" },
+            }
+        },
+        ":errors": {
+            attributes: {
+                input: { "+class": "is-invalid has-validation" },
+            },
+        },
+        "@group": {
+            attributes: {
+                label: { "+class": "group-label" },
+            }
+        },
+        "@signature": {
+            attributes: {
+                input: { "-class": "freeform-input" },
+            },
+        },
+    },
+}) }}
+
+{# Pull in JS overrides #}
+<script>
+    {% include "freeform/_templates/formatting/multipage-all-fields/_main.js" %}
+</script>
+
+{# Success and error message handling for non-AJAX forms #}
+{% if not form.settings.ajax %}
+    {% if form.submittedSuccessfully %}
+        <div{{ form.attributes.success }}>
+            <p>{{ form.settings.successMessage | t('freeform') }}</p>
+        </div>
+    {% endif %}
+    {% if form.hasErrors %}
+        <div{{ form.attributes.errors }}>
+            <p>{{ form.settings.errorMessage | t('freeform') }}</p>
+
+            {% if form.errors|length %}
+                <ul>
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+{# Display form field rows and columns #}
+{{ rowMacro.render(form.rows, form) }}
+
+{# Render the closing form tag #}
+{{ form.renderClosingTag }}

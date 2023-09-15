@@ -100,7 +100,7 @@ class SettingsService extends BaseService
 
     public function getSolspaceFormTemplateDirectory(): string
     {
-        return __DIR__.'/../templates/_defaultFormTemplates';
+        return __DIR__.'/../templates/_templates/formatting';
     }
 
     /**

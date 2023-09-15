@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\ButtonTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
@@ -11,8 +11,12 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 
 class PageButtons
 {
-    public const PREVIOUS_PAGE_INPUT_NAME = 'form_previous_page_button';
-    public const SUBMIT_INPUT_NAME = 'form_page_submit';
+    public const ACTION_SUBMIT = 'submit';
+    public const ACTION_BACK = 'back';
+    public const ACTION_SAVE = 'save';
+
+    public const INPUT_NAME_PREVIOUS_PAGE = 'form_previous_page_button';
+    public const INPUT_NAME_SUBMIT = 'form_page_submit';
 
     #[Section(
         handle: 'general',
@@ -71,7 +75,7 @@ class PageButtons
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
-    #[ValueTransformer(AttributesTransformer::class)]
+    #[ValueTransformer(PageButtonAttributesTransformer::class)]
     #[Input\Attributes]
     private ButtonAttributesCollection $attributes;
 

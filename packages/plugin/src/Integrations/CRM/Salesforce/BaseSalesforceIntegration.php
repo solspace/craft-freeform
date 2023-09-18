@@ -120,7 +120,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
             }
 
             $type = match ($field->type) {
-                'string', 'textarea', 'email', 'url', 'address', 'picklist', 'phone', 'reference' => FieldObject::TYPE_STRING,
+                'string', 'encryptedstring', 'textarea', 'email', 'url', 'address', 'picklist', 'phone', 'reference' => FieldObject::TYPE_STRING,
                 'int', 'number', 'currency' => FieldObject::TYPE_NUMERIC,
                 'boolean' => FieldObject::TYPE_BOOLEAN,
                 'multipicklist' => FieldObject::TYPE_ARRAY,

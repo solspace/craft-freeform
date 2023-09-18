@@ -390,6 +390,7 @@ class SalesforceLead extends AbstractSalesforceIntegration
 
             switch ($field->type) {
                 case 'string':
+                case 'encryptedstring':
                 case 'textarea':
                 case 'email':
                 case 'url':

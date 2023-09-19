@@ -59,7 +59,8 @@
     .freeform-row .freeform-column .input-group-one-line label {
         padding-right: 10px;
     }
-    .freeform-row .freeform-column .freeform-label {
+    .freeform-row .freeform-column .freeform-label,
+    .freeform-group .freeform-label {
         font-weight: bold;
     }
     .freeform-row .freeform-column .freeform-label.freeform-required:after {
@@ -111,8 +112,12 @@
         border-radius: 5px;
         color: #721c24;
     }
-    .freeform-form-errors>p {
+    .freeform-form-errors > p {
         margin: 0;
+    }
+    .freeform-group {
+        width: 100%;
+        padding: 0 15px;
     }
 </style>
 
@@ -220,28 +225,39 @@ if (form) {
     </ul>
 {% endif %}
 
+{# Build form rows and fields #}
+{% macro renderRows(form, rows) %}
+    {% for row in rows %}
+        {% set width = (12 / (row|length)) %}
+        <div{{ form.attributes.row }}>
+            {% for field in row %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: { class: [
+                            "freeform-column-" ~ width,
+                            "freeform-fieldtype-" ~ field.type,
+                        ]},
+                    },
+                }) %}
+                {% if field.type == "group" %}
+                    <div class="freeform-group">
+                        <label{{ field.attributes.label }}>
+                            {{ field.label }}
+                        </label>
+                        <div>
+                            {{ _self.renderRows(form, field.layout) }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ field.render }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
 {# Display form field rows and columns #}
-{% for row in form.rows %}
-    {% set width = (12 / (row|length)) %}
-
-    <div{{ form.attributes.row }}>
-
-        {% for field in row %}
-
-            {% do field.setParameters({
-                attributes: {
-                    container: { class: [
-                        "freeform-column-" ~ width,
-                        "freeform-fieldtype-" ~ field.type,
-                    ]},
-                },
-            }) %}
-
-            {{ field.render }}
-
-        {% endfor %}
-    </div>
-{% endfor %}
+{{ _self.renderRows(form, form.rows) }}
 
 {# Render the closing form tag #}
 {{ form.renderClosingTag }}

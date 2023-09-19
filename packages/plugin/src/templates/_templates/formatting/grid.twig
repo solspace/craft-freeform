@@ -255,28 +255,41 @@ if (form) {
     </ul>
 {% endif %}
 
+
+{% macro renderRows(form, rows) %}
+    {% for row in rows %}
+        {% set width = (12 / (row|length)) %}
+
+        <div{{ form.attributes.row }}>
+
+            {% for field in row %}
+
+                {% do field.setParameters({
+                    attributes: {
+                        container: { class: [
+                            "freeform-column-" ~ width,
+                            "freeform-fieldtype-" ~ field.type,
+                        ]},
+                    },
+                }) %}
+
+                {% if field.type == "group" %}
+
+                    {{ _self.renderRows(form, field.layout) }}
+
+                {% else %}
+
+                    {{ field.render }}
+
+                {% endif %}
+
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
 {# Display form field rows and columns #}
-{% for row in form.rows %}
-    {% set width = (12 / (row|length)) %}
-
-    <div{{ form.attributes.row }}>
-
-        {% for field in row %}
-
-            {% do field.setParameters({
-                attributes: {
-                    container: { class: [
-                        "freeform-column-" ~ width,
-                        "freeform-fieldtype-" ~ field.type,
-                    ]},
-                },
-            }) %}
-
-            {{ field.render }}
-
-        {% endfor %}
-    </div>
-{% endfor %}
+{{ _self.renderRows(form, form.rows) }}
 
 {# Render the closing form tag #}
 {{ form.renderClosingTag }}

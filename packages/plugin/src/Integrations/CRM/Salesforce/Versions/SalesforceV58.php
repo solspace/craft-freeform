@@ -23,12 +23,10 @@ use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingT
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
-use yii\base\Event;
 
 #[Type(
     name: 'Salesforce (v58)',
@@ -342,6 +340,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             return;
         }
 
+        $mapping = $this->triggerPushEvent(self::CATEGORY_LEAD, $mapping);
+
         try {
             $response = $client->post(
                 $this->getEndpoint('/sobjects/Lead'),
@@ -353,11 +353,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 ]
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_LEAD, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
@@ -372,7 +368,6 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         $contactMapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
 
         $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
-
         if (!$mapping) {
             return;
         }
@@ -450,6 +445,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     $mapping = $this->appendValues($mapping, $accountRecord, $appendAccountFields);
                 }
 
+                $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
                 $response = $client->patch(
                     $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id),
                     ['json' => $mapping],
@@ -457,6 +453,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
                 $this->accountId = $accountRecord->Id;
             } else {
+                $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
                 $response = $client->post(
                     $this->getEndpoint('/sobjects/Account'),
                     ['json' => $mapping],
@@ -467,11 +464,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 $this->accountId = $json->id;
             }
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_ACCOUNT, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
@@ -551,11 +544,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 );
             }
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
@@ -590,11 +579,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 ['json' => $mapping],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_OPPORTUNITY, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_OPPORTUNITY, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

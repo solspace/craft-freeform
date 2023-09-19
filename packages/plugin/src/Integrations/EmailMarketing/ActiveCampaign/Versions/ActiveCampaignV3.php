@@ -20,10 +20,8 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\ActiveCampaign\BaseActiveCampaignIntegration;
-use yii\base\Event;
 
 #[Type(
     name: 'ActiveCampaign (v3)',
@@ -116,11 +114,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                 ],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACTS, $response);
 
             $json = json_decode((string) $response->getBody());
 
@@ -141,11 +135,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                 ],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_LISTS, $response);
 
             foreach ($mapping as $key => $value) {
                 $fieldId = (string) $key;
@@ -167,11 +157,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                     ],
                 );
 
-                Event::trigger(
-                    $this,
-                    self::EVENT_AFTER_RESPONSE,
-                    new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
-                );
+                $this->triggerAfterResponseEvent(self::CATEGORY_FIELD_VALUES, $response);
             }
 
             if ($contactId && $tags) {
@@ -191,11 +177,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                             ],
                         );
 
-                        Event::trigger(
-                            $this,
-                            self::EVENT_AFTER_RESPONSE,
-                            new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
-                        );
+                        $this->triggerAfterResponseEvent(self::CATEGORY_TAGS, $response);
                     }
                 }
             }

@@ -6,8 +6,9 @@ use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Elements\ElementFieldMappingHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Connections\ConnectEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Events\Integrations\ElementIntegrations\ConnectEvent;
+use Solspace\Freeform\Events\Integrations\ElementIntegrations\ValidateEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
@@ -68,7 +69,25 @@ class ElementsBundle extends FeatureBundle
         $integrations = $this->getElementIntegrations($form);
         foreach ($integrations as $integration) {
             $element = $integration->buildElement($form);
+
+            $event = new ValidateEvent($form, $integration, $element);
+            Event::trigger(
+                ElementIntegrationInterface::class,
+                ElementIntegrationInterface::EVENT_BEFORE_VALIDATE,
+                $event,
+            );
+
+            if (!$event->isValid) {
+                continue;
+            }
+
             $element->validate();
+
+            Event::trigger(
+                ElementIntegrationInterface::class,
+                ElementIntegrationInterface::EVENT_AFTER_VALIDATE,
+                $event,
+            );
 
             if ($element->hasErrors()) {
                 $this->mappingHelper->attachErrors($form, $element, $integration);

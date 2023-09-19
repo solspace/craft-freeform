@@ -13,9 +13,12 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Freeform;
+use yii\base\Event;
 
 abstract class BaseIntegration implements IntegrationInterface
 {
@@ -88,6 +91,12 @@ abstract class BaseIntegration implements IntegrationInterface
     public function getTypeDefinition(): Type
     {
         return $this->typeDefinition;
+    }
+
+    protected function triggerAfterResponseEvent(string $category, ResponseInterface $response): void
+    {
+        $event = new IntegrationResponseEvent($this, $category, $response);
+        Event::trigger($this, self::EVENT_AFTER_RESPONSE, $event);
     }
 
     protected function getProcessedValue(mixed $value): bool|string|null

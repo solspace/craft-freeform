@@ -237,6 +237,8 @@ class ZohoV2 extends BaseZohoIntegration
                 ],
             );
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
+
             $json = json_decode((string) $response->getBody(), true);
 
             $this->processZohoResponseError($json);
@@ -266,6 +268,8 @@ class ZohoV2 extends BaseZohoIntegration
                     ],
                 ],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
 
             $json = json_decode((string) $response->getBody(), true);
 
@@ -305,6 +309,8 @@ class ZohoV2 extends BaseZohoIntegration
                 ],
             );
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
+
             $json = json_decode((string) $response->getBody(), true);
 
             $this->processZohoResponseError($json);
@@ -343,6 +349,8 @@ class ZohoV2 extends BaseZohoIntegration
                     ],
                 ],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
 
             $json = json_decode((string) $response->getBody(), true);
 

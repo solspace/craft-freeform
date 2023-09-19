@@ -12,7 +12,6 @@ use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
@@ -23,8 +22,6 @@ use Solspace\Freeform\Services\BaseService;
 
 abstract class AbstractIntegrationService extends BaseService
 {
-    public const EVENT_FETCH_TYPES = 'fetchTypes';
-
     public function __construct(
         $config = [],
         protected FormIntegrationsProvider $formIntegrationsProvider,
@@ -32,14 +29,6 @@ abstract class AbstractIntegrationService extends BaseService
         protected PropertyProvider $propertyProvider,
     ) {
         parent::__construct($config);
-    }
-
-    /**
-     * @return IntegrationInterface[]
-     */
-    public function getFormIntegrations(Form $form): array
-    {
-        return $this->formIntegrationsProvider->getForForm($form, $this->getIntegrationType());
     }
 
     public function getAllServiceProviders(): array
@@ -84,21 +73,6 @@ abstract class AbstractIntegrationService extends BaseService
         }
 
         return $models;
-    }
-
-    /**
-     * @return IntegrationInterface[]
-     */
-    public function getAllIntegrationObjects(): array
-    {
-        $models = $this->getAllIntegrations();
-
-        $integrations = [];
-        foreach ($models as $model) {
-            $integrations[] = $model->getIntegrationObject();
-        }
-
-        return $integrations;
     }
 
     public function getIntegrationObjectById(int $id): IntegrationInterface

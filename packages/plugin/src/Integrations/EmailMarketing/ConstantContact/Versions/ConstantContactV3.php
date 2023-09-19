@@ -20,10 +20,8 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\ConstantContact\BaseConstantContactIntegration;
-use yii\base\Event;
 
 #[Type(
     name: 'Constant Contact (v3)',
@@ -142,11 +140,7 @@ class ConstantContactV3 extends BaseConstantContactIntegration
                 ['json' => $contactData],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CONTACT_CUSTOM, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_CUSTOM, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

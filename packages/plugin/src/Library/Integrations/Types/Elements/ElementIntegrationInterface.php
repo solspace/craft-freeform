@@ -10,6 +10,10 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 interface ElementIntegrationInterface extends IntegrationInterface
 {
     public const EVENT_PROCESS_VALUE = 'process-value';
+
+    public const EVENT_BEFORE_VALIDATE = 'before-validate';
+    public const EVENT_AFTER_VALIDATE = 'after-validate';
+
     public const EVENT_BEFORE_CONNECT = 'before-connect';
     public const EVENT_AFTER_CONNECT = 'after-connect';
 

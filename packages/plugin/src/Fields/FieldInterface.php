@@ -23,6 +23,9 @@ interface FieldInterface
     public const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
     public const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
 
+    public const EVENT_BEFORE_SAVE = 'before-save';
+    public const EVENT_AFTER_SAVE = 'after-save';
+
     public const EVENT_VALIDATE = 'validate';
 
     public const TYPE_TEXT = 'text';

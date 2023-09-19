@@ -51,7 +51,7 @@ class FieldsBundle extends FeatureBundle
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
-        $event->addType(
+        $event->addBuiltInType(
             // Standard fields
             TextField::class,
             TextareaField::class,

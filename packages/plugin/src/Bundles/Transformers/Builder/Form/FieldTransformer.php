@@ -21,7 +21,19 @@ class FieldTransformer
 
         $properties = [];
         foreach ($editableProperties as $property) {
-            $value = $this->propertyAccess->getValue($field, $property->handle);
+            $reflectionProperty = new \ReflectionProperty($field, $property->handle);
+
+            $isAccessible = $reflectionProperty->isPublic();
+            if (!$isAccessible) {
+                $reflectionProperty->setAccessible(true);
+            }
+
+            $value = $reflectionProperty->getValue($field);
+
+            if (!$isAccessible) {
+                $reflectionProperty->setAccessible(false);
+            }
+
             if ($property->transformer) {
                 $value = $property->transformer->reverseTransform($value);
             }

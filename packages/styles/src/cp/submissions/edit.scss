@@ -49,6 +49,21 @@ $gutter: 10px;
       }
     }
   }
+
+  fieldset {
+    padding: 4px 14px 8px;
+
+    border: 1px solid transparent;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgba(205,216,228,.5);
+
+    legend {
+      padding: 0 10px;
+      background: white;
+
+      font-weight: bold;
+    }
+  }
 }
 
 #status-menu-btn {

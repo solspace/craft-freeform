@@ -1,20 +1,17 @@
 <?php
 
-namespace Solspace\Freeform\Events\Connections;
+namespace Solspace\Freeform\Events\Integrations\ElementIntegrations;
 
 use craft\base\ElementInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 
-class ConnectEvent extends CancelableArrayableEvent
+class ValidateEvent extends CancelableArrayableEvent
 {
-    /**
-     * ConnectEvent constructor.
-     */
     public function __construct(
         private Form $form,
-        private ElementIntegrationInterface $connection,
+        private ElementIntegrationInterface $integration,
         private ElementInterface $element,
     ) {
         parent::__construct();
@@ -22,7 +19,7 @@ class ConnectEvent extends CancelableArrayableEvent
 
     public function fields(): array
     {
-        return ['form', 'connection', 'element'];
+        return ['form', 'integration', 'element'];
     }
 
     public function getForm(): Form
@@ -30,9 +27,9 @@ class ConnectEvent extends CancelableArrayableEvent
         return $this->form;
     }
 
-    public function getConnection(): ElementIntegrationInterface
+    public function getIntegration(): ElementIntegrationInterface
     {
-        return $this->connection;
+        return $this->integration;
     }
 
     public function getElement(): ElementInterface

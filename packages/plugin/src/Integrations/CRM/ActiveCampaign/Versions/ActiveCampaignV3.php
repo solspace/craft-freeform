@@ -224,6 +224,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                 ],
             );
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->account)) {
@@ -320,7 +322,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         try {
-            $client->post(
+            $response = $client->post(
                 $this->getEndpoint('/contactLists'),
                 [
                     'json' => [
@@ -332,6 +334,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                     ],
                 ]
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
@@ -384,7 +388,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                 foreach ($this->dealProps as $prop) {
                     $prop['dealId'] = $dealId;
 
-                    $client->post(
+                    $response = $client->post(
                         $this->getEndpoint('/dealCustomFieldData'),
                         [
                             'json' => [
@@ -392,6 +396,8 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                             ],
                         ],
                     );
+
+                    $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
                 }
             }
         } catch (\Exception $exception) {

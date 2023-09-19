@@ -20,10 +20,8 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\BaseMailchimpIntegration;
-use yii\base\Event;
 
 #[Type(
     name: 'Mailchimp (v3)',
@@ -234,11 +232,7 @@ class MailchimpV3 extends BaseMailchimpIntegration
                 ['json' => $memberData],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
         } catch (\Exception $exception) {
             $json = json_decode($exception->getResponse()->getBody());
 
@@ -255,11 +249,7 @@ class MailchimpV3 extends BaseMailchimpIntegration
                         ['json' => $memberData],
                     );
 
-                    Event::trigger(
-                        $this,
-                        self::EVENT_AFTER_RESPONSE,
-                        new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
-                    );
+                    $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
                 } catch (\Exception $exception) {
                     $this->processException($exception, self::LOG_CATEGORY);
                 }

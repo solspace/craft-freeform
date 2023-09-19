@@ -75,10 +75,12 @@ class InsightlyV31 extends BaseInsightlyIntegration
         }
 
         try {
-            $client->post(
+            $response = $client->post(
                 $this->getEndpoint('/Leads'),
                 ['json' => $mapping],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

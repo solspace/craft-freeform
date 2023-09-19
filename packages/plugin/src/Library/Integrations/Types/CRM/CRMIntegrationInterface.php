@@ -18,6 +18,8 @@ use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 
 interface CRMIntegrationInterface extends APIIntegrationInterface
 {
+    public const EVENT_ON_PUSH = 'on-push';
+
     /**
      * Push objects to the CRM.
      */

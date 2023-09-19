@@ -214,6 +214,8 @@ class PipedriveV1 extends BasePipedriveIntegration
                 ['json' => $mapping],
             );
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_ORGANIZATION, $response);
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
@@ -265,6 +267,8 @@ class PipedriveV1 extends BasePipedriveIntegration
                 );
             }
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_PERSON, $response);
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
@@ -315,6 +319,8 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->getEndpoint('/leads'),
                 ['json' => $mapping],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
 
             $json = json_decode((string) $response->getBody(), false);
 
@@ -374,6 +380,8 @@ class PipedriveV1 extends BasePipedriveIntegration
                 ['json' => $mapping],
             );
 
+            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
@@ -397,10 +405,12 @@ class PipedriveV1 extends BasePipedriveIntegration
     private function addNote(Client $client, array $json): void
     {
         try {
-            $client->post(
+            $response = $client->post(
                 $this->getEndpoint('/notes'),
                 ['json' => $json],
             );
+
+            $this->triggerAfterResponseEvent('note', $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

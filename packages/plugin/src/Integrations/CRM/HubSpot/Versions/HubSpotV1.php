@@ -459,10 +459,12 @@ class HubSpotV1 extends BaseHubSpotIntegration
             }
         }
 
-        $client->post(
+        $response = $client->post(
             $this->getEndpoint('/deals/v1/deal'),
             ['json' => $deal],
         );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
     }
 
     private function isAppendFieldType(mixed $formField): bool
@@ -608,7 +610,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
 
     private function createCompany(Client $client, array $companyProps): ResponseInterface
     {
-        return $client->post(
+        $response = $client->post(
             $this->getEndpoint('/companies/v2/companies'),
             [
                 'json' => [
@@ -616,6 +618,10 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 ],
             ],
         );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_COMPANY, $response);
+
+        return $response;
     }
 
     private function getContactByEmail(string $email, Client $client, array $contactProps): ResponseInterface
@@ -632,7 +638,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
 
     private function updateContactByEmail(string $email, Client $client, array $contactProps): ResponseInterface
     {
-        return $client->post(
+        $response = $client->post(
             $this->getEndpoint('/contacts/v1/contact/email/'.$email.'/profile'),
             [
                 'json' => [
@@ -640,6 +646,10 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 ],
             ],
         );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
+
+        return $response;
     }
 
     private function addValueToContactProps(string $searchPropName, mixed $value, array $contactProps): array
@@ -696,7 +706,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
 
     private function createContact(Client $client, array $contactProps): ResponseInterface
     {
-        return $client->post(
+        $response = $client->post(
             $this->getEndpoint('/contacts/v1/contact'),
             [
                 'json' => [
@@ -704,5 +714,9 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 ],
             ],
         );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
+
+        return $response;
     }
 }

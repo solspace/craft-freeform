@@ -19,7 +19,6 @@ export const RecipientMappingBlock: React.FC<Props> = ({
   predefined,
   mapping,
   onChange,
-  onRemove,
 }) => {
   const { value, template, recipients } = mapping;
 
@@ -51,10 +50,6 @@ export const RecipientMappingBlock: React.FC<Props> = ({
             ...mapping,
             recipients: newValue,
           });
-
-          if (!predefined && newValue.length === 0) {
-            onRemove && onRemove();
-          }
         }}
       />
     </BlockWrapper>

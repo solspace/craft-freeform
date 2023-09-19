@@ -70,7 +70,8 @@
         display: inline-block;
         padding-right: 10px;
     }
-    .freeform-row .freeform-column .freeform-label {
+    .freeform-row .freeform-column .freeform-label,
+    .freeform-group .freeform-label {
         font-weight: bold;
     }
     .freeform-row .freeform-column .freeform-label.freeform-required:after {
@@ -148,6 +149,10 @@
     }
     .freeform-form-errors > p {
         margin: 0;
+    }
+    .freeform-group {
+        width: 100%;
+        padding: 0 15px;
     }
 </style>
 
@@ -255,15 +260,12 @@ if (form) {
     </ul>
 {% endif %}
 
-
+{# Build form rows and fields #}
 {% macro renderRows(form, rows) %}
     {% for row in rows %}
         {% set width = (12 / (row|length)) %}
-
         <div{{ form.attributes.row }}>
-
             {% for field in row %}
-
                 {% do field.setParameters({
                     attributes: {
                         container: { class: [
@@ -272,17 +274,18 @@ if (form) {
                         ]},
                     },
                 }) %}
-
                 {% if field.type == "group" %}
-
-                    {{ _self.renderRows(form, field.layout) }}
-
+                    <div class="freeform-group">
+                        <label{{ field.attributes.label }}>
+                            {{ field.label }}
+                        </label>
+                        <div>
+                            {{ _self.renderRows(form, field.layout) }}
+                        </div>
+                    </div>
                 {% else %}
-
                     {{ field.render }}
-
                 {% endif %}
-
             {% endfor %}
         </div>
     {% endfor %}

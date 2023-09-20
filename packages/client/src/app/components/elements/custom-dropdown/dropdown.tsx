@@ -92,6 +92,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
       meetsCondition: open,
       type: 'keydown',
       callback: (event) => {
+        if (event.key === 'Escape') {
+          setOpen(false);
+        }
+
         if (event.key === 'ArrowDown' && focusIndex < optionCount - 1) {
           setFocusIndex((prev) => prev + 1);
         }

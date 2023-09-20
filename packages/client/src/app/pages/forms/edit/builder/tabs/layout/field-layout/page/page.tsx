@@ -13,7 +13,9 @@ type Props = {
 };
 
 export const Page: React.FC<Props> = ({ page }) => {
-  const layout = useSelector(layoutSelectors.pageLayout(page));
+  const layout = useSelector((state) =>
+    layoutSelectors.pageLayout(state, page?.layoutUid)
+  );
 
   return (
     <PageWrapper>

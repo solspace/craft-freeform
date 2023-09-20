@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '@editor/store';
+import { useAppDispatch, useAppSelector } from '@editor/store';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { fieldActions } from '@editor/store/slices/layout/fields';
 import { layoutActions } from '@editor/store/slices/layout/layouts';
@@ -25,9 +25,11 @@ type Props = {
 
 export const GroupFieldLayout: React.FC<Props> = ({ field, layoutUid }) => {
   const dispatch = useAppDispatch();
-  const layout = useSelector(layoutSelectors.one(layoutUid));
+  const layout = useSelector((state) => layoutSelectors.one(state, layoutUid));
+  const rows = useAppSelector((state) =>
+    rowSelectors.inLayout(state, layout?.uid)
+  );
 
-  const rows = useSelector(rowSelectors.inLayout(layout));
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   useEffect(() => {

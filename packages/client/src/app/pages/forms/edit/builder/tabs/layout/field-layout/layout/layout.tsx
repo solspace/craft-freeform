@@ -1,6 +1,6 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import type { Layout as LayoutType } from '@editor/builder/types/layout';
+import { useAppSelector } from '@editor/store';
 import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
 import translate from '@ff-client/utils/translations';
 
@@ -14,7 +14,10 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = ({ layout }) => {
-  const rows = useSelector(rowSelectors.inLayout(layout));
+  const rows = useAppSelector((state) =>
+    rowSelectors.inLayout(state, layout?.uid)
+  );
+
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (

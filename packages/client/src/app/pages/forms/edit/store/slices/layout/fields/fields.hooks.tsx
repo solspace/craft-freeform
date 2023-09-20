@@ -33,8 +33,9 @@ export const useFieldOptionCollection = (
             const type = findType(field.typeClass);
             if (type?.type === 'group') {
               const fields = layoutSelectors.cartographed.layoutFieldList(
+                getState(),
                 field.properties.layout
-              )(getState());
+              );
 
               return {
                 label: field.properties.label,

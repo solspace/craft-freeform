@@ -10,8 +10,7 @@
     {{ redirectInput('freeform/settings/form-builder') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Form Builder"|t('freeform') }}</h2>
-
+    <div class="first">
     {{ forms.lightswitchField({
         label: "Live Render HTML Markup"|t('freeform'),
         instructions: "Live rendering HTML markup in field labels, option labels and HTML blocks inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview
@@ -20,6 +19,7 @@ inside the control panel. In cases like these, you'll need to disable this setti
         on: settings.renderFormHtmlInCpViews,
         errors: settings.errors("renderFormHtmlInCpViews"),
     }) }}
+    </div>
 
     {{ forms.lightswitchField({
         label: "Allow Twig to be enabled in HTML blocks"|t('freeform'),

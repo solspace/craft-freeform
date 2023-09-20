@@ -16,7 +16,7 @@ We will assume you already have a [Zapier](https://zapier.com/) account and some
 - Go to the [Zapier website](https://zapier.com/app/zaps) and create a new *Zap* (by clicking the bright orange *Make a Zap!* button at the top of the page).
 - For the *Choose App* option, select **Webhooks by Zapier**.
 - For the *Choose Trigger Event* option, select **Catch Hook**.
-- Proceed to the next step, and then you'll be presented the webhook URL (e.g. `https://hooks.zapier.com/hooks/catch/9654665/fg8767d/`)
+- Proceed to the next step, and then you'll be presented the webhook URL (e.g. `https://hooks.zapier.com/hooks/catch/12345/67890/`)
 - Pause here and copy the *Custom Webhook URL* and switch back to your Freeform tab.
 
 ### 3. Finish Integration on your site

@@ -54,7 +54,7 @@ Maps data to the following field types:
 
 ### 3. Install the App on Production Pipedrive Account
 
-<span class="note bold tip" style="margin-bottom: 10px;"><b>Note:</b> If you wish to work with your app in Sandbox/Dev mode, you can skip this step for now.</span><span class="note bold warning"><b>Important:</b> In order for this to work, the site (and its callback URL) you are connecting the integration to will need to be publicly accessible.</span>
+<span class="note tip" style="margin-bottom: 10px;"><b>Note:</b> If you wish to work with your app in Sandbox/Dev mode, you can skip this step for now.</span><span class="note warning"><b>Important:</b> In order for this to work, the site (and its callback URL) you are connecting the integration to will need to be publicly accessible.</span>
 
 - Inside of the [Pipedrive Developer Hub](https://developers.pipedrive.com/) site, click on your newly created app and click the **Change to Live** button at the top right corner.
 - Visit your [regular Pipedrive account](https://pipedrive.com).
@@ -72,7 +72,7 @@ Maps data to the following field types:
 - **LEADS**
     - **User ID** (optional) - specify which user ID the leads go into.
 
-<span class="note bold tip"><b>Note:</b> There seems to be no visual way in Pipedrive to see what the ID's are, so you'll likely need to do something like right-clicking on a User name link to view the ID in a URL.</span>
+<span class="note tip"><b>Note:</b> There seems to be no visual way in Pipedrive to see what the ID's are, so you'll likely need to do something like right-clicking on a User name link to view the ID in a URL.</span>
 
 - **DEALS**
     - **User ID** (optional) - specify which user ID the leads go into.

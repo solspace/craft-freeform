@@ -2,7 +2,7 @@
 
 This guide assumes you have a [Salesforce](http://salesforce.com) account already.
 
-<span class="note bold warning"><b>Important:</b> This integration will not work with the _Salesforce **Essentials**_ plan as it does not have access to the API.</span>
+<span class="note warning"><b>Important:</b> This integration will not work with the _Salesforce **Essentials**_ plan as it does not have access to the API.</span>
 
 ## Compatibility
 

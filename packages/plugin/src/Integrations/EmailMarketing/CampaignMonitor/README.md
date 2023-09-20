@@ -24,7 +24,7 @@ Maps data to the following field types:
 
 ## Setup Instructions
 
-<span class="note bold warning"><b>Important:</b> In order for this to work, the site (and its callback URL) you are connecting the integration to will need to be publicly accessible.</span>
+<span class="note warning"><b>Important:</b> In order for this to work, the site (and its callback URL) you are connecting the integration to will need to be publicly accessible.</span>
 
 ### 1. Prepare your site's end for Integration
 

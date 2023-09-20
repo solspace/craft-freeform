@@ -243,6 +243,7 @@ class SettingsService extends BaseService
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
             'form-builder' => ['title' => Freeform::t('Form Builder')],
+            'limited-users' => ['title' => Freeform::t('Limited Users')],
             'template-manager' => ['title' => Freeform::t('Template Manager')],
             'statuses' => ['title' => Freeform::t('Statuses')],
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],

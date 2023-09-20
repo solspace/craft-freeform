@@ -1,0 +1,17 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "Limited Users"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/limited-users') }}
+    {{ csrfInput() }}
+
+    <h2 class="first">{{ "Limited Users"|t('freeform') }}</h2>
+
+    <p>Feature coming soon!</p>
+
+{% endblock %}

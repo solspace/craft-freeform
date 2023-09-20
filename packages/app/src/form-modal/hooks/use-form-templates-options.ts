@@ -31,7 +31,7 @@ export const useFormTemplatesOptions = (): [string, SelectOption[]] => {
     } else {
       setTemplateList([
         {
-          label: 'Solspace Templates',
+          label: 'Freeform Templates',
           children: extractTemplates(templates.native),
         },
         {

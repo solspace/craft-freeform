@@ -84,9 +84,6 @@ class Settings extends Model
     /** @var string */
     public $defaultView;
 
-    /** @var string */
-    public $fieldDisplayOrder;
-
     /** @var bool */
     public $removeNewlines;
 
@@ -267,7 +264,6 @@ class Settings extends Model
         $this->formTemplateDirectory = null;
         $this->successTemplateDirectory = null;
         $this->defaultView = Freeform::VIEW_FORMS;
-        $this->fieldDisplayOrder = Freeform::FIELD_DISPLAY_ORDER_NAME;
         $this->defaultTemplates = true;
         $this->removeNewlines = false;
         $this->exportLabels = false;

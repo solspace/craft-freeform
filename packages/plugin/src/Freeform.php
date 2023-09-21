@@ -147,9 +147,6 @@ class Freeform extends Plugin
     public const VIEW_SETTINGS = 'settings';
     public const VIEW_EXPORT_PROFILES = 'export-profiles';
 
-    public const FIELD_DISPLAY_ORDER_TYPE = 'type';
-    public const FIELD_DISPLAY_ORDER_NAME = 'name';
-
     public const EDITION_EXPRESS = 'express';
     public const EDITION_LITE = 'lite';
     public const EDITION_PRO = 'pro';

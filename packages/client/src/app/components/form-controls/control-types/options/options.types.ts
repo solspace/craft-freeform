@@ -50,5 +50,6 @@ export type ConfigurationProps<
   updateValue: (value: T) => void;
   defaultValue: string | string[];
   updateDefaultValue: (value: string | string[]) => void;
+  convertToCustomValues?: () => void;
   isMultiple?: boolean;
 };

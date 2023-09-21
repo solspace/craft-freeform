@@ -10,7 +10,7 @@ import { useOptionTypesElements } from './elements.queries';
 
 const Elements: React.FC<
   ConfigurationProps<ConfigurableOptionsConfiguration>
-> = ({ value, updateValue }) => {
+> = ({ value, updateValue, convertToCustomValues }) => {
   return (
     <ConfigurableOptions
       value={value}
@@ -18,6 +18,7 @@ const Elements: React.FC<
       defaultValue={''}
       updateDefaultValue={() => {}}
       typeProviderQuery={useOptionTypesElements}
+      convertToCustomValues={convertToCustomValues}
     />
   );
 };

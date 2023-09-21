@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { FormComponent } from '@components/form-controls';
 import { Control } from '@components/form-controls/control';
+import { ControlWrapper } from '@components/form-controls/control.styles';
+import { Button } from '@components/form-controls/control-types/options/options.styles';
 import { FlexColumn } from '@components/layout/blocks/flex';
 import type { GenericValue } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import type { UseQueryResult } from '@tanstack/react-query';
 
 import type {
@@ -21,6 +24,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
   value,
   updateValue,
   typeProviderQuery,
+  convertToCustomValues,
 }) => {
   const [typeClass, setTypeClass] = useState(value.typeClass);
   const { data, isFetching } = typeProviderQuery();
@@ -99,6 +103,28 @@ export const ConfigurableOptions: React.FC<Props> = ({
             />
           );
         })}
+      {typeClass && (
+        <ControlWrapper className="field">
+          <Button
+            className="btn small"
+            onClick={() => {
+              if (
+                !confirm(
+                  translate(
+                    'Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.'
+                  )
+                )
+              ) {
+                return;
+              }
+
+              convertToCustomValues();
+            }}
+          >
+            {translate('Convert to Custom Values')}
+          </Button>
+        </ControlWrapper>
+      )}
     </FlexColumn>
   );
 };

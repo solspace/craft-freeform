@@ -45,6 +45,7 @@ const RecipientsController: React.FC<Props> = React.memo(
               className={classes('text', 'fullwidth', 'code')}
               placeholder="john.doe@example.com"
               onClick={() => addCell()}
+              onFocus={() => addCell()}
             />
           </RecipientItem>
         )}
@@ -56,6 +57,7 @@ const RecipientsController: React.FC<Props> = React.memo(
               </Icon>
               <EmailInput
                 type="text"
+                data-1p-ignore
                 className={classes('text', 'fullwidth', 'code')}
                 autoFocus={activeCell === `${index}:0`}
                 ref={(element) => setCellRef(element, index, 0)}

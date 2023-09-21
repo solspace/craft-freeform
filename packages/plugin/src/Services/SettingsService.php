@@ -83,11 +83,6 @@ class SettingsService extends BaseService
         return Settings::PROTECTION_RELOAD_FORM === $this->getSettingsModel()->spamProtectionBehaviour;
     }
 
-    public function getFieldDisplayOrder(): string
-    {
-        return $this->getSettingsModel()->fieldDisplayOrder;
-    }
-
     public function getFormTemplateDirectory(): ?string
     {
         return $this->getSettingsModel()->getAbsoluteFormTemplateDirectory();

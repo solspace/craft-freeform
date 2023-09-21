@@ -87,7 +87,7 @@ class Dynamic extends BaseNotification
     {
         $default = $this->getTemplate();
         $mapping = $this->recipientMapping->getMappingByValue($value);
-        if (!$mapping) {
+        if (!$mapping || !$mapping->getTemplate()) {
             return $default;
         }
 
@@ -98,7 +98,7 @@ class Dynamic extends BaseNotification
     {
         $default = $this->getRecipients();
         $mapping = $this->recipientMapping->getMappingByValue($value);
-        if (!$mapping) {
+        if (!$mapping || !$mapping->getRecipients()) {
             return $default;
         }
 

@@ -161,8 +161,6 @@ class Freeform extends Plugin
     public const PERMISSION_FORMS_DELETE = 'freeform-formsDelete';
     public const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
     public const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
-    public const PERMISSION_FIELDS_ACCESS = 'freeform-fieldsAccess';
-    public const PERMISSION_FIELDS_MANAGE = 'freeform-fieldsManage';
     public const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
     public const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';
     public const PERMISSION_SUBMISSIONS_READ = 'freeform-submissionsRead';
@@ -499,12 +497,6 @@ class Freeform extends Plugin
                                     'info' => self::t("If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox."),
                                     'nested' => $formPermissions,
                                 ],
-                            ],
-                        ],
-                        self::PERMISSION_FIELDS_ACCESS => [
-                            'label' => self::t('Access Fields'),
-                            'nested' => [
-                                self::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
                             ],
                         ],
                         self::PERMISSION_NOTIFICATIONS_ACCESS => [

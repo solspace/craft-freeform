@@ -12,14 +12,13 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
-use Solspace\Freeform\Integrations\CRM\Pardot\PardotIntegrationInterface;
 
 #[Type(
     name: 'Pardot (v4)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterface
+class PardotV4 extends BasePardotIntegration
 {
     protected const API_VERSION = '4';
 
@@ -120,10 +119,12 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
 
             unset($mapping['email']);
 
-            $client->post(
+            $response = $client->post(
                 $this->getPardotEndpoint('prospect', 'create/email/'.$email),
                 ['query' => $mapping],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_PROSPECT, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

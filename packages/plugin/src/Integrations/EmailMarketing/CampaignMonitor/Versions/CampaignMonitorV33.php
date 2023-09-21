@@ -20,10 +20,8 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\CampaignMonitor\BaseCampaignMonitorIntegration;
-use yii\base\Event;
 
 #[Type(
     name: 'Campaign Monitor (v3.3)',
@@ -138,11 +136,7 @@ class CampaignMonitorV33 extends BaseCampaignMonitorIntegration
                 ],
             );
 
-            Event::trigger(
-                $this,
-                self::EVENT_AFTER_RESPONSE,
-                new IntegrationResponseEvent($this, self::CATEGORY_CUSTOM, $response)
-            );
+            $this->triggerAfterResponseEvent(self::CATEGORY_CUSTOM, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

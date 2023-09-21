@@ -5,6 +5,9 @@ export enum Edition {
 }
 
 type Config = {
+  templates: {
+    native: boolean;
+  };
   editions: {
     edition: Edition;
     tiers: Edition[];

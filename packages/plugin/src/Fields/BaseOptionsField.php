@@ -4,31 +4,41 @@ namespace Solspace\Freeform\Fields;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
-use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
-use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 
 /**
  * @implements \IteratorAggregate<int, Option|OptionCollection>
  */
-abstract class BaseOptionsField extends AbstractField implements GeneratedOptionsInterface
+abstract class BaseOptionsField extends AbstractField implements OptionsInterface
 {
-    #[ValueTransformer(OptionsTransformer::class)]
-    #[Input\Options(
-        label: 'Options Editor',
-        instructions: 'Define your options',
-    )]
-    protected ?OptionsConfigurationInterface $optionConfiguration = null;
-
-    public function getOptionConfiguration(): ?OptionsConfigurationInterface
+    public function getLabels(): array
     {
-        return $this->optionConfiguration;
+        $labels = [];
+
+        foreach ($this->getOptions() as $option) {
+            if (!$option instanceof Option) {
+                continue;
+            }
+
+            if ($this instanceof MultiValueInterface) {
+                if (!\in_array($option->getValue(), $this->getValue())) {
+                    continue;
+                }
+            } else {
+                if ($option->getValue() != $this->getValue()) {
+                    continue;
+                }
+            }
+
+            $labels[] = $option->getLabel();
+        }
+
+        return $labels;
     }
 
-    public function getOptions(): OptionCollection
+    public function getLabelsAsString(): string
     {
-        return $this->optionConfiguration->getOptions();
+        return implode(', ', $this->getLabels());
     }
 }

@@ -144,9 +144,10 @@ const filterOptions = (
           const hasMatch =
             !query || option.label.toLowerCase().includes(query.toLowerCase());
           if (hasMatch) {
-            option.shadowIndex = index++;
-
-            return option;
+            return {
+              ...option,
+              shadowIndex: index++,
+            };
           }
         }
 

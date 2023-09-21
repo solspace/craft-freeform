@@ -12,9 +12,13 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
-interface PardotIntegrationInterface
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+
+interface PardotIntegrationInterface extends OAuth2ConnectorInterface
 {
     public function getInstanceUrl(): string;
 
     public function setInstanceUrl(string $instanceUrl): self;
+
+    public function getBusinessUnitId(): string;
 }

@@ -143,7 +143,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $submission = $form->getSubmission();
 
-        $event = new FormSubmitEvent($form, $submission);
+        $event = new FormSubmitEvent($form);
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
         if (!$event->isValid || !empty($form->getActions())) {

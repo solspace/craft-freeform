@@ -15,26 +15,13 @@ class ButtonAttributesCollection extends Attributes
 
     public function __construct(array $attributes = [])
     {
-        $this->container = new Attributes(['data-freeform-controls' => true]);
+        $this->container = new Attributes();
         $this->column = new Attributes();
         $this->buttonWrapper = new Attributes();
 
-        $this->submit = new Attributes([
-            'data-freeform-action' => 'submit',
-            'name' => PageButtons::SUBMIT_INPUT_NAME,
-            'type' => 'submit',
-        ]);
-
-        $this->back = new Attributes([
-            'data-freeform-action' => 'back',
-            'name' => PageButtons::PREVIOUS_PAGE_INPUT_NAME,
-            'type' => 'submit',
-        ]);
-
-        $this->save = new Attributes([
-            'data-freeform-action' => 'save',
-            'type' => 'submit',
-        ]);
+        $this->submit = new Attributes();
+        $this->back = new Attributes();
+        $this->save = new Attributes();
 
         parent::__construct($attributes);
     }

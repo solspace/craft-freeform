@@ -1,6 +1,6 @@
-@import "../../shared/variables";
-@import "../../shared/extendable-classes";
-@import "../../front-end/fields/opinion-scale";
+@import '../../shared/variables';
+@import '../../shared/extendable-classes';
+@import '../../front-end/fields/opinion-scale';
 
 $spacing: 10px;
 $gutter: 10px;
@@ -38,7 +38,7 @@ $gutter: 10px;
           position: relative;
           top: 2px;
 
-          content: "*";
+          content: '*';
           margin: 0 0 0 7px;
 
           font-family: Craft, sans-serif;
@@ -47,6 +47,21 @@ $gutter: 10px;
           color: #da5a47;
         }
       }
+    }
+  }
+
+  fieldset.group {
+    padding: 4px 14px 8px;
+
+    border: 1px solid transparent;
+    border-radius: 5px;
+    box-shadow: 0 0 0 1px #cdd8e4;
+
+    legend {
+      padding: 0 10px;
+      background: white;
+
+      font-weight: bold;
     }
   }
 }

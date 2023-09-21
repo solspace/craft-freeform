@@ -7,6 +7,7 @@ return [
     'freeform/settings/form-builder' => 'freeform/settings/provide-setting',
     'freeform/settings/notices-and-alerts' => 'freeform/settings/provide-setting',
     'freeform/settings/template-manager' => 'freeform/settings/provide-setting',
+    'freeform/settings/limited-users' => 'freeform/settings/provide-setting',
     'freeform/settings/spam' => 'freeform/settings/provide-setting',
     'freeform/settings/add-demo-template' => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template' => 'freeform/settings/add-email-template',

@@ -17,6 +17,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Configuration\FreeformConfig;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
 use yii\db\Query;
@@ -36,14 +37,10 @@ class FormsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         $this->view->registerAssetBundle(FreeformClientBundle::class);
+        $config = \Craft::$container->get(FreeformConfig::class);
 
         return $this->renderTemplate('freeform/forms', [
-            'config' => [
-                'editions' => [
-                    'edition' => Freeform::getInstance()->edition,
-                    'tiers' => Freeform::getInstance()->edition()->getEditions(),
-                ],
-            ],
+            'config' => $config,
         ]);
     }
 

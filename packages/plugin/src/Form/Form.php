@@ -556,8 +556,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_OPEN_TAG, $beforeTag);
         $output .= $beforeTag->getChunksAsString();
 
-        $attributes = $this->getAttributes()->jsonSerialize();
-        $event = new AttachFormAttributesEvent($this, $attributes);
+        $event = new AttachFormAttributesEvent($this);
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
         $output .= '<form'.$this->getAttributes().'>'.\PHP_EOL;

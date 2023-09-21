@@ -16,7 +16,7 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Hidden;
-use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
@@ -29,7 +29,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     iconPath: __DIR__.'/Icons/checkboxes.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkboxes.ejs',
 )]
-class CheckboxesField extends BaseOptionsField implements MultiValueInterface, OneLineInterface, DefaultValueInterface
+class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInterface, OneLineInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;
@@ -86,23 +86,6 @@ class CheckboxesField extends BaseOptionsField implements MultiValueInterface, O
         }
 
         return $output;
-    }
-
-    public function getValueAsString(bool $optionsAsValues = true): string
-    {
-        if (!$optionsAsValues) {
-            return implode(', ', $this->getValue());
-        }
-
-        $labels = [];
-        foreach ($this->getOptions() as $option) {
-            $isChecked = \in_array($option->getValue(), $this->getValue());
-            if ($isChecked) {
-                $labels[] = $option->getLabel();
-            }
-        }
-
-        return implode(', ', $labels);
     }
 
     public function getContentGqlType(): array|GQLType

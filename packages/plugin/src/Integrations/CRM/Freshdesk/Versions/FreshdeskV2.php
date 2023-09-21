@@ -164,10 +164,12 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
         }
 
         try {
-            $client->post(
+            $response = $client->post(
                 $this->getEndpoint('/tickets'),
                 [$requestType => $values],
             );
+
+            $this->triggerAfterResponseEvent(self::CATEGORY_TICKET, $response);
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

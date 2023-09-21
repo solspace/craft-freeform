@@ -44,7 +44,7 @@ class PageContext
             return;
         }
 
-        $shouldWalkBack = null !== RequestHelper::post(PageButtons::PREVIOUS_PAGE_INPUT_NAME);
+        $shouldWalkBack = null !== RequestHelper::post(PageButtons::INPUT_NAME_PREVIOUS_PAGE);
         if ($shouldWalkBack) {
             $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
             $index = array_pop($pageHistory) ?? 0;

@@ -23,6 +23,9 @@ interface FieldInterface
     public const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
     public const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
 
+    public const EVENT_BEFORE_SAVE = 'before-save';
+    public const EVENT_AFTER_SAVE = 'after-save';
+
     public const EVENT_VALIDATE = 'validate';
 
     public const TYPE_TEXT = 'text';
@@ -119,5 +122,7 @@ interface FieldInterface
 
     public function setParameters(array $parameters = null): void;
 
-    public function getCompiledAttributes(): FieldAttributesCollection;
+    public function getAttributes(): FieldAttributesCollection;
+
+    public function implements(string ...$interfaces): bool;
 }

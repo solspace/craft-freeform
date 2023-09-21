@@ -2,19 +2,24 @@
 .gitattributes export-ignore
 .gitignore export-ignore
 .github/ export-ignore
+
 .nvmrc export-ignore
-.prettierignore export-ignore
-.prettierrc.json export-ignore
+.php-cs-fixer* export-ignore
+.phpunit* export-ignore
+.prettier* export-ignore
 .tsconfig.json export-ignore
-CHANGELOG.md export-ignore
-README.md export-ignore
+
 composer.lock export-ignore
-lerna.json export-ignore
 package-lock.json export-ignore
 package.json export-ignore
+lerna.json export-ignore
+
+phpunit.xml export-ignore
+
 packages/app export-ignore
-packages/builder export-ignore
 packages/client export-ignore
 packages/scripts export-ignore
 packages/styles export-ignore
-packages/plugin/tests export-ignore
+packages/plugin/src/Tests export-ignore
+
+* text=auto

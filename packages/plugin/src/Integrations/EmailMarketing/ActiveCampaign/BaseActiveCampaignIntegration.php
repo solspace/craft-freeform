@@ -23,6 +23,11 @@ use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIn
 
 abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration implements ActiveCampaignIntegrationInterface
 {
+    public const CATEGORY_FIELD_VALUES = 'field-values';
+    public const CATEGORY_TAGS = 'tags';
+    public const CATEGORY_CONTACTS = 'contacts';
+    public const CATEGORY_CONTACT_LISTS = 'contacts-lists';
+
     protected const LOG_CATEGORY = 'ActiveCampaign';
 
     protected const CATEGORY_CUSTOM = 'Custom';

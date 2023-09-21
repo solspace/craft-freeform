@@ -36,4 +36,14 @@ class RegisterFieldTypesEvent extends Event
 
         return $this;
     }
+
+    public function addBuiltInType(string ...$classes)
+    {
+        $existingTypes = $this->types;
+        $this->types = [];
+
+        $this->addType(...$classes);
+
+        $this->types = array_merge($this->types, $existingTypes);
+    }
 }

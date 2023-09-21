@@ -1,8 +1,0 @@
-{% import "freeform/_defaultFormTemplates/basic-dark/_row.twig" as rowMacro %}
-
-<div{{ field.attributes.container }}>
-    {{ field.renderLabel }}
-    {{ field.renderInstructions }}
-
-    {{ rowMacro.render(field.layout, form) }}
-</div>

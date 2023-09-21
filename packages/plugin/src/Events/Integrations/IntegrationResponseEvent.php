@@ -10,7 +10,7 @@ class IntegrationResponseEvent extends CancelableArrayableEvent
 {
     public function __construct(
         private IntegrationInterface $integration,
-        private string $requestType,
+        private string $category,
         private ResponseInterface $response
     ) {
         parent::__construct();
@@ -18,7 +18,14 @@ class IntegrationResponseEvent extends CancelableArrayableEvent
 
     public function fields(): array
     {
-        return array_merge(parent::fields(), ['integration', 'response']);
+        return array_merge(
+            parent::fields(),
+            [
+                'integration',
+                'category',
+                'response',
+            ],
+        );
     }
 
     public function getIntegration(): IntegrationInterface
@@ -26,9 +33,9 @@ class IntegrationResponseEvent extends CancelableArrayableEvent
         return $this->integration;
     }
 
-    public function getRequestType(): string
+    public function getCategory(): string
     {
-        return $this->requestType;
+        return $this->category;
     }
 
     public function getResponse(): ResponseInterface

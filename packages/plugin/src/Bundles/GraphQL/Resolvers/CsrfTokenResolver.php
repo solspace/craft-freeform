@@ -9,13 +9,14 @@ class CsrfTokenResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
-        if (\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
-            return [
-                'name' => \Craft::$app->getConfig()->getGeneral()->csrfTokenName,
-                'value' => \Craft::$app->getRequest()->getCsrfToken(),
-            ];
+        $generalConfig = \Craft::$app->getConfig()->getGeneral();
+        if (!$generalConfig->enableCsrfProtection) {
+            return null;
         }
 
-        return null;
+        return [
+            'name' => $generalConfig->csrfTokenName,
+            'value' => \Craft::$app->getRequest()->getCsrfToken(),
+        ];
     }
 }

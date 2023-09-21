@@ -200,34 +200,34 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $checkboxValuesInclude = '';
 
         foreach ($this->getTableLayout() as $column) {
-            $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
+            $type = $column->type ?? self::COLUMN_TYPE_STRING;
 
             if (self::COLUMN_TYPE_DROPDOWN === $type) {
                 $dropdownValues = [];
-                $options = explode(';', $column['value']);
+                $options = explode(';', $column->value);
 
                 foreach ($options as $option) {
                     $dropdownValues[] = '"'.$option.'"';
                 }
 
                 if (!empty($dropdownValues)) {
-                    $dropdownValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                    $dropdownValuesInclude .= '- "'.$column->label.'" column:'."\n";
                     $dropdownValuesInclude .= '-- Single option value allowed.'."\n";
                     $dropdownValuesInclude .= '-- Options include '.implode(', ', $dropdownValues).'.';
                 }
 
-                $layout[] = '"'.$column['label'].'"';
+                $layout[] = '"'.$column->label.'"';
             } elseif (self::COLUMN_TYPE_CHECKBOX === $type) {
-                $checkboxValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                $checkboxValuesInclude .= '- "'.$column->label.'" column:'."\n";
                 $checkboxValuesInclude .= '-- Single option value allowed.'."\n";
-                $checkboxValuesInclude .= '-- Option value is "'.$column['value'].'".';
+                $checkboxValuesInclude .= '-- Option value is "'.$column->value.'".';
 
-                $layout[] = '"'.$column['label'].'"';
+                $layout[] = '"'.$column->label.'"';
             } else {
-                $textValuesInclude .= '- "'.$column['label'].'" column:'."\n";
-                $textValuesInclude .= '-- Single value allowed.';
+                $textValuesInclude .= '- "'.$column->label.'" column:'."\n";
+                $textValuesInclude .= '-- Single value allowed.'."\n";
 
-                $layout[] = '"'.$column['label'].'"';
+                $layout[] = '"'.$column->label.'"';
             }
         }
 

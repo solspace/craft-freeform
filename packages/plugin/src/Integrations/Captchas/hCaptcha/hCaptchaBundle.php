@@ -31,7 +31,7 @@ class hCaptchaBundle extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_OUTPUT_AS_JSON,
-            [$this, 'attachToJSON'],
+            [$this, 'attachToJson'],
         );
     }
 
@@ -85,18 +85,18 @@ class hCaptchaBundle extends FeatureBundle
         $integration?->validate($form);
     }
 
-    public function attachToJSON(OutputAsJsonEvent $event): void
+    public function attachToJson(OutputAsJsonEvent $event): void
     {
         $integration = $this->getHCaptchaForForm($event->getForm());
         if (!$integration) {
-            $event->add('hcaptcha', ['enabled' => false]);
+            return;
         }
 
         $event->add(
-            'hcaptcha',
+            'captcha',
             [
                 'enabled' => true,
-                'handle' => 'hCaptcha',
+                'handle' => 'captcha',
                 'name' => 'h-captcha-response',
             ]
         );

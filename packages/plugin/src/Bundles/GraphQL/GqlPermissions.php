@@ -39,11 +39,11 @@ class GqlPermissions extends Gql
     {
         $formUids = self::extractAllowedEntitiesFromSchema('read')[self::CATEGORY_FORMS] ?? [];
 
-        return array_filter(
+        return array_filter(array_filter(
             $formUids,
             function ($item) {
                 return 'all' !== $item;
             }
-        );
+        ));
     }
 }

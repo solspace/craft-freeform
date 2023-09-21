@@ -46,11 +46,6 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => "Field's label",
             ],
-            'hash' => [
-                'name' => 'hash',
-                'type' => Type::string(),
-                'description' => "Field's hash",
-            ],
             'handle' => [
                 'name' => 'handle',
                 'type' => Type::string(),
@@ -71,32 +66,21 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::int(),
                 'description' => 'Specifies the page index the field belongs to',
             ],
-            'inputAttributes' => [
-                'name' => 'inputAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's input attributes",
-            ],
-            'labelAttributes' => [
-                'name' => 'labelAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's label attributes",
-            ],
-            'errorAttributes' => [
-                'name' => 'errorAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's error attributes",
-            ],
-            'instructionAttributes' => [
-                'name' => 'instructionAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's instruction attributes",
+            'attributes' => [
+                'name' => 'attributes',
+                'type' => AttributesInterface::getType(),
+                'description' => "Field's attributes",
+                'resolve' => function ($source) {
+                    return $source->getAttributes();
+                },
             ],
             'rules' => [
                 'name' => 'rules',
                 'type' => Type::string(),
                 'description' => "Field's rules",
                 'resolve' => function ($source) {
-                    return $source->getRules();
+                    // FIXME
+                    return null; // $source->getRules();
                 },
             ],
         ], static::getName());

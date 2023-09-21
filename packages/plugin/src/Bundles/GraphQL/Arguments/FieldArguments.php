@@ -15,11 +15,6 @@ class FieldArguments extends Arguments
                 'type' => Type::listOf(Type::int()),
                 'description' => 'Filter fields by their IDs',
             ],
-            'hash' => [
-                'name' => 'hash',
-                'type' => Type::listOf(Type::string()),
-                'description' => 'Filter fields by their hash',
-            ],
             'handle' => [
                 'name' => 'handle',
                 'type' => Type::listOf(Type::string()),

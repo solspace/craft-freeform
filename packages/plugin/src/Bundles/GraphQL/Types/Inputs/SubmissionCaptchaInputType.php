@@ -4,13 +4,13 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types\Inputs;
 
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\InputObjectType;
-use Solspace\Freeform\Bundles\GraphQL\Arguments\SubmissionReCaptchaArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\SubmissionCaptchaArguments;
 
-class SubmissionReCaptchaInputType extends InputObjectType
+class SubmissionCaptchaInputType extends InputObjectType
 {
     public static function getName(): string
     {
-        return 'FreeformSubmissionReCaptchaInputType';
+        return 'FreeformSubmissionCaptchaInputType';
     }
 
     public static function getType(): mixed
@@ -20,7 +20,7 @@ class SubmissionReCaptchaInputType extends InputObjectType
         }
 
         $fields = \Craft::$app->getGql()->prepareFieldDefinitions(
-            SubmissionReCaptchaArguments::getArguments(),
+            SubmissionCaptchaArguments::getArguments(),
             self::getName()
         );
 

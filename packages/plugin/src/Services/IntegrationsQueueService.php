@@ -48,7 +48,7 @@ class IntegrationsQueueService extends BaseService
             $isSelected = $field->isHidden() || (bool) $field->getValue();
             if ($isSelected && $field->getEmailFieldHash() && $field->getResourceId()) {
                 $task = new IntegrationsQueueModel();
-                $task->integrationType = IntegrationsQueueRecord::INTEGRATION_TYPE_MAILING_LIST;
+                $task->integrationType = IntegrationsQueueRecord::INTEGRATION_TYPE_EMAIL_MARKETING;
                 $task->status = IntegrationsQueueRecord::STATUS_HALTED;
                 $task->submissionId = $submission->id;
                 $task->fieldHash = $field->getHash();

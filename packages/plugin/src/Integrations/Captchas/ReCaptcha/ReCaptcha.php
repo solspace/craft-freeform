@@ -246,6 +246,10 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             $errors[] = 'The secret parameter is missing.';
         }
 
+        if (\in_array('invalid-keys', $errorCodes, true)) {
+            $errors[] = 'The key parameter is invalid or malformed.';
+        }
+
         if (\in_array('invalid-input-secret', $errorCodes, true)) {
             $errors[] = 'The secret parameter is invalid or malformed.';
         }
@@ -278,11 +282,11 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         if ($form->isGraphQLPosted()) {
             $arguments = $form->getGraphQLArguments();
 
-            if (!isset($arguments['reCaptcha'])) {
+            if (!isset($arguments['captcha'])) {
                 return null;
             }
 
-            $property = $arguments['reCaptcha'];
+            $property = $arguments['captcha'];
             if (empty($property['name']) || empty($property['value']) || 'g-recaptcha-response' !== $property['name']) {
                 return null;
             }

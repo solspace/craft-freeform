@@ -18,6 +18,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\BaseService;
 use yii\base\Event;
@@ -297,6 +299,53 @@ class IntegrationsService extends BaseService
 
             $model->metadata[$property->handle] = $value;
         }
+    }
+
+    public function getForForm(?Form $form = null, ?string $type = null): array
+    {
+        $integrations = $this->getAllIntegrations($type);
+        $integrationIds = array_map(
+            fn (IntegrationModel $record) => $record->id,
+            $integrations
+        );
+
+        $query = FormIntegrationRecord::find()
+            ->where(['formId' => $form?->getId() ?? null])
+            ->andWhere(['IN', 'integrationId', $integrationIds])
+            ->indexBy('integrationId')
+        ;
+
+        /** @var FormIntegrationRecord[] $formIntegrationRecords */
+        $formIntegrationRecords = $query->all();
+
+        foreach ($integrations as $integration) {
+            $metadata = [];
+            $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
+            if ($formIntegration) {
+                $metadata = json_decode($formIntegration->metadata ?? '{}', true);
+                $enabled = $formIntegration->enabled;
+            }
+
+            if (!$formIntegration) {
+                $enabledByDefault = $integration->metadata['enabledByDefault'] ?? null;
+                if (!\is_bool($enabledByDefault) || !$enabledByDefault) {
+                    continue;
+                }
+
+                $enabled = true;
+            }
+
+            $integration->enabled = $enabled;
+            $integration->metadata = array_merge(
+                $integration->metadata,
+                $metadata
+            );
+        }
+
+        return array_map(
+            fn (IntegrationModel $record) => $record->getIntegrationObject(),
+            $integrations
+        );
     }
 
     protected function getQuery(): Query

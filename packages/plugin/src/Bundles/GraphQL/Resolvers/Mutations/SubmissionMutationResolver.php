@@ -94,6 +94,8 @@ class SubmissionMutationResolver extends ElementMutationResolver
         $spamReasons = $submission->getSpamReasons();
         if (\count($spamReasons) > 0) {
             $spamReasons = json_encode($spamReasons);
+        } else {
+            $spamReasons = null;
         }
 
         $settings = $form->getSettings();
@@ -117,8 +119,8 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'user' => $submission->getUser(),
         ];
 
-        if (!empty($arguments['reCaptcha'])) {
-            $payload['reCaptcha'] = $arguments['reCaptcha'];
+        if (!empty($arguments['captcha'])) {
+            $payload['captcha'] = $arguments['captcha'];
         }
 
         if (!empty($arguments['honeypot'])) {

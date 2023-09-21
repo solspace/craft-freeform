@@ -5,9 +5,10 @@ namespace Solspace\Freeform\Bundles\GraphQL\Mutations;
 use craft\errors\GqlException;
 use craft\gql\base\ElementMutationResolver;
 use craft\gql\base\Mutation;
+use craft\gql\base\MutationResolver;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\HoneypotInputArguments;
-use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\SubmissionReCaptchaInputArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\SubmissionCaptchaInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\Mutations\SubmissionMutationResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
@@ -36,18 +37,18 @@ class SubmissionMutation extends Mutation
                 $mutationResolver->setResolutionData('form', $form);
 
                 $mutationInputFields = SubmissionGenerator::getInputFields();
-                static::prepareResolver($mutationResolver, $mutationInputFields);
+                self::prepareResolver($mutationResolver, $mutationInputFields);
 
-                SubmissionReCaptchaInputArguments::setForm($form);
+                SubmissionCaptchaInputArguments::setForm($form);
 
                 $csrfInputArguments = CsrfTokenInputArguments::getArguments();
                 $honeypotInputArguments = HoneypotInputArguments::getArguments();
-                $reCaptchaInputArguments = SubmissionReCaptchaInputArguments::getArguments();
+                $captchaInputArguments = SubmissionCaptchaInputArguments::getArguments();
 
                 $mutationArguments = array_merge(
                     $csrfInputArguments,
                     $honeypotInputArguments,
-                    $reCaptchaInputArguments,
+                    $captchaInputArguments,
                     $mutationResolver->getResolutionData(ElementMutationResolver::CONTENT_FIELD_KEY)
                 );
 
@@ -62,5 +63,23 @@ class SubmissionMutation extends Mutation
         }
 
         return $mutations;
+    }
+
+    protected static function prepareResolver(MutationResolver $resolver, array $contentFields): void
+    {
+        $fieldList = [];
+
+        foreach ($contentFields as $contentField) {
+            $contentFieldType = $contentField->getContentGqlMutationArgumentType();
+            $handle = $contentField->getHandle();
+            $fieldList[$handle] = $contentFieldType;
+            $configArray = \is_array($contentFieldType) ? $contentFieldType : $contentFieldType->config;
+
+            if (\is_array($configArray) && !empty($configArray['normalizeValue'])) {
+                $resolver->setValueNormalizer($handle, $configArray['normalizeValue']);
+            }
+        }
+
+        $resolver->setResolutionData(ElementMutationResolver::CONTENT_FIELD_KEY, $fieldList);
     }
 }

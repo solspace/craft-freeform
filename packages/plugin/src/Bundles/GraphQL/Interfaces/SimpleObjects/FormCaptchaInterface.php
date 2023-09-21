@@ -4,29 +4,29 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\FormReCaptchaGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\FormReCaptchaType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\FormCaptchaGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\FormCaptchaType;
 
-class FormReCaptchaInterface extends AbstractInterface
+class FormCaptchaInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformFormReCaptchaInterface';
+        return 'FreeformFormCaptchaInterface';
     }
 
     public static function getTypeClass(): string
     {
-        return FormReCaptchaType::class;
+        return FormCaptchaType::class;
     }
 
     public static function getGeneratorClass(): string
     {
-        return FormReCaptchaGenerator::class;
+        return FormCaptchaGenerator::class;
     }
 
     public static function getDescription(): string
     {
-        return 'Freeform Form ReCaptcha GraphQL Interface';
+        return 'Freeform Form Captcha GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array
@@ -45,7 +45,7 @@ class FormReCaptchaInterface extends AbstractInterface
             'enabled' => [
                 'name' => 'enabled',
                 'type' => Type::boolean(),
-                'description' => 'Is ReCaptcha enabled for this form',
+                'description' => 'Is Captcha enabled for this form',
             ],
         ], static::getName());
     }

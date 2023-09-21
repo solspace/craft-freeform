@@ -192,6 +192,10 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             $errors[] = 'The secret parameter is missing.';
         }
 
+        if (\in_array('invalid-keys', $errorCodes, true)) {
+            $errors[] = 'The key parameter is invalid or malformed.';
+        }
+
         if (\in_array('invalid-input-secret', $errorCodes, true)) {
             $errors[] = 'The secret parameter is invalid or malformed.';
         }
@@ -224,11 +228,11 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         if ($form->isGraphQLPosted()) {
             $arguments = $form->getGraphQLArguments();
 
-            if (!isset($arguments['hCaptcha'])) {
+            if (!isset($arguments['captcha'])) {
                 return null;
             }
 
-            $property = $arguments['hCaptcha'];
+            $property = $arguments['captcha'];
             if (empty($property['name']) || empty($property['value']) || 'h-captcha-response' !== $property['name']) {
                 return null;
             }

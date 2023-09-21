@@ -37,24 +37,39 @@ class DynamicRecipients extends FeatureBundle
             }
 
             $value = $form->get($fieldHandle)->getValue();
-
-            $recipients = $notification->getRecipientsFromValue($value);
-            $template = $notification->getTemplateFromValue($value);
-
-            if (!$recipients->emailsToArray() || !$template) {
-                continue;
+            if (!\is_array($value)) {
+                $value = [$value];
             }
 
-            $event
-                ->getMailer()
-                ->sendEmail(
-                    $form,
-                    $recipients,
-                    $fields,
-                    $template,
-                    $submission,
-                )
-            ;
+            $defaultTemplate = $notification->getTemplate();
+            $defaultRecipients = $notification->getRecipients();
+
+            $recipientMapping = $notification->getRecipientMapping();
+            foreach ($value as $selectedValue) {
+                $mapping = $recipientMapping->getMappingByValue($selectedValue);
+
+                $template = $defaultTemplate;
+                $recipients = $defaultRecipients;
+                if ($mapping) {
+                    $template = $mapping->getTemplate() ?? $template;
+                    $recipients = $mapping->getRecipients()->count() ? $mapping->getRecipients() : $recipients;
+                }
+
+                if (!$recipients->emailsToArray() || !$template) {
+                    continue;
+                }
+
+                $event
+                    ->getMailer()
+                    ->sendEmail(
+                        $form,
+                        $recipients,
+                        $fields,
+                        $template,
+                        $submission,
+                    )
+                ;
+            }
         }
     }
 }

@@ -149,40 +149,6 @@ class FormInterface extends AbstractInterface
                     return Submission::gqlMutationNameByContext($source);
                 },
             ],
-            // @deprecated
-            'extraPostUrl' => [
-                'name' => 'extraPostUrl',
-                'type' => Type::string(),
-                'description' => 'An URL that will get a POST call with the submitted data',
-                'resolve' => function () {
-                    return 'Deprecated - Please use postForwardingUrl instead';
-                },
-            ],
-            // @deprecated
-            'extraPostTriggerPhrase' => [
-                'name' => 'extraPostTriggerPhrase',
-                'type' => Type::string(),
-                'description' => 'A keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
-                'resolve' => function () {
-                    return 'Deprecated - Please use postForwardingErrorTriggerPhrase instead';
-                },
-            ],
-            'postForwardingUrl' => [
-                'name' => 'postForwardingUrl',
-                'type' => Type::string(),
-                'description' => 'An URL that will get a POST call with the submitted data',
-                'resolve' => function ($source) {
-                    return $source->getSettings()->postForwardingUrl;
-                },
-            ],
-            'postForwardingErrorTriggerPhrase' => [
-                'name' => 'postForwardingErrorTriggerPhrase',
-                'type' => Type::string(),
-                'description' => 'A keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
-                'resolve' => function ($source) {
-                    return $source->getSettings()->postForwardingErrorTriggerPhrase;
-                },
-            ],
             'ipCollectingEnabled' => [
                 'name' => 'ipCollectingEnabled',
                 'type' => Type::boolean(),
@@ -221,33 +187,6 @@ class FormInterface extends AbstractInterface
                 'description' => 'The submit button processing label text',
                 'resolve' => function ($source) {
                     return $source->getSettings()->processingText;
-                },
-            ],
-            'gtmEnabled' => [
-                'name' => 'gtmEnabled',
-                'type' => Type::boolean(),
-                'description' => 'Is Google Tag Manager enabled',
-                'resolve' => function ($source) {
-                    // FIXME
-                    return null;
-                },
-            ],
-            'gtmId' => [
-                'name' => 'gtmId',
-                'type' => Type::string(),
-                'description' => 'The Google Tag Manager ID',
-                'resolve' => function ($source) {
-                    // FIXME
-                    return null;
-                },
-            ],
-            'gtmEventName' => [
-                'name' => 'gtmEventName',
-                'type' => Type::string(),
-                'description' => 'The name of the Event that will be added to Google Tag Manager\'s data layer ',
-                'resolve' => function ($source) {
-                    // FIXME
-                    return null;
                 },
             ],
             'captcha' => [

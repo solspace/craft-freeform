@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FieldGenerator;
-use Solspace\Freeform\Library\Attributes\Attributes;
 
 class FieldInterface extends AbstractInterface
 {
@@ -47,15 +46,6 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => "Field's label",
             ],
-            // @deprecated
-            'hash' => [
-                'name' => 'hash',
-                'type' => Type::string(),
-                'description' => "Field's hash",
-                'resolve' => function () {
-                    return 'This property is deprecated';
-                },
-            ],
             'handle' => [
                 'name' => 'handle',
                 'type' => Type::string(),
@@ -76,44 +66,12 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::int(),
                 'description' => 'Specifies the page index the field belongs to',
             ],
-            'inputAttributes' => [
-                'name' => 'inputAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's input attributes",
+            'attributes' => [
+                'name' => 'attributes',
+                'type' => AttributesInterface::getType(),
+                'description' => "Field's attributes",
                 'resolve' => function ($source) {
-                    return self::transform($source->getAttributes()->getInput());
-                },
-            ],
-            'labelAttributes' => [
-                'name' => 'labelAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's label attributes",
-                'resolve' => function ($source) {
-                    return self::transform($source->getAttributes()->getLabel());
-                },
-            ],
-            'errorAttributes' => [
-                'name' => 'errorAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's error attributes",
-                'resolve' => function ($source) {
-                    return self::transform($source->getAttributes()->getError());
-                },
-            ],
-            'instructionAttributes' => [
-                'name' => 'instructionAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's instruction attributes",
-                'resolve' => function ($source) {
-                    return self::transform($source->getAttributes()->getInstructions());
-                },
-            ],
-            'containerAttributes' => [
-                'name' => 'containerAttributes',
-                'type' => Type::listOf(AttributeInterface::getType()),
-                'description' => "Field's container attributes",
-                'resolve' => function ($source) {
-                    return self::transform($source->getAttributes()->getContainer());
+                    return $source->getAttributes();
                 },
             ],
             'rules' => [
@@ -126,19 +84,5 @@ class FieldInterface extends AbstractInterface
                 },
             ],
         ], static::getName());
-    }
-
-    private static function transform(Attributes $fieldAttributes): array
-    {
-        $attributes = [];
-
-        foreach ($fieldAttributes->toArray() as $attribute => $value) {
-            $attributes[] = [
-                'value' => $value,
-                'attribute' => $attribute,
-            ];
-        }
-
-        return $attributes;
     }
 }

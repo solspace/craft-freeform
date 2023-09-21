@@ -8,6 +8,7 @@ use craft\events\RegisterGqlSchemaComponentsEvent;
 use craft\events\RegisterGqlTypesEvent;
 use craft\services\Gql;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
@@ -50,6 +51,7 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = FormCaptchaInterface::class;
                 $event->types[] = SubmissionCaptchaInterface::class;
                 $event->types[] = AttributeInterface::class;
+                $event->types[] = AttributesInterface::class;
                 $event->types[] = SubmissionInterface::class;
             }
         );

@@ -7,12 +7,13 @@ use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class FormCaptchaResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
-        $integrations = Freeform::getInstance()->captchas->getFormIntegrations($source);
+        $integrations = Freeform::getInstance()->integrations->getForForm($source, IntegrationInterface::TYPE_CAPTCHAS);
         if (!$integrations) {
             return null;
         }

@@ -29,13 +29,11 @@ class IntegrationModel extends Model
     public ?string $type = null;
     public ?string $class = null;
     public array $metadata = [];
-    public \DateTime $lastUpdate;
 
     public static function create(string $type): self
     {
         $model = new self();
         $model->type = $type;
-        $model->lastUpdate = new \DateTime();
 
         return $model;
     }
@@ -47,8 +45,6 @@ class IntegrationModel extends Model
             'handle',
             'class',
             'metadata',
-            'forceUpdate',
-            'lastUpdate',
         ];
     }
 
@@ -76,7 +72,6 @@ class IntegrationModel extends Model
             (bool) $this->enabled,
             $this->handle ?? '',
             $this->name ?? '',
-            $this->lastUpdate,
             $type,
         );
 

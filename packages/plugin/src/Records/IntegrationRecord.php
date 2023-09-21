@@ -17,13 +17,12 @@ use craft\db\ActiveRecord;
 /**
  * Class IntegrationRecord.
  *
- * @property int       $id
- * @property string    $name
- * @property string    $handle
- * @property string    $type
- * @property string    $class
- * @property string    $metadata
- * @property \DateTime $lastUpdate
+ * @property int    $id
+ * @property string $name
+ * @property string $handle
+ * @property string $type
+ * @property string $class
+ * @property string $metadata
  */
 class IntegrationRecord extends ActiveRecord
 {

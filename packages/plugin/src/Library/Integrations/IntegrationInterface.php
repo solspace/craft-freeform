@@ -43,8 +43,6 @@ interface IntegrationInterface
 
     public function getName(): ?string;
 
-    public function getLastUpdate(): \DateTime;
-
     /**
      * Returns the integration service provider short name
      * i.e. - MailChimp, Constant Contact, Salesforce, etc...

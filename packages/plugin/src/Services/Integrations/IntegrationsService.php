@@ -141,7 +141,6 @@ class IntegrationsService extends BaseService
         $record->handle = $model->handle;
         $record->type = $model->type;
         $record->class = $model->class;
-        $record->lastUpdate = new \DateTime();
         $record->metadata = $model->metadata;
 
         $record->validate();
@@ -359,7 +358,6 @@ class IntegrationsService extends BaseService
                     'integration.type',
                     'integration.class',
                     'integration.metadata',
-                    'integration.lastUpdate',
                 ]
             )
             ->from(IntegrationRecord::TABLE.' integration')

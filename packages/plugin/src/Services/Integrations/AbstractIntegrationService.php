@@ -125,7 +125,6 @@ abstract class AbstractIntegrationService extends BaseService
                     'integration.type',
                     'integration.class',
                     'integration.metadata',
-                    'integration.lastUpdate',
                 ]
             )
             ->from(IntegrationRecord::TABLE.' integration')

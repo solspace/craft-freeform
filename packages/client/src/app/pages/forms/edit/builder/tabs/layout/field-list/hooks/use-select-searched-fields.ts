@@ -12,7 +12,8 @@ type SelectSearchedFields<T> = () => (data: T[]) => T[];
 
 export const useSelectSearchedFields: SelectSearchedFields<FieldType> = () => {
   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
-  const select = useCallback(
+
+  return useCallback(
     (data: FieldType[]) => {
       if (!searchQuery) {
         return data;
@@ -24,15 +25,14 @@ export const useSelectSearchedFields: SelectSearchedFields<FieldType> = () => {
     },
     [searchQuery]
   );
-
-  return select;
 };
 
 export const useSelectSearchedFavorites: SelectSearchedFields<
   FieldFavorite
 > = () => {
   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
-  const select = useCallback(
+
+  return useCallback(
     (data: FieldFavorite[]) => {
       if (!searchQuery) {
         return data;
@@ -44,13 +44,12 @@ export const useSelectSearchedFavorites: SelectSearchedFields<
     },
     [searchQuery]
   );
-
-  return select;
 };
 
 export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
-  const select = useCallback(
+
+  return useCallback(
     (data: FieldForm[]): FieldForm[] => {
       if (!searchQuery) {
         return data;
@@ -70,6 +69,4 @@ export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
     },
     [searchQuery]
   );
-
-  return select;
 };

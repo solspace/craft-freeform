@@ -112,7 +112,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('type', $this->string(50)->notNull())
                 ->addField('class', $this->string(255))
                 ->addField('metadata', $this->longText())
-                ->addField('lastUpdate', $this->dateTime())
                 ->addIndex(['type']),
 
             (new Table('freeform_email_marketing_lists'))

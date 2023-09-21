@@ -44,7 +44,7 @@ export const useTabDragAnimation: TabDragAnimation = (
     return 0;
   }, [ref, position, dragItemIndex, index]);
 
-  const style = useSpring({
+  return useSpring({
     immediate: dragType !== Drag.Page,
     to: {
       x,
@@ -54,6 +54,4 @@ export const useTabDragAnimation: TabDragAnimation = (
       tension: 500,
     },
   });
-
-  return style;
 };

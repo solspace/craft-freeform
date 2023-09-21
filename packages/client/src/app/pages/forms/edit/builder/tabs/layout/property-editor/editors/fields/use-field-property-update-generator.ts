@@ -18,7 +18,7 @@ export const useFieldPropertyUpdateGenerator = (
 
   const { data: fieldTypes } = useFetchFieldTypes();
 
-  const updateValueHandlerGenerator: ValueUpdateHandlerGenerator = useCallback(
+  return useCallback(
     (property) => {
       return (value) => {
         dispatch((dispatch, getState) => {
@@ -63,6 +63,4 @@ export const useFieldPropertyUpdateGenerator = (
     },
     [field, dispatch]
   );
-
-  return updateValueHandlerGenerator;
 };

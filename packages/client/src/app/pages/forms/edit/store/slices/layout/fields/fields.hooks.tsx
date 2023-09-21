@@ -19,7 +19,7 @@ export const useFieldOptionCollection = (
   const cartographed = useSelector(layoutSelectors.cartographed.pageFieldList);
   const pages = useSelector(pageSelecors.all);
 
-  const options = useMemo(
+  return useMemo(
     (): OptionCollection =>
       cartographed.map((mapped) => ({
         label: pages.find((page) => page.uid === mapped.page)?.label,
@@ -56,6 +56,4 @@ export const useFieldOptionCollection = (
       })),
     [cartographed, pages, excludedUids]
   );
-
-  return options;
 };

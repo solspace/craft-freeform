@@ -27,7 +27,6 @@ abstract class BaseIntegration implements IntegrationInterface
         private bool $enabled,
         private string $handle,
         private string $name,
-        private \DateTime $lastUpdate,
         private Type $typeDefinition,
     ) {
     }
@@ -57,11 +56,6 @@ abstract class BaseIntegration implements IntegrationInterface
     public function getName(): ?string
     {
         return $this->name;
-    }
-
-    public function getLastUpdate(): \DateTime
-    {
-        return $this->lastUpdate;
     }
 
     /**

@@ -19,7 +19,7 @@ export const useCreateFormModal: CreateFormModal = () => {
 
   const navigate = useNavigate();
 
-  const openCreateFormModal = (): void => {
+  return (): void => {
     openModal({
       title: 'Create a New Form',
       content: <CreateFormModal />,
@@ -45,6 +45,4 @@ export const useCreateFormModal: CreateFormModal = () => {
       },
     });
   };
-
-  return openCreateFormModal;
 };

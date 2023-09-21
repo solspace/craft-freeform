@@ -67,7 +67,7 @@ export const layoutSelectors = {
             );
           });
 
-          cartograph.push({ page: page.uid, fields });
+          cartograph.push({ page: page.uid, fields: layoutFields });
         });
 
         return cartograph;

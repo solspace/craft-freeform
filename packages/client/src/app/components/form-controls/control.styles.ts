@@ -76,4 +76,15 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
       }
     }
   }
+
+  &.spacing-small {
+    padding-top: 6px;
+  }
+
+  .btn {
+    background-color: rgba(96, 125, 159, 0.25);
+    &:hover {
+      background-color: rgba(96, 125, 159, 0.3);
+    }
+  }
 `;

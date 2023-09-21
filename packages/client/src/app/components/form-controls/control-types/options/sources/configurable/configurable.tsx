@@ -104,7 +104,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
           );
         })}
       {typeClass && (
-        <ControlWrapper className="field">
+        <ControlWrapper className="spacing-small">
           <Button
             className="btn small"
             onClick={() => {

@@ -54,7 +54,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   return (
     <>
-      <ControlWrapper className="field" $width={property.width}>
+      <ControlWrapper $width={property.width}>
         <Label>{translate('Source')}</Label>
         <ButtonGroup>
           {Object.entries(sourceLabels).map(([key, label]) => (

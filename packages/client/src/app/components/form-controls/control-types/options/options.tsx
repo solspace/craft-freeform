@@ -49,7 +49,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
     updateValue({
       source: Source.Custom,
       useCustomValues: true,
-      options: options.map((option: Option) => option),
+      options: [...options] as Option[],
     });
 
   return (

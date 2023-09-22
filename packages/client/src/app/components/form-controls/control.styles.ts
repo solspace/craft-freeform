@@ -82,9 +82,10 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   }
 
   .btn {
-    background-color: rgba(96, 125, 159, 0.25);
+    background-color: var(--ui-control-bg-color);
+
     &:hover {
-      background-color: rgba(96, 125, 159, 0.3);
+      background-color: var(--ui-control-hover-bg-color);
     }
   }
 `;

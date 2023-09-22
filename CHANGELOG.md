@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.4 - 2023-09-22
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- Added inline setup guides for all integrations.
+- Added a 'Convert to Custom Options' feature for Predefined/Element options.
+
+### Changed
+- Updated language on setting names in Settings -> Form Builder.
+
+### Fixed
+- Fixed a bug where Group fields were not showing correctly in the CP Submissions detail view.
+- Fixed a bug where Group fields were not showing in the Grid and Flexbox sample formatting templates.
+- Fixed a bug where the builder would sometimes break when setting conditional rules on fields with custom options.
+- Fixed a bug where User Select notifications were not working correctly.
+- Resolved all known issues with GraphQL implementations.
+- Resolved all known issues with developer events.
+
 ## 5.0.0-beta.3 - 2023-09-15
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
@@ -39,15 +58,24 @@
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
-- The **Group** field type allows you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
-- **Custom field types** are available to be created now.
-- Fields can be saved as **Favorites** for quick use in other forms.
-- Fields from other forms can be **searched** and reused in your form.
-- The **Template Overrides** feature enables modification of attributes for the form, fields, and buttons, as well as overriding field labels, values, and instructions at the template-level.
-- The **Settings** object allows you to access all of the form's settings assigned to it in the form builder, e.g. `form.settings.errorMessage`.
-- The **Multipage All Fields** formatting template replaces the **Bootstrap 5 Multipage All Fields** template.
-- Configure email notifications in the form builder using complex conditional rules based on field data.
-- The global `freeform` variable allows shorthand for template queries, e.g. `freeform.form` instead of `craft.freeform.form`.
+- **Form Builder**
+    - Fields can be saved as **Favorites** for quick use in other forms.
+    - Fields from other forms can be **searched** and reused in your form.
+    - The **Limited Users** feature allows you to easily customize the form builder experience for specific users or groups, ensuring that these users are not overwhelmed by advanced settings and prevents them from accidentally breaking your forms or site.
+    - Configure email notifications in the form builder using complex conditional rules based on field data.
+- **Fields**
+    - The **Group** field type allows you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
+    - Fields being populated with **Element** or **Predefined** data can now have the data converted to **Custom** options so they can be modified, added to, removed, reordered, etc.
+    - **Custom field types** are available to be created now.
+- **Email Notifications**
+    - Configure email notifications in the form builder using complex conditional rules based on field data.
+- **Templating**
+    - The **Template Overrides** feature enables modification of attributes for the form, fields, and buttons, as well as overriding field labels, values, and instructions at the template-level.
+    - The **Settings** object allows you to access all of the form's settings assigned to it in the form builder, e.g. `form.settings.errorMessage`.
+    - The **Multipage All Fields** formatting template replaces the **Bootstrap 5 Multipage All Fields** template.
+    - The `labels` and `labelsAsString` methods are now available for all _option_ field types. This allows you to choose between displaying option labels instead of values when loading submission data in front end or email notifications.
+    - The `implements` method is available to all fields for Twig-friendly implementation checks, e.g. `field.implements('options')`.
+    - The global `freeform` variable allows shorthand for template queries, e.g. `freeform.form` instead of `craft.freeform.form`.
 
 ### Changed
 - **Control Panel**
@@ -113,20 +141,29 @@
     - The defaults for `errorClassBanner`, `errorClassList`, `errorClassField` and `successClassBanner` plugin options for JS overrides have been adjusted to `freeform-form-errors`, `freeform-errors`, `freeform-has-errors` and `freeform-form-success`, respectively (`ff-` changed to `freeform-`).
 
 ### Removed
-- The **Field Manager** area (**Freeform > Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
-- The **Dashboard** page has been removed in favor of a redesigned **Forms** page.
-- Exporting "shortcuts" from the Dashboard is no longer available with the removal of the **Dashboard** page, but many other exporting options are available.
-- The **What's New** feature has been removed in favor of using Craft's Announcements feature.
-- The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
-- The **Resources** area inside the Freeform control panel has been removed.
-- The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
-- The `overrideValues` parameter for Form queries has been removed. Please use the `value` parameter in the new **Template Overrides** feature.
-- The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
-- The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
-- The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.
-- The `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as they are stored as integrations now.
-- The `freeform/fields/create` field creation console command has been removed as it is no longer applicable.
-- The following attribute control parameters have been removed and replaced by accessing them via the new `attributes` object: `inputClass`, `submitClass`, `rowClass`, `columnClass`, `labelClass`, `errorClass`, `instructionsClass`, `class`, `id`, `name`, `method`, and `action`.
+- **Control Panel**
+    - The **Field Manager** area (**Freeform > Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
+    - The **Dashboard** page has been removed in favor of a redesigned **Forms** page.
+    - Exporting "shortcuts" from the Dashboard is no longer available with the removal of the **Dashboard** page, but many other exporting options are available.
+    - The **What's New** feature has been removed in favor of using Craft's Announcements feature.
+    - The **Resources** area inside the Freeform control panel has been removed.
+    - The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
+- **Settings**
+    - The **Access Fields** and **Manage Fields** permissions have been removed as they are no longer applicable.
+    - The **Display Order of Fields in the Form Builder** setting has been removed as it is no longer applicable.
+- **Templating**
+    - The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
+    - The `overrideValues` parameter for Form queries has been removed. Please use the `value` parameter in the new **Template Overrides** feature.
+    - The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
+    - The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
+    - The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.
+    - The `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as they are stored as integrations now.
+    - The `freeform/fields/create` field creation console command has been removed as it is no longer applicable.
+    - The following attribute control parameters have been removed and replaced by accessing them via the new `attributes` object: `inputClass`, `submitClass`, `rowClass`, `columnClass`, `labelClass`, `errorClass`, `instructionsClass`, `class`, `id`, `name`, `method`, and `action`.
+- **GraphQL**
+    - The `extraPostUrl`, `extraPostTriggerPhrase`, `gtmId`, and `gtmEventName` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the new interface instead (TBD).
+    - The `inputAttributes`, `labelAttributes`, `errorAttributes`, and `instructionAttributes` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the `FreeformAttributesInterface` instead.
+    - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 
 ## 4.1.6 - 2023-07-20
 

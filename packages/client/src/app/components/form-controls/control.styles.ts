@@ -76,4 +76,16 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
       }
     }
   }
+
+  &.spacing-small {
+    padding-top: 6px;
+  }
+
+  .btn {
+    background-color: var(--ui-control-bg-color);
+
+    &:hover {
+      background-color: var(--ui-control-hover-bg-color);
+    }
+  }
 `;

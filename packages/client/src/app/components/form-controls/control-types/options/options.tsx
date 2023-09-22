@@ -5,6 +5,7 @@ import {
 } from '@components/form-controls/control.styles';
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
+import { useFieldOptions } from '@components/options/use-field-options';
 import { useAppDispatch } from '@editor/store';
 import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
 import { useFieldType } from '@ff-client/queries/field-types';
@@ -15,7 +16,8 @@ import translate from '@ff-client/utils/translations';
 import { generateDefaultValue } from './sources/defaults';
 import { SourceComponent } from './sources/source.component';
 import { Button, ButtonGroup } from './options.styles';
-import type { Source } from './options.types';
+import type { Option } from './options.types';
+import { Source } from './options.types';
 import { sourceLabels } from './options.types';
 
 const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
@@ -31,6 +33,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
   const fieldType = useFieldType(context.typeClass);
   const isMultiple = fieldType?.implements.includes('multiValue');
 
+  const [options] = useFieldOptions(context, fieldType);
   const dispatch = useAppDispatch();
   const updateDefaultValue = (value: string | string[]): void => {
     dispatch(
@@ -42,9 +45,16 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
     );
   };
 
+  const convertToCustomValues = (): void =>
+    updateValue({
+      source: Source.Custom,
+      useCustomValues: true,
+      options: [...options] as Option[],
+    });
+
   return (
     <>
-      <ControlWrapper className="field" $width={property.width}>
+      <ControlWrapper $width={property.width}>
         <Label>{translate('Source')}</Label>
         <ButtonGroup>
           {Object.entries(sourceLabels).map(([key, label]) => (
@@ -64,6 +74,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         updateValue={updateValue}
         defaultValue={defaultValue}
         updateDefaultValue={updateDefaultValue}
+        convertToCustomValues={convertToCustomValues}
         isMultiple={isMultiple}
       />
 

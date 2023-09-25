@@ -12,9 +12,11 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 abstract class PaymentGatewayIntegration extends APIIntegration implements PaymentGatewayIntegrationInterface, \JsonSerializable
 {
@@ -71,7 +73,7 @@ abstract class PaymentGatewayIntegration extends APIIntegration implements Payme
         try {
             $plans = $this->getPlans();
         } catch (\Exception $e) {
-            $this->getLogger()->error($e->getMessage(), ['service' => $this->getServiceProvider()]);
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::STRIPE)->error($e->getMessage(), ['service' => $this->getServiceProvider()]);
 
             $plans = [];
         }

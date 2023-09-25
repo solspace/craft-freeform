@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -22,6 +23,7 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, ZohoIntegrationInterface
 {
@@ -190,8 +192,8 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
         $data = $response['data'][0];
 
         if ('error' === $data['status']) {
-            $this->getLogger()->error(
-                $data['message'],
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::CRM_INTEGRATION)->error(
+                self::LOG_CATEGORY.' '.$data['message'],
                 ['exception' => $data],
             );
 

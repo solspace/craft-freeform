@@ -172,12 +172,10 @@ class SaveForm extends FeatureBundle
 
                 \Craft::$app->mailer->send($message);
             } catch (\Exception $exception) {
-                FreeformLogger::getInstance(FreeformLogger::EMAIL_NOTIFICATION)
-                    ->warning(
-                        $exception->getMessage(),
-                        ['form' => $form->getHandle(), 'context' => 'saving form', 'recipients' => $recipients]
-                    )
-                ;
+                Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION)->warning(
+                    $exception->getMessage(),
+                    ['form' => $form->getHandle(), 'context' => 'saving form', 'recipients' => $recipients]
+                );
             }
         }
     }

@@ -14,10 +14,10 @@ namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 abstract class BaseIntegration implements IntegrationInterface
@@ -104,21 +104,13 @@ abstract class BaseIntegration implements IntegrationInterface
         return App::parseEnv($value);
     }
 
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return Freeform::getInstance()
-            ->logger
-            ->getLogger('Integration'.($category ? '.'.$category : ''))
-        ;
-    }
-
     /**
      * @throws \Exception
      */
     protected function processException(\Exception $exception, ?string $category = null): void
     {
-        $this->getLogger($category)->error(
-            $exception->getMessage(),
+        Freeform::getInstance()->logger->getLogger(FreeformLogger::INTEGRATION)->error(
+            $category.' '.$exception->getMessage(),
             ['exception' => $exception->getMessage()],
         );
 

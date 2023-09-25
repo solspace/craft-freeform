@@ -23,7 +23,7 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
 
         $collection->add(
             BehaviorSettings::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
-            'Redirect to another URL'
+            'Return the Submitter to the following URL'
         );
 
         return $collection;

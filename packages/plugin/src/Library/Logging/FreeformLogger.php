@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Library\Logging;
 
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Solspace\Commons\Loggers\LoggerFactory;
 
 class FreeformLogger
 {
@@ -28,12 +27,20 @@ class FreeformLogger
     public const LEVEL_EMERGENCY = Logger::EMERGENCY;
 
     public const FREEFORM = 'Freeform';
+
+    // NEW
+    public const INTEGRATION = 'Integration';
+    public const EMAIL_MARKETING_INTEGRATION = 'Email Marketing Integration';
+    public const CRM_INTEGRATION = 'CRM Integration';
+    public const ELEMENTS_INTEGRATION = 'Elements Integration';
+    public const CAPTCHAS_INTEGRATION = 'Captchas Integration';
+    public const WEBHOOKS_INTEGRATION = 'Webhooks Integration';
+
+    // OLD
     public const FORM = 'Form';
     public const ADMIN_NOTIFICATION = 'Admin Notification';
     public const CONDITIONAL_NOTIFICATION = 'Conditional Notification';
     public const EMAIL_NOTIFICATION = 'Email Notification';
-    public const CRM_INTEGRATION = 'CRM Integration';
-    public const MAILING_LIST_INTEGRATION = 'Email Marketing Integration';
     public const STRIPE = 'Stripe';
     public const DASHBOARD = 'Dashboard';
     public const MAILER = 'Mailer service';
@@ -43,19 +50,31 @@ class FreeformLogger
     public const PAYLOAD_FORWARDING = 'POST Forwarding';
     public const FEATURE_BUNDLES = 'bundles';
 
-    private static $categoryColorMap = [
+    private static array $colorMap = [
         self::FREEFORM => '#333333',
+        // NEW
+        self::INTEGRATION => '#333333',
+        self::EMAIL_MARKETING_INTEGRATION => '#333333',
+        self::CRM_INTEGRATION => '#333333',
+        self::ELEMENTS_INTEGRATION => '#333333',
+        self::CAPTCHAS_INTEGRATION => '#333333',
+        self::WEBHOOKS_INTEGRATION => '#333333',
+        // OLD
+        self::FORM => '#333333',
+        self::ADMIN_NOTIFICATION => '#333333',
+        self::CONDITIONAL_NOTIFICATION => '#333333',
         self::EMAIL_NOTIFICATION => '#333333',
-        self::CRM_INTEGRATION => 'blue',
-        self::MAILING_LIST_INTEGRATION => '#333333',
+        self::STRIPE => '#333333',
         self::DASHBOARD => 'red',
         self::MAILER => '#333333',
         self::PAYMENT_GATEWAY => '#333333',
         self::CONDITIONAL_RULE => '#333333',
         self::ELEMENT_CONNECTION => '#333333',
+        self::PAYLOAD_FORWARDING => '#333333',
+        self::FEATURE_BUNDLES => '#333333',
     ];
 
-    private static $levelColorMap = [
+    private static array $levelColorMap = [
         'DEBUG' => '#CCCCCC',
         'INFO' => '#6c757d',
         'NOTICE' => '#28a745',
@@ -66,8 +85,7 @@ class FreeformLogger
         'EMERGENCY' => '#dc3545',
     ];
 
-    /** @var LoggerInterface[] */
-    private static $loggers = [];
+    private static array $loggers = [];
 
     public static function getInstance(string $category): LoggerInterface
     {

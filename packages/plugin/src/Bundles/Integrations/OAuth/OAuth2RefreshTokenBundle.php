@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class OAuth2RefreshTokenBundle extends FeatureBundle
@@ -142,10 +143,8 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
             $integrationsService->save($model, $integration);
         } catch (RequestException $e) {
             $responseBody = (string) $e->getResponse()->getBody();
-            Freeform::$logger
-                ->getLogger('Integrations')
-                ->error($responseBody, ['exception' => $e->getMessage()])
-            ;
+
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::INTEGRATION)->error($responseBody, ['exception' => $e->getMessage()]);
 
             throw $e;
         }

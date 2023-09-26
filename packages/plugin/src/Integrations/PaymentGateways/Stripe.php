@@ -971,7 +971,7 @@ class Stripe extends PaymentGatewayIntegration
                 throw $exception;
         }
 
-        FreeformLogger::getInstance(FreeformLogger::STRIPE)->error($exception->getMessage());
+        Freeform::getInstance()->logger->getLogger(FreeformLogger::STRIPE)->error($exception->getMessage());
 
         return false;
     }

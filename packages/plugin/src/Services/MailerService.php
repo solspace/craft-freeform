@@ -59,7 +59,6 @@ class MailerService extends BaseService implements MailHandlerInterface
         NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null
     ): int {
-        $logger = FreeformLogger::getInstance(FreeformLogger::MAILER);
         $sentMailCount = 0;
 
         if (null === $notificationTemplate) {
@@ -136,7 +135,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     'file' => $exception->getFile(),
                 ];
 
-                $logger->error($message, $context);
+                Freeform::getInstance()->logger->getLogger(FreeformLogger::MAILER)->error($message, $context);
 
                 $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form);
             }

@@ -7,7 +7,9 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 #[Type(
     name: 'Slack',
@@ -36,10 +38,7 @@ class Slack extends WebhookIntegration
         ]);
 
         if (!$message) {
-            $this
-                ->getLogger(self::LOG_CATEGORY)
-                ->warning('Slack integration has no message set')
-            ;
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::WEBHOOKS_INTEGRATION)->warning('Slack integration has no message set');
 
             return;
         }

@@ -38,19 +38,16 @@ class PageJumpEvent extends ArrayableEvent
         if ($jumpToIndex < $totalPages) {
             $this->jumpToIndex = $jumpToIndex;
         } else {
-            Freeform::getInstance()->logger
-                ->getLogger(FreeformLogger::CONDITIONAL_RULE)
-                ->error(
-                    Freeform::t(
-                        'Form "{form}" did not correctly jump to page index "{pageIndex}"',
-                        [
-                            'form' => $this->getForm()->getName(),
-                            'pageIndex' => $this->jumpToIndex,
-                        ]
-                    ),
-                    ['form' => $this->getForm()]
-                )
-            ;
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::CONDITIONAL_RULE)->error(
+                Freeform::t(
+                    'Form "{form}" did not correctly jump to page index "{pageIndex}"',
+                    [
+                        'form' => $this->getForm()->getName(),
+                        'pageIndex' => $this->jumpToIndex,
+                    ]
+                ),
+                ['form' => $this->getForm()]
+            );
         }
     }
 }

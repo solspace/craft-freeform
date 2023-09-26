@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
@@ -58,8 +59,6 @@ class PayloadForwarding extends FeatureBundle
             return;
         }
 
-        $logger = FreeformLogger::getInstance(FreeformLogger::PAYLOAD_FORWARDING);
-
         $payload = [];
         foreach ($form->getLayout()->getFields() as $field) {
             if (!$field->getHandle()) {
@@ -100,6 +99,8 @@ class PayloadForwarding extends FeatureBundle
         if (!array_intersect(array_keys($options), [RequestOptions::FORM_PARAMS, RequestOptions::JSON, RequestOptions::BODY])) {
             $options[RequestOptions::FORM_PARAMS] = $payload;
         }
+
+        $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::PAYLOAD_FORWARDING);
 
         try {
             $response = $client->send($request, $options);

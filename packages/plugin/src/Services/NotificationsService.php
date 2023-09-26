@@ -118,8 +118,7 @@ class NotificationsService extends BaseService
     {
         $notification = $this->getNotificationById($id);
         if (!$notification) {
-            $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
-            $logger->warning(
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION)->warning(
                 Freeform::t(
                     'Email notification template with ID {id} not found',
                     ['id' => $id]

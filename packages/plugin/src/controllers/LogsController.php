@@ -5,10 +5,17 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\LogBundle;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class LogsController extends BaseController
 {
+    /**
+     * @throws Exception
+     */
     public function actionIndex(): Response
     {
         $logReader = $this->getLoggerService()->getLogReader();
@@ -23,11 +30,16 @@ class LogsController extends BaseController
         );
     }
 
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
     public function actionError(): Response
     {
         $logReader = $this->getLoggerService()->getLogReader();
 
         $this->getLoggerService()->registerJsTranslations($this->view);
+
         \Craft::$app->view->registerAssetBundle(LogBundle::class);
 
         return $this->renderTemplate(
@@ -39,12 +51,14 @@ class LogsController extends BaseController
     }
 
     /**
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
+     * @throws Exception
      */
     public function actionClear(): Response
     {
         $this->requirePostRequest();
+
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->getLoggerService()->clearLogs();

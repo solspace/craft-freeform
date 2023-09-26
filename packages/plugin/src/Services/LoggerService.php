@@ -5,14 +5,12 @@ namespace Solspace\Freeform\Services;
 use craft\helpers\FileHelper;
 use craft\web\View;
 use Psr\Log\LoggerInterface;
-use Solspace\Commons\Loggers\Readers\LineLogReader;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Library\Logging\Readers\LineLogReader;
 
 class LoggerService extends BaseService
 {
-    public const DEFAULT_CATEGORY = 'freeform';
-
     public function getLogger(string $category): LoggerInterface
     {
         return FreeformLogger::getInstance($category);
@@ -23,17 +21,14 @@ class LoggerService extends BaseService
         return new LineLogReader(FreeformLogger::getLogfilePath());
     }
 
-    public function registerJsTranslations(View $view)
+    public function registerJsTranslations(View $view): void
     {
         $view->registerTranslations(Freeform::TRANSLATION_CATEGORY, [
             'Are you sure you want to clear the Error log?',
         ]);
     }
 
-    /**
-     * Delete the logfile.
-     */
-    public function clearLogs()
+    public function clearLogs(): void
     {
         $logFilePath = FreeformLogger::getLogfilePath();
 

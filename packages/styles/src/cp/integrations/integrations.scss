@@ -1,6 +1,18 @@
-@import "../main";
-@import "../../shared/variables";
-@import "../../shared/alerts";
+@import '../main';
+@import '../../shared/variables';
+@import '../../shared/alerts';
+
+table#integrations {
+  th {
+    &:first-child {
+      border-top-left-radius: 5px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 5px;
+    }
+  }
+}
 
 #auth-checker {
   margin-bottom: 10px;
@@ -9,7 +21,7 @@
     display: none;
 
     &:before {
-      content: "";
+      content: '';
       position: relative;
       top: 1px;
 
@@ -19,27 +31,27 @@
 
       margin-right: 5px;
 
-      background: #CCD1D6;
-      border: 1px solid #CCD1D6;
+      background: #ccd1d6;
+      border: 1px solid #ccd1d6;
       border-radius: 10px;
     }
   }
 
   .authorized {
     &:before {
-      border-color: #27AE60;
-      background: #27AE60;
+      border-color: #27ae60;
+      background: #27ae60;
     }
   }
 
   .not-authorized {
     &:before {
-      border-color: #D0021B;
-      background: #D0021B;
+      border-color: #d0021b;
+      background: #d0021b;
     }
 
     .errors {
-      color: #D0021B;
+      color: #d0021b;
     }
   }
 
@@ -47,7 +59,6 @@
     display: block;
   }
 }
-
 
 .alert {
   margin-top: 30px;

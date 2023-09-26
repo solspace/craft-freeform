@@ -107,6 +107,7 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())
+                ->addField('enabled', $this->boolean()->defaultValue(true))
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('type', $this->string(50)->notNull())

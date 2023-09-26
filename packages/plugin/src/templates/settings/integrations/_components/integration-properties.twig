@@ -1,0 +1,18 @@
+{% import "_includes/forms" as forms %}
+
+<div id="properties-{{ type.class|replace("\\", "") }}" style="display: none;">
+
+    {% if type.readme %}
+        <div class="markdown-instructions markdown-body">
+            {{ type.readmeContent|markdown('gfm-comment') }}
+        </div>
+    {% endif %}
+
+    <div class="property-editor" data-class="{{ type.class }}">
+        {% for property in type.properties | filter((prop) => not prop.hasFlag('internal', 'instance')) %}
+
+            {{ include('freeform/settings/integrations/_components/property') }}
+
+        {% endfor %}
+    </div>
+</div>

@@ -18,6 +18,7 @@ use craft\db\ActiveRecord;
  * Class IntegrationRecord.
  *
  * @property int    $id
+ * @property bool   $enabled
  * @property string $name
  * @property string $handle
  * @property string $type

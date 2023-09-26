@@ -60,6 +60,7 @@ use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
+use Solspace\Freeform\Services\Integrations\SingletonIntegrationsService;
 use Solspace\Freeform\Services\Integrations\WebhooksService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\LockService;
@@ -98,44 +99,45 @@ use yii\web\ForbiddenHttpException;
 /**
  * Class Plugin.
  *
- * @property CrmService                  $crm
- * @property CaptchasService             $captchas
- * @property ElementsService             $elements
- * @property FilesService                $files
- * @property FormsService                $forms
- * @property FieldsService               $fields
- * @property LayoutsService              $formLayouts
- * @property MailerService               $mailer
- * @property EmailMarketingService       $emailMarketing
- * @property NotificationsService        $notifications
- * @property SettingsService             $settings
- * @property StatusesService             $statuses
- * @property SubmissionsService          $submissions
- * @property SpamSubmissionsService      $spamSubmissions
- * @property LoggerService               $logger
- * @property IntegrationsService         $integrations
- * @property IntegrationsQueueService    $integrationsQueue
- * @property PaymentGatewaysService      $paymentGateways
- * @property ChartsService               $charts
- * @property WidgetsService              $widgets
- * @property ExportService               $export
- * @property ExportProfilesService       $exportProfiles
- * @property ExportNotificationsService  $exportNotifications
- * @property RulesService                $rules
- * @property PaymentNotificationsService $paymentNotifications
- * @property PaymentsService             $payments
- * @property StripeService               $stripe
- * @property SubscriptionPlansService    $subscriptionPlans
- * @property SubscriptionsService        $subscriptions
- * @property WebhooksService             $webhooks
- * @property RelationsService            $relations
- * @property DigestService               $digest
- * @property SummaryService              $summary
- * @property FreeformFeedService         $feed
- * @property LockService                 $lock
- * @property DiagnosticsService          $diagnostics
- * @property PreflightService            $preflight
- * @property TypesService                $formTypes
+ * @property CrmService                   $crm
+ * @property SingletonIntegrationsService $singletonIntegrations
+ * @property CaptchasService              $captchas
+ * @property ElementsService              $elements
+ * @property FilesService                 $files
+ * @property FormsService                 $forms
+ * @property FieldsService                $fields
+ * @property LayoutsService               $formLayouts
+ * @property MailerService                $mailer
+ * @property EmailMarketingService        $emailMarketing
+ * @property NotificationsService         $notifications
+ * @property SettingsService              $settings
+ * @property StatusesService              $statuses
+ * @property SubmissionsService           $submissions
+ * @property SpamSubmissionsService       $spamSubmissions
+ * @property LoggerService                $logger
+ * @property IntegrationsService          $integrations
+ * @property IntegrationsQueueService     $integrationsQueue
+ * @property PaymentGatewaysService       $paymentGateways
+ * @property ChartsService                $charts
+ * @property WidgetsService               $widgets
+ * @property ExportService                $export
+ * @property ExportProfilesService        $exportProfiles
+ * @property ExportNotificationsService   $exportNotifications
+ * @property RulesService                 $rules
+ * @property PaymentNotificationsService  $paymentNotifications
+ * @property PaymentsService              $payments
+ * @property StripeService                $stripe
+ * @property SubscriptionPlansService     $subscriptionPlans
+ * @property SubscriptionsService         $subscriptions
+ * @property WebhooksService              $webhooks
+ * @property RelationsService             $relations
+ * @property DigestService                $digest
+ * @property SummaryService               $summary
+ * @property FreeformFeedService          $feed
+ * @property LockService                  $lock
+ * @property DiagnosticsService           $diagnostics
+ * @property PreflightService             $preflight
+ * @property TypesService                 $formTypes
  */
 class Freeform extends Plugin
 {
@@ -352,6 +354,7 @@ class Freeform extends Plugin
         $this->setComponents(
             [
                 'crm' => CrmService::class,
+                'singletonIntegrations' => SingletonIntegrationsService::class,
                 'captchas' => CaptchasService::class,
                 'elements' => ElementsService::class,
                 'charts' => ChartsService::class,

@@ -2,19 +2,37 @@ type Filter = {
   expression: string;
 };
 
+export const EVENT_INTEGRATION_UPDATE = 'integration-update';
+
 $(() => {
   const $propertyEditor = $('.property-editor');
   const $classSelect = $('select[name="class"]');
 
-  $classSelect.on('change', () => updateFieldVisibility());
-  $propertyEditor.on('change', 'input, select, textarea', () => updateFieldVisibility());
+  $classSelect.on('change', function () {
+    $(this).trigger(EVENT_INTEGRATION_UPDATE);
+  });
+
+  $('select', $propertyEditor).on('change', function () {
+    $(this).trigger(EVENT_INTEGRATION_UPDATE);
+  });
+
+  $('input, textarea', $propertyEditor).on('keyup', function () {
+    $(this).trigger(EVENT_INTEGRATION_UPDATE);
+  });
 
   const updateFieldVisibility = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const values: Record<string, any> = {
       values: {},
     };
-    const currentClass = $classSelect.val();
+
+    let currentClass: string;
+    if ($classSelect.get(0)) {
+      currentClass = $classSelect.val() as string;
+    } else {
+      const $currentSelection = $('ul.integration-stack-items > li.active > a[data-type]');
+      currentClass = $currentSelection.data('type');
+    }
 
     $('form#main-form')
       .serializeArray()
@@ -36,6 +54,8 @@ $(() => {
           values.values[updatedName] = value;
         }
       });
+
+    console.log(values);
 
     $propertyEditor.find('.field').each(function () {
       const $field = $(this);
@@ -59,6 +79,8 @@ $(() => {
       });
     });
   };
+
+  $(document).on(EVENT_INTEGRATION_UPDATE, updateFieldVisibility);
 
   updateFieldVisibility();
 });

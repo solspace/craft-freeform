@@ -15,13 +15,11 @@
 {% block content %}
 
     {% if integrations|length %}
-        <table id="integrations" class="data fullwidth collapsible">
+        <table id="integrations" class="data fullwidth">
             <thead>
             <tr>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
-                <th scope="col">{{ "Handle"|t('freeform') }}</th>
                 <th scope="col">{{ "Service Provider"|t('freeform') }}</th>
-                <th scope="col">{{ "Last Updated"|t('freeform') }}</th>
                 <td class="thin"></td>
             </tr>
             </thead>
@@ -31,9 +29,6 @@
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
                     </th>
-                    <td data-title="{{ "Handle"|t('freeform') }}" class="code">
-                        {{ integration.handle }}
-                    </td>
                     <td data-title="{{ "Service Provider"|t('freeform') }}" class="code" style="display: flex; gap: 5px;">
                         <img
                                 width="16"
@@ -64,7 +59,7 @@
 {% endblock %}
 
 {% css %}
-    #content { padding: 0; }
+    #content { padding: 1px; }
 {% endcss %}
 
 {% js %}

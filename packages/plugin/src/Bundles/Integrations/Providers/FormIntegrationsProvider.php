@@ -20,4 +20,23 @@ class FormIntegrationsProvider
     {
         return $this->integrationsService->getForForm($form, $type);
     }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T> $class
+     *
+     * @return IntegrationInterface|T
+     */
+    public function getSingleton(Form $form, string $class): ?IntegrationInterface
+    {
+        $integrations = $this->getForForm($form, IntegrationInterface::TYPE_SINGLETON);
+        foreach ($integrations as $integration) {
+            if ($integration instanceof $class) {
+                return $integration;
+            }
+        }
+
+        return null;
+    }
 }

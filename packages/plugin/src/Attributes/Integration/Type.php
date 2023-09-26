@@ -33,11 +33,16 @@ class Type
         return null;
     }
 
+    public function implements(string $interface): bool
+    {
+        return (new \ReflectionClass($this->class))->implementsInterface($interface);
+    }
+
     #[Ignore]
     public function getIconUrl(): ?string
     {
         if ($this->iconPath && file_exists($this->iconPath)) {
-            return \Craft::$app->assetManager->getPublishedUrl($this->iconPath);
+            return \Craft::$app->assetManager->getPublishedUrl($this->iconPath, true);
         }
 
         return null;

@@ -250,6 +250,7 @@ class SettingsService extends BaseService
             'captchas' => ['title' => Freeform::t('Captchas')],
             // 'payment-gateways' => ['title' => Freeform::t('Payments')],
             'webhooks' => ['title' => Freeform::t('Webhooks')],
+            'other' => ['title' => Freeform::t('Other')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'error-log' => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],

@@ -43,8 +43,6 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $this->saveSettings(
             [
-                'freeformHoneypot' => $this->getRequest()->getBodyParam('honeypot', true),
-                'freeformHoneypotEnhancement' => $this->getRequest()->getBodyParam('enhancedHoneypot', false),
                 'spamFolderEnabled' => $this->getRequest()->getBodyParam('spamFolder', true),
                 'spamProtectionBehaviour' => $this->getRequest()->getBodyParam('spamBehaviour'),
             ]

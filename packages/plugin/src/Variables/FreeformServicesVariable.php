@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Variables;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
@@ -55,11 +54,6 @@ class FreeformServicesVariable
     public function settings(): SettingsService
     {
         return Freeform::getInstance()->settings;
-    }
-
-    public function honeypot(): HoneypotService
-    {
-        return Freeform::getInstance()->honeypot;
     }
 
     public function payments(): PaymentsService

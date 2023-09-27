@@ -259,22 +259,6 @@ class DiagnosticsService extends BaseService
             ),
             'Spam settings' => [
                 new DiagnosticItem(
-                    'Honeypot: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                    $this->getSummary()->statistics->spam->honeypot
-                ),
-                new DiagnosticItem(
-                    'Honeypot JS enhancement: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                    $this->getSummary()->statistics->spam->javascriptEnhancement,
-                    [
-                        new NoticeValidator(
-                            fn ($value) => !$value,
-                            '',
-                            'This being enabled could potentially be problematic with caching, etc. If doing so, please be sure to manually refresh this token.'
-                        ),
-                    ],
-                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-                ),
-                new DiagnosticItem(
                     'Spam Folder: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSummary()->statistics->spam->spamFolder,
                     [

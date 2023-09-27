@@ -4,28 +4,24 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers;
 
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
-use Solspace\Freeform\Bundles\Spam\Honeypot\HoneypotProvider;
-use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\Singleton\Honeypot\Honeypot;
 
 class HoneypotResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
-        $isHoneypotEnabled = Freeform::getInstance()->settings->isFreeformHoneypotEnabled();
-
-        if (!$isHoneypotEnabled) {
+        if (!$source instanceof Form) {
             return null;
         }
 
-        $honeypot = \Craft::$container->get(HoneypotProvider::class)->getHoneypot($source);
-
-        if (!$honeypot) {
+        $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
+        $honeypot = $integrationProvider->getSingleton(Honeypot::class);
+        if (!$honeypot || !$honeypot->isEnabled()) {
             return null;
         }
 
-        return [
-            'name' => $honeypot->getName(),
-            'value' => $honeypot->getHash(),
-        ];
+        return ['name' => $honeypot->getInputName()];
     }
 }

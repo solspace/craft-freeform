@@ -28,11 +28,8 @@
 
         {% endcache %}
 
-        {# Script for updating the form's Hash, JS Honeypot and CSRF token #}
+        {# Script for updating the form's Hash and CSRF token #}
         <script>
-            // Get a fresh JS Honeypot via `freeform.honeypot()` service (if applicable)
-            var honeypot = JSON.parse('{{ freeform.honeypot(form)|json_encode|raw }}');
-
             // Find the corresponding Form
             var form = document.querySelector('form');
 
@@ -40,17 +37,11 @@
             var formHashInput = form.querySelector('input[name=formHash]');
             formHashInput.setAttribute('value', '{{ form.hash }}');
 
-            // Locate and update the JS Honeypot input (if applicable)
-            var honeypotInput = form.querySelector('input[name^="freeform_form_handle"]');
-            honeypotInput.setAttribute('id', honeypot.name);
-            honeypotInput.setAttribute('name', honeypot.name);
-            honeypotInput.value = honeypot.hash;
-
             // Locate and update the CSRF input
             var csrfInput = form.querySelector('input[name={{ craft.app.config.general.csrfTokenName|e('js') }}]');
             csrfInput.value = '{{ craft.app.request.csrfToken|e('js') }}';
         </script>
-        
+
     {% else %}
 
         <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
@@ -66,7 +57,6 @@
             In order to view this page live, you'll need to make some adjustments to this template or your test form:
             <ol>
                 <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>If using the <b>Javascript Enhancment</b> setting for the Freeform Honeypot, either disable that now, or follow the instructions inside the code of this page by uncommenting a few lines in the JS.</li>
             </ol>
         </p>
     </div>

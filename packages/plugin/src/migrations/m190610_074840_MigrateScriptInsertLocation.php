@@ -35,7 +35,7 @@ class m190610_074840_MigrateScriptInsertLocation extends Migration
 
             $settings->scriptInsertLocation = $scriptInsertLocation;
 
-            $pluginService->savePluginSettings($plugin, ['freeformHoneypotEnhancement' => true]);
+            $pluginService->savePluginSettings($plugin, []);
         } catch (\Exception $e) {
         }
 

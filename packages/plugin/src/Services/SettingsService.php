@@ -13,10 +13,11 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Bundles\Spam\Honeypot\HoneypotProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Singleton\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -38,34 +39,23 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->pluginName;
     }
 
-    public function getCustomErrorMessage(): ?string
-    {
-        return $this->getSettingsModel()->customErrorMessage;
-    }
-
     public function isFreeformHoneypotEnabled(Form $form = null): bool
     {
         $settingsModel = $this->getSettingsModel();
-
-        $enabled = $settingsModel->freeformHoneypot;
-        if (!$enabled) {
-            return false;
-        }
 
         if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
             return false;
         }
 
-        if ($form && $form->getProperties()->get(HoneypotProvider::HONEYPOT_DISABLE_KEY, false)) {
-            return false;
+        if ($form) {
+            $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
+            $honeypot = $integrationProvider->getSingleton($form, Honeypot::class);
+            if ($honeypot && $honeypot->isEnabled()) {
+                return true;
+            }
         }
 
-        return true;
-    }
-
-    public function isFreeformHoneypotEnhanced(): bool
-    {
-        return (bool) $this->getSettingsModel()->freeformHoneypotEnhancement;
+        return false;
     }
 
     public function isSpamBehaviourSimulatesSuccess(): bool

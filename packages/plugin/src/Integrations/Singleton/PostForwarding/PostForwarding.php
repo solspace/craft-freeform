@@ -18,6 +18,8 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 {
     use EnabledByDefaultTrait;
 
+    public const EVENT_POST_FORWARDING = 'post-forwarding';
+
     #[Text(
         label: 'URL',
         instructions: 'Enter the URL where the POST request should be sent',
@@ -30,4 +32,14 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
         instructions: 'Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
     )]
     protected string $errorTrigger = '';
+
+    public function getUrl(): string
+    {
+        return $this->getProcessedValue($this->url);
+    }
+
+    public function getErrorTrigger(): string
+    {
+        return $this->getProcessedValue($this->errorTrigger);
+    }
 }

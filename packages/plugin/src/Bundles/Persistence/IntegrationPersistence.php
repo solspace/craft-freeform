@@ -80,7 +80,7 @@ class IntegrationPersistence extends FeatureBundle
                 $enabledByDefault = $originalMetadata->enabledByDefault ?? null;
 
                 if (\is_bool($enabledByDefault)) {
-                    if ($enabledByDefault === $enabled) {
+                    if ($enabledByDefault === $enabled && $encodedMetadata === $originalMetadata) {
                         continue;
                     }
                 } elseif (!$enabled) {

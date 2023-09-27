@@ -1,59 +1,48 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\PayloadForwarding;
+namespace Solspace\Freeform\Integrations\Singleton\PostForwarding\EventListeners;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Forms\HydrateEvent;
-use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
-use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\PostForwarding\PostForwardingEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Singleton\PostForwarding\PostForwarding;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
-class PayloadForwarding extends FeatureBundle
+class PostForwardingTrigger extends FeatureBundle
 {
-    public const BAG_KEY = 'postForwarding';
-
-    public const KEY_URL = 'url';
-    public const KEY_TRIGGER_PHRASE = 'triggerPhrase';
-
-    public const EVENT_POST_FORWARDING = 'postForwarding';
-
-    public function __construct()
-    {
-        Event::on(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, [$this, 'forward']);
-        Event::on(Form::class, Form::EVENT_HYDRATE_FORM, [$this, 'attachPayloadForwardingProperties']);
+    public function __construct(
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {
+        Event::on(
+            Form::class,
+            Form::EVENT_AFTER_SUBMIT,
+            [$this, 'sendPostPayload']
+        );
     }
 
-    public function attachPayloadForwardingProperties(HydrateEvent $event)
-    {
-        $bag = $event->getForm()->getProperties();
-        $properties = $event->getFormProperties();
-
-        $bag->set(self::BAG_KEY, [
-            self::KEY_URL => $properties->getExtraPostUrl(),
-            self::KEY_TRIGGER_PHRASE => $properties->getExtraPostTriggerPhrase(),
-        ]);
-    }
-
-    public function forward(ProcessSubmissionEvent $event)
+    public function sendPostPayload(SubmitEvent $event): void
     {
         $form = $event->getForm();
-        $submission = $event->getSubmission();
+        $submission = $form->getSubmission();
 
         if ($form->getSuppressors()->isPayload() || $form->isMarkedAsSpam()) {
             return;
         }
 
-        $payloadForwarding = $form->getProperties()->get(self::BAG_KEY, []);
+        $integration = $this->integrationsProvider->getSingleton($form, PostForwarding::class);
+        if (!$integration) {
+            return;
+        }
 
-        $url = $payloadForwarding[self::KEY_URL] ?? null;
-        $triggerPhrase = $payloadForwarding[self::KEY_TRIGGER_PHRASE] ?? null;
+        $url = $integration->getUrl();
+        $triggerPhrase = $integration->getErrorTrigger();
 
         if (!$url) {
             return;
@@ -76,7 +65,7 @@ class PayloadForwarding extends FeatureBundle
         $payload['submission-title'] = $submission->title;
         $payload['submission-ip'] = $submission->ip;
 
-        $payloadEvent = new PayloadForwardEvent(
+        $payloadEvent = new PostForwardingEvent(
             new Client(),
             new Request('POST', $url),
             $url,
@@ -84,8 +73,7 @@ class PayloadForwarding extends FeatureBundle
             $payload
         );
 
-        Event::trigger(self::class, self::EVENT_POST_FORWARDING, $payloadEvent);
-
+        Event::trigger(PostForwarding::class, PostForwarding::EVENT_POST_FORWARDING, $payloadEvent);
         if (!$payloadEvent->isValid) {
             return;
         }
@@ -109,7 +97,7 @@ class PayloadForwarding extends FeatureBundle
             $logContext = [
                 'url' => $url,
                 'form' => $form->getHandle(),
-                'submission' => $submission ? $submission->id : null,
+                'submission' => $submission?->id,
                 'response' => (string) $response->getBody(),
             ];
 
@@ -128,7 +116,7 @@ class PayloadForwarding extends FeatureBundle
                 [
                     'url' => $url,
                     'form' => $form->getHandle(),
-                    'submission' => $submission ? $submission->id : null,
+                    'submission' => $submission?->id,
                     'message' => $e->getMessage(),
                 ]
             );

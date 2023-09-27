@@ -55,8 +55,6 @@ $(() => {
         }
       });
 
-    console.log(values);
-
     $propertyEditor.find('.field').each(function () {
       const $field = $(this);
       const $filterScripts = $field.find('script.visibility-filters');

@@ -37,11 +37,11 @@ class GTM extends BaseIntegration implements SingletonIntegrationInterface
 
     public function getContainerId(): string
     {
-        return $this->containerId;
+        return $this->getProcessedValue($this->containerId);
     }
 
     public function getEventName(): string
     {
-        return $this->eventName;
+        return $this->getProcessedValue($this->eventName);
     }
 }

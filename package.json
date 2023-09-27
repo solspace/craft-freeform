@@ -34,7 +34,7 @@
     "typescript": "^5.2.2"
   },
   "scripts": {
-    "dev": "npm run dev --workspaces",
+    "dev": "npm run dev --workspaces --if-present",
     "front-end": "npm run dev --workspace=@ff/scripts --workspace=@ff/styles",
     "build": "npm run build --workspaces",
     "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",

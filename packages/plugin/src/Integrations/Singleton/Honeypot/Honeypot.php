@@ -23,15 +23,15 @@ class Honeypot extends BaseIntegration implements SingletonIntegrationInterface
     private const DEFAULT_MESSAGE = 'Form honeypot is invalid';
 
     #[Text(
-        label: 'Custom Honeypot Field Name',
-        instructions: 'If you wish to change the default name of the Freeform Honeypot field, specify a value here.',
+        label: 'Custom Input Name',
+        instructions: 'Enter a new value to rename the default Freeform Honeypot input name.',
         placeholder: self::DEFAULT_INPUT_NAME,
     )]
     protected string $inputName = '';
 
     #[TextArea(
-        label: 'Custom Honeypot Error Message',
-        instructions: 'If you wish to change the default error message of the Freeform Honeypot field, specify a value here. (Only applied if spam behaviour set to display error messages)',
+        label: 'Custom Error Message',
+        instructions: 'Enter a new value to change the default error message for the Freeform Honeypot. This is only applied if the Spam Behavior setting is set to Display Error Messages.',
         placeholder: self::DEFAULT_MESSAGE,
     )]
     protected string $errorMessage = '';

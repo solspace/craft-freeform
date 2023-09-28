@@ -28,14 +28,14 @@ class JavascriptTest extends BaseIntegration implements SingletonIntegrationInte
 
     #[Text(
         label: 'Custom Input Name',
-        instructions: 'If you wish to change the default name of the Javascript Test input, specify a value here.',
+        instructions: 'Enter a new value to rename the default Freeform Javascript Test input name.',
         placeholder: 'freeform_form_handle',
     )]
     protected string $inputName = '';
 
     #[TextArea(
         label: 'Custom Error Message',
-        instructions: 'If you wish to change the default error message of the Javascript Test, specify a value here. (Only applied if spam behaviour set to display error messages)',
+        instructions: 'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.',
         placeholder: self::DEFAULT_MESSAGE,
     )]
     protected string $errorMessage = '';

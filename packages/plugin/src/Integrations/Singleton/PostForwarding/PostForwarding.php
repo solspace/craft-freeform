@@ -22,7 +22,7 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 
     #[Text(
         label: 'URL',
-        instructions: 'Enter the URL where the POST request should be sent',
+        instructions: 'Enter the URL where the POST request should be sent.',
         placeholder: 'https://example.com',
     )]
     protected string $url = '';

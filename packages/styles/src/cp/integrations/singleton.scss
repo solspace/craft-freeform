@@ -83,7 +83,7 @@
             background-color: var(--gray-200);
 
             &.enabled {
-              border-color: var(--green-500);
+              border-color: var(--enabled-color);
             }
           }
         }

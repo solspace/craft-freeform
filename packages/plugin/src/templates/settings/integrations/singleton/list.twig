@@ -33,7 +33,10 @@
 
                 <div id="properties-{{ type.class|replace("\\", "") }}" style="{{ selectedIntegration != type.shortName ? "display: none;" }}">
 
-                    <h1>{{ type.name }}</h1>
+                    <h1>
+                        <img src="{{ type.iconUrl }}" alt="{{ type.name }}" />
+                        <span>{{ type.name }}</span>
+                    </h1>
 
                     {% if type.readme %}
                         <div class="markdown-instructions markdown-body">

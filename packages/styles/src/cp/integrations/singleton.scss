@@ -94,5 +94,19 @@
   &-content {
     flex: 1;
     padding: 24px;
+
+    h1 {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+      gap: 8px;
+
+      font-size: 1.8em;
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
   }
 }

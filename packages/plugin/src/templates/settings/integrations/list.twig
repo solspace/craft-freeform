@@ -18,24 +18,28 @@
         <table id="integrations" class="data fullwidth">
             <thead>
             <tr>
+                <th class="thin"></th>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
                 <th scope="col">{{ "Service Provider"|t('freeform') }}</th>
-                <td class="thin"></td>
+                <th class="thin"></th>
             </tr>
             </thead>
             <tbody>
             {% for integration in integrations %}
                 <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
+                    <td class="thin" style="padding-right: 0;">
+                        <div style="width: 16px;">
+                            <img
+                                style="width: 16px; height: 16px; display: block;"
+                                src="{{ integration.integrationObject.typeDefinition.iconUrl }}"
+                                alt="{{ integration.integrationObject.typeDefinition.name }}"
+                            />
+                        </div>
+                    </td>
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
                     </th>
-                    <td data-title="{{ "Service Provider"|t('freeform') }}" class="code" style="display: flex; gap: 5px;">
-                        <img
-                                width="16"
-                                height="16"
-                                src="{{ integration.integrationObject.typeDefinition.iconUrl }}"
-                                alt="{{ integration.integrationObject.typeDefinition.name }}"
-                        />
+                    <td data-title="{{ "Service Provider"|t('freeform') }}" class="code">
                         {{ integration.integrationObject.typeDefinition.name }}
                     </td>
                     <td class="thin">

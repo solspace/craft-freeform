@@ -457,7 +457,7 @@ class Settings extends Model
      */
     public function getEmailTemplateContent(): string
     {
-        $path = __DIR__.'/../templates/_emailTemplates/default.twig';
+        $path = __DIR__.'/../templates/_templates/email/default.twig';
         if (!file_exists($path)) {
             throw new FreeformException(
                 Freeform::t(

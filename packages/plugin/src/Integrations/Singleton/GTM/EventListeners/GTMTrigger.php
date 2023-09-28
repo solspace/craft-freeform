@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Singleton\GTM\GTM;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use yii\base\Event;
 
 class GTMTrigger extends FeatureBundle
@@ -32,39 +33,15 @@ class GTMTrigger extends FeatureBundle
 
         $eventName = $integration->getEventName() ?: 'form-submission';
 
-        $event->addChunk(<<<EOS
-            <script>
-                var form = document.querySelector('form[data-id="{$form->getAnchor()}"]');
-                if (form) {
-                  form.addEventListener('freeform-ajax-success', function (event) {
-                    var response = event.response;
+        $twig = new IsolatedTwig();
 
-                    var pushEvent = form.freeform._dispatchEvent(
-                      'freeform-gtm-data-layer-push',
-                      { payload: {}, response: response }
-                    );
+        $gtmTriggerScript = file_get_contents(__DIR__.'/../Scripts/gtm-trigger.js');
+        $gtmTriggerScript = $twig->render($gtmTriggerScript, [
+            'form' => $form,
+            'eventName' => $eventName,
+        ]);
 
-                    var payload = {
-                      event: '{$eventName}',
-                      form: {
-                        handle: '{$form->getHandle()}',
-                        finished: response.finished,
-                        multipage: response.multipage,
-                        success: response.success,
-                      },
-                      submission: {
-                        id: response.submissionId,
-                        token: response.submissionToken,
-                      },
-                    };
-
-                    payload = Object.assign(payload, pushEvent.payload);
-
-                    window.dataLayer.push(payload);
-                  });
-                }
-            </script>
-            EOS);
+        $event->addChunk("<script>{$gtmTriggerScript}</script>");
 
         if (!$integration->getContainerId()) {
             return;
@@ -72,18 +49,15 @@ class GTMTrigger extends FeatureBundle
 
         $containerId = $integration->getContainerId();
 
-        $event->addChunk(
-            "<!-- Google Tag Manager -->
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','".$containerId."');</script>
-<!-- End Google Tag Manager -->"
-        );
+        $gtmImportScript = file_get_contents(__DIR__.'/../Scripts/gtm-import.js');
+        $gtmImportScript = $twig->render($gtmImportScript, [
+            'containerId' => $containerId,
+        ]);
+
+        $event->addChunk("<!-- Google Tag Manager --><script>{$gtmImportScript}</script><!-- End Google Tag Manager -->");
 
         $event->addChunk('<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-5985G6Q"
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id='.$containerId.'"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->');
     }

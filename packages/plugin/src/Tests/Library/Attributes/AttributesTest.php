@@ -40,7 +40,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-empty-test', '');
 
-        $this->assertEquals(' data-empty-test', (string) $attributes);
+        $this->assertEquals(' data-empty-test=""', (string) $attributes);
     }
 
     public function testBooleanValuesAddOnlyKey()
@@ -114,7 +114,7 @@ class AttributesTest extends TestCase
         ;
 
         $this->assertEquals(
-            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text="" number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
             (string) $attributes
         );
     }
@@ -143,7 +143,7 @@ class AttributesTest extends TestCase
         ]);
 
         $this->assertEquals(
-            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text="" number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
             (string) $attributes
         );
     }
@@ -163,7 +163,7 @@ class AttributesTest extends TestCase
         ;
 
         $this->assertEquals(
-            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text="" number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
             (string) $attributes
         );
     }
@@ -180,7 +180,7 @@ class AttributesTest extends TestCase
         $attributes->setIfEmpty('non-existent', 'value');
 
         $this->assertEquals(
-            ' text="text value" empty-text non-existent="value"',
+            ' text="text value" empty-text="" non-existent="value"',
             (string) $attributes
         );
     }

@@ -662,7 +662,7 @@ export default class Freeform {
 
       if (request.status === 200) {
         const response = JSON.parse(request.response);
-        const { success, finished, actions = [], errors, formErrors, honeypot, returnUrl } = response;
+        const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
 
         if (!actions.length) {
           if (success) {
@@ -713,15 +713,6 @@ export default class Freeform {
           const payloadInput = form.querySelector('input[name^=freeform_payload]');
           if (payloadInput) {
             payloadInput.value = payload;
-          }
-        }
-
-        if (honeypot) {
-          const honeypotInput = form.querySelector('input[name^=freeform_form_handle]');
-          if (honeypotInput) {
-            honeypotInput.setAttribute('name', honeypot.name);
-            honeypotInput.setAttribute('id', honeypot.name);
-            honeypotInput.value = honeypot.hash;
           }
         }
 

@@ -32,7 +32,7 @@ class Attributes implements \Countable, \JsonSerializable, \IteratorAggregate
 
             $key = htmlspecialchars($key, \ENT_QUOTES, 'UTF-8');
 
-            if (true === $value || '' === $value || null === $value) {
+            if (true === $value || null === $value) {
                 $stringArray[] = $key;
 
                 continue;

@@ -92,12 +92,7 @@ class HoneypotBundle extends FeatureBundle
         }
 
         if ($settings->isSpamBehaviourDisplayErrors()) {
-            $errorMessage = $integration->getErrorMessage();
-            if (!$errorMessage) {
-                $errorMessage = 'Form honeypot is invalid';
-            }
-
-            $form->addError(Freeform::t($errorMessage));
+            $form->addError(Freeform::t($integration->getErrorMessage()));
         }
 
         $form->markAsSpam(SpamReason::TYPE_HONEYPOT, 'Honeypot check failed');

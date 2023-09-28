@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Singleton\Honeypot;
+namespace Solspace\Freeform\Integrations\Singleton\JavascriptTest;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Input\Text;
@@ -9,29 +9,33 @@ use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
+/**
+ * @internal
+ *
+ * @coversNothing
+ */
 #[Type(
-    name: 'Honeypot',
+    name: 'Javascript Test',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class Honeypot extends BaseIntegration implements SingletonIntegrationInterface
+class JavascriptTest extends BaseIntegration implements SingletonIntegrationInterface
 {
     use EnabledByDefaultTrait;
-    public const EVENT_RENDER_HONEYPOT = 'render-honeypot';
 
-    private const DEFAULT_INPUT_NAME = 'freeform_form_handle';
-    private const DEFAULT_MESSAGE = 'Form honeypot is invalid';
+    private const DEFAULT_INPUT_NAME = 'freeform_check';
+    private const DEFAULT_MESSAGE = 'Javascript must be enabled to submit this form';
 
     #[Text(
-        label: 'Custom Honeypot Field Name',
-        instructions: 'If you wish to change the default name of the Freeform Honeypot field, specify a value here.',
-        placeholder: self::DEFAULT_INPUT_NAME,
+        label: 'Custom Input Name',
+        instructions: 'If you wish to change the default name of the Javascript Test input, specify a value here.',
+        placeholder: 'freeform_form_handle',
     )]
     protected string $inputName = '';
 
     #[TextArea(
-        label: 'Custom Honeypot Error Message',
-        instructions: 'If you wish to change the default error message of the Freeform Honeypot field, specify a value here. (Only applied if spam behaviour set to display error messages)',
+        label: 'Custom Error Message',
+        instructions: 'If you wish to change the default error message of the Javascript Test, specify a value here. (Only applied if spam behaviour set to display error messages)',
         placeholder: self::DEFAULT_MESSAGE,
     )]
     protected string $errorMessage = '';

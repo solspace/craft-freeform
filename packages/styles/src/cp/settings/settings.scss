@@ -7,3 +7,12 @@
 
 #throttling-time-frame {
 }
+
+ul.freeform-settings-list {
+  list-style-type: disc;
+  padding-left: 20px !important;
+
+  > li {
+    font-weight: 600
+  }
+}

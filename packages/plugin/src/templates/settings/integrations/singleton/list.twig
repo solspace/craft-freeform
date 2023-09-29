@@ -1,0 +1,67 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+
+    {% set selectedIntegration = craft.app.request.segment(4) %}
+    {% set saveShortcutRedirect = 'freeform/settings/other/'~selectedIntegration %}
+
+    <input type="hidden" name="action" value="freeform/integrations/singleton/save">
+    <input type="hidden" name="selectedIntegration" value="{{ selectedIntegration }}" />
+
+    <div class="integration-stack">
+        <div class="integration-stack-list">
+            <ul class="integration-stack-items">
+            {% for type in types %}
+                {% set integration = integrations[type.class]|default(null) %}
+
+                <li data-name="{{ type.shortName }}" class="{{ selectedIntegration == type.shortName ? "active" }}">
+                    <a data-type="{{ type.class }}" data-name="{{ type.shortName }}">
+                        <img src="{{ type.iconUrl }}" alt="{{ type.name }}" />
+                        <span>{{ type.name }}</span>
+                        <div class="{{ integration and integration.enabled ? 'enabled' }}"></div>
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+
+        <div class="integration-stack-content">
+            {% for type in types %}
+
+                {% set integration = integrations[type.class]|default(null) %}
+
+                <div id="properties-{{ type.class|replace("\\", "") }}" style="{{ selectedIntegration != type.shortName ? "display: none;" }}">
+
+                    <h1>
+                        <img src="{{ type.iconUrl }}" alt="{{ type.name }}" />
+                        <span>{{ type.name }}</span>
+                    </h1>
+
+                    {% if type.readme %}
+                        {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
+                    {% endif %}
+
+                    <div class="enabled-switch" data-name="{{ type.shortName }}">
+                        {{ forms.lightswitchField({
+                            label: 'Enabled'|t('freeform'),
+                            class: 'enable-integration',
+                            name: 'properties['~ type.class ~ '][enabled]',
+                            on: integration and integration.enabled,
+                        }) }}
+                    </div>
+
+                    <div class="property-editor" data-class="{{ type.class }}">
+                        {% for property in type.properties | filter((prop) => not prop.hasFlag('internal', 'instance')) %}
+
+                            {{ include('freeform/settings/integrations/_components/property') }}
+
+                        {% endfor %}
+                    </div>
+                </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

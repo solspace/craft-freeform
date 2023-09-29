@@ -9,6 +9,7 @@ use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInte
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 
 class IntegrationTypeProvider
 {
@@ -62,6 +63,10 @@ class IntegrationTypeProvider
 
         if ($reflection->implementsInterface(CaptchaIntegrationInterface::class)) {
             return IntegrationInterface::TYPE_CAPTCHAS;
+        }
+
+        if ($reflection->implementsInterface(WebhookIntegrationInterface::class)) {
+            return IntegrationInterface::TYPE_WEBHOOKS;
         }
 
         return IntegrationInterface::TYPE_OTHER;

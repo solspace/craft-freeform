@@ -10,7 +10,6 @@ import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import TableHandler from '@lib/plugin/handlers/fields/table';
-import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
@@ -57,7 +56,6 @@ export default class Freeform {
   _handlers = [
     BackButtonHandler,
     RuleHandler,
-    HoneypotHandler,
     DatePickerHandler,
     InputMaskHandler,
     SignatureHandler,
@@ -664,7 +662,7 @@ export default class Freeform {
 
       if (request.status === 200) {
         const response = JSON.parse(request.response);
-        const { success, finished, actions = [], errors, formErrors, honeypot, returnUrl } = response;
+        const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
 
         if (!actions.length) {
           if (success) {
@@ -715,15 +713,6 @@ export default class Freeform {
           const payloadInput = form.querySelector('input[name^=freeform_payload]');
           if (payloadInput) {
             payloadInput.value = payload;
-          }
-        }
-
-        if (honeypot) {
-          const honeypotInput = form.querySelector('input[name^=freeform_form_handle]');
-          if (honeypotInput) {
-            honeypotInput.setAttribute('name', honeypot.name);
-            honeypotInput.setAttribute('id', honeypot.name);
-            honeypotInput.value = honeypot.hash;
           }
         }
 

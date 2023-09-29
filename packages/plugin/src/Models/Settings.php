@@ -111,18 +111,6 @@ class Settings extends Model
     /** @var bool */
     public $rememberPageSubmitOrder;
 
-    /** @var bool */
-    public $freeformHoneypot;
-
-    /** @var bool */
-    public $freeformHoneypotEnhancement;
-
-    /** @var string */
-    public $customHoneypotName;
-
-    /** @var string */
-    public $customErrorMessage;
-
     /** @var int */
     public $formSubmitExpiration;
 
@@ -274,10 +262,6 @@ class Settings extends Model
         $this->formSubmitDisable = true;
         $this->rememberPageSubmitOrder = true;
 
-        $this->freeformHoneypot = true;
-        $this->customHoneypotName = null;
-        $this->customErrorMessage = null;
-        $this->freeformHoneypotEnhancement = false;
         $this->spamProtectionBehaviour = self::PROTECTION_SIMULATE_SUCCESS;
         $this->blockedEmails = null;
         $this->blockedKeywords = null;

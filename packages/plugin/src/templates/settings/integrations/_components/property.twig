@@ -1,0 +1,63 @@
+{% import "_includes/forms" as forms %}
+
+{% set handle = property.handle %}
+{% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
+{% set inputName = "properties["~type.class~"]["~property.handle~"]" %}
+
+{# Hide PRO only fields as hidden inputs #}
+{% if property.hasFlag('pro') and not freeform.pro %}
+
+    <input type="hidden" name="{{ inputName }}" value="{{ value }}" />
+
+{% else %}
+
+    <div class="field">
+        <script type="application/json" class="visibility-filters">
+            {{- property.visibilityFilters|json_encode|raw -}}
+        </script>
+
+        {% set options = {
+            label: property.label|t('freeform'),
+            instructions: property.instructions|t('freeform'),
+            placeholder: property.placeholder,
+            class: [
+                "property-" ~ property.handle,
+                property.hasMiddlewareInstalled('handle') ? 'handle-generator',
+            ]|filter,
+            name: inputName,
+            value: value,
+            required: property.required,
+            errors: integration is defined and integration is not null ? integration.errors(type.class~property.handle),
+            suggestEnvVars: true,
+        } %}
+
+        {% if property.hasFlag('readonly') %}
+            {% set options = options|merge({ readonly: true }) %}
+        {% endif %}
+
+        {% if property.type == "bool" %}
+
+            {% set options = options|merge({on: value, value: 1}) %}
+            {{ forms.lightswitchField(options) }}
+
+        {% elseif property.type == "textarea" %}
+
+            {{ forms.textareaField(options|merge({ rows: property.rows })) }}
+
+        {% elseif property.type == "select" %}
+
+            {% set opts = property.options ? property.options.toTwigArray() : {} %}
+            {{ forms.selectField(options|merge({ options: opts })) }}
+
+        {% else %}
+
+            {% if property.hasFlag('readonly') %}
+                {{ forms.textField(options) }}
+            {% else %}
+                {{ forms.autosuggestField(options) }}
+            {% endif %}
+
+        {% endif %}
+    </div>
+
+{% endif %}

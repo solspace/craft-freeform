@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useAppSelector } from '@editor/store';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
 
@@ -12,8 +12,12 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = ({ layoutUid }) => {
-  const layout = useSelector(layoutSelectors.one(layoutUid));
-  const rows = useSelector(rowSelectors.inLayout(layout));
+  const layout = useAppSelector((state) =>
+    layoutSelectors.one(state, layoutUid)
+  );
+  const rows = useAppSelector((state) =>
+    rowSelectors.inLayout(state, layout?.uid)
+  );
 
   if (!layout || !rows.length) {
     return null;

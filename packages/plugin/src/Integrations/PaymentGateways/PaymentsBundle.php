@@ -58,7 +58,7 @@ class PaymentsBundle extends FeatureBundle
     {
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
-        if (!$paymentFields || 0 === \count($paymentFields) || $form->getSuppressors()->isPayments()) {
+        if (!$paymentFields || 0 === \count($paymentFields) || $form->isDisabled()->payments) {
             return true; // no payment fields, so no processing needed
         }
 
@@ -152,7 +152,7 @@ class PaymentsBundle extends FeatureBundle
         $suppress = $integration->isSuppressOnFail();
 
         if ((bool) $suppress) {
-            $submission->getForm()->enableSuppression();
+            $submission->getForm()->disableFunctionality();
         }
     }
 }

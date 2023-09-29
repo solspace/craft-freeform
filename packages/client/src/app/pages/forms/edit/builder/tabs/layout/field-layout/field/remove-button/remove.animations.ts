@@ -7,7 +7,7 @@ type RemoveAnimation = (options: { active: boolean; hovering: boolean }) => {
 };
 
 export const useRemoveAnimation: RemoveAnimation = ({ active, hovering }) => {
-  const style = useSpring({
+  return useSpring({
     opacity: active ? 1 : 0,
     background: hovering ? colors.error : 'transparent',
     fill: hovering ? '#fff' : colors.gray300,
@@ -31,6 +31,4 @@ export const useRemoveAnimation: RemoveAnimation = ({ active, hovering }) => {
       }
     },
   });
-
-  return style;
 };

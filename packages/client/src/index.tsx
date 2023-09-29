@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { BreadcrumbProvider } from '@components/breadcrumbs/breadcrumbs.context';
+import { CpNavigation } from '@components/cp-navigation/cp-navigation';
+import { queryClient } from '@config/react-query';
 import { PortalProvider } from '@editor/builder/contexts/portal.context';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -10,9 +12,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 import './utils/prototypes';
 
-import { queryClient } from '../config/react-query';
-
-import { CpNavigation } from './app/components/cp-navigation/cp-navigation';
 import { Form, Forms } from './app/pages/forms';
 import ManualStyles from './styles/manual';
 import { debug } from './utils/debug';

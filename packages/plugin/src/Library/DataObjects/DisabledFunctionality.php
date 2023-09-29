@@ -2,7 +2,18 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-class Suppressors
+/**
+ * @property bool $api
+ * @property bool $elements
+ * @property bool $adminNotifications
+ * @property bool $userSelectNotifications
+ * @property bool $emailFieldNotifications
+ * @property bool $conditionalNotifications
+ * @property bool $payments
+ * @property bool $webhooks
+ * @property bool $payload
+ */
+class DisabledFunctionality
 {
     private bool $api = false;
     private bool $elements = false;
@@ -42,6 +53,16 @@ class Suppressors
                 }
             }
         }
+    }
+
+    public function __isset(string $name): bool
+    {
+        return property_exists($this, $name);
+    }
+
+    public function __get(string $name)
+    {
+        return $this->{$name};
     }
 
     public function isApi(): bool

@@ -23,19 +23,18 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 class IntegrationModel extends Model
 {
     public ?int $id = null;
+    public bool $enabled = false;
     public ?string $name = null;
     public ?string $handle = null;
-    public ?bool $enabled = null;
     public ?string $type = null;
     public ?string $class = null;
     public array $metadata = [];
-    public \DateTime $lastUpdate;
 
     public static function create(string $type): self
     {
         $model = new self();
         $model->type = $type;
-        $model->lastUpdate = new \DateTime();
+        $model->enabled = true;
 
         return $model;
     }
@@ -43,12 +42,11 @@ class IntegrationModel extends Model
     public function safeAttributes(): array
     {
         return [
+            'enabled',
             'name',
             'handle',
             'class',
             'metadata',
-            'forceUpdate',
-            'lastUpdate',
         ];
     }
 
@@ -76,7 +74,6 @@ class IntegrationModel extends Model
             (bool) $this->enabled,
             $this->handle ?? '',
             $this->name ?? '',
-            $this->lastUpdate,
             $type,
         );
 

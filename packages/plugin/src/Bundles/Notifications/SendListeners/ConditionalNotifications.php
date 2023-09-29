@@ -32,9 +32,7 @@ class ConditionalNotifications extends FeatureBundle
     public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
-        $suppressors = $form->getSuppressors();
-
-        if ($suppressors->isConditionalNotifications()) {
+        if ($form->isDisabled()->conditionalNotifications) {
             return;
         }
 

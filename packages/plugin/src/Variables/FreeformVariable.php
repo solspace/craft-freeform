@@ -18,11 +18,9 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Session\Honeypot;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
@@ -104,27 +102,6 @@ class FreeformVariable
     public function name(): string
     {
         return Freeform::getInstance()->name;
-    }
-
-    public function getHoneypot(Form $form): Honeypot
-    {
-        return $this->getHoneypotService()->getHoneypot($form);
-    }
-
-    /**
-     * @return \Twig_Markup
-     */
-    public function getHoneypotInput(Form $form): Markup
-    {
-        return Template::raw($this->getHoneypotService()->getHoneypotInput($form));
-    }
-
-    /**
-     * @return \Twig_Markup
-     */
-    public function getHoneypotJavascript(Form $form): Markup
-    {
-        return Template::raw($this->getHoneypotService()->getHoneypotJavascriptScript($form));
     }
 
     public function getSettingsNavigation(): array
@@ -235,11 +212,6 @@ class FreeformVariable
     private function getSettingsService(): SettingsService
     {
         return Freeform::getInstance()->settings;
-    }
-
-    private function getHoneypotService(): HoneypotService
-    {
-        return Freeform::getInstance()->honeypot;
     }
 
     private function getPaymentsService(): PaymentsService

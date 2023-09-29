@@ -19,9 +19,7 @@ class AdminNotifications extends FeatureBundle
     public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
-        $suppressors = $form->getSuppressors();
-
-        if ($suppressors->isAdminNotifications()) {
+        if ($form->isDisabled()->adminNotifications) {
             return;
         }
 

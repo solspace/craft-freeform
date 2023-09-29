@@ -83,9 +83,6 @@ interface Features {
       demoTemplatesInstalled: boolean;
     };
     spam: {
-      honeypot: boolean;
-      customHoneypotName: boolean;
-      javascriptEnhancement: boolean;
       spamProtectionBehaviour: SpamProtectionBehaviour;
       spamFolder: boolean;
       purgeSpam: boolean;

@@ -2,9 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
-use Solspace\Freeform\Bundles\Spam\Honeypot\HoneypotProvider;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
-use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
@@ -19,12 +17,10 @@ use yii\base\Event;
 
 class SpamControl extends FeatureBundle
 {
-    public function __construct(
-        private HoneypotProvider $honeypotProvider
-    ) {
+    public function __construct()
+    {
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'redirectPage']);
         Event::on(Form::class, Form::EVENT_AFTER_VALIDATE, [$this, 'handleValidation']);
-        Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'handleAjaxPayload']);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleFormReset']);
 
         Event::on(
@@ -56,19 +52,6 @@ class SpamControl extends FeatureBundle
         }
     }
 
-    public function handleAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void
-    {
-        if (!$this->isHoneypotEnabled()) {
-            return;
-        }
-
-        $honeypot = $this->honeypotProvider->getHoneypot($event->getForm());
-        $event->add('honeypot', [
-            'name' => $honeypot->getName(),
-            'hash' => $honeypot->getHash(),
-        ]);
-    }
-
     public function persistSpamReasons(SubmitEvent $event): void
     {
         $form = $event->getForm();
@@ -98,11 +81,6 @@ class SpamControl extends FeatureBundle
         $bag = $form->getProperties();
 
         return $bag->get(Form::PROPERTY_SPAM_REASONS, []);
-    }
-
-    private function isHoneypotEnabled(): bool
-    {
-        return $this->getSettingsService()->isFreeformHoneypotEnabled();
     }
 
     private function getFormsService(): FormsService

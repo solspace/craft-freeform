@@ -17,7 +17,7 @@ export const useFormSettingUpdateGenerator = (
 
   const { data } = useQueryFormSettings();
 
-  const updateValueHandlerGenerator: ValueUpdateHandlerGenerator = useCallback(
+  return useCallback(
     (property) => {
       return (value) => {
         dispatch((dispatch, getState) => {
@@ -56,6 +56,4 @@ export const useFormSettingUpdateGenerator = (
     },
     [namespace, dispatch]
   );
-
-  return updateValueHandlerGenerator;
 };

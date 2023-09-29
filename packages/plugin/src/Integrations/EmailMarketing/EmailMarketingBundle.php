@@ -61,7 +61,7 @@ class EmailMarketingBundle extends FeatureBundle
             return;
         }
 
-        if ($form->getSuppressors()->isApi()) {
+        if ($form->isDisabled()->api) {
             return;
         }
 

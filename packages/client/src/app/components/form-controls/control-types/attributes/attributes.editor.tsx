@@ -208,6 +208,4 @@ export const AttributesEditor: React.FC<Props> = ({
       </AttributeTabContent>
     </AttributeEditorWrapper>
   );
-
-  return <div>Editorrrishe {JSON.stringify(attributes)}</div>;
 };

@@ -87,7 +87,7 @@ export const useFieldDragAnimation: FieldDragAnimation = ({
     hoverPosition
   );
 
-  const style = useSpring({
+  return useSpring({
     immediate: (key) => {
       switch (key) {
         case 'x':
@@ -107,6 +107,4 @@ export const useFieldDragAnimation: FieldDragAnimation = ({
       mass: 0.5,
     },
   });
-
-  return style;
 };

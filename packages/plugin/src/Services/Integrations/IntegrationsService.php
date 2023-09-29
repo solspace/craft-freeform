@@ -22,9 +22,11 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -137,11 +139,11 @@ class IntegrationsService extends BaseService
             }
         }
 
+        $record->enabled = $model->enabled;
         $record->name = $model->name;
         $record->handle = $model->handle;
         $record->type = $model->type;
         $record->class = $model->class;
-        $record->lastUpdate = new \DateTime();
         $record->metadata = $model->metadata;
 
         $record->validate();
@@ -210,7 +212,7 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function getIntegrationType(IntegrationInterface $integration): string
+    public function getIntegrationType(string|IntegrationInterface $integration): string
     {
         $reflection = new \ReflectionClass($integration);
 
@@ -226,7 +228,15 @@ class IntegrationsService extends BaseService
             return 'payment-gateways';
         }
 
-        throw new IntegrationException('Unknown integration type');
+        if ($reflection->implementsInterface(WebhookIntegrationInterface::class)) {
+            return 'webhooks';
+        }
+
+        if ($reflection->implementsInterface(CaptchaIntegrationInterface::class)) {
+            return 'captchas';
+        }
+
+        return 'other';
     }
 
     public function decryptModelValues(IntegrationModel $model): void
@@ -303,49 +313,66 @@ class IntegrationsService extends BaseService
 
     public function getForForm(?Form $form = null, ?string $type = null): array
     {
-        $integrations = $this->getAllIntegrations($type);
-        $integrationIds = array_map(
-            fn (IntegrationModel $record) => $record->id,
-            $integrations
-        );
+        static $cache;
 
-        $query = FormIntegrationRecord::find()
-            ->where(['formId' => $form?->getId() ?? null])
-            ->andWhere(['IN', 'integrationId', $integrationIds])
-            ->indexBy('integrationId')
-        ;
+        if (null === $cache) {
+            $cache = [];
+        }
 
-        /** @var FormIntegrationRecord[] $formIntegrationRecords */
-        $formIntegrationRecords = $query->all();
+        $key = ($form?->getId() ?? '0').$type;
 
-        foreach ($integrations as $integration) {
-            $metadata = [];
-            $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
-            if ($formIntegration) {
-                $metadata = json_decode($formIntegration->metadata ?? '{}', true);
-                $enabled = $formIntegration->enabled;
-            }
+        if (!isset($cache[$key])) {
+            $integrations = $this->getAllIntegrations($type);
 
-            if (!$formIntegration) {
-                $enabledByDefault = $integration->metadata['enabledByDefault'] ?? null;
-                if (!\is_bool($enabledByDefault) || !$enabledByDefault) {
-                    continue;
+            $integrations = array_filter(
+                $integrations,
+                fn (IntegrationModel $model) => $model->enabled
+            );
+
+            $integrationIds = array_map(
+                fn (IntegrationModel $model) => $model->id,
+                $integrations
+            );
+
+            $query = FormIntegrationRecord::find()
+                ->where(['formId' => $form?->getId() ?? null])
+                ->andWhere(['IN', 'integrationId', $integrationIds])
+                ->indexBy('integrationId')
+            ;
+
+            /** @var FormIntegrationRecord[] $formIntegrationRecords */
+            $formIntegrationRecords = $query->all();
+
+            foreach ($integrations as $integration) {
+                $metadata = [];
+                $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
+                if ($formIntegration) {
+                    $metadata = json_decode($formIntegration->metadata ?? '{}', true);
+                    $enabled = $formIntegration->enabled;
                 }
 
-                $enabled = true;
+                if (!$formIntegration) {
+                    if (isset($integration->metadata['enabledByDefault'])) {
+                        $enabled = (bool) $integration->metadata['enabledByDefault'];
+                    } else {
+                        $enabled = false;
+                    }
+                }
+
+                $integration->enabled = $enabled;
+                $integration->metadata = array_merge(
+                    $integration->metadata,
+                    $metadata
+                );
             }
 
-            $integration->enabled = $enabled;
-            $integration->metadata = array_merge(
-                $integration->metadata,
-                $metadata
+            $cache[$key] = array_map(
+                fn (IntegrationModel $record) => $record->getIntegrationObject(),
+                $integrations
             );
         }
 
-        return array_map(
-            fn (IntegrationModel $record) => $record->getIntegrationObject(),
-            $integrations
-        );
+        return $cache[$key];
     }
 
     protected function getQuery(): Query
@@ -354,12 +381,12 @@ class IntegrationsService extends BaseService
             ->select(
                 [
                     'integration.id',
+                    'integration.enabled',
                     'integration.name',
                     'integration.handle',
                     'integration.type',
                     'integration.class',
                     'integration.metadata',
-                    'integration.lastUpdate',
                 ]
             )
             ->from(IntegrationRecord::TABLE.' integration')

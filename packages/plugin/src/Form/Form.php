@@ -45,9 +45,9 @@ use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Collections\RowCollection;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\DataObjects\DisabledFunctionality;
 use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
-use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
@@ -98,7 +98,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public const RETURN_URI_KEY = 'formReturnUrl';
 
-    public const DATA_SUPPRESS = 'suppress';
+    public const DATA_DISABLE = 'disable';
     public const DATA_RELATIONS = 'relations';
     public const DATA_DISABLE_CAPTCHA = 'disableCaptcha';
 
@@ -120,7 +120,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private bool $finished = false;
     private bool $valid = false;
-    private bool $suppressionEnabled = false;
+    private bool $disableFunctionality = false;
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
     private bool $formPosted = false;
@@ -605,16 +605,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return Freeform::getInstance()->files;
     }
 
-    public function getSuppressors(): Suppressors
+    public function isDisabled(): DisabledFunctionality
     {
-        $suppressors = $this->suppressionEnabled ? true : $this->getProperties()->get(self::DATA_SUPPRESS);
+        $disableSettings = $this->disableFunctionality ? true : $this->getProperties()->get(self::DATA_DISABLE);
 
-        return new Suppressors($suppressors);
+        return new DisabledFunctionality($disableSettings);
     }
 
-    public function enableSuppression(): self
+    public function disableFunctionality(): self
     {
-        $this->suppressionEnabled = true;
+        $this->disableFunctionality = true;
 
         return $this;
     }

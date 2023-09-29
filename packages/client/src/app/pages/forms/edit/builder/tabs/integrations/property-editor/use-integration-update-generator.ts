@@ -15,7 +15,7 @@ export const useIntegrationUpdateGenerator = (
 ): ValueUpdateHandlerGenerator => {
   const dispatch = useAppDispatch();
 
-  const updateValueHandlerGenerator: ValueUpdateHandlerGenerator = useCallback(
+  return useCallback(
     (property) => {
       return (value) => {
         dispatch((dispatch, getState) => {
@@ -54,6 +54,4 @@ export const useIntegrationUpdateGenerator = (
     },
     [integration, dispatch]
   );
-
-  return updateValueHandlerGenerator;
 };

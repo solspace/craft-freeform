@@ -40,8 +40,7 @@ abstract class AbstractIntegrationService extends BaseService
 
             $providers = [];
             foreach ($types as $type) {
-                $reflection = new \ReflectionClass($type->class);
-                if (!$reflection->implementsInterface($this->getIntegrationInterface())) {
+                if (!$type->implements($this->getIntegrationInterface())) {
                     continue;
                 }
 
@@ -120,12 +119,12 @@ abstract class AbstractIntegrationService extends BaseService
             ->select(
                 [
                     'integration.id',
+                    'integration.enabled',
                     'integration.name',
                     'integration.handle',
                     'integration.type',
                     'integration.class',
                     'integration.metadata',
-                    'integration.lastUpdate',
                 ]
             )
             ->from(IntegrationRecord::TABLE.' integration')

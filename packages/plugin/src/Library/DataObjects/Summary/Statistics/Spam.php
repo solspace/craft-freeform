@@ -4,15 +4,6 @@ namespace Solspace\Freeform\Library\DataObjects\Summary\Statistics;
 
 class Spam
 {
-    /** @var bool */
-    public $honeypot = false;
-
-    /** @var bool */
-    public $customHoneypotName = false;
-
-    /** @var bool */
-    public $javascriptEnhancement = false;
-
     /** @var string */
     public $spamProtectionBehaviour = false;
 

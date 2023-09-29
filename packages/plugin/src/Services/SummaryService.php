@@ -122,9 +122,6 @@ class SummaryService extends Component
         $summary->statistics->settings = $settings;
 
         $spam = new Spam();
-        $spam->honeypot = $settingsService->isFreeformHoneypotEnabled();
-        $spam->customHoneypotName = (bool) $settingsService->getSettingsModel()->customHoneypotName;
-        $spam->javascriptEnhancement = $settingsService->isFreeformHoneypotEnhanced();
         $spam->spamProtectionBehaviour = $settingsService->getSettingsModel()->spamProtectionBehaviour;
         $spam->spamFolder = $settingsService->isSpamFolderEnabled();
         $spam->purgeSpam = (bool) $settingsService->getPurgableSpamAgeInDays();

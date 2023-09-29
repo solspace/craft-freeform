@@ -22,12 +22,12 @@ const middlewareStack: Record<
 
 export const applyMiddleware = <T>(
   value: T,
-  middlewareList: Middleware[],
+  middlewareList?: Middleware[],
   context?: GenericValue,
   injectCallback?: MiddlewareInjectCallback
 ): T => {
   let updatedValue: T = value;
-  middlewareList.forEach((middleware) => {
+  middlewareList?.forEach((middleware) => {
     const [name, args] = middleware;
     if (middlewareStack[name]) {
       updatedValue = middlewareStack[name](

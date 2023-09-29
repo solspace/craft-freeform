@@ -25,6 +25,7 @@ interface IntegrationInterface
     public const TYPE_CAPTCHAS = 'captchas';
     public const TYPE_WEBHOOKS = 'webhooks';
     public const TYPE_OTHER = 'other';
+    public const TYPE_SINGLETON = 'singleton';
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_AS_HIDDEN_IN_INSTANCE = 'as-hidden-in-instance';
@@ -42,8 +43,6 @@ interface IntegrationInterface
     public function getHandle(): ?string;
 
     public function getName(): ?string;
-
-    public function getLastUpdate(): \DateTime;
 
     /**
      * Returns the integration service provider short name

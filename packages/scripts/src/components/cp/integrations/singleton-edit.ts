@@ -20,6 +20,8 @@ $(() => {
 
     window.history.pushState({}, '', url);
 
+    $('input[name="selectedIntegration"]').val(name);
+
     $(this).trigger(EVENT_INTEGRATION_UPDATE);
     $(this).parent().addClass('active').siblings('.active').removeClass('active');
   });

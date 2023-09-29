@@ -94,6 +94,8 @@ class SingletonController extends BaseController
             $this->getIntegrationsService()->save($model, $integration, true);
         }
 
-        return $this->redirect('freeform/settings/other');
+        $selectedIntegration = $this->request->post('selectedIntegration');
+
+        return $this->redirect('freeform/settings/other/'.$selectedIntegration);
     }
 }

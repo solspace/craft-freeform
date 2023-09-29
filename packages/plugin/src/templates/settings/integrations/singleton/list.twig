@@ -7,7 +7,7 @@
     {% set saveShortcutRedirect = 'freeform/settings/other/'~selectedIntegration %}
 
     <input type="hidden" name="action" value="freeform/integrations/singleton/save">
-    {{ redirectInput('freeform/settings/other/'~selectedIntegration) }}
+    <input type="hidden" name="selectedIntegration" value="{{ selectedIntegration }}" />
 
     <div class="integration-stack">
         <div class="integration-stack-list">

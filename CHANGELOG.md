@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.5 - 2023-09-29
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- Added singleton integration configurator to Freeform settings.
+- Added integrations for Google Tag Manager and POST Forwarding.
+
+### Changed
+- Overhauled the Honeypot and Javascript Test features to be streamlined, separate, and set up as integrations that can be enabled/disabled and configured per form.
+- Made various adjustments to settings language inside the form builder.
+- Updated integration guide styling.
+- Changed the `suppress` template parameter name to `disable`.
+
+### Fixed
+- Fixed a bug where the error log wasn't showing inside the Freeform control panel.
+- Fixed a bug where HTML and Rich Text fields were not showing up clearly in the builder when empty.
+- Resolved various visual issues within the builder.
+
 ## 5.0.0-beta.4 - 2023-09-22
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
@@ -122,11 +141,12 @@
     - Reorganized and adjusted settings pages.
     - The **Limit Form Submission Rate** setting has been renamed to **Duplicate Check**. Available options have been revised and renamed for clarity as well.
 - **Spam Protection**
+    - The **Freeform Honeypot** and **Javascript Test** features have been decoupled, overhauled, and set up as integrations. They can now be enabled/disabled and configured per form. The Javascript Test is now a simpler approach that will streamline use with caching or headless implementations.
     - The **Javascript Enhancement** feature has been renamed to **Javascript Test**.
     - **Captchas** are now stored as integrations, can have multiple configured per site, and can be turned on/off and further configured at the form level inside the form builder, e.g. stricter settings, different behavior, etc.
     - The **reCAPTCHA v2 Checkbox** and **hCaptcha Checkbox** special fields are now inserted into the form automatically (before the Submit button).
 - **Templating**
-    - The `suppress` parameter (for suppressing email notifications and integrations when editing submissions on the front end) has had the `dynamicRecipients`, `submitterNotifications`, `connections` parameter names changed to `userSelectNotifications`, `emailFieldNotifications`, and `elements`, respectively. An additional `conditionalNotifications` parameter has been added to account for the new _Conditional Notifications_ feature.
+    - The `suppress` parameter (for suppressing email notifications and integrations when editing submissions on the front end) has been renamed to `disable` and has had the `dynamicRecipients`, `submitterNotifications`, `connections` parameter names changed to `userSelectNotifications`, `emailFieldNotifications`, and `elements`, respectively. An additional `conditionalNotifications` parameter has been added to account for the new _Conditional Notifications_ feature.
     - All formatting templates have been updated and improved.
     - The **Bootstrap 5 Multipage All Fields** formatting template has been transitioned to a "Basic" non-Bootstrap version, now called **Multipage All Fields**.
     - Form settings and behaviors can now all be accessed in templates via `freeform.settings.settingName`.
@@ -157,7 +177,7 @@
     - The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
     - The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
     - The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.
-    - The `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as they are stored as integrations now.
+    - The `freeformHoneypot`, `freeformHoneypotEnhancement`, `customHoneypotName`, `customErrorMessage`, `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as Honeypot and Captchas are stored as integrations now.
     - The `freeform/fields/create` field creation console command has been removed as it is no longer applicable.
     - The following attribute control parameters have been removed and replaced by accessing them via the new `attributes` object: `inputClass`, `submitClass`, `rowClass`, `columnClass`, `labelClass`, `errorClass`, `instructionsClass`, `class`, `id`, `name`, `method`, and `action`.
 - **GraphQL**

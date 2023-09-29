@@ -22,7 +22,7 @@ class FormReCaptchaResolver extends Resolver
             return [
                 'enabled' => true,
                 'handle' => 'reCaptcha',
-                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
+                'name' => $isHCaptcha ? 'h-captcha-response' : 'g-recaptcha-response',
             ];
         }
 

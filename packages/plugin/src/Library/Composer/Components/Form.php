@@ -934,7 +934,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             $object['reCaptcha'] = [
                 'enabled' => true,
                 'handle' => 'reCaptcha',
-                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
+                'name' => $isHCaptcha ? 'h-captcha-response' : 'g-recaptcha-response',
             ];
         } else {
             $object['reCaptcha'] = [

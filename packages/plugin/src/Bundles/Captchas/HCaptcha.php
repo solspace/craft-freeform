@@ -120,14 +120,14 @@ class HCaptcha extends FeatureBundle
 
             $property = $arguments['reCaptcha'];
 
-            if (empty($property['name']) || empty($property['value']) || 'h-recaptcha-response' !== $property['name']) {
+            if (empty($property['name']) || empty($property['value']) || 'h-captcha-response' !== $property['name']) {
                 return null;
             }
 
             return $property['value'];
         }
 
-        return \Craft::$app->request->post('h-recaptcha-response');
+        return \Craft::$app->request->post('h-captcha-response');
     }
 
     private function validateResponse(string $response): bool

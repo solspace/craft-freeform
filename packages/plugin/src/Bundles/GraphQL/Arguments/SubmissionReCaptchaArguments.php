@@ -13,7 +13,7 @@ class SubmissionReCaptchaArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The ReCaptcha field name (E.g "g-recaptcha-response" or "h-recaptcha-response").',
+                'description' => 'The ReCaptcha field name (E.g "g-recaptcha-response" or "h-captcha-response").',
             ],
             'value' => [
                 'name' => 'value',

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Singleton\GTM;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input\Text;
+use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -28,6 +29,7 @@ class GTM extends BaseIntegration implements SingletonIntegrationInterface
     )]
     protected string $containerId = '';
 
+    #[Middleware('handle')]
     #[Text(
         label: 'Event Name',
         instructions: 'Specify a custom event name to be triggered when the form is submitted.',

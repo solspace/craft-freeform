@@ -35,7 +35,7 @@ class FormCaptchaResolver extends Resolver
                 return [
                     'enabled' => true,
                     'handle' => 'captcha',
-                    'name' => 'h-recaptcha-response',
+                    'name' => 'h-captcha-response',
                 ];
             }
         }

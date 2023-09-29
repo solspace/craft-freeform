@@ -72,16 +72,12 @@ class SingletonController extends BaseController
             unset($props['enabled']);
 
             $model = $models[$type->class] ?? null;
-            if (!$model && $enabled) {
+            if (!$model) {
                 $model = new IntegrationModel();
                 $model->class = $type->class;
                 $model->type = IntegrationInterface::TYPE_SINGLETON;
                 $model->name = $type->name;
                 $model->handle = StringHelper::toKebabCase($type->name);
-            }
-
-            if (!$model) {
-                continue;
             }
 
             $model->enabled = $enabled;

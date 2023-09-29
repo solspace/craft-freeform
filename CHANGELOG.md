@@ -185,6 +185,33 @@
     - The `inputAttributes`, `labelAttributes`, `errorAttributes`, and `instructionAttributes` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the `FreeformAttributesInterface` instead.
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 
+## 4.1.9 - 2023-09-29
+
+### Changed
+- Updated the Salesforce integration to allow mapping to encrypted fields in Salesforce.
+- Updated the Craft compatibility check in the Diagnostics page to include Craft 4.5.x.
+
+### Fixed
+- Fixed a bug where hCaptcha was not working correctly.
+
+## 4.1.8 - 2023-09-15
+
+### Changed
+- Updated `stripe/stripe-php` dependency to align with Craft Commerce.
+- Updated the Stripe Payments integration to support mapping Phone field types.
+
+## 4.1.7 - 2023-09-08
+
+### Added
+- Added support for `.stl` files in the Freeform file helper validation.
+
+### Changed
+- Updated the Pipedrive Leads integration to use the new Notes endpoint.
+
+### Fixed
+- Fixed a bug where not all Stripe validation errors were accounted for and could cause the form to break.
+- Fixed a bug where CRM integration errors were sometimes too long to be logged in Freeform. Updated the column size to resolve this.
+
 ## 4.1.6 - 2023-07-20
 
 ### Added

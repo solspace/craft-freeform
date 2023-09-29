@@ -28,8 +28,8 @@ class JavascriptTest extends BaseIntegration implements SingletonIntegrationInte
 
     #[Text(
         label: 'Custom Input Name',
-        instructions: 'Enter a new value to rename the default Freeform Javascript Test input name.',
-        placeholder: 'freeform_form_handle',
+        instructions: "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'.",
+        placeholder: 'e.g. freeform_check',
     )]
     protected string $inputName = '';
 

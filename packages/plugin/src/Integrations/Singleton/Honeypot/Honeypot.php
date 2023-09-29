@@ -19,12 +19,12 @@ class Honeypot extends BaseIntegration implements SingletonIntegrationInterface
     use EnabledByDefaultTrait;
     public const EVENT_RENDER_HONEYPOT = 'render-honeypot';
 
-    private const DEFAULT_INPUT_NAME = 'freeform_form_handle';
+    private const DEFAULT_INPUT_NAME = 'e.g. freeform_form_handle';
     private const DEFAULT_MESSAGE = 'Form honeypot is invalid';
 
     #[Text(
         label: 'Custom Input Name',
-        instructions: 'Enter a new value to rename the default Freeform Honeypot input name.',
+        instructions: "Enter a new value to rename the default Freeform Honeypot input name. The default is 'freeform_form_handle'.",
         placeholder: self::DEFAULT_INPUT_NAME,
     )]
     protected string $inputName = '';

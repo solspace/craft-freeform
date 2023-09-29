@@ -20,7 +20,7 @@ export const layoutSelectors = {
   ),
   pageLayout: createSelector(
     (state: RootState) => state.layout.layouts,
-    (_, pageLayoutUid: string) => pageLayoutUid,
+    (_: RootState, pageLayoutUid: string) => pageLayoutUid,
     (layouts: Layout[], pageLayoutUid: string) =>
       layouts.find((layout) => layout.uid === pageLayoutUid)
   ),

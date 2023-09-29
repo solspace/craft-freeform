@@ -28,10 +28,12 @@ class IntegrationDTOProvider
      */
     public function convert(array $integrations): array
     {
-        return array_filter(
-            array_map(
-                fn ($model) => $this->createDTOFromModel($model),
-                $integrations
+        return array_values(
+            array_filter(
+                array_map(
+                    fn ($model) => $this->createDTOFromModel($model),
+                    $integrations
+                )
             )
         );
     }

@@ -3,9 +3,7 @@
 <div id="properties-{{ type.class|replace("\\", "") }}" style="display: none;">
 
     {% if type.readme %}
-        <div class="markdown-instructions markdown-body">
-            {{ type.readmeContent|markdown('gfm-comment') }}
-        </div>
+        {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
     {% endif %}
 
     <div class="property-editor" data-class="{{ type.class }}">

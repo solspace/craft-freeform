@@ -1,0 +1,18 @@
+{% set id = 'markdown-'~craft.app.security.generateRandomString %}
+
+<div class="markdown-instructions markdown-body">
+    <input type="checkbox" id="{{ id }}" class="markdown-toggle" />
+
+    <div class="markdown-container">
+        <button type="button" class="markdown-collapse" onclick="document.getElementById('{{ id }}').click()">
+            {{ "Collapse"|t('freeform') }}
+        </button>
+        <div class="markdown-content">
+            {{ content|raw }}
+        </div>
+    </div>
+
+    <div class="markdown-blur" onclick="document.getElementById('{{ id }}').click()">
+        <span>{{ "Click to expand"|t('freeform') }}</span>
+    </div>
+</div>

@@ -39,9 +39,7 @@
                     </h1>
 
                     {% if type.readme %}
-                        <div class="markdown-instructions markdown-body">
-                            {{ type.readmeContent|markdown('gfm-comment') }}
-                        </div>
+                        {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
                     {% endif %}
 
                     <div class="enabled-switch" data-name="{{ type.shortName }}">

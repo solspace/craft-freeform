@@ -1,34 +1,149 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css);
 
 .markdown-instructions {
-  padding: 16px;
+  position: relative;
 
-  background: #f3f7fc;
-  border-radius: 3px;
-  border: 1px solid #cbd6e2;
+  .markdown-toggle {
+    display: none;
 
-  font-size: 14px;
+    &:checked {
+      & + .markdown-container {
+        max-height: 500px;
 
-  pre {
-    background: #d1ddea;
+        overflow: auto;
+
+        .markdown-collapse {
+          opacity: 1;
+        }
+      }
+
+      & + .markdown-container + .markdown-blur {
+        opacity: 0;
+        pointer-events: none;
+      }
+    }
   }
 
-  ul {
-    padding-left: 20px;
+  .markdown-collapse {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+
+    opacity: 0;
+    padding: 5px 10px;
+
+    border: 1px solid var(--gray-300);
+    border-radius: 30px;
+    background: transparent;
+
+    font-size: 12px;
+    line-height: 12px;
+    color: var(--gray-300);
+
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--gray-300);
+      color: white;
+    }
   }
 
-  ul {
-    list-style: disc;
+  .markdown-container {
+    position: relative;
+
+    max-height: 150px;
+
+    background: #f3f7fc;
+    border-radius: 3px;
+    border: 1px solid #cbd6e2;
+
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+
+    $fg: var(--gray-300);
+    $bg: var(--gray-100);
+
+    scrollbar-width: thin;
+    scrollbar-color: $fg $bg;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: $bg;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: $fg;
+    }
+  }
+
+  .markdown-blur {
+    cursor: pointer;
+
+    position: absolute;
+    bottom: 0;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(transparent 0%, transparent 20%, white 80%, white 100%);
+
+    text-align: center;
+    line-height: 30px;
+
+    transition: opacity 0.3s ease;
+
+    span {
+      cursor: pointer;
+
+      display: block;
+      padding: 5px 10px;
+
+      border: 1px solid transparent;
+      border-radius: 30px;
+      background: var(--gray-300);
+
+      color: white;
+      font-size: 12px;
+      line-height: 12px;
+    }
+  }
+
+  .markdown-content {
+    padding: 16px;
+
+    font-size: 14px;
+
+    pre {
+      background: #d1ddea;
+    }
+
     ul {
-      list-style: square;
+      padding-left: 20px;
+    }
+
+    ul {
+      list-style: disc;
       ul {
-        list-style: circle;
+        list-style: square;
         ul {
-          list-style: disc;
+          list-style: circle;
           ul {
-            list-style: square;
+            list-style: disc;
             ul {
-              list-style: circle;
+              list-style: square;
+              ul {
+                list-style: circle;
+              }
             }
           }
         }

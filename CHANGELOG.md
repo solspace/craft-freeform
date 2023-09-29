@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 4.1.9 - 2023-09-29
+
+### Changed
+- Updated the Salesforce integration to allow mapping to encrypted fields in Salesforce.
+- Updated the Craft compatibility check in the Diagnostics page to include Craft 4.5.x.
+
+### Fixed
+- Fixed a bug where hCaptcha was not working correctly.
+
 ## 4.1.8 - 2023-09-15
 
 ### Changed

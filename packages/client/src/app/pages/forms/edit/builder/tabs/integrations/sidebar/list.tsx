@@ -49,7 +49,7 @@ export const List: React.FC = () => {
     if (!categories[type]) {
       categories[type] = {
         type,
-        label: type,
+        label: type.replace('-', ' '),
         children: [],
       };
     }

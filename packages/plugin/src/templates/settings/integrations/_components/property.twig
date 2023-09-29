@@ -22,7 +22,7 @@
             placeholder: property.placeholder,
             class: [
                 "property-" ~ property.handle,
-                property.hasMiddleware('handle') ? 'handle-generator',
+                property.hasMiddlewareInstalled('handle') ? 'handle-generator',
             ]|filter,
             name: inputName,
             value: value,

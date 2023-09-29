@@ -56,7 +56,7 @@ abstract class Property
     }
 
     #[Ignore]
-    public function hasMiddleware(...$name): bool
+    public function hasMiddlewareInstalled(...$name): bool
     {
         foreach ($this->middleware as $middleware) {
             if (\in_array($middleware->name, $name, true)) {

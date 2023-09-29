@@ -10,8 +10,17 @@
         <input type="hidden" name="action" value="freeform/settings/save-settings">
         {{ redirectInput('freeform/settings/spam') }}
         {{ csrfInput() }}
+        
+        <p class="first">{{ "Spam protection features are configured in the <b>Integrations</b> settings area."|t('freeform')|raw }}</p>
+        <ul class="freeform-settings-list">
+            <li><a href='{{ cpUrl("freeform/settings/other/Honeypot") }}'>{{ "Configure Freeform Honeypot"|t('freeform') }}</a></li>
+            <li><a href='{{ cpUrl("freeform/settings/other/JavascriptTest") }}'>{{ "Configure Freeform Javascript Test"|t('freeform') }}</a></li>
+            <li><a href='{{ cpUrl("freeform/settings/captchas") }}'>{{ "Configure reCAPTCHA or hCaptcha"|t('freeform') }}</a></li>
+        </ul>
 
-        <h2 class="first">{{ "Spam Behavior"|t('freeform') }}</h2>
+        <hr />
+
+        <h2>{{ "Spam Behavior"|t('freeform') }}</h2>
 
         {{ forms.selectField({
             id: "spam-protection-behaviour",

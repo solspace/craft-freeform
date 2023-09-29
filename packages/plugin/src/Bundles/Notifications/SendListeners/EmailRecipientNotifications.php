@@ -21,9 +21,7 @@ class EmailRecipientNotifications extends FeatureBundle
     public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
-        $suppressors = $form->getSuppressors();
-
-        if ($suppressors->isEmailFieldNotifications()) {
+        if ($form->isDisabled()->emailFieldNotifications) {
             return;
         }
 

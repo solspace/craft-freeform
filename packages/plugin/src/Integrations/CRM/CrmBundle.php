@@ -71,6 +71,10 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
+        if ($form->isDisabled()->api) {
+            return;
+        }
+
         /** @var CRMIntegrationInterface[] $integrations */
         $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CRM);
         foreach ($integrations as $integration) {

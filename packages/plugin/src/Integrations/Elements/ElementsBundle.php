@@ -103,7 +103,7 @@ class ElementsBundle extends FeatureBundle
             return;
         }
 
-        if ($form->getSuppressors()->isElements()) {
+        if ($form->isDisabled()->elements) {
             return;
         }
 

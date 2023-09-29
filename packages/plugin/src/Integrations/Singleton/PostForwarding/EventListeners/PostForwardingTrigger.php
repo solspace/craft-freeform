@@ -32,7 +32,7 @@ class PostForwardingTrigger extends FeatureBundle
         $form = $event->getForm();
         $submission = $form->getSubmission();
 
-        if ($form->getSuppressors()->isPayload() || $form->isMarkedAsSpam()) {
+        if ($form->isDisabled()->payload || $form->isMarkedAsSpam()) {
             return;
         }
 

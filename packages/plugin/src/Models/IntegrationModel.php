@@ -34,6 +34,7 @@ class IntegrationModel extends Model
     {
         $model = new self();
         $model->type = $type;
+        $model->enabled = true;
 
         return $model;
     }

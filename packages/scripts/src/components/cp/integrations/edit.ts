@@ -18,6 +18,10 @@ $(() => {
 
   $('input, textarea', $propertyEditor).on('keyup', function () {
     $(this).trigger(EVENT_INTEGRATION_UPDATE);
+
+    if ($(this).hasClass('handle-generator')) {
+      $(this).val(generateHandle($(this).val() as string));
+    }
   });
 
   const updateFieldVisibility = () => {
@@ -82,3 +86,5 @@ $(() => {
 
   updateFieldVisibility();
 });
+
+const generateHandle = (value: string) => value.replace(/[^a-zA-Z0-9\-_]/g, '');

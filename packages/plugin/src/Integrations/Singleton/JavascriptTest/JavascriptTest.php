@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Singleton\JavascriptTest;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
+use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
@@ -26,6 +27,7 @@ class JavascriptTest extends BaseIntegration implements SingletonIntegrationInte
     private const DEFAULT_INPUT_NAME = 'freeform_check';
     private const DEFAULT_MESSAGE = 'Javascript must be enabled to submit this form';
 
+    #[Middleware('handle')]
     #[Text(
         label: 'Custom Input Name',
         instructions: "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'.",

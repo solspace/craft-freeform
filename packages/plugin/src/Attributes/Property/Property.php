@@ -54,4 +54,16 @@ abstract class Property
 
         return false;
     }
+
+    #[Ignore]
+    public function hasMiddleware(...$name): bool
+    {
+        foreach ($this->middleware as $middleware) {
+            if (\in_array($middleware->name, $name, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

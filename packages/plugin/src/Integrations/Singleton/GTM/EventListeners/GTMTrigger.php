@@ -27,7 +27,7 @@ class GTMTrigger extends FeatureBundle
         $form = $event->getForm();
 
         $integration = $this->integrationsProvider->getSingleton($form, GTM::class);
-        if (!$integration) {
+        if (!$integration || !$integration->isEnabled()) {
             return;
         }
 

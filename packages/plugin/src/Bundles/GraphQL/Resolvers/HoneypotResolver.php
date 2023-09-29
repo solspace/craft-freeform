@@ -17,7 +17,7 @@ class HoneypotResolver extends Resolver
         }
 
         $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $honeypot = $integrationProvider->getSingleton(Honeypot::class);
+        $honeypot = $integrationProvider->getSingleton($source, Honeypot::class);
         if (!$honeypot || !$honeypot->isEnabled()) {
             return null;
         }

@@ -20,7 +20,8 @@ class m230424_010101_announcement_4_0_23 extends Migration
             Translation::prep('freeform', 'The [Floating Labels]({url}) formatting template is ready-to-go and requires no frameworks or toolkits.', [
                 'url' => 'https://docs.solspace.com/craft/freeform/v4/templates/formatting/basic-floating-labels/',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
 
         \Craft::$app->announcements->push(
@@ -28,7 +29,8 @@ class m230424_010101_announcement_4_0_23 extends Migration
             Translation::prep('freeform', 'Completely revamped [demo templates]({url})! Quickly try on a wide range of sample formatting templates on your forms, view submission data, check out advanced setups and more.', [
                 'url' => 'https://docs.solspace.com/craft/freeform/v4/setup/demo-templates/',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
 
         \Craft::$app->announcements->push(
@@ -36,14 +38,16 @@ class m230424_010101_announcement_4_0_23 extends Migration
             Translation::prep('freeform', 'Set [Predefined Assets]({url}) dynamically from a field value, allowing the user\'s selection to determine which asset(s) to include in the email notification.', [
                 'url' => 'https://docs.solspace.com/craft/freeform/v4/overview/email-notifications/#template-options',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
         \Craft::$app->announcements->push(
             Translation::prep('freeform', 'Map to Craft Entry postDate or expiryDate', []),
             Translation::prep('freeform', 'When using the [Element Connections]({url}) feature, you can now map Freeform fields to Craft Entry "postDate" and "expiryDate".', [
                 'url' => 'https://docs.solspace.com/craft/freeform/v4/integrations/elements/',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
 
         return true;

@@ -21,7 +21,8 @@ class m230613_010101_announcement_4_1_0 extends Migration
                 'url1' => 'https://docs.solspace.com/craft/freeform/v4/headless/graphql/',
                 'url2' => 'https://docs.solspace.com/craft/freeform/v4/headless/',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
 
         return true;

@@ -20,7 +20,8 @@ class m230516_010101_announcement_4_0_24 extends Migration
             Translation::prep('freeform', 'You can now prevent users from submitting a form more than once when [using the same email address]({url}) on any Email field.', [
                 'url' => 'https://docs.solspace.com/craft/freeform/v4/overview/submission-limits/',
             ]),
-            'freeform'
+            'freeform',
+            true
         );
 
         return true;

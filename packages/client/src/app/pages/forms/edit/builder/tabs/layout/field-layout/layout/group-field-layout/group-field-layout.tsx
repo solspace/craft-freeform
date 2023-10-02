@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { useAppDispatch, useAppSelector } from '@editor/store';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { fieldActions } from '@editor/store/slices/layout/fields';
@@ -25,7 +24,9 @@ type Props = {
 
 export const GroupFieldLayout: React.FC<Props> = ({ field, layoutUid }) => {
   const dispatch = useAppDispatch();
-  const layout = useSelector((state) => layoutSelectors.one(state, layoutUid));
+  const layout = useAppSelector((state) =>
+    layoutSelectors.one(state, layoutUid)
+  );
   const rows = useAppSelector((state) =>
     rowSelectors.inLayout(state, layout?.uid)
   );

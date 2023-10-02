@@ -10,9 +10,6 @@ use craft\i18n\Translation;
  */
 class m230613_010101_announcement_4_1_0 extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         \Craft::$app->announcements->push(
@@ -28,9 +25,6 @@ class m230613_010101_announcement_4_1_0 extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         echo "m230613_010101_announcement_4_1_0 cannot be reverted.\n";

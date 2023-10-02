@@ -9,8 +9,9 @@ import { rowSelectors } from '../rows/rows.selectors';
 export const layoutSelectors = {
   one: createSelector(
     (state: RootState) => state.layout.layouts,
-    (_, uid?: string) => uid,
-    (layouts: Layout[], uid) => layouts.find((layout) => layout.uid === uid)
+    (_: RootState, uid?: string) => uid,
+    (layouts: Layout[], uid: string) =>
+      layouts.find((layout) => layout.uid === uid)
   ),
   currentPageLayout: createSelector(
     (state: RootState) => pageSelecors.current(state),

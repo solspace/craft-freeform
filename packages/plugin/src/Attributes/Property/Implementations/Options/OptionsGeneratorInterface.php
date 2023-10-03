@@ -6,5 +6,5 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 interface OptionsGeneratorInterface
 {
-    public function fetchOptions(Property $property): OptionCollection;
+    public function fetchOptions(?Property $property): OptionCollection;
 }

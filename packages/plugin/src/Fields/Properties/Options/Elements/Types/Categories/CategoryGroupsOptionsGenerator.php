@@ -8,7 +8,7 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 class CategoryGroupsOptionsGenerator implements OptionsGeneratorInterface
 {
-    public function fetchOptions(Property $property): OptionCollection
+    public function fetchOptions(?Property $property): OptionCollection
     {
         $collection = new OptionCollection();
 

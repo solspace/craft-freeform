@@ -10,61 +10,117 @@
     {{ redirectInput('freeform/settings/form-builder') }}
     {{ csrfInput() }}
 
-    <div class="first">
-    {{ forms.lightswitchField({
-        label: "Live Render HTML Markup"|t('freeform'),
-        instructions: "Live rendering HTML markup in field labels, option labels and HTML blocks inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview
-inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
-        name: "settings[renderFormHtmlInCpViews]",
-        on: settings.renderFormHtmlInCpViews,
-        errors: settings.errors("renderFormHtmlInCpViews"),
-    }) }}
+    <div class="field smart-switch first">
+        <div>
+            {{ forms.lightswitch({
+                name: "settings[defaults][previewHtml]",
+                on: settings.defaults.previewHtml,
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: "Live Render HTML blocks"|t('freeform'),
+                instructions: "Live rendering HTML in HTML blocks, field labels and option labels inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
+            }) }}
+        </div>
     </div>
 
-    {{ forms.lightswitchField({
-        label: "Allow Twig to be enabled in HTML blocks"|t('freeform'),
-        instructions: "A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.",
-        name: "settings[twigInHtml]",
-        on: settings.twigInHtml,
-        errors: settings.errors("twigInHtml"),
-    }) }}
-
-    <div id="isolated-twig" class="field {{ not settings.twigInHtml ? 'hidden' }}">
-        {{ forms.lightswitchField({
-            label: "Render HTML block Twig in Isolated Mode"|t('freeform'),
-            instructions: "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well."|t('freeform'),
-            name: "settings[twigInHtmlIsolatedMode]",
-            on: settings.twigInHtmlIsolatedMode,
-            errors: settings.errors("twigInHtmlIsolatedMode"),
-        }) }}
+    <div class="field smart-switch">
+        <div>
+            {{ forms.lightswitch({
+                name: "settings[defaults][twigInHtml]",
+                on: settings.defaults.twigInHtml,
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: "Allow Twig to be enabled in HTML blocks"|t('freeform'),
+                instructions: "A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code."|t('freeform'),
+            }) }}
+        </div>
     </div>
 
-    {{ forms.lightswitchField({
-        label: "Include Freeform's Sample Formatting Templates"|t('freeform'),
-        instructions: "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting."|t('freeform'),
-        name: "settings[defaultTemplates]",
-        on: settings.defaultTemplates,
-        errors: settings.errors("defaultTemplates"),
-    }) }}
+    <div class="field smart-switch">
+        <div>
+            {{ forms.lightswitch({
+                name: "settings[defaults][twigIsolation]",
+                on: settings.defaults.twigIsolation,
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: "Render HTML block Twig in Isolated Mode"|t('freeform'),
+                instructions: "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well."|t('freeform'),
+            }) }}
+        </div>
+    </div>
 
-    <hr />
-    <h2>{{ "Form Builder Defaults"|t('freeform') }}</h2>
+    <div class="field smart-switch">
+        <div>
+            {{ forms.lightswitch({
+                name: "settings[defaults][includeSampleTemplates]",
+                on: settings.defaults.includeSampleTemplates,
+            }) }}
+        </div>
+        <div>
+            {{ forms.field({
+                label: "Include Freeform's Sample Formatting Templates",
+                instructions: "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting."|t('freeform'),
+            }) }}
+        </div>
+    </div>
 
-    {{ forms.lightswitchField({
-        label: "AJAX Enabled for Forms by Default"|t('freeform'),
-        instructions: 'By default, the "Enable AJAX" feature checkbox will be checked for new forms.'|t('freeform'),
-        name: "settings[ajaxByDefault]",
-        on: settings.ajaxByDefault,
-        errors: settings.errors("ajaxByDefault"),
-    }) }}
+    {% for catName, category in settings.defaults %}
+        <hr>
 
-    {{ forms.selectField({
-        label: "Default Formatting Template"|t('freeform'),
-        instructions: "The default formatting template for new forms."|t('freeform'),
-        name: "settings[formattingTemplate]",
-        value: settings.formattingTemplate,
-        errors: settings.errors("formattingTemplate"),
-        options: formattingTemplateList,
-    }) }}
+        <h2>{{ category.label }}</h2>
+        <ul class="categories">
+            {% for subName, subCategory in category %}
+                <li>
+                    <ul class="category-item-list">
+                        {% for itemName, item in subCategory %}
+                            {% set path = "settings[defaults]["~catName~"]["~subName~"]["~itemName~"]" %}
+
+                            <li>
+                                <label>
+                                    {{ subCategory.label }}
+
+                                    {{ include('freeform/settings/arrow-icon.svg') }}
+
+                                    {{ item.label }}
+                                </label>
+
+                                <div>
+                                    {% if item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\SelectItem') %}
+                                        {{ forms.select({
+                                            name: path~"[value]",
+                                            value: item.value,
+                                            options: item.options.toTwigArray(),
+                                            class: 'fullwidth',
+                                        }) }}
+                                    {% else %}
+                                        {{ forms.text({
+                                            name: path~"[value]",
+                                            value: item.value,
+                                        }) }}
+                                    {% endif %}
+                                </div>
+
+                                <button type="button" class="lock-button {{ item.locked ? "locked" }}">
+                                    <input type="hidden" name="{{ path }}[locked]" value="{{ item.locked ? '1' : '0' }}" />
+                                    <span class="locked">
+                                        {{ include("freeform/settings/locked-icon.svg") }}
+                                    </span>
+                                    <span class="unlocked">
+                                        {{ include("freeform/settings/unlocked-icon.svg") }}
+                                    </span>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endfor %}
 
 {% endblock %}

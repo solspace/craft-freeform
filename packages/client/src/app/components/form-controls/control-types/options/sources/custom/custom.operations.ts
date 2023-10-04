@@ -1,3 +1,5 @@
+import update from 'immutability-helper';
+
 import type { CustomOptionsConfiguration, Option } from '../../options.types';
 
 export const addOption = (
@@ -81,5 +83,23 @@ export const toggleUseCustomValues = (
       ...option,
       value: option.label,
     })),
+  };
+};
+
+export const moveOption = (
+  value: CustomOptionsConfiguration,
+  fromIndex: number,
+  toIndex: number
+): CustomOptionsConfiguration => {
+  const prevOptions = [...value.options];
+
+  return {
+    ...value,
+    options: update(prevOptions, {
+      $splice: [
+        [fromIndex, 1],
+        [toIndex, 0, prevOptions[fromIndex] as Option],
+      ],
+    }),
   };
 };

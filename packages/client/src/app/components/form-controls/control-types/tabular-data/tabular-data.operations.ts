@@ -2,6 +2,7 @@ import type {
   ColumnConfiguration,
   ColumnValue,
 } from '@components/form-controls/control-types/tabular-data/tabular-data.types';
+import update from 'immutability-helper';
 
 export const addRow = (
   rows: ColumnValue[],
@@ -36,8 +37,14 @@ export const moveRow = (
   toIndex: number,
   rows: ColumnValue[]
 ): ColumnValue[] => {
-  // TODO: implement this method
-  return rows;
+  const prevRows = [...rows];
+
+  return update(prevRows, {
+    $splice: [
+      [fromIndex, 1],
+      [toIndex, 0, prevRows[fromIndex] as ColumnValue],
+    ],
+  });
 };
 
 export const cleanRows = (rows: ColumnValue[]): ColumnValue[] => {

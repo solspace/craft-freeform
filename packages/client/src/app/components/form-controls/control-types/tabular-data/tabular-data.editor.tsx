@@ -1,18 +1,18 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import {
   Button,
   Cell,
-  DeleteIcon,
-  DragIcon,
   Input,
-  Row,
   TableContainer,
   TableEditorWrapper,
   TabularOptions,
 } from '@components/form-controls/control-types/table/table.editor.styles';
+import { DraggableRow } from '@components/form-controls/draggable-row';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
+import CrossIcon from '@components/form-controls/icons/cross.svg';
+import MoveIcon from '@components/form-controls/icons/move.svg';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -34,6 +34,12 @@ export const TabularDataEditor: React.FC<Props> = ({
   values,
   updateValue,
 }) => {
+  const refs = useRef([]);
+  refs.current = values.map(
+    (value, index) =>
+      refs.current[index] || React.createRef<HTMLButtonElement>()
+  );
+
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
     useCellNavigation(values.length, configuration.length);
 
@@ -57,7 +63,14 @@ export const TabularDataEditor: React.FC<Props> = ({
         <TabularOptions>
           <tbody>
             {values.map((value, rowIndex) => (
-              <Row key={rowIndex}>
+              <DraggableRow
+                key={rowIndex}
+                index={rowIndex}
+                dragRef={refs.current[rowIndex]}
+                onDrop={(fromIndex, toIndex) =>
+                  updateValue(moveRow(fromIndex, toIndex, values))
+                }
+              >
                 {configuration.map((column, columnIndex) => (
                   <Cell key={columnIndex}>
                     <Input
@@ -97,12 +110,8 @@ export const TabularDataEditor: React.FC<Props> = ({
                 {values.length > 1 && (
                   <>
                     <Cell $tiny>
-                      <Button
-                        onClick={() =>
-                          updateValue(moveRow(rowIndex, rowIndex, values))
-                        }
-                      >
-                        <DragIcon />
+                      <Button ref={refs.current[rowIndex]} className="handle">
+                        <MoveIcon />
                       </Button>
                     </Cell>
                     <Cell $tiny>
@@ -112,12 +121,12 @@ export const TabularDataEditor: React.FC<Props> = ({
                           setActiveCell(Math.max(rowIndex - 1, 0), 0);
                         }}
                       >
-                        <DeleteIcon />
+                        <CrossIcon />
                       </Button>
                     </Cell>
                   </>
                 )}
-              </Row>
+              </DraggableRow>
             ))}
           </tbody>
         </TabularOptions>

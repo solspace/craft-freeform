@@ -243,7 +243,7 @@ class SettingsController extends BaseController
         }
 
         $formattingTemplateList = [];
-        if ($this->getSettingsService()->getSettingsModel()->defaultTemplates) {
+        if ($this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
             $formattingTemplateList[] = ['optgroup' => Freeform::t('Freeform Templates')];
             foreach ($this->getSettingsService()->getSolspaceFormTemplates() as $formTemplate) {
                 $formattingTemplateList[] = [

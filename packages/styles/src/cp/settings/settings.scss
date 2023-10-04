@@ -32,8 +32,8 @@ ul.freeform-settings-list {
 .category-item-list {
   li {
     display: grid;
-    grid-template-columns: 40% 40% auto;
-    gap: 10px;
+    grid-template-columns: 35% 40% auto;
+    gap: 20px;
 
     label {
       display: flex;
@@ -46,25 +46,40 @@ ul.freeform-settings-list {
       }
     }
 
-    div {
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
 
+      min-height: 34px;
     }
 
     button {
       position: relative;
 
-      width: 10px;
-      height: 10px;
+      width: 34px;
+      height: 34px;
 
       span {
         position: absolute;
         left: 0;
-        top: 10px;
+        right: 0;
+        top: 0;
+        bottom: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
       & span.locked {
         opacity: 0;
         fill: #e21e25;
+
+        svg {
+          position: relative;
+          left: -2px;
+        }
       }
 
       & span.unlocked {

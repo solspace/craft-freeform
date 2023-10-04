@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Form\Settings\Implementations\ValueGenerators;
 
-use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 use Solspace\Freeform\Services\SettingsService;
 
@@ -12,7 +11,7 @@ class DefaultTemplateGenerator implements ValueGeneratorInterface
     {
     }
 
-    public function generateValue(Property $property, string $class, ?object $referenceObject): ?string
+    public function generateValue(?object $referenceObject): ?string
     {
         $defaultTemplate = $this->settingsService->getSettingsModel()->formattingTemplate;
 

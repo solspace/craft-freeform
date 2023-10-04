@@ -17,7 +17,8 @@ class FormattingTemplateOptions implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        if ((bool) $this->settingsService->getSettingsModel()->defaultTemplates) {
+        $includeDefaultTemplates = $this->settingsService->getSettingsModel()->defaults->includeSampleTemplates;
+        if ($includeDefaultTemplates) {
             $base = $this->settingsService->getSolspaceFormTemplates();
             if ($base) {
                 $solspaceTemplates = new OptionCollection('Solspace');

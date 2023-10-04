@@ -481,7 +481,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $default = $this->getSettingsService()->getSettingsModel()->formattingTemplate;
 
         $templateList = [];
-        if ($this->getSettingsService()->getSettingsModel()->defaultTemplates) {
+        if ($this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
             foreach ($this->getSettingsService()->getSolspaceFormTemplates() as $formTemplate) {
                 $templateList[] = $formTemplate->getFileName();
             }

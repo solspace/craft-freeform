@@ -8,6 +8,8 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGenerat
 class SelectItem extends BaseConfigItem
 {
     public ?OptionsGeneratorInterface $optionsGenerator = null;
+    public ?string $emptyValue = null;
+
     private OptionCollection $options;
 
     public function __construct($config = [])
@@ -19,7 +21,13 @@ class SelectItem extends BaseConfigItem
 
     public function getOptions(): OptionCollection
     {
-        return $this->optionsGenerator ? $this->optionsGenerator->fetchOptions(null) : $this->options;
+        $collection = $this->optionsGenerator ? $this->optionsGenerator->fetchOptions(null) : $this->options;
+
+        if (null !== $this->emptyValue) {
+            $collection->add('', $this->emptyValue, 0);
+        }
+
+        return $collection;
     }
 
     public function getValue(): string

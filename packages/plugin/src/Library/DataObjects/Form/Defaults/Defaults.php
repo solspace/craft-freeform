@@ -6,10 +6,10 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\CategoryInter
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Notifications\Notifications;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Settings\Settings;
 
-class Defaults implements \IteratorAggregate
+class Defaults implements \IteratorAggregate, \JsonSerializable
 {
-    public bool $previewHtml = true;
-    public bool $twigInHtml = true;
+    public bool $previewHtml = false;
+    public bool $twigInHtml = false;
     public bool $twigIsolation = true;
     public bool $includeSampleTemplates = true;
 
@@ -46,5 +46,17 @@ class Defaults implements \IteratorAggregate
         }
 
         return new \ArrayIterator($categories);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'previewHtml' => $this->previewHtml,
+            'twigInHtml' => $this->twigInHtml,
+            'twigIsolation' => $this->twigIsolation,
+            'includeSampleTemplates' => $this->includeSampleTemplates,
+            'notifications' => $this->notifications->jsonSerialize(),
+            'settings' => $this->settings->jsonSerialize(),
+        ];
     }
 }

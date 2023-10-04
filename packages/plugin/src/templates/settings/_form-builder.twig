@@ -98,6 +98,11 @@
                                             options: item.options.toTwigArray(),
                                             class: 'fullwidth',
                                         }) }}
+                                    {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\BoolItem') %}
+                                        {{ forms.lightswitch({
+                                            name: path~"[value]",
+                                            on: item.value,
+                                        }) }}
                                     {% else %}
                                         {{ forms.text({
                                             name: path~"[value]",
@@ -106,8 +111,13 @@
                                     {% endif %}
                                 </div>
 
-                                <button type="button" class="lock-button {{ item.locked ? "locked" }}">
-                                    <input type="hidden" name="{{ path }}[locked]" value="{{ item.locked ? '1' : '0' }}" />
+                                <button type="button" tabindex="-1" class="lock-button {{ item.locked ? "locked" }}">
+                                    <input
+                                            type="hidden"
+                                            class="{{ item.locked ? "locked" }}"
+                                            name="{{ path }}[locked]"
+                                            value="{{ item.locked ? '1' : '0' }}"
+                                    />
                                     <span class="locked">
                                         {{ include("freeform/settings/locked-icon.svg") }}
                                     </span>

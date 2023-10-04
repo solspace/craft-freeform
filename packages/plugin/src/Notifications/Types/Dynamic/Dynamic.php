@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Notifications\Types\Dynamic;
 
 use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientMappingTransformer;
@@ -39,6 +40,7 @@ class Dynamic extends BaseNotification
     protected ?FieldInterface $field;
 
     #[ValueTransformer(NotificationTemplateTransformer::class)]
+    #[DefaultValue('notifications.userSelect.template')]
     #[Input\NotificationTemplate(
         label: 'Default Notification Template',
         instructions: 'This notification template will be used as a default notification template for all values unless specified otherwise.',

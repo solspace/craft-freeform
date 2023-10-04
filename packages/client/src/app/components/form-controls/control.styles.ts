@@ -40,6 +40,12 @@ export const FormField = styled.div`
   padding: 0;
   width: 100%;
   display: block;
+
+  &.disabled {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.5;
+  }
 `;
 
 type ControlWrapperProps = {
@@ -54,6 +60,12 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
   justify-content: flex-start;
 
   width: ${({ $width }) => ($width ? `${$width}%` : '100%')};
+
+  &.disabled {
+    opacity: 0.5;
+    user-select: none;
+    pointer-events: none;
+  }
 
   &.errors {
     ${Label} {

@@ -4,11 +4,16 @@ namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems;
 
 use yii\base\Component;
 
-abstract class BaseConfigItem extends Component implements DefaultConfigInterface, \JsonSerializable
+abstract class BaseConfigItem extends Component implements DefaultConfigInterface
 {
-    public string $label = '';
     public bool $locked = false;
     public mixed $value = '';
+    private string $label = '';
+
+    public function setLabel(string $label): void
+    {
+        $this->label = $label;
+    }
 
     public function getLabel(): string
     {
@@ -20,9 +25,9 @@ abstract class BaseConfigItem extends Component implements DefaultConfigInterfac
         return $this->locked;
     }
 
-    public function jsonSerialize(): \stdClass
+    public function toArray(): array
     {
-        return (object) [
+        return [
             'value' => $this->value,
             'locked' => $this->locked,
         ];

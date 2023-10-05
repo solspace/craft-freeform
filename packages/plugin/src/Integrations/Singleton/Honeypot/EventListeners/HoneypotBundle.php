@@ -143,6 +143,10 @@ class HoneypotBundle extends FeatureBundle
 
     private function getHoneypotIntegration(Form $form): ?Honeypot
     {
+        if ($form->isDisabled()->honeypot) {
+            return null;
+        }
+
         $integration = $this->integrationsProvider->getSingleton($form, Honeypot::class);
         if (!$integration || !$integration->isEnabled()) {
             return null;

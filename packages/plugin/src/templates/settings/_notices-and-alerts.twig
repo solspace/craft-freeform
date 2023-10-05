@@ -10,7 +10,19 @@
     {{ redirectInput('freeform/settings/notices-and-alerts') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Email Alerts"|t('freeform') }}</h2>
+    <h2 class="first">{{ "Control Panel Notices"|t('freeform') }}</h2>
+
+    {{ forms.lightswitchField({
+        label: "Display Update Warnings & Notices"|t('freeform'),
+        instructions: "Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes to bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com."|t('freeform'),
+        name: "settings[displayFeed]",
+        on: settings.displayFeed,
+        errors: settings.getErrors("displayFeed"),
+    }) }}
+
+    <hr />
+
+    <h2>{{ "Email Alerts"|t('freeform') }}</h2>
 
     {{ forms.textField({
         class: "code",
@@ -88,34 +100,6 @@
         name: "settings[digestOnlyOnProduction]",
         on: settings.digestOnlyOnProduction,
         errors: settings.getErrors("digestOnlyOnProduction"),
-    }) }}
-
-    <hr>
-
-    <h2>{{ "Control Panel Notices"|t('freeform') }}</h2>
-
-    {{ forms.lightswitchField({
-        label: "Display Update Warnings & Notices"|t('freeform'),
-        instructions: "Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes to bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com."|t('freeform'),
-        name: "settings[displayFeed]",
-        on: settings.displayFeed,
-        errors: settings.getErrors("displayFeed"),
-    }) }}
-
-    {{ forms.checkboxSelectField({
-        label: 'Additional Optional Checks' | t('freeform'),
-        instructions: "Help us provide you with more tailored warnings and notices by selecting any of the options below that may affect your site. Freeform's update notices check cannot detect template-level things or flows, so by selecting options below, Freeform will know to check against these as well and provide you with more robust warnings and alerts. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com." | t('freeform'),
-        name: 'settings[feedInfo]',
-        values: settings.feedInfo,
-        options: [
-            { label: 'Site uses a JS framework (Vue.js, React.js, etc.)'|t('freeform'), value: 'jsFramework' },
-            { label: 'Caching on at least some forms'|t('freeform'), value: 'caching' },
-            { label: 'Custom module or plugin for Freeform'|t('freeform'), value: 'customModule' },
-            { label: 'Alert me on any GDPR-related improvements or fixes'|t('freeform'), value: 'gdpr' },
-            { label: 'Make use of Editing submissions on front-end'|t('freeform'), value: 'editingSubmissions' },
-            { label: 'Display submission data on front-end'|t('freeform'), value: 'displayingSubmissions' },
-            { label: 'Site uses GraphQL'|t('freeform'), value: 'graphQL' },
-        ],
     }) }}
 
 {% endblock %}

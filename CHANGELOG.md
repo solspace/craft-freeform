@@ -1,5 +1,26 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.6 - 2023-10-05
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- A wide range of form builder settings can now have default values set for them, and can also be locked to that value. For example, you can force the Tailwind 3 formatting template to be used for every form.
+- Field options can now be reordered in the form builder.
+
+### Changed
+- Updated File Upload fields to be realigned with Craft's file kind/extensions defaults. Removed the custom Freeform MIME type checks.
+- Moved the `disableCaptcha` and `disableHoneypot` template parameters into the `disable` parameter feature. Added disabling of Javascript Test as well.
+- Various adjustments to language for settings in the control panel. 
+
+### Fixed
+- Fixed a bug where the _Send Additional Notification_ feature (in CP) was not working.
+- Fixed a bug where creating or updating integrations would error in the Settings area.
+- Fixed some compatibility issues with PHP 8.0.x.
+
+### Removed
+- The **Additional Optional Checks** setting for the **Update Warnings & Notices** feature has been removed.
+
 ## 5.0.0-beta.5 - 2023-09-29
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
@@ -82,6 +103,7 @@
     - Fields from other forms can be **searched** and reused in your form.
     - The **Limited Users** feature allows you to easily customize the form builder experience for specific users or groups, ensuring that these users are not overwhelmed by advanced settings and prevents them from accidentally breaking your forms or site.
     - Configure email notifications in the form builder using complex conditional rules based on field data.
+    - A wide range of form builder settings can now have default values set for them, and can also be locked to that value. For example, you can force the Tailwind 3 formatting template to be used for every form.
 - **Fields**
     - The **Group** field type allows you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
     - Fields being populated with **Element** or **Predefined** data can now have the data converted to **Custom** options so they can be modified, added to, removed, reordered, etc.
@@ -162,7 +184,7 @@
 
 ### Removed
 - **Control Panel**
-    - The **Field Manager** area (**Freeform > Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
+    - The **Field Manager** area (**Freeform → Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
     - The **Dashboard** page has been removed in favor of a redesigned **Forms** page.
     - Exporting "shortcuts" from the Dashboard is no longer available with the removal of the **Dashboard** page, but many other exporting options are available.
     - The **What's New** feature has been removed in favor of using Craft's Announcements feature.
@@ -171,13 +193,21 @@
 - **Settings**
     - The **Access Fields** and **Manage Fields** permissions have been removed as they are no longer applicable.
     - The **Display Order of Fields in the Form Builder** setting has been removed as it is no longer applicable.
+    - The following **Project Config** items have been removed due to the improvements to Form Builder defaults:
+        - `defaultTemplates` - use `includeSampleTemplates: true` under `defaults:` instead.
+        - `renderFormHtmlInCpViews` - use `previewHtml: true` under `defaults:` instead.
+        - `twigInHtml` - use `twigInHtml: true` under `defaults:` instead.
+        - `twigInHtmlIsolatedMode`. - use `twigIsolation: true` under `defaults:` instead.
+        - `formattingTemplate` - use `value: basic-light/index.twig` under `defaults:` → `settings:` → `general:` → `formattingTemplate:` instead.
+        - `ajaxByDefault` - - use `value: '1'` under `defaults:` → `settings:` → `processing:` → `ajax:` instead.
+    - The `freeformHoneypot`, `freeformHoneypotEnhancement`, `customHoneypotName`, `customErrorMessage`, `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as Honeypot and Captchas are stored as integrations now.
+    - The **Additional Optional Checks** setting for the **Update Warnings & Notices** feature has been removed.
 - **Templating**
     - The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
     - The `overrideValues` parameter for Form queries has been removed. Please use the `value` parameter in the new **Template Overrides** feature.
     - The `option.checked` property has been removed. Please use and compare `option.value` to `field.value`.
     - The `disableRecaptcha` template parameter has been removed. Please use `disableCaptcha` instead.
     - The `limitFormSubmissions` property has been removed from the `form` object. Please use `form.settings.limitSubmissions` instead.
-    - The `freeformHoneypot`, `freeformHoneypotEnhancement`, `customHoneypotName`, `customErrorMessage`, `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as Honeypot and Captchas are stored as integrations now.
     - The `freeform/fields/create` field creation console command has been removed as it is no longer applicable.
     - The following attribute control parameters have been removed and replaced by accessing them via the new `attributes` object: `inputClass`, `submitClass`, `rowClass`, `columnClass`, `labelClass`, `errorClass`, `instructionsClass`, `class`, `id`, `name`, `method`, and `action`.
 - **GraphQL**

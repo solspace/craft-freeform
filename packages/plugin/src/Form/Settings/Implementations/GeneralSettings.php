@@ -62,6 +62,7 @@ class GeneralSettings extends SettingsNamespace
 
     #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]
+    #[DefaultValue('settings.general.formType')]
     #[Input\Select(
         label: 'Form Type',
         instructions: 'Select the type of form this is.',
@@ -82,6 +83,7 @@ class GeneralSettings extends SettingsNamespace
     #[Section(self::SECTION_GENERAL)]
     #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Validators\Required]
+    #[DefaultValue('settings.general.formattingTemplate')]
     #[Input\Select(
         label: 'Formatting Template',
         instructions: 'Select a formatting template to be used when rendering this form.',
@@ -113,6 +115,7 @@ class GeneralSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_DATA_STORAGE.'.svg',
         order: 2,
     )]
+    #[DefaultValue('settings.dataStorage.storeData')]
     #[Input\Boolean(
         label: 'Store Submitted Data for this Form',
         instructions: 'All submissions users make on this form will be stored in the database.',

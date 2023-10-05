@@ -26,7 +26,10 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   const { label, handle, required, instructions, width, disabled } = property;
 
   return (
-    <ControlWrapper className={classes(!!errors && 'errors')} $width={width}>
+    <ControlWrapper
+      className={classes(!!errors && 'errors', disabled && 'disabled')}
+      $width={width}
+    >
       <FormLabel
         label={label}
         handle={handle}
@@ -34,9 +37,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
         title={size === 'small' && instructions}
       />
       {size === 'normal' && <FormInstructions instructions={instructions} />}
-      <FormField className={classes(disabled && 'disabled')}>
-        {children}
-      </FormField>
+      <FormField>{children}</FormField>
       <FormErrorList errors={errors} />
     </ControlWrapper>
   );

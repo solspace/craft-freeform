@@ -20,6 +20,10 @@ export const useFieldPropertyUpdateGenerator = (
 
   return useCallback(
     (property) => {
+      if (property.disabled) {
+        return;
+      }
+
       return (value) => {
         dispatch((dispatch, getState) => {
           const injectCallback: MiddlewareInjectCallback = (key, value) => {
@@ -27,7 +31,7 @@ export const useFieldPropertyUpdateGenerator = (
               .find((type) => type.typeClass === field.typeClass)
               ?.properties.find((prop) => prop.handle === key);
 
-            if (!targetProperty) {
+            if (!targetProperty || targetProperty.disabled) {
               return;
             }
 

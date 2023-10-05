@@ -7,7 +7,6 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Services\FilesService;
 use yii\base\Event;
 
@@ -72,18 +71,6 @@ class FileDragAndDropUploadValidation extends FeatureBundle
 
         if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
             return;
-        }
-
-        // Check the mime type if the server supports it
-        if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-            $mimeType = FileHelper::getMimeType($tmpName);
-            $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-            if ($mimeExtension) {
-                $extension = $mimeExtension;
-            } else {
-                $field->addError(Freeform::t('Unknown file type'));
-            }
         }
 
         if (empty($tmpName)) {

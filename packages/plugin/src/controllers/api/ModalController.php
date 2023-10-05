@@ -68,7 +68,7 @@ class ModalController extends BaseController
             ];
         }
 
-        if (!$this->getSettingsService()->getSettingsModel()->defaultTemplates) {
+        if (!$this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
             $templates['native'] = [];
         }
 

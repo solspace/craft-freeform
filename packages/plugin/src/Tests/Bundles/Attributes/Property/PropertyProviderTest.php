@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Tests\Bundles\Attributes\Property;
 
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use yii\di\Container;
 
 /**
@@ -21,24 +23,32 @@ use yii\di\Container;
  */
 class PropertyProviderTest extends TestCase
 {
-    private Container $mockContainer;
-    private ImplementationProvider $mockImplementationProvider;
+    private PropertyProvider $provider;
 
     protected function setUp(): void
     {
         $mockContainer = $this->createMock(Container::class);
         $mockContainer->method('get')->willReturn(new TestTransformer());
 
-        $this->mockContainer = $mockContainer;
-
         $mockImplementationProvider = $this->createMock(ImplementationProvider::class);
-        $this->mockImplementationProvider = $mockImplementationProvider;
+
+        $mockDefaultsProvider = $this->createMock(DefaultsProvider::class);
+        $mockDefaultsProvider
+            ->expects($this->once())
+            ->method('getValue')
+            ->with($this->equalTo('settings.default.value'))
+            ->willReturn('pulled from defaults')
+        ;
+
+        $this->provider = new PropertyProvider(
+            $mockContainer,
+            $mockImplementationProvider,
+            $mockDefaultsProvider,
+        );
     }
 
     public function testSetObjectProperties()
     {
-        $provider = new PropertyProvider($this->mockContainer, $this->mockImplementationProvider);
-
         $object = new TestAttributesClass();
 
         $values = [
@@ -46,7 +56,7 @@ class PropertyProviderTest extends TestCase
             'stringValue' => [7, 8, 'nine'],
         ];
 
-        $provider->setObjectProperties($object, $values);
+        $this->provider->setObjectProperties($object, $values);
 
         $this->assertEquals('7,8,nine', $object->getStringValue());
         $this->assertEquals(22, $object->getId());
@@ -57,11 +67,9 @@ class PropertyProviderTest extends TestCase
      */
     public function testGetEditableProperties(array $checklist)
     {
-        $provider = new PropertyProvider($this->mockContainer, $this->mockImplementationProvider);
-
         $handle = $checklist['handle'];
 
-        $editableProperties = $provider->getEditableProperties(TestAttributesClass::class);
+        $editableProperties = $this->provider->getEditableProperties(TestAttributesClass::class);
 
         foreach ($checklist as $key => $expectedValue) {
             $actualValue = $editableProperties->get($handle)->{$key};
@@ -86,15 +94,29 @@ class PropertyProviderTest extends TestCase
         }
     }
 
-    public function propertyDataProvider()
+    public function propertyDataProvider(): array
     {
         return [
+            [[
+                'type' => 'string',
+                'handle' => 'defaultValue',
+                'label' => 'Default Value',
+                'instructions' => null,
+                'order' => 1,
+                'value' => 'pulled from defaults',
+                'placeholder' => null,
+                'section' => null,
+                'flags' => [],
+                'visibilityFilters' => [],
+                'middleware' => [],
+                'required' => false,
+            ]],
             [[
                 'type' => 'table',
                 'handle' => 'stringValue',
                 'label' => 'String Value',
                 'instructions' => null,
-                'order' => 1,
+                'order' => 2,
                 'value' => ['one', 'two', 'three'],
                 'placeholder' => null,
                 'section' => null,
@@ -109,7 +131,7 @@ class PropertyProviderTest extends TestCase
                 'handle' => 'optionalInt',
                 'label' => 'Optional Integer',
                 'instructions' => null,
-                'order' => 2,
+                'order' => 3,
                 'value' => null,
                 'placeholder' => 'placeholder',
                 'section' => null,
@@ -141,7 +163,7 @@ class PropertyProviderTest extends TestCase
                 'handle' => 'propWithMiddleware',
                 'label' => 'Prop With Middleware',
                 'instructions' => null,
-                'order' => 3,
+                'order' => 4,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -162,7 +184,7 @@ class PropertyProviderTest extends TestCase
                 'handle' => 'propWithFlags',
                 'label' => 'Prop With Flags',
                 'instructions' => null,
-                'order' => 4,
+                'order' => 5,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -180,7 +202,7 @@ class PropertyProviderTest extends TestCase
                 'handle' => 'propWithFilters',
                 'label' => 'Prop With Filters',
                 'instructions' => null,
-                'order' => 5,
+                'order' => 6,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -217,6 +239,10 @@ class TestTransformer implements TransformerInterface
 class TestAttributesClass
 {
     private int $id;
+
+    #[DefaultValue('settings.default.value')]
+    #[Input\Text]
+    private string $defaultValue;
 
     #[ValueTransformer(TestTransformer::class)]
     #[Input\Table(

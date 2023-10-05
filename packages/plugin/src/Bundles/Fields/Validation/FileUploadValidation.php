@@ -144,18 +144,6 @@ class FileUploadValidation extends FeatureBundle
                     continue;
                 }
 
-                // Check the mime type if the server supports it
-                if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-                    $mimeType = FileHelper::getMimeType($tmpName);
-                    $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-                    if ($mimeExtension) {
-                        $extension = $mimeExtension;
-                    } else {
-                        $field->addError(Freeform::t('Unknown file type'));
-                    }
-                }
-
                 if (empty($tmpName)) {
                     switch ($errorCode) {
                         case \UPLOAD_ERR_INI_SIZE:

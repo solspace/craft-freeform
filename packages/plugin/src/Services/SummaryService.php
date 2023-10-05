@@ -102,7 +102,7 @@ class SummaryService extends Component
         $settings->defaultView = $settingsService->getSettingsModel()->defaultView;
         $settings->renderHtmlInComposer = $settingsService->isRenderFormHtmlInCpViews();
         $settings->ajaxEnabledByDefault = $settingsService->isAjaxEnabledByDefault();
-        $settings->includeDefaultFormattingTemplates = (bool) $settingsService->getSettingsModel()->defaultTemplates;
+        $settings->includeDefaultFormattingTemplates = $settingsService->getSettingsModel()->defaults->includeSampleTemplates;
         $settings->removeNewlinesOnExport = $settingsService->isRemoveNewlines();
         $settings->populateValuesFromGet = (bool) $settingsService->getSettingsModel()->fillWithGet;
         $settings->disableSubmit = $settingsService->isFormSubmitDisable();

@@ -12,6 +12,9 @@ namespace Solspace\Freeform\Library\DataObjects;
  * @property bool $payments
  * @property bool $webhooks
  * @property bool $payload
+ * @property bool $captchas
+ * @property bool $honeypot
+ * @property bool $javascriptTest
  */
 class DisabledFunctionality
 {
@@ -25,7 +28,11 @@ class DisabledFunctionality
 
     private bool $payments = false;
     private bool $webhooks = false;
+
     private bool $payload = false;
+    private bool $captchas = false;
+    private bool $honeypot = false;
+    private bool $javascriptTest = false;
 
     /**
      * Suppressors constructor.
@@ -37,13 +44,19 @@ class DisabledFunctionality
         if (true === $settings) {
             $this->api = true;
             $this->elements = true;
+
             $this->adminNotifications = true;
             $this->userSelectNotifications = true;
             $this->emailFieldNotifications = true;
             $this->conditionalNotifications = true;
+
             $this->payments = true;
             $this->webhooks = true;
+
             $this->payload = true;
+            $this->captchas = true;
+            $this->honeypot = true;
+            $this->javascriptTest = true;
         }
 
         if (\is_array($settings)) {
@@ -108,5 +121,20 @@ class DisabledFunctionality
     public function isPayload(): bool
     {
         return $this->payload;
+    }
+
+    public function isCaptchas(): bool
+    {
+        return $this->captchas;
+    }
+
+    public function isHoneypot(): bool
+    {
+        return $this->honeypot;
+    }
+
+    public function isJavascriptTest(): bool
+    {
+        return $this->javascriptTest;
     }
 }

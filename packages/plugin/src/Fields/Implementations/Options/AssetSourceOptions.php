@@ -18,7 +18,7 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 class AssetSourceOptions implements OptionsGeneratorInterface
 {
-    public function fetchOptions(Property $property): OptionCollection
+    public function fetchOptions(?Property $property): OptionCollection
     {
         $options = new OptionCollection();
 

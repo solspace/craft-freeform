@@ -8,6 +8,7 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 class Flag implements CustomNormalizerInterface
 {
     public const PRO = 'pro';
+    public const LOCKED = 'locked';
 
     public function __construct(public string $name)
     {

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Notifications\Types\Admin;
 
 use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -30,6 +31,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 class Admin extends BaseNotification
 {
     #[ValueTransformer(NotificationTemplateTransformer::class)]
+    #[DefaultValue('notifications.admin.template')]
     #[Input\NotificationTemplate(
         label: 'Notification Template',
         instructions: 'Select an email notification template to use for this notification.',

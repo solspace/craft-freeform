@@ -48,7 +48,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         columns: 2,
         options: FileKindsOptionsGenerator::class,
     )]
-    protected array $fileKinds = ['image', 'document'];
+    protected array $fileKinds = ['image'];
 
     #[Input\Integer(
         label: 'Maximum File Size',

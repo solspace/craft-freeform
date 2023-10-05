@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.1.10 - 2023-10-05
+
+### Changed
+- Updated File Upload fields to be realigned with Craft's file kind/extensions defaults. Removed the custom Freeform MIME type checks.
+- Updated existing feature announcement integrations to be visible to Admins only.
+
 ## 4.1.9 - 2023-09-29
 
 ### Changed

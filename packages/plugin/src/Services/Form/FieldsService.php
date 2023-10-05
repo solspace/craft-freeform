@@ -93,14 +93,16 @@ class FieldsService extends BaseService
         $type = $record->type;
 
         $metadata = json_decode($record->metadata, true);
-        $properties = [
-            'id' => $record->id,
-            'uid' => $record->uid,
-            'rowId' => $record->rowId,
-            'rowUid' => $record->getRow()->one()?->uid,
-            'order' => $record->order,
-            ...$metadata,
-        ];
+        $properties = array_merge(
+            [
+                'id' => $record->id,
+                'uid' => $record->uid,
+                'rowId' => $record->rowId,
+                'rowUid' => $record->getRow()->one()?->uid,
+                'order' => $record->order,
+            ],
+            $metadata,
+        );
 
         if (!class_exists($type)) {
             return null;

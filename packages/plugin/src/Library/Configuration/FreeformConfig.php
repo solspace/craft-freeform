@@ -15,7 +15,7 @@ class FreeformConfig implements \JsonSerializable
 
         $this->config = [
             'templates' => [
-                'native' => (bool) $settings->getSettingsModel()->defaultTemplates,
+                'native' => $settings->getSettingsModel()->defaults->includeSampleTemplates,
             ],
             'editions' => [
                 'edition' => $plugin->edition,

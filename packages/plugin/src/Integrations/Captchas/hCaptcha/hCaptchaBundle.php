@@ -104,6 +104,10 @@ class hCaptchaBundle extends FeatureBundle
 
     private function getHCaptchaForForm(Form $form): ?hCaptcha
     {
+        if ($form->isDisabled()->captchas) {
+            return null;
+        }
+
         $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CAPTCHAS);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {

@@ -28,18 +28,19 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
         return $this;
     }
 
-    public function add(Option|string $value, string $label = ''): self
+    public function add(Option|string $value, string $label = '', ?int $atIndex = null): self
     {
         if ($value instanceof Option) {
-            $this->options[] = $value;
-
-            return $this;
+            $option = $value;
+        } else {
+            $option = new Option($value, $label);
         }
 
-        $this->options[] = new Option(
-            $value,
-            $label,
-        );
+        if (null !== $atIndex) {
+            array_splice($this->options, $atIndex, 0, [$option]);
+        } else {
+            $this->options[] = $option;
+        }
 
         return $this;
     }

@@ -4,5 +4,5 @@ namespace Solspace\Freeform\Attributes\Property;
 
 interface ValueGeneratorInterface
 {
-    public function generateValue(Property $property, string $class, ?object $referenceObject): mixed;
+    public function generateValue(?object $referenceObject): mixed;
 }

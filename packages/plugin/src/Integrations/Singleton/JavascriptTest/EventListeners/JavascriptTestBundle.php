@@ -175,6 +175,10 @@ class JavascriptTestBundle extends FeatureBundle
 
     private function getIntegration(Form $form): ?JavascriptTest
     {
+        if ($form->isDisabled()->javascriptTest) {
+            return null;
+        }
+
         $integration = $this->integrationsProvider->getSingleton($form, JavascriptTest::class);
         if (!$integration || !$integration->isEnabled()) {
             return null;

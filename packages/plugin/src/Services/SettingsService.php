@@ -275,7 +275,7 @@ class SettingsService extends BaseService
 
     public function isAjaxEnabledByDefault(): bool
     {
-        return $this->getSettingsModel()->ajaxByDefault;
+        return $this->getSettingsModel()->defaults->settings->processing->ajax->getValue();
     }
 
     public function isSectionASetting(string $sectionName): bool

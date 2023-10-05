@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Date\DateTimeTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -13,10 +14,8 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorOptionsGenerator;
-use Solspace\Freeform\Bundles\Form\SuccessBehavior\SuccessBehaviorValueGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
-use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\AjaxToggleGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 
@@ -40,7 +39,7 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_PROCESSING.'.svg',
         order: 1,
     )]
-    #[ValueGenerator(AjaxToggleGenerator::class)]
+    #[DefaultValue('settings.processing.ajax')]
     #[Input\Boolean(
         label: 'Use AJAX',
         instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
@@ -49,6 +48,7 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = false;
 
     #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.showIndicator')]
     #[Input\Boolean(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
@@ -57,6 +57,7 @@ class BehaviorSettings extends SettingsNamespace
     public bool $showProcessingSpinner = false;
 
     #[Section(self::SECTION_PROCESSING)]
+    #[DefaultValue('settings.processing.showText')]
     #[Input\Boolean(
         label: 'Show Processing Text on Submit',
         instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
@@ -66,6 +67,7 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_PROCESSING)]
     #[VisibilityFilter('Boolean(showProcessingText)')]
+    #[DefaultValue('settings.processing.processingText')]
     #[Input\Text(
         'Processing Text',
         instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
@@ -80,7 +82,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 2,
     )]
     #[Validators\Required]
-    #[ValueGenerator(SuccessBehaviorValueGenerator::class)]
+    #[DefaultValue('settings.successAndErrors.successBehavior')]
     #[Input\Select(
         instructions: "Select how you'd like the success return of this form to be handled. May also be overridden at the template level.",
         order: 1,
@@ -91,6 +93,7 @@ class BehaviorSettings extends SettingsNamespace
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]
     #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE.'"')]
+    #[DefaultValue('settings.successAndErrors.successTemplate')]
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
         order: 2,
@@ -100,15 +103,16 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL.'"')]
+    #[DefaultValue('settings.successAndErrors.returnUrl')]
     #[Input\Text(
         label: 'Return URL',
         instructions: 'Set a URL for the form to be redirected to after successful submit.',
         order: 3,
     )]
-    #[Validators\Required]
-    public string $returnUrl = '/contact-us/thank-you/';
+    public string $returnUrl = '';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.successMessage')]
     #[Input\TextArea(
         instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.',
         order: 4,
@@ -117,6 +121,7 @@ class BehaviorSettings extends SettingsNamespace
     public string $successMessage = 'Form has been submitted successfully!';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[DefaultValue('settings.successAndErrors.errorMessage')]
     #[Input\TextArea(
         instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.',
         order: 5,
@@ -131,6 +136,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 3,
     )]
     #[Flag(Flag::PRO)]
+    #[DefaultValue('settings.limits.duplicateCheck')]
     #[Input\Select(
         label: 'Duplicate Check',
         instructions: 'Select an option for restricting users when submitting this form.',

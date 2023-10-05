@@ -88,7 +88,9 @@ abstract class IntegrationsController extends BaseController
         $id = $post['id'] ?? null;
         $model = $this->getNewOrExistingModel($id);
 
-        $model->class = $post['class'];
+        if (!$model->id) {
+            $model->class = $post['class'];
+        }
 
         $properties = $post['properties'][$model->class] ?? [];
         $post['metadata'] = $properties ?: null;

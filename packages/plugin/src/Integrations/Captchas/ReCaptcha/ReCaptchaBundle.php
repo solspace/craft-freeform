@@ -106,6 +106,10 @@ class ReCaptchaBundle extends FeatureBundle
 
     private function getReCaptchaForForm(Form $form): ?ReCaptcha
     {
+        if ($form->isDisabled()->captchas) {
+            return null;
+        }
+
         $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CAPTCHAS);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {

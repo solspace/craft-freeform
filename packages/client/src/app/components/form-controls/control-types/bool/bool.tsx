@@ -25,7 +25,10 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
   const { handle, label, width } = property;
 
   return (
-    <ControlWrapper $width={width}>
+    <ControlWrapper
+      $width={width}
+      className={classes(property.disabled && 'disabled')}
+    >
       <CheckboxWrapper $size={size}>
         <CheckboxItem>
           {size === 'small' && (

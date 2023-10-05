@@ -84,7 +84,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_BEFORE_RESET = 'before-reset-form';
     public const EVENT_AFTER_RESET = 'after-reset-form';
     public const EVENT_PERSIST_STATE = 'persist-state';
-    public const EVENT_HYDRATE_FORM = 'hydrate-form';
     public const EVENT_GENERATE_RETURN_URL = 'generate-return-url';
     public const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepare-ajax-response-payload';
     public const EVENT_CREATE_SUBMISSION = 'create-submission';
@@ -100,7 +99,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public const DATA_DISABLE = 'disable';
     public const DATA_RELATIONS = 'relations';
-    public const DATA_DISABLE_CAPTCHA = 'disableCaptcha';
 
     protected FormLayout $layout;
     protected FormAttributesCollection $attributes;
@@ -279,7 +277,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             return false;
         }
 
-        if ($this->getProperties()->get(self::DATA_DISABLE_CAPTCHA)) {
+        if ($this->isDisabled()->captchas) {
             return false;
         }
 

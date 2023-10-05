@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
@@ -13,7 +14,6 @@ use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
-use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTemplateGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
@@ -62,6 +62,7 @@ class GeneralSettings extends SettingsNamespace
 
     #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]
+    #[DefaultValue('settings.general.formType')]
     #[Input\Select(
         label: 'Form Type',
         instructions: 'Select the type of form this is.',
@@ -72,15 +73,17 @@ class GeneralSettings extends SettingsNamespace
 
     #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]
+    #[DefaultValue('settings.general.submissionTitle')]
     #[Input\Text(
         instructions: 'How the titles of submissions should be auto-generated for this form.',
         order: 4,
     )]
-    public string $submissionTitle = 'Submission on {{ dateCreated|date("Y-m-d H:i:s") }}';
+    public ?string $submissionTitle = null;
 
     #[Section(self::SECTION_GENERAL)]
     #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Validators\Required]
+    #[DefaultValue('settings.general.formattingTemplate')]
     #[Input\Select(
         label: 'Formatting Template',
         instructions: 'Select a formatting template to be used when rendering this form.',
@@ -112,6 +115,7 @@ class GeneralSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_DATA_STORAGE.'.svg',
         order: 2,
     )]
+    #[DefaultValue('settings.dataStorage.storeData')]
     #[Input\Boolean(
         label: 'Store Submitted Data for this Form',
         instructions: 'All submissions users make on this form will be stored in the database.',
@@ -120,7 +124,7 @@ class GeneralSettings extends SettingsNamespace
     public bool $storeData = true;
 
     #[Section(self::SECTION_DATA_STORAGE)]
-    #[ValueGenerator(DefaultStatusGenerator::class)]
+    #[DefaultValue('settings.dataStorage.defaultStatus')]
     #[Validators\Required]
     #[Input\Select(
         instructions: 'Select the default status for each submission of this form.',
@@ -130,6 +134,7 @@ class GeneralSettings extends SettingsNamespace
     public ?int $defaultStatus = null;
 
     #[Section(self::SECTION_DATA_STORAGE)]
+    #[DefaultValue('settings.dataStorage.collectIp')]
     #[Input\Boolean(
         label: 'Collect IP Addresses',
         instructions: 'Collect and store each users IP address when submitting the form.',

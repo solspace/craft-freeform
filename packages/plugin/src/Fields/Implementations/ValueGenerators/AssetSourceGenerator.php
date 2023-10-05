@@ -12,12 +12,11 @@
 
 namespace Solspace\Freeform\Fields\Implementations\ValueGenerators;
 
-use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 
 class AssetSourceGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(Property $property, string $class, ?object $referenceObject): ?int
+    public function generateValue(?object $referenceObject): ?int
     {
         $volumes = \Craft::$app->getVolumes()->getViewableVolumes();
 

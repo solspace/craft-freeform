@@ -28,7 +28,11 @@ class NotificationTemplateTransformer implements TransformerInterface
     public function reverseTransform($value): int|string|null
     {
         if (!$value instanceof NotificationTemplate) {
-            return null;
+            if (is_numeric($value)) {
+                return (int) $value;
+            }
+
+            return $value;
         }
 
         return $value->getId();

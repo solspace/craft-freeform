@@ -20,6 +20,10 @@ export const useFormSettingUpdateGenerator = (
   return useCallback(
     (property) => {
       return (value) => {
+        if (property.disabled) {
+          return;
+        }
+
         dispatch((dispatch, getState) => {
           const injectCallback: MiddlewareInjectCallback = (key, value) => {
             const targetProperty = data

@@ -239,7 +239,7 @@ return [
     'Together at Center',
     'Together at Right',
     'Choose whether the submit button is positioned on the left, center or right side.',
-    "Show 'Clear' button?",
+    "Show 'Clear' button",
     'Edit in Fullscreen mode',
     'Exit Fullscreen mode',
     'Allow Twig',

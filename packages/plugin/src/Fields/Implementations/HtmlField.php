@@ -19,7 +19,6 @@ use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
-use Solspace\Freeform\Models\Settings;
 
 #[Type(
     name: 'HTML',
@@ -68,8 +67,7 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
                 return $content;
             }
 
-            /** @var Settings $settings */
-            $settings = Freeform::getInstance()->getSettings();
+            $settings = Freeform::getInstance()->getDefaults();
             if ($settings->twigInHtml) {
                 $variables = [
                     'form' => $this->getForm(),

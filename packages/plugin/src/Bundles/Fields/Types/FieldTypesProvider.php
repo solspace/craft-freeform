@@ -55,15 +55,17 @@ class FieldTypesProvider
             }
 
             if (!$hasDefaultSection) {
-                $list = [
-                    new Section(
-                        null,
-                        'Configuration',
-                        file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
-                        1
-                    ),
-                    ...$list,
-                ];
+                $list = array_merge(
+                    [
+                        new Section(
+                            null,
+                            'Configuration',
+                            file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
+                            1
+                        ),
+                    ],
+                    $list,
+                );
             }
 
             $this->sections = array_values($list);

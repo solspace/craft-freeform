@@ -137,4 +137,10 @@ $(() => {
       },
     });
   }
+
+  $('.lock-button').on('click', function () {
+    const input = $('input', this);
+    input.val(input.val() === '1' ? '0' : '1');
+    input.toggleClass('locked', input.val() === '1');
+  });
 });

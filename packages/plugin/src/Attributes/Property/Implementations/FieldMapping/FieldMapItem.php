@@ -51,11 +51,13 @@ class FieldMapItem
 
         $formHandle = $form->getHandle();
         if (!\array_key_exists($formHandle, $variables)) {
-            $variableList = [
-                'form' => $form,
-                'submission' => $form->getSubmission(),
-                ...$context,
-            ];
+            $variableList = array_merge(
+                [
+                    'form' => $form,
+                    'submission' => $form->getSubmission(),
+                ],
+                $context
+            );
 
             $fields = $form->getLayout()->getFields();
             foreach ($fields as $field) {

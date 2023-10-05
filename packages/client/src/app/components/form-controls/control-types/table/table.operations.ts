@@ -1,4 +1,5 @@
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
+import update from 'immutability-helper';
 
 export const addColumn = (
   columns: ColumnDescription[],
@@ -32,8 +33,14 @@ export const moveColumn = (
   toIndex: number,
   columns: ColumnDescription[]
 ): ColumnDescription[] => {
-  // TODO: implement this method
-  return columns;
+  const prevColumns = [...columns];
+
+  return update(prevColumns, {
+    $splice: [
+      [fromIndex, 1],
+      [toIndex, 0, prevColumns[fromIndex] as ColumnDescription],
+    ],
+  });
 };
 
 export const cleanColumns = (

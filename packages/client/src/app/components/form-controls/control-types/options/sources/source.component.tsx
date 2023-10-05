@@ -16,8 +16,8 @@ export const SourceComponent: React.FC<ConfigurationProps> = ({
   updateValue,
   defaultValue,
   updateDefaultValue,
-  isMultiple,
   convertToCustomValues,
+  isMultiple,
 }) => {
   const { source = Source.Custom } = value;
 

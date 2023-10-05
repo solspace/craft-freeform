@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import {
   Button,
   Cell,
-  DeleteIcon,
-  DragIcon,
   Input,
-  Row,
   Select,
   TableContainer,
   TableEditorWrapper,
@@ -20,7 +17,10 @@ import {
   updateColumn,
 } from '@components/form-controls/control-types/table/table.operations';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
+import { DraggableRow } from '@components/form-controls/draggable-row';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
+import CrossIcon from '@components/form-controls/icons/cross.svg';
+import MoveIcon from '@components/form-controls/icons/move.svg';
 import type { Option as PropertyOption } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
@@ -35,6 +35,12 @@ export const TableEditor: React.FC<Props> = ({
   columns,
   updateValue,
 }) => {
+  const refs = useRef([]);
+  refs.current = columns.map(
+    (column, index) =>
+      refs.current[index] || React.createRef<HTMLButtonElement>()
+  );
+
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
     useCellNavigation(columns.length, 3);
 
@@ -54,7 +60,14 @@ export const TableEditor: React.FC<Props> = ({
         <TabularOptions>
           <tbody>
             {columns.map((column, rowIndex) => (
-              <Row key={rowIndex}>
+              <DraggableRow
+                key={rowIndex}
+                index={rowIndex}
+                dragRef={refs.current[rowIndex]}
+                onDrop={(fromIndex, toIndex) =>
+                  updateValue(moveColumn(fromIndex, toIndex, columns))
+                }
+              >
                 <Cell>
                   <Input
                     type="text"
@@ -141,12 +154,8 @@ export const TableEditor: React.FC<Props> = ({
                 {columns.length > 1 && (
                   <>
                     <Cell $tiny>
-                      <Button
-                        onClick={() =>
-                          updateValue(moveColumn(rowIndex, rowIndex, columns))
-                        }
-                      >
-                        <DragIcon />
+                      <Button ref={refs.current[rowIndex]} className="handle">
+                        <MoveIcon />
                       </Button>
                     </Cell>
                     <Cell $tiny>
@@ -156,12 +165,12 @@ export const TableEditor: React.FC<Props> = ({
                           setActiveCell(Math.max(rowIndex - 1, 0), 0);
                         }}
                       >
-                        <DeleteIcon />
+                        <CrossIcon />
                       </Button>
                     </Cell>
                   </>
                 )}
-              </Row>
+              </DraggableRow>
             ))}
           </tbody>
         </TabularOptions>

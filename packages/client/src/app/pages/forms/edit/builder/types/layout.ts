@@ -1,3 +1,5 @@
+import type React from 'react';
+import type { RefObject } from 'react';
 import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
 
 export type Layout = {
@@ -38,4 +40,11 @@ export type Row = {
   uid: string;
   layoutUid: string;
   order: number;
+};
+
+export type OptionRow = {
+  id: string;
+  dragRef?: RefObject<HTMLButtonElement>;
+  onDrop?: (fromIndex: number, toIndex: number) => void;
+  children?: React.ReactNode;
 };

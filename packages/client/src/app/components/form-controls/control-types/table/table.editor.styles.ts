@@ -69,28 +69,16 @@ export const Button = styled.button`
   align-items: center;
   justify-content: center;
 
+  &.handle {
+    cursor: move;
+  }
+
   &:disabled {
     cursor: not-allowed;
     color: lightgray;
   }
-`;
 
-const Icon = styled.div`
-  border: 0 !important;
-
-  &::after {
-    font-weight: 800;
-  }
-`;
-
-export const DragIcon = styled(Icon)`
-  &::after {
-    content: '\\2723';
-  }
-`;
-
-export const DeleteIcon = styled(Icon)`
-  &::after {
-    content: '\\2715';
+  > svg {
+    fill: currentColor;
   }
 `;

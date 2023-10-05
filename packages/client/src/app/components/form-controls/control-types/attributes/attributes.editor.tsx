@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
+import CrossIcon from '@components/form-controls/icons/cross.svg';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -8,7 +9,6 @@ import { useCellNavigation } from '../../hooks/use-cell-navigation';
 import {
   Button,
   Cell,
-  DeleteIcon,
   Input,
   Row,
   TabularOptions,
@@ -187,7 +187,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         setActiveCell(Math.max(index - 1, 0), 0);
                       }}
                     >
-                      <DeleteIcon />
+                      <CrossIcon />
                     </Button>
                   </Cell>
                 </Row>

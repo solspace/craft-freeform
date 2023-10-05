@@ -910,7 +910,7 @@
 - Added a setting for Date & Time fields in the form builder that lets you set/force a locale for the field.
 
 ### Changed
-- Updated Stripe validation errors to also respect the "Automatically Scroll to top of the Form on AJAX submit?" setting.
+- Updated Stripe validation errors to also respect the "Automatically Scroll to top of the Form on AJAX submit" setting.
 
 ### Fixed
 - Fixed a bug where the custom form properties feature wasn't working correctly.
@@ -1348,7 +1348,7 @@
 - Updated the Weekly Digest and Email Alert email notifications to reference the custom plugin name (when specified) instead of 'Freeform' (Pro).
 - Updated the Weekly Digest email notifications' form names to link to submissions pages instead of form edit view.
 - Updated the CP Forms index to order forms alphabetically again (vs using the custom order specified on the Dashboard).
-- Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
+- Updated the 'Disable Submit Button on Form Submit' setting to be on by default for new installs.
 
 ### Fixed
 - Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
@@ -1562,7 +1562,7 @@
 ## 3.7.1 - 2020-07-24
 
 ### Changed
-- Updated the "Automatically Scroll to Form on Errors and Multipage forms?" feature/setting to no longer automatically insert an anchor at the top of the form if the setting is disabled.
+- Updated the "Automatically Scroll to Form on Errors and Multipage forms" feature/setting to no longer automatically insert an anchor at the top of the form if the setting is disabled.
 - Optimized the Quick Export feature to only post selected form export preferences.
 
 ### Fixed
@@ -2272,7 +2272,7 @@
 ## 2.5.8 - 2019-01-11
 
 ### Added
-- Added 'Automatically Scroll to Form on Errors and Multipage forms?' setting to allow the ability to disable this feature.
+- Added 'Automatically Scroll to Form on Errors and Multipage forms' setting to allow the ability to disable this feature.
 
 ### Changed
 - Updated Freeform's developer events for compatibility with the Craft Webhooks plugin's [updated approach](https://github.com/craftcms/webhooks/blob/develop/CHANGELOG.md#112---2018-12-21) (v1.1.2).
@@ -2562,7 +2562,7 @@
 - Updated Date & Time field date picker to have several more translation options available.
 - Updated Demo Templates to no longer install duplicate template routes.
 - Updated Demo Templates routes to be extension agnostic.
-- Updated the 'Disable submit button on form submit?' setting to be disabled by default.
+- Updated the 'Disable Submit Button on Form Submit' setting to be disabled by default.
 - Updated plugin icon to be a little more spicy.
 - Renamed the 'Save and continue editing' button in Composer to just 'Quick Save'.
 - Renamed the 'Include Freeform scripts in the page's footer?' setting to 'Freeform Javascript Insertion Location' with a dropdown for choices.

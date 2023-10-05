@@ -13,7 +13,7 @@ class SuccessTemplateOptions implements OptionsGeneratorInterface
     {
     }
 
-    public function fetchOptions(Property $property): OptionCollection
+    public function fetchOptions(?Property $property): OptionCollection
     {
         $options = new OptionCollection();
 

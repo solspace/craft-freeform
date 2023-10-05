@@ -9,7 +9,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 
 class FormLimitingOptions implements OptionsGeneratorInterface
 {
-    public function fetchOptions(Property $property): OptionCollection
+    public function fetchOptions(?Property $property): OptionCollection
     {
         return (new OptionCollection())
             ->add(

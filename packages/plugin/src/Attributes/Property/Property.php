@@ -40,6 +40,7 @@ abstract class Property
         public mixed $value = null,
         public ?string $placeholder = null,
         public ?int $width = null,
+        public ?bool $disabled = null,
     ) {
     }
 

@@ -2,11 +2,10 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FormModal;
 
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
-use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
-use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTemplateGenerator;
 
 class CreateFormModal
 {
@@ -15,12 +14,13 @@ class CreateFormModal
     private string $name = '';
 
     #[Required]
-    #[ValueGenerator(DefaultTemplateGenerator::class)]
+    #[DefaultValue('settings.general.formattingTemplate')]
     #[Input\Select(
         options: FormattingTemplateOptions::class,
     )]
     private ?string $formattingTemplate = null;
 
+    #[DefaultValue('settings.dataStorage.storeData')]
     #[Input\Boolean(
         label: 'Store Submitted Data for this Form',
         instructions: 'All submissions for this form will be stored in the database.',

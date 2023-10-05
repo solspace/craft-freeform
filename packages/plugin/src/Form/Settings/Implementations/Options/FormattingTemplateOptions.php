@@ -13,11 +13,12 @@ class FormattingTemplateOptions implements OptionsGeneratorInterface
     {
     }
 
-    public function fetchOptions(Property $property): OptionCollection
+    public function fetchOptions(?Property $property): OptionCollection
     {
         $options = new OptionCollection();
 
-        if ((bool) $this->settingsService->getSettingsModel()->defaultTemplates) {
+        $includeDefaultTemplates = $this->settingsService->getSettingsModel()->defaults->includeSampleTemplates;
+        if ($includeDefaultTemplates) {
             $base = $this->settingsService->getSolspaceFormTemplates();
             if ($base) {
                 $solspaceTemplates = new OptionCollection('Solspace');

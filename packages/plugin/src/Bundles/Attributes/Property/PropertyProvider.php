@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Attributes\Property;
 
 use Carbon\Carbon;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
@@ -23,6 +24,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
@@ -36,6 +38,7 @@ class PropertyProvider
     public function __construct(
         private Container $container,
         private ImplementationProvider $implementationProvider,
+        private DefaultsProvider $defaultsProvider,
     ) {
     }
 
@@ -109,18 +112,7 @@ class PropertyProvider
             $this->processVisibilityFilters($property, $attribute);
             $this->processDateProperties($attribute);
 
-            $value = $property->getDefaultValue() ?? $attribute->value;
-            if (null === $referenceObject && $attribute->valueGenerator) {
-                $value = $attribute->valueGenerator->generateValue($attribute, $class, $referenceObject);
-            }
-
-            if ($referenceObject && $property->isInitialized($referenceObject)) {
-                $value = $property->getValue($referenceObject);
-            }
-
-            if ($attribute->transformer) {
-                $value = $attribute->transformer->reverseTransform($value);
-            }
+            $this->processValue($property, $attribute, $referenceObject);
 
             /** @var Section $section */
             $fallbackLabel = Stringy::create($property->getName())
@@ -129,7 +121,6 @@ class PropertyProvider
                 ->toTitleCase()
             ;
 
-            $attribute->value = $value;
             $attribute->section = $section?->handle;
             $attribute->type = $this->processType($property, $attribute);
             $attribute->handle = $property->getName();
@@ -256,6 +247,41 @@ class PropertyProvider
         /** @var TransformerInterface $transformer */
         $transformer = $this->container->get($transformerAttribute->className);
         $attribute->transformer = $transformer;
+    }
+
+    private function processValue(\ReflectionProperty $property, Property $attribute, $referenceObject): void
+    {
+        $this->processDefaultValue($property, $attribute);
+
+        $value = $attribute->value ?? $property->getDefaultValue();
+        if (null === $referenceObject && $attribute->valueGenerator) {
+            $value = $attribute->valueGenerator->generateValue($referenceObject);
+        }
+
+        if ($referenceObject && $property->isInitialized($referenceObject)) {
+            $value = $property->getValue($referenceObject);
+        }
+
+        if ($attribute->transformer) {
+            $value = $attribute->transformer->reverseTransform($value);
+        }
+
+        $attribute->value = $value;
+    }
+
+    private function processDefaultValue(\ReflectionProperty $property, Property $attribute): void
+    {
+        $defaultValue = AttributeHelper::findAttribute($property, DefaultValue::class);
+        if (!$defaultValue) {
+            return;
+        }
+
+        $isLocked = $this->defaultsProvider->isLocked($defaultValue->path);
+        if ($isLocked) {
+            $attribute->disabled = true;
+        }
+
+        $attribute->value = $this->defaultsProvider->getValue($defaultValue->path);
     }
 
     private function processValueGenerator(\ReflectionProperty $property, Property $attribute): void

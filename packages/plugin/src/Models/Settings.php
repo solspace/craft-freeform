@@ -16,6 +16,7 @@ use craft\base\Model;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
@@ -93,9 +94,6 @@ class Settings extends Model
     /** @var bool */
     public $exportHandlesAsNames;
 
-    /** @var bool */
-    public $defaultTemplates;
-
     /** @deprecated use $scriptInsertLocation instead */
     public $footerScripts;
 
@@ -163,9 +161,6 @@ class Settings extends Model
     public $renderFormHtmlInCpViews;
 
     /** @var bool */
-    public $ajaxByDefault;
-
-    /** @var bool */
     public $autoScrollToErrors;
 
     /** @var bool */
@@ -211,12 +206,6 @@ class Settings extends Model
     public $badgeType;
 
     /** @var bool */
-    public $twigInHtml;
-
-    /** @var bool */
-    public $twigInHtmlIsolatedMode;
-
-    /** @var bool */
     public $updateSearchIndexes;
 
     /** @var bool */
@@ -243,6 +232,8 @@ class Settings extends Model
     /** @var bool */
     public $bypassSpamCheckOnLoggedInUsers;
 
+    public Defaults $defaults;
+
     /**
      * Settings constructor.
      */
@@ -252,7 +243,6 @@ class Settings extends Model
         $this->formTemplateDirectory = null;
         $this->successTemplateDirectory = null;
         $this->defaultView = Freeform::VIEW_FORMS;
-        $this->defaultTemplates = true;
         $this->removeNewlines = false;
         $this->exportLabels = false;
         $this->exportHandlesAsNames = false;
@@ -277,7 +267,6 @@ class Settings extends Model
         $this->purgableSpamAgeInDays = null;
         $this->purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
         $this->renderFormHtmlInCpViews = true;
-        $this->ajaxByDefault = self::DEFAULT_AJAX;
         $this->autoScrollToErrors = true;
         $this->autoScroll = true;
         $this->fillWithGet = false;
@@ -300,9 +289,6 @@ class Settings extends Model
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
 
-        $this->twigInHtml = true;
-        $this->twigInHtmlIsolatedMode = true;
-
         $this->updateSearchIndexes = true;
 
         $this->formFieldShowOnlyAllowedForms = false;
@@ -317,7 +303,17 @@ class Settings extends Model
 
         $this->bypassSpamCheckOnLoggedInUsers = false;
 
+        $this->defaults = new Defaults($config['defaults'] ?? []);
+        unset($config['defaults']);
+
         parent::__construct($config);
+    }
+
+    public function setAttributes($values, $safeOnly = true): void
+    {
+        $values['defaults'] = new Defaults($values['defaults'] ?? []);
+
+        parent::setAttributes($values, $safeOnly);
     }
 
     public function rules(): array

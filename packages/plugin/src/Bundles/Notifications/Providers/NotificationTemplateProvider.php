@@ -12,6 +12,9 @@ class NotificationTemplateProvider
     ) {
     }
 
+    /**
+     * @return NotificationTemplate[]
+     */
     public function getDatabaseTemplates(): array
     {
         $records = $this->service->getAllNotifications();
@@ -24,6 +27,9 @@ class NotificationTemplateProvider
         );
     }
 
+    /**
+     * @return NotificationTemplate[]
+     */
     public function getFileTemplates(): array
     {
         $records = $this->service->getAllNotifications();

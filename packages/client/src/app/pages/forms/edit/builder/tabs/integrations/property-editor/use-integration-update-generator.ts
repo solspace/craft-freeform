@@ -17,12 +17,20 @@ export const useIntegrationUpdateGenerator = (
 
   return useCallback(
     (property) => {
+      if (property.disabled) {
+        return;
+      }
+
       return (value) => {
         dispatch((dispatch, getState) => {
           const injectCallback: MiddlewareInjectCallback = (key, value) => {
             const targetProperty = integration.properties.find(
               (prop) => prop.handle === key
             );
+
+            if (!targetProperty || targetProperty.disabled) {
+              return;
+            }
 
             dispatch(
               integrationActions.modify({

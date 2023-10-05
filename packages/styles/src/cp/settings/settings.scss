@@ -16,3 +16,90 @@ ul.freeform-settings-list {
     font-weight: 600
   }
 }
+
+.field.smart-switch {
+  display: grid;
+  grid-template-columns: min-content auto;
+  gap: 16px;
+}
+
+.categories, .category-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.category-item-list {
+  li {
+    display: grid;
+    grid-template-columns: 35% 40% auto;
+    gap: 20px;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      svg {
+        width: 11px;
+        height: 11px;
+      }
+    }
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      min-height: 34px;
+    }
+
+    button {
+      position: relative;
+
+      width: 34px;
+      height: 34px;
+
+      span {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      & span.locked {
+        opacity: 0;
+        fill: #e21e25;
+
+        svg {
+          position: relative;
+          left: -2px;
+        }
+      }
+
+      & span.unlocked {
+        opacity: 1;
+        fill: #1fa07b;
+      }
+
+      input.locked {
+        border: 1px solid red;
+        pointer-events: none;
+        user-select: none;
+
+        & + span.locked {
+          opacity: 1;
+        }
+
+        & + span + span.unlocked {
+          opacity: 0;
+        }
+      }
+    }
+  }
+}

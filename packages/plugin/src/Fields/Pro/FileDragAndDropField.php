@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Fields\Pro;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Library\Helpers\FileHelper;
 
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
@@ -134,18 +133,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
             return $errors;
-        }
-
-        // Check the mime type if the server supports it
-        if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-            $mimeType = FileHelper::getMimeType($tmpName);
-            $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-            if ($mimeExtension) {
-                $extension = $mimeExtension;
-            } else {
-                $errors[] = $this->translate('Unknown file type');
-            }
         }
 
         if (empty($tmpName)) {

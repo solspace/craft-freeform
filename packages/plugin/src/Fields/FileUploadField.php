@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Fields;
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
 use craft\helpers\Assets;
-use craft\helpers\FileHelper;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
@@ -26,7 +25,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use yii\base\Exception;
-use yii\base\InvalidArgumentException;
 use yii\base\InvalidConfigException;
 
 class FileUploadField extends AbstractField implements MultipleValueInterface, FileUploadInterface
@@ -236,20 +234,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     if ($fileData) {
                         if (empty($fileUpload['filename'])) {
                             // Make up a filename
-                            $extension = null;
-
-                            if (\Solspace\Freeform\Library\Helpers\FileHelper::isMimeTypeCheckEnabled() && !empty($matches['type'])) {
-                                try {
-                                    $extension = FileHelper::getExtensionByMimeType($matches['type']);
-                                } catch (InvalidArgumentException) {
-                                }
-
-                                if (!$extension) {
-                                    $uploadErrors[] = $this->translate('Invalid file type provided');
-                                }
-                            }
-
-                            $fileUpload['filename'] = 'Upload.'.$extension;
+                            $fileUpload['filename'] = 'Upload 1';
                         }
 
                         $filename = Assets::prepareAssetName($fileUpload['filename']);
@@ -345,20 +330,6 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
 
                 if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
                     continue;
-                }
-
-                // Check the mime type if the server supports it
-                if (\Solspace\Freeform\Library\Helpers\FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-                    $mimeType = FileHelper::getMimeType($tmpName);
-                    $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-                    if ($mimeExtension) {
-                        $extension = $mimeExtension;
-                    } else {
-                        $uploadErrors[] = $this->translate(
-                            'Unknown file type'
-                        );
-                    }
                 }
 
                 if (empty($tmpName)) {

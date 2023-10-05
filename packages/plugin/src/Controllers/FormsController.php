@@ -440,7 +440,7 @@ class FormsController extends BaseController
             'title' => $title,
             'continueEditingUrl' => 'freeform/forms/{id}',
             'formTypes' => $this->getEncodedJson($this->getFormsTypesService()->getTypes()),
-            'fileKinds' => $this->getEncodedJson(Assets::getFileKinds()),
+            'fileKinds' => $this->getEncodedJson(Assets::getAllowedFileKinds()),
             'fieldTypeList' => $this->getEncodedJson($this->getFieldsService()->getEditableFieldTypes()),
             'notificationList' => $this->getEncodedJson($notifications),
             'mailingList' => $this->getEncodedJson($mailingListIntegrations),

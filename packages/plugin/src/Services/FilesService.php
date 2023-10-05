@@ -529,7 +529,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function getFileKinds(): array
     {
-        $fileKinds = Assets::getFileKinds();
+        $fileKinds = Assets::getAllowedFileKinds();
 
         $returnArray = [];
         foreach ($fileKinds as $kind => $extensions) {

@@ -99,6 +99,14 @@
 
     <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
+        {{ forms.lightswitchField({
+            label: "Allow File-based Email Templates to be created inside the CP?"|t('freeform'),
+            instructions: "Allowing users to generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
+            name: "settings[allowFileTemplateEdit]",
+            on: settings.allowFileTemplateEdit,
+            errors: settings.errors("allowFileTemplateEdit"),
+        }) }}
+
         {% set suggestionsData = [] %}
         {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
             {% set suggestionsData = suggestionsData|merge([{

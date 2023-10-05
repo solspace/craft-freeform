@@ -347,7 +347,7 @@ class SubmissionQuery extends ElementQuery
 
             $condition = array_map(fn ($column) => Db::parseParam($column, $term), $columns);
             if (\count($condition)) {
-                $condition = ['or', ...$condition];
+                $condition = array_merge(['or'], $condition);
 
                 $this->subQuery->andWhere($condition);
             }

@@ -33,7 +33,6 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
-use Solspace\Freeform\Library\Mailing\NotificationInterface;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
@@ -337,7 +336,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     private function notifyAboutEmailSendingError(
         string $failedRecipient,
-        NotificationInterface $failedNotification,
+        NotificationTemplate $failedNotification,
         \Exception $exception,
         Form $form
     ): void {

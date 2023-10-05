@@ -5,6 +5,9 @@ namespace Solspace\Freeform\controllers\notifications;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use yii\web\Response;
 
 class SenderController extends BaseController
@@ -33,10 +36,15 @@ class SenderController extends BaseController
 
         $emails = $this->request->post('emails');
         $emails = StringHelper::extractSeparatedValues($emails);
-        if (empty($emails)) {
+        if (!\is_array($emails) || empty($emails)) {
             $this->response->statusCode = 400;
 
             return $this->asJson('No emails specified');
+        }
+
+        $recipients = new RecipientCollection();
+        foreach ($emails as $email) {
+            $recipients->add(new Recipient($email, ''));
         }
 
         $submissionIds = $this->request->post('submissionIds', []);
@@ -65,6 +73,8 @@ class SenderController extends BaseController
                 continue;
             }
 
+            $notification = NotificationTemplate::fromRecord($notification);
+
             $fields = $form->getLayout()->getFields();
             foreach ($fields as $field) {
                 $handle = $field->getHandle();
@@ -79,9 +89,9 @@ class SenderController extends BaseController
 
             $this->getMailerService()->sendEmail(
                 $form,
-                $emails,
-                $notification,
+                $recipients,
                 $fields,
+                $notification,
                 $submission
             );
         }

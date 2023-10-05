@@ -57,7 +57,7 @@ class Settings
     {
         foreach ($this->getProperties() as $property) {
             if ($this->hasProperty($property, $name)) {
-                return $this->accessor->getValue($property->getValue($this), $name);
+                return $this->accessor->getValue($this->getValue($property), $name);
             }
         }
 
@@ -72,7 +72,7 @@ class Settings
     {
         $array = [];
         foreach ($this->getProperties() as $property) {
-            $array[$property->getName()] = $property->getValue($this);
+            $array[$property->getName()] = $this->getValue($property);
         }
 
         return $array;
@@ -92,13 +92,25 @@ class Settings
     {
         $reflection = new \ReflectionClass($this);
 
-        return $reflection->getProperties();
+        $properties = $reflection->getProperties();
+        foreach ($properties as $index => $property) {
+            if (!is_a($property->getType()->getName(), SettingsNamespace::class, true)) {
+                unset($properties[$index]);
+            }
+        }
+
+        return $properties;
     }
 
-    private function hasProperty($property, string $name): bool
+    private function getValue(\ReflectionProperty $property): mixed
     {
-        $setting = $property->getValue($this);
+        return $this->accessor->getValue($this, $property->getName());
+    }
 
-        return isset($setting->{$name});
+    private function hasProperty(\ReflectionProperty $property, string $name): bool
+    {
+        $setting = $this->accessor->getValue($this, $property->getName());
+
+        return $this->accessor->isReadable($setting, $name);
     }
 }

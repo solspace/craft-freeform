@@ -371,7 +371,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 foreach ($uploadFields as $uploadField) {
                     $value = $submission->{$uploadField->getHandle()}->getValue();
                     if ($value) {
-                        $assetIds = [...$assetIds, ...$value];
+                        $assetIds = array_merge($assetIds, $value);
                     }
                 }
 

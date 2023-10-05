@@ -13,7 +13,7 @@ class FileKindsOptionsGenerator implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        $fileKinds = Assets::getFileKinds();
+        $fileKinds = Assets::getAllowedFileKinds();
         foreach ($fileKinds as $key => $fileKind) {
             $options->add($key, $fileKind['label']);
         }

@@ -169,7 +169,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Include Attachments?"|t('freeform'),
+        label: "Include Attachments"|t('freeform'),
         instructions: "Include uploaded files as attachments in email notification."|t('freeform'),
         name: "includeAttachments",
         on: notification.includeAttachments,
@@ -215,7 +215,7 @@
 
 
     {{ forms.lightswitchField({
-        label: "Auto 'Text-Only' version?"|t('freeform'),
+        label: "Auto 'Text-Only' version"|t('freeform'),
         instructions: "When enabled, Freeform will automatically provide a Text-only version of the notification based on the HTML version."|t('freeform'),
         name: "autoText",
         on: notification.autoText,

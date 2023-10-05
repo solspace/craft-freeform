@@ -13,7 +13,7 @@
     <h2 class="first">{{ "Submit Behavior"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
-        label: "Disable Submit Button on Form Submit?"|t('freeform'),
+        label: "Disable Submit Button on Form Submit"|t('freeform'),
         instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
         name: "settings[formSubmitDisable]",
         on: settings.formSubmitDisable,
@@ -21,7 +21,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Automatically Scroll to Form on Errors and Multipage forms?"|t('freeform'),
+        label: "Automatically Scroll to Form on Errors and Multipage forms"|t('freeform'),
         instructions: "Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms."|t('freeform'),
         name: "settings[autoScrollToErrors]",
         on: settings.autoScrollToErrors,
@@ -29,7 +29,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Automatically Scroll to top of the Form on AJAX submit?"|t('freeform'),
+        label: "Automatically Scroll to top of the Form on AJAX submit"|t('freeform'),
         instructions: "Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight."|t('freeform'),
         name: "settings[autoScroll]",
         on: settings.autoScroll,
@@ -37,7 +37,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Remember the Page Order in Multi-page forms?"|t('freeform'),
+        label: "Remember the Page Order in Multi-page forms"|t('freeform'),
         instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
         name: "settings[rememberPageSubmitOrder]",
         on: settings.rememberPageSubmitOrder,

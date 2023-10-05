@@ -60,7 +60,7 @@
     <h2>{{ "Element Field Type"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
-        label: "Restrict Form options in Form Field Type to User permissions?"|t('freeform'),
+        label: "Restrict Form options in Form Field Type to User permissions"|t('freeform'),
         instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Element Field Type (relating forms in Entries, etc)."|t('freeform'),
         name: "settings[formFieldShowOnlyAllowedForms]",
         on: settings.formFieldShowOnlyAllowedForms,
@@ -100,7 +100,7 @@
     <h2>{{ "Submission Data"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
-        label: "Fill Form Values from the GET Query String?"|t('freeform'),
+        label: "Fill Form Values from the GET Query String"|t('freeform'),
         instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
         name: "settings[fillWithGet]",
         on: settings.fillWithGet,
@@ -108,7 +108,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Enable Search Index Updating on New Submissions?"|t('freeform'),
+        label: "Enable Search Index Updating on New Submissions"|t('freeform'),
         instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
         name: "settings[updateSearchIndexes]",
         on: settings.updateSearchIndexes,

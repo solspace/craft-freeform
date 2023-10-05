@@ -105,7 +105,7 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Display errors about blocked email(s) under each email field?"|t('freeform'),
+            label: "Display errors about blocked email(s) under each email field"|t('freeform'),
             instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues."|t('freeform'),
             name: "settings[showErrorsForBlockedEmails]",
             on: settings.showErrorsForBlockedEmails,
@@ -133,7 +133,7 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Display errors about blocked keyword(s) under each text/textarea field?"|t('freeform'),
+            label: "Display errors about blocked keyword(s) under each text/textarea field"|t('freeform'),
             instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues."|t('freeform'),
             name: "settings[showErrorsForBlockedKeywords]",
             on: settings.showErrorsForBlockedKeywords,

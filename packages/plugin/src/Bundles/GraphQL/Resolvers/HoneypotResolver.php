@@ -22,6 +22,9 @@ class HoneypotResolver extends Resolver
             return null;
         }
 
-        return ['name' => $honeypot->getInputName()];
+        return [
+            'name' => $honeypot->getInputName(),
+            'value' => '',
+        ];
     }
 }

@@ -39,6 +39,7 @@ class SubmissionMutation extends Mutation
                 $mutationInputFields = SubmissionGenerator::getInputFields();
                 self::prepareResolver($mutationResolver, $mutationInputFields);
 
+                HoneypotInputArguments::setForm($form);
                 SubmissionCaptchaInputArguments::setForm($form);
 
                 $csrfInputArguments = CsrfTokenInputArguments::getArguments();

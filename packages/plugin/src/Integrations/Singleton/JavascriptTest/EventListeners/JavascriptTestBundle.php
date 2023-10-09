@@ -101,7 +101,7 @@ class JavascriptTestBundle extends FeatureBundle
         if ($settings->isSpamBehaviourDisplayErrors()) {
             $errorMessage = $integration->getErrorMessage();
             if (!$errorMessage) {
-                $errorMessage = 'Form honeypot is invalid';
+                $errorMessage = 'Javascript Test is invalid';
             }
 
             $form->addError(Freeform::t($errorMessage));

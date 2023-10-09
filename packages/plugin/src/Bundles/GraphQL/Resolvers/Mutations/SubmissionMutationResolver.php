@@ -55,13 +55,13 @@ class SubmissionMutationResolver extends ElementMutationResolver
         $submission = $form->getSubmission();
 
         if ($requestHandled && $form->isValid() && !$form->getActions()) {
-            $submissionsService->handleSubmission($form, $submission);
+            $submissionsService->handleSubmission($form);
 
             $form->reset();
             $form->persistState();
         }
 
-        $returnUrl = $formsService->getReturnUrl($form, $submission);
+        $returnUrl = $formsService->getReturnUrl($form);
 
         $userErrors = [];
 

@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
 import type { GenericValue } from '@ff-client/types/properties';
 
 import { ModalWrapper } from './modal.styles';
@@ -22,15 +22,7 @@ export const Modal: React.FC<PropsWithChildren<Props>> = ({
   closeModal,
   style,
 }) => {
-  useOnKeypress({
-    callback: (event: KeyboardEvent): void => {
-      switch (event.key) {
-        case 'Escape':
-          closeModal();
-          return;
-      }
-    },
-  });
+  useEscapeStack(closeModal);
 
   return <ModalWrapper style={style}>{children}</ModalWrapper>;
 };

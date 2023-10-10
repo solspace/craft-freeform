@@ -62,7 +62,7 @@ export const FieldListItem = styled.li`
   gap: 10px;
 
   width: 250px;
-  padding: ${spacings.xs} ${spacings.lg};
+  padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
 
   border-bottom: 1px solid ${colors.gray200};
   font-size: 16px;

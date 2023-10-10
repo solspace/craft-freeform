@@ -1,4 +1,6 @@
 import React from 'react';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
@@ -13,6 +15,7 @@ import '../config';
 import './utils/prototypes';
 
 import { Form, Forms } from './app/pages/forms';
+import { EscapeStackProvider } from './contexts/escape/escape.context';
 import ManualStyles from './styles/manual';
 import { debug } from './utils/debug';
 import { generateUrl } from './utils/urls';
@@ -33,26 +36,30 @@ debug.log(
 );
 
 root.render(
-  <BrowserRouter basename={generateUrl('/', false)}>
-    <QueryClientProvider client={queryClient}>
-      <BreadcrumbProvider>
-        <PortalProvider>
-          <Breadcrumb label="Freeform" url="/forms" />
-          <Breadcrumb label="Forms" url="/forms" />
-          <ManualStyles />
-          <ReactQueryDevtools />
-          <CpNavigation />
-          <Routes>
-            <Route path="/" element={<App />}>
-              <Route path="forms">
-                <Route path="new/*" element={<Form />} />
-                <Route path=":formId/*" element={<Form />} />
-                <Route index element={<Forms />} />
-              </Route>
-            </Route>
-          </Routes>
-        </PortalProvider>
-      </BreadcrumbProvider>
-    </QueryClientProvider>
-  </BrowserRouter>
+  <DndProvider backend={HTML5Backend}>
+    <BrowserRouter basename={generateUrl('/', false)}>
+      <QueryClientProvider client={queryClient}>
+        <EscapeStackProvider>
+          <BreadcrumbProvider>
+            <PortalProvider>
+              <Breadcrumb label="Freeform" url="/forms" />
+              <Breadcrumb label="Forms" url="/forms" />
+              <ManualStyles />
+              <ReactQueryDevtools />
+              <CpNavigation />
+              <Routes>
+                <Route path="/" element={<App />}>
+                  <Route path="forms">
+                    <Route path="new/*" element={<Form />} />
+                    <Route path=":formId/*" element={<Form />} />
+                    <Route index element={<Forms />} />
+                  </Route>
+                </Route>
+              </Routes>
+            </PortalProvider>
+          </BreadcrumbProvider>
+        </EscapeStackProvider>
+      </QueryClientProvider>
+    </BrowserRouter>
+  </DndProvider>
 );

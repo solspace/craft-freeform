@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import { useEditorAnimations } from '@components/form-controls/preview/previewable-component.animations';
 import SpinnerIcon from '@components/loaders/loading-text/spinner.svg';
+import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
@@ -87,15 +88,13 @@ export const Dropdown: React.FC<DropdownProps> = ({
     [options, value, loading]
   );
 
+  useEscapeStack(() => setOpen(false), open);
+
   useOnKeypress(
     {
       meetsCondition: open,
       type: 'keydown',
       callback: (event) => {
-        if (event.key === 'Escape') {
-          setOpen(false);
-        }
-
         if (event.key === 'ArrowDown' && focusIndex < optionCount - 1) {
           setFocusIndex((prev) => prev + 1);
         }

@@ -8,6 +8,7 @@ import { LoaderFieldGroup } from '../../field-group/field-group.loader';
 import { useSelectSearchedFavorites } from '../../hooks/use-select-searched-fields';
 
 import { useCreateModal } from './modal/use-create-modal';
+import EditIcon from './edit.icon.svg';
 import { FieldItem } from './field-item';
 
 const title = translate('Favorites');
@@ -30,10 +31,14 @@ export const FavoriteFields: React.FC = () => {
   }
 
   return (
-    <FieldGroup title={title}>
-      <button type="button" className="btn" onClick={openModal}>
-        manager
-      </button>
+    <FieldGroup
+      title={title}
+      button={{
+        icon: <EditIcon />,
+        title: translate('Edit Favorites'),
+        onClick: openModal,
+      }}
+    >
       {data.map((favorite) => (
         <FieldItem key={favorite.uid} favorite={favorite} />
       ))}

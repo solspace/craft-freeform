@@ -6,8 +6,22 @@ export const FieldGroupWrapper = styled.div`
 `;
 
 export const GroupTitle = styled.h2`
+  position: relative;
+
   margin: 0;
   padding: 0 0 5px;
+
+  button {
+    position: absolute;
+    top: 1px;
+    right: 0;
+
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
 `;
 
 export const List = styled.div`

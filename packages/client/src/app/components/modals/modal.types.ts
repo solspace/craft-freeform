@@ -1,5 +1,7 @@
-export type ModalType = {
-  title?: string;
-  content: React.ReactNode;
-  onSave?: () => boolean | Promise<boolean>;
-};
+import type { PropsWithChildren } from 'react';
+
+export type ModalType = React.FC<ModalContainerProps>;
+
+export type ModalContainerProps = PropsWithChildren<{
+  closeModal: () => void;
+}>;

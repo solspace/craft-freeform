@@ -4,6 +4,7 @@ return [
     // FIELDS
     'freeform/api/fields/forms' => 'freeform/api/fields/forms',
     'freeform/api/fields/favorites' => 'freeform/api/fields/favorites',
+    'freeform/api/fields/favorites/<id:\d+>' => 'freeform/api/fields/favorites',
     'freeform/api/fields/types' => 'freeform/api/fields/types',
     'freeform/api/fields/types/sections' => 'freeform/api/fields/types/sections',
 

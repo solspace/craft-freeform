@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { DragPreviewImage } from 'react-dnd';
+import { RemoveButton } from '@components/elements/remove-button/remove';
+import { useAppDispatch } from '@editor/store';
+import { contextActions } from '@editor/store/slices/context';
 import type { Field as FieldPropType } from '@editor/store/slices/layout/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 
 import { FieldCell } from './cell/cell';
-import { Remove } from './remove-button/remove';
 import { useFieldDragAnimation } from './field.animations';
 import { useFieldDrag } from './field.drag';
 import { createPreview } from './field.drag.preview';
@@ -30,6 +33,7 @@ export const Field: React.FC<Props> = ({
   dragFieldIndex,
   hoverPosition,
 }) => {
+  const dispatch = useAppDispatch();
   const [hovering, setHovering] = useState(false);
   const { isDragging, drag, preview } = useFieldDrag(field, index);
   const style = useFieldDragAnimation({
@@ -55,7 +59,13 @@ export const Field: React.FC<Props> = ({
         ref={drag}
         style={style}
       >
-        <Remove field={field} active={hovering} />
+        <RemoveButton
+          active={hovering}
+          onClick={() => {
+            dispatch(contextActions.unfocus());
+            dispatch(fieldThunks.remove(field));
+          }}
+        />
         <FieldCell field={field} />
       </FieldWrapper>
     </>

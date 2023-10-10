@@ -1,9 +1,12 @@
 import React from 'react';
 import { FormComponent } from '@components/form-controls';
-import type { IntegrationEntry } from '@editor/store/slices/integrations';
+import { useAppDispatch } from '@editor/store';
+import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
+import {
+  integrationActions,
+  type IntegrationEntry,
+} from '@editor/store/slices/integrations';
 import { type Property, PropertyType } from '@ff-client/types/properties';
-
-import { useIntegrationUpdateGenerator } from './use-integration-update-generator';
 
 type Props = {
   integration: IntegrationEntry;
@@ -11,7 +14,20 @@ type Props = {
 };
 
 export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
-  const generateUpdateHandler = useIntegrationUpdateGenerator(integration);
+  const dispatch = useAppDispatch();
+  const generateUpdateHandler = useValueUpdateGenerator(
+    integration.properties,
+    integration.values,
+    (key, value) => {
+      dispatch(
+        integrationActions.modify({
+          id: integration.id,
+          key,
+          value,
+        })
+      );
+    }
+  );
   const value = integration.values[property.handle];
 
   if (property.type === PropertyType.Hidden) {

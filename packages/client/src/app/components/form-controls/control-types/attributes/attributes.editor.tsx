@@ -55,6 +55,10 @@ export const AttributesEditor: React.FC<Props> = ({
     setActiveCell(0, 0);
   }, [currentTab]);
 
+  if (!currentTab || !currentAttributes) {
+    return null;
+  }
+
   const appendAndFocus = (
     rowIndex: number,
     cellIndex: number,

@@ -5,4 +5,6 @@ export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.lg};
+
+  padding: ${spacings.md} ${spacings.xl};
 `;

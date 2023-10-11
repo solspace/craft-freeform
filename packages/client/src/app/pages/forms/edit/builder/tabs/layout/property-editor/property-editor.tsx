@@ -6,8 +6,8 @@ import { RenderContextProvider } from '@components/form-controls/context/render.
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
 import { FieldProperties } from './editors/fields/field-properties';
 import { PageProperties } from './editors/pages/page-properties';
@@ -19,14 +19,7 @@ export const PropertyEditor: React.FC = () => {
   const context = useSelector(contextSelectors.focus);
   const { active, type } = context;
 
-  useOnKeypress({
-    meetsCondition: active,
-    callback: (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        dispatch(contextActions.unfocus());
-      }
-    },
-  });
+  useEscapeStack(() => dispatch(contextActions.unfocus()), active);
 
   const ref = useClickOutside<HTMLDivElement>({
     callback: () => {
@@ -55,7 +48,7 @@ export const PropertyEditor: React.FC = () => {
   });
 
   return (
-    <RenderContextProvider size="normal">
+    <RenderContextProvider size="small">
       <PropertyEditorWrapper $active={active} ref={ref}>
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}

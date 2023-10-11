@@ -13,6 +13,11 @@ class ErrorCollection
         return $this;
     }
 
+    public function hasErrors(): bool
+    {
+        return (bool) $this->errors;
+    }
+
     public function asArray(): array
     {
         return $this->errors;

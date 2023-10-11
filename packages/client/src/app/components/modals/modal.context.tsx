@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import classes from '@ff-client/utils/classes';
 
@@ -31,6 +31,14 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setModals(modals.slice(0, -1));
   };
 
+  useEffect(() => {
+    if (modals.length > 0) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+  }, [modals]);
+
   const overlayAnimation = useAnimateOverlay(modals.length > 0);
   const transitions = useAnimateModals(modals);
 
@@ -43,15 +51,9 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
             style={overlayAnimation}
             className={classes(!modals.length && 'inactive')}
           >
-            {transitions((style, modal, _, index) => (
-              <Modal
-                key={index}
-                title={modal.title}
-                onSave={modal.onSave}
-                closeModal={closeModal}
-                style={style}
-              >
-                {modal.content}
+            {transitions((style, ModalContent, _, index) => (
+              <Modal key={index} closeModal={closeModal} style={style}>
+                <ModalContent closeModal={closeModal} />
               </Modal>
             ))}
           </ModalOverlay>

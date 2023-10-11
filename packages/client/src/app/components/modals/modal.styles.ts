@@ -50,10 +50,6 @@ export const ModalHeader = styled.header`
   border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
 `;
 
-export const ModalBody = styled.div`
-  padding: ${spacings.xl};
-`;
-
 export const ModalFooter = styled.footer`
   display: flex;
   justify-content: end;

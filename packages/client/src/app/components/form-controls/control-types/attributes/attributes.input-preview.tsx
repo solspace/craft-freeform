@@ -1,4 +1,5 @@
 import React from 'react';
+import type { AttributeTab } from '@ff-client/types/properties';
 
 import {
   CodeBlock,
@@ -11,20 +12,15 @@ import { attributesToArray } from './attributes.operations';
 import type { AttributeEntry } from './attributes.types';
 
 type Props = {
-  name: string;
+  tab: AttributeTab;
   attributes: AttributeEntry[];
 };
 
-export const InputPreview: React.FC<Props> = ({ name, attributes }) => {
-  const showableTags = ['input', 'label', 'select', 'table'];
-  if (!showableTags.includes(name)) {
-    name = '...';
-  }
-
+export const InputPreview: React.FC<Props> = ({ tab, attributes }) => {
   return (
     <CodeBlock>
       {'<'}
-      {name}
+      {tab.previewTag}
       {attributesToArray(attributes).map(([name, value], idx) => (
         <span key={idx}>
           <Name> {name}</Name>

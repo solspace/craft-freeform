@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Form\Settings;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -72,7 +73,12 @@ class Settings
     {
         $array = [];
         foreach ($this->getProperties() as $property) {
-            $array[$property->getName()] = $this->getValue($property);
+            $value = $this->getValue($property);
+            if ($value instanceof Attributes) {
+                $value = $value->toArray();
+            }
+
+            $array[$property->getName()] = $value;
         }
 
         return $array;

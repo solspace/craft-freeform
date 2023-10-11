@@ -48,6 +48,8 @@ export const CloseLink = styled.a`
 `;
 
 export const Title = styled.h3`
+  position: relative;
+
   display: flex;
   justify-content: flex-start;
   align-items: end;

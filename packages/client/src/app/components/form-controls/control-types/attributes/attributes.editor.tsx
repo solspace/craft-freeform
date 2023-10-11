@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import CrossIcon from '@components/form-controls/icons/cross.svg';
+import type {
+  AttributeProperty,
+  AttributeTab,
+} from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -26,26 +30,26 @@ import {
   deleteAttribute,
   updateAttribute,
 } from './attributes.operations';
-import type {
-  EditableAttributeCollection,
-  InputAttributeTarget,
-} from './attributes.types';
+import type { EditableAttributeCollection } from './attributes.types';
 
 type Props = {
+  property: AttributeProperty;
   attributes: EditableAttributeCollection;
   updateValue: UpdateValue<EditableAttributeCollection>;
 };
 
 export const AttributesEditor: React.FC<Props> = ({
+  property,
   attributes,
   updateValue,
 }) => {
+  const tabs = property.tabs || [];
+  const [tab, setTab] = useState<AttributeTab>(tabs.at(0));
+
   const entries = Object.entries(attributes);
-  const [firstTab] = entries.at(0);
-
-  const [tab, setTab] = useState<string>(firstTab);
-
-  const [currentTab, currentAttributes] = entries.find(([key]) => key === tab);
+  const [currentTab, currentAttributes] = entries.find(
+    ([key]) => key === tab.handle
+  ) || [tab.handle, []];
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
     useCellNavigation(currentAttributes.length, 2);
@@ -55,6 +59,10 @@ export const AttributesEditor: React.FC<Props> = ({
     setActiveCell(0, 0);
   }, [currentTab]);
 
+  if (!currentTab || !currentAttributes) {
+    return null;
+  }
+
   const appendAndFocus = (
     rowIndex: number,
     cellIndex: number,
@@ -63,7 +71,7 @@ export const AttributesEditor: React.FC<Props> = ({
     setActiveCell(atIndex !== undefined ? atIndex + 1 : rowIndex, cellIndex);
     updateValue(
       addAttribute(
-        currentTab as InputAttributeTarget,
+        currentTab,
         attributes,
         atIndex !== undefined ? atIndex : currentAttributes.length - 1
       )
@@ -73,19 +81,19 @@ export const AttributesEditor: React.FC<Props> = ({
   return (
     <AttributeEditorWrapper>
       <AttributeTypeTabs>
-        {entries.map(([key]) => (
-          <a
-            key={key}
-            className={classes(key === tab && 'active')}
-            onClick={() => setTab(key)}
-          >
-            {key[0].toUpperCase()}
-            {key.substring(1, key.length)}
-          </a>
-        ))}
+        {property.tabs &&
+          property.tabs.map((tabEntry) => (
+            <a
+              key={tabEntry.handle}
+              className={classes(tabEntry === tab && 'active')}
+              onClick={() => setTab(tabEntry)}
+            >
+              {tabEntry.label}
+            </a>
+          ))}
       </AttributeTypeTabs>
       <AttributeTabContent>
-        <InputPreview name={currentTab} attributes={currentAttributes} />
+        <InputPreview tab={tab} attributes={currentAttributes} />
         <AttributeContainer>
           <TabularOptions>
             <tbody>
@@ -135,7 +143,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         updateValue(
                           updateAttribute(
                             index,
-                            currentTab as InputAttributeTarget,
+                            currentTab,
                             [event.target.value, value],
                             attributes
                           )
@@ -164,7 +172,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         updateValue(
                           updateAttribute(
                             index,
-                            currentTab as InputAttributeTarget,
+                            currentTab,
                             [tag, event.target.value],
                             attributes
                           )
@@ -178,11 +186,7 @@ export const AttributesEditor: React.FC<Props> = ({
                       tabIndex={-1}
                       onClick={() => {
                         updateValue(
-                          deleteAttribute(
-                            index,
-                            currentTab as InputAttributeTarget,
-                            attributes
-                          )
+                          deleteAttribute(index, currentTab, attributes)
                         );
                         setActiveCell(Math.max(index - 1, 0), 0);
                       }}

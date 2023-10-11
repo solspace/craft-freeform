@@ -1,10 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { FormComponent } from '@components/form-controls';
+import { useAppDispatch } from '@editor/store';
+import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
+import { formActions } from '@editor/store/slices/form';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
+import { useQueryFormSettings } from '@ff-client/queries/forms';
 import type { Property } from '@ff-client/types/properties';
-
-import { useFormSettingUpdateGenerator } from './use-form-setting-update-generator';
 
 type Props = {
   namespace: string;
@@ -12,11 +14,30 @@ type Props = {
 };
 
 export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
+  const dispatch = useAppDispatch();
+  const { data } = useQueryFormSettings();
+
+  const properties = data.find(
+    (setting) => setting.handle === namespace
+  ).properties;
+
   const formErrors = useSelector(formSelectors.errors);
   const context = useSelector(formSelectors.settings.one(namespace));
   const value = context[property.handle];
 
-  const generateUpdateHandler = useFormSettingUpdateGenerator(namespace);
+  const generateUpdateHandler = useValueUpdateGenerator(
+    properties,
+    context,
+    (handle, value) => {
+      dispatch(
+        formActions.modifySettings({
+          namespace,
+          key: handle,
+          value,
+        })
+      );
+    }
+  );
 
   const errors: string[] | undefined =
     formErrors?.[namespace]?.[property.handle];

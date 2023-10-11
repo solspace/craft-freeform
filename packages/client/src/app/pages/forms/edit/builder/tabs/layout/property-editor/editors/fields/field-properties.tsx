@@ -45,12 +45,15 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   if (!sections && isFetching) {
     return (
-      <div>
-        <h2>{type.name}</h2>
+      <FieldPropertiesWrapper>
+        <Title>
+          <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
+          <span>{type.name}</span>
+        </Title>
         <SectionWrapper>
           <Skeleton />
         </SectionWrapper>
-      </div>
+      </FieldPropertiesWrapper>
     );
   }
 

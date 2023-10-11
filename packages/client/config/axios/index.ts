@@ -42,11 +42,11 @@ axios.interceptors.request.use((config) => {
 });
 
 axios.interceptors.response.use(null, (error) => {
-  if (error.response.data.error) {
+  if (error.response?.data?.error) {
     error.message = error.response.data.error;
   }
 
-  if (error.response.data.errors) {
+  if (error.response?.data?.errors) {
     return Promise.reject(
       new APIError(error.message, error.response.data.errors)
     );

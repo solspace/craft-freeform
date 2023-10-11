@@ -2,11 +2,6 @@ import { animated } from 'react-spring';
 import styled from 'styled-components';
 
 export const RemoveButtonWrapper = styled(animated.button)`
-  position: absolute;
-  top: 4px;
-  right: 4px;
-  z-index: 2;
-
   display: flex;
   justify-content: center;
   align-items: center;

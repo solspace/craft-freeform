@@ -19,8 +19,7 @@ export const CheckboxWrapper = styled.div<CheckboxWrapperProps>`
 
   label {
     color: ${colors.gray550};
-    font-weight: ${({ $size = 'small' }) =>
-      $size === 'small' ? 'normal' : 'bold'};
+    font-weight: bold;
   }
 `;
 

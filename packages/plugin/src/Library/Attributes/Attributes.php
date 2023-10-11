@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Library\Attributes;
 
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
-class Attributes implements \Countable, \JsonSerializable, \IteratorAggregate
+class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializable, \IteratorAggregate
 {
     public const STRATEGY_APPEND = 'append';
     public const STRATEGY_REMOVE = 'remove';
@@ -247,6 +249,12 @@ class Attributes implements \Countable, \JsonSerializable, \IteratorAggregate
         }
 
         return $array;
+    }
+
+    #[Ignore]
+    public function normalize(): array
+    {
+        return $this->toArray();
     }
 
     public function jsonSerialize(): object

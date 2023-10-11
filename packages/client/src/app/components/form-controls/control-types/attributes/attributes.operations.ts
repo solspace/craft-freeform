@@ -1,7 +1,6 @@
 import type {
   AttributeEntry,
   EditableAttributeCollection,
-  InputAttributeTarget,
 } from './attributes.types';
 
 type ParsedAttribute = [string, string | undefined];
@@ -45,21 +44,25 @@ export const attributesToString = (attributes: AttributeEntry[]): string => {
 };
 
 export const addAttribute = (
-  category: InputAttributeTarget,
+  category: string,
   attributes: EditableAttributeCollection,
   atIndex: number
-): EditableAttributeCollection => ({
-  ...attributes,
-  [category]: [
-    ...attributes[category].slice(0, atIndex + 1),
-    ['', ''],
-    ...attributes[category].slice(atIndex + 1),
-  ],
-});
+): EditableAttributeCollection => {
+  const categoryAttributes = attributes?.[category] || [];
+
+  return {
+    ...attributes,
+    [category]: [
+      ...categoryAttributes.slice(0, atIndex + 1),
+      ['', ''],
+      ...categoryAttributes.slice(atIndex + 1),
+    ],
+  };
+};
 
 export const updateAttribute = (
   index: number,
-  category: InputAttributeTarget,
+  category: string,
   attribute: AttributeEntry,
   attributes: EditableAttributeCollection
 ): EditableAttributeCollection => {
@@ -75,7 +78,7 @@ export const updateAttribute = (
 
 export const deleteAttribute = (
   index: number,
-  category: InputAttributeTarget,
+  category: string,
   attributes: EditableAttributeCollection
 ): EditableAttributeCollection => {
   return {
@@ -90,9 +93,7 @@ export const cleanAttributes = (
   const updated: EditableAttributeCollection = {};
 
   Object.entries(attributes).forEach(([category, attrs]) => {
-    updated[category as InputAttributeTarget] = attrs.filter(
-      ([key, value]) => !!key || !!value
-    );
+    updated[category] = attrs.filter(([key, value]) => !!key || !!value);
   });
 
   return updated;

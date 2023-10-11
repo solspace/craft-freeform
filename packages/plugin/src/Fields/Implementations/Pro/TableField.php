@@ -95,6 +95,53 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     #[ValueTransformer(TableAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'table',
+                'label' => 'Table',
+                'previewTag' => 'table',
+            ],
+            [
+                'handle' => 'row',
+                'label' => 'Row',
+                'previewTag' => 'tr',
+            ],
+            [
+                'handle' => 'column',
+                'label' => 'Column',
+                'previewTag' => 'td',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'dropdown',
+                'label' => 'Dropdown',
+                'previewTag' => 'select',
+            ],
+            [
+                'handle' => 'checkbox',
+                'label' => 'Checkbox',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'addButton',
+                'label' => 'Add Button',
+                'previewTag' => 'button',
+            ],
+            [
+                'handle' => 'removeButton',
+                'label' => 'Remove Button',
+                'previewTag' => 'button',
+            ],
+        ]
     )]
     protected TableAttributesCollection $tableAttributes;
 

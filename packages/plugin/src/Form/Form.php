@@ -138,6 +138,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
+        $this->attributes->merge($settings->getGeneral()->attributes);
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -557,7 +558,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $event = new AttachFormAttributesEvent($this);
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
-        $output .= '<form'.$this->getAttributes().'>'.\PHP_EOL;
+        $output .= '<form'.$this->getAttributes().$this->getAttributes()->getForm().'>'.\PHP_EOL;
 
         $hiddenFields = $this->getCurrentPage()->getFields()->getList(HiddenField::class);
         foreach ($hiddenFields as $field) {

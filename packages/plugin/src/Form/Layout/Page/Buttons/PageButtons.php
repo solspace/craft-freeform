@@ -76,7 +76,40 @@ class PageButtons
         order: 999,
     )]
     #[ValueTransformer(PageButtonAttributesTransformer::class)]
-    #[Input\Attributes]
+    #[Input\Attributes(
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'column',
+                'label' => 'Column',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'buttonWrapper',
+                'label' => 'Button Wrapper',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'submit',
+                'label' => 'Submit',
+                'previewTag' => 'button',
+            ],
+            [
+                'handle' => 'back',
+                'label' => 'Back',
+                'previewTag' => 'button',
+            ],
+            [
+                'handle' => 'save',
+                'label' => 'Save',
+                'previewTag' => 'button',
+            ],
+        ]
+    )]
     private ButtonAttributesCollection $attributes;
 
     public function __construct(array $config)

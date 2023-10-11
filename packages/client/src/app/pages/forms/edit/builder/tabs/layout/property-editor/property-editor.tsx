@@ -48,7 +48,7 @@ export const PropertyEditor: React.FC = () => {
   });
 
   return (
-    <RenderContextProvider size="normal">
+    <RenderContextProvider size="small">
       <PropertyEditorWrapper $active={active} ref={ref}>
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}

@@ -46,15 +46,18 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
 
   const navigate = useNavigate();
 
-  useOnKeypress({
-    callback: (event: KeyboardEvent): void => {
-      switch (event.key) {
-        case 'Enter':
-          handleSave();
-          return;
-      }
+  useOnKeypress(
+    {
+      callback: (event: KeyboardEvent): void => {
+        switch (event.key) {
+          case 'Enter':
+            handleSave();
+            return;
+        }
+      },
     },
-  });
+    [state]
+  );
 
   const handleSave = async (): Promise<void> => {
     setIsSaving(true);
@@ -78,30 +81,27 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
   return (
     <ModalContainer>
       <ModalHeader>
-        <h1>fdas</h1>
+        <h1>{translate('Create a new Form')}</h1>
       </ModalHeader>
 
       <FormWrapper>
         {!data && isFetching && <FormModalLoading />}
-        {data && (
-          <>
-            {data.map((property, idx) => (
-              <FormComponent
-                key={property.handle}
-                updateValue={(value) => {
-                  setState({
-                    ...state,
-                    [property.handle]: value,
-                  });
-                }}
-                autoFocus={idx === 0}
-                value={state?.[property.handle]}
-                property={property}
-                errors={errors?.[property.handle] as unknown as string[]}
-              />
-            ))}
-          </>
-        )}
+        {data &&
+          data.map((property, idx) => (
+            <FormComponent
+              key={property.handle}
+              updateValue={(value) => {
+                setState({
+                  ...state,
+                  [property.handle]: value,
+                });
+              }}
+              autoFocus={idx === 0}
+              value={state?.[property.handle]}
+              property={property}
+              errors={errors?.[property.handle] as unknown as string[]}
+            />
+          ))}
       </FormWrapper>
 
       <ModalFooter>

@@ -4,11 +4,13 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FormAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
@@ -18,6 +20,7 @@ use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTempl
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
+use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 
 #[SettingNamespace(
     'General',
@@ -109,6 +112,35 @@ class GeneralSettings extends SettingsNamespace
     )]
     public string $color = '';
 
+    #[Section(self::SECTION_GENERAL)]
+    #[ValueTransformer(FormAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your form elements.',
+        tabs: [
+            [
+                'handle' => 'form',
+                'label' => 'Form',
+                'previewTag' => 'form',
+            ],
+            [
+                'handle' => 'row',
+                'label' => 'Row',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'success',
+                'label' => 'Success',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'errors',
+                'label' => 'Errors',
+                'previewTag' => 'ul',
+            ],
+        ]
+    )]
+    public FormAttributesCollection $attributes;
+
     #[Section(
         self::SECTION_DATA_STORAGE,
         label: 'Data Storage',
@@ -160,4 +192,9 @@ class GeneralSettings extends SettingsNamespace
         implements: [BooleanInterface::class],
     )]
     public ?string $optInCheckbox = null;
+
+    public function __construct()
+    {
+        $this->attributes = new FormAttributesCollection();
+    }
 }

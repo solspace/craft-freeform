@@ -53,15 +53,18 @@ export const useQueryFormSettings = (): UseQueryResult<
 > => {
   const dispatch = useAppDispatch();
 
-  return useQuery<FormSettingNamespace[], AxiosError>(QKForms.settings(), () =>
-    axios
-      .get<FormSettingNamespace[]>(`/api/forms/settings`)
-      .then((res) => res.data)
-      .then((res) => res.sort((a, b) => a.order - b.order))
-      .then((res) => {
-        dispatch(formActions.setInitialSettings(res));
+  return useQuery<FormSettingNamespace[], AxiosError>(
+    QKForms.settings(),
+    () =>
+      axios
+        .get<FormSettingNamespace[]>(`/api/forms/settings`)
+        .then((res) => res.data)
+        .then((res) => res.sort((a, b) => a.order - b.order))
+        .then((res) => {
+          dispatch(formActions.setInitialSettings(res));
 
-        return res;
-      })
+          return res;
+        }),
+    { staleTime: Infinity, cacheTime: Infinity }
   );
 };

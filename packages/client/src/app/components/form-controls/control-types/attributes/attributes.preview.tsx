@@ -1,4 +1,8 @@
 import React from 'react';
+import type {
+  AttributeProperty,
+  AttributeTab,
+} from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
 import {
@@ -21,20 +25,21 @@ import type {
 } from './attributes.types';
 
 type Props = {
+  property: AttributeProperty;
   attributes: EditableAttributeCollection;
 };
 
 const RenderAttributes: React.FC<{
-  name: string;
+  tab: AttributeTab;
   attributes: AttributeEntry[];
-}> = ({ name, attributes }) => {
+}> = ({ tab, attributes }) => {
   const attributeArray = attributesToArray(attributes);
 
   return (
     <AttributeListWrapper
       className={classes(!attributeArray.length && 'empty')}
     >
-      <AttributeTitle>{name}</AttributeTitle>
+      <AttributeTitle>{tab.label}</AttributeTitle>
       {!!attributeArray.length && (
         <AttributeList>
           {attributeArray.map(([name, value], idx) => (
@@ -56,12 +61,17 @@ const RenderAttributes: React.FC<{
   );
 };
 
-export const AttributePreview: React.FC<Props> = ({ attributes }) => {
+export const AttributePreview: React.FC<Props> = ({ property, attributes }) => {
   return (
     <PreviewWrapper>
-      {Object.entries(attributes).map(([key, value]) => (
-        <RenderAttributes key={key} name={key} attributes={value} />
-      ))}
+      {property.tabs &&
+        property.tabs.map((tab) => (
+          <RenderAttributes
+            key={tab.handle}
+            tab={tab}
+            attributes={attributes[tab.handle] || []}
+          />
+        ))}
     </PreviewWrapper>
   );
 };

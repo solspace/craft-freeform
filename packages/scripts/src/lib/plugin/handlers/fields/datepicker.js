@@ -1,45 +1,22 @@
+import flatpickr from 'flatpickr';
+import Locales from 'flatpickr/dist/l10n';
+import 'flatpickr/dist/flatpickr.min.css';
+
 /* eslint-disable no-undef */
 class DatePicker {
-  loadedLocales = [];
-  freeform;
-
-  scriptAdded = false;
-
   constructor(freeform) {
-    this.freeform = freeform;
-
-    if (!this.freeform.has('data-scripts-datepicker')) {
+    if (!freeform.has('data-scripts-datepicker')) {
       return;
     }
 
-    if (!this.scriptAdded) {
-      const script = document.createElement('script');
-      script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.js';
-      script.async = false;
-      script.defer = false;
-      script.addEventListener('load', () => {
-        this.reload();
-      });
-      document.body.appendChild(script);
-
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.css';
-      document.body.appendChild(style);
-
-      this.scriptAdded = true;
-    }
-  }
-
-  reload = () => {
-    if (!this.freeform.has('data-scripts-datepicker')) {
-      return;
-    }
-
-    const pickers = this.freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
+    const pickers = freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
     pickers.forEach((picker) => {
+      picker.setAttribute('autocomplete', 'off');
+
       const locale = picker.getAttribute('data-datepicker-locale');
+
       const options = {
+        locale: Locales[locale],
         disableMobile: true,
         allowInput: true,
         dateFormat: picker.getAttribute('data-datepicker-format'),
@@ -53,31 +30,16 @@ class DatePicker {
         static: picker.getAttribute('data-datepicker-static') !== null,
       };
 
-      const optionsEvent = this.freeform._dispatchEvent('flatpickr-before-init', { detail: options, options });
-      const assembledOptions = {
+      const optionsEvent = freeform._dispatchEvent('flatpickr-before-init', { detail: options, options });
+
+      const instance = flatpickr(picker, {
         ...optionsEvent.detail,
         ...optionsEvent.options,
-      };
+      });
 
-      const instance = flatpickr(picker, assembledOptions);
-      picker.setAttribute('autocomplete', 'off');
-
-      this.freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
-
-      if (!this.loadedLocales.includes(locale)) {
-        const script = document.createElement('script');
-        script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/l10n/${locale}.js`;
-        script.async = false;
-        script.defer = false;
-        script.addEventListener('load', () => {
-          instance.set('locale', locale);
-        });
-        document.body.appendChild(script);
-
-        this.loadedLocales.push(locale);
-      }
+      freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
     });
-  };
+  }
 }
 
 export default DatePicker;

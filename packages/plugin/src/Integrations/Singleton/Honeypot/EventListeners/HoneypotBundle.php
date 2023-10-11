@@ -66,7 +66,10 @@ class HoneypotBundle extends FeatureBundle
             return;
         }
 
-        $event->add('honeypot', ['name' => $integration->getInputName()]);
+        $event->add('honeypot', [
+            'name' => $integration->getInputName(),
+            'value' => '',
+        ]);
     }
 
     public function validateFormHoneypot(ValidationEvent $event): void
@@ -81,14 +84,22 @@ class HoneypotBundle extends FeatureBundle
         $settings = $this->getSettingsService();
 
         if ($form->isGraphQLPosted()) {
-            return;
-        }
+            $arguments = $form->getGraphQLArguments();
 
-        /** @var array $postValues */
-        $postValues = \Craft::$app->request->post();
+            if (
+                isset($arguments['honeypot']['name'], $arguments['honeypot']['value'])
+                && $honeypotName === $arguments['honeypot']['name']
+                && '' === $arguments['honeypot']['value']
+            ) {
+                return;
+            }
+        } else {
+            /** @var array $postValues */
+            $postValues = \Craft::$app->request->post();
 
-        if (isset($postValues[$honeypotName]) && '' === $postValues[$honeypotName]) {
-            return;
+            if (isset($postValues[$honeypotName]) && '' === $postValues[$honeypotName]) {
+                return;
+            }
         }
 
         if ($settings->isSpamBehaviourDisplayErrors()) {

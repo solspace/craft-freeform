@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSpring } from 'react-spring';
 import type { Field } from '@editor/store/slices/layout/fields';
+import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useFieldType } from '@ff-client/queries/field-types';
 import classes from '@ff-client/utils/classes';
@@ -63,6 +64,11 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
     },
     isEnabled: active,
   });
+
+  useEscapeStack(() => {
+    setActive(false);
+    setHover(false);
+  }, active);
 
   if (!field?.uid) {
     return null;

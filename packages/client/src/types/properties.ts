@@ -77,10 +77,18 @@ type BaseProperty<T, PT extends PropertyType> = {
   group?: string;
 };
 
+export type AttributeTab = {
+  handle: string;
+  label: string;
+  previewTag: string;
+};
+
 export type AttributeProperty = BaseProperty<
-  AttributeCollection<PropertyKey>,
+  AttributeCollection,
   PropertyType.Attributes
->;
+> & {
+  tabs: AttributeTab[];
+};
 
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
   min?: number;

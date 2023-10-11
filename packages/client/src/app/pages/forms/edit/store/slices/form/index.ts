@@ -37,7 +37,6 @@ export const formSlice = createSlice({
 
       for (const namespace of action.payload) {
         state.settings[namespace.handle] = {};
-
         for (const property of namespace.properties) {
           state.settings[namespace.handle][property.handle] = property.value;
         }

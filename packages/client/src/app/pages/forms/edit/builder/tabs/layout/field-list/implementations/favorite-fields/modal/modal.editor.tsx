@@ -1,4 +1,5 @@
 import React from 'react';
+import { RenderContextProvider } from '@components/form-controls/context/render.context';
 import { SectionWrapper } from '@editor/builder/tabs/form-settings/settings.sidebar.styles';
 import {
   Icon,
@@ -72,7 +73,9 @@ export const FavoritesEditor: React.FC<Props> = ({
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{values?.label || type.name}</span>
       </Title>
-      <SectionWrapper>{sectionBlocks}</SectionWrapper>
+      <RenderContextProvider size={'small'}>
+        <SectionWrapper>{sectionBlocks}</SectionWrapper>
+      </RenderContextProvider>
     </>
   );
 };

@@ -6,14 +6,6 @@ export type Layout = {
   uid: string;
 };
 
-enum ButtonAttributeTarget {
-  Container = 'container',
-  Column = 'column',
-  Submit = 'submit',
-  Back = 'back',
-  Save = 'save',
-}
-
 export type PageButton = {
   label: string;
   enabled: boolean;
@@ -28,7 +20,7 @@ export type Page = {
   layoutUid: string;
   buttons?: {
     layout: string;
-    attributes: AttributeCollection<ButtonAttributeTarget>;
+    attributes: AttributeCollection;
     submit: PageButton;
     back: PageButton;
     save: PageButton;

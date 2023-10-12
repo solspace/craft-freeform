@@ -7,9 +7,16 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\CipherHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
+use yii\base\Exception;
+use yii\base\ExitException;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -123,6 +130,15 @@ class ProfilesController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
+    /**
+     * @throws InvalidConfigException
+     * @throws FreeformException
+     * @throws ExitException
+     * @throws HttpException
+     * @throws ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws Exception
+     */
     public function actionExport(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
@@ -132,7 +148,9 @@ class ProfilesController extends BaseController
         $profileId = \Craft::$app->request->post('profileId');
         $type = \Craft::$app->request->post('type');
 
-        $profile = $this->getExportProfileService()->getProfileById($profileId);
+        $exportProfilesService = $this->getExportProfileService();
+
+        $profile = $exportProfilesService->getProfileById($profileId);
 
         if (!$profile) {
             throw new HttpException(404, Freeform::t('Profile with ID {id} not found'), ['id' => $profileId]);
@@ -141,9 +159,23 @@ class ProfilesController extends BaseController
         $form = $profile->getForm();
         $data = $profile->getSubmissionData();
 
-        $exporter = $this->getExportProfileService()->createExporter($type, $form, $data);
+        $key = CipherHelper::getKey($form);
 
-        $this->getExportProfileService()->export($exporter, $form);
+        foreach ($data as &$submission) {
+            foreach ($submission as &$field) {
+                if ($field) {
+                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
+
+                    if ($decryptedValue) {
+                        $field = $decryptedValue;
+                    }
+                }
+            }
+        }
+
+        $exporter = $exportProfilesService->createExporter($type, $form, $data);
+
+        $exportProfilesService->export($exporter, $form);
     }
 
     private function renderEditForm(ExportProfileModel $model, string $title): Response

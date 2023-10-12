@@ -21,7 +21,6 @@ import { SectionBlock } from '../../section-block';
 import { SectionWrapper } from '../../section-block.styles';
 
 import { FavoriteButton } from './favorite/favorite.button';
-import AdvancedIcon from './icons/advanced.svg';
 import { FieldComponent } from './field-component';
 import { FieldPropertiesWrapper } from './field-properties.styles';
 
@@ -66,6 +65,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         return;
       }
 
+      // FIXME - Convert Field Type as a proper field property under advanced section, similar to label, handle required etc
       sectionBlocks.push(
         <SectionBlock label={label} icon={icon} key={handle}>
           {properties.map((property) => (
@@ -75,6 +75,39 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
               property={property}
             />
           ))}
+          {handle === 'advanced' && (
+            <FormComponent
+              value={field.typeClass}
+              property={{
+                type: PropertyType.Select,
+                handle: 'typeClass',
+                label: translate('Field type'),
+                instructions: translate('Change the type of this field.'),
+                options: types.map((type) => ({
+                  label: type.name,
+                  value: type.typeClass,
+                })),
+              }}
+              updateValue={(value) => {
+                if (
+                  !confirm(
+                    translate(
+                      'Are you sure? You might potentially lose important data.'
+                    )
+                  )
+                ) {
+                  return;
+                }
+
+                dispatch(
+                  fieldThunks.change.type(
+                    field,
+                    searchFieldType(value as string)
+                  )
+                );
+              }}
+            />
+          )}
         </SectionBlock>
       );
     });
@@ -89,40 +122,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{type.name}</span>
       </Title>
-      <SectionWrapper>
-        {sectionBlocks}
-
-        <SectionBlock label={translate('Advanced')} icon={<AdvancedIcon />}>
-          <FormComponent
-            value={field.typeClass}
-            property={{
-              type: PropertyType.Select,
-              handle: 'typeClass',
-              label: translate('Field type'),
-              instructions: translate('Change the type of this field.'),
-              options: types.map((type) => ({
-                label: type.name,
-                value: type.typeClass,
-              })),
-            }}
-            updateValue={(value) => {
-              if (
-                !confirm(
-                  translate(
-                    'Are you sure? You might potentially lose important data.'
-                  )
-                )
-              ) {
-                return;
-              }
-
-              dispatch(
-                fieldThunks.change.type(field, searchFieldType(value as string))
-              );
-            }}
-          />
-        </SectionBlock>
-      </SectionWrapper>
+      <SectionWrapper>{sectionBlocks}</SectionWrapper>
     </FieldPropertiesWrapper>
   );
 };

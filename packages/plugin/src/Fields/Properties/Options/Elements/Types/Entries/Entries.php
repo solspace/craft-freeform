@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries;
 use craft\elements\Entry;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
@@ -13,6 +14,7 @@ use Solspace\Freeform\Library\Helpers\ElementHelper;
 
 class Entries implements OptionTypeProviderInterface
 {
+    #[Section('configuration')]
     #[Input\Select(
         label: 'Site ID',
         emptyOption: 'All Sites',
@@ -20,6 +22,7 @@ class Entries implements OptionTypeProviderInterface
     )]
     private ?string $siteId = null;
 
+    #[Section('configuration')]
     #[Input\Select(
         label: 'Section',
         emptyOption: 'All Sections',
@@ -27,6 +30,7 @@ class Entries implements OptionTypeProviderInterface
     )]
     private ?int $sectionId = null;
 
+    #[Section('configuration')]
     #[VisibilityFilter('Boolean(properties.sectionId)')]
     #[Input\DynamicSelect(
         label: 'Entry Type',
@@ -35,6 +39,7 @@ class Entries implements OptionTypeProviderInterface
     )]
     private ?int $entryTypeId = null;
 
+    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -47,6 +52,7 @@ class Entries implements OptionTypeProviderInterface
     )]
     private string $label = 'title';
 
+    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Value',
@@ -59,12 +65,14 @@ class Entries implements OptionTypeProviderInterface
     )]
     private string $value = 'id';
 
+    #[Section('configuration')]
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/entries/fields',
     )]
     private string $orderBy = 'id';
 
+    #[Section('configuration')]
     #[Input\Select(
         options: [
             ['value' => 'asc', 'label' => 'Ascending'],

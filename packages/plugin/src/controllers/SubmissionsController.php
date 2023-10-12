@@ -25,6 +25,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
+use Solspace\Freeform\Library\Helpers\CipherHelper;
 use Solspace\Freeform\Models\Pro\Payments\AbstractPaymentModel;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
@@ -111,7 +112,21 @@ class SubmissionsController extends BaseController
             throw new FreeformException(Freeform::t('No submissions found'));
         }
 
-        $exporter = new ExportCsv($form->getForm(), $submissions, $this->getExportProfileService()->getExportSettings());
+        $key = CipherHelper::getKey($form);
+
+        foreach ($submissions as &$submission) {
+            foreach ($submission as &$field) {
+                if ($field) {
+                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
+
+                    if ($decryptedValue) {
+                        $field = $decryptedValue;
+                    }
+                }
+            }
+        }
+
+        $exporter = new ExportCsv($form, $submissions, $this->getExportProfileService()->getExportSettings());
         $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());

@@ -285,9 +285,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $forms = Freeform::getInstance()->forms->getResolvedForms(['id' => $formIds]);
         foreach ($forms as $form) {
             $alias = 'fc'.$form->getId();
+            $fieldsArray = [];
+            foreach ($form->getLayout()->getFields() as $field) {
+                $fieldsArray[] = $field;
+            }
             $fields = array_map(
                 fn (FieldInterface $field) => $alias.'.[['.Submission::getFieldColumnName($field).']] as '.$field->getHandle(),
-                $form->getLayout()->getStorableFields()
+                $fieldsArray
             );
 
             $query->addSelect($fields);

@@ -6,6 +6,7 @@ use craft\gql\types\Number as NumberType;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 
 #[Type(
     name: 'Number',
@@ -15,15 +16,18 @@ use Solspace\Freeform\Attributes\Property\Input;
 )]
 class NumberField extends TextField
 {
+    #[Section('configuration')]
     #[Input\Boolean('Allow negative numbers')]
     protected bool $allowNegative = false;
 
+    #[Section('configuration')]
     #[Input\MinMax(
         label: 'Min/Max Values',
         instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
     )]
     protected ?array $minMaxValues = [null, null];
 
+    #[Section('configuration')]
     #[Input\Integer(
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
@@ -31,6 +35,7 @@ class NumberField extends TextField
     )]
     protected int $decimalCount = 0;
 
+    #[Section('configuration')]
     #[Input\Integer(
         instructions: 'The step',
         min: 0,

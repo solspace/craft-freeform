@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
@@ -32,11 +33,13 @@ class TextareaField extends AbstractField implements PlaceholderInterface, Defau
     use DefaultTextValueTrait;
     use PlaceholderTrait;
 
+    #[Section('configuration')]
     #[Input\TextArea(
         instructions: 'The default value of this field.',
     )]
     protected string $defaultValue = '';
 
+    #[Section('configuration')]
     #[Input\Integer(
         instructions: 'The number of rows in height for this field.',
         min: 1,

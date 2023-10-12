@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Bundles\Fields\Types;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Attributes\Property\SectionProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
@@ -44,29 +43,6 @@ class FieldTypesProvider
             $types = $this->getRegisteredTypes();
 
             $list = $this->sectionProvider->getSections(...$types);
-
-            $hasDefaultSection = false;
-            foreach ($list as $section) {
-                if (null === $section->handle) {
-                    $hasDefaultSection = true;
-
-                    break;
-                }
-            }
-
-            if (!$hasDefaultSection) {
-                $list = array_merge(
-                    [
-                        new Section(
-                            null,
-                            'Configuration',
-                            file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
-                            1
-                        ),
-                    ],
-                    $list,
-                );
-            }
 
             $this->sections = array_values($list);
         }

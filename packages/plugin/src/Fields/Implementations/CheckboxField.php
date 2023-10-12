@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -37,6 +38,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
 {
     use DefaultTextValueTrait;
 
+    #[Section('configuration')]
     #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;
 

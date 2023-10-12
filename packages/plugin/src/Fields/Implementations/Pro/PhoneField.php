@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PhoneMaskInterface;
@@ -19,12 +20,14 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 {
     protected string $customInputType = 'tel';
 
+    #[Section('configuration')]
     #[Input\Text(
         label: 'Pattern validation',
         instructions: "Use '0' (a digit between 0-9) and other characters, e.g. '(000) 000-0000' or '+0 0000 000000'.",
     )]
     protected ?string $pattern = null;
 
+    #[Section('configuration')]
     #[Input\Boolean(
         label: 'Use built-in javascript validation on pattern',
     )]

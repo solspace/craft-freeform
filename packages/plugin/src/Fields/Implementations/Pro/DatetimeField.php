@@ -28,7 +28,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     public const DATETIME_TYPE_TIME = 'time';
 
     #[Section(
-        handle: null,
+        handle: 'configuration',
         label: 'Configuration',
         icon: __DIR__.'/../../SectionIcons/gears.svg',
         order: 1,
@@ -45,12 +45,14 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     )]
     protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
+    #[Section('configuration')]
     #[Input\Text(
         label: 'Initial value',
         instructions: "You can use 'now', 'today', '5 days ago', '2024-01-01 20:00:00', etc.",
     )]
     protected string $initialValue = '';
 
+    #[Section('configuration')]
     #[Input\Text(
         label: 'Force a locale',
         instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
@@ -58,18 +60,21 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     )]
     protected ?string $locale = null;
 
+    #[Section('configuration')]
     #[Input\Boolean(
         label: 'Use built-in datepicker',
         order: 2,
     )]
     protected bool $useDatepicker = true;
 
+    #[Section('configuration')]
     #[Input\Boolean(
         label: 'Use date format as placeholder',
         order: 3,
     )]
     protected bool $generatePlaceholder = true;
 
+    #[Section('configuration')]
     #[VisibilityFilter('properties.generatePlaceholder === false')]
     #[Input\Text(
         instructions: "The text that will be shown if the field doesn't have a value.",

@@ -13,6 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\CipherHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -280,9 +281,25 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        $exporter = $this->getExportProfileService()->createExporter($exportType, $form, $data);
+        $key = CipherHelper::getKey($form);
 
-        $this->getExportProfileService()->export($exporter, $form);
+        foreach ($data as &$submission) {
+            foreach ($submission as &$field) {
+                if ($field) {
+                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
+
+                    if ($decryptedValue) {
+                        $field = $decryptedValue;
+                    }
+                }
+            }
+        }
+
+        $exportProfilesService = $this->getExportProfileService();
+
+        $exporter = $exportProfilesService->createExporter($exportType, $form, $data);
+
+        $exportProfilesService->export($exporter, $form);
     }
 
     private function getExportSettings(): ExportSettingRecord

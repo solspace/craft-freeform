@@ -12,6 +12,6 @@ class WelcomeScreenController extends BaseController
     {
         WelcomeScreenBundle::register(\Craft::$app->getView());
 
-        return $this->renderTemplate('freeform/welcome', ['settings' => Freeform::getInstance()->getSettings()]);
+        return $this->renderTemplate('freeform/settings', ['settings' => Freeform::getInstance()->getSettings()]);
     }
 }

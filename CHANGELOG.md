@@ -15,9 +15,6 @@
 - Fixed some issues with the Honeypot and Javascript Test for GraphQL.
 - Fixed some issues with the installation of Freeform. Temporarily bypassing the Welcome screen.
 
-### Removed
-- The **Additional Optional Checks** setting for the **Update Warnings & Notices** feature has been removed.
-
 ## 5.0.0-beta.6 - 2023-10-05
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.

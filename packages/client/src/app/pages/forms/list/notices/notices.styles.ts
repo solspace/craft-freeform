@@ -10,14 +10,14 @@ export const NoticesList = styled.ul`
 `;
 
 export const Icon = styled.div`
-  font-size: 26px;
+  font-size: 22px;
 `;
 
 export const Message = styled.p`
   flex: 1;
 
   margin: 0;
-  padding: 3px 0 0;
+  padding: 1px 0 0;
 `;
 
 export const CloseButton = styled.button`
@@ -25,20 +25,22 @@ export const CloseButton = styled.button`
 `;
 
 const map = [
-  { type: 'new', accent: '#038052' },
-  { type: 'info', accent: '#007bff' },
-  { type: 'warning', accent: '#e87b00' },
-  { type: 'error', accent: '#cf1324' },
-  { type: 'log-list', accent: '#cf1324' },
+  { type: 'new', accent: '#038052', bg: 'transparent' },
+  { type: 'info', accent: '#007bff', bg: 'transparent' },
+  { type: 'warning', accent: '#e87b00', bg: 'transparent' },
+  { type: 'critical', accent: '#cf1324', bg: '#fbe4e4' },
+  { type: 'error', accent: '#cf1324', bg: 'transparent' },
+  { type: 'log-list', accent: '#cf1324', bg: 'transparent' },
 ];
 
 let accentStyle = '';
-map.forEach(({ type, accent }) => {
+map.forEach(({ type, accent, bg }) => {
   accentStyle += `
     &[data-type='${type}'] {
       fill: ${accent};
       color: ${accent};
       border-color: ${accent};
+      background-color: ${bg};
 
       a {
         color: ${accent};

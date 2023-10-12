@@ -21,6 +21,7 @@ import {
 const icons: Record<string, ReactNode> = {
   info: <InfoIcon />,
   warning: <TriangleIcon />,
+  critical: <TriangleIcon />,
   error: <CircleIcon />,
   new: <NewIcon />,
 };

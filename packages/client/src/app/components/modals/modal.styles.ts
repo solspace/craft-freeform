@@ -42,7 +42,7 @@ export const ModalContainer = styled.div`
 `;
 
 export const ModalHeader = styled.header`
-  padding: ${spacings.xl};
+  padding: ${spacings.lg} ${spacings.xl};
 
   background-color: ${colors.gray100};
   box-shadow: inset 0 -1px 0 ${colors.hairline};

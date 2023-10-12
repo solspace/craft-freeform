@@ -13,6 +13,10 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 
     public function generateValue(?object $referenceObject): int
     {
-        return $this->statusesService->getDefaultStatusId();
+        try {
+            return $this->statusesService->getDefaultStatusId();
+        } catch (\Exception $e) {
+            return 0;
+        }
     }
 }

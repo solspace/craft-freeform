@@ -74,6 +74,8 @@ export enum SpamBehaviour {
 }
 
 export interface SpamInterface {
+  honeypot: boolean;
+  enhancedHoneypot: boolean;
   spamFolder: boolean;
   spamBehaviour: SpamBehaviour;
 }

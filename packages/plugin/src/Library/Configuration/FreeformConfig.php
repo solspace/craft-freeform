@@ -12,11 +12,13 @@ class FreeformConfig implements \JsonSerializable
     public function __construct(SettingsService $settings)
     {
         $plugin = Freeform::getInstance();
+        $settingsModel = $settings->getSettingsModel();
 
         $this->config = [
             'templates' => [
-                'native' => $settings->getSettingsModel()->defaults->includeSampleTemplates,
+                'native' => (bool) $settingsModel->defaults->includeSampleTemplates,
             ],
+            'feed' => (bool) $settingsModel->displayFeed,
             'editions' => [
                 'edition' => $plugin->edition,
                 'tiers' => $plugin->edition()->getEditions(),

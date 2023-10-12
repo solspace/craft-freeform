@@ -2,8 +2,14 @@ import {
   Icon as TitleIcon,
   Title,
 } from '@editor/builder/tabs/layout/property-editor/property-editor.styles';
+import { SectionBlockContainer } from '@editor/builder/tabs/layout/property-editor/section-block.styles';
 import { errorAlert, scrollBar } from '@ff-client/styles/mixins';
-import { colors, shadows, spacings } from '@ff-client/styles/variables';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const FavoritesWrapper = styled.div`
@@ -13,7 +19,7 @@ export const FavoritesWrapper = styled.div`
   height: 600px;
 `;
 
-const titleIconSize = 26;
+const titleIconSize = 22;
 
 export const FavoritesEditorWrapper = styled.div`
   flex: 1;
@@ -21,15 +27,13 @@ export const FavoritesEditorWrapper = styled.div`
   height: 100%;
   padding: 0 ${spacings.lg};
 
-  background-color: ${colors.gray050};
-
   overflow-x: hidden;
   overflow-y: auto;
   ${scrollBar};
 
   ${Title} {
     padding-left: 0;
-    font-size: 24px;
+    font-size: 20px;
 
     ${TitleIcon} {
       width: ${titleIconSize}px;
@@ -41,12 +45,25 @@ export const FavoritesEditorWrapper = styled.div`
       }
     }
   }
+
+  ${SectionBlockContainer} {
+    &:after {
+      background-color: white;
+    }
+  }
 `;
 
 export const FieldList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  padding: ${spacings.sm};
+
   overflow-y: auto;
   overflow-x: hidden;
 
+  background: ${colors.gray050};
   box-shadow: ${shadows.right};
 
   ${scrollBar};
@@ -64,10 +81,12 @@ export const FieldListItem = styled.li`
   width: 250px;
   padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
 
-  border-bottom: 1px solid ${colors.gray200};
+  border: 1px solid transparent;
+  border-radius: ${borderRadius.lg};
   font-size: 16px;
 
   user-select: none;
+  transition: all 0.2s ease-in-out;
 
   > span {
     flex: 1;
@@ -77,16 +96,14 @@ export const FieldListItem = styled.li`
     white-space: nowrap;
   }
 
-  &:last-child {
-    border-bottom: none;
-  }
-
   &:hover {
-    background-color: ${colors.gray100};
+    background-color: ${colors.gray200};
   }
 
   &.active {
-    background: ${colors.gray200};
+    background: ${colors.gray500};
+    color: ${colors.white};
+    fill: currentColor;
   }
 
   &.errors {

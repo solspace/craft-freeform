@@ -23,6 +23,7 @@ const App: React.FC = () => {
     <Reliability key="reliability" />,
     <Finalize
       key="finalize"
+      active={step === 4}
       successCallback={(): void => {
         setFinalized(true);
       }}

@@ -9,10 +9,15 @@ export const QKNotices = {
   all: ['notices'],
 } as const;
 
-export const useNoticesQuery = (): UseQueryResult<Notice[]> => {
+type NoticesResponse = {
+  notices: Notice[];
+  errors: number;
+};
+
+export const useNoticesQuery = (): UseQueryResult<NoticesResponse> => {
   return useQuery(
     QKNotices.all,
-    () => axios.get<Notice[]>('/api/notices').then((res) => res.data),
+    () => axios.get<NoticesResponse>('/api/notices').then((res) => res.data),
     { enabled: config.feed }
   );
 };

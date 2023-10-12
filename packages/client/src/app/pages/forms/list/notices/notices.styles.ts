@@ -29,6 +29,7 @@ const map = [
   { type: 'info', accent: '#007bff' },
   { type: 'warning', accent: '#e87b00' },
   { type: 'error', accent: '#cf1324' },
+  { type: 'log-list', accent: '#cf1324' },
 ];
 
 let accentStyle = '';
@@ -38,6 +39,12 @@ map.forEach(({ type, accent }) => {
       fill: ${accent};
       color: ${accent};
       border-color: ${accent};
+
+      a {
+        color: ${accent};
+        text-decoration: underline;
+        font-weight: bold;
+      }
     }
   `;
 });

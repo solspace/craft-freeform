@@ -15,6 +15,7 @@ namespace Solspace\Freeform\controllers\api;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\Notification;
 use Solspace\Freeform\Services\FreeformFeedService;
+use Solspace\Freeform\Services\LoggerService;
 
 class NoticesController extends BaseApiController
 {
@@ -23,6 +24,7 @@ class NoticesController extends BaseApiController
         $module,
         $config,
         private FreeformFeedService $feedService,
+        private LoggerService $loggerService,
     ) {
         parent::__construct($id, $module, $config ?? []);
     }
@@ -39,7 +41,10 @@ class NoticesController extends BaseApiController
             $notices[] = new Notification($data);
         }
 
-        return $notices;
+        return [
+            'notices' => $notices,
+            'errors' => $this->loggerService->getLogReader()->count(),
+        ];
     }
 
     protected function delete(int $id): bool|null

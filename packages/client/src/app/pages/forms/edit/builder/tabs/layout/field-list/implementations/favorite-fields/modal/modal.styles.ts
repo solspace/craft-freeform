@@ -33,7 +33,7 @@ export const FavoritesEditorWrapper = styled.div`
 
   ${Title} {
     padding-left: 0;
-    font-size: 20px;
+    font-size: 18px;
 
     ${TitleIcon} {
       width: ${titleIconSize}px;
@@ -83,7 +83,7 @@ export const FieldListItem = styled.li`
 
   border: 1px solid transparent;
   border-radius: ${borderRadius.lg};
-  font-size: 16px;
+  font-size: 13px;
 
   user-select: none;
   transition: all 0.2s ease-in-out;

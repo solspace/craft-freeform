@@ -91,7 +91,7 @@ class SubmissionInterface extends Element
                     'onSuccess' => [
                         'name' => 'onSuccess',
                         'type' => Type::string(),
-                        'description' => 'The success behaviour of the submission',
+                        'description' => 'The success behavior of the submission',
                     ],
                     'returnUrl' => [
                         'name' => 'returnUrl',

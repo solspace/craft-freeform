@@ -6,7 +6,7 @@ type DefaultView =
   | "settings"
   | "export-profiles";
 
-type SpamProtectionBehaviour =
+type SpamProtectionBehavior =
   | "display_errors"
   | "simulate_success"
   | "reload_form";
@@ -83,7 +83,7 @@ interface Features {
       demoTemplatesInstalled: boolean;
     };
     spam: {
-      spamProtectionBehaviour: SpamProtectionBehaviour;
+      spamProtectionBehavior: SpamProtectionBehavior;
       spamFolder: boolean;
       purgeSpam: boolean;
       purgeInterval: number;

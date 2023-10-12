@@ -15,14 +15,14 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
         $collection = new OptionCollection();
 
         $collection->add(
-            BehaviorSettings::SUCCESS_BEHAVIOUR_RELOAD,
+            BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD,
             'Reload form with a Success banner above'
         );
 
         $this->addSuccessTemplateOption($collection);
 
         $collection->add(
-            BehaviorSettings::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
+            BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL,
             'Return the Submitter to the following URL'
         );
 
@@ -37,7 +37,7 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
         }
 
         $optionCollection->add(
-            BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE,
+            BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE,
             'Replace form with a Success message'
         );
     }

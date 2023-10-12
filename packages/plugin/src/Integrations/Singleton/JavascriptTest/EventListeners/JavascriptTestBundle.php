@@ -98,7 +98,7 @@ class JavascriptTestBundle extends FeatureBundle
             return;
         }
 
-        if ($settings->isSpamBehaviourDisplayErrors()) {
+        if ($settings->isSpamBehaviorDisplayErrors()) {
             $errorMessage = $integration->getErrorMessage();
             if (!$errorMessage) {
                 $errorMessage = 'Javascript Test is invalid';

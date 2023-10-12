@@ -68,12 +68,12 @@ export interface ReliabilityInterface {
   digestProductionOnly: boolean;
 }
 
-export enum SpamBehaviour {
+export enum SpamBehavior {
   SimulateSuccess = 'simulate_success',
   DisplayErrors = 'display_errors',
 }
 
 export interface SpamInterface {
   spamFolder: boolean;
-  spamBehaviour: SpamBehaviour;
+  spamBehavior: SpamBehavior;
 }

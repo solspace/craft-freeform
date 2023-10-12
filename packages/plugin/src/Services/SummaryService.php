@@ -122,7 +122,7 @@ class SummaryService extends Component
         $summary->statistics->settings = $settings;
 
         $spam = new Spam();
-        $spam->spamProtectionBehaviour = $settingsService->getSettingsModel()->spamProtectionBehaviour;
+        $spam->spamProtectionBehavior = $settingsService->getSettingsModel()->spamProtectionBehavior;
         $spam->spamFolder = $settingsService->isSpamFolderEnabled();
         $spam->purgeSpam = (bool) $settingsService->getPurgableSpamAgeInDays();
         $spam->purgeInterval = $settingsService->getPurgableSpamAgeInDays();

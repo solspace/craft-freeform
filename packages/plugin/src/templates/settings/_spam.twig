@@ -23,11 +23,11 @@
         <h2>{{ "Spam Behavior"|t('freeform') }}</h2>
 
         {{ forms.selectField({
-            id: "spam-protection-behaviour",
+            id: "spam-protection-behavior",
             label: "Spam Protection Behavior"|t('freeform'),
             instructions: "Select the behavior you'd like Freeform to take when it detects a submission as being spam."|t('freeform'),
-            name: "settings[spamProtectionBehaviour]",
-            value: settings.spamProtectionBehaviour,
+            name: "settings[spamProtectionBehavior]",
+            value: settings.spamProtectionBehavior,
             options: {
                 "simulate_success": "Simulate Success (recommended)"|t('freeform'),
                 "display_errors": "Display Errors (for debugging)"|t('freeform'),

@@ -25,9 +25,9 @@ use Solspace\Freeform\Form\Settings\SettingsNamespace;
 )]
 class BehaviorSettings extends SettingsNamespace
 {
-    public const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
-    public const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
-    public const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
+    public const SUCCESS_BEHAVIOR_RELOAD = 'reload';
+    public const SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL = 'redirect-return-url';
+    public const SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
 
     private const SECTION_SUCCESS_AND_ERRORS = 'success-and-errors';
     private const SECTION_PROCESSING = 'processing';
@@ -92,7 +92,7 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]
-    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE.'"')]
+    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE.'"')]
     #[DefaultValue('settings.successAndErrors.successTemplate')]
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
@@ -102,7 +102,7 @@ class BehaviorSettings extends SettingsNamespace
     public ?string $successTemplate;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
-    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL.'"')]
+    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL.'"')]
     #[DefaultValue('settings.successAndErrors.returnUrl')]
     #[Input\Text(
         label: 'Return URL',

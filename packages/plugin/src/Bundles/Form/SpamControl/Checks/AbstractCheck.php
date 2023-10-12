@@ -34,7 +34,7 @@ abstract class AbstractCheck extends FeatureBundle
 
     protected function isDisplayErrors(): bool
     {
-        return $this->getSettingsService()->isSpamBehaviourDisplayErrors();
+        return $this->getSettingsService()->isSpamBehaviorDisplayErrors();
     }
 
     protected function getSettings(): Settings

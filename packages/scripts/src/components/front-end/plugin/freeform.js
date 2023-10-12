@@ -14,7 +14,7 @@ import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
-import { SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, SUCCESS_BEHAVIOUR_RELOAD } from '@lib/plugin/constants/form';
+import { SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL, SUCCESS_BEHAVIOR_RELOAD } from '@lib/plugin/constants/form';
 import RuleHandler from '@lib/plugin/handlers/form/rules';
 
 export default class Freeform {
@@ -666,7 +666,7 @@ export default class Freeform {
 
         if (!actions.length) {
           if (success) {
-            if (finished && response.onSuccess === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL && returnUrl) {
+            if (finished && response.onSuccess === SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL && returnUrl) {
               this._dispatchEvent(events.form.ajaxSuccess, { request, response });
               this._onSuccessfulSubmit(event, form, response);
 
@@ -691,7 +691,7 @@ export default class Freeform {
                 this._dispatchEvent(events.form.onReset);
               }
 
-              if (response.onSuccess === SUCCESS_BEHAVIOUR_RELOAD) {
+              if (response.onSuccess === SUCCESS_BEHAVIOR_RELOAD) {
                 this._renderSuccessBanner();
               }
             }

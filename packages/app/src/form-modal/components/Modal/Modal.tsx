@@ -215,7 +215,7 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
 
               <Grid columns={2}>
                 <Select
-                  name="successBehaviour"
+                  name="successBehavior"
                   label="Success Behavior"
                   value={form.settings.behavior.successBehavior}
                   onChange={(value): void =>

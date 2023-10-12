@@ -16,7 +16,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 class SuccessAndErrors extends BaseCategory
 {
     #[OptionsGenerator(SuccessBehaviorOptionsGenerator::class)]
-    #[SetDefaultValue(BehaviorSettings::SUCCESS_BEHAVIOUR_RELOAD)]
+    #[SetDefaultValue(BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD)]
     public SelectItem $successBehavior;
 
     #[Label('Return URL')]

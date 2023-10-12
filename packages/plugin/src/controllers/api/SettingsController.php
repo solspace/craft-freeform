@@ -44,7 +44,7 @@ class SettingsController extends BaseController
         $this->saveSettings(
             [
                 'spamFolderEnabled' => $this->getRequest()->getBodyParam('spamFolder', true),
-                'spamProtectionBehaviour' => $this->getRequest()->getBodyParam('spamBehaviour'),
+                'spamProtectionBehavior' => $this->getRequest()->getBodyParam('spamBehavior'),
             ]
         );
 

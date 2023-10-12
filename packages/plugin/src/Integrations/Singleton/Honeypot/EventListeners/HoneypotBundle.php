@@ -102,7 +102,7 @@ class HoneypotBundle extends FeatureBundle
             }
         }
 
-        if ($settings->isSpamBehaviourDisplayErrors()) {
+        if ($settings->isSpamBehaviorDisplayErrors()) {
             $form->addError(Freeform::t($integration->getErrorMessage()));
         }
 

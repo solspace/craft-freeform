@@ -116,7 +116,7 @@ class Settings extends Model
     public $minimumSubmitTime;
 
     /** @var string */
-    public $spamProtectionBehaviour;
+    public $spamProtectionBehavior;
 
     /** @var int */
     public $submissionThrottlingCount;
@@ -252,7 +252,7 @@ class Settings extends Model
         $this->formSubmitDisable = true;
         $this->rememberPageSubmitOrder = true;
 
-        $this->spamProtectionBehaviour = self::PROTECTION_SIMULATE_SUCCESS;
+        $this->spamProtectionBehavior = self::PROTECTION_SIMULATE_SUCCESS;
         $this->blockedEmails = null;
         $this->blockedKeywords = null;
         $this->blockedEmailsError = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;

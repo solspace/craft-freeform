@@ -5,7 +5,7 @@ import SelectField, { Options } from '@ff-app/welcome-screen/shared/components/f
 import Heading from '@ff-app/welcome-screen/shared/components/Typography/Heading/Heading';
 import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Paragraph/Paragraph';
 import { Italics } from '@ff-app/welcome-screen/shared/components/Typography/Typography.styles';
-import { SpamBehaviour } from '@ff-app/welcome-screen/shared/interfaces/settings';
+import { SpamBehavior } from '@ff-app/welcome-screen/shared/interfaces/settings';
 import SpamState from '@ff-welcome-screen/shared/recoil/atoms/spam';
 import React from 'react';
 import { CSSTransition } from 'react-transition-group';
@@ -14,9 +14,9 @@ import { useRecoilState } from 'recoil';
 const Spam: React.FC = () => {
   const [state, setState] = useRecoilState(SpamState);
 
-  const spamBehaviourOptions: Options<SpamBehaviour> = [
-    { value: SpamBehaviour.SimulateSuccess, label: 'Simulate Success (recommended)' },
-    { value: SpamBehaviour.DisplayErrors, label: 'Display Errors' },
+  const spamBehaviorOptions: Options<SpamBehavior> = [
+    { value: SpamBehavior.SimulateSuccess, label: 'Simulate Success (recommended)' },
+    { value: SpamBehavior.DisplayErrors, label: 'Display Errors' },
   ];
 
   return (
@@ -69,12 +69,12 @@ const Spam: React.FC = () => {
 
         <SelectField
           description="Select the behavior you'd like Freeform to take when it detects a submission as being spam."
-          value={state.spamBehaviour}
-          options={spamBehaviourOptions}
+          value={state.spamBehavior}
+          options={spamBehaviorOptions}
           onChange={(event): void => {
             setState((oldState) => ({
               ...oldState,
-              spamBehaviour: event.target.value as SpamBehaviour,
+              spamBehavior: event.target.value as SpamBehavior,
             }));
           }}
         />

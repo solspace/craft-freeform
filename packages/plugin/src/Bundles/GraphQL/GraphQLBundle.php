@@ -35,6 +35,10 @@ class GraphQLBundle extends FeatureBundle
             return;
         }
 
+        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            return;
+        }
+
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_TYPES,

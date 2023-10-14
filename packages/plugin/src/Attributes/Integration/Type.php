@@ -8,6 +8,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
+    public array $editions = [];
     public string $class;
     public string $shortName;
     public ?PropertyCollection $properties;

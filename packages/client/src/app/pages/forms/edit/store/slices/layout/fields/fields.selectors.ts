@@ -6,6 +6,7 @@ import type { Field } from '.';
 
 export const fieldSelectors = {
   all: (state: RootState): Field[] => state.layout.fields,
+  count: (state: RootState): number => state.layout.fields.length,
 
   one:
     (uid: string) =>

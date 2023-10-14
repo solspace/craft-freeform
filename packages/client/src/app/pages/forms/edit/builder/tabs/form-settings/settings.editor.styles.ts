@@ -35,3 +35,16 @@ export const SectionHeader = styled.h1`
   padding: 0;
   margin: 0;
 `;
+
+export const SectionContainer = styled.div`
+  &:empty {
+    width: 100%;
+    height: 50px;
+
+    &:before {
+      content: 'No settings available for this section.';
+      font-style: italic;
+      color: ${colors.gray200};
+    }
+  }
+`;

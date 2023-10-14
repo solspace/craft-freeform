@@ -8,6 +8,10 @@ type Config = {
   templates: {
     native: boolean;
   };
+  limits: {
+    forms?: number;
+    fields?: number;
+  };
   editions: {
     edition: Edition;
     tiers: Edition[];

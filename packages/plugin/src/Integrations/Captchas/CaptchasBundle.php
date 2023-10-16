@@ -23,9 +23,6 @@ class CaptchasBundle extends FeatureBundle
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $event->addType(ReCaptcha::class);
-
-        if ($this->plugin()->isPro()) {
-            $event->addType(hCaptcha::class);
-        }
+        $event->addType(hCaptcha::class);
     }
 }

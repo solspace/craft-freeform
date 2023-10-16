@@ -15,8 +15,8 @@
 			"general": {
 				"name": "{{ settings.pluginName }}",
 				"defaultView": "{{ settings.defaultView }}",
-				"ajax": {{ settings.ajaxByDefault ? 'true' : 'false' }},
-				"defaultFormattingTemplate": "{{ settings.formattingTemplate }}",
+				"ajax": {{ settings.defaults.settings.processing.ajax.value ? 'true' : 'false' }},
+				"defaultFormattingTemplate": "{{ settings.defaults.settings.general.formattingTemplate.value }}",
 				"disableSubmit": {{ settings.formSubmitDisable ? 'true' : 'false' }},
 				"autoScroll": {{ settings.autoScrollToErrors ? 'true' : 'false' }},
 				"jsInsertLocation": "footer",
@@ -26,7 +26,7 @@
 			},
 			"spam": {
 				"spamFolder": {{ settings.spamFolderEnabled ? 'true' : 'false' }},
-				"spamBehaviour": "{{ settings.spamProtectionBehaviour }}"
+				"spamBehavior": "{{ settings.spamProtectionBehavior }}"
 			},
 			"reliability": {
 				"errorRecipients": "{{ settings.alertNotificationRecipients }}",

@@ -27,15 +27,15 @@ class SuccessBehaviorBundle extends FeatureBundle
         $behaviorSettings = $form->getSettings()->getBehavior();
 
         switch ($behaviorSettings->successBehavior) {
-            case BehaviorSettings::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL:
+            case BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL:
                 $returnUrl = $this->plugin()->forms->getReturnUrl($form);
 
                 $event->getResponse()->redirect($returnUrl);
 
                 break;
 
-            case BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE:
-            case BehaviorSettings::SUCCESS_BEHAVIOUR_RELOAD:
+            case BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE:
+            case BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD:
             default:
                 $url = $request->getUrl();
                 $event->getResponse()->redirect($url);

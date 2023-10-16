@@ -33,7 +33,7 @@ class SpamControl extends FeatureBundle
     public function redirectPage(HandleRequestEvent $event): void
     {
         $spamReasons = $this->getSpamReasons($event->getForm());
-        if ($spamReasons && $this->getSettingsService()->isSpamBehaviourReloadForm()) {
+        if ($spamReasons && $this->getSettingsService()->isSpamBehaviorReloadForm()) {
             \Craft::$app->response->redirect($event->getRequest()->getUrl());
         }
     }

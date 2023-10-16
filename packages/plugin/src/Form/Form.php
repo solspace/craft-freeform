@@ -537,7 +537,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         if (
             ($this->isSubmittedSuccessfully() || $this->isFinished())
-            && BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $successBehavior
+            && BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE === $successBehavior
         ) {
             return $this->getFormHandler()->renderSuccessTemplate($this);
         }

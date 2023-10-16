@@ -39,6 +39,7 @@ class ModalController extends BaseApiController
 
         $data->settings = (object) ['general' => (object) []];
         $data->settings->general->name = $data->name;
+        $data->settings->general->type = $data->type;
         $data->settings->general->handle = StringHelper::camelCase($data->name);
         $data->settings->general->formattingTemplate = $data->formattingTemplate;
         $data->settings->general->storeData = $data->storeData;

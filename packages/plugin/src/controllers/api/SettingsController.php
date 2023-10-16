@@ -21,17 +21,22 @@ class SettingsController extends BaseController
     public function actionGeneral(): Response
     {
         $this->requirePostRequest();
+        $request = $this->getRequest();
+
+        $defaults = $this->getSettingsService()->getSettingsModel()->defaults->jsonSerialize();
+        $defaults['settings']['processing']['ajax']['value'] = $request->getBodyParam('ajaxByDefault', true);
+        $defaults['settings']['general']['formattingTemplate']['value'] = $request->getBodyParam('defaultFormattingTemplate', 'basic-light');
+
         $this->saveSettings(
             [
-                'pluginName' => $this->getRequest()->getBodyParam('name'),
-                'defaultView' => $this->getRequest()->getBodyParam('defaultView', 'forms'),
-                'ajaxByDefault' => $this->getRequest()->getBodyParam('ajax', true),
-                'formattingTemplate' => $this->getRequest()->getBodyParam('defaultFormattingTemplate', 'basic-light'),
-                'formSubmitDisable' => $this->getRequest()->getBodyParam('disableSubmit', true),
-                'autoScrollToErrors' => $this->getRequest()->getBodyParam('autoScroll', true),
-                'scriptInsertLocation' => $this->getRequest()->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
-                'scriptInsertType' => $this->getRequest()->getBodyParam('jsInsertType', Settings::SCRIPT_INSERT_TYPE_INLINE),
-                'sessionContext' => $this->getRequest()->getBodyParam('sessionType', Settings::CONTEXT_TYPE_PAYLOAD),
+                'defaults' => $defaults,
+                'pluginName' => $request->getBodyParam('name'),
+                'defaultView' => $request->getBodyParam('defaultView', 'forms'),
+                'formSubmitDisable' => $request->getBodyParam('disableSubmit', true),
+                'autoScrollToErrors' => $request->getBodyParam('autoScroll', true),
+                'scriptInsertLocation' => $request->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
+                'scriptInsertType' => $request->getBodyParam('jsInsertType', Settings::SCRIPT_INSERT_TYPE_INLINE),
+                'sessionContext' => $request->getBodyParam('sessionType', Settings::CONTEXT_TYPE_PAYLOAD),
             ]
         );
 
@@ -44,7 +49,7 @@ class SettingsController extends BaseController
         $this->saveSettings(
             [
                 'spamFolderEnabled' => $this->getRequest()->getBodyParam('spamFolder', true),
-                'spamProtectionBehaviour' => $this->getRequest()->getBodyParam('spamBehaviour'),
+                'spamProtectionBehavior' => $this->getRequest()->getBodyParam('spamBehavior'),
             ]
         );
 

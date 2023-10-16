@@ -6,6 +6,7 @@ import {
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
 import { useFieldOptions } from '@components/options/use-field-options';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
 import { useFieldType } from '@ff-client/queries/field-types';
@@ -54,20 +55,22 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   return (
     <>
-      <ControlWrapper $width={property.width}>
-        <Label>{translate('Source')}</Label>
-        <ButtonGroup>
-          {Object.entries(sourceLabels).map(([key, label]) => (
-            <Button
-              key={key}
-              className={classes(source === key && 'active')}
-              onClick={() => updateValue(generateDefaultValue(key as Source))}
-            >
-              {label}
-            </Button>
-          ))}
-        </ButtonGroup>
-      </ControlWrapper>
+      {config.editions.isAtLeast(Edition.Lite) && (
+        <ControlWrapper $width={property.width}>
+          <Label>{translate('Source')}</Label>
+          <ButtonGroup>
+            {Object.entries(sourceLabels).map(([key, label]) => (
+              <Button
+                key={key}
+                className={classes(source === key && 'active')}
+                onClick={() => updateValue(generateDefaultValue(key as Source))}
+              >
+                {label}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </ControlWrapper>
+      )}
 
       <SourceComponent
         value={value}

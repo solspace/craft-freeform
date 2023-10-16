@@ -33,9 +33,9 @@ interface FormHandlerInterface
      */
     public function incrementSpamBlockCount(Form $form): int;
 
-    public function isSpamBehaviourSimulateSuccess(): bool;
+    public function isSpamBehaviorSimulateSuccess(): bool;
 
-    public function isSpamBehaviourReloadForm(): bool;
+    public function isSpamBehaviorReloadForm(): bool;
 
     public function isSpamFolderEnabled(): bool;
 

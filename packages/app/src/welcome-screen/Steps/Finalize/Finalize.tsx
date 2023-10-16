@@ -11,9 +11,10 @@ import { useRecoilValue } from 'recoil';
 import { Finished, Label, ProgressItem, Tick, Wrapper } from './Finalize.styles';
 
 interface Props {
+  active: boolean;
   successCallback: () => void;
 }
-const Finalize: React.FC<Props> = ({ successCallback }) => {
+const Finalize: React.FC<Props> = ({ active, successCallback }) => {
   const generalState = useRecoilValue(GeneralState);
   const spamState = useRecoilValue(SpamState);
   const reliabilityState = useRecoilValue(ReliabilityState);
@@ -36,8 +37,10 @@ const Finalize: React.FC<Props> = ({ successCallback }) => {
       successCallback();
     };
 
-    pushData();
-  }, []);
+    if (active) {
+      pushData();
+    }
+  }, [active]);
 
   return (
     <div>
@@ -45,7 +48,7 @@ const Finalize: React.FC<Props> = ({ successCallback }) => {
       <Paragraph>
         <Wrapper>
           <ProgressItem>
-            <Tick ticked={generalDone} />
+            <Tick $ticked={generalDone} />
             <Label>
               <Italics>
                 Applying <b>General Setup</b> preferences...
@@ -54,7 +57,7 @@ const Finalize: React.FC<Props> = ({ successCallback }) => {
           </ProgressItem>
 
           <ProgressItem>
-            <Tick ticked={spamDone} />
+            <Tick $ticked={spamDone} />
             <Label>
               <Italics>
                 Applying <b>Spam Protection</b> preferences...
@@ -63,7 +66,7 @@ const Finalize: React.FC<Props> = ({ successCallback }) => {
           </ProgressItem>
 
           <ProgressItem>
-            <Tick ticked={reliabilityDone} />
+            <Tick $ticked={reliabilityDone} />
             <Label>
               <Italics>
                 Applying <b>Reliability Protection</b> preferences...

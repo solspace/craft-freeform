@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Singleton\JavascriptTest;
 
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Attributes\Property\Middleware;
@@ -15,6 +16,8 @@ use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
  *
  * @coversNothing
  */
+#[Edition(Edition::PRO)]
+#[Edition(Edition::LITE)]
 #[Type(
     name: 'Javascript Test',
     readme: __DIR__.'/README.md',

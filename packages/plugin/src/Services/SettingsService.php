@@ -57,19 +57,19 @@ class SettingsService extends BaseService
         return false;
     }
 
-    public function isSpamBehaviourSimulatesSuccess(): bool
+    public function isSpamBehaviorSimulatesSuccess(): bool
     {
-        return Settings::PROTECTION_SIMULATE_SUCCESS === $this->getSettingsModel()->spamProtectionBehaviour;
+        return Settings::PROTECTION_SIMULATE_SUCCESS === $this->getSettingsModel()->spamProtectionBehavior;
     }
 
-    public function isSpamBehaviourDisplayErrors(): bool
+    public function isSpamBehaviorDisplayErrors(): bool
     {
-        return Settings::PROTECTION_DISPLAY_ERRORS === $this->getSettingsModel()->spamProtectionBehaviour;
+        return Settings::PROTECTION_DISPLAY_ERRORS === $this->getSettingsModel()->spamProtectionBehavior;
     }
 
-    public function isSpamBehaviourReloadForm(): bool
+    public function isSpamBehaviorReloadForm(): bool
     {
-        return Settings::PROTECTION_RELOAD_FORM === $this->getSettingsModel()->spamProtectionBehaviour;
+        return Settings::PROTECTION_RELOAD_FORM === $this->getSettingsModel()->spamProtectionBehavior;
     }
 
     public function getFormTemplateDirectory(): ?string

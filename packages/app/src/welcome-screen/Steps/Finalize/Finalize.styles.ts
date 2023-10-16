@@ -12,7 +12,7 @@ export const ProgressItem = styled.div`
 `;
 
 interface TickInterface {
-  ticked?: boolean;
+  $ticked?: boolean;
 }
 export const Tick = styled.div<TickInterface>`
   height: 26px;
@@ -22,7 +22,7 @@ export const Tick = styled.div<TickInterface>`
   line-height: 10px;
   border-radius: 20px;
 
-  background-color: ${({ ticked }: TickInterface): string => (ticked ? '#58a785' : '#CCC')};
+  background-color: ${({ $ticked }: TickInterface): string => ($ticked ? '#58a785' : '#CCC')};
   transition: background-color 1s ${easings.out.default};
 
   &:before {

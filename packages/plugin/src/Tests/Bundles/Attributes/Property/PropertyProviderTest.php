@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Tests\Bundles\Attributes\Property;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -40,11 +41,21 @@ class PropertyProviderTest extends TestCase
             ->willReturn('pulled from defaults')
         ;
 
-        $this->provider = new PropertyProvider(
-            $mockContainer,
-            $mockImplementationProvider,
-            $mockDefaultsProvider,
-        );
+        $this->provider = $this
+            ->getMockBuilder(PropertyProvider::class)
+            ->setConstructorArgs([
+                $mockContainer,
+                $mockImplementationProvider,
+                $mockDefaultsProvider,
+            ])
+            ->onlyMethods(['getPluginEdition'])
+            ->getMock()
+        ;
+
+        $this->provider
+            ->method('getPluginEdition')
+            ->willReturn('lite')
+        ;
     }
 
     public function testSetObjectProperties()
@@ -127,7 +138,8 @@ class PropertyProviderTest extends TestCase
                 'required' => false,
             ]],
             [[
-                'type' => 'int',
+                'type' => 'hidden',
+                'editions' => ['pro'],
                 'handle' => 'optionalInt',
                 'label' => 'Optional Integer',
                 'instructions' => null,
@@ -142,6 +154,7 @@ class PropertyProviderTest extends TestCase
             ]],
             [[
                 'type' => 'select',
+                'editions' => ['pro', 'lite'],
                 'handle' => 'boolWithDefaultTrue',
                 'label' => 'Bool With Default True',
                 'instructions' => 'instructions',
@@ -250,12 +263,15 @@ class TestAttributesClass
     )]
     private string $stringValue;
 
+    #[Edition('pro')]
     #[Input\Integer(
         'Optional Integer',
         placeholder: 'placeholder',
     )]
     private ?int $optionalInt;
 
+    #[Edition('pro')]
+    #[Edition('lite')]
     #[Input\Select(
         instructions: 'instructions',
         order: 99,

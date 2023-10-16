@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\DataObjects\Summary\Statistics;
 class Spam
 {
     /** @var string */
-    public $spamProtectionBehaviour = false;
+    public $spamProtectionBehavior = false;
 
     /** @var bool */
     public $spamFolder = false;

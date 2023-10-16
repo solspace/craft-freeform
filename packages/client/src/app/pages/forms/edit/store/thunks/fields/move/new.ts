@@ -1,3 +1,4 @@
+import config, { Edition } from '@config/freeform/freeform.config';
 import type { Row } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
 import { fieldActions } from '@editor/store/slices/layout/fields';
@@ -13,6 +14,12 @@ const newRow =
     row?: Row;
   }): AppThunk =>
   (dispatch, getState) => {
+    if (config.editions.is(Edition.Express)) {
+      if (getState().layout.fields.length >= config.limits.fields) {
+        return;
+      }
+    }
+
     const { fieldType, row } = options;
     let { layoutUid } = options;
 

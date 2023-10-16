@@ -16,7 +16,7 @@ class PreflightService extends BaseService
 
         return [
             new DiagnosticItem(
-                'Success behaviour',
+                'Success behavior',
                 $this->getOutdatedBehaviourCount(),
                 [
                     new WarningValidator(

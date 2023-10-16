@@ -28,9 +28,13 @@ class DigestService extends Component
 
     public const TEMPLATE_PATH = __DIR__.'/../../templates/_emailTemplates/digest.twig';
 
-    public function triggerDigest()
+    public function triggerDigest(): void
     {
         if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
+            return;
+        }
+
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
 

@@ -12,9 +12,9 @@ class SuccessBehaviorValueGenerator implements ValueGeneratorInterface
     {
         $successTemplates = Freeform::getInstance()->settings->getSuccessTemplates();
         if (empty($successTemplates)) {
-            return BehaviorSettings::SUCCESS_BEHAVIOUR_RELOAD;
+            return BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD;
         }
 
-        return BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE;
+        return BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE;
     }
 }

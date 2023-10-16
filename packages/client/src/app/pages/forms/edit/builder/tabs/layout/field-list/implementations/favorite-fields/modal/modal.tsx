@@ -75,7 +75,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   return (
     <ModalContainer style={{ maxWidth: '70%' }}>
       <ModalHeader>
-        <h1>{translate('Favorites Manager')}</h1>
+        <h1>{translate('Favorite Fields')}</h1>
       </ModalHeader>
       <FavoritesWrapper>
         <FieldList>

@@ -372,14 +372,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         return Template::raw($output);
     }
 
-    public function isSpamBehaviourSimulateSuccess(): bool
+    public function isSpamBehaviorSimulateSuccess(): bool
     {
-        return $this->getSettingsService()->isSpamBehaviourSimulatesSuccess();
+        return $this->getSettingsService()->isSpamBehaviorSimulatesSuccess();
     }
 
-    public function isSpamBehaviourReloadForm(): bool
+    public function isSpamBehaviorReloadForm(): bool
     {
-        return $this->getSettingsService()->isSpamBehaviourReloadForm();
+        return $this->getSettingsService()->isSpamBehaviorReloadForm();
     }
 
     public function isSpamFolderEnabled(): bool

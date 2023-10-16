@@ -39,8 +39,8 @@ $(() => {
     },
   });
 
-  const spamProtectionBehaviour = $('select#spam-protection-behaviour');
-  spamProtectionBehaviour.on({
+  const spamProtectionBehavior = $('select#spam-protection-behavior');
+  spamProtectionBehavior.on({
     change: function () {
       const customError = $('#custom-spam-error-message');
       if ($(this).val() === 'display_errors') {

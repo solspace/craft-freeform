@@ -34,10 +34,7 @@
     {% if serviceProviderTypes|length == 0 %}
 
         <div class="zilch">
-            {{ "This integration requires the Freeform Pro edition."|t('freeform', {
-                link_open: '<a href="https://solspace.com/">',
-                link_close: '</a>',
-            })|raw }}
+            {{ "This integration requires the Freeform Pro edition."|t('freeform')|raw }}
         </div>
 
     {% else %}

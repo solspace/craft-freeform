@@ -16,6 +16,11 @@ class EditionHelper
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->edition;
+    }
+
     public function getEditions(): array
     {
         return $this->tiers;

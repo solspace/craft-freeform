@@ -3,12 +3,14 @@
 namespace Solspace\Freeform\Integrations\Singleton\PostForwarding;
 
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Post Forwarding',
     readme: __DIR__.'/README.md',

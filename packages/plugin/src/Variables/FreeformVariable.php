@@ -18,6 +18,7 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
@@ -151,9 +152,9 @@ class FreeformVariable
         return Freeform::getInstance()->isPro();
     }
 
-    public function getEdition(): string
+    public function getEdition(): EditionHelper
     {
-        return Freeform::getInstance()->edition;
+        return Freeform::getInstance()->edition();
     }
 
     public function getVersion(int $marks = null): string

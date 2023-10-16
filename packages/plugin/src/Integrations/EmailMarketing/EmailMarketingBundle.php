@@ -8,7 +8,6 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
@@ -21,10 +20,6 @@ class EmailMarketingBundle extends FeatureBundle
         private FormIntegrationsProvider $formIntegrationsProvider,
         private IntegrationClientProvider $clientProvider,
     ) {
-        if (!Freeform::getInstance()->isPro()) {
-            return;
-        }
-
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
@@ -36,6 +31,11 @@ class EmailMarketingBundle extends FeatureBundle
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'handleIntegrations']
         );
+    }
+
+    public static function isProOnly(): bool
+    {
+        return true;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void

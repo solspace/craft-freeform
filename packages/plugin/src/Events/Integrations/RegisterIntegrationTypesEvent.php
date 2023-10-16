@@ -44,7 +44,7 @@ class RegisterIntegrationTypesEvent extends ArrayableEvent
             return $this;
         }
 
-        if ($type->editions && !\in_array(Freeform::getInstance()->edition(), $type->editions, true)) {
+        if ($type->editions && !\in_array(Freeform::getInstance()->edition, $type->editions, true)) {
             return $this;
         }
 

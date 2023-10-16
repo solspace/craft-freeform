@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
-use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Date\DateTimeTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
@@ -135,7 +135,7 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/'.self::SECTION_LIMITS.'.svg',
         order: 3,
     )]
-    #[Flag(Flag::PRO)]
+    #[Edition(Edition::PRO)]
     #[DefaultValue('settings.limits.duplicateCheck')]
     #[Input\Select(
         label: 'Duplicate Check',
@@ -146,6 +146,8 @@ class BehaviorSettings extends SettingsNamespace
     public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
+    #[Edition(Edition::PRO)]
+    #[Edition(Edition::LITE)]
     #[ValueTransformer(DateTimeTransformer::class)]
     #[Input\DatePicker(
         label: 'Stop Submissions After Date',

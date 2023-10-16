@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
 use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
@@ -23,16 +25,18 @@ class IntegrationTypeProvider
                 return null;
             }
 
-            $types = $reflectionClass->getAttributes(Type::class);
-            $type = reset($types);
+            $type = AttributeHelper::findAttribute($reflectionClass, Type::class);
             if (!$type) {
                 return null;
             }
 
-            $type = $type->newInstance();
-
             $type->class = $integrationClass;
             $type->shortName = $reflectionClass->getShortName();
+
+            $editions = AttributeHelper::findAttributes($reflectionClass, Edition::class);
+            foreach ($editions as $edition) {
+                $type->editions[] = $edition->name;
+            }
 
             $eventListeners = $reflectionClass->getAttributes(EventListener::class);
             foreach ($eventListeners as $listener) {

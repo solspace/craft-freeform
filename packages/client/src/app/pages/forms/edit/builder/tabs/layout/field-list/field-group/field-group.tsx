@@ -1,5 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import React from 'react';
+import classes from '@ff-client/utils/classes';
 
 import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
 
@@ -7,6 +8,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 type Props = {
   title: string;
+  disabled?: boolean;
   button?: {
     icon: ReactNode;
     title?: string;
@@ -16,11 +18,12 @@ type Props = {
 
 export const FieldGroup: React.FC<PropsWithChildren<Props>> = ({
   title,
+  disabled,
   button,
   children,
 }) => {
   return (
-    <FieldGroupWrapper>
+    <FieldGroupWrapper className={classes(disabled && 'disabled')}>
       <GroupTitle>
         {title}
         {button && (

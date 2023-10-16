@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -37,6 +38,18 @@ class FormPersistence extends FeatureBundle
     public function handleFormCreate(PersistFormEvent $event): void
     {
         $payload = $event->getPayload()->form;
+
+        if ($this->plugin()->edition()->is(Freeform::EDITION_EXPRESS)) {
+            $totalForms = FormRecord::find()->count();
+            if ($totalForms >= 1) {
+                $event->addErrorsToResponse(
+                    'form',
+                    ['name' => [Freeform::t('Freeform Express only allows one form')]]
+                );
+
+                return;
+            }
+        }
 
         $record = FormRecord::create();
         $record->uid = $payload->uid;

@@ -51,7 +51,10 @@ class NotificationsBundle extends FeatureBundle
     {
         $event->addType(Admin::class);
         $event->addType(EmailField::class);
-        $event->addType(Dynamic::class);
+
+        if ($this->plugin()->edition()->isAtLeast(Freeform::EDITION_LITE)) {
+            $event->addType(Dynamic::class);
+        }
 
         if ($this->plugin()->edition()->isAtLeast(Freeform::EDITION_PRO)) {
             $event->addType(Conditional::class);

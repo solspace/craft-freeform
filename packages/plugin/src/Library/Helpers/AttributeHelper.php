@@ -12,7 +12,7 @@ class AttributeHelper
      *
      * @return null|T
      */
-    public static function findAttribute(\ReflectionProperty $property, string $className): ?object
+    public static function findAttribute(\ReflectionProperty|\ReflectionClass $property, string $className): ?object
     {
         $attributes = $property->getAttributes();
         foreach ($attributes as $attribute) {
@@ -30,7 +30,7 @@ class AttributeHelper
      *
      * @return T[]
      */
-    public static function findAttributes(\ReflectionProperty $property, string $className): array
+    public static function findAttributes(\ReflectionProperty|\ReflectionClass $property, string $className): array
     {
         $matches = [];
 

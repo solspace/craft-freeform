@@ -34,6 +34,10 @@ class FormsController extends BaseApiController
     {
         $this->requireFormPermission($id);
 
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
         if (!$this->formDuplicator->clone($id)) {
             throw new FreeformException('Could not duplicate form');
         }

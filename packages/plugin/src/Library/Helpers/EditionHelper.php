@@ -16,6 +16,11 @@ class EditionHelper
         }
     }
 
+    public function __toString(): string
+    {
+        return $this->edition;
+    }
+
     public function getEditions(): array
     {
         return $this->tiers;
@@ -46,5 +51,16 @@ class EditionHelper
         $editionIndex = array_search($edition, $this->tiers, true);
 
         return false !== $editionIndex && $this->editionIndex <= $editionIndex;
+    }
+
+    public function isBelow(string $edition): bool
+    {
+        if (null === $this->editionIndex) {
+            return false;
+        }
+
+        $editionIndex = array_search($edition, $this->tiers, true);
+
+        return false !== $editionIndex && $this->editionIndex < $editionIndex;
     }
 }

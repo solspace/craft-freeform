@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
@@ -15,6 +16,7 @@ use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'hCaptcha',
     readme: __DIR__.'/README.md',

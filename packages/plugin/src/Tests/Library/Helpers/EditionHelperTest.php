@@ -50,4 +50,14 @@ class EditionHelperTest extends TestCase
         $this->assertFalse($helper->isAtLeast('lite'));
         $this->assertFalse($helper->isAtMost('ultra'));
     }
+
+    public function testIsBelow()
+    {
+        $helper = new EditionHelper('pro', ['lite', 'plus', 'pro', 'ultra']);
+
+        $this->assertFalse($helper->isBelow('lite'));
+        $this->assertFalse($helper->isBelow('plus'));
+        $this->assertFalse($helper->isBelow('pro'));
+        $this->assertTrue($helper->isBelow('ultra'));
+    }
 }

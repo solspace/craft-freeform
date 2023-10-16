@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services;
 
 use Carbon\Carbon;
 use craft\db\Query;
+use craft\helpers\App;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\FeedItem;
@@ -75,7 +76,7 @@ class FreeformFeedService extends Component
         ;
     }
 
-    public function fetchFeed()
+    public function fetchFeed(): void
     {
         if (Freeform::isLocked(self::CACHE_KEY_FEED, self::CACHE_TTL_FEED)) {
             return;
@@ -88,7 +89,7 @@ class FreeformFeedService extends Component
         $this->parseFeed();
     }
 
-    public function parseFeed()
+    public function parseFeed(): void
     {
         $currentVersion = Freeform::getInstance()->getVersion();
         $feed = $this->getFeed();
@@ -191,7 +192,7 @@ class FreeformFeedService extends Component
         $feed = [];
 
         try {
-            $feedUrl = \Craft::parseEnv('$FREEFORM_API_FEED_URL');
+            $feedUrl = App::parseEnv('$FREEFORM_API_FEED_URL');
             if ('$FREEFORM_API_FEED_URL' === $feedUrl) {
                 $feedUrl = self::FREEFORM_API_FEED_URL;
             }

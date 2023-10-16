@@ -23,7 +23,6 @@ use Solspace\Freeform\Library\DataObjects\Summary\Statistics\System;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Totals;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Widgets;
 use Solspace\Freeform\Library\Helpers\ArrayHelper;
-use Solspace\Freeform\Widgets\Pro\FieldValuesWidget;
 use Solspace\Freeform\Widgets\Pro\LinearChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RadialChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RecentWidget;
@@ -193,7 +192,6 @@ class SummaryService extends Component
         $widgets = new Widgets();
         $widgets->linear = $this->isWidgetUsed(LinearChartsWidget::class);
         $widgets->radial = $this->isWidgetUsed(RadialChartsWidget::class);
-        $widgets->fieldValues = $this->isWidgetUsed(FieldValuesWidget::class);
         $widgets->recent = $this->isWidgetUsed(RecentWidget::class);
         $widgets->quickForm = $this->isWidgetUsed(QuickFormWidget::class);
         $widgets->stats = $this->isWidgetUsed(StatisticsWidget::class);
@@ -219,7 +217,7 @@ class SummaryService extends Component
         return $summary;
     }
 
-    private function isWidgetUsed(string $widgetClass)
+    private function isWidgetUsed(string $widgetClass): bool
     {
         static $widgets;
 
@@ -245,10 +243,6 @@ class SummaryService extends Component
     private function isModifiedStatuses(): bool
     {
         $statuses = Freeform::getInstance()->statuses->getAllStatusNames();
-
-        if (3 === !\count($statuses)) {
-            return true;
-        }
 
         if (array_keys($statuses) != [1, 2, 3]) {
             return true;
@@ -313,9 +307,9 @@ class SummaryService extends Component
                 $notStoringSubmissions = true;
             }
 
-            if ($form->getExtraPostUrl()) {
-                $postForwarding = true;
-            }
+            // if ($form->getExtraPostUrl()) {
+            //     $postForwarding = true;
+            // }
 
             if ($generalSettings->collectIpAddresses) {
                 $collectIp = true;
@@ -329,47 +323,47 @@ class SummaryService extends Component
                 $limitSubmissionRate = true;
             }
 
-            if ($form->getTagAttributes()) {
+            if ($form->getAttributes()->count()) {
                 $formTagAttributes = true;
             }
 
-            $recipients = $form->getAdminNotificationProperties()->getRecipients();
-            $notificationId = $form->getAdminNotificationProperties()->getNotificationId();
-            if ($recipients && $notificationId) {
-                $adminNotifications = true;
-            }
+            // $recipients = $form->getAdminNotificationProperties()->getRecipients();
+            // $notificationId = $form->getAdminNotificationProperties()->getNotificationId();
+            // if ($recipients && $notificationId) {
+            //     $adminNotifications = true;
+            // }
 
             if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingSpinner) {
                 $processingIndicators = true;
             }
 
-            if ($form->isGtmEnabled()) {
-                $gtmEnabled = true;
-            }
+            // if ($form->isGtmEnabled()) {
+            //     $gtmEnabled = true;
+            // }
 
-            foreach ($form->getPages() as $page) {
-                if (!$form->getRuleProperties()) {
-                    continue;
-                }
+            // foreach ($form->getPages() as $page) {
+            //     if (!$form->getRuleProperties()) {
+            //         continue;
+            //     }
+            //
+            //     if ($form->getRuleProperties()->hasActiveFieldRules($page->getIndex())) {
+            //         $conditionalRulesFields = true;
+            //     }
+            //
+            //     if ($form->getRuleProperties()->hasActiveGotoRules($page->getIndex())) {
+            //         $conditionalRulesPages = true;
+            //     }
+            // }
 
-                if ($form->getRuleProperties()->hasActiveFieldRules($page->getIndex())) {
-                    $conditionalRulesFields = true;
-                }
-
-                if ($form->getRuleProperties()->hasActiveGotoRules($page->getIndex())) {
-                    $conditionalRulesPages = true;
-                }
-            }
-
-            foreach ($form->getConnectionProperties()->getList() as $connection) {
-                if ($connection instanceof Entries) {
-                    $elementConnectionsEntries = true;
-                }
-
-                if ($connection instanceof Users) {
-                    $elementConnectionsUsers = true;
-                }
-            }
+            // foreach ($form->getConnectionProperties()->getList() as $connection) {
+            //     if ($connection instanceof Entries) {
+            //         $elementConnectionsEntries = true;
+            //     }
+            //
+            //     if ($connection instanceof Users) {
+            //         $elementConnectionsUsers = true;
+            //     }
+            // }
 
             foreach ($form->getLayout()->getFields() as $field) {
                 $fieldTypes[] = $field->getType();
@@ -391,42 +385,42 @@ class SummaryService extends Component
                 }
             }
 
-            $layout = json_decode($formModel->layoutJson, false);
-            if (isset($layout->composer->properties->payment)) {
-                $paymentType = $layout->composer->properties->payment->paymentType ?? null;
-                if ('single' === $paymentType) {
-                    $paymentSingle = true;
-                }
-
-                if (\in_array($paymentType, ['predefined_subscription', 'dynamic_subscription'], true)) {
-                    $paymentSubscription = true;
-                }
-            }
+            // $layout = json_decode($formModel->layoutJson, false);
+            // if (isset($layout->composer->properties->payment)) {
+            //     $paymentType = $layout->composer->properties->payment->paymentType ?? null;
+            //     if ('single' === $paymentType) {
+            //         $paymentSingle = true;
+            //     }
+            //
+            //     if (\in_array($paymentType, ['predefined_subscription', 'dynamic_subscription'], true)) {
+            //         $paymentSubscription = true;
+            //     }
+            // }
         }
 
         $fieldTypes = array_unique($fieldTypes);
         $fieldTypes = array_filter($fieldTypes);
 
         return (object) [
-            'paymentsSingle' => $paymentSingle,
-            'paymentsSubscription' => $paymentSubscription,
+            'paymentsSingle' => false,
+            'paymentsSubscription' => false,
             'fieldTypes' => $fieldTypes,
             'usingSource' => $usingSource,
             'multiPage' => $multiPage,
             'builtInAjax' => $builtInAjax,
             'notStoringSubmissions' => $notStoringSubmissions,
-            'postForwarding' => $postForwarding,
+            'postForwarding' => false,
             'collectIp' => $collectIp,
             'optInDataStorage' => $optInDataStorage,
             'limitSubmissionRate' => $limitSubmissionRate,
             'formTagAttributes' => $formTagAttributes,
-            'adminNotifications' => $adminNotifications,
-            'loadingIndicators' => $loadingIndicators,
-            'conditionalRulesFields' => $conditionalRulesFields,
-            'conditionalRulesPages' => $conditionalRulesPages,
-            'elementConnectionsEntries' => $elementConnectionsEntries,
-            'elementConnectionsUsers' => $elementConnectionsUsers,
-            'gtmEnabled' => $gtmEnabled,
+            'adminNotifications' => false,
+            'loadingIndicators' => false,
+            'conditionalRulesFields' => false,
+            'conditionalRulesPages' => false,
+            'elementConnectionsEntries' => false,
+            'elementConnectionsUsers' => false,
+            'gtmEnabled' => false,
             'types' => $types,
         ];
     }

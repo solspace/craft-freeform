@@ -8,6 +8,7 @@ type Config = {
   templates: {
     native: boolean;
   };
+  feed: boolean;
   limits: {
     forms?: number;
     fields?: number;

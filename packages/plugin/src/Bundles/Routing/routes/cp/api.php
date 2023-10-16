@@ -57,4 +57,8 @@ return [
 
     // OPTIONS
     'freeform/api/options' => 'freeform/api/options/generate-options',
+
+    // NOTICES
+    'freeform/api/notices' => 'freeform/api/notices',
+    'freeform/api/notices/<id:\d+>' => 'freeform/api/notices',
 ];

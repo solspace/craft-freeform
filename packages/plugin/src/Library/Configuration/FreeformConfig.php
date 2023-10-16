@@ -15,12 +15,14 @@ class FreeformConfig implements \JsonSerializable
     public function __construct(SettingsService $settings)
     {
         $plugin = Freeform::getInstance();
+        $settingsModel = $settings->getSettingsModel();
         $edition = $plugin->edition();
 
         $this->config = [
             'templates' => [
-                'native' => $settings->getSettingsModel()->defaults->includeSampleTemplates,
+                'native' => (bool) $settingsModel->defaults->includeSampleTemplates,
             ],
+            'feed' => (bool) $settingsModel->displayFeed,
             'limits' => [
                 'forms' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FORMS,
                 'fields' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FIELDS,

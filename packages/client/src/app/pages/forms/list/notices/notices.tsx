@@ -63,7 +63,7 @@ export const Notices: React.FC = () => {
           <Message
             dangerouslySetInnerHTML={{
               __html: translate(
-                'There are currently <a href="{link}" target="_blank">{errors} logged errors</a> in the Freeform error log.',
+                'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.',
                 {
                   link: generateUrl('settings/error-log'),
                   errors: data.errors,

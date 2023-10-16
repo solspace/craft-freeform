@@ -27,8 +27,11 @@ export const useNoticeDeleteMutation = (): UseMutationResult => {
 
   return useMutation((id: number) => axios.delete(`/api/notices/${id}`), {
     onMutate: (id: number) => {
-      queryClient.setQueryData<Notice[]>(QKNotices.all, (oldData) => {
-        return oldData.filter((notice) => notice.id !== id);
+      queryClient.setQueryData<NoticesResponse>(QKNotices.all, (oldData) => {
+        return {
+          ...oldData,
+          notices: oldData.notices.filter((notice) => notice.id !== id),
+        };
       });
     },
   });

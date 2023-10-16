@@ -41,6 +41,18 @@ class NoticesController extends BaseApiController
             $notices[] = new Notification($data);
         }
 
+        usort(
+            $notices,
+            function (Notification $a, Notification $b) {
+                $categorySortOrder = Notification::CATEGORY_SORT_ORDER;
+
+                $aIndex = array_search($a->getType(), $categorySortOrder, true);
+                $bIndex = array_search($b->getType(), $categorySortOrder, true);
+
+                return $aIndex <=> $bIndex;
+            }
+        );
+
         return [
             'notices' => $notices,
             'errors' => $this->loggerService->getLogReader()->count(),

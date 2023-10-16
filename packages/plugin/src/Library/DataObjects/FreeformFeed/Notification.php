@@ -6,9 +6,19 @@ use Carbon\Carbon;
 
 class Notification
 {
+    public const TYPE_NEW = 'new';
+    public const TYPE_INFO = 'info';
     public const TYPE_NOTICE = 'notice';
     public const TYPE_WARNING = 'warning';
     public const TYPE_CRITICAL = 'critical';
+
+    public const CATEGORY_SORT_ORDER = [
+        self::TYPE_CRITICAL,
+        self::TYPE_WARNING,
+        self::TYPE_INFO,
+        self::TYPE_NOTICE,
+        self::TYPE_NEW,
+    ];
 
     private int $id;
 

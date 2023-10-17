@@ -1,4 +1,5 @@
 import React from 'react';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { ModalProvider } from '@components/modals/modal.context';
 import {
   fetchFieldPropertySections,
@@ -20,6 +21,7 @@ export const ListProvider: React.FC = () => {
 
   return (
     <ModalProvider>
+      <Breadcrumb label="Forms" url="/forms" />
       <List />
     </ModalProvider>
   );

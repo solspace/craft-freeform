@@ -1,7 +1,6 @@
 {
   "name": "root",
   "workspaces": [
-    "packages/app",
     "packages/client",
     "packages/scripts",
     "packages/styles"

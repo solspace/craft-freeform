@@ -16,7 +16,6 @@ lerna.json export-ignore
 
 phpunit.xml export-ignore
 
-packages/app export-ignore
 packages/client export-ignore
 packages/scripts export-ignore
 packages/styles export-ignore

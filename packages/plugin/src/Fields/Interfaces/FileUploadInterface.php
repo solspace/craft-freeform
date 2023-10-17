@@ -12,9 +12,13 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
+use craft\elements\db\AssetQuery;
+
 interface FileUploadInterface
 {
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
+
+    public function getAssets(): AssetQuery;
 
     public function getAssetSourceId(): ?int;
 

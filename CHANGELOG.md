@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.8 - 2023-10-17
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- Added support and checks for a free Express edition.
+- Added warning, info and error notices for the forms dashboard.
+
+### Changed
+- Updated the install Welcome screen.
+
+### Fixed
+- Fixed some issues with the User element integration.
+- Fixed a bug where the Digest feature was not working correctly.
+
 ## 5.0.0-beta.7 - 2023-10-12
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.

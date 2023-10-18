@@ -25,7 +25,7 @@ class FileUploadBundle extends FeatureBundle
         Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'prolongUnfinalizedAssets']);
     }
 
-    public function prolongUnfinalizedAssets(SaveFormEvent $event)
+    public function prolongUnfinalizedAssets(SaveFormEvent $event): void
     {
         $saveTimeDays = (int) Freeform::getInstance()->settings->getSettingsModel()->saveFormTtl;
         $newDate = new Carbon('now +'.$saveTimeDays.' days', 'UTC');
@@ -40,7 +40,7 @@ class FileUploadBundle extends FeatureBundle
         }
     }
 
-    public function finalizeFiles(SubmitEvent $event)
+    public function finalizeFiles(SubmitEvent $event): void
     {
         $form = $event->getForm();
 
@@ -55,7 +55,7 @@ class FileUploadBundle extends FeatureBundle
         }
     }
 
-    public function handleDnDPost(TransformValueEvent $event)
+    public function handleDnDPost(TransformValueEvent $event): void
     {
         $field = $event->getField();
         if (!$field instanceof FileDragAndDropField) {

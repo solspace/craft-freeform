@@ -6,7 +6,7 @@ return [
     'freeform/api/elements/entries/fields' => 'freeform/api/elements/entry/get-field-options',
 
     // Users
-    'freeform/api/elements/users/fields' => 'freeform/api/elements/user/get-fields',
+    'freeform/api/elements/users/fields' => 'freeform/api/elements/user/fields',
 
     // Categories
     'freeform/api/elements/categories/fields' => 'freeform/api/elements/category/get-fields',

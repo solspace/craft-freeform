@@ -29,7 +29,7 @@ export const InstallWrapper = styled.div`
   align-items: center;
   gap: ${spacings.sm};
 
-  margin-top: 60px;
+  margin-top: 20px;
 
   font-size: 22px;
   fill: ${colors.teal500};
@@ -43,7 +43,7 @@ export const InstallText = styled(animated.div)``;
 
 export const ExtraContentWrapper = styled(animated.div)`
   max-width: 60%;
-  margin-top: 40px;
+  margin-top: 20px;
 
   color: ${colors.gray400};
   font-style: italic;

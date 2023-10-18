@@ -20,7 +20,7 @@ class WelcomeScreenBundle extends FeatureBundle
         );
     }
 
-    public function redirectToWelcome(PluginEvent $event)
+    public function redirectToWelcome(PluginEvent $event): void
     {
         if (!$event->plugin instanceof Freeform) {
             return;

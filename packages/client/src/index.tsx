@@ -15,6 +15,7 @@ import '../config';
 import './utils/prototypes';
 
 import { Form, Forms } from './app/pages/forms';
+import { Welcome } from './app/pages/welcome/welcome';
 import { EscapeStackProvider } from './contexts/escape/escape.context';
 import ManualStyles from './styles/manual';
 import { debug } from './utils/debug';
@@ -43,17 +44,16 @@ root.render(
           <BreadcrumbProvider>
             <PortalProvider>
               <Breadcrumb label="Freeform" url="/forms" />
-              <Breadcrumb label="Forms" url="/forms" />
               <ManualStyles />
               <ReactQueryDevtools />
               <CpNavigation />
               <Routes>
                 <Route path="/" element={<App />}>
                   <Route path="forms">
-                    <Route path="new/*" element={<Form />} />
                     <Route path=":formId/*" element={<Form />} />
                     <Route index element={<Forms />} />
                   </Route>
+                  <Route path="welcome" element={<Welcome />} />
                 </Route>
               </Routes>
             </PortalProvider>

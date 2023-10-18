@@ -3,8 +3,7 @@
     "packages/client",
     "packages/builder",
     "packages/scripts",
-    "packages/styles",
-    "packages/app"
+    "packages/styles"
   ],
   "version": "1.0.0"
 }

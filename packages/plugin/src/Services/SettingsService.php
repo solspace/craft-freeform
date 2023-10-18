@@ -20,6 +20,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Singleton\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
@@ -305,20 +306,12 @@ class SettingsService extends BaseService
 
     public function getFailedNotificationRecipients(): RecipientCollection
     {
-        return new RecipientCollection(
-            StringHelper::extractSeparatedValues(
-                $this->getSettingsModel()->alertNotificationRecipients ?? ''
-            )
-        );
+        return $this->getRecipientCollection($this->getSettingsModel()->alertNotificationRecipients ?? '');
     }
 
     public function getDigestRecipients(): RecipientCollection
     {
-        return new RecipientCollection(
-            StringHelper::extractSeparatedValues(
-                $this->getSettingsModel()->digestRecipients ?? ''
-            )
-        );
+        return $this->getRecipientCollection($this->getSettingsModel()->digestRecipients ?? '');
     }
 
     public function getDigestFrequency(): int
@@ -328,11 +321,7 @@ class SettingsService extends BaseService
 
     public function getClientDigestRecipients(): RecipientCollection
     {
-        return new RecipientCollection(
-            StringHelper::extractSeparatedValues(
-                $this->getSettingsModel()->clientDigestRecipients ?? ''
-            )
-        );
+        return $this->getRecipientCollection($this->getSettingsModel()->clientDigestRecipients ?? '');
     }
 
     public function getClientDigestFrequency(): int
@@ -428,5 +417,15 @@ class SettingsService extends BaseService
         }
 
         return $templates;
+    }
+
+    private function getRecipientCollection(string $emails): RecipientCollection
+    {
+        $recipients = array_map(
+            fn (string $email) => new Recipient($email),
+            StringHelper::extractSeparatedValues($emails)
+        );
+
+        return new RecipientCollection($recipients);
     }
 }

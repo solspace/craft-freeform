@@ -438,7 +438,7 @@ class SummaryService extends Component
     private function getWebhooks(): array
     {
         $integrations = [];
-        foreach (Freeform::getInstance()->webhooks->getAll() as $webhook) {
+        foreach (Freeform::getInstance()->webhooks->getAllIntegrations() as $webhook) {
             $integrations[] = $webhook->type;
         }
 

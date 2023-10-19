@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
 
 #[Type(
     name: 'Generic Webhook',
+    type: Type::TYPE_WEBHOOKS,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

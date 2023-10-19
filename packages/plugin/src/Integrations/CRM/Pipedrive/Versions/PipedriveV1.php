@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pipedrive\BasePipedriveIntegration;
 
 #[Type(
-    name: 'Pipedrive (v1)',
+    name: 'Pipedrive',
+    type: Type::TYPE_CRM,
+    version: 'v1',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

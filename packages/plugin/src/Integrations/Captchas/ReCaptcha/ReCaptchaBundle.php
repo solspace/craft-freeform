@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
 
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use yii\base\Event;
 
 class ReCaptchaBundle extends FeatureBundle
@@ -110,7 +110,7 @@ class ReCaptchaBundle extends FeatureBundle
             return null;
         }
 
-        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CAPTCHAS);
+        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_CAPTCHAS);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {
                 continue;

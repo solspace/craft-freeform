@@ -3,10 +3,10 @@
 
 {% block content %}
 
-    {% set selectedIntegration = craft.app.request.segment(4) %}
-    {% set saveShortcutRedirect = 'freeform/settings/other/'~selectedIntegration %}
+    {% set selectedIntegration = craft.app.request.segment(5) %}
+    {% set saveShortcutRedirect = 'freeform/settings/integrations/single/'~selectedIntegration %}
 
-    <input type="hidden" name="action" value="freeform/integrations/singleton/save">
+    <input type="hidden" name="action" value="freeform/integrations/single/save">
     <input type="hidden" name="selectedIntegration" value="{{ selectedIntegration }}" />
 
     <div class="integration-stack">

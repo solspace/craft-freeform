@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\BaseMailchimpIntegration;
 
 #[Type(
-    name: 'Mailchimp (v3)',
+    name: 'Mailchimp',
+    type: Type::TYPE_EMAIL_MARKETING,
+    version: 'v3',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.png',
 )]

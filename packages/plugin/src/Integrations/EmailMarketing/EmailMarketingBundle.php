@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing;
 
 use Composer\ClassMapGenerator\ClassMapGenerator;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -66,7 +66,7 @@ class EmailMarketingBundle extends FeatureBundle
         }
 
         /** @var EmailMarketingIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_EMAIL_MARKETING);
+        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_EMAIL_MARKETING);
         foreach ($integrations as $integration) {
             if (!$integration->isEnabled()) {
                 continue;

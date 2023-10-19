@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 
 #[Type(
     name: 'Entry',
+    type: Type::TYPE_ELEMENTS,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

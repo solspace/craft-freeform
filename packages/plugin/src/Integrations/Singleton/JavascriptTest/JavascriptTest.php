@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 #[Edition(Edition::LITE)]
 #[Type(
     name: 'Javascript Test',
+    type: Type::TYPE_SINGLE,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

@@ -14,7 +14,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
 
 #[Type(
-    name: 'Pardot (v4)',
+    name: 'Pardot',
+    type: Type::TYPE_CRM,
+    version: 'v4',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

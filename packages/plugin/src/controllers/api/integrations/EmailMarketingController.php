@@ -24,7 +24,7 @@ class EmailMarketingController extends BaseApiController
     public function actionLists(): Response
     {
         $id = $this->request->get('id');
-        $integration = Freeform::getInstance()->emailMarketing->getIntegrationObjectById($id);
+        $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($id);
         if (!$integration instanceof EmailMarketingIntegrationInterface) {
             throw new NotFoundHttpException('Integration not found');
         }
@@ -47,7 +47,7 @@ class EmailMarketingController extends BaseApiController
             throw new NotFoundHttpException('Integration not found');
         }
 
-        $integration = Freeform::getInstance()->emailMarketing->getIntegrationObjectById($id);
+        $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($id);
         if (!$integration instanceof EmailMarketingIntegrationInterface) {
             throw new NotFoundHttpException('Integration not found');
         }

@@ -29,7 +29,9 @@ use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
 
 #[Type(
-    name: 'Salesforce (v58)',
+    name: 'Salesforce',
+    type: Type::TYPE_CRM,
+    version: 'v58',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

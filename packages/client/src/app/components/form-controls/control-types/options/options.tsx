@@ -1,4 +1,5 @@
 import React from 'react';
+import { ButtonGroup } from '@components/elements/button-group/button-group';
 import {
   ControlWrapper,
   Label,
@@ -11,12 +12,10 @@ import { useAppDispatch } from '@editor/store';
 import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { OptionsProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import { generateDefaultValue } from './sources/defaults';
 import { SourceComponent } from './sources/source.component';
-import { Button, ButtonGroup } from './options.styles';
 import type { Option } from './options.types';
 import { Source } from './options.types';
 import { sourceLabels } from './options.types';
@@ -58,17 +57,13 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
       {config.editions.isAtLeast(Edition.Lite) && (
         <ControlWrapper $width={property.width}>
           <Label>{translate('Source')}</Label>
-          <ButtonGroup>
-            {Object.entries(sourceLabels).map(([key, label]) => (
-              <Button
-                key={key}
-                className={classes(source === key && 'active')}
-                onClick={() => updateValue(generateDefaultValue(key as Source))}
-              >
-                {label}
-              </Button>
-            ))}
-          </ButtonGroup>
+          <ButtonGroup
+            options={sourceLabels}
+            value={source}
+            onClick={(selectedSource) =>
+              updateValue(generateDefaultValue(selectedSource as Source))
+            }
+          />
         </ControlWrapper>
       )}
 

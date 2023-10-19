@@ -2,7 +2,9 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Label = styled.label`
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.xs};
 
   height: 18px;
   margin-bottom: 4px;
@@ -17,6 +19,18 @@ export const Label = styled.label`
 
       color: ${colors.error};
     }
+  }
+`;
+
+const iconSize = 16;
+export const LabelIcon = styled.div`
+  position: relative;
+  top: -1px;
+  &,
+  svg {
+    width: ${iconSize}px;
+    height: ${iconSize}px;
+    font-size: ${iconSize}px;
   }
 `;
 

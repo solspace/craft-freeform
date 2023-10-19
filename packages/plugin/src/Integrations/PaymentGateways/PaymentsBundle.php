@@ -2,7 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways;
 
+use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
@@ -14,12 +16,19 @@ use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class PaymentsBundle extends FeatureBundle
 {
     public function __construct()
     {
+        Event::on(
+            IntegrationsService::class,
+            IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
+            [$this, 'registerTypes']
+        );
+
         Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
@@ -35,6 +44,18 @@ class PaymentsBundle extends FeatureBundle
     public static function getPriority(): int
     {
         return 900;
+    }
+
+    public function registerTypes(RegisterIntegrationTypesEvent $event): void
+    {
+        $path = \Craft::getAlias('@freeform/Integrations/PaymentGateways');
+
+        $classMap = ClassMapGenerator::createMap($path);
+        $classes = array_keys($classMap);
+
+        foreach ($classes as $class) {
+            $event->addType($class);
+        }
     }
 
     public function handlePayments(ProcessSubmissionEvent $event): void

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -30,7 +31,7 @@ class FormIntegrationsProvider
      */
     public function getSingleton(Form $form, string $class): ?IntegrationInterface
     {
-        $integrations = $this->getForForm($form, IntegrationInterface::TYPE_SINGLETON);
+        $integrations = $this->getForForm($form, Type::TYPE_SINGLE);
         foreach ($integrations as $integration) {
             if ($integration instanceof $class) {
                 return $integration;

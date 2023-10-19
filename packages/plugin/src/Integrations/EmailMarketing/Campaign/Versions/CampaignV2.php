@@ -29,7 +29,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\Campaign\BaseCampaignIntegration;
 
 #[Type(
-    name: 'Campaign (v2)',
+    name: 'Campaign',
+    type: Type::TYPE_EMAIL_MARKETING,
+    version: 'v2',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

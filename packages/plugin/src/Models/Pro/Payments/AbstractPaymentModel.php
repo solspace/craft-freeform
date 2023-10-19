@@ -55,7 +55,7 @@ abstract class AbstractPaymentModel extends Model implements PaymentInterface
     public function getIntegration()
     {
         if (!$this->integration) {
-            $paymentGateways = Freeform::getInstance()->paymentGateways;
+            $paymentGateways = Freeform::getInstance()->integrations;
             $this->integration = $paymentGateways->getIntegrationObjectById($this->integrationId);
         }
 

@@ -25,7 +25,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SubscriptionPaymentIntentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\PaymentProperties;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;

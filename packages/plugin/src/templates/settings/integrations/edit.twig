@@ -1,6 +1,6 @@
 {% extends "freeform/_layouts/settings" %}
 
-{% set saveShortcutRedirect = 'freeform/settings/'~type~'/{id}' %}
+{% set saveShortcutRedirect = 'freeform/settings/integrations/'~type~'/{id}' %}
 {% set fullPageForm = true %}
 
 {% block actionButton %}
@@ -18,7 +18,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/'~type~'/new')|hash }}">
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/integrations/'~type~'/new')|hash }}">
                             {{ "Save and add another"|t('freeform') }}
                         </a>
                     </li>

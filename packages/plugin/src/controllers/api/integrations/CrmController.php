@@ -18,7 +18,7 @@ class CrmController extends BaseApiController
         }
 
         /** @var CRMIntegrationInterface $integration */
-        $integration = Freeform::getInstance()->crm->getIntegrationObjectById($id);
+        $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($id);
         if (!$integration) {
             throw new NotFoundHttpException('Integration not found');
         }

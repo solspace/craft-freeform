@@ -29,7 +29,9 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
-    name: 'HubSpot (v1)',
+    name: 'HubSpot',
+    type: Type::TYPE_CRM,
+    version: 'v1',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

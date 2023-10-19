@@ -13,6 +13,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 #[Type(
     name: 'Slack',
+    type: Type::TYPE_WEBHOOKS,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

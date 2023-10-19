@@ -108,6 +108,9 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
 };
+export type ButtonGroupProperty = BaseProperty<string, PropertyType.Select> & {
+  options: OptionCollection;
+};
 export type DynamicSelectProperty = BaseProperty<
   string,
   PropertyType.DynamicSelect

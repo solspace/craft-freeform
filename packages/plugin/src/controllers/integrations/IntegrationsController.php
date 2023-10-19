@@ -2,24 +2,23 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
-use Solspace\Freeform\Services\Integrations\AbstractIntegrationService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
 
-abstract class IntegrationsController extends BaseController
+class IntegrationsController extends BaseController
 {
     public function __construct(
         $id,
@@ -41,7 +40,7 @@ abstract class IntegrationsController extends BaseController
         parent::init();
     }
 
-    public function actionIndex(): Response
+    public function actionIndex(string $type): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
         \Craft::$app->view->registerAssetBundle(IntegrationsBundle::class);
@@ -49,32 +48,31 @@ abstract class IntegrationsController extends BaseController
         return $this->renderTemplate(
             'freeform/settings/integrations/list',
             [
-                'title' => $this->getTitle(),
-                'type' => $this->getTypeShorthand(),
-                'integrations' => $this->getIntegrationModels(),
-                'providers' => $this->getServiceProviderTypes(),
+                'title' => $this->getTitle($type),
+                'type' => $type,
+                'integrations' => $this->getIntegrationModels($type),
+                'providers' => $this->getServiceProviderTypes($type),
             ]
         );
     }
 
-    public function actionCreate(): Response
+    public function actionCreate(string $type): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        $model = IntegrationModel::create($this->getTypeShorthand());
-        $title = Freeform::t('Create new');
+        $model = IntegrationModel::create($type);
 
-        return $this->renderEditForm($model, $title);
+        return $this->renderEditForm($model);
     }
 
-    public function actionEdit(mixed $id = null, IntegrationModel $model = null): Response
+    public function actionEdit(string $type, mixed $id = null): Response
     {
-        $model = $this->getNewOrExistingModel($id);
+        $model = $this->getNewOrExistingModel($id, $type);
         if (!$model->id) {
             throw new HttpException(404, Freeform::t('Integration not found'));
         }
 
-        return $this->renderEditForm($model, $model->name);
+        return $this->renderEditForm($model);
     }
 
     public function actionSave(): Response
@@ -86,7 +84,8 @@ abstract class IntegrationsController extends BaseController
         $post = \Craft::$app->request->post();
 
         $id = $post['id'] ?? null;
-        $model = $this->getNewOrExistingModel($id);
+        $type = $post['type'];
+        $model = $this->getNewOrExistingModel($id, $type);
 
         if (!$model->id) {
             $model->class = $post['class'];
@@ -123,7 +122,7 @@ abstract class IntegrationsController extends BaseController
 
         \Craft::$app->session->setError(Freeform::t('Integration not saved'));
 
-        return $this->renderEditForm($model, $model->name);
+        return $this->renderEditForm($model);
     }
 
     public function actionCheckIntegrationConnection(): Response
@@ -160,80 +159,73 @@ abstract class IntegrationsController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    public function actionForceAuthorization(string $handle): Response
+    public function actionForceAuthorization(int $id): Response
     {
-        $model = $this->getIntegrationsService()->getByHandle($handle);
-        if (!$model) {
-            throw new IntegrationException(
-                Freeform::t(
-                    "Integration with handle '{handle}' not found",
-                    ['handle' => $handle]
-                )
-            );
-        }
-
-        $integration = $model->getIntegrationObject();
+        $integration = $this->getIntegrationsService()->getIntegrationObjectById($id);
+        $type = $integration->getTypeDefinition()->type;
         if (!$integration instanceof OAuth2ConnectorInterface) {
-            return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getTypeShorthand().'/'.$model->id));
+            return $this->redirect(
+                UrlHelper::cpUrl('freeform/settings/integrations/'.$type.'/'.$integration->getId())
+            );
         }
 
         // TODO: move into an event listener flow
         $this->OAuth2Bundle->initiateAuthenticationFlow($integration);
     }
 
-    protected function renderEditForm(IntegrationModel $model, ?string $title): Response
+    protected function renderEditForm(IntegrationModel $model): Response
     {
         $this->view->registerAssetBundle(IntegrationsBundle::class);
         $this->view->registerAssetBundle(IntegrationsEditBundle::class);
 
         $this->getIntegrationsService()->decryptModelValues($model);
+        $type = $model->type;
 
         $variables = [
             'integration' => $model,
-            'blockTitle' => $title,
-            'serviceProviderTypes' => $this->getServiceProviderTypes(),
-            'continueEditingUrl' => 'freeform/settings/'.$this->getTypeShorthand().'/{handle}',
-            'action' => 'freeform/integrations/'.$this->getAction().'/save',
-            'title' => $this->getTitle(),
-            'type' => $this->getTypeShorthand(),
+            'serviceProviderTypes' => $this->getServiceProviderTypes($type),
+            'continueEditingUrl' => 'freeform/settings/integrations/'.$type.'/{handle}',
+            'action' => 'freeform/integrations/integrations/save',
+            'title' => $this->getTitle($type),
+            'type' => $type,
         ];
 
         return $this->renderTemplate('freeform/settings/integrations/edit', $variables);
     }
 
-    protected function getAction(): string
+    protected function getIntegrationModels(string $type): array
     {
-        return $this->getTypeShorthand();
+        return $this->integrationsService->getAllIntegrations($type);
     }
 
-    protected function getIntegrationModels(): array
+    protected function getServiceProviderTypes(string $type): array
     {
-        return $this->getDedicatedService()->getAllIntegrations();
+        return $this->integrationsService->getAllServiceProviders($type);
     }
 
-    protected function getServiceProviderTypes(): array
+    protected function getNewOrExistingModel(int|string|null $id, string $type): IntegrationModel
     {
-        return $this->getDedicatedService()->getAllServiceProviders();
-    }
-
-    protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
-    {
+        $model = null;
         if (is_numeric($id)) {
-            $model = $this->getDedicatedService()->getIntegrationById($id);
-        } else {
-            $model = $this->getDedicatedService()->getIntegrationByHandle($id);
+            $model = $this->integrationsService->getById($id);
+        } elseif (\is_string($id)) {
+            $model = $this->integrationsService->getByHandle($id);
         }
 
         if (!$model) {
-            $model = IntegrationModel::create($this->getTypeShorthand());
+            $model = IntegrationModel::create($type);
         }
 
         return $model;
     }
 
-    abstract protected function getDedicatedService(): AbstractIntegrationService;
-
-    abstract protected function getTitle(): string;
-
-    abstract protected function getTypeShorthand(): string;
+    private function getTitle(string $type): string
+    {
+        return StringHelper::titleize(
+            implode(
+                ' ',
+                StringHelper::toWords($type, removePunctuation: true)
+            )
+        );
+    }
 }

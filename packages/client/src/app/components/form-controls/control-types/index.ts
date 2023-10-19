@@ -1,5 +1,6 @@
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
+export { default as buttonGroup } from './button-group/button-group';
 export { default as checkboxes } from './checkboxes/checkboxes';
 export { default as codeEditor } from './code-editor/code';
 export { default as colorPicker } from './color-picker/color-picker';

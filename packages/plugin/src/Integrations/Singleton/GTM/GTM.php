@@ -13,6 +13,7 @@ use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
 
 #[Type(
     name: 'Google Tag Manager',
+    type: Type::TYPE_SINGLE,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

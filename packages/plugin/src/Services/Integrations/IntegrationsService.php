@@ -15,18 +15,15 @@ namespace Solspace\Freeform\Services\Integrations;
 use craft\db\Query;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -44,6 +41,7 @@ class IntegrationsService extends BaseService
 
     public function __construct(
         $config = [],
+        protected IntegrationClientProvider $clientProvider,
         private PropertyProvider $propertyProvider,
     ) {
         parent::__construct($config);
@@ -55,7 +53,6 @@ class IntegrationsService extends BaseService
     public function getAllIntegrationTypes(): array
     {
         static $types;
-
         if (null === $types) {
             $event = new RegisterIntegrationTypesEvent();
             Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
@@ -68,23 +65,46 @@ class IntegrationsService extends BaseService
     }
 
     /**
+     * @return Type[]
+     */
+    public function getAllServiceProviders(?string $isOfType = null): array
+    {
+        static $providers;
+        if (null === $providers) {
+            $types = $this->getIntegrationsService()->getAllIntegrationTypes();
+
+            $providers = [];
+            foreach ($types as $type) {
+                if ($isOfType && $type->type !== $isOfType) {
+                    continue;
+                }
+
+                $type->properties = $this->propertyProvider->getEditableProperties($type->class);
+
+                $providers[$type->class] = $type;
+            }
+        }
+
+        return $providers;
+    }
+
+    /**
      * @return IntegrationModel[]
      */
     public function getAllIntegrations(?string $type = null): array
     {
         $this->getAllIntegrationTypes();
-        $query = $this->getQuery();
-
-        if ($type) {
-            $query->andWhere(['[[type]]' => $type]);
-        }
-
-        $results = $query->all();
+        $results = $this->getQuery($type)->all();
 
         $models = [];
         foreach ($results as $result) {
             $model = $this->createIntegrationModel($result);
-            $models[] = $model;
+
+            try {
+                $model->getIntegrationObject();
+                $models[] = $model;
+            } catch (IntegrationNotFoundException $e) {
+            }
         }
 
         return $models;
@@ -108,6 +128,18 @@ class IntegrationsService extends BaseService
         }
 
         return $this->createIntegrationModel($result);
+    }
+
+    public function getIntegrationObjectById(int $id): IntegrationInterface
+    {
+        $model = $this->getById($id);
+        if ($model) {
+            return $model->getIntegrationObject();
+        }
+
+        throw new IntegrationException(
+            Freeform::t('Integration with ID {id} not found', ['id' => $id])
+        );
     }
 
     public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
@@ -210,33 +242,6 @@ class IntegrationsService extends BaseService
 
             throw $exception;
         }
-    }
-
-    public function getIntegrationType(string|IntegrationInterface $integration): string
-    {
-        $reflection = new \ReflectionClass($integration);
-
-        if ($reflection->implementsInterface(CRMIntegrationInterface::class)) {
-            return 'crm';
-        }
-
-        if ($reflection->implementsInterface(EmailMarketingIntegrationInterface::class)) {
-            return 'email-marketing';
-        }
-
-        if ($reflection->implementsInterface(PaymentGatewayIntegrationInterface::class)) {
-            return 'payment-gateways';
-        }
-
-        if ($reflection->implementsInterface(WebhookIntegrationInterface::class)) {
-            return 'webhooks';
-        }
-
-        if ($reflection->implementsInterface(CaptchaIntegrationInterface::class)) {
-            return 'captchas';
-        }
-
-        return 'other';
     }
 
     public function decryptModelValues(IntegrationModel $model): void
@@ -390,9 +395,9 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
-    protected function getQuery(): Query
+    protected function getQuery(?string $type = null): Query
     {
-        return (new Query())
+        $query = (new Query())
             ->select(
                 [
                     'integration.id',
@@ -407,6 +412,12 @@ class IntegrationsService extends BaseService
             ->from(IntegrationRecord::TABLE.' integration')
             ->orderBy(['id' => \SORT_ASC])
         ;
+
+        if ($type) {
+            $query->andWhere(['type' => $type]);
+        }
+
+        return $query;
     }
 
     protected function createIntegrationModel(array $data): IntegrationModel

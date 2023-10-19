@@ -14,6 +14,28 @@ table#integrations {
   }
 }
 
+.integration-version {
+  font-size: 12px;
+  font-family: monospace;
+  color: #AAA;
+
+  .prefix-v {
+    color: #BBB;
+  }
+
+  .version-number {
+    color: #414141;
+  }
+
+  &:before {
+    content: '[';
+  }
+
+  &:after {
+    content: ']';
+  }
+}
+
 #auth-checker {
   margin-bottom: 10px;
 

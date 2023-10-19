@@ -234,23 +234,18 @@ class SettingsService extends BaseService
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
             'hdapi' => ['heading' => Freeform::t('Integrations')],
-            'email-marketing' => ['title' => Freeform::t('Email Marketing')],
-            'crm' => ['title' => Freeform::t('CRM')],
-            'elements' => ['title' => Freeform::t('Elements')],
-            'captchas' => ['title' => Freeform::t('Captchas')],
-            // 'payment-gateways' => ['title' => Freeform::t('Payments')],
-            'webhooks' => ['title' => Freeform::t('Webhooks')],
-            'other' => ['title' => Freeform::t('Other')],
+            'integrations/email-marketing' => ['title' => Freeform::t('Email Marketing')],
+            'integrations/crm' => ['title' => Freeform::t('CRM')],
+            'integrations/elements' => ['title' => Freeform::t('Elements')],
+            'integrations/captchas' => ['title' => Freeform::t('Captchas')],
+            'integrations/payment-gateways' => ['title' => Freeform::t('Payments')],
+            'integrations/webhooks' => ['title' => Freeform::t('Webhooks')],
+            'integrations/single' => ['title' => Freeform::t('Other')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'error-log' => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],
             'diagnostics' => ['title' => Freeform::t('Diagnostics')],
-            'craft-preflight' => ['title' => Freeform::t('Craft 4 Preflight')],
         ];
-
-        if (version_compare(Freeform::getInstance()->getVersion(), '4.0.0-alpha', '>=')) {
-            unset($nav['craft-preflight']);
-        }
 
         if (!$this->isAllowAdminEdit()) {
             unset($nav['hdspam']);

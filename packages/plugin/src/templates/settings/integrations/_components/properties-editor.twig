@@ -1,12 +1,15 @@
 {% import "_includes/forms" as forms %}
 
 <div id="integration-type" data-type="{{ type }}">
-    <input type="hidden" name="action" value="{{ action }}">
-    {{ redirectInput('freeform/settings/'~type) }}
-    {% if integration.id %}
-        <input type="hidden" name="id" value="{{ integration.id }}">
-    {% endif %}
     {{ csrfInput() }}
+    {{ redirectInput('freeform/settings/integrations/'~type) }}
+
+    <input type="hidden" name="action" value="{{ action }}" />
+    <input type="hidden" name="type" value="{{ type }}" />
+
+    {% if integration.id %}
+        <input type="hidden" name="id" value="{{ integration.id }}" />
+    {% endif %}
 
     {{ forms.selectField({
         first: true,

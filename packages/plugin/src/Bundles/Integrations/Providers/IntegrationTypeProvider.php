@@ -7,11 +7,6 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 
 class IntegrationTypeProvider
 {
@@ -48,31 +43,5 @@ class IntegrationTypeProvider
         }
 
         return self::$types[$integrationClass];
-    }
-
-    public function getTypeShorthand(IntegrationInterface $integration): string
-    {
-        $reflection = new \ReflectionClass($integration);
-        if ($reflection->implementsInterface(CRMIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_CRM;
-        }
-
-        if ($reflection->implementsInterface(EmailMarketingIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_EMAIL_MARKETING;
-        }
-
-        if ($reflection->implementsInterface(ElementIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_ELEMENTS;
-        }
-
-        if ($reflection->implementsInterface(CaptchaIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_CAPTCHAS;
-        }
-
-        if ($reflection->implementsInterface(WebhookIntegrationInterface::class)) {
-            return IntegrationInterface::TYPE_WEBHOOKS;
-        }
-
-        return IntegrationInterface::TYPE_OTHER;
     }
 }

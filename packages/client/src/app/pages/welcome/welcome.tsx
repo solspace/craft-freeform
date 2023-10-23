@@ -56,7 +56,9 @@ export const Welcome: React.FC = () => {
           </a>
         </Button>
         <Button style={buttons[1]} className="btn submit">
-          <a href={generateUrl('/settings')}>{translate('Configure Freeform')}</a>
+          <a href={generateUrl('/settings')}>
+            {translate('Configure Freeform')}
+          </a>
         </Button>
       </ButtonsWrapper>
     </WelcomeWrapper>

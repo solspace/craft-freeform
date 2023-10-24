@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 class DatePicker {
-  loadedLocales = [];
+  loadedLocales = {};
   freeform;
 
   scriptAdded = false;
@@ -64,7 +64,7 @@ class DatePicker {
 
       this.freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
 
-      if (!this.loadedLocales.includes(locale)) {
+      if (!this.loadedLocales[locale]) {
         const script = document.createElement('script');
         script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/l10n/${locale}.js`;
         script.async = false;
@@ -74,7 +74,11 @@ class DatePicker {
         });
         document.body.appendChild(script);
 
-        this.loadedLocales.push(locale);
+        this.loadedLocales[locale] = script;
+      } else {
+        this.loadedLocales[locale].addEventListener('load', () => {
+          instance.set('locale', locale);
+        });
       }
     });
   };

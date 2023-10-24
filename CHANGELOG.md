@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.1.11 - 2023-10-24
+
+### Changed
+- Updated the GraphQL submission mutation to no longer require the custom header.
+
+### Fixed
+- Fixed a bug where locales were not working correctly when using more than one Date & Time field in the same form.
+
 ## 4.1.10 - 2023-10-05
 
 ### Changed

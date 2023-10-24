@@ -69,8 +69,10 @@ class DatePicker {
         script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/l10n/${locale}.js`;
         script.async = false;
         script.defer = false;
+        script.dataset.loaded = false;
         script.addEventListener('load', () => {
           instance.set('locale', locale);
+          script.dataset.true = false;
         });
         document.body.appendChild(script);
 
@@ -78,7 +80,12 @@ class DatePicker {
       } else {
         this.loadedLocales[locale].addEventListener('load', () => {
           instance.set('locale', locale);
+          this.loadedLocales[locale].dataset.loaded = true;
         });
+
+        if (this.loadedLocales[locale].dataset.loaded) {
+          instance.set('locale', locale);
+        }
       }
     });
   };

@@ -14,7 +14,7 @@ class DatePicker {
 
     if (!this.scriptAdded) {
       const script = document.createElement('script');
-      script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.js';
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js';
       script.async = false;
       script.defer = false;
       script.addEventListener('load', () => {
@@ -24,7 +24,7 @@ class DatePicker {
 
       const style = document.createElement('link');
       style.rel = 'stylesheet';
-      style.href = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.css';
+      style.href = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css';
       document.body.appendChild(style);
 
       this.scriptAdded = true;
@@ -66,7 +66,7 @@ class DatePicker {
 
       if (!this.loadedLocales[locale]) {
         const script = document.createElement('script');
-        script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/l10n/${locale}.js`;
+        script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`;
         script.async = false;
         script.defer = false;
         script.dataset.loaded = false;

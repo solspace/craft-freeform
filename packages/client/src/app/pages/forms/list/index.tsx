@@ -1,5 +1,5 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { ModalProvider } from '@components/modals/modal.context';
 import {
   fetchFieldPropertySections,
@@ -9,7 +9,6 @@ import {
 import { useQueryClient } from '@tanstack/react-query';
 
 import { List } from './list';
-import { store } from './store';
 
 export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
@@ -21,10 +20,9 @@ export const ListProvider: React.FC = () => {
   );
 
   return (
-    <Provider store={store}>
-      <ModalProvider>
-        <List />
-      </ModalProvider>
-    </Provider>
+    <ModalProvider>
+      <Breadcrumb label="Forms" url="/forms" />
+      <List />
+    </ModalProvider>
   );
 };

@@ -20,15 +20,16 @@ class PaymentsBundle extends FeatureBundle
 {
     public function __construct()
     {
-        if (!Freeform::getInstance()->isPro()) {
-            return;
-        }
-
         Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'handlePayments']
         );
+    }
+
+    public static function isProOnly(): bool
+    {
+        return true;
     }
 
     public static function getPriority(): int

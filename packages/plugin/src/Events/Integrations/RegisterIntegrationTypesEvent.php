@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Events\Integrations;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Freeform;
 
 class RegisterIntegrationTypesEvent extends ArrayableEvent
 {
@@ -40,6 +41,10 @@ class RegisterIntegrationTypesEvent extends ArrayableEvent
 
         $type = $this->typeProvider->getTypeDefinition($class);
         if (!$type) {
+            return $this;
+        }
+
+        if ($type->editions && !\in_array(Freeform::getInstance()->edition, $type->editions, true)) {
             return $this;
         }
 

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
@@ -106,6 +107,7 @@ class PropertyProvider
             $this->processImplementations($attribute);
             $this->processTransformer($property, $attribute);
             $this->processValueGenerator($property, $attribute);
+            $this->processEditions($property, $attribute);
             $this->processFlags($property, $attribute);
             $this->processValidators($property, $attribute);
             $this->processMiddleware($property, $attribute);
@@ -144,7 +146,7 @@ class PropertyProvider
 
     public function processType(\ReflectionProperty $property, Property $attribute): string
     {
-        if ($attribute->hasFlag(Flag::PRO) && !Freeform::getInstance()->isPro()) {
+        if (!$attribute->matchesEdition($this->getPluginEdition())) {
             return 'hidden';
         }
 
@@ -160,6 +162,11 @@ class PropertyProvider
         $class = new \ReflectionClass($type->getName());
 
         return lcfirst($class->getShortName());
+    }
+
+    protected function getPluginEdition(): string
+    {
+        return Freeform::getInstance()->edition;
     }
 
     private function processOptions(Property $attribute): void
@@ -294,6 +301,14 @@ class PropertyProvider
         /** @var ValueGeneratorInterface $valueGenerator */
         $valueGenerator = $this->container->get($valueGeneratorAttribute->className);
         $attribute->valueGenerator = $valueGenerator;
+    }
+
+    private function processEditions(\ReflectionProperty $property, Property $attribute): void
+    {
+        $editions = AttributeHelper::findAttributes($property, Edition::class);
+        foreach ($editions as $edition) {
+            $attribute->editions[] = $edition->name;
+        }
     }
 
     private function processFlags(\ReflectionProperty $property, Property $attribute): void

@@ -94,7 +94,6 @@ use Solspace\Freeform\Variables\FreeformVariable;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
-use yii\web\ForbiddenHttpException;
 
 /**
  * Class Plugin.
@@ -196,6 +195,7 @@ class Freeform extends Plugin
     public static function editions(): array
     {
         return [
+            self::EDITION_EXPRESS,
             self::EDITION_LITE,
             self::EDITION_PRO,
         ];
@@ -209,18 +209,6 @@ class Freeform extends Plugin
     public function isPro(): bool
     {
         return self::EDITION_PRO === $this->edition;
-    }
-
-    public function isLite(): bool
-    {
-        return self::EDITION_LITE === $this->edition;
-    }
-
-    public function requirePro()
-    {
-        if (!$this->isPro()) {
-            throw new ForbiddenHttpException(self::t('Requires Freeform Pro'));
-        }
     }
 
     public function init(): void
@@ -419,6 +407,10 @@ class Freeform extends Plugin
     // TODO: move into a feature bundle
     private function initFieldTypes(): void
     {
+        if ($this->edition()->isBelow(self::EDITION_LITE)) {
+            return;
+        }
+
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,

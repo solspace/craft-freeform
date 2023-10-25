@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use craft\helpers\Db;
 use craft\web\View;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\FeedMessageRecord;
 use Solspace\Freeform\Records\NotificationLogRecord;
-use Solspace\Freeform\Records\NotificationTemplateRecord;
 use yii\base\Component;
 
 class DigestService extends Component
@@ -26,11 +26,15 @@ class DigestService extends Component
     public const CACHE_KEY_DIGEST = 'freeform-digest-cache-key';
     public const CACHE_TTL_DIGEST = 60 * 60 * 3; // every 3h
 
-    public const TEMPLATE_PATH = __DIR__.'/../../templates/_emailTemplates/digest.twig';
+    public const TEMPLATE_PATH = '_templates/email/digest.twig';
 
-    public function triggerDigest()
+    public function triggerDigest(): void
     {
         if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
+            // return;
+        }
+
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
 
@@ -51,7 +55,7 @@ class DigestService extends Component
         $this->parseDigest(NotificationLogRecord::TYPE_DIGEST_CLIENT, $clientRecipients, $clientFrequency);
     }
 
-    public function sendDigest(array $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd): void
+    public function sendDigest(RecipientCollection $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd): void
     {
         $isFullDigest = NotificationLogRecord::TYPE_DIGEST_DEV === $type;
         $mailer = Freeform::getInstance()->mailer;
@@ -59,7 +63,8 @@ class DigestService extends Component
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $notification = NotificationTemplateRecord::createFromTemplate(self::TEMPLATE_PATH);
+        $templatePath = \Craft::getAlias('@freeform/templates/'.self::TEMPLATE_PATH);
+        $notification = NotificationTemplate::fromFile($templatePath);
 
         $recipients = $mailer->processRecipients($recipients);
         $message = $mailer->compileMessage(

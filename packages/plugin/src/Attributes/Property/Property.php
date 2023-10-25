@@ -22,6 +22,9 @@ abstract class Property
     /** @var VisibilityFilter[] */
     public array $visibilityFilters = [];
 
+    /** @var Edition[] */
+    public ?array $editions = null;
+
     /** @var Flag[] */
     public array $flags = [];
 
@@ -49,6 +52,21 @@ abstract class Property
     {
         foreach ($this->flags as $flag) {
             if (\in_array($flag->name, $name, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function matchesEdition(string $edition): bool
+    {
+        if (empty($this->editions)) {
+            return true;
+        }
+
+        foreach ($this->editions as $item) {
+            if ($item === $edition) {
                 return true;
             }
         }

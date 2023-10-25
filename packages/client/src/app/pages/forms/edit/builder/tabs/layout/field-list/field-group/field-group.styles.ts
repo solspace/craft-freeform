@@ -3,6 +3,12 @@ import styled from 'styled-components';
 
 export const FieldGroupWrapper = styled.div`
   margin-bottom: ${spacings.xl};
+
+  &.disabled {
+    opacity: 0.5;
+    user-select: none;
+    pointer-events: none;
+  }
 `;
 
 export const GroupTitle = styled.h2`

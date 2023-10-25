@@ -173,7 +173,7 @@ class DiagnosticsService extends BaseService
         $emailTemplates = $freeform->notifications->getAllNotifications();
 
         $integrations = $freeform->integrations->getAllIntegrations();
-        $webhooks = $freeform->webhooks->getAll();
+        $webhooks = $freeform->webhooks->getAllIntegrations();
 
         $isSpamFolderEnabled = $freeform->settings->isSpamFolderEnabled();
 

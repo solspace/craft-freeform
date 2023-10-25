@@ -28,12 +28,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       className={classes(!!errors && 'errors', disabled && 'disabled')}
       $width={width}
     >
-      <FormLabel
-        label={label}
-        handle={handle}
-        required={required}
-        title={instructions}
-      />
+      <FormLabel label={label} handle={handle} required={required} />
       <FormInstructions instructions={instructions} />
       <FormField>{children}</FormField>
       <FormErrorList errors={errors} />

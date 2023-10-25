@@ -340,6 +340,10 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Exception $exception,
         Form $form
     ): void {
+        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            return;
+        }
+
         $recipients = $this->getSettingsService()->getFailedNotificationRecipients();
         if (!\count($recipients)) {
             return;

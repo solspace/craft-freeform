@@ -314,10 +314,11 @@ class IntegrationsService extends BaseService
     public function getForForm(?Form $form = null, ?string $type = null): array
     {
         static $cache;
-
         if (null === $cache) {
             $cache = [];
         }
+
+        $freeformEdition = Freeform::getInstance()->edition;
 
         $key = ($form?->getId() ?? '0').$type;
 
@@ -366,10 +367,24 @@ class IntegrationsService extends BaseService
                 );
             }
 
-            $cache[$key] = array_map(
+            $integrationObjects = array_map(
                 fn (IntegrationModel $record) => $record->getIntegrationObject(),
                 $integrations
             );
+
+            $eligibleIntegrationObjects = array_filter(
+                $integrationObjects,
+                function (IntegrationInterface $integration) use ($freeformEdition) {
+                    $editions = $integration->getTypeDefinition()->editions;
+                    if (!$editions) {
+                        return true;
+                    }
+
+                    return \in_array($freeformEdition, $editions, true);
+                }
+            );
+
+            $cache[$key] = $eligibleIntegrationObjects;
         }
 
         return $cache[$key];

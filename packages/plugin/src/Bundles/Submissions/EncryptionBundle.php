@@ -38,7 +38,7 @@ class EncryptionBundle extends FeatureBundle
      */
     public function encryptFields(ModelEvent $event): void
     {
-        if (!Freeform::getInstance()->isLite() && !Freeform::getInstance()->isPro()) {
+        if (!Freeform::getInstance()->isPro()) {
             return;
         }
 
@@ -68,7 +68,7 @@ class EncryptionBundle extends FeatureBundle
      */
     public function decryptFields(PopulateElementEvent $event): void
     {
-        if (!Freeform::getInstance()->isLite() && !Freeform::getInstance()->isPro()) {
+        if (!Freeform::getInstance()->isPro()) {
             return;
         }
 

@@ -25,7 +25,6 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
-use Solspace\Freeform\Fields\Interfaces\NoEncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Parameters\Parameters;
@@ -93,7 +92,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         handle: 'attributes',
         label: 'Attributes',
         icon: __DIR__.'/SectionIcons/list.svg',
-        order: 4,
+        order: 999,
     )]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(
@@ -127,19 +126,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         ]
     )]
     protected FieldAttributesCollection $attributes;
-
-    #[Section(
-        handle: 'advanced',
-        label: 'Advanced',
-        icon: __DIR__.'/SectionIcons/advanced.svg',
-        order: 5,
-    )]
-    #[Flag(Flag::PRO)]
-    #[Input\Boolean(
-        label: 'Encrypt field data',
-        order: 7
-    )]
-    protected bool $encryption = false;
 
     protected Parameters $parameters;
 
@@ -548,16 +534,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
 
         return false;
-    }
-
-    public function isUseEncryption(): bool
-    {
-        return $this->encryption;
-    }
-
-    public function canUseEncryption(): bool
-    {
-        return !$this instanceof NoEncryptionInterface;
     }
 
     /**

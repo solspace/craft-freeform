@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Fields\Traits;
 
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Implementations\ValueGenerators\AssetSourceGenerator;
@@ -22,7 +21,6 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 
 trait FileUploadTrait
 {
-    #[Section('configuration')]
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
     #[ValueGenerator(AssetSourceGenerator::class)]
     #[Input\Select(
@@ -33,7 +31,6 @@ trait FileUploadTrait
     )]
     protected ?int $assetSourceId = null;
 
-    #[Section('configuration')]
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Upload Location',

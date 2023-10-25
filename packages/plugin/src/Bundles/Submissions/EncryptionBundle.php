@@ -2,33 +2,31 @@
 
 namespace Solspace\Freeform\Bundles\Submissions;
 
-use Solspace\Commons\Helpers\PermissionHelper;
+use craft\events\ModelEvent;
+use craft\events\PopulateElementEvent;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Submissions\CipherEvent;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Helpers\CipherHelper;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use yii\base\Event;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 
-class CipherFieldsBundle extends FeatureBundle
+class EncryptionBundle extends FeatureBundle
 {
-    protected CipherHelper $cipherHelper;
-
-    public function __construct(CipherHelper $cipherHelper)
+    public function __construct()
     {
-        $this->cipherHelper = $cipherHelper;
-
         Event::on(
             Submission::class,
-            Submission::EVENT_ENCRYPT_FIELDS,
+            Submission::EVENT_BEFORE_SAVE,
             [$this, 'encryptFields']
         );
 
         Event::on(
-            Submission::class,
-            Submission::EVENT_DECRYPT_FIELDS,
+            SubmissionQuery::class,
+            SubmissionQuery::EVENT_AFTER_POPULATE_ELEMENT,
             [$this, 'decryptFields']
         );
     }
@@ -38,20 +36,22 @@ class CipherFieldsBundle extends FeatureBundle
      * @throws InvalidConfigException
      * @throws \Exception
      */
-    public function encryptFields(CipherEvent $event): void
+    public function encryptFields(ModelEvent $event): void
     {
-        if (!Freeform::getInstance()->isPro()) {
+        if (!Freeform::getInstance()->isLite() && !Freeform::getInstance()->isPro()) {
             return;
         }
 
-        $submission = $event->getSubmission();
+        $submission = $event->sender;
 
-        $key = CipherHelper::getKey($submission->getForm());
+        $key = EncryptionHelper::getKey($submission->getForm());
 
-        foreach ($submission->getIterator() as $field) {
+        $fields = $submission->getFieldCollection()->getList(EncryptionInterface::class);
+
+        foreach ($fields as $field) {
             $value = $field->getValue();
 
-            if ($value && $field->canUseEncryption() && $field->isUseEncryption()) {
+            if ($field->isEncrypted() && $value) {
                 $encryptedValue = base64_encode(\Craft::$app->getSecurity()->encryptByKey($value, $key));
 
                 if ($encryptedValue) {
@@ -66,20 +66,22 @@ class CipherFieldsBundle extends FeatureBundle
      * @throws InvalidConfigException
      * @throws \Exception
      */
-    public function decryptFields(CipherEvent $event): void
+    public function decryptFields(PopulateElementEvent $event): void
     {
-        if (!Freeform::getInstance()->isPro() || !\Craft::$app->getUser() || !PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)) {
+        if (!Freeform::getInstance()->isLite() && !Freeform::getInstance()->isPro()) {
             return;
         }
 
-        $submission = $event->getSubmission();
+        $submission = $event->element;
 
-        $key = CipherHelper::getKey($submission->getForm());
+        $key = EncryptionHelper::getKey($submission->getForm());
 
-        foreach ($submission->getIterator() as $field) {
+        $fields = $submission->getFieldCollection()->getList(EncryptionInterface::class);
+
+        foreach ($fields as $field) {
             $value = $field->getValue();
 
-            if ($value && $field->canUseEncryption()) {
+            if ($value) {
                 $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($value), $key);
 
                 if ($decryptedValue) {

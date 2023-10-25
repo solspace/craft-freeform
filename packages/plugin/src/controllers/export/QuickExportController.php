@@ -13,7 +13,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\CipherHelper;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -67,7 +67,7 @@ class QuickExportController extends BaseController
 
                     if (is_numeric($fieldId)) {
                         try {
-                            $field = $form->getLayout()->getFieldById($fieldId);
+                            $field = $form->getLayout()->getField($fieldId);
                             $label = $field->getLabel();
 
                             $storedFieldIds[] = $field->getId();
@@ -281,19 +281,7 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        $key = CipherHelper::getKey($form);
-
-        foreach ($data as &$submission) {
-            foreach ($submission as &$field) {
-                if ($field) {
-                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
-
-                    if ($decryptedValue) {
-                        $field = $decryptedValue;
-                    }
-                }
-            }
-        }
+        $data = EncryptionHelper::decrypt($form, $data);
 
         $exportProfilesService = $this->getExportProfileService();
 

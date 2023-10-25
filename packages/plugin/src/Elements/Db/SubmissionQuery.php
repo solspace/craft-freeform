@@ -7,14 +7,12 @@ use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Submissions\CipherEvent;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Records\StatusRecord;
-use yii\base\Event;
 
 class SubmissionQuery extends ElementQuery
 {
@@ -101,16 +99,6 @@ class SubmissionQuery extends ElementQuery
         $this->spamReason = $value;
 
         return $this;
-    }
-
-    public function afterPopulate(array $elements): array
-    {
-        foreach ($elements as $submission) {
-            $cipherEvent = new CipherEvent($submission);
-            Event::trigger(Submission::class, Submission::EVENT_DECRYPT_FIELDS, $cipherEvent);
-        }
-
-        return parent::afterPopulate($elements);
     }
 
     protected function beforePrepare(): bool

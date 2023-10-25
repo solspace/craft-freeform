@@ -6,7 +6,6 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -25,7 +24,6 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 
-    #[Section('configuration')]
     #[Input\Select(
         label: 'Maximum Number of Stars',
         options: [
@@ -43,15 +41,12 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
     )]
     protected int $maxValue = 5;
 
-    #[Section('configuration')]
     #[Input\ColorPicker('Unselected Color')]
     protected string $colorIdle = '#DDDDDD';
 
-    #[Section('configuration')]
     #[Input\ColorPicker('Hover Color')]
     protected string $colorHover = '#FFD700';
 
-    #[Section('configuration')]
     #[Input\ColorPicker('Selected Color')]
     protected string $colorSelected = '#FF7700';
 

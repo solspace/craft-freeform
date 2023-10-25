@@ -5,9 +5,10 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
@@ -16,48 +17,43 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     iconPath: __DIR__.'/../Icons/signature.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
-class SignatureField extends AbstractField implements ExtraFieldInterface
+class SignatureField extends AbstractField implements ExtraFieldInterface, EncryptionInterface
 {
-    #[Section('configuration')]
+    use EncryptionTrait;
+
     #[Input\Integer(
         label: 'Width of Pad',
         instructions: 'Specify a value in pixels.',
     )]
     protected int $width = 400;
 
-    #[Section('configuration')]
     #[Input\Integer(
         label: 'Height of Pad',
         instructions: 'Specify a value in pixels.',
     )]
     protected int $height = 100;
 
-    #[Section('configuration')]
     #[Input\Boolean(
         label: "Show 'Clear' button",
         instructions: 'Allows user to erase and start over.',
     )]
     protected bool $showClearButton = true;
 
-    #[Section('configuration')]
     #[Input\ColorPicker(
         label: 'Border color of Pad',
     )]
     protected string $borderColor = '#999999';
 
-    #[Section('configuration')]
     #[Input\ColorPicker(
         label: 'Background color of Pad',
     )]
     protected string $backgroundColor = 'rgba(0,0,0,0)';
 
-    #[Section('configuration')]
     #[Input\ColorPicker(
         label: 'Pen color',
     )]
     protected string $penColor = '#000000';
 
-    #[Section('configuration')]
     #[Input\Integer(
         label: 'Pen dot size',
         instructions: 'The size of the dot when drawing on the pad.',

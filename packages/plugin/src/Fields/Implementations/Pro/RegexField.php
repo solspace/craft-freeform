@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 
@@ -17,13 +16,11 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 )]
 class RegexField extends TextField implements ExtraFieldInterface
 {
-    #[Section('configuration')]
     #[Input\Text(
         instructions: 'Enter any regex pattern here.',
     )]
     protected string $pattern = '';
 
-    #[Section('configuration')]
     #[Input\TextArea(
         label: 'Error Message',
         instructions: "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found.",

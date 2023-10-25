@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories;
 use craft\elements\Category;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
 use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
@@ -13,7 +12,6 @@ use Solspace\Freeform\Library\Helpers\ElementHelper;
 
 class Categories implements OptionTypeProviderInterface
 {
-    #[Section('configuration')]
     #[Input\Select(
         label: 'Site ID',
         emptyOption: 'All Sites',
@@ -21,7 +19,6 @@ class Categories implements OptionTypeProviderInterface
     )]
     private ?string $siteId = null;
 
-    #[Section('configuration')]
     #[Input\Select(
         label: 'Group',
         emptyOption: 'All Groups',
@@ -29,7 +26,6 @@ class Categories implements OptionTypeProviderInterface
     )]
     private ?string $groupId = null;
 
-    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -41,7 +37,6 @@ class Categories implements OptionTypeProviderInterface
     )]
     private string $label = 'title';
 
-    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Value',
@@ -53,14 +48,12 @@ class Categories implements OptionTypeProviderInterface
     )]
     private string $value = 'id';
 
-    #[Section('configuration')]
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/categories/fields',
     )]
     private string $orderBy = 'id';
 
-    #[Section('configuration')]
     #[Input\Select(
         options: [
             ['value' => 'asc', 'label' => 'Ascending'],

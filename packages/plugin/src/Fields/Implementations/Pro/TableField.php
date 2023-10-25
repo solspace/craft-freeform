@@ -10,10 +10,12 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -26,8 +28,9 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     iconPath: __DIR__.'/../Icons/table.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/table.ejs',
 )]
-class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
+class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface, EncryptionInterface
 {
+    use EncryptionTrait;
     use MultipleValueTrait;
 
     public const COLUMN_TYPE_STRING = 'string';
@@ -36,7 +39,6 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
     public array $columns = [];
 
-    #[Section('configuration')]
     #[ValueTransformer(TableTransformer::class)]
     #[Input\Table(
         label: 'Table Layout',
@@ -59,39 +61,33 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected TableLayout $tableLayout;
 
-    #[Section('configuration')]
     #[Input\Boolean('Use built-in javascript for adding and removing rows')]
     protected bool $useScript = false;
 
-    #[Section('configuration')]
     #[Input\Integer(
         label: 'Maximum number of rows',
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
     protected ?int $maxRows = null;
 
-    #[Section('configuration')]
     #[Input\Text(
         label: 'Add Button Label',
         instructions: 'Set the label for the add button.',
     )]
     protected string $addButtonLabel = 'Add';
 
-    #[Section('configuration')]
     #[Input\Text(
         label: 'Add Button Markup',
         instructions: 'Set the markup for the add button.',
     )]
     protected ?string $addButtonMarkup;
 
-    #[Section('configuration')]
     #[Input\Text(
         label: 'Remove Button Label',
         instructions: 'Set the label for the remove button.',
     )]
     protected string $removeButtonLabel = 'Remove';
 
-    #[Section('configuration')]
     #[Input\Text(
         label: 'Remove Button Markup',
         instructions: 'Set the markup for the remove button.',

@@ -2,11 +2,9 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
@@ -16,7 +14,6 @@ use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
  */
 abstract class BaseGeneratedOptionsField extends BaseOptionsField implements GeneratedOptionsInterface
 {
-    #[Section('configuration')]
     #[ValueTransformer(OptionsTransformer::class)]
     #[Input\Options(
         label: 'Options Editor',

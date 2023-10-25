@@ -2,7 +2,6 @@ import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
 import * as ControlTypes from '@components/form-controls/control-types';
 import type { ControlType } from '@components/form-controls/types';
-import config, { Edition } from '@config/freeform/freeform.config';
 import type {
   GenericValue,
   Property,
@@ -35,7 +34,7 @@ export const FormComponent: React.FC<Props> = ({
   context,
   autoFocus = false,
 }) => {
-  const { handle, type, visibilityFilters, flags } = property;
+  const { handle, type, visibilityFilters } = property;
   const FormControl = types[type];
 
   const isVisible = useVisibility(
@@ -50,10 +49,6 @@ export const FormComponent: React.FC<Props> = ({
   FormControl.displayName = `FormComponent: <${type}>`;
 
   if (!isVisible) {
-    return null;
-  }
-
-  if (!config.editions.is(Edition.Pro) && flags?.includes(Edition.Pro)) {
     return null;
   }
 

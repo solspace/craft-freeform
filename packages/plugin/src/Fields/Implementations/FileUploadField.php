@@ -18,12 +18,13 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
@@ -33,15 +34,15 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     iconPath: __DIR__.'/Icons/file-upload.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/file-upload.ejs',
 )]
-class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface
+class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface, EncryptionInterface
 {
+    use EncryptionTrait;
     use FileUploadTrait;
     use MultipleValueTrait;
 
     public const DEFAULT_MAX_FILESIZE_KB = 2048;
     public const DEFAULT_FILE_COUNT = 1;
 
-    #[Section('configuration')]
     #[Input\Checkboxes(
         label: 'File Kinds',
         instructions: 'Select the file kinds that are allowed to be uploaded.',
@@ -52,7 +53,6 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     )]
     protected array $fileKinds = ['image'];
 
-    #[Section('configuration')]
     #[Input\Integer(
         label: 'Maximum File Size',
         instructions: 'Specify the maximum file size, in KB.',
@@ -60,7 +60,6 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     )]
     protected int $maxFileSizeKB = self::DEFAULT_MAX_FILESIZE_KB;
 
-    #[Section('configuration')]
     #[Input\Integer(
         instructions: 'Specify the maximum uploadable file count.',
     )]

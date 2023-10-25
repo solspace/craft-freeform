@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\controllers;
 
+use craft\helpers\ArrayHelper;
 use craft\records\Asset;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -25,7 +26,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
-use Solspace\Freeform\Library\Helpers\CipherHelper;
 use Solspace\Freeform\Models\Pro\Payments\AbstractPaymentModel;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
@@ -79,17 +79,24 @@ class SubmissionsController extends BaseController
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
 
-        $submissions = $this->getSubmissionsService()->getAsArray($submissionIds);
+        $form = null;
 
-        if ($submissions) {
-            $formId = $submissions[0]['formId'];
-            $form = $this->getFormsService()->getFormById($formId);
+        $submissions = Submission::find()->id($submissionIds)->all();
+
+        if (!$submissions) {
+            throw new FreeformException(Freeform::t('No submissions found'));
+        }
+
+        $data = [];
+
+        foreach ($submissions as $submission) {
+            $form = $submission->getForm();
 
             $canManage = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
             $canManageSpecific = PermissionHelper::checkPermission(
                 PermissionHelper::prepareNestedPermission(
                     Freeform::PERMISSION_SUBMISSIONS_MANAGE,
-                    $formId
+                    $form->getId()
                 )
             );
 
@@ -97,7 +104,7 @@ class SubmissionsController extends BaseController
             $canReadSpecific = PermissionHelper::checkPermission(
                 PermissionHelper::prepareNestedPermission(
                     Freeform::PERMISSION_SUBMISSIONS_READ,
-                    $formId
+                    $form->getId()
                 )
             );
 
@@ -106,28 +113,22 @@ class SubmissionsController extends BaseController
             }
 
             if (!$form) {
-                throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));
+                throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $form->getId()]));
             }
-        } else {
-            throw new FreeformException(Freeform::t('No submissions found'));
+
+            $fields = $submission->getFieldCollection();
+
+            $submission = ArrayHelper::toArray($submission);
+
+            foreach ($fields as $field) {
+                $submission[$field->getHandle()] = $field->getValue();
+            }
+
+            $data[] = $submission;
         }
 
-        $key = CipherHelper::getKey($form);
-
-        foreach ($submissions as &$submission) {
-            foreach ($submission as &$field) {
-                if ($field) {
-                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
-
-                    if ($decryptedValue) {
-                        $field = $decryptedValue;
-                    }
-                }
-            }
-        }
-
-        $exporter = new ExportCsv($form, $submissions, $this->getExportProfileService()->getExportSettings());
-        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
+        $exporter = new ExportCsv($form, $data, $this->getExportProfileService()->getExportSettings());
+        $fileName = sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }

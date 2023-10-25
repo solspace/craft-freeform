@@ -5,14 +5,12 @@ namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users;
 use craft\elements\User;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
 use Solspace\Freeform\Library\Helpers\ElementHelper;
 
 class Users implements OptionTypeProviderInterface
 {
-    #[Section('configuration')]
     #[Input\Select(
         label: 'Group',
         emptyOption: 'All Groups',
@@ -20,7 +18,6 @@ class Users implements OptionTypeProviderInterface
     )]
     private ?string $groupId = null;
 
-    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -28,7 +25,6 @@ class Users implements OptionTypeProviderInterface
     )]
     private string $label = 'fullName';
 
-    #[Section('configuration')]
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Value',
@@ -36,14 +32,12 @@ class Users implements OptionTypeProviderInterface
     )]
     private string $value = 'id';
 
-    #[Section('configuration')]
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/users/fields?order',
     )]
     private string $orderBy = 'id';
 
-    #[Section('configuration')]
     #[Input\Select(
         options: [
             ['value' => 'asc', 'label' => 'Ascending'],

@@ -24,7 +24,6 @@ use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
-use Solspace\Freeform\Events\Submissions\CipherEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
@@ -52,10 +51,6 @@ class Submission extends Element
     public const FIELD_COLUMN_PREFIX = 'field_';
 
     public const EVENT_PROCESS_SUBMISSION = 'process-submission';
-
-    public const EVENT_ENCRYPT_FIELDS = 'encrypt-fields';
-
-    public const EVENT_DECRYPT_FIELDS = 'decrypt-fields';
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
@@ -138,14 +133,6 @@ class Submission extends Element
         }
 
         return parent::__isset($name);
-    }
-
-    public function beforeSave(bool $isNew): bool
-    {
-        $cipherEvent = new CipherEvent($this);
-        Event::trigger(self::class, self::EVENT_ENCRYPT_FIELDS, $cipherEvent);
-
-        return parent::beforeSave($isNew);
     }
 
     public static function find(): SubmissionQuery
@@ -534,6 +521,15 @@ class Submission extends Element
         return $event->actions;
     }
 
+    public function getFieldCollection(): FieldCollection
+    {
+        if (null === $this->fieldCollection && $this->getForm()) {
+            $this->fieldCollection = Freeform::getInstance()->fields->getFieldCollection($this->getForm());
+        }
+
+        return $this->fieldCollection;
+    }
+
     protected static function defineSources(string $context = null): array
     {
         static $sources;
@@ -782,15 +778,6 @@ class Submission extends Element
     private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
-    }
-
-    private function getFieldCollection(): FieldCollection
-    {
-        if (null === $this->fieldCollection && $this->getForm()) {
-            $this->fieldCollection = Freeform::getInstance()->fields->getFieldCollection($this->getForm());
-        }
-
-        return $this->fieldCollection;
     }
 
     private function getNewIncrementalId(): int

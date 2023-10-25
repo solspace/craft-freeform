@@ -286,7 +286,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         foreach ($forms as $form) {
             $alias = 'fc'.$form->getId();
             $fieldsArray = [];
-            foreach ($form->getLayout()->getFields() as $field) {
+            foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
                 $fieldsArray[] = $field;
             }
             $fields = array_map(

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -32,14 +31,12 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
     protected string $instructions = '';
     protected bool $required = false;
 
-    #[Section('configuration')]
     #[Input\Boolean(
         label: 'Allow Twig',
         instructions: 'Used to enable Twig in HTML blocks',
     )]
     protected bool $twig = false;
 
-    #[Section('configuration')]
     #[Input\CodeEditor(
         label: 'HTML',
         instructions: 'The HTML content to be rendered',

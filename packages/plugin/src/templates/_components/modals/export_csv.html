@@ -48,7 +48,7 @@
             <div class="select">
                 <select class="select" name="form_id">
                     {% for form in forms %}
-                        <option value="{{ form.id }}" {% if form.id == selectedFormId %}selected{% endif %}>
+                        <option value="{{ form.id }}" {{ form.id == selectedFormId ? 'selected' }}>
                             {{ form.name }}
                         </option>
                     {% endfor %}
@@ -85,7 +85,7 @@
                                    class="checkbox"
                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
                                    value="1"
-                                   {{ isChecked ?? 'checked' }}
+                                   {{ isChecked ? 'checked' }}
                                    id="{{ form.id ~ '-' ~ fieldId }}"
                             />
                             <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label }}</label>

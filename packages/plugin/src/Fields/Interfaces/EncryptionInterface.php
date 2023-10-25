@@ -12,9 +12,7 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface NoEncryptionInterface
+interface EncryptionInterface
 {
-    public function isUseEncryption(): bool;
-
-    public function canUseEncryption(): bool;
+    public function isEncrypted(): bool;
 }

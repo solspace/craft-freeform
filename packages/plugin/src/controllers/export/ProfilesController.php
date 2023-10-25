@@ -8,7 +8,7 @@ use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\CipherHelper;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -159,19 +159,7 @@ class ProfilesController extends BaseController
         $form = $profile->getForm();
         $data = $profile->getSubmissionData();
 
-        $key = CipherHelper::getKey($form);
-
-        foreach ($data as &$submission) {
-            foreach ($submission as &$field) {
-                if ($field) {
-                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
-
-                    if ($decryptedValue) {
-                        $field = $decryptedValue;
-                    }
-                }
-            }
-        }
+        $data = EncryptionHelper::decrypt($form, $data);
 
         $exporter = $exportProfilesService->createExporter($type, $form, $data);
 

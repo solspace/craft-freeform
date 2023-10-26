@@ -159,7 +159,8 @@ class ProfilesController extends BaseController
         $form = $profile->getForm();
         $data = $profile->getSubmissionData();
 
-        $data = EncryptionHelper::decrypt($form, $data);
+        $key = EncryptionHelper::getKey($form->getUid());
+        $data = EncryptionHelper::decryptExportData($key, $data);
 
         $exporter = $exportProfilesService->createExporter($type, $form, $data);
 

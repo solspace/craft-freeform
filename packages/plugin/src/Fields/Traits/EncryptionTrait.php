@@ -12,21 +12,18 @@
 
 namespace Solspace\Freeform\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 
 trait EncryptionTrait
 {
-    #[Section(
-        handle: 'advanced',
-        label: 'Advanced',
-        icon: __DIR__.'/../SectionIcons/advanced.svg',
-        order: 1000,
-    )]
-    #[Flag(Flag::PRO)]
+    #[Section('advanced')]
+    #[Edition(Edition::LITE)]
+    #[Edition(Edition::PRO)]
     #[Input\Boolean(
         label: 'Encrypt field data',
+        order: 1,
     )]
     protected bool $encrypted = false;
 

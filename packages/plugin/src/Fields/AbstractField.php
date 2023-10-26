@@ -127,6 +127,19 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     )]
     protected FieldAttributesCollection $attributes;
 
+    #[Section(
+        handle: 'advanced',
+        label: 'Advanced',
+        icon: __DIR__.'/SectionIcons/advanced.svg',
+        order: 1000,
+    )]
+    #[Input\FieldType(
+        label: 'Field Type',
+        instructions: 'Change the type of this field.',
+        order: 2,
+    )]
+    protected ?string $fieldType = null;
+
     protected Parameters $parameters;
 
     protected ?int $id = null;

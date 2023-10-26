@@ -281,7 +281,8 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        $data = EncryptionHelper::decrypt($form, $data);
+        $key = EncryptionHelper::getKey($form->getUid());
+        $data = EncryptionHelper::decryptExportData($key, $data);
 
         $exportProfilesService = $this->getExportProfileService();
 

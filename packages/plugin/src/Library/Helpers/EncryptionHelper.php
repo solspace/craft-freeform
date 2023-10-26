@@ -2,37 +2,98 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 class EncryptionHelper
 {
-    public static function getKey(Form $form): string
+    public static function getKey(string $formUid): string
     {
         $secret = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextSecret();
 
         $key = $secret ?: \Craft::$app->getConfig()->getGeneral()->securityKey;
-        $key .= $form->getUid();
+        $key .= $formUid;
 
         return $key;
     }
 
-    public static function decrypt(Form $form, array $data): array
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public static function encrypt(string $key, mixed $value): mixed
     {
-        $key = self::getKey($form);
+        if (\is_array($value)) {
+            foreach ($value as &$element) {
+                $element = self::encrypt($key, $element);
+            }
+        } else {
+            $encryptedValue = self::encryptByKey($key, $value);
 
-        foreach ($data as &$submission) {
-            foreach ($submission as &$field) {
-                if ($field && \is_string($field)) {
-                    $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($field), $key);
+            if ($encryptedValue) {
+                $value = $encryptedValue;
+            }
+        }
 
-                    if ($decryptedValue) {
-                        $field = $decryptedValue;
-                    }
+        return $value;
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public static function decrypt(string $key, mixed $value): mixed
+    {
+        if (\is_array($value)) {
+            foreach ($value as &$element) {
+                $element = self::decrypt($key, $element);
+            }
+        } else {
+            $decryptedValue = self::decryptByKey($key, $value);
+
+            if ($decryptedValue) {
+                $value = $decryptedValue;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public static function decryptExportData(string $key, array $data): array
+    {
+        foreach ($data as &$values) {
+            foreach ($values as &$value) {
+                if ($value && (\is_string($value) || \is_array($value))) {
+                    $decryptedValue = self::decrypt($key, $value);
+
+                    $value = $decryptedValue;
                 }
             }
         }
 
         return $data;
+    }
+
+    /**
+     * @throws InvalidConfigException
+     * @throws Exception
+     */
+    public static function encryptByKey(string $key, mixed $value): string
+    {
+        return base64_encode(\Craft::$app->getSecurity()->encryptByKey($value, $key));
+    }
+
+    /**
+     * @throws Exception
+     * @throws InvalidConfigException
+     */
+    public static function decryptByKey(string $key, mixed $value): string
+    {
+        return \Craft::$app->getSecurity()->decryptByKey(base64_decode($value), $key);
     }
 }

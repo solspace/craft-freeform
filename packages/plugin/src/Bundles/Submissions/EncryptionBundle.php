@@ -21,42 +21,37 @@ class EncryptionBundle extends FeatureBundle
         Event::on(
             Submission::class,
             Submission::EVENT_BEFORE_SAVE,
-            [$this, 'encryptFields']
+            [$this, 'encrypt']
         );
 
         Event::on(
             SubmissionQuery::class,
             SubmissionQuery::EVENT_AFTER_POPULATE_ELEMENT,
-            [$this, 'decryptFields']
+            [$this, 'decrypt']
         );
     }
 
     /**
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Exception
      */
-    public function encryptFields(ModelEvent $event): void
+    public function encrypt(ModelEvent $event): void
     {
-        if (!Freeform::getInstance()->isPro()) {
+        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
 
         $submission = $event->sender;
 
-        $key = EncryptionHelper::getKey($submission->getForm());
+        $key = EncryptionHelper::getKey($submission->getForm()->getUid());
 
-        $fields = $submission->getFieldCollection()->getList(EncryptionInterface::class);
+        $fields = $submission->getFieldCollection()->getStorableFields()->getList(EncryptionInterface::class);
 
         foreach ($fields as $field) {
-            $value = $field->getValue();
+            if ($field->isEncrypted() && $field->getValue()) {
+                $encryptedValue = EncryptionHelper::encrypt($key, $field->getValue());
 
-            if ($field->isEncrypted() && $value) {
-                $encryptedValue = base64_encode(\Craft::$app->getSecurity()->encryptByKey($value, $key));
-
-                if ($encryptedValue) {
-                    $field->setValue($encryptedValue);
-                }
+                $field->setValue($encryptedValue);
             }
         }
     }
@@ -64,29 +59,24 @@ class EncryptionBundle extends FeatureBundle
     /**
      * @throws Exception
      * @throws InvalidConfigException
-     * @throws \Exception
      */
-    public function decryptFields(PopulateElementEvent $event): void
+    public function decrypt(PopulateElementEvent $event): void
     {
-        if (!Freeform::getInstance()->isPro()) {
+        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
 
         $submission = $event->element;
 
-        $key = EncryptionHelper::getKey($submission->getForm());
+        $key = EncryptionHelper::getKey($submission->getForm()->getUid());
 
-        $fields = $submission->getFieldCollection()->getList(EncryptionInterface::class);
+        $fields = $submission->getFieldCollection()->getStorableFields()->getList(EncryptionInterface::class);
 
         foreach ($fields as $field) {
-            $value = $field->getValue();
+            if ($field->getValue()) {
+                $decryptedValue = EncryptionHelper::decrypt($key, $field->getValue());
 
-            if ($value) {
-                $decryptedValue = \Craft::$app->getSecurity()->decryptByKey(base64_decode($value), $key);
-
-                if ($decryptedValue) {
-                    $field->setValue($decryptedValue);
-                }
+                $field->setValue($decryptedValue);
             }
         }
     }

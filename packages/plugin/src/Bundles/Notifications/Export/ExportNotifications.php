@@ -7,10 +7,16 @@ use craft\helpers\Db;
 use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 use yii\base\Event;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 class ExportNotifications extends FeatureBundle
 {
@@ -24,6 +30,13 @@ class ExportNotifications extends FeatureBundle
         Event::on(Application::class, Application::EVENT_AFTER_REQUEST, [$this, 'handleNotifications']);
     }
 
+    /**
+     * @throws InvalidConfigException
+     * @throws FreeformException
+     * @throws LoaderError
+     * @throws SyntaxError
+     * @throws Exception
+     */
     public function handleNotifications(): void
     {
         if (Freeform::isLocked(self::CACHE_KEY, self::CACHE_TTL)) {
@@ -69,6 +82,9 @@ class ExportNotifications extends FeatureBundle
             $message->setTo($mailer->processRecipients(json_decode($notification->recipients)));
 
             $data = $profile->getSubmissionData();
+
+            $key = EncryptionHelper::getKey($form->getUid());
+            $data = EncryptionHelper::decryptExportData($key, $data);
 
             $exporter = $exportService->createExporter($notification->fileType, $form, $data);
 

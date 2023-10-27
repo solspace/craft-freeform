@@ -66,10 +66,17 @@ class EncryptionHelper
      */
     public static function decryptExportData(string $key, array $data): array
     {
-        foreach ($data as &$values) {
-            foreach ($values as &$value) {
-                if ($value && (\is_string($value) || \is_array($value))) {
-                    $decryptedValue = self::decrypt($key, $value);
+        foreach ($data as &$row) {
+            foreach ($row as &$value) {
+                if ($value && \is_string($value)) {
+                    if ($array = json_decode($value)) {
+                        $value = $array;
+
+                        $decryptedValue = self::decrypt($key, $value);
+                        $decryptedValue = json_encode($decryptedValue);
+                    } else {
+                        $decryptedValue = self::decrypt($key, $value);
+                    }
 
                     $value = $decryptedValue;
                 }

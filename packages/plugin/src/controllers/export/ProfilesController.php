@@ -13,7 +13,6 @@ use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use yii\base\Exception;
-use yii\base\ExitException;
 use yii\base\InvalidConfigException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -133,7 +132,6 @@ class ProfilesController extends BaseController
     /**
      * @throws InvalidConfigException
      * @throws FreeformException
-     * @throws ExitException
      * @throws HttpException
      * @throws ForbiddenHttpException
      * @throws BadRequestHttpException

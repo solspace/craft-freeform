@@ -127,6 +127,14 @@ class SubmissionsController extends BaseController
             $data[] = $submission;
         }
 
+        foreach ($data as &$row) {
+            foreach ($row as &$value) {
+                if (\is_array($value)) {
+                    $value = json_encode($value);
+                }
+            }
+        }
+
         $exporter = new ExportCsv($form, $data, $this->getExportProfileService()->getExportSettings());
         $fileName = sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
 

@@ -37,7 +37,7 @@ class EncryptionBundle extends FeatureBundle
      */
     public function encrypt(ModelEvent $event): void
     {
-        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
+        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_PRO)) {
             return;
         }
 
@@ -62,10 +62,6 @@ class EncryptionBundle extends FeatureBundle
      */
     public function decrypt(PopulateElementEvent $event): void
     {
-        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_LITE)) {
-            return;
-        }
-
         $submission = $event->element;
 
         $key = EncryptionHelper::getKey($submission->getForm()->getUid());

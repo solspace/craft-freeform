@@ -19,7 +19,6 @@ use Solspace\Freeform\Attributes\Property\Section;
 trait EncryptionTrait
 {
     #[Section('advanced')]
-    #[Edition(Edition::LITE)]
     #[Edition(Edition::PRO)]
     #[Input\Boolean(
         label: 'Encrypt field data',

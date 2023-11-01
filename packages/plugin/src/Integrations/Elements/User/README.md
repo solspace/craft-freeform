@@ -34,4 +34,8 @@ This integration allows you to map Freeform submission data to [Craft User](http
 
 See [Mapping Guidelines](https://docs.solspace.com/craft/freeform/v5/integrations/elements/#mapping-guidelines) for more info.
 
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
+
 <style type="text/css">.warning {display:block;padding:10px 15px;border:1px solid var(--warning-color);border-radius:5px;}.danger {color:var(--error-color);display:block;padding:10px 15px;border:1px solid var(--error-color);border-radius:5px;}</style>

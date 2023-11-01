@@ -48,3 +48,7 @@ Form: *{{ form.name }}*
 • {{ field.label }}: {{ submission[field.handle] }}
 {% endfor %}
 ```
+
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

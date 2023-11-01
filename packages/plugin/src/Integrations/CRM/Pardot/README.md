@@ -85,3 +85,7 @@ To use this integration on your form(s), you'll need to configure each form indi
     - Enable the integration.
     - Select the API endpoints you wish to map to.
     - Map Freeform fields to the Pardot fields as needed.
+
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

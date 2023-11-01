@@ -66,4 +66,8 @@ To use this integration on your form(s), you'll need to configure each form indi
     - Enable the integration.
     - Adjust any of the settings as needed.
 
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
+
 <style type="text/css">.warning {display:block;padding:10px 15px;border:1px solid var(--warning-color);border-radius:5px;}</style>

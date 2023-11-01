@@ -74,3 +74,7 @@ When setting up the form inside the form builder, please be sure to map all requ
 - Value ($ amount), e.g. use a hidden field that contains `500.00` or a regular input/select that allows the user to select the value, etc.
 
 If you want the form submitter to automatically (or optionally) be opted into an ActiveCampaign mailing list, use a hidden field or dropdown, radioes, checkbox, etc that contains the ID of the mailing list you wish to have them subscribed to. Then map that field to the **Mailing List ID** field under *Contact*.
+
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

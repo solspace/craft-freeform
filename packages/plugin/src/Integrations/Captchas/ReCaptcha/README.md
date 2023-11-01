@@ -68,4 +68,8 @@ To use this integration on your form(s), you'll need to configure each form indi
 
 <span class="note warning"><b>Important:</b> <i>reCAPTCHA v2 Invisible</i> and <i>reCAPTCHA v3</i> will automatically load a <i>reCAPTCHA</i> icon in the bottom right corner of your site containing the form. This is required by Google's terms of service. There are CSS workarounds if you wish to locate the icon to the left side of the browser page, etc.</span>
 
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
+
 <style type="text/css">.warning {display:block;padding:10px 15px;border:1px solid var(--warning-color);border-radius:5px;}</style>

@@ -50,3 +50,7 @@ In order for Zapier to know that Freeform exists and what data is available to i
 
 - Try submitting one of your forms that use this webhook, and check if Freeform posts successfully to it and Zapier maps correctly.
 - If there are any issues on Freeform's end, you'll see errors in the Freeform error log. If there's an issue on Zapier's end, you'll see errors inside Zapier.
+
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

@@ -97,3 +97,7 @@ To map a *Contact Interest/Group*, in the **Contact Groups** field mapping area 
 
 ### Marketing Permissions
 To map *GDPR consent / Marketing settings* options, in the **Marketing Permissions** field mapping area in the form builder for the form, select the Freeform field(s) which will represent opting into the corresponding options. ANY value included in these will be considered an opt-in (regardless of whether it's `yes` or `y`, etc). You will need to map a field to each setting individually, so you'll likely need to use a separate checkbox field for each.
+
+---
+
+<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

@@ -106,7 +106,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

@@ -577,13 +577,18 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return Type::string();
     }
 
+    public function getContentGqlHandle(): ?string
+    {
+        return $this->getHandle();
+    }
+
     public function getContentGqlMutationArgumentType(): Type|array
     {
         $description = $this->getContentGqlDescription();
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

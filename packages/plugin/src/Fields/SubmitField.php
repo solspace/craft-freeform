@@ -137,6 +137,11 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
         return false;
     }
 
+    public function getContentGqlHandle(): string
+    {
+        return $this->getHash();
+    }
+
     private function isFirstPage(): bool
     {
         return 0 === $this->getPageIndex();

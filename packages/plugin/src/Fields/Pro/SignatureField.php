@@ -97,7 +97,7 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

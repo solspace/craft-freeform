@@ -94,6 +94,11 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
             .'/>';
     }
 
+    public function getContentGqlHandle(): string
+    {
+        return 'mailingList_'.$this->getHash();
+    }
+
     public function getContentGqlType(): Type|array
     {
         return Type::int();
@@ -109,7 +114,7 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

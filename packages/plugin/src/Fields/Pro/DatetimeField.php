@@ -409,7 +409,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

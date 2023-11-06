@@ -196,9 +196,9 @@ class FormInterface extends AbstractInterface
             ],
             'mailingListName' => [
                 'name' => 'mailingListName',
-                'type' => Type::string(),
+                'type' => Type::listOf(Type::string()),
                 'resolve' => MailingListNameResolver::class.'::resolve',
-                'description' => 'The form’s mailing list field hash',
+                'description' => 'The form’s mailing list field handles',
             ],
             'successMessage' => [
                 'name' => 'successMessage',

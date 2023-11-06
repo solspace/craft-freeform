@@ -193,7 +193,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => FileUploadInputType::getType(),
             'description' => trim($description),
         ];

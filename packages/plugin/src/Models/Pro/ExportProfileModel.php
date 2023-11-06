@@ -12,7 +12,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\StatusRecord;
 use yii\db\Expression;
@@ -153,17 +152,14 @@ class ExportProfileModel extends Model
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
-                    try {
-                        $field = $form->getLayout()->getFieldById($fieldId);
-                        if ($field instanceof CreditCardDetailsField) {
-                            continue;
-                        }
-
-                        $label = $field->getLabel();
-                        $storedFieldIds[] = $field->getId();
-                    } catch (FreeformException $e) {
+                    $field = $form->getLayout()->getFieldById($fieldId);
+                    if (!$field || $field instanceof CreditCardDetailsField) {
                         continue;
                     }
+
+                    $label = $field->getLabel();
+
+                    $storedFieldIds[] = $field->getId();
                 }
 
                 $fieldSettings[$fieldId] = [
@@ -286,7 +282,11 @@ class ExportProfileModel extends Model
             }
 
             if (is_numeric($fieldId)) {
-                $field = $form->get($fieldId);
+                $field = $form->getLayout()->getFieldById($fieldId);
+                if (!$field || $field instanceof CreditCardDetailsField) {
+                    continue;
+                }
+
                 $fieldName = Submission::getFieldColumnName($field);
                 $fieldHandle = $field->getHandle();
 
@@ -334,7 +334,11 @@ class ExportProfileModel extends Model
 
                 $fieldId = $id;
                 if (is_numeric($id)) {
-                    $field = $form->get($id);
+                    $field = $form->getLayout()->getFieldById($id);
+                    if (!$field || $field instanceof CreditCardDetailsField) {
+                        continue;
+                    }
+
                     $fieldId = 'sc.[['.Submission::getFieldColumnName($field).']]';
                 }
 

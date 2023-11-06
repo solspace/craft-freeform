@@ -42,7 +42,7 @@ class FieldCollection implements \IteratorAggregate
         return $indexed;
     }
 
-    public function get(int|string $identificator): FieldInterface
+    public function get(int|string $identificator): ?FieldInterface
     {
         foreach ($this->fields as $field) {
             if (
@@ -53,7 +53,7 @@ class FieldCollection implements \IteratorAggregate
             }
         }
 
-        throw new FreeformException("Field with handle '{$identificator}' not found");
+        return null;
     }
 
     public function has(int|string $identificator): bool

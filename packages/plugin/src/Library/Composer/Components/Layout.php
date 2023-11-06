@@ -140,17 +140,17 @@ class Layout implements \JsonSerializable, \Iterator
         return $this->fieldCollection->getIndexedByHandle();
     }
 
-    public function getFieldById(int $id): FieldInterface
+    public function getFieldById(int $id): ?FieldInterface
     {
         return $this->fieldCollection->get($id);
     }
 
-    public function getFieldByHandle(string $handle): FieldInterface
+    public function getFieldByHandle(string $handle): ?FieldInterface
     {
         return $this->fieldCollection->get($handle);
     }
 
-    public function getFieldByHash(string $hash): FieldInterface
+    public function getFieldByHash(string $hash): ?FieldInterface
     {
         return $this->fieldCollection->get($hash);
     }

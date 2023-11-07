@@ -198,10 +198,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $containerAttributes = $this->getAttributes()
-            ->getContainer()
-            ->setIfEmpty('data-field-container', $this->getHandle())
-        ;
+        $containerAttributes = $this->getAttributes()->getContainer();
 
         $output = '<div'.$containerAttributes.'>';
 

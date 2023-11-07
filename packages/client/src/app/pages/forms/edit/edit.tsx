@@ -8,10 +8,10 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
+import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
-import { integrationActions } from './store/slices/integrations';
 import { pageActions } from './store/slices/layout/pages';
 import { rowActions } from './store/slices/layout/rows';
 import { notificationActions } from './store/slices/notifications';
@@ -27,7 +27,7 @@ export const Edit: React.FC = () => {
   const dispatch = useAppDispatch();
 
   useQueryFormSettings();
-
+  useQueryFormIntegrations(formId && Number(formId));
   const { data, isFetching, isError, error } = useQuerySingleForm(
     formId && Number(formId)
   );
@@ -51,7 +51,6 @@ export const Edit: React.FC = () => {
     dispatch(layoutActions.set(layouts));
     dispatch(rowActions.set(rows));
     dispatch(notificationActions.set([]));
-    dispatch(integrationActions.emptyIntegrations());
 
     if (pages.length === 0) {
       dispatch(addNewPage());

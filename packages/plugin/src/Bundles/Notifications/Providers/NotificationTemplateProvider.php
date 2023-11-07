@@ -42,6 +42,19 @@ class NotificationTemplateProvider
         );
     }
 
+    public function getNotificationTemplate(string|int $id): ?NotificationTemplate
+    {
+        if (is_numeric($id)) {
+            return $this->getDatabaseNotificationTemplate((int) $id);
+        }
+
+        if (\is_string($id)) {
+            return $this->getFileNotificationTemplate($id);
+        }
+
+        return null;
+    }
+
     public function getDatabaseNotificationTemplate(int $id): ?NotificationTemplate
     {
         $record = $this->service->getTemplateRecordById($id);

@@ -33,6 +33,15 @@ export const Instructions = styled.span`
   &:not(:last-child) {
     padding-bottom: 6px;
   }
+
+  code {
+    background-color: #dfe5ec;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-family: monospace;
+    color: ${colors.gray600};
+    font-style: normal;
+  }
 `;
 
 export const FormField = styled.div`

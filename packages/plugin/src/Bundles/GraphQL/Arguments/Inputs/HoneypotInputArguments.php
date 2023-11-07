@@ -6,7 +6,7 @@ use craft\gql\base\Arguments;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\HoneypotInputType;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Singleton\Honeypot\Honeypot;
+use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 
 class HoneypotInputArguments extends Arguments
 {

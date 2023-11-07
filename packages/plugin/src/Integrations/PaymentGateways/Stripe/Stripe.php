@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
+use Hashids\Hashids;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -49,6 +50,7 @@ class Stripe extends PaymentGatewayIntegration
     protected string $secretKey = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Webhook Secret',
         instructions: 'Enter your Stripe webhook secret here.',
@@ -68,6 +70,11 @@ class Stripe extends PaymentGatewayIntegration
         instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
     )]
     protected bool $sendOnSuccess = true;
+
+    public static function getHashids(): Hashids
+    {
+        return new Hashids('stripe', 10);
+    }
 
     public function getPublicKey(): string
     {
@@ -110,22 +117,22 @@ class Stripe extends PaymentGatewayIntegration
         return $charges instanceof StripeAPI\Collection;
     }
 
-    // public function fetchFields(): array
-    // {
-    //     return [
-    //         new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-    //         new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-    //         new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-    //         new FieldObject('email', 'Email', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-    //         new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-    //         new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //         new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //         new FieldObject('city', 'City', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //         new FieldObject('state', 'State', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //         new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //         new FieldObject('country', 'Country', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-    //     ];
-    // }
+    public function fetchFields(): array
+    {
+        return [
+            new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
+            new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
+            new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
+            new FieldObject('email', 'Email', FieldObject::TYPE_STRING, self::CATEGORY_USER),
+            new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, self::CATEGORY_USER),
+            new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('city', 'City', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('state', 'State', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('country', 'Country', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+        ];
+    }
 
     /**
      * Returns link to stripe dashboard for selected resource.

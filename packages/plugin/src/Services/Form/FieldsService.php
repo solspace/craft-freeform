@@ -3,12 +3,14 @@
 namespace Solspace\Freeform\Services\Form;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 use Solspace\Freeform\Services\FormsService;
+use yii\base\Event;
 
 class FieldsService extends BaseService
 {
@@ -111,6 +113,12 @@ class FieldsService extends BaseService
         /** @var FieldInterface $field */
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
+
+        Event::trigger(
+            FieldInterface::class,
+            FieldInterface::EVENT_AFTER_SET_PROPERTIES,
+            new FieldPropertiesEvent($field)
+        );
 
         return $field;
     }

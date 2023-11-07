@@ -120,6 +120,16 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
+    public function getByUid(string $uid): ?IntegrationModel
+    {
+        $result = $this->getQuery()->where(['uid' => $uid])->one();
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createIntegrationModel($result);
+    }
+
     public function getByHandle(string $handle): ?IntegrationModel
     {
         $result = $this->getQuery()->where(['handle' => $handle])->one();
@@ -139,6 +149,18 @@ class IntegrationsService extends BaseService
 
         throw new IntegrationException(
             Freeform::t('Integration with ID {id} not found', ['id' => $id])
+        );
+    }
+
+    public function getIntegrationObjectByUid(string $uid): IntegrationInterface
+    {
+        $model = $this->getByUid($uid);
+        if ($model) {
+            return $model->getIntegrationObject();
+        }
+
+        throw new IntegrationException(
+            Freeform::t('Integration with UID {uid} not found', ['uid' => $uid])
         );
     }
 
@@ -401,6 +423,7 @@ class IntegrationsService extends BaseService
             ->select(
                 [
                     'integration.id',
+                    'integration.uid',
                     'integration.enabled',
                     'integration.name',
                     'integration.handle',

@@ -36,9 +36,10 @@
     "y18n": "^5.0.8"
   },
   "dependencies": {
+    "@stripe/stripe-js": "^2.1.9",
     "axios": "^1.5.0",
     "clsx": "^2.0.0",
-    "core-js": "^3.32.1",
+    "core-js": "^3.33.2",
     "filesize": "^10.0.12",
     "microtip": "^0.2.2"
   }

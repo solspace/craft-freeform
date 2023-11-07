@@ -11,14 +11,10 @@ export const Label = styled.label`
   font-weight: bold;
   color: ${colors.gray550};
 
-  &.is-required {
-    &:after {
-      content: '*';
-      padding-left: 2px;
-      position: absolute;
-
-      color: ${colors.error};
-    }
+  .required {
+    position: relative;
+    top: -5px;
+    left: -5px;
   }
 `;
 
@@ -47,6 +43,7 @@ export const FieldCellWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
+  height: 100%;
   padding: ${spacings.sm} ${spacings.md};
   margin: 0;
 

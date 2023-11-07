@@ -3,6 +3,7 @@ import type {
   GenericValue,
   VisibilityFilter,
 } from '@ff-client/types/properties';
+import { filterTest } from '@ff-client/utils/filters';
 
 export const useVisibility = (
   filters: VisibilityFilter[],
@@ -14,18 +15,7 @@ export const useVisibility = (
     }
 
     try {
-      let visible = true;
-
-      filters.forEach((filter) => {
-        const func = new Function(...Object.keys(values), `return ${filter}`);
-        const isValid = func(...Object.values(values));
-
-        if (!isValid) {
-          visible = false;
-        }
-      });
-
-      return visible;
+      return filterTest(filters, values);
     } catch (error) {
       console.error(
         `Failed to evaluate visibility expression: ${filters.join(' && ')}`

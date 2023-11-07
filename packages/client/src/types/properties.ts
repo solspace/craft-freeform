@@ -34,6 +34,7 @@ export enum PropertyType {
   Recipients = 'recipients',
   Select = 'select',
   DynamicSelect = 'dynamicSelect',
+  AppStateSelect = 'appStateSelect',
   String = 'string',
   Table = 'table',
   TabularData = 'tabularData',
@@ -119,6 +120,16 @@ export type DynamicSelectProperty = BaseProperty<
   source?: string;
   parameterFields?: string[];
   generator?: string;
+};
+export type AppStateSelectProperty = BaseProperty<
+  string,
+  PropertyType.AppStateSelect
+> & {
+  emptyOption?: string;
+  source?: string;
+  optionValue?: string;
+  optionLabel?: string;
+  filters?: string[];
 };
 export type CheckboxesProperty = BaseProperty<
   Array<string | number>,
@@ -226,6 +237,7 @@ export type Property =
   | ConditionalRulesProperty
   | DateTimeProperty
   | DynamicSelectProperty
+  | AppStateSelectProperty
   | FieldMappingProperty
   | FieldTypeProperty
   | FieldProperty

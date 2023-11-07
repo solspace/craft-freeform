@@ -54,14 +54,9 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
-use Solspace\Freeform\Services\Integrations\CaptchasService;
 use Solspace\Freeform\Services\Integrations\CrmService;
-use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
-use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
-use Solspace\Freeform\Services\Integrations\SingletonIntegrationsService;
-use Solspace\Freeform\Services\Integrations\WebhooksService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\LoggerService;
@@ -72,11 +67,6 @@ use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
-use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
-use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
-use Solspace\Freeform\Services\Pro\Payments\StripeService;
-use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
-use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\Pro\RulesService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
 use Solspace\Freeform\Services\RelationsService;
@@ -98,45 +88,35 @@ use yii\db\Query;
 /**
  * Class Plugin.
  *
- * @property CrmService                   $crm
- * @property SingletonIntegrationsService $singletonIntegrations
- * @property CaptchasService              $captchas
- * @property ElementsService              $elements
- * @property FilesService                 $files
- * @property FormsService                 $forms
- * @property FieldsService                $fields
- * @property LayoutsService               $formLayouts
- * @property MailerService                $mailer
- * @property EmailMarketingService        $emailMarketing
- * @property NotificationsService         $notifications
- * @property SettingsService              $settings
- * @property StatusesService              $statuses
- * @property SubmissionsService           $submissions
- * @property SpamSubmissionsService       $spamSubmissions
- * @property LoggerService                $logger
- * @property IntegrationsService          $integrations
- * @property IntegrationsQueueService     $integrationsQueue
- * @property PaymentGatewaysService       $paymentGateways
- * @property ChartsService                $charts
- * @property WidgetsService               $widgets
- * @property ExportService                $export
- * @property ExportProfilesService        $exportProfiles
- * @property ExportNotificationsService   $exportNotifications
- * @property RulesService                 $rules
- * @property PaymentNotificationsService  $paymentNotifications
- * @property PaymentsService              $payments
- * @property StripeService                $stripe
- * @property SubscriptionPlansService     $subscriptionPlans
- * @property SubscriptionsService         $subscriptions
- * @property WebhooksService              $webhooks
- * @property RelationsService             $relations
- * @property DigestService                $digest
- * @property SummaryService               $summary
- * @property FreeformFeedService          $feed
- * @property LockService                  $lock
- * @property DiagnosticsService           $diagnostics
- * @property PreflightService             $preflight
- * @property TypesService                 $formTypes
+ * @property CrmService                 $crm
+ * @property FilesService               $files
+ * @property FormsService               $forms
+ * @property FieldsService              $fields
+ * @property LayoutsService             $formLayouts
+ * @property MailerService              $mailer
+ * @property EmailMarketingService      $emailMarketing
+ * @property NotificationsService       $notifications
+ * @property SettingsService            $settings
+ * @property StatusesService            $statuses
+ * @property SubmissionsService         $submissions
+ * @property SpamSubmissionsService     $spamSubmissions
+ * @property LoggerService              $logger
+ * @property IntegrationsService        $integrations
+ * @property IntegrationsQueueService   $integrationsQueue
+ * @property ChartsService              $charts
+ * @property WidgetsService             $widgets
+ * @property ExportService              $export
+ * @property ExportProfilesService      $exportProfiles
+ * @property ExportNotificationsService $exportNotifications
+ * @property RulesService               $rules
+ * @property RelationsService           $relations
+ * @property DigestService              $digest
+ * @property SummaryService             $summary
+ * @property FreeformFeedService        $feed
+ * @property LockService                $lock
+ * @property DiagnosticsService         $diagnostics
+ * @property PreflightService           $preflight
+ * @property TypesService               $formTypes
  */
 class Freeform extends Plugin
 {
@@ -214,6 +194,8 @@ class Freeform extends Plugin
     public function init(): void
     {
         parent::init();
+        \Yii::setAlias('@freeform-scripts', __DIR__.'/Resources/js/scripts');
+        \Yii::setAlias('@freeform-styles', __DIR__.'/Resources/css');
         \Yii::setAlias('@freeform', __DIR__);
 
         // TODO: refactor these into separate bundles
@@ -342,9 +324,6 @@ class Freeform extends Plugin
         $this->setComponents(
             [
                 'crm' => CrmService::class,
-                'singletonIntegrations' => SingletonIntegrationsService::class,
-                'captchas' => CaptchasService::class,
-                'elements' => ElementsService::class,
                 'charts' => ChartsService::class,
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
@@ -361,18 +340,11 @@ class Freeform extends Plugin
                 'logger' => LoggerService::class,
                 'integrations' => IntegrationsService::class,
                 'integrationsQueue' => IntegrationsQueueService::class,
-                'paymentGateways' => PaymentGatewaysService::class,
                 'widgets' => WidgetsService::class,
                 'export' => ExportService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'exportNotifications' => ExportNotificationsService::class,
                 'rules' => RulesService::class,
-                'paymentNotifications' => PaymentNotificationsService::class,
-                'payments' => PaymentsService::class,
-                'stripe' => StripeService::class,
-                'subscriptionPlans' => SubscriptionPlansService::class,
-                'subscriptions' => SubscriptionsService::class,
-                'webhooks' => WebhooksService::class,
                 'relations' => RelationsService::class,
                 'notes' => NotesService::class,
                 'digest' => DigestService::class,
@@ -587,12 +559,6 @@ class Freeform extends Plugin
                 SubmissionsController::class,
                 SubmissionsController::EVENT_REGISTER_EDIT_ASSETS,
                 [$this->rules, 'registerRulesJsAsAssets']
-            );
-
-            Event::on(
-                Form::class,
-                Form::EVENT_ATTACH_TAG_ATTRIBUTES,
-                [$this->stripe, 'addAttributesToFormTag']
             );
         }
     }

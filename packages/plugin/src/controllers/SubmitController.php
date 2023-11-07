@@ -30,22 +30,10 @@ class SubmitController extends BaseController
 
     public function actionIndex(): ?Response
     {
-        $this->requirePostRequest();
-
         $request = \Craft::$app->getRequest();
         $isAjaxRequest = $request->getIsAjax();
 
-        $formId = SessionContext::getPostedFormId();
-        $form = $this->getFormsService()->getFormById($formId);
-        if (!$form) {
-            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
-
-            if (!$isAjaxRequest) {
-                throw new FreeformException($message);
-            }
-
-            return $this->asJson(['success' => false, 'message' => $message]);
-        }
+        $form = $this->getFormFromRequest();
 
         $requestHandled = $form->handleRequest($request);
         $submissionsService = $this->getSubmissionsService();
@@ -72,6 +60,16 @@ class SubmitController extends BaseController
         }
 
         return null;
+    }
+
+    public function actionValidate(): ?Response
+    {
+        $request = \Craft::$app->getRequest();
+
+        $form = $this->getFormFromRequest();
+        $form->handleRequest($request);
+
+        return $this->toAjaxResponse($form);
     }
 
     public function behaviors(): array
@@ -151,5 +149,31 @@ class SubmitController extends BaseController
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
 
         return $this->asJson($event->getPayload());
+    }
+
+    private function getFormFromRequest(): Form
+    {
+        $this->requirePostRequest();
+
+        $request = \Craft::$app->getRequest();
+        $isAjaxRequest = $request->getIsAjax();
+
+        $formId = SessionContext::getPostedFormId();
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
+            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
+
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            $response = $this->asJson(['success' => false, 'message' => $message]);
+            $response->setStatusCode(404);
+            $response->send();
+
+            exit;
+        }
+
+        return $form;
     }
 }

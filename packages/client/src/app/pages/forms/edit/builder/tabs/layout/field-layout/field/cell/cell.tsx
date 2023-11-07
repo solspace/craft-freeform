@@ -59,15 +59,12 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       }}
     >
       {!type.implements.includes('inputOnly') && (
-        <Label
-          className={classes(
-            field.properties.required ? 'label is-required' : 'label'
-          )}
-        >
+        <Label className="label">
           <LabelIcon dangerouslySetInnerHTML={{ __html: type.icon }} />
           <LoadingText loading={isLoadingPreview} spinner>
             {field.properties.label || type?.name}
           </LoadingText>
+          {field.properties.required && <span className="required" />}
         </Label>
       )}
 

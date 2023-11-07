@@ -1,4 +1,5 @@
 import events from '@lib/plugin/constants/event-types';
+import { removeElement } from '@lib/plugin/helpers/elements';
 
 class Table {
   PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
@@ -94,9 +95,7 @@ class Table {
     const row = event.target.closest('tr');
 
     this.freeform._dispatchEvent(events.table.onRemoveRow, { table, row });
-
-    row.ffRemove();
-
+    removeElement(row);
     this.freeform._dispatchEvent(events.table.afterRemoveRow, { table });
   };
 }

@@ -1,4 +1,5 @@
 import type Freeform from '@components/front-end/plugin/freeform';
+import type { FreeformHandler } from 'types/form';
 
 export const enum Operator {
   Equals = 'equals',
@@ -26,7 +27,7 @@ type RuleCondition = {
   value: string;
 };
 
-class RuleHandler {
+class RuleHandler implements FreeformHandler {
   freeform: Freeform;
   form: HTMLFormElement;
 
@@ -48,20 +49,6 @@ class RuleHandler {
     }
 
     const rules: Rule[] = JSON.parse(rulesElement.textContent as string);
-
-    // Create a callback which will be called when a field is changed
-    const callback =
-      (rule: Rule): EventListenerOrEventListenerObject =>
-      () => {
-        // Trigger the main rule applying for this field
-        this.applyRule(rule);
-
-        // Trigger any related rules which are affected by this field
-        // this allows for nested rules to work
-        rules
-          .filter((r) => r.conditions.some((condition) => condition.field === rule.field))
-          .forEach((r) => this.applyRule(r));
-      };
 
     // Iterate through all form elements
     Array.from(this.form.elements).forEach((element) => {
@@ -104,6 +91,20 @@ class RuleHandler {
       if (!listener) {
         return;
       }
+
+      // Create a callback which will be called when a field is changed
+      const callback =
+        (rule: Rule): EventListenerOrEventListenerObject =>
+        () => {
+          // Trigger the main rule applying for this field
+          this.applyRule(rule);
+
+          // Trigger any related rules which are affected by this field
+          // this allows for nested rules to work
+          rules
+            .filter((r) => r.conditions.some((condition) => condition.field === rule.field))
+            .forEach((r) => this.applyRule(r));
+        };
 
       // Attach event listeners
       matchedRules.forEach((rule) => {
@@ -152,15 +153,20 @@ class RuleHandler {
       return;
     }
 
+    const field = this.form[condition.field];
+    const isCheckbox =
+      field instanceof RadioNodeList && field.length === 2 && (field[1] as HTMLInputElement)?.type === 'checkbox';
+
     // Default the value to `null` if the field is hidden, which will help
     // with triggering nested rules
-
     const isHidden = fieldContainer.dataset.hidden !== undefined;
-    const conditionValue = isHidden ? null : this.form[condition.field].value;
+    let conditionValue = isHidden ? null : field.value;
+    if (isCheckbox && !isHidden) {
+      conditionValue = (field[1] as HTMLInputElement).checked ? '1' : '';
+    }
 
     switch (condition.operator) {
       case Operator.Equals:
-        console.log(conditionValue, condition.value);
         return `${conditionValue}`.toLowerCase() === `${condition.value}`.toLowerCase();
 
       case Operator.NotEquals:

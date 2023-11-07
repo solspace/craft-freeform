@@ -14,6 +14,24 @@ class FormIntegrationsProvider
     ) {
     }
 
+    public function getById(?int $id): ?IntegrationInterface
+    {
+        if (null === $id) {
+            return null;
+        }
+
+        return $this->integrationsService->getIntegrationObjectById($id);
+    }
+
+    public function getByUid(?string $uid): ?IntegrationInterface
+    {
+        if (null === $uid) {
+            return null;
+        }
+
+        return $this->integrationsService->getIntegrationObjectByUid($uid);
+    }
+
     /**
      * @return IntegrationInterface[]
      */

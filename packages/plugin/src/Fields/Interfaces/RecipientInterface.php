@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+
 interface RecipientInterface
 {
     /**
@@ -20,5 +22,5 @@ interface RecipientInterface
      * Either returns an ["email", "email"] array
      * Or an array with keys as recipient names, like ["Jon Doe" => "email", ..]
      */
-    public function getRecipients(): array;
+    public function getRecipients(): RecipientCollection;
 }

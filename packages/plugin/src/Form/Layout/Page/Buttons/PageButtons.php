@@ -5,9 +5,11 @@ namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\ButtonTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\SaveButtonTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Form\Layout\Page\Buttons\Button\SaveButton;
 
 class PageButtons
 {
@@ -65,9 +67,9 @@ class PageButtons
 
     #[Section('general')]
     #[Edition(Edition::PRO)]
-    #[ValueTransformer(ButtonTransformer::class)]
+    #[ValueTransformer(SaveButtonTransformer::class)]
     #[Input\Special\PageButton(label: 'Save Button', togglable: true, enabled: false)]
-    private Button $save;
+    private SaveButton $save;
 
     #[Section(
         handle: 'attributes',
@@ -119,7 +121,7 @@ class PageButtons
 
         $this->submit = new Button($config['submit'] ?? ['label' => 'Submit', 'enabled' => true]);
         $this->back = new Button($config['back'] ?? ['label' => 'Back', 'enabled' => true]);
-        $this->save = new Button($config['save'] ?? ['label' => 'Save', 'enabled' => false]);
+        $this->save = new SaveButton($config['save'] ?? ['label' => 'Save', 'enabled' => false]);
     }
 
     public function getLayout(): string
@@ -167,7 +169,7 @@ class PageButtons
         return $this->back;
     }
 
-    public function getSave(): Button
+    public function getSave(): SaveButton
     {
         return $this->save;
     }

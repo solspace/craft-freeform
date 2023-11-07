@@ -27,6 +27,8 @@ interface IntegrationInterface
 
     public function getId(): ?int;
 
+    public function getUid(): ?string;
+
     public function setId(int $id): self;
 
     public function isEnabled(): bool;

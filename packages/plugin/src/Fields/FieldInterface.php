@@ -27,6 +27,7 @@ interface FieldInterface
     public const EVENT_AFTER_SAVE = 'after-save';
 
     public const EVENT_VALIDATE = 'validate';
+    public const EVENT_AFTER_SET_PROPERTIES = 'after-set-properties';
 
     public const TYPE_TEXT = 'text';
     public const TYPE_TEXTAREA = 'textarea';

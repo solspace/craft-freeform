@@ -8,6 +8,7 @@ const events = {
     renderSuccess: 'freeform-render-success',
     renderFieldErrors: 'freeform-render-field-errors',
     renderFormErrors: 'freeform-render-form-errors',
+    ajaxBeforeSuccess: 'freeform-before-ajax-success',
     ajaxSuccess: 'freeform-ajax-success',
     ajaxError: 'freeform-ajax-error',
     ajaxBeforeSubmit: 'freeform-ajax-before-submit',

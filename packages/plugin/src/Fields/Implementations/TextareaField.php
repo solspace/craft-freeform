@@ -81,7 +81,7 @@ class TextareaField extends AbstractField implements PlaceholderInterface, Defau
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

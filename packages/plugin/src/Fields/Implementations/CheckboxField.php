@@ -124,7 +124,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

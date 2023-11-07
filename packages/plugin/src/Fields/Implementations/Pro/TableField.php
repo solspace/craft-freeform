@@ -287,7 +287,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

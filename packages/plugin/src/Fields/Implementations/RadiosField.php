@@ -99,7 +99,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

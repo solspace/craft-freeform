@@ -31,7 +31,7 @@ class GraphQLContext
         }
 
         foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+            if ($field instanceof PersistentValueInterface || !$field->getContentGqlHandle()) {
                 continue;
             }
 
@@ -39,8 +39,8 @@ class GraphQLContext
                 continue;
             }
 
-            if (isset($arguments[$field->getHandle()])) {
-                $postedValue = $arguments[$field->getHandle()];
+            if (isset($arguments[$field->getContentGqlHandle()])) {
+                $postedValue = $arguments[$field->getContentGqlHandle()];
 
                 $event = new TransformValueEvent($field, $postedValue);
                 Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);

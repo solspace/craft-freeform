@@ -156,7 +156,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
                     $this->contactProps[] = [
                         'contact' => null,
-                        'field' => (int) $key,
+                        'field' => (string) $key,
                         'value' => $value,
                     ];
                 } else {
@@ -302,7 +302,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
 
             foreach ($this->contactProps as $prop) {
-                $prop['contact'] = $this->contactId;
+                $prop['contact'] = (string) $this->contactId;
 
                 $client->post(
                     $this->getEndpoint('/fieldValues'),
@@ -317,7 +317,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             $this->processException($exception, self::LOG_CATEGORY);
         }
 
-        if (!$this->contactId && !$listId) {
+        if ((!$this->contactId && !$listId) || !$listId) {
             return;
         }
 

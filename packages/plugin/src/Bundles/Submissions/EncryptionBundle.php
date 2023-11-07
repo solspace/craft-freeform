@@ -2,17 +2,15 @@
 
 namespace Solspace\Freeform\Bundles\Submissions;
 
-use craft\events\ModelEvent;
 use craft\events\PopulateElementEvent;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use yii\base\Event;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
 
 class EncryptionBundle extends FeatureBundle
 {
@@ -20,60 +18,42 @@ class EncryptionBundle extends FeatureBundle
     {
         Event::on(
             Submission::class,
-            Submission::EVENT_BEFORE_SAVE,
+            Submission::EVENT_PROCESS_FIELD_VALUE,
             [$this, 'encrypt']
         );
 
         Event::on(
             SubmissionQuery::class,
-            SubmissionQuery::EVENT_AFTER_POPULATE_ELEMENT,
+            SubmissionQuery::EVENT_BEFORE_POPULATE_ELEMENT,
             [$this, 'decrypt']
         );
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
-    public function encrypt(ModelEvent $event): void
+    public function encrypt(ProcessFieldValueEvent $event): void
     {
-        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_PRO)) {
+        $field = $event->getField();
+
+        $value = $event->getValue();
+
+        if ($this->plugin()->edition()->isBelow(Freeform::EDITION_PRO) || !$field instanceof EncryptionInterface || !$field->isEncrypted() || !$value) {
             return;
         }
 
-        $submission = $event->sender;
+        $key = EncryptionHelper::getKey($field->getForm()->getUid());
 
-        $key = EncryptionHelper::getKey($submission->getForm()->getUid());
+        $value = EncryptionHelper::encrypt($key, $value);
 
-        $fields = $submission->getFieldCollection()->getStorableFields()->getList(EncryptionInterface::class);
-
-        foreach ($fields as $field) {
-            if ($field->isEncrypted() && $field->getValue()) {
-                $encryptedValue = EncryptionHelper::encrypt($key, $field->getValue());
-
-                $field->setValue($encryptedValue);
-            }
-        }
+        $event->setValue($value);
     }
 
-    /**
-     * @throws Exception
-     * @throws InvalidConfigException
-     */
     public function decrypt(PopulateElementEvent $event): void
     {
-        $submission = $event->element;
+        $form = Freeform::getInstance()->forms->getFormById($event->row['formId']);
 
-        $key = EncryptionHelper::getKey($submission->getForm()->getUid());
+        $key = EncryptionHelper::getKey($form->getUid());
 
-        $fields = $submission->getFieldCollection()->getStorableFields()->getList(EncryptionInterface::class);
-
-        foreach ($fields as $field) {
-            if ($field->getValue()) {
-                $decryptedValue = EncryptionHelper::decrypt($key, $field->getValue());
-
-                $field->setValue($decryptedValue);
-            }
+        foreach ($event->row as $field => $value) {
+            $event->row[$field] = EncryptionHelper::decrypt($key, $value);
         }
     }
 }

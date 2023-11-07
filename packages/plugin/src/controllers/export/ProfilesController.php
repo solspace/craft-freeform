@@ -7,15 +7,10 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
-use yii\base\Exception;
-use yii\base\InvalidConfigException;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -129,14 +124,6 @@ class ProfilesController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws InvalidConfigException
-     * @throws FreeformException
-     * @throws HttpException
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
-     * @throws Exception
-     */
     public function actionExport(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);

@@ -79,8 +79,6 @@ class SubmissionsController extends BaseController
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
 
-        $form = null;
-
         $submissions = Submission::find()->id($submissionIds)->all();
 
         if (!$submissions) {

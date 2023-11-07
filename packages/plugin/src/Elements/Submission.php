@@ -24,6 +24,7 @@ use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
@@ -51,6 +52,7 @@ class Submission extends Element
     public const FIELD_COLUMN_PREFIX = 'field_';
 
     public const EVENT_PROCESS_SUBMISSION = 'process-submission';
+    public const EVENT_PROCESS_FIELD_VALUE = 'process-field-value';
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
@@ -417,7 +419,11 @@ class Submission extends Element
                 $value = LitEmoji::unicodeToShortcode($value);
             }
 
-            $contentData[self::getFieldColumnName($field)] = $value;
+            $event = new ProcessFieldValueEvent($field, $value);
+
+            Event::trigger(self::class, self::EVENT_PROCESS_FIELD_VALUE, $event);
+
+            $contentData[self::getFieldColumnName($field)] = $event->getValue();
         }
 
         $contentTable = self::getContentTableName($this->getForm());

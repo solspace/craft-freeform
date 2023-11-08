@@ -76,7 +76,7 @@ class SubmissionGenerator extends Generator implements GeneratorInterface, Singl
             if ($field->includeInGqlSchema()) {
                 self::$inputFields[] = $field;
 
-                self::$resolverFields[$field->getHandle()] = $field->getContentGqlType();
+                self::$resolverFields[$field->getContentGqlHandle()] = $field->getContentGqlType();
             }
         }
     }

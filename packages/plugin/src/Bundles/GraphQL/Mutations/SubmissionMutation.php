@@ -72,7 +72,7 @@ class SubmissionMutation extends Mutation
 
         foreach ($contentFields as $contentField) {
             $contentFieldType = $contentField->getContentGqlMutationArgumentType();
-            $handle = $contentField->getHandle();
+            $handle = $contentField->getContentGqlHandle();
             $fieldList[$handle] = $contentFieldType;
             $configArray = \is_array($contentFieldType) ? $contentFieldType : $contentFieldType->config;
 

@@ -126,7 +126,7 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

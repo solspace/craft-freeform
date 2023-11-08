@@ -433,6 +433,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->parameters->fieldIdPrefix.$attribute;
     }
 
+    public function getContentGqlHandle(): ?string
+    {
+        return $this->getHandle();
+    }
+
     public function getContentGqlDescription(): array
     {
         $description = [];
@@ -456,7 +461,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

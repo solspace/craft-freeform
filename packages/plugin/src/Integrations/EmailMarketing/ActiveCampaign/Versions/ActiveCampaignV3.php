@@ -138,6 +138,10 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_LISTS, $response);
 
             foreach ($mapping as $key => $value) {
+                if (!is_numeric($key)) {
+                    continue;
+                }
+
                 $fieldId = (string) $key;
 
                 if (\is_array($value)) {

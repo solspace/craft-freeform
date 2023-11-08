@@ -84,6 +84,8 @@ interface FieldInterface
 
     public function getHandle(): ?string;
 
+    public function getContentGqlHandle(): ?string;
+
     public function getLabel(): ?string;
 
     public function getInstructions(): ?string;

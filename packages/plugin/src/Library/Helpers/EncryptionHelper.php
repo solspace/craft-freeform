@@ -31,7 +31,7 @@ class EncryptionHelper
         $prefix = self::ENCRYPTION_PREFIX;
 
         if (\is_string($value) && str_starts_with($value, $prefix)) {
-            $value = str_replace($prefix, '', $value);
+            $value = substr($value, \strlen($prefix));
 
             return self::decryptByKey($key, $value);
         }

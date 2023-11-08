@@ -8,7 +8,7 @@ use Solspace\Freeform\Fields\MailingListField;
 
 class MailingListNameResolver extends Resolver
 {
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?string
+    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): array
     {
         $mailingLists = [];
 
@@ -16,14 +16,10 @@ class MailingListNameResolver extends Resolver
 
         if ($mailingListFields) {
             foreach ($mailingListFields as $mailingListField) {
-                $mailingLists[] = $mailingListField->getHandle();
+                $mailingLists[] = $mailingListField->getContentGqlHandle();
             }
         }
 
-        if (\count($mailingLists) > 0) {
-            return implode(',', $mailingLists);
-        }
-
-        return null;
+        return $mailingLists;
     }
 }

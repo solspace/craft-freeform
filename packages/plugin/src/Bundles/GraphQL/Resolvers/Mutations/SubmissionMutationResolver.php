@@ -70,7 +70,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
         foreach ($form->getLayout()->getFields() as $field) {
             if ($field->hasErrors()) {
                 $errors = [];
-                $errors[$field->getHandle()] = $field->getErrors();
+                $errors[$field->getContentGqlHandle()] = $field->getErrors();
 
                 $userErrors[] = $errors;
             }
@@ -133,7 +133,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
         $payload['assets'] = null;
         $assetsFields = $form->getLayout()->getFields(FileUploadField::class);
         foreach ($assetsFields as $assetsField) {
-            $assets = $submission->getAssets($assetsField->getHandle());
+            $assets = $submission->getAssets($assetsField->getContentGqlHandle());
             foreach ($assets as $asset) {
                 $payload['assets'][] = $asset;
             }

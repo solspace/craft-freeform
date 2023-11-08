@@ -103,7 +103,7 @@ class TextareaField extends AbstractField implements SingleValueInterface, Place
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

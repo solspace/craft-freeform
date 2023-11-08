@@ -83,7 +83,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

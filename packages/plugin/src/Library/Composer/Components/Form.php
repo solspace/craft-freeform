@@ -919,10 +919,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $mailingListFields = $this->getLayout()->getFields(MailingListField::class);
         if ($mailingListFields) {
             foreach ($mailingListFields as $mailingListField) {
-                $mailingLists[] = $mailingListField->getHandle();
+                $mailingLists[] = $mailingListField->getContentGqlHandle();
             }
         }
-        $object['mailingListName'] = implode(',', $mailingLists);
+        $object['mailingListName'] = $mailingLists;
 
         $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($this);
 

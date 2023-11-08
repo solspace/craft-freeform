@@ -74,6 +74,8 @@ interface FieldInterface
 
     public function getHandle(): ?string;
 
+    public function getContentGqlHandle(): ?string;
+
     public function getHash(): string;
 
     public function setValue(mixed $value): self;

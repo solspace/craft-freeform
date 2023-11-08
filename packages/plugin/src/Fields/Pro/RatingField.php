@@ -133,7 +133,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         $description = implode("\n", $description);
 
         return [
-            'name' => $this->getHandle(),
+            'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];

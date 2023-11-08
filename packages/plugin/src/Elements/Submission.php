@@ -420,7 +420,6 @@ class Submission extends Element
             }
 
             $event = new ProcessFieldValueEvent($field, $value);
-
             Event::trigger(self::class, self::EVENT_PROCESS_FIELD_VALUE, $event);
 
             $contentData[self::getFieldColumnName($field)] = $event->getValue();

@@ -7,15 +7,8 @@ use Solspace\Freeform\Fields\FieldInterface;
 
 class ProcessFieldValueEvent extends CancelableEvent
 {
-    private FieldInterface $field;
-
-    private mixed $value;
-
-    public function __construct(FieldInterface $field, mixed $value)
+    public function __construct(private FieldInterface $field, private mixed $value)
     {
-        $this->field = $field;
-        $this->value = $value;
-
         parent::__construct();
     }
 

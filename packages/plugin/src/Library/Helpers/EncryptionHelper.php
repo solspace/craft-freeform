@@ -6,7 +6,7 @@ use Solspace\Freeform\Freeform;
 
 class EncryptionHelper
 {
-    public const ENCRYPTED = 'encrypted';
+    private const ENCRYPTION_PREFIX = 'encrypted:';
 
     public static function getKey(string $formUid): string
     {
@@ -20,19 +20,18 @@ class EncryptionHelper
 
     public static function encrypt(string $key, mixed $value): string
     {
-        $prefix = self::ENCRYPTED;
-
+        $prefix = self::ENCRYPTION_PREFIX;
         $value = self::encryptByKey($key, $value);
 
-        return $prefix.':'.$value;
+        return $prefix.$value;
     }
 
     public static function decrypt(string $key, mixed $value): mixed
     {
-        $prefix = self::ENCRYPTED;
+        $prefix = self::ENCRYPTION_PREFIX;
 
         if (\is_string($value) && str_starts_with($value, $prefix)) {
-            $value = str_replace([$prefix, ':'], '', $value);
+            $value = str_replace($prefix, '', $value);
 
             return self::decryptByKey($key, $value);
         }
@@ -43,7 +42,6 @@ class EncryptionHelper
     public static function decryptExportData(string $key, array $encryptedData): array
     {
         $decryptedData = [];
-
         foreach ($encryptedData as $row) {
             $decryptedRow = [];
 

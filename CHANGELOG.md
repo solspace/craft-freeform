@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.1.12 - 2023-11-09
+
+### Changed
+- Updated GraphQL mutations to support multiple email marketing mailing list fields.
+
+### Fixed
+- Fixed an issue where submission purge logic was not always working reliably.
+- Fixed a bug where form heading Success and Error messages were not being escaped.
+- Fixed a bug where removing a field from a form was not automatically removing it from any configured export profiles for that form.
+
 ## 4.1.11 - 2023-10-24
 
 ### Changed

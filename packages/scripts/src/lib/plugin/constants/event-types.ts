@@ -15,6 +15,9 @@ const events = {
     ajaxAfterSubmit: 'freeform-ajax-after-submit',
     handleActions: 'freeform-handle-actions',
   } as const,
+  rules: {
+    applied: 'freeform-rules-applied',
+  } as const,
   table: {
     onAddRow: 'freeform-field-table-on-add-row',
     afterRowAdded: 'freeform-field-table-after-row-added',

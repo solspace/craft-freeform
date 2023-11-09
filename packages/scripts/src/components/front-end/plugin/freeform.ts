@@ -6,7 +6,7 @@ import 'core-js/features/object/assign';
 import 'core-js/features/dom-collections/for-each';
 
 import events from '@lib/plugin/constants/event-types';
-import { SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL, SUCCESS_BEHAVIOR_RELOAD } from '@lib/plugin/constants/form';
+import { SuccessBehavior } from '@lib/plugin/constants/form';
 import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
@@ -19,7 +19,10 @@ import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
+import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
+import type { StorageResponse } from 'types/events';
+import { type FreeformResponse } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
 
 export default class Freeform {
@@ -284,8 +287,6 @@ export default class Freeform {
       event.preventDefault();
       event.stopPropagation();
 
-      this.unlockSubmit();
-
       return false;
     }
 
@@ -510,7 +511,7 @@ export default class Freeform {
     const data = this._prepareFormData();
     data.set('action', 'freeform/submit/validate');
 
-    const request = await axios({
+    const request = await axios<FreeformResponse>({
       method: form.getAttribute('method'),
       url: form.getAttribute('action') || window.location.href,
       data,
@@ -551,6 +552,27 @@ export default class Freeform {
     return false;
   };
 
+  store = async (): Promise<string | undefined> => {
+    const formData = this._prepareFormData();
+    formData.set('action', 'freeform/submit/store');
+
+    const { status, data } = await axios.post<StorageResponse>(window.location.href, formData, {
+      headers: {
+        'Cache-Control': 'no-cache',
+        'X-Requested-With': 'XMLHttpRequest',
+        HTTP_X_REQUESTED_WITH: 'XMLHttpRequest',
+      },
+    });
+
+    if (status === 200) {
+      return data.token;
+    } else {
+      console.log('Error storing form data', data);
+    }
+
+    return;
+  };
+
   _onSubmitAjax = (event: SubmitEvent) => {
     const { form } = this;
 
@@ -583,7 +605,7 @@ export default class Freeform {
 
         if (!actions.length) {
           if (success) {
-            if (finished && response.onSuccess === SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL && returnUrl) {
+            if (finished && response.onSuccess === SuccessBehavior.RedirectReturnUrl && returnUrl) {
               const redirectEvent = this._dispatchEvent(events.form.ajaxSuccess, { request, response });
 
               if (redirectEvent.defaultPrevented) {
@@ -611,7 +633,7 @@ export default class Freeform {
                 this._dispatchEvent(events.form.onReset);
               }
 
-              if (response.onSuccess === SUCCESS_BEHAVIOR_RELOAD) {
+              if (response.onSuccess === SuccessBehavior.Reload) {
                 this._renderSuccessBanner();
               }
             }
@@ -679,34 +701,25 @@ export default class Freeform {
     );
   };
 
-  _createNewEvent = (name: string, bubbles = true, cancelable = true): Event => {
-    return new Event(name, { bubbles, cancelable });
-  };
-
   _dispatchEvent = <T extends object = Record<string, never>>(
     name: string,
     parameters?: FreeformEventParameters<T>,
     element?: HTMLElement
   ): Event & T => {
-    const { bubbles = false, cancelable = true, ...rest } = parameters;
-
-    const eventParameters = {
-      freeform: this,
-      form: this.form,
-      ...(rest || ({} as T)),
-    };
-
-    const event = this._createNewEvent(name, bubbles, cancelable);
-    Object.assign(event, eventParameters);
+    const event = dispatchCustomEvent(
+      name,
+      {
+        ...parameters,
+        form: this.form,
+        freeform: this,
+      },
+      element
+    );
 
     document.dispatchEvent(event);
     this.form.dispatchEvent(event);
 
-    if (element) {
-      element.dispatchEvent(event);
-    }
-
-    return event as Event & T;
+    return event;
   };
 }
 

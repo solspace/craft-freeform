@@ -188,6 +188,10 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         ;
         $output .= '<div'.$stripeAttributes.'></div>';
 
+        if (!$this->integration) {
+            $output .= '<p class="error" style="color: #cf1124;">No Stripe integration selected</p>';
+        }
+
         $output .= '</div>';
 
         return $output;

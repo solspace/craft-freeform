@@ -1,4 +1,4 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
     {{ field.renderLabel }}
     {{ field.renderInstructions }}
@@ -16,4 +16,4 @@
     {% endfor %}
     {{ field.renderErrors }}
 
-</div>
+{{ field.renderContainerClosingTag }}

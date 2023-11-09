@@ -77,7 +77,5 @@ class RulesBundle extends FeatureBundle
         if (true === $isHidden) {
             $event->isValid = false;
         }
-
-        // $event->isValid = false;
     }
 }

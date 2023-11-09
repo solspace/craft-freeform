@@ -7,6 +7,11 @@ export type FreeformEvent = CustomEvent & {
 type AllTypes = string | number | boolean | null | undefined;
 type GenericValue = AllTypes | AllTypes[] | Record<string, AllTypes | AllTypes[]>;
 
+type Action = {
+  name: string;
+  metadata: Record<string, string>;
+};
+
 export type FreeformResponse = {
   success: boolean;
   finished: boolean;
@@ -27,4 +32,12 @@ export type FreeformResponse = {
 
 export type FreeformResponseEvent = FreeformEvent & {
   response: FreeformResponse;
+};
+
+export type FreeformActionsEvent = FreeformResponseEvent & {
+  actions: Action[];
+};
+
+export type StorageResponse = {
+  token: string;
 };

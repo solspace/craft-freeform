@@ -1,4 +1,6 @@
 import type Freeform from '@components/front-end/plugin/freeform';
+import events from '@lib/plugin/constants/event-types';
+import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { FreeformHandler } from 'types/form';
 
 export const enum Operator {
@@ -116,12 +118,12 @@ class RuleHandler implements FreeformHandler {
     rules.forEach((rule) => this.applyRule(rule));
   };
 
-  applyRule = (rule: Rule) => {
+  applyRule = (rule: Rule): boolean => {
     const { field, display, combinator, conditions } = rule;
 
     const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container=${field}]`);
     if (!fieldContainer) {
-      return;
+      return false;
     }
 
     // Either all conditions must be true, or at least one must be true
@@ -145,6 +147,10 @@ class RuleHandler implements FreeformHandler {
         fieldContainer.dataset.hidden = '';
       }
     }
+
+    dispatchCustomEvent(events.rules.applied, { rule }, fieldContainer);
+
+    return true;
   };
 
   private verifyCondition = (condition: RuleCondition): boolean => {

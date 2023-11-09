@@ -1,31 +1,38 @@
-import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
 import { config } from './elements';
 
-type ClientSecretProps = {
-  integration: string;
+type ClientSecretResponse = {
+  id: string;
+  secret: string;
 };
 
-type ClientScretResponse = {
-  paymentIntentId: string;
-  clientSecret: string;
+const create = async (integration: string): Promise<ClientSecretResponse> => {
+  const { data } = await axios.post<ClientSecretResponse>('/freeform/payments/stripe/payment-intents', {
+    integration,
+    [config.csrf.name]: config.csrf.value,
+  });
+
+  return data;
 };
 
-const clientSecret = async (integration: string) => {
-  const { data } = await axios.post<ClientSecretProps, AxiosResponse<ClientScretResponse>>(
-    '/freeform/payments/stripe/payment-intents',
-    {
-      integration,
-      [config.csrf.name]: config.csrf.value,
-    }
-  );
+type UpdateAmountResponse = {
+  amount: number;
+};
+
+const update = async (integration: string, id: string, amount: number): Promise<UpdateAmountResponse> => {
+  const { data } = await axios.patch<UpdateAmountResponse>(`/freeform/payments/stripe/payment-intents/${id}`, {
+    integration,
+    amount,
+    [config.csrf.name]: config.csrf.value,
+  });
 
   return data;
 };
 
 export default {
   paymentIntents: {
-    clientSecret,
+    create,
+    update,
   },
 };

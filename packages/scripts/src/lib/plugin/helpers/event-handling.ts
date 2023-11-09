@@ -1,34 +1,22 @@
-type ObjectLiteral = { [key: string]: unknown } & {
-  bubbles?: boolean;
-  cancelable?: boolean;
-};
+import type { FreeformEventParameters } from 'types/form';
 
-export const dispatchCustomEvent = <T extends ObjectLiteral>(
-  eventName: string,
-  parameters: T = {} as T,
-  element: HTMLElement
-): T & Event => {
-  const bubbles = parameters.bubbles ?? true;
-  const cancelable = parameters.cancelable ?? true;
+export const dispatchCustomEvent = <T extends object = Record<string, never>>(
+  name: string,
+  parameters?: FreeformEventParameters<T>,
+  element?: HTMLElement
+): Event & T => {
+  const { bubbles = false, cancelable = true, ...eventParameters } = parameters || {};
 
-  delete parameters.bubbles;
-  delete parameters.cancelable;
+  const event = createNewEvent(name, bubbles, cancelable);
+  Object.assign(event, eventParameters);
 
-  const event = createNewEvent(eventName, bubbles, cancelable);
-  Object.assign(event, parameters);
-
-  element.dispatchEvent(event);
+  if (element) {
+    element.dispatchEvent(event);
+  }
 
   return event as Event & T;
 };
 
 export const createNewEvent = (eventName: string, bubbles = true, cancelable = true): Event => {
-  if (typeof Event === 'function') {
-    return new Event(eventName, { bubbles, cancelable });
-  }
-
-  const event = document.createEvent('Event');
-  event.initEvent(eventName, bubbles, cancelable);
-
-  return event;
+  return new Event(eventName, { bubbles, cancelable });
 };

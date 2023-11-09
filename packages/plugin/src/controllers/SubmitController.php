@@ -72,6 +72,16 @@ class SubmitController extends BaseController
         return $this->toAjaxResponse($form);
     }
 
+    public function actionStore(): Response
+    {
+        $request = \Craft::$app->getRequest();
+
+        $form = $this->getFormFromRequest();
+        $form->handleRequest($request);
+
+        return $this->toAjaxResponse($form);
+    }
+
     public function behaviors(): array
     {
         $generalConfig = \Craft::$app->getConfig()->getGeneral();

@@ -14,11 +14,18 @@ export const config = {
   },
 };
 
-const elementMap = new WeakMap();
-
-const { formId, apiKey } = config;
+type StripeElement = {
+  elements: StripeElements;
+  paymentIntent: {
+    id: string;
+    secret: string;
+  };
+};
 
 (async () => {
+  const { formId, apiKey } = config;
+
+  const elementMap = new WeakMap<HTMLDivElement, StripeElement>();
   const stripe = await loadStripe(apiKey);
 
   const form = document.querySelector<HTMLFormElement>(`form[data-id="${formId}"]`);
@@ -26,29 +33,57 @@ const { formId, apiKey } = config;
     return;
   }
 
+  const initStripe = async (container: HTMLDivElement) => {
+    if (container.dataset.hidden === '') {
+      return;
+    }
+
+    console.log(JSON.stringify(container.dataset));
+
+    const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
+    if (elementMap.has(field)) {
+      return;
+    }
+
+    field.innerHTML = 'Loading...';
+
+    const { id, secret } = await queries.paymentIntents.create(field.dataset.integration);
+
+    (field.previousSibling as HTMLInputElement).value = id;
+
+    const elements = stripe.elements({
+      clientSecret: secret,
+    });
+
+    const paymentElementOptions: StripePaymentElementOptions = {
+      layout: 'tabs',
+    };
+
+    const paymentElement = elements.create('payment', paymentElementOptions);
+    paymentElement.mount(field);
+    paymentElement.on('change', (event) => {
+      console.log('payment change', event);
+    });
+
+    elementMap.set(field, {
+      elements,
+      paymentIntent: {
+        id,
+        secret,
+      },
+    });
+  };
+
   form.addEventListener(events.form.ready, async () => {
-    const containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe');
-    containers.forEach(async (container) => {
-      const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
-      const { paymentIntentId, clientSecret } = await queries.paymentIntents.clientSecret(field.dataset.integration);
+    let containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
+    console.log(containers);
+    containers.forEach(initStripe);
 
-      (field.previousSibling as HTMLInputElement).value = paymentIntentId;
-
-      const elements = stripe.elements({
-        clientSecret,
+    containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe[data-hidden]');
+    containers.forEach((container) => {
+      container.addEventListener(events.rules.applied, () => {
+        initStripe(container);
       });
-
-      const paymentElementOptions: StripePaymentElementOptions = {
-        layout: 'tabs',
-      };
-
-      const paymentElement = elements.create('payment', paymentElementOptions);
-      paymentElement.mount(field);
-      paymentElement.on('change', (event) => {
-        console.log('payment change', event);
-      });
-
-      elementMap.set(field, elements);
     });
   });
 
@@ -61,18 +96,24 @@ const { formId, apiKey } = config;
 
     containers.forEach(async (container) => {
       const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
-      const elements = elementMap.get(field) as StripeElements;
-
-      const returnUrl = new URL(window.location.href);
-      //returnUrl.searchParams.append('submissionId', submissionId.toString());
+      const {
+        elements,
+        paymentIntent: { id },
+      } = elementMap.get(field);
 
       const isValid = await event.freeform.validate();
       console.log('Form is %s', isValid ? 'valid' : 'invalid');
+
+      await queries.paymentIntents.update(field.dataset.integration, id, 1500);
+      await elements.fetchUpdates();
 
       if (!isValid) {
         event.freeform.unlockSubmit();
         return;
       }
+
+      const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
+      //returnUrl.searchParams.append('submissionId', submissionId.toString());
 
       console.log('confirming payment', returnUrl, returnUrl.toString());
 
@@ -86,7 +127,7 @@ const { formId, apiKey } = config;
 
       if (error) {
         console.log(error);
-        alert('There was an error');
+        window.scrollTo({ top: field.offsetTop, behavior: 'smooth' });
         event.freeform.unlockSubmit();
       }
     });

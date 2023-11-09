@@ -1,8 +1,10 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
+
     <div class="form-check">
         {{ field.renderInput }}
         {{ field.renderLabel }}
         {{ field.renderInstructions }}
         {{ field.renderErrors }}
     </div>
-</div>
+
+{{ field.renderContainerClosingTag }}

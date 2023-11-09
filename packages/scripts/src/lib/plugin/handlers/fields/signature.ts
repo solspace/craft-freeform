@@ -1,8 +1,11 @@
-/* eslint-disable no-undef */
-class Signature {
-  freeform;
+import type Freeform from '@components/front-end/plugin/freeform';
+import type { FreeformHandler } from 'types/form';
+
+class Signature implements FreeformHandler {
+  freeform: Freeform;
   scriptAdded = false;
-  constructor(freeform) {
+
+  constructor(freeform: Freeform) {
     this.freeform = freeform;
     if (!this.freeform.has('data-scripts-signature')) {
       return;
@@ -27,7 +30,7 @@ class Signature {
       return;
     }
 
-    const canvasFields = this.freeform.form.querySelectorAll('canvas[data-signature-field]');
+    const canvasFields = this.freeform.form.querySelectorAll<HTMLCanvasElement>('canvas[data-signature-field]');
     canvasFields.forEach((canvas) => {
       const onEnd = () => {
         input.value = signaturePad.toDataURL();
@@ -39,10 +42,11 @@ class Signature {
       canvas.style.borderStyle = 'solid';
       canvas.style.borderColor = borderColor;
 
-      const input = canvas.previousSibling;
-      const clearButton = canvas.parentNode.querySelector('[data-signature-clear]');
+      const input = canvas.previousSibling as HTMLInputElement;
+      const clearButton = canvas.parentNode.querySelector<HTMLButtonElement>('[data-signature-clear]');
       const value = input.value;
 
+      // @ts-expect-error: SignaturePad types are not included
       const signaturePad = new SignaturePad(canvas, {
         onEnd,
         backgroundColor,

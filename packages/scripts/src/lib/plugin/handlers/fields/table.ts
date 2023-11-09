@@ -1,12 +1,14 @@
+import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { removeElement } from '@lib/plugin/helpers/elements';
+import type { FreeformHandler } from 'types/form';
 
-class Table {
+class Table implements FreeformHandler {
   PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
 
   freeform;
 
-  constructor(freeform) {
+  constructor(freeform: Freeform) {
     this.freeform = freeform;
     this.reload();
   }
@@ -24,7 +26,7 @@ class Table {
 
       if (button) {
         const getNextMaxIndex = () => {
-          const inputs = table.querySelectorAll('textarea, input, select');
+          const inputs = table.querySelectorAll<HTMLInputElement>('textarea, input, select');
           let maxIndex = 0;
           for (let i = 0; i < inputs.length; i++) {
             const input = inputs[i];
@@ -42,18 +44,18 @@ class Table {
         };
 
         button.addEventListener('click', () => {
-          const referenceRow = table.querySelector('tbody > tr:last-child');
+          const referenceRow = table.querySelector<HTMLTableRowElement>('tbody > tr:last-child');
 
           if (referenceRow) {
-            const cloneRow = referenceRow.cloneNode(true);
-            const inputs = cloneRow.querySelectorAll('textarea, input, select');
+            const cloneRow = referenceRow.cloneNode(true) as HTMLTableRowElement;
+            const inputs = cloneRow.querySelectorAll<HTMLInputElement>('textarea, input, select');
             const maxIndex = getNextMaxIndex();
             for (let i = 0; i < inputs.length; i++) {
               const item = inputs[i];
               let defaultValue = item.dataset.defaultValue || '';
               item.name = item.name.replace(this.PATTERN, `$1[${maxIndex}]$3`);
               if (item.tagName === 'SELECT') {
-                const firstOption = item.querySelector('option:first-child');
+                const firstOption = item.querySelector<HTMLOptionElement>('option:first-child');
                 if (firstOption) {
                   defaultValue = firstOption.value;
                 }
@@ -64,7 +66,7 @@ class Table {
               item.value = defaultValue;
             }
 
-            const removeRowButton = cloneRow.querySelector('[data-freeform-table-remove-row]');
+            const removeRowButton = cloneRow.querySelector<HTMLButtonElement>('[data-freeform-table-remove-row]');
             if (removeRowButton) {
               removeRowButton.addEventListener('click', this.removeRow);
             }
@@ -86,13 +88,15 @@ class Table {
     });
   };
 
-  removeRow = (event) => {
-    if (event.target.closest('tbody').querySelectorAll('tr').length === 1) {
+  removeRow = (event: Event) => {
+    const target = event.target as HTMLTableRowElement;
+
+    if (target.closest('tbody').querySelectorAll('tr').length === 1) {
       return;
     }
 
-    const table = event.target.closest('table');
-    const row = event.target.closest('tr');
+    const table = target.closest('table');
+    const row = target.closest('tr');
 
     this.freeform._dispatchEvent(events.table.onRemoveRow, { table, row });
     removeElement(row);
@@ -101,21 +105,3 @@ class Table {
 }
 
 export default Table;
-
-if (!Element.prototype.matches) {
-  Element.prototype.matches = Element.prototype.msMatchesSelector || Element.prototype.webkitMatchesSelector;
-}
-
-if (!Element.prototype.closest) {
-  Element.prototype.closest = function (s) {
-    var el = this;
-
-    do {
-      if (el.matches(s)) {
-        return el;
-      }
-      el = el.parentElement || el.parentNode;
-    } while (el !== null && el.nodeType === 1);
-    return null;
-  };
-}

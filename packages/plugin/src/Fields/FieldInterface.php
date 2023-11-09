@@ -26,6 +26,12 @@ interface FieldInterface
     public const EVENT_BEFORE_SAVE = 'before-save';
     public const EVENT_AFTER_SAVE = 'after-save';
 
+    public const EVENT_RENDER_CONTAINER = 'render-container';
+    public const EVENT_RENDER_INPUT = 'render-input';
+    public const EVENT_RENDER_LABEL = 'render-label';
+    public const EVENT_RENDER_ERRORS = 'render-errors';
+    public const EVENT_RENDER_INSTRUCTIONS = 'render-instructions';
+
     public const EVENT_VALIDATE = 'validate';
     public const EVENT_AFTER_SET_PROPERTIES = 'after-set-properties';
 

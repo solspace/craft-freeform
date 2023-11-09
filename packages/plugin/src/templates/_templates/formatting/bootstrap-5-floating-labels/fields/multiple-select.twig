@@ -1,18 +1,17 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
-{% set inputAttributes = ('height:' ~ (25 * 5) ~ 'px') %}
+    {% set inputAttributes = ('height:' ~ (25 * 5) ~ 'px') %}
+    {% do field.setParameters({
+        attributes: {
+            input: {
+                "style": inputAttributes
+            },
+        }
+    }) %}
 
-{% do field.setParameters({
-    attributes: {
-        input: { 
-            "style": inputAttributes
-        },
-    }
-}) %}
+    {{ field.renderInput -}}
+    {{- field.renderLabel }}
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
 
-{{ field.renderInput -}}
-{{- field.renderLabel }}
-{{ field.renderInstructions }}
-{{ field.renderErrors }}
-
-</div>
+{{ field.renderContainerClosingTag }}

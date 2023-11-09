@@ -1,17 +1,19 @@
+import type Freeform from '@components/front-end/plugin/freeform';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
+import type { FreeformActionsEvent } from 'types/events';
+import type { FreeformHandler } from 'types/form';
+
 import events from '../../constants/event-types';
 
-/* eslint-disable no-undef */
-/* eslint-disable no-unused-vars */
-class SaveForm {
+class SaveForm implements FreeformHandler {
   freeform;
   form;
 
-  constructor(freeform) {
+  constructor(freeform: Freeform) {
     this.freeform = freeform;
     this.form = freeform.form;
 
-    this.form.addEventListener(events.form.handleActions, (event) => {
+    this.form.addEventListener(events.form.handleActions, (event: FreeformActionsEvent) => {
       const { actions } = event;
 
       const saveAndContinue = actions.find((action) => action.name === 'save-form');
@@ -26,6 +28,7 @@ class SaveForm {
         { key, token, url },
         this.form
       );
+
       if (tokenEvent.defaultPrevented) {
         return;
       }

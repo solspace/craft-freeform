@@ -14,6 +14,8 @@ use yii\base\Event;
 
 class FieldsService extends BaseService
 {
+    private array $fieldCache = [];
+
     public function __construct(
         $config = [],
         private PropertyProvider $propertyProvider,
@@ -92,6 +94,10 @@ class FieldsService extends BaseService
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
+        if (isset($this->fieldCache[$record->id])) {
+            return $this->fieldCache[$record->id];
+        }
+
         $type = $record->type;
 
         $metadata = json_decode($record->metadata, true);
@@ -113,6 +119,8 @@ class FieldsService extends BaseService
         /** @var FieldInterface $field */
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
+
+        $this->fieldCache[$record->id] = $field;
 
         Event::trigger(
             FieldInterface::class,

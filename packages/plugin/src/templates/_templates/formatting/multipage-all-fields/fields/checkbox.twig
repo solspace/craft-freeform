@@ -1,8 +1,8 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
-{{ field.renderInput -}}
-{{- field.renderLabel }}
-{{ field.renderInstructions }}
-{{ field.renderErrors }}
+    {{ field.renderInput -}}
+    {{- field.renderLabel }}
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
 
-</div>
+{{ field.renderContainerClosingTag }}

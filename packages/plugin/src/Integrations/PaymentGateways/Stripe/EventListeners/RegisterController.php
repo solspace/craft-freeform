@@ -20,9 +20,10 @@ class RegisterController extends FeatureBundle
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules[] = new UrlRule([
-                    'pattern' => 'freeform/payments/stripe/payment-intents',
-                    'route' => 'freeform/stripe-payment-intents/create-payment-intent',
-                    'verb' => ['POST', 'GET'],
+                    'pattern' => 'freeform/payments/stripe/payment-intents/<paymentIntentId:[a-zA-Z0-9_]+>',
+                    'route' => 'freeform/stripe-payment-intents/payment-intents',
+                    'verb' => ['POST', 'PATCH'],
+                    'defaults' => ['paymentIntentId' => null],
                 ]);
             }
         );

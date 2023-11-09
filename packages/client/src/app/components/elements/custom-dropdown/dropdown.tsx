@@ -170,18 +170,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
             <CloseButton>
               <CloseIcon />
             </CloseButton>
-
             <Search
               placeholder="Search..."
               ref={searchRef}
               value={query}
               onClick={(event) => event.stopPropagation()}
               onKeyDown={(event) => {
-                if (event.key === 'Escape') {
-                  event.preventDefault();
-                  setOpen(false);
-                }
-
                 if (['ArrowUp', 'ArrowDown'].includes(event.key)) {
                   event.preventDefault();
                 }

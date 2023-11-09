@@ -1,8 +1,12 @@
+import type Freeform from '@components/front-end/plugin/freeform';
+import type { FreeformHandler } from 'types/form';
+
 /* eslint-disable no-undef */
-class InputMask {
-  freeform;
+class InputMask implements FreeformHandler {
+  freeform: Freeform;
   scriptAdded = false;
-  constructor(freeform) {
+
+  constructor(freeform: Freeform) {
     this.freeform = freeform;
 
     if (!this.freeform.has('data-scripts-js-mask')) {
@@ -32,6 +36,7 @@ class InputMask {
     maskedInputs.forEach((input) => {
       const mask = input.getAttribute('data-pattern');
       if (mask) {
+        // @ts-expect-error: IMask is not defined
         new IMask(input, { mask });
       }
     });

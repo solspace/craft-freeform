@@ -35,6 +35,7 @@
       "parser": "@typescript-eslint/parser",
       "plugins": ["import", "simple-import-sort"],
       "rules": {
+        "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/consistent-type-imports": ["error", { "prefer": "type-imports" }],
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/no-explicit-any": "error",

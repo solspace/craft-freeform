@@ -2,8 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Implementations\CheckboxField;
 
+use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Form\Form;
@@ -18,6 +20,7 @@ class CheckboxFieldBundle extends FeatureBundle
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleCheckedByDefault']);
         Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, [$this, 'handleTransform']);
         Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_STORAGE, [$this, 'handleTransform']);
+        Event::on(RuleValidator::class, RuleValidator::EVENT_PROCESS_POSTED_RULE_VALUE, [$this, 'processPostedRuleValue']);
     }
 
     public function handleCheckedByDefault(FormEventInterface $event): void
@@ -50,5 +53,15 @@ class CheckboxFieldBundle extends FeatureBundle
             $field->setChecked(false);
             $event->setValue(null);
         }
+    }
+
+    public function processPostedRuleValue(ProcessPostedRuleValueEvent $event): void
+    {
+        $field = $event->getField();
+        if (!$field instanceof CheckboxField) {
+            return;
+        }
+
+        $event->setValue($field->isChecked() ? '1' : '');
     }
 }

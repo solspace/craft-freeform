@@ -1,16 +1,8 @@
-/**
- * @returns {boolean}
- * @private
- */
-export const isSafari = () => {
+export const isSafari = (): boolean => {
   return navigator.userAgent.indexOf('Safari') > -1;
 };
 
-/**
- * @returns {number|boolean}
- * @private
- */
-export const isIe = () => {
+export const isIe = (): number | boolean => {
   const userAgent = window.navigator.userAgent;
 
   const msie = userAgent.indexOf('MSIE ');

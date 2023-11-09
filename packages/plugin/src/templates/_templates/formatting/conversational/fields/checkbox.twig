@@ -1,4 +1,4 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
     <div class="freeform-checkbox">
         <label for="{{ field.idAttribute }}" class="form-check-label {{ field.hasErrors ? "freeform-has-errors" }} {{ field.required ? "freeform-required" }}">
@@ -12,4 +12,4 @@
     {{ field.renderInstructions }}
     {{ field.renderErrors }}
 
-</div>
+{{ field.renderContainerClosingTag }}

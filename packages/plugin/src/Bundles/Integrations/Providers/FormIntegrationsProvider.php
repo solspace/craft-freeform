@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
@@ -29,7 +30,11 @@ class FormIntegrationsProvider
             return null;
         }
 
-        return $this->integrationsService->getIntegrationObjectByUid($uid);
+        try {
+            return $this->integrationsService->getIntegrationObjectByUid($uid);
+        } catch (IntegrationException) {
+            return null;
+        }
     }
 
     /**

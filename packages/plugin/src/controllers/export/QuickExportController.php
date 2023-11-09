@@ -13,7 +13,11 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -65,14 +69,14 @@ class QuickExportController extends BaseController
                     $isChecked = (bool) $item['checked'];
 
                     if (is_numeric($fieldId)) {
-                        try {
-                            $field = $form->getLayout()->getFieldById($fieldId);
-                            $label = $field->getLabel();
-
-                            $storedFieldIds[] = $field->getId();
-                        } catch (FreeformException $e) {
+                        $field = $form->getLayout()->getField($fieldId);
+                        if (!$field || $field instanceof CreditCardDetailsField) {
                             continue;
                         }
+
+                        $label = $field->getLabel();
+
+                        $storedFieldIds[] = $field->getId();
                     }
 
                     $fieldSetting[$fieldId] = [
@@ -173,6 +177,13 @@ class QuickExportController extends BaseController
         );
     }
 
+    /**
+     * @throws InvalidConfigException
+     * @throws FreeformException
+     * @throws Exception
+     * @throws ForbiddenHttpException
+     * @throws BadRequestHttpException
+     */
     public function actionIndex()
     {
         $this->requirePostRequest();
@@ -280,9 +291,14 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        $exporter = $this->getExportProfileService()->createExporter($exportType, $form, $data);
+        $key = EncryptionHelper::getKey($form->getUid());
+        $data = EncryptionHelper::decryptExportData($key, $data);
 
-        $this->getExportProfileService()->export($exporter, $form);
+        $exportProfilesService = $this->getExportProfileService();
+
+        $exporter = $exportProfilesService->createExporter($exportType, $form, $data);
+
+        $exportProfilesService->export($exporter, $form);
     }
 
     private function getExportSettings(): ExportSettingRecord

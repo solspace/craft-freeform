@@ -12,7 +12,6 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\StatusRecord;
 use yii\db\Expression;
 
@@ -152,17 +151,14 @@ class ExportProfileModel extends Model
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
-                    try {
-                        $field = $form->getLayout()->getField($fieldId);
-                        if ($field instanceof CreditCardDetailsField) {
-                            continue;
-                        }
-
-                        $label = $field->getLabel();
-                        $storedFieldIds[] = $field->getId();
-                    } catch (FreeformException $e) {
+                    $field = $form->getLayout()->getField($fieldId);
+                    if (!$field || $field instanceof CreditCardDetailsField) {
                         continue;
                     }
+
+                    $label = $field->getLabel();
+
+                    $storedFieldIds[] = $field->getId();
                 }
 
                 $fieldSettings[$fieldId] = [

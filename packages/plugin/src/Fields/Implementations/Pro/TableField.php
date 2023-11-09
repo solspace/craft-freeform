@@ -10,10 +10,12 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -26,8 +28,9 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     iconPath: __DIR__.'/../Icons/table.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/table.ejs',
 )]
-class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
+class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface, EncryptionInterface
 {
+    use EncryptionTrait;
     use MultipleValueTrait;
 
     public const COLUMN_TYPE_STRING = 'string';

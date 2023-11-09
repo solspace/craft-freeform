@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\controllers;
 
+use craft\helpers\ArrayHelper;
 use craft\records\Asset;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -78,17 +79,22 @@ class SubmissionsController extends BaseController
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
 
-        $submissions = $this->getSubmissionsService()->getAsArray($submissionIds);
+        $submissions = Submission::find()->id($submissionIds)->all();
 
-        if ($submissions) {
-            $formId = $submissions[0]['formId'];
-            $form = $this->getFormsService()->getFormById($formId);
+        if (!$submissions) {
+            throw new FreeformException(Freeform::t('No submissions found'));
+        }
+
+        $data = [];
+
+        foreach ($submissions as $submission) {
+            $form = $submission->getForm();
 
             $canManage = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
             $canManageSpecific = PermissionHelper::checkPermission(
                 PermissionHelper::prepareNestedPermission(
                     Freeform::PERMISSION_SUBMISSIONS_MANAGE,
-                    $formId
+                    $form->getId()
                 )
             );
 
@@ -96,7 +102,7 @@ class SubmissionsController extends BaseController
             $canReadSpecific = PermissionHelper::checkPermission(
                 PermissionHelper::prepareNestedPermission(
                     Freeform::PERMISSION_SUBMISSIONS_READ,
-                    $formId
+                    $form->getId()
                 )
             );
 
@@ -105,14 +111,30 @@ class SubmissionsController extends BaseController
             }
 
             if (!$form) {
-                throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));
+                throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $form->getId()]));
             }
-        } else {
-            throw new FreeformException(Freeform::t('No submissions found'));
+
+            $fields = $submission->getFieldCollection();
+
+            $submission = ArrayHelper::toArray($submission);
+
+            foreach ($fields as $field) {
+                $submission[$field->getHandle()] = $field->getValue();
+            }
+
+            $data[] = $submission;
         }
 
-        $exporter = new ExportCsv($form->getForm(), $submissions, $this->getExportProfileService()->getExportSettings());
-        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
+        foreach ($data as &$row) {
+            foreach ($row as &$value) {
+                if (\is_array($value)) {
+                    $value = json_encode($value);
+                }
+            }
+        }
+
+        $exporter = new ExportCsv($form, $data, $this->getExportProfileService()->getExportSettings());
+        $fileName = sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }

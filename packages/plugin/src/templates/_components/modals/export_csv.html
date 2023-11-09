@@ -21,7 +21,7 @@
 
 <form id="export-csv-modal" method="post">
     {{ csrfInput() }}
-    <input type="hidden" name="action" value="freeform/quick-export" />
+    <input type="hidden" name="action" value="freeform/export/quick-export" />
     <input type="hidden" name="spam" value="{{ isSpam ? '1' }}" />
 
     <div class="header">
@@ -48,7 +48,7 @@
             <div class="select">
                 <select class="select" name="form_id">
                     {% for form in forms %}
-                        <option value="{{ form.id }}"{{ (form.id == selectedFormId) ?? ' selected' }}>
+                        <option value="{{ form.id }}" {{ form.id == selectedFormId ? 'selected' }}>
                             {{ form.name }}
                         </option>
                     {% endfor %}

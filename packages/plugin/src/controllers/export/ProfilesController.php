@@ -7,6 +7,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -132,7 +133,9 @@ class ProfilesController extends BaseController
         $profileId = \Craft::$app->request->post('profileId');
         $type = \Craft::$app->request->post('type');
 
-        $profile = $this->getExportProfileService()->getProfileById($profileId);
+        $exportProfilesService = $this->getExportProfileService();
+
+        $profile = $exportProfilesService->getProfileById($profileId);
 
         if (!$profile) {
             throw new HttpException(404, Freeform::t('Profile with ID {id} not found'), ['id' => $profileId]);
@@ -141,9 +144,12 @@ class ProfilesController extends BaseController
         $form = $profile->getForm();
         $data = $profile->getSubmissionData();
 
-        $exporter = $this->getExportProfileService()->createExporter($type, $form, $data);
+        $key = EncryptionHelper::getKey($form->getUid());
+        $data = EncryptionHelper::decryptExportData($key, $data);
 
-        $this->getExportProfileService()->export($exporter, $form);
+        $exporter = $exportProfilesService->createExporter($type, $form, $data);
+
+        $exportProfilesService->export($exporter, $form);
     }
 
     private function renderEditForm(ExportProfileModel $model, string $title): Response

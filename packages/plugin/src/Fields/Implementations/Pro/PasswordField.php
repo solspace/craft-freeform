@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -26,6 +27,9 @@ use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
 )]
 class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {
+    #[Input\Hidden]
+    protected bool $encrypted = false;
+
     public function getType(): string
     {
         return self::TYPE_PASSWORD;

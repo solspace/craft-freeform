@@ -6,7 +6,9 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
@@ -15,8 +17,10 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     iconPath: __DIR__.'/../Icons/signature.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
-class SignatureField extends AbstractField implements ExtraFieldInterface
+class SignatureField extends AbstractField implements ExtraFieldInterface, EncryptionInterface
 {
+    use EncryptionTrait;
+
     #[Input\Integer(
         label: 'Width of Pad',
         instructions: 'Specify a value in pixels.',

@@ -3,7 +3,7 @@
 return [
     // quick export
     'freeform/export/export-dialogue' => 'freeform/export/quick-export/export-dialogue',
-    'freeform/export' => 'freeform/export/quick-export/index',
+    'freeform/export/quick-export' => 'freeform/export/quick-export/index',
 
     // Export Profiles
     'freeform/export/profiles' => 'freeform/export/profiles/index',

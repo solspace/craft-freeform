@@ -21,6 +21,7 @@ export enum PropertyType {
   DateTime = 'dateTime',
   Field = 'field',
   FieldMapping = 'fieldMapping',
+  FieldType = 'fieldType',
   Hidden = 'hidden',
   Integer = 'int',
   Label = 'label',
@@ -204,6 +205,7 @@ export type FieldMappingProperty = BaseProperty<
   source?: string;
   parameterFields?: string[];
 };
+export type FieldTypeProperty = BaseProperty<string, PropertyType.FieldType>;
 
 export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG>;
 export type CodeEditorProperty = BaseProperty<
@@ -222,6 +224,7 @@ export type Property =
   | DateTimeProperty
   | DynamicSelectProperty
   | FieldMappingProperty
+  | FieldTypeProperty
   | FieldProperty
   | HiddenProperty
   | IntegerProperty

@@ -12,8 +12,10 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 
 #[Type(
     name: 'Date & Time',
@@ -21,8 +23,10 @@ use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
     iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
-class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface
+class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface, EncryptionInterface
 {
+    use EncryptionTrait;
+
     public const DATETIME_TYPE_BOTH = 'both';
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';

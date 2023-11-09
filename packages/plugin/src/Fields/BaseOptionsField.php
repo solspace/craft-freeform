@@ -4,14 +4,18 @@ namespace Solspace\Freeform\Fields;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 
 /**
  * @implements \IteratorAggregate<int, Option|OptionCollection>
  */
-abstract class BaseOptionsField extends AbstractField implements OptionsInterface
+abstract class BaseOptionsField extends AbstractField implements OptionsInterface, EncryptionInterface
 {
+    use EncryptionTrait;
+
     public function getLabels(): array
     {
         $labels = [];

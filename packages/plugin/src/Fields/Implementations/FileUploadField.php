@@ -21,8 +21,10 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
@@ -32,8 +34,9 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     iconPath: __DIR__.'/Icons/file-upload.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/file-upload.ejs',
 )]
-class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface
+class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface, EncryptionInterface
 {
+    use EncryptionTrait;
     use FileUploadTrait;
     use MultipleValueTrait;
 

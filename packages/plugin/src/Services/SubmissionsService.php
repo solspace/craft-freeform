@@ -522,6 +522,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $assetIds = [];
         foreach ($query->batch() as $results) {
+            $deletableIds = [];
+
             /** @var Submission $submission */
             foreach ($results as $submission) {
                 $submission = $this->getSubmission($submission->getId());
@@ -533,10 +535,15 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                     }
                 }
 
-                if (\Craft::$app->elements->deleteElement($submission)) {
-                    ++$deletedSubmissions;
-                }
+                $deletableIds[] = $submission->id;
             }
+
+            \Craft::$app->db
+                ->createCommand()
+                ->delete(Table::ELEMENTS, ['id' => $deletableIds])
+                ->execute();
+
+            $deletedSubmissions += \count($deletableIds);
         }
 
         $assetIds = array_unique($assetIds);

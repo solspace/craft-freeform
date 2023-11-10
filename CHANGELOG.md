@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.9 - 2023-11-10
+
+> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+
+### Added
+- Fields can now be individually encrypted.
+
+### Changed
+- Updated the GraphQL submission mutation to no longer require the custom header.
+
+### Fixed
+- Fixed a bug where locales were not working correctly when using more than one Date & Time field in the same form.
+- Fixed a bug with the ActiveCampaign integration.
+- Various other fixes and improvements to GraphQL.
+
 ## 5.0.0-beta.8 - 2023-10-17
 
 > {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
@@ -137,6 +152,7 @@
 - **Fields**
     - The **Group** field type allows you to nest multiple fields inside. Additionally, conditional rules can be applied to Group fields.
     - Fields being populated with **Element** or **Predefined** data can now have the data converted to **Custom** options so they can be modified, added to, removed, reordered, etc.
+    - Fields can now be individually encrypted.
     - **Custom field types** are available to be created now.
 - **Email Notifications**
     - Configure email notifications in the form builder using complex conditional rules based on field data.
@@ -152,6 +168,7 @@
 - **Control Panel**
     - The **Dashboard** and **Forms** pages have been combined and redesigned.
     - The **Email Notifications** subnav menu item has been renamed to **Notifications**.
+    - All settings and references of `behaviour` have been updated to `behavior`.
 - **Form Builder**
     - Completely redesigned the form builder.
         - Settings and other features are now in full-page tabs to allow for lots of room to configure.
@@ -244,6 +261,30 @@
     - The `extraPostUrl`, `extraPostTriggerPhrase`, `gtmId`, and `gtmEventName` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the new interface instead (TBD).
     - The `inputAttributes`, `labelAttributes`, `errorAttributes`, and `instructionAttributes` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the `FreeformAttributesInterface` instead.
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
+
+## 4.1.12 - 2023-11-09
+
+### Changed
+- Updated GraphQL mutations to support multiple email marketing mailing list fields.
+
+### Fixed
+- Fixed an issue where submission purge logic was not always working reliably.
+- Fixed a bug where form heading Success and Error messages were not being escaped.
+- Fixed a bug where removing a field from a form was not automatically removing it from any configured export profiles for that form.
+
+## 4.1.11 2023-10-24
+
+### Changed
+- Updated the GraphQL submission mutation to no longer require the custom header.
+
+### Fixed
+- Fixed a bug where locales were not working correctly when using more than one Date & Time field in the same form.
+
+## 4.1.10 2023-10-05
+
+### Changed
+- Updated File Upload fields to be realigned with Craft's file kind/extensions defaults. Removed the custom Freeform MIME type checks.
+- Updated existing feature announcement integrations to be visible to Admins only.
 
 ## 4.1.9 - 2023-09-29
 

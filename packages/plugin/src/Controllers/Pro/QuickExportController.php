@@ -69,7 +69,7 @@ class QuickExportController extends BaseController
                     $isChecked = (bool) $item['checked'];
 
                     if (is_numeric($fieldId)) {
-                        $field = $form->getLayout()->getFieldById($fieldId);
+                        $field = $form->get($fieldId);
                         if (!$field || $field instanceof CreditCardDetailsField) {
                             continue;
                         }

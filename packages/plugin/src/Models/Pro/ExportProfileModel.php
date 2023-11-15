@@ -152,7 +152,7 @@ class ExportProfileModel extends Model
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
-                    $field = $form->getLayout()->getFieldById($fieldId);
+                    $field = $form->get($fieldId);
                     if (!$field || $field instanceof CreditCardDetailsField) {
                         continue;
                     }
@@ -282,7 +282,7 @@ class ExportProfileModel extends Model
             }
 
             if (is_numeric($fieldId)) {
-                $field = $form->getLayout()->getFieldById($fieldId);
+                $field = $form->get($fieldId);
                 if (!$field || $field instanceof CreditCardDetailsField) {
                     continue;
                 }
@@ -334,7 +334,7 @@ class ExportProfileModel extends Model
 
                 $fieldId = $id;
                 if (is_numeric($id)) {
-                    $field = $form->getLayout()->getFieldById($id);
+                    $field = $form->get($id);
                     if (!$field || $field instanceof CreditCardDetailsField) {
                         continue;
                     }

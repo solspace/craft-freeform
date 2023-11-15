@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.12.1 - 2023-11-15
+
+### Fixed
+- Fixed a bug where some Freeform widgets would error in the Craft dashboard due to a change in the previous version (4.1.12).
+
 ## 4.1.12 - 2023-11-09
 
 ### Changed

@@ -240,10 +240,10 @@ class PaymentIntentsController extends BaseApiController
                     'customer' => $customer->id,
                     'amount' => $field->getAmount() * 100,
                     'currency' => $currency,
-                    'payment_method_types' => ['card', 'ideal', 'paypal'],
-                    // 'automatic_payment_methods' => [
-                    //     'enabled' => true,
-                    // ],
+                    // 'payment_method_types' => ['card', 'ideal', 'paypal'],
+                    'automatic_payment_methods' => [
+                        'enabled' => true,
+                    ],
                     'description' => $description,
                     'metadata' => $metadata,
                 ])

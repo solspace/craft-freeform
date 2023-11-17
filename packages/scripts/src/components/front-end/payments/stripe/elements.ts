@@ -58,7 +58,7 @@ type StripeElement = {
     });
 
     const paymentElementOptions: StripePaymentElementOptions = {
-      layout: 'tabs',
+      layout: 'auto',
     };
 
     const paymentElement = elements.create('payment', paymentElementOptions);

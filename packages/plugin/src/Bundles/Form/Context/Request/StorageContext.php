@@ -18,6 +18,7 @@ class StorageContext
     {
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'loadStoredValues']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'loadStoredValues']);
+        Event::on(Form::class, Form::EVENT_QUICK_LOAD, [$this, 'loadStoredValues']);
         Event::on(LoadSavedForm::class, Form::EVENT_FORM_LOADED, [$this, 'loadStoredValues']);
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'storeCurrentValues'], null, false);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleReset']);

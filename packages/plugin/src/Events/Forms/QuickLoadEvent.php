@@ -5,18 +5,17 @@ namespace Solspace\Freeform\Events\Forms;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
-use yii\web\Request;
 
-class HandleRequestEvent extends CancelableArrayableEvent implements FormEventInterface
+class QuickLoadEvent extends CancelableArrayableEvent implements FormEventInterface
 {
-    public function __construct(private Form $form, private Request $request)
+    public function __construct(private Form $form, private array $payload)
     {
         parent::__construct();
     }
 
     public function fields(): array
     {
-        return ['form', 'request'];
+        return ['form', 'payload'];
     }
 
     public function getForm(): Form
@@ -24,8 +23,8 @@ class HandleRequestEvent extends CancelableArrayableEvent implements FormEventIn
         return $this->form;
     }
 
-    public function getRequest(): Request
+    public function getPayload(): array
     {
-        return $this->request;
+        return $this->payload;
     }
 }

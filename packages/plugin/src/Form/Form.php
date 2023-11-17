@@ -22,6 +22,7 @@ use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
+use Solspace\Freeform\Events\Forms\QuickLoadEvent;
 use Solspace\Freeform\Events\Forms\RegisterContextEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
@@ -89,6 +90,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_CREATE_SUBMISSION = 'create-submission';
     public const EVENT_SEND_NOTIFICATIONS = 'send-notifications';
     public const EVENT_GET_CUSTOM_PROPERTY = 'get-custom-property';
+    public const EVENT_QUICK_LOAD = 'quick-load';
 
     public const PROPERTY_STORED_VALUES = 'storedValues';
     public const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -513,6 +515,20 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $event->isValid;
     }
 
+    public function quickLoad(array $payload): void
+    {
+        $this->getProperties()->merge($payload['properties'] ?? []);
+        $this->getAttributes()->merge($payload['attributes'] ?? []);
+
+        $this->createSubmission();
+
+        Event::trigger(
+            self::class,
+            self::EVENT_QUICK_LOAD,
+            new QuickLoadEvent($this, $payload)
+        );
+    }
+
     public function persistState(): void
     {
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
@@ -671,7 +687,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return isset($this->getProperties()->get(self::PROPERTY_STORED_VALUES, [])[$field->getHandle()]);
     }
 
-    public function reset()
+    public function reset(): void
     {
         $event = new ResetEvent($this);
         Event::trigger(self::class, self::EVENT_BEFORE_RESET, $event);

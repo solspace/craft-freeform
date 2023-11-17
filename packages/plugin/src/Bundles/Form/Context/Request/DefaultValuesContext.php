@@ -13,6 +13,7 @@ class DefaultValuesContext
     {
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleDefaultValues']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleDefaultValues']);
+        Event::on(Form::class, Form::EVENT_QUICK_LOAD, [$this, 'handleDefaultValues']);
     }
 
     public function handleDefaultValues(FormEventInterface $event): void

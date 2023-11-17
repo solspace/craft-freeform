@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Submissions;
 
-use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -24,7 +24,7 @@ class PopulateSubmission extends FeatureBundle
         return 1;
     }
 
-    public function populateSubmissionValues(HandleRequestEvent $event): void
+    public function populateSubmissionValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $submission = $form->getSubmission();

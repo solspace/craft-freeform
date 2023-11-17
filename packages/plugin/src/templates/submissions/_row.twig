@@ -1,4 +1,4 @@
-{% macro render(row, submission) %}
+{% macro render(row, submission, fieldRenderer) %}
     {% import "_includes/forms" as forms %}
 
     <div class="fields-row">
@@ -333,6 +333,7 @@
                         {{ field.render }}
 
                     {% endif %}
+
                 {% endif %}
 
             </div>

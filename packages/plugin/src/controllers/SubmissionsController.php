@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -141,7 +142,8 @@ class SubmissionsController extends BaseController
 
     public function actionEdit(int $id): Response
     {
-        $submission = $this->getSubmissionsService()->getSubmissionById($id);
+        $submissionsService = $this->getSubmissionsService();
+        $submission = $submissionsService->getSubmissionById($id);
 
         if (!$submission) {
             throw new HttpException(404, Freeform::t('Submission with ID {id} not found', ['id' => $id]));
@@ -176,6 +178,8 @@ class SubmissionsController extends BaseController
             $statuses[$statusId] = $status;
         }
 
+        $fieldRenderer = [$submissionsService, 'renderSubmissionField'];
+
         $variables = [
             'form' => $submission->getForm(),
             'submission' => $submission,
@@ -184,6 +188,7 @@ class SubmissionsController extends BaseController
             'statuses' => $statuses,
             'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
+            'fieldRenderer' => $fieldRenderer,
             'tabs' => array_map(
                 fn (Page $page) => [
                     'tabId' => $page->getIndex(),

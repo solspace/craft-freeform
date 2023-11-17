@@ -72,7 +72,7 @@
                 {% endfor %}
 
                 {% for row in page %}
-                    {{ rowMacro.render(row, submission) }}
+                    {{ rowMacro.render(row, submission, fieldRenderer) }}
                 {% endfor %}
             </div>
         {% endfor %}

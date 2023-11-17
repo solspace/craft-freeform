@@ -33,7 +33,7 @@ class DragAndDropFile implements FreeformHandler {
       fileUpload.addEventListener(events.dragAndDrop.onChange, this.handleChanges);
 
       loadExistingUploads(fileUpload, this.freeform);
-      form.addEventListener(events.form.onReset, this.handleReset(fileUpload));
+      form.addEventListener(events.form.reset, this.handleReset(fileUpload));
 
       fileUpload
         .querySelector<HTMLInputElement>(`input[type=file]`)

@@ -21,7 +21,6 @@ import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
-import type { StorageResponse } from 'types/events';
 import { type FreeformResponse } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
 
@@ -282,7 +281,7 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
-    const onSubmitEvent = this._dispatchEvent(events.form.onSubmit, { isBackButtonPressed, cancelable: true });
+    const onSubmitEvent = this._dispatchEvent(events.form.submit, { isBackButtonPressed, cancelable: true });
     if (onSubmitEvent.defaultPrevented) {
       event.preventDefault();
       event.stopPropagation();
@@ -506,12 +505,13 @@ export default class Freeform {
     return data;
   };
 
-  validate = async () => {
+  quickSave = async (secret: string): Promise<string | undefined> => {
     const { form } = this;
     const data = this._prepareFormData();
-    data.set('action', 'freeform/submit/validate');
+    data.set('action', 'freeform/submit/quick-save');
+    data.set('storage-secret', secret);
 
-    const request = await axios<FreeformResponse>({
+    const request = await axios<FreeformResponse & { storageToken: string }>({
       method: form.getAttribute('method'),
       url: form.getAttribute('action') || window.location.href,
       data,
@@ -527,11 +527,12 @@ export default class Freeform {
     const response = request.data;
 
     if (request.status === 200) {
-      const { success, errors, formErrors } = response;
+      const { success, errors, formErrors, storageToken } = response;
 
       if (success) {
         this.unlockSubmit(true);
-        return true;
+
+        return storageToken;
       }
 
       if (errors || formErrors) {
@@ -548,27 +549,6 @@ export default class Freeform {
     }
 
     this.unlockSubmit(true);
-
-    return false;
-  };
-
-  store = async (): Promise<string | undefined> => {
-    const formData = this._prepareFormData();
-    formData.set('action', 'freeform/submit/store');
-
-    const { status, data } = await axios.post<StorageResponse>(window.location.href, formData, {
-      headers: {
-        'Cache-Control': 'no-cache',
-        'X-Requested-With': 'XMLHttpRequest',
-        HTTP_X_REQUESTED_WITH: 'XMLHttpRequest',
-      },
-    });
-
-    if (status === 200) {
-      return data.token;
-    } else {
-      console.log('Error storing form data', data);
-    }
 
     return;
   };
@@ -630,7 +610,7 @@ export default class Freeform {
                 // Reset the form so that the user may enter fresh information
                 // if a submission is not being edited
                 form.reset();
-                this._dispatchEvent(events.form.onReset);
+                this._dispatchEvent(events.form.reset);
               }
 
               if (response.onSuccess === SuccessBehavior.Reload) {

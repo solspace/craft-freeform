@@ -23,6 +23,8 @@ type StripeElement = {
 };
 
 (async () => {
+  let paymentsProcessed = false;
+
   const { formId, apiKey } = config;
 
   const elementMap = new WeakMap<HTMLDivElement, StripeElement>();
@@ -74,7 +76,8 @@ type StripeElement = {
     });
   };
 
-  form.addEventListener(events.form.ready, async () => {
+  const loadContainers = async () => {
+    paymentsProcessed = false;
     let containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
     console.log(containers);
     containers.forEach(initStripe);
@@ -85,9 +88,15 @@ type StripeElement = {
         initStripe(container);
       });
     });
-  });
+  };
 
-  form.addEventListener(events.form.onSubmit, async (event: FreeformEvent) => {
+  form.addEventListener(events.form.ready, loadContainers);
+  form.addEventListener(events.form.reset, loadContainers);
+  form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
+    if (paymentsProcessed) {
+      return;
+    }
+
     const containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
     if (containers.length > 0) {
       event.preventDefault();
@@ -101,33 +110,27 @@ type StripeElement = {
         paymentIntent: { id },
       } = elementMap.get(field);
 
-      const isValid = await event.freeform.validate();
-      console.log('Form is %s', isValid ? 'valid' : 'invalid');
-
-      await queries.paymentIntents.update(field.dataset.integration, id, 1500);
-      await elements.fetchUpdates();
-
-      if (!isValid) {
+      const token = await event.freeform.quickSave(id);
+      if (!token) {
         event.freeform.unlockSubmit();
         return;
       }
 
       const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
-      //returnUrl.searchParams.append('submissionId', submissionId.toString());
+      returnUrl.searchParams.append('integration', field.dataset.integration);
+      returnUrl.searchParams.append('token', token);
 
-      console.log('confirming payment', returnUrl, returnUrl.toString());
+      console.log('confirming payment');
 
       const { error } = await stripe.confirmPayment({
         elements,
-        redirect: 'if_required',
         confirmParams: {
           return_url: returnUrl.toString(),
         },
       });
 
       if (error) {
-        console.log(error);
-        window.scrollTo({ top: field.offsetTop, behavior: 'smooth' });
+        event.freeform._renderFormErrors([error.message]);
         event.freeform.unlockSubmit();
       }
     });

@@ -19,27 +19,23 @@ use yii\db\ActiveQuery;
 
 /**
  * @property string $id
- * @property int    $submissionId
  * @property int    $integrationId
- * @property int    $subscriptionId
+ * @property int    $fieldId
+ * @property int    $submissionId
  * @property string $resourceId
+ * @property string $type
  * @property float  $amount
  * @property string $currency
- * @property int    $last4
  * @property string $status
  * @property string $metadata
- * @property string $errorCode
- * @property string $errorMessage
  */
 class PaymentRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_payments_payments}}';
+    public const TABLE = '{{%freeform_payments}}';
 
     public const STATUS_SUCCESS = 'success';
-    public const STATUS_PAID = 'paid';
     public const STATUS_FAILED = 'failed';
-    public const STATUS_ACTIVE = 'active';
-    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_PENDING = 'pending';
 
     public static function tableName(): string
     {
@@ -60,13 +56,5 @@ class PaymentRecord extends ActiveRecord
     public function getSubmission(): ActiveQuery
     {
         return $this->hasOne(Submission::class, ['submissionId' => 'id']);
-    }
-
-    /**
-     * @return ActiveQuery|SubscriptionRecord
-     */
-    public function getSubscription(): ActiveQuery
-    {
-        return $this->hasOne(SubscriptionRecord::class, ['subscriptionId' => 'id']);
     }
 }

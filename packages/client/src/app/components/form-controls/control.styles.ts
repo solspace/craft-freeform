@@ -35,12 +35,13 @@ export const Instructions = styled.span`
   }
 
   code {
-    background-color: #dfe5ec;
-    padding: 2px 4px;
+    padding: 1px 4px;
     border-radius: 3px;
+    background-color: #dfe5ec;
+
     font-family: monospace;
-    color: ${colors.gray600};
     font-style: normal;
+    color: ${colors.gray600};
   }
 `;
 

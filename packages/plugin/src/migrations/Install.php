@@ -148,16 +148,6 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['integrationId', 'category'])
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_payment_gateway_fields'))
-                ->addField('id', $this->primaryKey())
-                ->addField('integrationId', $this->integer()->notNull())
-                ->addField('label', $this->string(255)->notNull())
-                ->addField('handle', $this->string(255)->notNull())
-                ->addField('type', $this->string(50)->notNull())
-                ->addField('required', $this->boolean()->defaultValue(false))
-                ->addIndex(['type'])
-                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
-
             (new Table('freeform_statuses'))
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string(255)->notNull())
@@ -231,51 +221,23 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
             // Payments
-            (new Table('freeform_payments_subscription_plans'))
+            (new Table('freeform_payments'))
                 ->addField('id', $this->primaryKey())
                 ->addField('integrationId', $this->integer()->notNull())
-                ->addField('resourceId', $this->string(255))
-                ->addField('name', $this->string(255))
-                ->addField('status', $this->string(20))
-                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
-
-            (new Table('freeform_payments_payments'))
-                ->addField('id', $this->primaryKey())
-                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('fieldId', $this->integer()->notNull())
                 ->addField('submissionId', $this->integer()->notNull())
-                ->addField('subscriptionId', $this->integer())
                 ->addField('resourceId', $this->string(50))
+                ->addField('type', $this->string(20))
                 ->addField('amount', $this->float(2))
                 ->addField('currency', $this->string(3))
-                ->addField('last4', $this->smallInteger())
                 ->addField('status', $this->string(20))
                 ->addField('metadata', $this->mediumText())
-                ->addField('errorCode', $this->string(20))
-                ->addField('errorMessage', $this->string(255))
-                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('subscriptionId', 'freeform_payments_subscriptions', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
-                ->addIndex(['integrationId', 'resourceId'], true),
-
-            (new Table('freeform_payments_subscriptions'))
-                ->addField('id', $this->primaryKey())
-                ->addField('integrationId', $this->integer()->notNull())
-                ->addField('submissionId', $this->integer()->notNull())
-                ->addField('planId', $this->integer()->notNull())
-                ->addField('resourceId', $this->string(50))
-                ->addField('amount', $this->float(2))
-                ->addField('currency', $this->string(3))
-                ->addField('interval', $this->string(20))
-                ->addField('intervalCount', $this->smallInteger()->null())
-                ->addField('last4', $this->smallInteger())
-                ->addField('status', $this->string(20))
-                ->addField('metadata', $this->mediumText())
-                ->addField('errorCode', $this->string(20))
-                ->addField('errorMessage', $this->string(255))
+                ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('planId', 'freeform_payments_subscription_plans', 'id', ForeignKey::CASCADE)
-                ->addIndex(['integrationId', 'resourceId'], true),
+                ->addIndex(['integrationId', 'resourceId'], true)
+                ->addIndex(['integrationId', 'type'])
+                ->addIndex(['resourceId']),
 
             (new Table('freeform_submission_notes'))
                 ->addField('id', $this->primaryKey())

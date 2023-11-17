@@ -12,14 +12,18 @@
 
 namespace Solspace\Freeform\controllers;
 
+use Solspace\Commons\Helpers\CryptoHelper;
+use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 use yii\filters\Cors;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -62,22 +66,38 @@ class SubmitController extends BaseController
         return null;
     }
 
-    public function actionValidate(): ?Response
+    public function actionQuickSave(): Response
     {
         $request = \Craft::$app->getRequest();
+
+        $secret = $request->post('storage-secret');
+        if (!$secret) {
+            throw new NotFoundHttpException('No secret provided');
+        }
 
         $form = $this->getFormFromRequest();
         $form->handleRequest($request);
 
-        return $this->toAjaxResponse($form);
-    }
+        $bag = new SessionBag($form->getId(), $form->getProperties()->toArray(), $form->getAttributes()->toArray());
 
-    public function actionStore(): Response
-    {
-        $request = \Craft::$app->getRequest();
+        $serialized = json_encode($bag);
+        $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $secret));
 
-        $form = $this->getFormFromRequest();
-        $form->handleRequest($request);
+        $record = new SavedFormRecord();
+        $record->formId = $form->getId();
+        $record->token = 'qs-'.CryptoHelper::getUniqueToken(30);
+
+        $record->sessionId = \Craft::$app->getSession()->getId();
+        $record->payload = $payload;
+        $record->save();
+
+        Event::on(
+            Form::class,
+            Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD,
+            function (PrepareAjaxResponsePayloadEvent $event) use ($record) {
+                $event->add('storageToken', $record->token);
+            }
+        );
 
         return $this->toAjaxResponse($form);
     }

@@ -29,6 +29,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Twig\Markup;
 use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -333,6 +334,18 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $ids = array_filter($ids);
 
         return array_unique($ids);
+    }
+
+    public function renderSubmissionField(FieldInterface $field): Markup
+    {
+        $value = $field->getValue();
+        if (\is_array($value)) {
+            $value = implode(', ', $value);
+        }
+
+        $value .= 'what is this omg';
+
+        return new Markup($value, 'UTF-8');
     }
 
     /**

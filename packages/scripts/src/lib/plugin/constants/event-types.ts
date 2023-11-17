@@ -1,8 +1,8 @@
 const events = {
   form: {
     ready: 'freeform-ready',
-    onReset: 'freeform-on-reset',
-    onSubmit: 'freeform-on-submit',
+    reset: 'freeform-on-reset',
+    submit: 'freeform-on-submit',
     removeMessages: 'freeform-remove-messages',
     fieldRemoveMessages: 'freeform-remove-field-messages',
     renderSuccess: 'freeform-render-success',

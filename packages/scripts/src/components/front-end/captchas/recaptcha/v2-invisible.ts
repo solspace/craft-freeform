@@ -52,7 +52,7 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
 };
 
 form.addEventListener(events.form.ready, initRecaptchaInvisible);
-form.addEventListener(events.form.onSubmit, async (event: FreeformEvent) => {
+form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   if (isTokenSet) {
     return;
   }

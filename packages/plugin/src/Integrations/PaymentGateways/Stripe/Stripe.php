@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
-use Hashids\Hashids;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -28,7 +30,7 @@ class Stripe extends PaymentGatewayIntegration
 {
     public const LOG_CATEGORY = 'Stripe';
 
-    public const CATEGORY_USER = 'user';
+    public const CATEGORY_CUSTOMER = 'customer';
     public const CATEGORY_ADDRESS = 'address';
 
     #[Flag(self::FLAG_ENCRYPTED)]
@@ -71,10 +73,15 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected bool $sendOnSuccess = true;
 
-    public static function getHashids(): Hashids
-    {
-        return new Hashids('stripe', 10);
-    }
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[Input\Special\Properties\FieldMapping(
+        label: 'Field Mapping',
+        instructions: 'Map your form fields to Stripe Customer fields.',
+        source: 'api/stripe/fields/'.self::CATEGORY_CUSTOMER,
+        parameterFields: ['id' => 'id'],
+    )]
+    protected ?FieldMapping $customerMapping;
 
     public function getPublicKey(): string
     {
@@ -119,18 +126,20 @@ class Stripe extends PaymentGatewayIntegration
 
     public function fetchFields(): array
     {
+        $cat = self::CATEGORY_CUSTOMER;
+
         return [
-            new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-            new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-            new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-            new FieldObject('email', 'Email', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-            new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, self::CATEGORY_USER),
-            new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-            new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-            new FieldObject('city', 'City', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-            new FieldObject('state', 'State', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-            new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
-            new FieldObject('country', 'Country', FieldObject::TYPE_STRING, self::CATEGORY_ADDRESS),
+            new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $cat, true),
+            new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('city', 'City', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('state', 'State', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, $cat),
+            new FieldObject('country', 'Country', FieldObject::TYPE_STRING, $cat),
         ];
     }
 

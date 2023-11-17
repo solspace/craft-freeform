@@ -13,8 +13,8 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\Currency\CurrencyOptionsGenerator;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 #[Type(
@@ -32,6 +32,8 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public const CURRENCY_TYPE_FIXED = 'fixed';
     public const CURRENCY_TYPE_DYNAMIC = 'dynamic';
+
+    public const DEFAULT_PRODUCT_NAME = 'Freeform: {{ form.name }}';
 
     #[ValueTransformer(IntegrationTransformer::class)]
     #[Input\ApplicationStateSelect(
@@ -62,6 +64,34 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected string $paymentType = self::PAYMENT_TYPE_SINGLE;
 
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Input\Text(
+        label: 'Subscription Product Name',
+        instructions: 'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.',
+        placeholder: self::DEFAULT_PRODUCT_NAME,
+    )]
+    protected string $productName = '';
+
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Input\Select(
+        label: 'Subscription Interval',
+        options: [
+            'day' => 'Day',
+            'week' => 'Week',
+            'month' => 'Month',
+            'year' => 'Year',
+        ],
+    )]
+    protected string $interval = 'month';
+
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Input\Integer(
+        label: 'Interval Count',
+        instructions: 'Enter the number of intervals between each subscription payment. If using interval `month` and count `3`, the subscription will be charged every 3 months.',
+        unsigned: true,
+    )]
+    protected int $intervalCount = 1;
+
     #[Input\ButtonGroup(
         label: 'Payment Amount Type',
         options: [
@@ -75,7 +105,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     #[Input\Integer(
         label: 'Payment Amount',
         instructions: 'Enter the amount you want to charge for this payment.',
-        step: 0.01,
+        min: 1,
         unsigned: true,
     )]
     protected float $amount = 0;
@@ -115,6 +145,18 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected ?FieldInterface $currencyField = null;
 
+    #[Input\Text(
+        label: 'Successful Payment Redirect',
+        instructions: 'Enter a URL to redirect to after a successful payment. You can use the `form`, `submission` and `paymentIntent` objects in twig.',
+    )]
+    protected string $redirectSuccess = '';
+
+    #[Input\Text(
+        label: 'Failed Payment Redirect',
+        instructions: 'Enter a URL to redirect to after a failed payment. You can use the `form` and `paymentIntent` objects in twig.',
+    )]
+    protected string $redirectFailed = '';
+
     public function getType(): string
     {
         return 'stripe';
@@ -133,6 +175,21 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     public function getPaymentType(): string
     {
         return $this->paymentType;
+    }
+
+    public function getProductName(): string
+    {
+        return $this->productName ?: self::DEFAULT_PRODUCT_NAME;
+    }
+
+    public function getInterval(): string
+    {
+        return $this->interval;
+    }
+
+    public function getIntervalCount(): int
+    {
+        return $this->intervalCount;
     }
 
     public function getAmountType(): string
@@ -165,13 +222,23 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         return $this->currencyField;
     }
 
+    public function getRedirectSuccess(): string
+    {
+        return $this->redirectSuccess;
+    }
+
+    public function getRedirectFailed(): string
+    {
+        return $this->redirectFailed;
+    }
+
     protected function getInputHtml(): string
     {
-        $id = Stripe::getHashids()->encode(
+        $id = HashHelper::hash([
             $this->getForm()->getId(),
             $this->integration?->getId() ?? 0,
-            $this->getId()
-        );
+            $this->getId(),
+        ]);
 
         $output = '<div'.$this->getAttributes()->getInput().'>';
 

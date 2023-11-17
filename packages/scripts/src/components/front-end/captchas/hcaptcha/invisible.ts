@@ -49,7 +49,7 @@ const initHCaptchaInvisible = (event: FreeformEvent): void => {
 
 form.addEventListener(events.form.ready, initHCaptchaInvisible);
 
-form.addEventListener(events.form.onSubmit, async (event: FreeformEvent) => {
+form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   if (isTokenSet) {
     return;
   }

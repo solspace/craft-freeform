@@ -19,7 +19,7 @@ class StripeCustomerService
             $existingCustomer = $stripe
                 ->customers
                 ->search([
-                    'query' => "email: '$email'",
+                    'query' => "email: '{$email}'",
                     'limit' => 1,
                 ])
                 ->first()

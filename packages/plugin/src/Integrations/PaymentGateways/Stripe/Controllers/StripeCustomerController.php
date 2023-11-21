@@ -2,13 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 
-use craft\helpers\UrlHelper;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCustomerService;
-use Solspace\Freeform\Library\Helpers\IsolatedTwig;
-use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
-use Solspace\Freeform\Records\SavedFormRecord;
-use Solspace\Freeform\Services\SubmissionsService;
-use Stripe\PaymentIntent;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 

@@ -3,21 +3,10 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PayloadStorage;
-use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePriceService;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCustomerService;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
-use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePriceService;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
-use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
-use Solspace\Freeform\Records\SavedFormRecord;
-use Solspace\Freeform\Services\SubmissionsService;
-use Stripe\PaymentIntent;
-use Stripe\Price;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -84,9 +73,8 @@ class PaymentIntentsController extends BaseStripeController
                 'client_secret' => $newSubscription->latest_invoice->payment_intent->client_secret,
                 'amount' => $amount,
             ], 201);
-        } else {
-            $stripe->paymentIntents->update($paymentIntentId, ['amount' => $amount]);
         }
+        $stripe->paymentIntents->update($paymentIntentId, ['amount' => $amount]);
 
         return $this->asSerializedJson([
             'amount' => $amount,

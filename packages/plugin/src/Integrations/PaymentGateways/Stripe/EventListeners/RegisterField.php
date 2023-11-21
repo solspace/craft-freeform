@@ -11,7 +11,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Helpers\ResponseHelper;
 use yii\base\Event;
 
 class RegisterField extends FeatureBundle
@@ -68,9 +67,9 @@ class RegisterField extends FeatureBundle
         ]);
 
         $chunk = <<<SCRIPT
-            <script id="ff-conf-{$form->getAnchor()}" class="freeform-stripe-config" type="application/json">{$config}</script>
-            <script class="freeform-stripe-script" type="text/javascript">{$script}</script>
-        SCRIPT;
+                <script id="ff-conf-{$form->getAnchor()}" class="freeform-stripe-config" type="application/json">{$config}</script>
+                <script class="freeform-stripe-script" type="text/javascript">{$script}</script>
+            SCRIPT;
 
         $event->addChunk($chunk, ['formId' => $form->getAnchor()]);
     }

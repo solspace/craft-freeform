@@ -13,7 +13,7 @@ class StripePriceService
     private const ZERO_DECIMAL_CURRENCIES = [
         'bif', 'clp', 'djf', 'gnf', 'jpy', 'kmf',
         'krw', 'mga', 'pyg', 'rwf', 'ugx',
-        'vnd', 'vuv', 'xaf', 'xof', 'xpf'
+        'vnd', 'vuv', 'xaf', 'xof', 'xpf',
     ];
 
     public function __construct(
@@ -30,10 +30,12 @@ class StripePriceService
         switch ($field->getAmountType()) {
             case StripeField::AMOUNT_TYPE_DYNAMIC:
                 $amount = $this->getDynamicAmount($form, $field);
+
                 break;
 
             case StripeField::AMOUNT_TYPE_FIXED:
                 $amount = $field->getAmount();
+
                 break;
         }
 

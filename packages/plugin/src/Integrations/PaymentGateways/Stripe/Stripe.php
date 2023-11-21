@@ -15,7 +15,6 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
@@ -174,13 +173,12 @@ class Stripe extends PaymentGatewayIntegration
             $customerFields['address'] = $addressFields;
         }
 
-
         return $customerFields;
     }
 
     public function fetchFields(string $category): array
     {
-        return match($category) {
+        return match ($category) {
             self::CATEGORY_CUSTOMER => [
                 new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, $category),
                 new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, $category),

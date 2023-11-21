@@ -64,10 +64,13 @@ abstract class BaseApiController extends BaseController
         return \Craft::$container->get(Serializer::class);
     }
 
-    protected function asEmptyResponse(): Response
+    protected function asEmptyResponse(?int $statusCode = null): Response
     {
         $this->response->format = Response::FORMAT_RAW;
         $this->response->content = '';
+        if ($statusCode) {
+            $this->response->statusCode = $statusCode;
+        }
 
         return $this->response;
     }

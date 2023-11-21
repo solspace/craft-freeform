@@ -94,7 +94,7 @@ class PayloadStorage implements FormContextStorageInterface
         $event->add($name, $payload);
     }
 
-    public function getBag(string $key, Form $form)
+    public function getBag(string $key, Form $form): ?SessionBag
     {
         $payload = $this->getPostedPayload();
 
@@ -121,7 +121,7 @@ class PayloadStorage implements FormContextStorageInterface
         // isn't required
     }
 
-    private function getPostedPayload()
+    private function getPostedPayload(): ?string
     {
         $payload = RequestHelper::post(self::INPUT_PREFIX);
 

@@ -17,7 +17,6 @@ use yii\base\Event;
 class RegisterField extends FeatureBundle
 {
     public function __construct(
-        private ResponseHelper $responseHelper,
         private FormIntegrationsProvider $integrationsProvider,
     ) {
         Event::on(
@@ -58,20 +57,21 @@ class RegisterField extends FeatureBundle
         $scriptPath = \Craft::getAlias('@freeform-scripts/front-end/payments/stripe/elements.js');
         $script = file_get_contents($scriptPath);
 
-        $chunk = <<<SCRIPT
-            <script id="freeform-stripe-script" type="text/javascript">{$script}</script>
-            SCRIPT;
+        $config = json_encode([
+            'formId' => $form->getAnchor(),
+            'apiKey' => $integration->getPublicKey(),
+            'fieldMapping' => $integration->getMappedFieldHandles($form),
+            'csrf' => [
+                'name' => \Craft::$app->getConfig()->general->csrfTokenName,
+                'value' => \Craft::$app->request->csrfToken,
+            ],
+        ]);
 
-        $event->addChunk(
-            $chunk,
-            [
-                'formId' => $form->getAnchor(),
-                'apiKey' => $integration->getPublicKey(),
-                'csrf' => [
-                    'name' => \Craft::$app->getConfig()->general->csrfTokenName,
-                    'value' => \Craft::$app->request->csrfToken,
-                ],
-            ]
-        );
+        $chunk = <<<SCRIPT
+            <script id="ff-conf-{$form->getAnchor()}" class="freeform-stripe-config" type="application/json">{$config}</script>
+            <script class="freeform-stripe-script" type="text/javascript">{$script}</script>
+        SCRIPT;
+
+        $event->addChunk($chunk, ['formId' => $form->getAnchor()]);
     }
 }

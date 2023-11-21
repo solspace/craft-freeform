@@ -26,4 +26,9 @@ abstract class FeatureBundle implements BundleInterface
     {
         return $this->plugin()->edition();
     }
+
+    protected function registerController(string $key, string $class): void
+    {
+        $this->plugin()->controllerMap[$key] = $class;
+    }
 }

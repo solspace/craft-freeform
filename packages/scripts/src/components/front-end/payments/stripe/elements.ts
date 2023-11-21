@@ -4,15 +4,22 @@ import { loadStripe } from '@stripe/stripe-js';
 import type { FreeformEvent } from 'types/events';
 
 import queries from './elements.queries';
+import elementsQueries from './elements.queries';
 
-export const config = {
-  formId: '{{ formId }}',
-  apiKey: '{{ apiKey }}',
+const formId = '{{ formId }}';
+
+type Config = {
+  formId: string;
+  apiKey: string;
+  fieldMapping: Array<{ source: string; target: string }>;
   csrf: {
-    name: '{{ csrf.name }}',
-    value: '{{ csrf.value }}',
-  },
+    name: string;
+    value: string;
+  };
 };
+
+export const config: Config = JSON.parse(document.getElementById(`ff-conf-${formId}`).innerText);
+console.log(config);
 
 type StripeElement = {
   elements: StripeElements;
@@ -25,7 +32,7 @@ type StripeElement = {
 (async () => {
   let paymentsProcessed = false;
 
-  const { formId, apiKey } = config;
+  const { formId, apiKey, fieldMapping } = config;
 
   const elementMap = new WeakMap<HTMLDivElement, StripeElement>();
   const stripe = await loadStripe(apiKey);
@@ -49,11 +56,11 @@ type StripeElement = {
 
     field.innerHTML = 'Loading...';
 
-    const { id, secret } = await queries.paymentIntents.create(field.dataset.integration);
+    const { id, secret } = await queries.paymentIntents.create(field.dataset.integration, form);
 
     (field.previousSibling as HTMLInputElement).value = id;
 
-    const elements = stripe.elements({
+    let elements = stripe.elements({
       clientSecret: secret,
     });
 
@@ -61,10 +68,56 @@ type StripeElement = {
       layout: 'auto',
     };
 
-    const paymentElement = elements.create('payment', paymentElementOptions);
+    let paymentElement = elements.create('payment', paymentElementOptions);
     paymentElement.mount(field);
     paymentElement.on('change', (event) => {
       console.log('payment change', event);
+    });
+
+    const amountFieldHandle = field.dataset.amountField;
+    if (amountFieldHandle) {
+      (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        console.log('setting amount', value);
+
+        elementsQueries.paymentIntents
+          .updateAmount(field.dataset.integration, form, id)
+          .then(({ id, client_secret }) => {
+            if (client_secret) {
+              paymentElement.unmount();
+              elements = stripe.elements({ clientSecret: client_secret });
+
+              paymentElement = elements.create('payment', paymentElementOptions);
+              paymentElement.mount(field);
+
+              elementMap.set(field, {
+                elements,
+                paymentIntent: {
+                  id,
+                  secret: client_secret,
+                },
+              });
+            } else {
+              elements.fetchUpdates();
+            }
+          });
+      });
+    }
+
+    fieldMapping.forEach(({ source, target }) => {
+      console.log(form[target]);
+      (form[target] as HTMLInputElement)?.addEventListener('change', (event) => {
+        const value = (event.target as HTMLInputElement).value;
+        console.log('setting', source, value);
+
+        elementsQueries.customers.update({
+          integration: field.dataset.integration,
+          form,
+          paymentIntentId: id,
+          key: source,
+          value,
+        });
+      });
     });
 
     elementMap.set(field, {
@@ -92,6 +145,7 @@ type StripeElement = {
 
   form.addEventListener(events.form.ready, loadContainers);
   form.addEventListener(events.form.reset, loadContainers);
+  form.addEventListener(events.form.ajaxAfterSubmit, loadContainers);
   form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
     if (paymentsProcessed) {
       return;

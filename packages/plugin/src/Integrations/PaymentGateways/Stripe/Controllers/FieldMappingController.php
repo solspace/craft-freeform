@@ -9,15 +9,17 @@ use yii\web\NotFoundHttpException;
 
 class FieldMappingController extends BaseApiController
 {
-    protected function getOne($id): array|object
+    protected function getOne($category): array|object
     {
+        $id = $this->request->get('id');
+
         /** @var Stripe $integration */
         $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($id);
         if (!$integration) {
             throw new NotFoundHttpException('Integration not found');
         }
 
-        $fields = $integration->fetchFields();
+        $fields = $integration->fetchFields($category);
 
         $payload = [];
         foreach ($fields as $field) {

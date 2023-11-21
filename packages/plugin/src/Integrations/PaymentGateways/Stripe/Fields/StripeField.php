@@ -30,9 +30,6 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     public const AMOUNT_TYPE_FIXED = 'fixed';
     public const AMOUNT_TYPE_DYNAMIC = 'dynamic';
 
-    public const CURRENCY_TYPE_FIXED = 'fixed';
-    public const CURRENCY_TYPE_DYNAMIC = 'dynamic';
-
     public const DEFAULT_PRODUCT_NAME = 'Freeform: {{ form.name }}';
 
     #[ValueTransformer(IntegrationTransformer::class)]
@@ -120,30 +117,11 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected ?FieldInterface $amountField = null;
 
-    #[Input\ButtonGroup(
-        label: 'Currency Type',
-        options: [
-            self::CURRENCY_TYPE_FIXED => 'Fixed',
-            self::CURRENCY_TYPE_DYNAMIC => 'Dynamic',
-        ],
-    )]
-    protected string $currencyType = self::CURRENCY_TYPE_FIXED;
-
-    #[VisibilityFilter('properties.currencyType === "fixed"')]
     #[Input\Select(
         label: 'Payment Currency',
         options: CurrencyOptionsGenerator::class,
     )]
     protected string $currency = 'USD';
-
-    #[VisibilityFilter('properties.currencyType === "dynamic"')]
-    #[ValueTransformer(FieldTransformer::class)]
-    #[Input\Field(
-        label: 'Payment Currency Field',
-        instructions: 'Select a field which will determine the payment currency.',
-        emptyOption: 'No field selected',
-    )]
-    protected ?FieldInterface $currencyField = null;
 
     #[Input\Text(
         label: 'Successful Payment Redirect',
@@ -207,19 +185,9 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         return $this->amountField;
     }
 
-    public function getCurrencyType(): string
-    {
-        return $this->currencyType;
-    }
-
     public function getCurrency(): string
     {
         return $this->currency;
-    }
-
-    public function getCurrencyField(): ?FieldInterface
-    {
-        return $this->currencyField;
     }
 
     public function getRedirectSuccess(): string
@@ -252,6 +220,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         $stripeAttributes = (new Attributes())
             ->set('class', 'freeform-stripe-card')
             ->set('data-integration', $id)
+            ->set('data-amount-field', $this->amountField?->getHandle() ?? false)
         ;
         $output .= '<div'.$stripeAttributes.'></div>';
 

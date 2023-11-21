@@ -7,12 +7,15 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
@@ -76,12 +79,22 @@ class Stripe extends PaymentGatewayIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(
-        label: 'Field Mapping',
+        label: 'Customer Mapping',
         instructions: 'Map your form fields to Stripe Customer fields.',
         source: 'api/stripe/fields/'.self::CATEGORY_CUSTOMER,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $customerMapping;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[Input\Special\Properties\FieldMapping(
+        label: 'Customer Address Mapping',
+        instructions: 'Map your form fields to Stripe Customer Address fields.',
+        source: 'api/stripe/fields/'.self::CATEGORY_ADDRESS,
+        parameterFields: ['id' => 'id'],
+    )]
+    protected ?FieldMapping $addressMapping;
 
     public function getPublicKey(): string
     {
@@ -124,23 +137,67 @@ class Stripe extends PaymentGatewayIntegration
         return $charges instanceof StripeAPI\Collection;
     }
 
-    public function fetchFields(): array
+    /**
+     * @return array<array{source: string, target: string}>
+     */
+    public function getMappedFieldHandles(Form $form): array
     {
-        $cat = self::CATEGORY_CUSTOMER;
+        $map = [];
 
-        return [
-            new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $cat, true),
-            new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('city', 'City', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('state', 'State', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, $cat),
-            new FieldObject('country', 'Country', FieldObject::TYPE_STRING, $cat),
-        ];
+        $items = array_merge(
+            $this->customerMapping->getMapping(),
+            $this->addressMapping->getMapping(),
+        );
+
+        foreach ($items as $item) {
+            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
+                continue;
+            }
+
+            $field = $form->get($item->getValue());
+
+            $map[] = [
+                'source' => $item->getSource(),
+                'target' => $field->getHandle(),
+            ];
+        }
+
+        return $map;
+    }
+
+    public function getMappedFieldValues(Form $form): array
+    {
+        $customerFields = $this->processMapping($form, $this->customerMapping, self::CATEGORY_CUSTOMER);
+        $addressFields = $this->processMapping($form, $this->addressMapping, self::CATEGORY_ADDRESS);
+
+        if (!empty($addressFields)) {
+            $customerFields['address'] = $addressFields;
+        }
+
+
+        return $customerFields;
+    }
+
+    public function fetchFields(string $category): array
+    {
+        return match($category) {
+            self::CATEGORY_CUSTOMER => [
+                new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, $category),
+                new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, $category),
+                new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $category),
+                new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true),
+                new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category),
+            ],
+            self::CATEGORY_ADDRESS => [
+                new FieldObject('line1', 'Address #1', FieldObject::TYPE_STRING, $category),
+                new FieldObject('line2', 'Address #2', FieldObject::TYPE_STRING, $category),
+                new FieldObject('city', 'City', FieldObject::TYPE_STRING, $category),
+                new FieldObject('state', 'State', FieldObject::TYPE_STRING, $category),
+                new FieldObject('postal_code', 'Zip', FieldObject::TYPE_STRING, $category),
+                new FieldObject('country', 'Country', FieldObject::TYPE_STRING, $category),
+            ],
+            default => [],
+        };
     }
 
     /**
@@ -181,6 +238,11 @@ class Stripe extends PaymentGatewayIntegration
 
     protected function getProcessableFields(string $category): array
     {
-        return [];
+        $indexed = [];
+        foreach ($this->fetchFields($category) as $field) {
+            $indexed[$field->getHandle()] = $field;
+        }
+
+        return $indexed;
     }
 }

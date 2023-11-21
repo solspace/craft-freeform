@@ -1,5 +1,5 @@
 import type { KeyboardEvent, MutableRefObject } from 'react';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
@@ -53,6 +53,13 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
     page,
     index
   );
+
+  useEffect(() => {
+    if (isEditing) {
+      inputRef.current?.focus();
+      inputRef.current?.select();
+    }
+  }, [isEditing]);
 
   const connectedRef = dropRef(
     dragRef(wrapperRef)
@@ -118,7 +125,6 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
           <Input
             type="text"
             ref={inputRef}
-            autoFocus={true}
             className="text small"
             placeholder={page.label}
             defaultValue={page.label}

@@ -7,38 +7,67 @@ type ClientSecretResponse = {
   secret: string;
 };
 
-const create = async (integration: string): Promise<ClientSecretResponse> => {
-  const { data } = await axios.post<ClientSecretResponse>(
-    '/freeform/payments/stripe/payment-intents',
-    {
-      [config.csrf.name]: config.csrf.value,
-    },
-    { headers: { 'FF-STRIPE-INTEGRATION': integration } }
-  );
-
-  return data;
-};
-
 type UpdateAmountResponse = {
+  id?: string;
+  client_secret?: string;
   amount: number;
 };
 
-const update = async (integration: string, id: string, amount: number): Promise<UpdateAmountResponse> => {
-  const { data } = await axios.patch<UpdateAmountResponse>(
-    `/freeform/payments/stripe/payment-intents/${id}`,
-    {
-      amount,
-      [config.csrf.name]: config.csrf.value,
-    },
-    { headers: { 'FF-STRIPE-INTEGRATION': integration } }
-  );
+const paymentIntents = {
+  create: async (integration: string, form: HTMLFormElement): Promise<ClientSecretResponse> => {
+    const formData = new FormData(form);
+    formData.set('method', 'post');
+    formData.delete('action');
 
-  return data;
+    const { data } = await axios.post<ClientSecretResponse>('/freeform/payments/stripe/payment-intents', formData, {
+      headers: { 'FF-STRIPE-INTEGRATION': integration },
+    });
+
+    return data;
+  },
+  updateAmount: async (integration: string, form: HTMLFormElement, id: string): Promise<UpdateAmountResponse> => {
+    const formData = new FormData(form);
+    formData.set('method', 'post');
+    formData.set(config.csrf.name, config.csrf.value);
+    formData.delete('action');
+
+    const { data } = await axios.post<UpdateAmountResponse>(
+      `/freeform/payments/stripe/payment-intents/${id}/amount`,
+      formData,
+      { headers: { 'FF-STRIPE-INTEGRATION': integration } }
+    );
+
+    return data;
+  },
+};
+
+type UpdateProps = {
+  integration: string;
+  form: HTMLFormElement;
+  paymentIntentId: string;
+  key: string;
+  value: string;
+};
+
+const customers = {
+  update: async ({ integration, form, paymentIntentId }: UpdateProps) => {
+    const formData = new FormData(form);
+    formData.set('method', 'post');
+    formData.delete('action');
+
+    const { status } = await axios.post(
+      `/freeform/payments/stripe/payment-intents/${paymentIntentId}/customers`,
+      formData,
+      {
+        headers: { 'FF-STRIPE-INTEGRATION': integration },
+      }
+    );
+
+    return status;
+  },
 };
 
 export default {
-  paymentIntents: {
-    create,
-    update,
-  },
+  paymentIntents,
+  customers,
 };

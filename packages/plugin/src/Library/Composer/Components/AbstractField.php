@@ -16,6 +16,7 @@ use craft\helpers\Template;
 use GraphQL\Type\Definition\Type;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
@@ -381,6 +382,15 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     public function getLabel(): string
     {
+        if (empty($this->label)) {
+            $field = Freeform::getInstance()->fields->getFieldById($this->getId());
+            if ($field) {
+                return $this->translate($field->label);
+            }
+
+            return $this->getHandle();
+        }
+
         return $this->translate($this->label);
     }
 

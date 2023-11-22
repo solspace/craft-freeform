@@ -104,21 +104,33 @@ type StripeElement = {
       });
     }
 
-    fieldMapping.forEach(({ source, target }) => {
-      console.log(form[target]);
-      (form[target] as HTMLInputElement)?.addEventListener('change', (event) => {
-        const value = (event.target as HTMLInputElement).value;
-        console.log('setting', source, value);
+    const hasCustomMapping = fieldMapping.some(({ target }) => target === undefined);
+    console.log(hasCustomMapping);
 
-        elementsQueries.customers.update({
-          integration: field.dataset.integration,
-          form,
-          paymentIntentId: id,
-          key: source,
-          value,
-        });
+    const listener = (source: string) => (event: Event) => {
+      const value = (event.target as HTMLInputElement).value;
+      console.log('setting', source, value);
+
+      elementsQueries.customers.update({
+        integration: field.dataset.integration,
+        form,
+        paymentIntentId: id,
+        key: source,
+        value,
       });
-    });
+    };
+
+    if (hasCustomMapping) {
+      const allFields = form.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]), select, textarea');
+
+      allFields.forEach((field) => {
+        field.addEventListener('change', listener(field.name));
+      });
+    } else {
+      fieldMapping.forEach(({ source, target }) => {
+        (form[target] as HTMLInputElement)?.addEventListener('change', listener(source));
+      });
+    }
 
     elementMap.set(field, {
       elements,

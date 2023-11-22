@@ -83,7 +83,7 @@ class Stripe extends PaymentGatewayIntegration
         source: 'api/stripe/fields/'.self::CATEGORY_CUSTOMER,
         parameterFields: ['id' => 'id'],
     )]
-    protected ?FieldMapping $customerMapping;
+    protected ?FieldMapping $customerMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
@@ -93,7 +93,7 @@ class Stripe extends PaymentGatewayIntegration
         source: 'api/stripe/fields/'.self::CATEGORY_ADDRESS,
         parameterFields: ['id' => 'id'],
     )]
-    protected ?FieldMapping $addressMapping;
+    protected ?FieldMapping $addressMapping = null;
 
     public function getPublicKey(): string
     {
@@ -144,21 +144,22 @@ class Stripe extends PaymentGatewayIntegration
         $map = [];
 
         $items = array_merge(
-            $this->customerMapping->getMapping(),
-            $this->addressMapping->getMapping(),
+            $this->customerMapping?->getMapping() ?? [],
+            $this->addressMapping?->getMapping() ?? [],
         );
 
         foreach ($items as $item) {
-            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
-                continue;
-            }
-
             $field = $form->get($item->getValue());
 
-            $map[] = [
-                'source' => $item->getSource(),
-                'target' => $field->getHandle(),
-            ];
+            $map[] = match ($item->getType()) {
+                FieldMapItem::TYPE_RELATION => [
+                    'source' => $item->getSource(),
+                    'target' => $field?->getHandle(),
+                ],
+                default => [
+                    'source' => $item->getSource(),
+                ],
+            };
         }
 
         return $map;

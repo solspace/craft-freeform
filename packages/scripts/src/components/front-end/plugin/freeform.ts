@@ -505,11 +505,14 @@ export default class Freeform {
     return data;
   };
 
-  quickSave = async (secret: string): Promise<string | undefined> => {
+  quickSave = async (secret: string, token?: string): Promise<string | undefined> => {
     const { form } = this;
     const data = this._prepareFormData();
     data.set('action', 'freeform/submit/quick-save');
     data.set('storage-secret', secret);
+    if (token) {
+      data.set('token', token);
+    }
 
     const request = await axios<FreeformResponse & { storageToken: string }>({
       method: form.getAttribute('method'),

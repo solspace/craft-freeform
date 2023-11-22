@@ -70,6 +70,7 @@ class SubmitController extends BaseController
     {
         $request = \Craft::$app->getRequest();
 
+        $token = $request->post('token', 'qs-'.CryptoHelper::getUniqueToken(30));
         $secret = $request->post('storage-secret');
         if (!$secret) {
             throw new NotFoundHttpException('No secret provided');
@@ -85,7 +86,7 @@ class SubmitController extends BaseController
 
         $record = new SavedFormRecord();
         $record->formId = $form->getId();
-        $record->token = 'qs-'.CryptoHelper::getUniqueToken(30);
+        $record->token = $token;
 
         $record->sessionId = \Craft::$app->getSession()->getId();
         $record->payload = $payload;

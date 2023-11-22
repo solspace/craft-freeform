@@ -13,13 +13,15 @@ use yii\web\NotFoundHttpException;
 abstract class BaseStripeController extends BaseApiController
 {
     /**
-     * @return array{ 0: Form, 1: Stripe, 2: StripeField }
+     * @return array{ 0: Form, 1: Stripe, 2: StripeField, 3: string }
      */
-    protected function getRequestItems(): array
+    protected function getRequestItems(?string $hash = null): array
     {
-        $hash = $this->request->getHeaders()->get('FF-STRIPE-INTEGRATION');
         if (!$hash) {
-            $hash = $this->request->get('integration');
+            $hash = $this->request->getHeaders()->get('FF-STRIPE-INTEGRATION');
+            if (!$hash) {
+                $hash = $this->request->get('integration');
+            }
         }
 
         if (!$hash) {
@@ -61,6 +63,6 @@ abstract class BaseStripeController extends BaseApiController
             throw new NotFoundHttpException('Field Not Found');
         }
 
-        return [$form, $integration, $field];
+        return [$form, $integration, $field, $hash];
     }
 }

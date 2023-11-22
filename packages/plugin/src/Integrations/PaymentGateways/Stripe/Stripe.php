@@ -182,8 +182,6 @@ class Stripe extends PaymentGatewayIntegration
         return match ($category) {
             self::CATEGORY_CUSTOMER => [
                 new FieldObject('name', 'Full Name', FieldObject::TYPE_STRING, $category),
-                new FieldObject('first_name', 'First  Name', FieldObject::TYPE_STRING, $category),
-                new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, $category),
                 new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category, true),
                 new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category),
             ],

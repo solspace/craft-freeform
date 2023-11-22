@@ -8,6 +8,7 @@ use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers\CallbackCo
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers\FieldMappingController;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers\PaymentIntentsController;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers\StripeCustomerController;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers\StripeWebhookController;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 use yii\web\UrlRule;
@@ -20,6 +21,7 @@ class RegisterControllers extends FeatureBundle
         $this->registerController('stripe-callback', CallbackController::class);
         $this->registerController('stripe-customers', StripeCustomerController::class);
         $this->registerController('stripe-field-mapping', FieldMappingController::class);
+        $this->registerController('stripe-webhook', StripeWebhookController::class);
 
         Event::on(
             UrlManager::class,
@@ -47,6 +49,12 @@ class RegisterControllers extends FeatureBundle
                     'pattern' => 'freeform/payments/stripe/callback',
                     'route' => 'freeform/stripe-callback/callback',
                     'verb' => ['GET'],
+                ]);
+
+                $event->rules[] = new UrlRule([
+                    'pattern' => 'freeform/payments/stripe/webhook',
+                    'route' => 'freeform/stripe-webhook/webhooks',
+                    'verb' => ['POST', 'GET'],
                 ]);
             }
         );

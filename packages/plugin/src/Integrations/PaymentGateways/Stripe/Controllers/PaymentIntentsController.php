@@ -12,7 +12,7 @@ use yii\web\Response;
 
 class PaymentIntentsController extends BaseStripeController
 {
-    protected array|bool|int $allowAnonymous = ['payment-intents'];
+    protected array|bool|int $allowAnonymous = ['create', 'update-amount'];
 
     public function __construct(
         $id,
@@ -84,7 +84,7 @@ class PaymentIntentsController extends BaseStripeController
     public function actionCreate(): Response
     {
         try {
-            [$form, $integration, $field] = $this->getRequestItems();
+            [$form, $integration, $field, $hash] = $this->getRequestItems();
         } catch (NotFoundHttpException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
         }
@@ -102,6 +102,7 @@ class PaymentIntentsController extends BaseStripeController
         ;
 
         $metadata = [
+            'hash' => $hash,
             'formId' => $form->getId(),
             'formName' => $form->getName(),
             'formLink' => UrlHelper::cpUrl('freeform/forms/'.$form->getId()),
@@ -139,6 +140,15 @@ class PaymentIntentsController extends BaseStripeController
                     ],
                     'expand' => ['latest_invoice.payment_intent'],
                 ])
+            ;
+
+            // Set the same metadata on the payment intent as well.
+            $stripe
+                ->paymentIntents
+                ->update(
+                    $subscription->latest_invoice->payment_intent->id,
+                    ['metadata' => $metadata]
+                )
             ;
 
             $id = $subscription->latest_invoice->payment_intent->id;

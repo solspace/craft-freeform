@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { config } from './elements';
+import config from './elements.config';
 
 type ClientSecretResponse = {
   id: string;

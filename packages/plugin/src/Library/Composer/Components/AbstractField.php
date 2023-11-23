@@ -636,7 +636,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $forAttribute = sprintf(' for="%s"', $this->getIdAttribute());
 
         $output = '<label'.$forAttribute.$this->getLabelAttributesString().'>';
-        $output .= $this->getLabel();
+        $output .= (empty($this->label)) ? '&nbsp;' : $this->getLabel();
         $output .= '</label>';
         $output .= \PHP_EOL;
 

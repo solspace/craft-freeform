@@ -3,7 +3,6 @@
 ## 4.1.13 - 2023-11-23
 
 ### Changed
-
 - Updated all references to field names in the control panel and exported files to use the default field label as a fallback if the field label is blank in the form settings. To preserve legacy functionality, rendering forms on the front end will continue showing the field label blank.
 
 ## 4.1.12.1 - 2023-11-15

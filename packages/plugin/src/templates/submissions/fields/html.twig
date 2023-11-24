@@ -1,0 +1,5 @@
+{% if craft.freeform.settings.renderFormHtmlInCpViews %}
+    {{ field.render }}
+{% else %}
+    {{ "Live HTML rendering currently disabled."|t("freeform") }}
+{% endif %}

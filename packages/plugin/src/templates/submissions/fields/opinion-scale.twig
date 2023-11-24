@@ -1,0 +1,31 @@
+{% set value = submission[field.handle].value %}
+{% set field = field.setValue(value) %}
+
+<div class="field">
+    <div class="heading">
+        {{ field.label }}
+    </div>
+    <div class="opinion-scale">
+        <ul class="opinion-scale-scales">
+            {% for index, scale in field.scales %}
+                <li>
+                    <input type="radio"
+                           id="{{ field.handle ~ '-' ~ index }}"
+                           name="{{ field.handle }}"
+                           autocomplete="off"
+                           value="{{ scale.value }}"
+                            {{ field.value == scale.value ? "checked" }}
+                    />
+                    <label for="{{ field.handle ~ '-' ~ index }}">
+                        {{ scale.label }}
+                    </label>
+                </li>
+            {% endfor %}
+        </ul>
+        <ul class="opinion-scale-legends">
+            {% for legend in field.legends %}
+                <li>{{ legend|t("app") }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

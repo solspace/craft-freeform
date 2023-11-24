@@ -21,6 +21,23 @@ class StripePriceService
     ) {
     }
 
+    public function getFormattedAmount(string|int $amount, string $currency): string
+    {
+        $currency = strtolower($currency);
+        $isZeroDecimal = \in_array($currency, self::ZERO_DECIMAL_CURRENCIES, true);
+
+        $divisor = $isZeroDecimal ? 1 : 100;
+
+        return number_format($amount / $divisor, 2);
+    }
+
+    public function getCurrencySymbol(string $currency): string
+    {
+        $currencies = json_decode(file_get_contents(__DIR__.'/../../Common/Currency/currencies.json'));
+
+        return $currencies->{strtoupper($currency)}?->symbol ?? $currency;
+    }
+
     public function getAmount(
         Form $form,
         StripeField $field,

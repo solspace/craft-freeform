@@ -1,0 +1,11 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.radioGroupField({
+    label: field.label,
+    name: field.handle,
+    id: field.handle,
+    required: field.required,
+    errors: submission.errors(field.handle),
+    value: submission[field.handle].value,
+    options: field.options.toTwigArray,
+}) }}

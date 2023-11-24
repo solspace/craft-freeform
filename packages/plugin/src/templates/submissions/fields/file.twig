@@ -1,0 +1,36 @@
+<div class="field">
+    <div class="heading">
+        <label>{{ field.label }}</label>
+    </div>
+    <div class="file-preview">
+        {% set assets = submission.getAssets(field.handle) %}
+
+        {% if assets %}
+            {% for asset in assets|filter(asset => asset is not null) %}
+                {% set thumbSizes = [30, 60, 100, 200] %}
+                {% set srcset = "" %}
+                {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
+                {% set srcset = srcset|trim(", ") %}
+
+                <div class="element small removable hasthumb" style="padding-right: 20px;">
+                    <input type="hidden" name="{{ field.handle }}[]"
+                           value="{{ asset.id }}">
+                    <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
+                    <div class="elementthumb">
+                        <img sizes="30px" srcset="{{ srcset }}" alt="">
+                    </div>
+                    <label>
+                        <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                            {{ asset.title }}
+                        </a>
+                    </label>
+                </div>
+            {% endfor %}
+        {% else %}
+            {{ "No files uploaded"|t('freeform') }}
+        {% endif %}
+    </div>
+    <div class="field">
+        <input type="file" name="{{ field.handle }}[]" multiple />
+    </div>
+</div>

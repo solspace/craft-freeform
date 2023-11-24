@@ -1,0 +1,10 @@
+<fieldset class="group">
+    <legend>{{ field.label }}</legend>
+
+    {% for groupRow in field.layout %}
+
+        {{ _self.render(groupRow, submission) }}
+
+    {% endfor %}
+
+</fieldset>

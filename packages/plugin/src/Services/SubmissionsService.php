@@ -23,6 +23,7 @@ use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Events\Submissions\RenderSubmissionFieldEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
@@ -39,6 +40,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
     public const EVENT_POST_PROCESS = 'postProcess';
+    public const EVENT_RENDER_FIELD = 'render-field';
+
+    private const DEFAULT_FIELD_TEMPLATE = 'freeform/submissions/fields/_default';
 
     /** @var Submission[] */
     private static array $submissionCache = [];
@@ -336,16 +340,29 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return array_unique($ids);
     }
 
-    public function renderSubmissionField(FieldInterface $field): Markup
-    {
-        $value = $field->getValue();
-        if (\is_array($value)) {
-            $value = implode(', ', $value);
+    public function renderSubmissionField(
+        FieldInterface $field,
+        Submission $submission,
+    ): Markup {
+        $event = new RenderSubmissionFieldEvent($field, $submission);
+        $this->trigger(self::EVENT_RENDER_FIELD, $event);
+
+        if ($event->getOutput()) {
+            return $event->getOutput();
         }
 
-        $value .= 'what is this omg';
+        $templatePath = 'freeform/submissions/fields/'.$field->getType();
+        $hasTemplate = file_exists(\Craft::$app->view->resolveTemplate($templatePath));
 
-        return new Markup($value, 'UTF-8');
+        $output = \Craft::$app->view->renderTemplate(
+            $hasTemplate ? $templatePath : self::DEFAULT_FIELD_TEMPLATE,
+            [
+                'field' => $field,
+                'submission' => $submission,
+            ]
+        );
+
+        return new Markup($output, 'UTF-8');
     }
 
     /**

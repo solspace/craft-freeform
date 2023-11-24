@@ -1,0 +1,154 @@
+{% set method = payment.paymentMethod %}
+
+<style>
+    .stripe-payment {
+        display: inline-flex;
+        justify-content: start;
+
+        min-width: 400px;
+        padding: 10px 15px;
+
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        box-shadow: 0 2px 12px rgba(205,216,228,.5);
+
+        & ul {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            & li {
+                display: grid;
+                grid-template-columns: 120px max-content;
+                align-items: start;
+            }
+        }
+
+        .stripe-icon {
+            display: inline-block;
+            width: 50px;
+
+            background: #635bff;
+            border-radius: 4px;
+        }
+
+        .stripe-amount {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .stripe-status {
+            font-weight: bold;
+
+            &.succeeded {
+                color: #28a745;
+            }
+
+            &.failed {
+                color: #dc3545;
+            }
+        }
+
+        .payment-method {
+
+            &.card {
+                display: grid;
+                grid-template-columns: min-content max-content;
+                grid-template-areas: 'icon brand' 'card-number card-number';
+                column-gap: 10px;
+                row-gap: 2px;
+
+                .icon {
+                    grid-area: icon;
+                    width: 40px;
+                }
+
+                .brand {
+                    grid-area: brand;
+                    font-weight: bold;
+                }
+
+                .card-number {
+                    grid-area: card-number;
+
+                    font-size: 0.8em;
+                    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+                    &:before {
+                        content: "•••• •••• •••• ";
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<div class="field">
+    <div class="heading">
+        <label class="stripe-label" for="">
+            <span>{{ field.label }}</span>
+        </label>
+    </div>
+    <div class="stripe-payment">
+        <ul>
+            <li>
+                <div>
+                    <span class="stripe-icon">{{ stripeSvg|raw }}</span>
+                </div>
+                <span>
+                    {% if payment.type == "payment" %}
+                        {{ "Single Payment"|t('freeform') }}
+                    {% else %}
+                        {{ "Subscription"|t('freeform') }}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <div>{{ "Amount"|t('freeform') }}</div>
+                <span class="stripe-amount">
+                    {{ amount }}{{ currency }}
+                </span>
+            </li>
+            <li>
+                <div>{{ "Status"|t('freeform') }}</div>
+                <span class="stripe-status {{ payment.status == "succeeded" ? "succeeded" : "failed" }}">
+                    {{ payment.status|capitalize|t('freeform') }}
+                </span>
+            </li>
+            <li>
+                <div>{{ "Method"|t('freeform') }}</div>
+                <span class="payment-method {{ paymentMethod.type }}">
+                    {% if paymentMethod.type == "card" %}
+
+                        <div class="icon">
+                            {% if paymentMethodIcon %}
+                                <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="stripe-logo">
+                            {% endif %}
+                        </div>
+                        <div class="brand">
+                            {{ paymentMethod.details.brand|capitalize|t('freeform') }}
+                        </div>
+                        <div class="card-number">
+                            {{ paymentMethod.details.last4 }}
+                        </div>
+
+                    {% else %}
+                        {{ paymentMethod.type|capitalize|t('freeform') }}
+                    {% endif %}
+                </span>
+            </li>
+            <li>
+                <div></div>
+                <a href="https://dashboard.stripe.com/payments/{{ payment.resourceId }}" target="_blank">
+                    {{ 'Open in Stripe'|t('freeform') }}
+                    <span class="icon-link-ext"></span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</div>

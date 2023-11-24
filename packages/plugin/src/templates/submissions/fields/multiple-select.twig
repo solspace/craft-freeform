@@ -1,0 +1,11 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.multiselectField({
+    label: field.label,
+    name: field.handle,
+    id: field.handle,
+    required: field.required,
+    errors: submission.errors(field.handle),
+    values: submission[field.handle].value,
+    options: field.options.toTwigArray,
+}) }}

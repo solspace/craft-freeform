@@ -57,4 +57,15 @@ class PaymentRecord extends ActiveRecord
     {
         return $this->hasOne(Submission::class, ['submissionId' => 'id']);
     }
+
+    public function getPaymentMethod(): ?\stdClass
+    {
+        $metadata = json_decode($this->metadata);
+
+        if (!$metadata?->type) {
+            return null;
+        }
+
+        return $metadata;
+    }
 }

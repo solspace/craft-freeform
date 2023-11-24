@@ -1,0 +1,11 @@
+{% set value = submission[field.handle].value %}
+
+<div class="field">
+    <div class="heading">
+        <label>{{ field.label }}</label>
+    </div>
+    <div>
+        {% set field = field.setValue(value) %}
+        {{ field.renderInput }}
+    </div>
+</div>

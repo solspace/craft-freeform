@@ -1,0 +1,22 @@
+<div class="field">
+    <div class="heading">
+        <label>{{ field.label }}</label>
+    </div>
+    <div class="signature-wrapper">
+        <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle] }}" />
+        <canvas data-image="{{ submission[field.handle] }}"
+                width="{{ field.width }}"
+                height="{{ field.height }}"
+                style="border: 1px solid {{ field.borderColor }}; padding: 1px;"
+        >Your browser does not support canvas</canvas>
+
+        <div class="btngroup small download-signature-links">
+            <a href="javascript:;"
+               data-type="png"
+               class="btn small">PNG</a>
+            <a href="javascript:;"
+               data-type="jpg"
+               class="btn small">JPG</a>
+        </div>
+    </div>
+</div>

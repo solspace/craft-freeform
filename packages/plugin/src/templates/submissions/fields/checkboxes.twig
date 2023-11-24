@@ -1,0 +1,13 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.checkboxSelectField({
+    label: field.label,
+    name: field.handle,
+    id: field.handle,
+    value: value,
+    required: field.required,
+    errors: submission.errors(field.handle),
+    showAllOption: false,
+    options: field.options.toTwigArray,
+    values: submission[fieldHandle].value,
+}) }}

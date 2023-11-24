@@ -195,78 +195,7 @@
 
     {% endif %}
 
-
-    {% if payments is defined %}
-
-        <div class="meta read-only">
-            <div class="data">
-                <h4 class="heading h6">{{ "Payments"|t('freeform') }}</h4>
-                {% if payments.externalDashboardLink %}
-                    <div class="value">
-                        <a href={{ payments.externalDashboardLink }} target="_blank">
-                            {{ "See in"|t('freeform') }}
-                            {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
-                        </a>
-                    </div>
-                {% endif %}
-            </div>
-            <div class="data">
-                <h5 class="heading">{{ "Gateway"|t('freeform') }}</h5>
-                <div class="value">{{ payments.gateway|t('freeform') }}</div>
-            </div>
-            <div class="data">
-                <h5 class="heading">{{ "Type"|t('freeform') }}</h5>
-                <div class="value">{{ payments.type|t('freeform')|capitalize }}</div>
-            </div>
-            <div class="data">
-                <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
-                <div class="value">
-                    {% include 'freeform/_components/fields/paymentStatus.html' with { payment: payments } %}
-                    {% if payments.status == 'active' %}
-                        <a href="{{ payments.unsubscribeUrl }}" target="_blank" class="label payment-status failed" style="margin-left: 5px;">
-                            {{ "Cancel"|t('freeform') }}
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-
-            {% if payments.errorMessage %}
-                <div class="data">
-                    <h5 class="heading">{{ "Error"|t('freeform') }}</h5>
-                    <div class="value">{{ payments.errorMessage }}</div>
-                </div>
-            {% elseif payments.type == 'single' %}
-                <div class="data">
-                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
-                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
-                </div>
-            {% else %}
-                <div class="data">
-                    <h5 class="heading">{{ "Plan"|t('freeform') }}</h5>
-                    <div class="value">{{ payments.plan ? payments.plan.name : 'Unknown' }}</div>
-                </div>
-                <div class="data">
-                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
-                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
-                </div>
-                <div class="data">
-                    <h5 class="heading">{{ "Interval"|t('freeform') }}</h5>
-                    <div class="value">{{ payments.interval|capitalize }}</div>
-                </div>
-            {% endif %}
-
-            {% if not payments.errorMessage %}
-                <div class="data">
-                    <h5 class="heading">{{ "Card Number"|t('freeform') }}</h5>
-                    <div class="value">
-                        {% include 'freeform/_components/fields/paymentCard.html' with { payment: payments } %}
-                    </div>
-                </div>
-            {% endif %}
-        </div>
-        <hr>
-
-    {% endif %}
+    {% hook 'freeform.submissions.edit.sidepanel' %}
 
     {% if submission.id %}
 

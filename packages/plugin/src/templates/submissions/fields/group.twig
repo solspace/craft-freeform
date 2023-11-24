@@ -1,9 +1,11 @@
+{% import 'freeform/submissions/_row' as rowMacros %}
+
 <fieldset class="group">
     <legend>{{ field.label }}</legend>
 
     {% for groupRow in field.layout %}
 
-        {{ _self.render(groupRow, submission) }}
+        {{ rowMacros.render(groupRow, submission, fieldRenderer) }}
 
     {% endfor %}
 

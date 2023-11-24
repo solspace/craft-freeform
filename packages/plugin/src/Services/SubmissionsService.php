@@ -359,6 +359,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             [
                 'field' => $field,
                 'submission' => $submission,
+                'fieldRenderer' => [$this, 'renderSubmissionField'],
             ]
         );
 

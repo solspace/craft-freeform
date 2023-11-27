@@ -12,7 +12,6 @@ export const loadStripeContainers = (props: StripeFunctionConstructorProps) => a
   paymentsProcessed = false;
 
   let containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
-  console.log(containers);
   containers.forEach(initStripe(props));
 
   containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe[data-hidden]');
@@ -52,8 +51,6 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
     returnUrl.searchParams.append('integration', field.dataset.integration);
     returnUrl.searchParams.append('token', token);
-
-    console.log('confirming payment');
 
     const { error } = await stripe.confirmPayment({
       elements,

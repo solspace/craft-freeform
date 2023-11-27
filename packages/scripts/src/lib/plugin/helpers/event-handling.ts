@@ -3,7 +3,7 @@ import type { FreeformEventParameters } from 'types/form';
 export const dispatchCustomEvent = <T extends object = Record<string, never>>(
   name: string,
   parameters?: FreeformEventParameters<T>,
-  element?: HTMLElement
+  element?: HTMLElement | Array<HTMLElement>
 ): Event & T => {
   const { bubbles = false, cancelable = true, ...eventParameters } = parameters || {};
 
@@ -11,7 +11,11 @@ export const dispatchCustomEvent = <T extends object = Record<string, never>>(
   Object.assign(event, eventParameters);
 
   if (element) {
-    element.dispatchEvent(event);
+    if (element instanceof HTMLElement) {
+      element.dispatchEvent(event);
+    } else {
+      Array.from(element).forEach((el) => el.dispatchEvent(event));
+    }
   }
 
   return event as Event & T;

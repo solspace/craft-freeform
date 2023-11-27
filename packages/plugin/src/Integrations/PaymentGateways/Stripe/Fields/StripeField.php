@@ -21,6 +21,7 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
     name: 'Stripe Payment',
     typeShorthand: 'stripe',
     iconPath: __DIR__.'/../icon.svg',
+    previewTemplatePath: __DIR__.'/../Templates/stripe-field-preview.ejs',
 )]
 class StripeField extends AbstractField implements PaymentFieldInterface
 {

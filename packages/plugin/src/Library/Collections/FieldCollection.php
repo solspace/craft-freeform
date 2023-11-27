@@ -130,6 +130,16 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return $this->getExcludedList(NoStorageInterface::class);
     }
 
+    public function cloneCollection(): self
+    {
+        $clonedList = [];
+        foreach ($this->fields as $field) {
+            $clonedList[] = clone $field;
+        }
+
+        return new self($clonedList);
+    }
+
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->fields);

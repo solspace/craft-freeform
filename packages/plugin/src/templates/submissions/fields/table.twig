@@ -1,3 +1,5 @@
+{% set value = submission[field.handle].value %}
+
 <div class="field" data-freeform-table>
     <div class="heading">
         <label>{{ field.label }}</label>
@@ -14,7 +16,7 @@
         </tr>
         </thead>
         <tbody>
-        {% if submission[field.handle].value is empty %}
+        {% if value is empty %}
             <tr>
                 {% for index, column in field.tableLayout %}
                     {% set colName = field.handle ~ "[0][" ~ index ~ "]" %}
@@ -62,7 +64,7 @@
                 </td>
             </tr>
         {% else %}
-            {% for rowIndex, row in submission[field.handle].value %}
+            {% for rowIndex, row in value %}
                 <tr>
                     {% for index, column in field.tableLayout %}
                         {% set colName = field.handle ~ "[" ~ rowIndex ~ "][" ~ index ~ "]" %}

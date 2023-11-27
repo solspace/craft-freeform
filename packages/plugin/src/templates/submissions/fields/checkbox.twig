@@ -1,13 +1,11 @@
 {% import "_includes/forms" as forms %}
 
-{% set value = submission[field.handle].value %}
-
 {% set checkboxInput %}
     {{ forms.checkboxField({
         label: field.label,
         name: field.handle,
         id: field.handle,
-        checked: value ? true : false,
+        checked: submission[field.handle].value ? true : false,
         value: field.defaultValue,
     }) }}
 {% endset %}

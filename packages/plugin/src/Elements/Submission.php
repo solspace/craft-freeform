@@ -24,6 +24,7 @@ use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -53,6 +54,7 @@ class Submission extends Element
 
     public const EVENT_PROCESS_SUBMISSION = 'process-submission';
     public const EVENT_PROCESS_FIELD_VALUE = 'process-field-value';
+    public const EVENT_SET_FIELD_VALUE = 'set-field-value';
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
@@ -118,7 +120,10 @@ class Submission extends Element
                     $value = json_decode($value, true);
                 }
 
-                $field->setValue($value);
+                $event = new SetSubmissionFieldValueEvent($field, $this, $value);
+                $this->trigger(self::EVENT_SET_FIELD_VALUE, $event);
+
+                $field->setValue($event->getValue());
 
                 return;
             } catch (FreeformException) {
@@ -733,7 +738,7 @@ class Submission extends Element
             return "<img height='50' width='{$newWidth}' src=\"{$value}\" />";
         }
 
-        if ($value instanceof AbstractField) {
+        if ($value instanceof FieldInterface) {
             $field = $value;
             $value = $value->getValue();
 
@@ -783,6 +788,15 @@ class Submission extends Element
     private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
+    }
+
+    private function getFieldCollection(): FieldCollection
+    {
+        if (null === $this->fieldCollection && $this->getForm()) {
+            $this->fieldCollection = $this->getForm()->getLayout()->getFields()->cloneCollection();
+        }
+
+        return $this->fieldCollection;
     }
 
     private function getNewIncrementalId(): int

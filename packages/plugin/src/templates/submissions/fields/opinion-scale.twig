@@ -1,6 +1,3 @@
-{% set value = submission[field.handle].value %}
-{% set field = field.setValue(value) %}
-
 <div class="field">
     <div class="heading">
         {{ field.label }}
@@ -14,7 +11,7 @@
                            name="{{ field.handle }}"
                            autocomplete="off"
                            value="{{ scale.value }}"
-                            {{ field.value == scale.value ? "checked" }}
+                            {{ submission[field.handle].value == scale.value ? "checked" }}
                     />
                     <label for="{{ field.handle ~ '-' ~ index }}">
                         {{ scale.label }}

@@ -240,7 +240,7 @@ class SubmissionsController extends BaseController
         }
 
         $model->title = \Craft::$app->request->post('title', $model->title);
-        $model->userId = $userId;
+        $model->userId = (int) $userId;
         $model->statusId = $post['statusId'];
         $model->setFormFieldValues($post);
 

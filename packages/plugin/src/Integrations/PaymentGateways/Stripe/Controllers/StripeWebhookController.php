@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCallbackService;
 use Solspace\Freeform\Records\SavedFormRecord;
 use Stripe\Event;
+use Stripe\Exception\SignatureVerificationException;
 use Stripe\PaymentIntent;
+use Stripe\Webhook;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -25,9 +27,25 @@ class StripeWebhookController extends BaseStripeController
 
     public function actionWebhooks(): Response
     {
-        $event = Event::constructFrom($this->request->post());
+        $payload = @file_get_contents('php://input');
+        $json = json_decode($payload, false);
+        $header = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? null;
 
-        return match ($event->type) {
+        $hash = $json->data->object->metadata->hash;
+        [, $integration] = $this->getRequestItems($hash);
+        $secret = $integration->getWebhookSecret();
+
+        try {
+            $event = Webhook::constructEvent($payload, $header, $secret);
+        } catch (\UnexpectedValueException $e) {
+            // Invalid payload
+            return $this->asSerializedJson(['error' => $e->getMessage()], 400);
+        } catch (SignatureVerificationException $e) {
+            // Invalid signature
+            return $this->asEmptyResponse(401);
+        }
+
+        return match ($event?->type) {
             Event::PAYMENT_INTENT_SUCCEEDED => $this->handlePaymentIntentSucceeded($event),
             default => $this->asEmptyResponse(),
         };

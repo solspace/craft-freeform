@@ -63,6 +63,7 @@ class StripeCallbackService
         $payment->currency = $paymentIntent->currency;
         $payment->amount = $paymentIntent->amount;
         $payment->status = $paymentIntent->status;
+        $payment->link = $this->generateLink($paymentIntent, $integration);
 
         $metadata = [];
         $paymentMethod = null;
@@ -118,5 +119,26 @@ class StripeCallbackService
         }
 
         return true;
+    }
+
+    private function generateLink(PaymentIntent $paymentIntent, Stripe $integration): string
+    {
+        $isTestEnv = str_starts_with($integration->getPublicKey(), 'pk_test_');
+        $isSubscription = null !== $paymentIntent->invoice && null !== $paymentIntent->invoice->subscription;
+
+        $base = $isTestEnv ? 'https://dashboard.stripe.com/test/' : 'https://dashboard.stripe.com/';
+        $link = $base;
+        if ($isSubscription) {
+            $link .= 'subscriptions/';
+            if (\is_string($paymentIntent->invoice->subscription)) {
+                $link .= $paymentIntent->invoice->subscription;
+            } else {
+                $link .= $paymentIntent->invoice->subscription->id;
+            }
+        } else {
+            $link .= 'payments/'.$paymentIntent->id;
+        }
+
+        return $link;
     }
 }

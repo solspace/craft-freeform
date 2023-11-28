@@ -27,6 +27,7 @@ use yii\db\ActiveQuery;
  * @property float  $amount
  * @property string $currency
  * @property string $status
+ * @property string $link
  * @property string $metadata
  */
 class PaymentRecord extends ActiveRecord

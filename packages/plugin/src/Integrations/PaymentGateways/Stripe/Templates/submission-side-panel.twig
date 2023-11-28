@@ -136,7 +136,7 @@
     <div class="data">
         <h5 class="heading"></h5>
         <div class="value">
-            <a href="https://dashboard.stripe.com/payments/{{ payment.resourceId }}" target="_blank">
+            <a href="{{ payment.link }}" target="_blank">
                 {{ 'Open in Stripe'|t('freeform') }}
                 <span class="icon-link-ext"></span>
             </a>

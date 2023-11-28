@@ -24,9 +24,8 @@ use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
-use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
-use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
@@ -529,15 +528,6 @@ class Submission extends Element
         Event::trigger(static::class, self::EVENT_REGISTER_ACTIONS, $event);
 
         return $event->actions;
-    }
-
-    public function getFieldCollection(): FieldCollection
-    {
-        if (null === $this->fieldCollection && $this->getForm()) {
-            $this->fieldCollection = Freeform::getInstance()->fields->getFieldCollection($this->getForm());
-        }
-
-        return $this->fieldCollection;
     }
 
     protected static function defineSources(string $context = null): array

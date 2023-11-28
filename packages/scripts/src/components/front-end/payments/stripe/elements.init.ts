@@ -29,8 +29,6 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
   const event = dispatchCustomEvent<StripeAppearanceEvent>(events.render.appearance, { bubbles: true }, [field]);
 
-  console.log('appearance', event.appearance, event);
-
   let elements = stripe.elements({
     clientSecret: secret,
     appearance: event.appearance,
@@ -46,27 +44,33 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     // console.log('payment change', event);
   });
 
-  const amountFieldHandle = field.dataset.amountField;
-  if (amountFieldHandle) {
-    (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
-      queries.paymentIntents.updateAmount(field.dataset.integration, form, id).then(({ id, client_secret }) => {
-        if (client_secret) {
-          paymentElement.unmount();
-          elements = stripe.elements({ clientSecret: client_secret });
+  const amountFieldHandles = field.dataset.amountFields?.split(';') ?? [];
+  if (amountFieldHandles.length > 0) {
+    amountFieldHandles.forEach((amountFieldHandle) => {
+      (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
+        const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
-          paymentElement = elements.create('payment', paymentElementOptions);
-          paymentElement.mount(field);
+        queries.paymentIntents
+          .updateAmount(field.dataset.integration, form, paymentIntentId)
+          .then(({ id, client_secret }) => {
+            if (client_secret) {
+              paymentElement.unmount();
+              elements = stripe.elements({ clientSecret: client_secret });
 
-          elementMap.set(field, {
-            elements,
-            paymentIntent: {
-              id,
-              secret: client_secret,
-            },
+              paymentElement = elements.create('payment', paymentElementOptions);
+              paymentElement.mount(field);
+
+              elementMap.set(field, {
+                elements,
+                paymentIntent: {
+                  id,
+                  secret: client_secret,
+                },
+              });
+            } else {
+              elements.fetchUpdates();
+            }
           });
-        } else {
-          elements.fetchUpdates();
-        }
       });
     });
   }

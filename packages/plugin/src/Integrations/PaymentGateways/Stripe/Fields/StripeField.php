@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
@@ -27,6 +28,9 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 {
     public const PAYMENT_TYPE_SINGLE = 'single';
     public const PAYMENT_TYPE_SUBSCRIPTION = 'subscription';
+
+    public const PAYMENT_INTERVAL_TYPE_STATIC = 'static';
+    public const PAYMENT_INTERVAL_TYPE_DYNAMIC = 'dynamic';
 
     public const AMOUNT_TYPE_FIXED = 'fixed';
     public const AMOUNT_TYPE_DYNAMIC = 'dynamic';
@@ -71,6 +75,17 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     protected string $productName = '';
 
     #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Input\ButtonGroup(
+        label: 'Subscription Interval Type',
+        options: [
+            self::PAYMENT_INTERVAL_TYPE_STATIC => 'Static',
+            self::PAYMENT_INTERVAL_TYPE_DYNAMIC => 'Dynamic',
+        ],
+    )]
+    protected string $intervalType = self::PAYMENT_INTERVAL_TYPE_STATIC;
+
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[VisibilityFilter('properties.intervalType === "static"')]
     #[Input\Select(
         label: 'Subscription Interval',
         options: [
@@ -83,6 +98,27 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     protected string $interval = 'month';
 
     #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[VisibilityFilter('properties.intervalType === "dynamic"')]
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
+        label: 'Subscription Interval Field',
+        instructions: 'Select a field which will determine the interval. (Available values: `year`, `month`, `week`, `day`)',
+        emptyOption: 'No field selected',
+    )]
+    protected ?FieldInterface $intervalField = null;
+
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Input\ButtonGroup(
+        label: 'Subscription Interval Count Type',
+        options: [
+            self::PAYMENT_INTERVAL_TYPE_STATIC => 'Static',
+            self::PAYMENT_INTERVAL_TYPE_DYNAMIC => 'Dynamic',
+        ],
+    )]
+    protected string $intervalCountType = self::PAYMENT_INTERVAL_TYPE_STATIC;
+
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[VisibilityFilter('properties.intervalCountType === "static"')]
     #[Input\Integer(
         label: 'Interval Count',
         instructions: 'Enter the number of intervals between each subscription payment. If using interval `month` and count `3`, the subscription will be charged every 3 months.',
@@ -90,6 +126,23 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected int $intervalCount = 1;
 
+    #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[VisibilityFilter('properties.intervalCountType === "dynamic"')]
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
+        label: 'Subscription Interval Count Field',
+        instructions: 'Select a field which will determine the interval count.',
+        emptyOption: 'No field selected',
+        implements: [NumericInterface::class],
+    )]
+    protected ?FieldInterface $intervalCountField = null;
+
+    #[Section(
+        handle: 'payment-amount',
+        label: 'Payment Amount',
+        icon: __DIR__.'/Icons/money.svg',
+        order: 2,
+    )]
     #[Input\ButtonGroup(
         label: 'Payment Amount Type',
         options: [
@@ -99,6 +152,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected string $amountType = self::AMOUNT_TYPE_FIXED;
 
+    #[Section('payment-amount')]
     #[VisibilityFilter('properties.amountType === "fixed"')]
     #[Input\Integer(
         label: 'Payment Amount',
@@ -108,6 +162,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected float $amount = 0;
 
+    #[Section('payment-amount')]
     #[VisibilityFilter('properties.amountType === "dynamic"')]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
@@ -118,18 +173,26 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected ?FieldInterface $amountField = null;
 
+    #[Section('payment-amount')]
     #[Input\Select(
         label: 'Payment Currency',
         options: CurrencyOptionsGenerator::class,
     )]
     protected string $currency = 'USD';
 
+    #[Section(
+        handle: 'redirect',
+        label: 'Redirect after payment',
+        icon: __DIR__.'/Icons/redirect.svg',
+        order: 3,
+    )]
     #[Input\Text(
         label: 'Successful Payment Redirect',
         instructions: 'Enter a URL to redirect to after a successful payment. You can use the `form`, `submission` and `paymentIntent` objects in twig.',
     )]
     protected string $redirectSuccess = '';
 
+    #[Section('redirect')]
     #[Input\Text(
         label: 'Failed Payment Redirect',
         instructions: 'Enter a URL to redirect to after a failed payment. You can use the `form` and `paymentIntent` objects in twig.',
@@ -161,14 +224,34 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         return $this->productName ?: self::DEFAULT_PRODUCT_NAME;
     }
 
+    public function getIntervalType(): string
+    {
+        return $this->intervalType ?: self::PAYMENT_INTERVAL_TYPE_STATIC;
+    }
+
     public function getInterval(): string
     {
         return $this->interval;
     }
 
+    public function getIntervalField(): ?FieldInterface
+    {
+        return $this->intervalField;
+    }
+
+    public function getIntervalCountType(): string
+    {
+        return $this->intervalCountType ?: self::PAYMENT_INTERVAL_TYPE_STATIC;
+    }
+
     public function getIntervalCount(): int
     {
         return $this->intervalCount;
+    }
+
+    public function getIntervalCountField(): ?FieldInterface
+    {
+        return $this->intervalCountField;
     }
 
     public function getAmountType(): string
@@ -218,10 +301,16 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         ;
         $output .= '<input'.$inputAttributes.' />';
 
+        $amountFields = array_filter([
+            $this->amountField?->getHandle() ?? false,
+            $this->intervalField?->getHandle() ?? false,
+            $this->intervalCountField?->getHandle() ?? false,
+        ]);
+
         $stripeAttributes = (new Attributes())
             ->set('class', 'freeform-stripe-card')
             ->set('data-integration', $id)
-            ->set('data-amount-field', $this->amountField?->getHandle() ?? false)
+            ->set('data-amount-fields', !empty($amountFields) ? implode(';', $amountFields) : false)
         ;
         $output .= '<div'.$stripeAttributes.'></div>';
 

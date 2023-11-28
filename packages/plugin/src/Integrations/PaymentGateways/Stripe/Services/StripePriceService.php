@@ -38,10 +38,8 @@ class StripePriceService
         return $currencies->{strtoupper($currency)}?->symbol ?? $currency;
     }
 
-    public function getAmount(
-        Form $form,
-        StripeField $field,
-    ): int {
+    public function getAmount(Form $form, StripeField $field): int
+    {
         $amount = $field->getAmount();
 
         switch ($field->getAmountType()) {
@@ -64,6 +62,22 @@ class StripePriceService
         return (int) round($amount * $multiplier);
     }
 
+    public function getInterval(Form $form, StripeField $field): string
+    {
+        return match ($field->getIntervalType()) {
+            StripeField::PAYMENT_INTERVAL_TYPE_STATIC => $field->getInterval(),
+            StripeField::PAYMENT_INTERVAL_TYPE_DYNAMIC => $this->getDynamicInterval($form, $field),
+        };
+    }
+
+    public function getIntervalCount(Form $form, StripeField $field): int
+    {
+        return match ($field->getIntervalCountType()) {
+            StripeField::PAYMENT_INTERVAL_TYPE_STATIC => $field->getIntervalCount(),
+            StripeField::PAYMENT_INTERVAL_TYPE_DYNAMIC => $this->getDynamicIntervalCount($form, $field),
+        };
+    }
+
     public function getPrice(
         StripeField $field,
         Form $form,
@@ -71,6 +85,9 @@ class StripePriceService
     ): Price {
         $amount = $this->getAmount($form, $field);
         $currency = $field->getCurrency();
+
+        $interval = $this->getInterval($form, $field);
+        $intervalCount = $this->getIntervalCount($form, $field);
 
         $stripe = $integration->getStripeClient();
 
@@ -95,10 +112,12 @@ class StripePriceService
             $product = $stripe->products->create(['name' => $productName]);
         }
 
+        $lookupKey = "{$amount}{$currency}-{$interval}:{$intervalCount}";
+
         $price = $stripe
             ->prices
             ->search([
-                'query' => "product: '{$product->id}' and lookup_key: '{$amount}{$currency}'",
+                'query' => "product: '{$product->id}' and lookup_key: '{$lookupKey}'",
                 'limit' => 1,
             ])
             ->first()
@@ -110,11 +129,11 @@ class StripePriceService
                 ->create([
                     'product' => $product->id,
                     'unit_amount' => $amount,
-                    'lookup_key' => "{$amount}{$currency}",
+                    'lookup_key' => "{$lookupKey}",
                     'currency' => $currency,
                     'recurring' => [
-                        'interval' => $field->getInterval(),
-                        'interval_count' => $field->getIntervalCount(),
+                        'interval' => $interval,
+                        'interval_count' => $intervalCount,
                     ],
                 ])
             ;
@@ -123,7 +142,7 @@ class StripePriceService
         return $price;
     }
 
-    private function getDynamicAmount($form, $field): string
+    private function getDynamicAmount(Form $form, StripeField $field): string
     {
         $amount = 0;
         $formField = $form->get($field->getAmountField()?->getId());
@@ -132,5 +151,27 @@ class StripePriceService
         }
 
         return $amount;
+    }
+
+    private function getDynamicInterval(Form $form, StripeField $field): string
+    {
+        $interval = $field->getInterval();
+        $formField = $form->get($field->getIntervalField()?->getId());
+        if ($formField) {
+            $interval = $formField->getValue();
+        }
+
+        return $interval;
+    }
+
+    private function getDynamicIntervalCount(Form $form, StripeField $field): int
+    {
+        $intervalCount = $field->getIntervalCount();
+        $formField = $form->get($field->getIntervalCountField()?->getId());
+        if ($formField) {
+            $intervalCount = (int) $formField->getValueAsString();
+        }
+
+        return $intervalCount;
     }
 }

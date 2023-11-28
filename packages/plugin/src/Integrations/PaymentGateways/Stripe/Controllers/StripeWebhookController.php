@@ -46,12 +46,14 @@ class StripeWebhookController extends BaseStripeController
         }
 
         return match ($event?->type) {
-            Event::PAYMENT_INTENT_SUCCEEDED => $this->handlePaymentIntentSucceeded($event),
+            Event::PAYMENT_INTENT_CANCELED,
+            Event::PAYMENT_INTENT_PAYMENT_FAILED,
+            Event::PAYMENT_INTENT_SUCCEEDED => $this->handlePaymentIntent($event),
             default => $this->asEmptyResponse(),
         };
     }
 
-    protected function handlePaymentIntentSucceeded(Event $event): Response
+    protected function handlePaymentIntent(Event $event): Response
     {
         /** @var PaymentIntent $paymentIntent */
         $paymentIntent = $event->data->object;

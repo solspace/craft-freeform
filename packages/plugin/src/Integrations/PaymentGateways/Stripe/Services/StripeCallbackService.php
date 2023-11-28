@@ -64,15 +64,24 @@ class StripeCallbackService
         $payment->amount = $paymentIntent->amount;
         $payment->status = $paymentIntent->status;
 
-        $paymentMethod = $paymentIntent->payment_method->{$paymentIntent->payment_method->type};
-        if (!\is_array($paymentMethod)) {
-            $paymentMethod = $paymentMethod->toArray();
+        $metadata = [];
+        $paymentMethod = null;
+        if ($paymentIntent->last_payment_error) {
+            $error = $paymentIntent->last_payment_error->toArray();
+            unset($error['payment_method']);
+
+            $paymentMethod = $paymentIntent->last_payment_error->payment_method;
+            $metadata['error'] = $error;
+        } elseif ($paymentIntent->payment_method) {
+            $paymentMethod = $paymentIntent->payment_method;
         }
 
-        $payment->metadata = [
-            'type' => $paymentIntent->payment_method->type,
-            'details' => $paymentMethod,
-        ];
+        if ($paymentMethod) {
+            $metadata['type'] = $paymentMethod->type;
+            $metadata['details'] = $paymentMethod->{$paymentMethod->type}->toArray();
+        }
+
+        $payment->metadata = $metadata;
         $payment->save();
 
         $submissionMetadata = [

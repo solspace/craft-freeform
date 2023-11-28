@@ -11,7 +11,7 @@ class StripePaymentMethodIconService
 
         return match ($type) {
             'card' => $this->getCardIcon($details->brand),
-            default => null,
+            default => $this->getCardIcon($type),
         };
     }
 

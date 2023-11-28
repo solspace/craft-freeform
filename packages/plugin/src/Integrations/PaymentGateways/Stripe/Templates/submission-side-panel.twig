@@ -39,6 +39,10 @@
 
         .payment-method {
 
+            .icon {
+                width: 60px;
+            }
+
             &.card {
                 display: grid;
                 grid-template-columns: min-content max-content;
@@ -48,7 +52,6 @@
 
                 .icon {
                     grid-area: icon;
-                    width: 40px;
                 }
 
                 .brand {
@@ -95,7 +98,7 @@
     <div class="data">
         <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
         <div class="value stripe-status {{ payment.status == "succeeded" ? "succeeded" : "failed" }}">
-            {{ payment.status|capitalize|t('freeform') }}
+            {{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}
         </div>
     </div>
     <div class="data">
@@ -116,8 +119,16 @@
                     {{ paymentMethod.details.last4 }}
                 </div>
 
+            {% elseif paymentMethodIcon %}
+
+                <div class="icon">
+                    <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="{{ paymentMethod.type }}">
+                </div>
+
             {% else %}
+
                 {{ paymentMethod.type|capitalize|t('freeform') }}
+
             {% endif %}
 
         </div>

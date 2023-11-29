@@ -26,7 +26,7 @@ import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstruct
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
-  static instances = new WeakMap();
+  static instances = new WeakMap<HTMLFormElement, Freeform>();
 
   id: string;
   form: HTMLFormElement;
@@ -74,7 +74,7 @@ export default class Freeform {
 
   _lastButtonPressed?: HTMLButtonElement;
 
-  static getInstance = (form: HTMLFormElement) => Freeform.instances.get(form);
+  static getInstance = (form: HTMLFormElement): Freeform => Freeform.instances.get(form);
 
   constructor(form: HTMLFormElement) {
     if (Freeform.instances.get(form)) {
@@ -159,6 +159,14 @@ export default class Freeform {
 
   setOption = <K extends keyof FreeformOptions>(name: K, value: FreeformOptions[K]) => {
     this.options[name] = value;
+  };
+
+  disableForm = (): void => {
+    this.form.dataset.freeformDisabled = '';
+  };
+
+  enableForm = (): void => {
+    delete this.form.dataset.freeformDisabled;
   };
 
   lockSubmit = (force = false) => {

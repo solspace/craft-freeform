@@ -1,3 +1,4 @@
+import Freeform from '@components/front-end/plugin/freeform';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { StripePaymentElementOptions } from '@stripe/stripe-js';
 
@@ -8,6 +9,7 @@ import queries from './elements.queries';
 import type { StripeFunctionConstructorProps } from './elements.types';
 
 const { fieldMapping } = config;
+const workers: string[] = [];
 
 export const initStripe = (props: StripeFunctionConstructorProps) => async (container: HTMLDivElement) => {
   if (container.dataset.hidden === '') {
@@ -21,12 +23,20 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     return;
   }
 
+  // Store an empty entry in the elementMap to prevent duplicate initialization
+  elementMap.set(field, {
+    elements: null,
+    paymentIntent: null,
+  });
+
   field.innerHTML = 'Loading...';
 
   const { id, secret } = await queries.paymentIntents.create(field.dataset.integration, form);
 
+  // Set the PaymentIntent ID as the field value
   (field.previousSibling as HTMLInputElement).value = id;
 
+  // Dispatch an event which lets other scripts modify the appearance of the Stripe element
   const event = dispatchCustomEvent<StripeAppearanceEvent>(events.render.appearance, { bubbles: true }, [field]);
 
   let elements = stripe.elements({
@@ -44,37 +54,49 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     // console.log('payment change', event);
   });
 
+  const freeform = Freeform.getInstance(form);
+
   const amountFieldHandles = field.dataset.amountFields?.split(';') ?? [];
-  if (amountFieldHandles.length > 0) {
-    amountFieldHandles.forEach((amountFieldHandle) => {
-      (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
-        const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
-        queries.paymentIntents
-          .updateAmount(field.dataset.integration, form, paymentIntentId)
-          .then(({ id, client_secret }) => {
-            if (client_secret) {
-              paymentElement.unmount();
-              elements = stripe.elements({ clientSecret: client_secret });
+  // Listen for changes to the amount, interval and interval count fields
+  amountFieldHandles.forEach((amountFieldHandle) => {
+    (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
+      workers.push(amountFieldHandle);
+      freeform.disableForm();
+      const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
-              paymentElement = elements.create('payment', paymentElementOptions);
-              paymentElement.mount(field);
+      queries.paymentIntents
+        .updateAmount(field.dataset.integration, form, paymentIntentId)
+        .then(({ id, client_secret }) => {
+          // If a client_secret is returned - we need to recreate the Stripe element
+          if (client_secret) {
+            paymentElement.unmount();
+            elements = stripe.elements({ clientSecret: client_secret });
 
-              elementMap.set(field, {
-                elements,
-                paymentIntent: {
-                  id,
-                  secret: client_secret,
-                },
-              });
-            } else {
-              elements.fetchUpdates();
-            }
-          });
-      });
+            paymentElement = elements.create('payment', paymentElementOptions);
+            paymentElement.mount(field);
+
+            elementMap.set(field, {
+              elements,
+              paymentIntent: {
+                id,
+                secret: client_secret,
+              },
+            });
+          } else {
+            elements.fetchUpdates();
+          }
+        })
+        .finally(() => {
+          workers.pop();
+          if (!workers.length) {
+            freeform.enableForm();
+          }
+        });
     });
-  }
+  });
 
+  // Listen for changes to any mapped fields which affect the Customer
   const hasCustomMapping = fieldMapping.some(({ target }) => target === undefined);
   const listener = (source: string) => (event: Event) => {
     const value = (event.target as HTMLInputElement).value;
@@ -88,6 +110,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     });
   };
 
+  // If there's a custom mapping present, we need to listen to all input changes
   if (hasCustomMapping) {
     const allFields = form.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]), select, textarea');
 

@@ -25,15 +25,10 @@ use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
+use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Fields\Implementations\FileUploadField;
-use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
-use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
-use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
-use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\FieldCollection;
@@ -53,6 +48,7 @@ class Submission extends Element
 
     public const EVENT_PROCESS_SUBMISSION = 'process-submission';
     public const EVENT_PROCESS_FIELD_VALUE = 'process-field-value';
+    public const EVENT_RENDER_TABLE_VALUE = 'render-submission-table-field';
     public const EVENT_SET_FIELD_VALUE = 'set-field-value';
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
@@ -696,72 +692,12 @@ class Submission extends Element
             return Html::decode(StringHelper::implodeRecursively(', ', $value));
         }
 
-        if ($value instanceof TableField) {
-            $rows = $value->getValue();
-            $value = '<table>';
-            foreach ($rows as $row) {
-                $value .= '<tr>';
-                foreach ($row as $val) {
-                    $value .= '<td>'.$val.'</td>';
-                }
-                $value .= '</tr>';
-            }
-            $value .= '</table>';
-
-            return Html::decode($value);
-        }
-
-        if ($value instanceof SignatureField) {
-            $field = $value;
-            $value = $value->getValue();
-
-            if (!$value) {
-                return '';
-            }
-
-            $width = $field->getWidth();
-            $height = $field->getHeight();
-
-            $ratio = $width / $height;
-            $newWidth = 50 * $ratio;
-
-            return "<img height='50' width='{$newWidth}' src=\"{$value}\" />";
-        }
-
         if ($value instanceof FieldInterface) {
-            $field = $value;
-            $value = $value->getValue();
+            $event = new RenderTableValueEvent($value, $this);
+            $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
 
-            if ($field instanceof FileUploadField) {
-                $output = '';
-                foreach ($value as $assetId) {
-                    $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-
-                    if ($asset) {
-                        $output .= \Craft::$app->view->renderTemplate(
-                            'freeform/_components/fields/file.html',
-                            ['asset' => $asset]
-                        );
-                    }
-                }
-
-                return $output;
-            }
-
-            if (\is_array($value)) {
-                $value = implode(', ', $value);
-            }
-
-            if ($field instanceof CheckboxField) {
-                return $value ?: '-';
-            }
-
-            if ($field instanceof RatingField) {
-                return (int) $value.'/'.$field->getMaxValue();
-            }
-
-            if ($field instanceof ObscureValueInterface) {
-                return (string) $field->getActualValue($value);
+            if ($event->getOutput()) {
+                return $event->getOutput();
             }
 
             return Html::encode($value);

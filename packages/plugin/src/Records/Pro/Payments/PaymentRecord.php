@@ -63,7 +63,7 @@ class PaymentRecord extends ActiveRecord
     {
         $metadata = json_decode($this->metadata);
 
-        if (!$metadata?->type) {
+        if (!isset($metadata->type)) {
             return null;
         }
 

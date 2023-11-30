@@ -1,4 +1,3 @@
-import Freeform from '@components/front-end/plugin/freeform';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { StripePaymentElementOptions } from '@stripe/stripe-js';
 
@@ -54,15 +53,13 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     // console.log('payment change', event);
   });
 
-  const freeform = Freeform.getInstance(form);
-
   const amountFieldHandles = field.dataset.amountFields?.split(';') ?? [];
 
   // Listen for changes to the amount, interval and interval count fields
   amountFieldHandles.forEach((amountFieldHandle) => {
     (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
       workers.push(amountFieldHandle);
-      freeform.disableForm();
+      form.freeform.disableForm();
       const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
       queries.paymentIntents
@@ -90,7 +87,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
         .finally(() => {
           workers.pop();
           if (!workers.length) {
-            freeform.enableForm();
+            form.freeform.enableForm();
           }
         });
     });

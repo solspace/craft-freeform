@@ -4,8 +4,12 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services;
 
 class StripePaymentMethodIconService
 {
-    public function getIconFromPaymentMethod(\stdClass $method): ?string
+    public function getIconFromPaymentMethod(?\stdClass $method): ?string
     {
+        if (null === $method) {
+            return null;
+        }
+
         $type = $method->type ?? null;
         $details = $method->details ?? [];
 

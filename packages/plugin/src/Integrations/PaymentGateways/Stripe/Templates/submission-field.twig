@@ -116,31 +116,35 @@
             <li>
                 <div>{{ "Status"|t('freeform') }}</div>
                 <span class="stripe-status {{ payment.status == "succeeded" ? "succeeded" : "failed" }}">
-                    {{ payment.status|capitalize|t('freeform') }}
+                    {{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}
                 </span>
             </li>
-            <li>
-                <div>{{ "Method"|t('freeform') }}</div>
-                <span class="payment-method {{ paymentMethod.type }}">
-                    {% if paymentMethod.type == "card" %}
 
-                        <div class="icon">
-                            {% if paymentMethodIcon %}
-                                <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="stripe-logo">
-                            {% endif %}
-                        </div>
-                        <div class="brand">
-                            {{ paymentMethod.details.brand|capitalize|t('freeform') }}
-                        </div>
-                        <div class="card-number">
-                            {{ paymentMethod.details.last4 }}
-                        </div>
+            {% if paymentMethod %}
+                <li>
+                    <div>{{ "Method"|t('freeform') }}</div>
+                    <span class="payment-method {{ paymentMethod.type }}">
+                        {% if paymentMethod.type == "card" %}
 
-                    {% else %}
-                        {{ paymentMethod.type|capitalize|t('freeform') }}
-                    {% endif %}
-                </span>
-            </li>
+                            <div class="icon">
+                                {% if paymentMethodIcon %}
+                                    <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="stripe-logo">
+                                {% endif %}
+                            </div>
+                            <div class="brand">
+                                {{ paymentMethod.details.brand|capitalize|t('freeform') }}
+                            </div>
+                            <div class="card-number">
+                                {{ paymentMethod.details.last4 }}
+                            </div>
+
+                        {% else %}
+                            {{ paymentMethod.type|capitalize|t('freeform') }}
+                        {% endif %}
+                    </span>
+                </li>
+            {% endif %}
+
             <li>
                 <div></div>
                 <a href="{{ payment.link }}" target="_blank">

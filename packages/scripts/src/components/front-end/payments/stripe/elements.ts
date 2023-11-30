@@ -5,6 +5,8 @@ import config from './elements.config';
 import { loadStripeContainers, submitStripe } from './elements.submit';
 import type { StripeElement, StripeFunctionConstructorProps } from './elements.types';
 
+const initializedForms = new WeakMap<HTMLFormElement, boolean>();
+
 (async () => {
   const { formId, apiKey } = config;
 
@@ -15,6 +17,12 @@ import type { StripeElement, StripeFunctionConstructorProps } from './elements.t
   if (!form) {
     return;
   }
+
+  if (initializedForms.has(form)) {
+    return;
+  }
+
+  initializedForms.set(form, true);
 
   const props: StripeFunctionConstructorProps = {
     elementMap,

@@ -27,7 +27,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     return;
   }
 
-  const { elementMap, stripe } = props;
+  const { elementMap, stripe, form } = props;
 
   const containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
   if (containers.length > 0) {

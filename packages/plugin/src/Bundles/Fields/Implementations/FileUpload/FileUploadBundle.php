@@ -5,8 +5,10 @@ namespace Solspace\Freeform\Bundles\Fields\Implementations\FileUpload;
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
@@ -22,6 +24,7 @@ class FileUploadBundle extends FeatureBundle
     {
         Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'finalizeFiles']);
         Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, [$this, 'handleDnDPost']);
+        Event::on(Submission::class, Submission::EVENT_RENDER_TABLE_VALUE, [$this, 'renderTableValue']);
         Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'prolongUnfinalizedAssets']);
     }
 
@@ -78,6 +81,28 @@ class FileUploadBundle extends FeatureBundle
         }
 
         $event->setValue($ids);
+    }
+
+    public function renderTableValue(RenderTableValueEvent $event): void
+    {
+        $field = $event->getField();
+        if (!$field instanceof FileUploadField) {
+            return;
+        }
+
+        $output = '';
+        foreach ($field->getValue() as $assetId) {
+            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+
+            if ($asset) {
+                $output .= \Craft::$app->view->renderTemplate(
+                    'freeform/_components/fields/file.html',
+                    ['asset' => $asset]
+                );
+            }
+        }
+
+        $event->setOutput($output);
     }
 
     /**

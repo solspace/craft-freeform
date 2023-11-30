@@ -24,44 +24,52 @@ class StripeCallbackService
         PaymentIntent $paymentIntent,
         ?SavedFormRecord $savedForm,
     ): bool {
-        if (!$savedForm) {
-            return false;
-        }
-
         $stripe = $integration->getStripeClient();
+        $payment = PaymentRecord::findOne([
+            'fieldId' => $field->getId(),
+            'integrationId' => $integration->getId(),
+            'resourceId' => $paymentIntent->id,
+        ]);
 
-        $payload = json_decode(
-            \Craft::$app->security->decryptByKey(
-                base64_decode($savedForm->payload),
-                $paymentIntent->client_secret
-            ),
-            true
-        );
+        if (!$payment && $savedForm) {
+            $savedForm->delete();
 
-        $paymentIntent = $stripe->paymentIntents->retrieve(
-            $paymentIntent->id,
-            ['expand' => ['payment_method', 'invoice.subscription']]
-        );
+            $payload = json_decode(
+                \Craft::$app->security->decryptByKey(
+                    base64_decode($savedForm->payload),
+                    $paymentIntent->client_secret
+                ),
+                true
+            );
 
-        $form->quickLoad($payload);
-        $this->submissionsService->handleSubmission($form);
+            $paymentIntent = $stripe->paymentIntents->retrieve(
+                $paymentIntent->id,
+                ['expand' => ['payment_method', 'invoice.subscription']]
+            );
 
-        $type = null !== $paymentIntent->invoice ? 'subscription' : 'payment';
+            $form->quickLoad($payload);
+            $this->submissionsService->handleSubmission($form);
 
-        if (!$form->getSubmission()->id) {
+            $type = null !== $paymentIntent->invoice ? 'subscription' : 'payment';
+
+            if (!$form->getSubmission()->id) {
+                return false;
+            }
+
+            $payment = new PaymentRecord();
+            $payment->integrationId = $integration->getId();
+            $payment->fieldId = $field->getId();
+            $payment->submissionId = $form->getSubmission()->id;
+            $payment->resourceId = $paymentIntent->id;
+            $payment->type = $type;
+            $payment->currency = $paymentIntent->currency;
+            $payment->amount = $paymentIntent->amount;
+        }
+
+        if (!$payment) {
             return false;
         }
 
-        $savedForm->delete();
-
-        $payment = new PaymentRecord();
-        $payment->integrationId = $integration->getId();
-        $payment->fieldId = $field->getId();
-        $payment->submissionId = $form->getSubmission()->id;
-        $payment->resourceId = $paymentIntent->id;
-        $payment->type = $type;
-        $payment->currency = $paymentIntent->currency;
-        $payment->amount = $paymentIntent->amount;
         $payment->status = $paymentIntent->status;
         $payment->link = $this->generateLink($paymentIntent, $integration);
 
@@ -85,15 +93,14 @@ class StripeCallbackService
         $payment->metadata = $metadata;
         $payment->save();
 
-        $submissionMetadata = [
-            'submissionId' => $form->getSubmission()->id,
-            'submissionLink' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
-        ];
+        if ($savedForm) {
+            $submissionMetadata = [
+                'submissionId' => $form->getSubmission()->id,
+                'submissionLink' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
+            ];
 
-        if ($paymentIntent?->invoice?->subscription) {
-            $stripe
-                ->subscriptions
-                ->update(
+            if ($paymentIntent?->invoice?->subscription) {
+                $stripe->subscriptions->update(
                     $paymentIntent->invoice->subscription->id,
                     [
                         'metadata' => array_merge(
@@ -101,12 +108,9 @@ class StripeCallbackService
                             $submissionMetadata,
                         ),
                     ]
-                )
-            ;
-        } else {
-            $stripe
-                ->paymentIntents
-                ->update(
+                );
+            } else {
+                $stripe->paymentIntents->update(
                     $paymentIntent->id,
                     [
                         'metadata' => array_merge(
@@ -114,8 +118,8 @@ class StripeCallbackService
                             $submissionMetadata,
                         ),
                     ]
-                )
-            ;
+                );
+            }
         }
 
         return true;

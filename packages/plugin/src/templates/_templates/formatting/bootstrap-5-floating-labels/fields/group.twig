@@ -1,6 +1,7 @@
 {% import "freeform/_templates/formatting/bootstrap-5-floating-labels/_row.twig" as rowMacro %}
 
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
+
     <div class="card">
         <div class="card-header">
             {{ field.renderLabel }}
@@ -10,4 +11,5 @@
             {{ rowMacro.render(field.layout, form) }}
         </div>
     </div>
-</div>
+
+{{ field.renderContainerClosingTag }}

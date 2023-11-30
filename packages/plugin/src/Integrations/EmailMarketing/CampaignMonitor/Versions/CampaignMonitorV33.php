@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\CampaignMonitor\BaseCampaignMonitorIntegration;
 
 #[Type(
-    name: 'Campaign Monitor (v3.3)',
+    name: 'Campaign Monitor',
+    type: Type::TYPE_EMAIL_MARKETING,
+    version: 'v3.3',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

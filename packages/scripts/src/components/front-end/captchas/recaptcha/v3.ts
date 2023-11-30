@@ -44,7 +44,7 @@ form.addEventListener(events.form.ready, (event: FreeformEvent) => {
   loadReCaptcha(event.form, config);
 });
 
-form.addEventListener(events.form.onSubmit, (event: FreeformEvent) => {
+form.addEventListener(events.form.submit, (event: FreeformEvent) => {
   if (isTokenSet) {
     return;
   }

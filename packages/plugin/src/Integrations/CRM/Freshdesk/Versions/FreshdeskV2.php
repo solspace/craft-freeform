@@ -15,7 +15,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Freshdesk\BaseFreshdeskIntegration;
 
 #[Type(
-    name: 'Freshdesk (v2)',
+    name: 'Freshdesk',
+    type: Type::TYPE_CRM,
+    version: 'v2',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

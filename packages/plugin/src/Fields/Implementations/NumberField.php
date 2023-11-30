@@ -6,6 +6,7 @@ use craft\gql\types\Number as NumberType;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Fields\Interfaces\NumericInterface;
 
 #[Type(
     name: 'Number',
@@ -13,7 +14,7 @@ use Solspace\Freeform\Attributes\Property\Input;
     iconPath: __DIR__.'/Icons/number.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class NumberField extends TextField
+class NumberField extends TextField implements NumericInterface
 {
     #[Input\Boolean('Allow negative numbers')]
     protected bool $allowNegative = false;

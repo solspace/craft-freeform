@@ -1,14 +1,14 @@
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
-{% do field.setParameters({
-    attributes: {
-        input: { "placeholder": field.placeholder },
-    }
-}) %}
+    {% do field.setParameters({
+        attributes: {
+            input: { "placeholder": field.placeholder },
+        }
+    }) %}
 
-{{ field.renderInput -}}
-{{- field.renderLabel }}
-{{ field.renderInstructions }}
-{{ field.renderErrors }}
+    {{ field.renderInput -}}
+    {{- field.renderLabel }}
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
 
-</div>
+{{ field.renderContainerClosingTag }}

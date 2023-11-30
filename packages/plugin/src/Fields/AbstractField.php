@@ -23,6 +23,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Events\Fields\FieldRenderEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -198,15 +199,13 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $containerAttributes = $this->getAttributes()
-            ->getContainer()
-            ->setIfEmpty('data-field-container', $this->getHandle())
-        ;
+        Event::trigger($this, self::EVENT_RENDER_CONTAINER, new FieldRenderEvent($this));
 
+        $containerAttributes = $this->getAttributes()->getContainer();
         $output = '<div'.$containerAttributes.'>';
 
         if (!$this instanceof InputOnlyInterface) {
-            $output .= $this->getLabelHtml();
+            $output .= $this->renderLabel();
         }
 
         $instructionsBelow = 'below' === strtolower($this->parameters->instructions);
@@ -217,12 +216,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
 
         $output .= $this->onBeforeInputHtml();
-        $output .= $this->getInputHtml();
+        $output .= $this->renderInput();
         $output .= $this->onAfterInputHtml();
 
         // Show instructions below only if set by a property
         if ($instructionsBelow) {
-            $output .= $this->getInstructionsHtml();
+            $output .= $this->renderInstructions();
         }
 
         if ($this->getErrors()) {
@@ -234,12 +233,26 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->renderRaw($output);
     }
 
+    final public function renderContainerOpeningTag(array $parameters = null): Markup
+    {
+        $this->setParameters($parameters);
+        Event::trigger($this, self::EVENT_RENDER_CONTAINER, new FieldRenderEvent($this));
+
+        return $this->renderRaw($this->getContainerOpeningTagHtml());
+    }
+
+    final public function renderContainerClosingTag(): Markup
+    {
+        return $this->renderRaw($this->getContainerClosingTagHtml());
+    }
+
     /**
      * Render the Label HTML.
      */
     final public function renderLabel(array $parameters = null): Markup
     {
         $this->setParameters($parameters);
+        Event::trigger($this, self::EVENT_RENDER_LABEL, new FieldRenderEvent($this));
 
         return $this->renderRaw($this->getLabelHtml());
     }
@@ -247,6 +260,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function renderInstructions(array $parameters = null): Markup
     {
         $this->setParameters($parameters);
+        Event::trigger($this, self::EVENT_RENDER_INSTRUCTIONS, new FieldRenderEvent($this));
 
         return $this->renderRaw($this->getInstructionsHtml());
     }
@@ -257,6 +271,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     final public function renderInput(array $parameters = null): Markup
     {
         $this->setParameters($parameters);
+        Event::trigger($this, self::EVENT_RENDER_INPUT, new FieldRenderEvent($this));
 
         return $this->renderRaw($this->getInputHtml());
     }
@@ -267,6 +282,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     final public function renderErrors(array $parameters = null): Markup
     {
         $this->setParameters($parameters);
+        Event::trigger($this, self::EVENT_RENDER_ERRORS, new FieldRenderEvent($this));
 
         return $this->renderRaw($this->getErrorHtml());
     }
@@ -552,6 +568,16 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
 
         return false;
+    }
+
+    protected function getContainerOpeningTagHtml(): string
+    {
+        return '<div'.$this->getAttributes()->getContainer().'>';
+    }
+
+    protected function getContainerClosingTagHtml(): string
+    {
+        return '</div>';
     }
 
     /**

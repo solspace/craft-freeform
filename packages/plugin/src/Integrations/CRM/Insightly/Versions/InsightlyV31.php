@@ -14,7 +14,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Insightly\BaseInsightlyIntegration;
 
 #[Type(
-    name: 'Insightly (v3.1)',
+    name: 'Insightly',
+    type: Type::TYPE_CRM,
+    version: 'v3.1',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

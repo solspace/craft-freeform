@@ -7,13 +7,10 @@ use craft\base\Model;
 use craft\db\Query;
 use craft\db\Table;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Records\StatusRecord;
-use yii\db\Expression;
 
 class ExportProfileModel extends Model
 {
@@ -152,10 +149,6 @@ class ExportProfileModel extends Model
 
                 if (is_numeric($fieldId)) {
                     $field = $form->getLayout()->getField($fieldId);
-                    if (!$field || $field instanceof CreditCardDetailsField) {
-                        continue;
-                    }
-
                     $label = $field->getLabel();
 
                     $storedFieldIds[] = $field->getId();
@@ -207,30 +200,6 @@ class ExportProfileModel extends Model
                 continue;
             }
 
-            if ($field instanceof CreditCardDetailsField) {
-                $fieldSettings['cc_amount'] = [
-                    'label' => 'Payment Amount',
-                    'checked' => true,
-                ];
-
-                $fieldSettings['cc_currency'] = [
-                    'label' => 'Payment Currency',
-                    'checked' => true,
-                ];
-
-                $fieldSettings['cc_status'] = [
-                    'label' => 'Payment Status',
-                    'checked' => true,
-                ];
-
-                $fieldSettings['cc_card'] = [
-                    'label' => 'Payment Card',
-                    'checked' => true,
-                ];
-
-                continue;
-            }
-
             $fieldSettings[$field->getId()] = [
                 'label' => $field->getLabel(),
                 'checked' => true,
@@ -259,16 +228,6 @@ class ExportProfileModel extends Model
     private function buildCommand(): Query
     {
         $form = $this->getForm();
-
-        // TODO: reimplement when implementing payments
-
-        // $paymentProperties = $form->getPaymentProperties();
-        // $hasPaymentSingles = $hasPaymentSubscriptions = false;
-        // if ($paymentProperties) {
-        //     $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
-        //     $hasPaymentSubscriptions = !$hasPaymentSingles;
-        // }
-
         $fieldData = $this->getFieldSettings();
 
         $searchableFields = [];
@@ -290,11 +249,6 @@ class ExportProfileModel extends Model
                 $fieldName = match ($fieldName) {
                     'title' => 'c.[['.$fieldName.']]',
                     'status' => 'stat.[[name]] AS status',
-                    'cc_type' => new Expression("'".$hasPaymentSingles ? 'single' : 'subscription'."' as cc_type"),
-                    'cc_status' => 'p.[[status]] as cc_status',
-                    'cc_amount' => 'p.[[amount]] as cc_amount',
-                    'cc_currency' => 'p.[[currency]] as cc_currency',
-                    'cc_card' => 'p.[[last4]] as cc_card',
                     default => 's.[['.$fieldName.']]',
                 };
 
@@ -392,14 +346,6 @@ class ExportProfileModel extends Model
             ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(implode(' AND ', $conditions), $parameters)
         ;
-
-        // TODO: reimplement with payments
-
-        // if ($hasPaymentSingles) {
-        //     $command->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
-        // } elseif ($hasPaymentSubscriptions) {
-        //     $command->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
-        // }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

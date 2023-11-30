@@ -25,7 +25,7 @@ class LoadSavedForm extends FeatureBundle
         return 900;
     }
 
-    public function loadSavedForm(RegisterContextEvent $event)
+    public function loadSavedForm(RegisterContextEvent $event): void
     {
         $form = $event->getForm();
 
@@ -60,7 +60,7 @@ class LoadSavedForm extends FeatureBundle
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new LoadFormEvent($form));
     }
 
-    public function handleFinalizeForm(SubmitEvent $event)
+    public function handleFinalizeForm(SubmitEvent $event): void
     {
         $form = $event->getForm();
 

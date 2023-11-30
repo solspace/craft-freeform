@@ -1,0 +1,10 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: field.label,
+    name: field.handle,
+    id: field.handle,
+    required: field.required,
+    errors: submission.errors(field.handle),
+    value: submission[field.handle].value,
+}) }}

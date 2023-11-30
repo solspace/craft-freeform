@@ -23,6 +23,7 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 class IntegrationModel extends Model
 {
     public ?int $id = null;
+    public ?string $uid = null;
     public bool $enabled = false;
     public ?string $name = null;
     public ?string $handle = null;
@@ -71,6 +72,7 @@ class IntegrationModel extends Model
 
         $object = new $className(
             $this->id,
+            $this->uid,
             (bool) $this->enabled,
             $this->handle ?? '',
             $this->name ?? '',

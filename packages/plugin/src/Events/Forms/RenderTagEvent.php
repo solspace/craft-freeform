@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 
 class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 {
@@ -36,8 +37,18 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         return $this->chunks;
     }
 
-    public function addChunk(string $chunk, $position = self::POSITION_END): self
+    public function addChunk(string $chunk, array $variables = [], $position = self::POSITION_END): self
     {
+        static $isolatedTwig;
+
+        if (!empty($variables)) {
+            if (null === $isolatedTwig) {
+                $isolatedTwig = new IsolatedTwig();
+            }
+
+            $chunk = $isolatedTwig->render($chunk, $variables);
+        }
+
         if (self::POSITION_END === $position || !is_numeric($position)) {
             $this->chunks[] = $chunk;
         }

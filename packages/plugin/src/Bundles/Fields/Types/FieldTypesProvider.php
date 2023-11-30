@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use yii\base\Event;
 
 class FieldTypesProvider
@@ -105,24 +106,20 @@ class FieldTypesProvider
             return null;
         }
 
-        /** @var Type $type */
-        $typeAttribute = $reflection->getAttributes(Type::class)[0] ?? null;
-        if (!$typeAttribute) {
+        $type = AttributeHelper::findAttribute($reflection, Type::class);
+        if (!$type) {
             throw new InvalidFieldTypeException("Field type definition invalid for '{$typeClass}'");
         }
 
-        /** @var Type $typeInstance */
-        $typeInstance = $typeAttribute->newInstance();
+        $fieldType = new FieldType();
+        $fieldType->typeClass = $typeClass;
+        $fieldType->type = $type->typeShorthand;
+        $fieldType->name = $type->name;
+        $fieldType->icon = file_get_contents($type->iconPath);
+        $fieldType->previewTemplate = $type->previewTemplatePath ? file_get_contents($type->previewTemplatePath) : null;
+        $fieldType->implements = $this->implementationProvider->getImplementations($typeClass);
+        $fieldType->properties = $this->propertyProvider->getEditableProperties($typeClass);
 
-        $type = new FieldType();
-        $type->typeClass = $typeClass;
-        $type->type = $typeInstance->typeShorthand;
-        $type->name = $typeInstance->name;
-        $type->icon = file_get_contents($typeInstance->iconPath);
-        $type->previewTemplate = $typeInstance->previewTemplatePath ? file_get_contents($typeInstance->previewTemplatePath) : null;
-        $type->implements = $this->implementationProvider->getImplementations($typeClass);
-        $type->properties = $this->propertyProvider->getEditableProperties($typeClass);
-
-        return $type;
+        return $fieldType;
     }
 }

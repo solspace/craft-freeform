@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs;
 
 use craft\gql\base\Arguments;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\SubmissionCaptchaInputType;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class SubmissionCaptchaInputArguments extends Arguments
 {
@@ -19,7 +19,7 @@ class SubmissionCaptchaInputArguments extends Arguments
 
     public static function getArguments(): array
     {
-        $integrations = Freeform::getInstance()->integrations->getForForm(self::$form, IntegrationInterface::TYPE_CAPTCHAS);
+        $integrations = Freeform::getInstance()->integrations->getForForm(self::$form, Type::TYPE_CAPTCHAS);
         if (!$integrations) {
             return [];
         }

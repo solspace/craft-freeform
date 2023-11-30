@@ -18,7 +18,6 @@ use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
-use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\SettingsService;
 
 /**
@@ -54,10 +53,5 @@ class FreeformServicesVariable
     public function settings(): SettingsService
     {
         return Freeform::getInstance()->settings;
-    }
-
-    public function payments(): PaymentsService
-    {
-        return Freeform::getInstance()->payments;
     }
 }

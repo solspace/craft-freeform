@@ -1,0 +1,22 @@
+{% macro render(row, submission, fieldRenderer) %}
+    {% import "_includes/forms" as forms %}
+
+    <div class="fields-row">
+        {%- for field in row.getFields(["password", "hidden", "invisible"], "excludes") -%}
+            {{ field.renderContainerOpeningTag({
+                attributes: {
+                    container: {
+                        class: [
+                            'fields-column',
+                            field.required ?: 'field-required',
+                        ],
+                    },
+                },
+            }) }}
+
+                {{ fieldRenderer|call(field, submission) }}
+
+            {{ field.renderContainerClosingTag }}
+        {% endfor %}
+    </div>
+{% endmacro %}

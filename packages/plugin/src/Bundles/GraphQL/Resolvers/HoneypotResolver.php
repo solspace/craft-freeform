@@ -6,7 +6,7 @@ use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Singleton\Honeypot\Honeypot;
+use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 
 class HoneypotResolver extends Resolver
 {

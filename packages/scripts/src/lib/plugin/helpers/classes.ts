@@ -17,3 +17,11 @@ export const addDnDClass: ClassAddType = (element, ...classNames) => {
 export const removeDnDClass: ClassAddType = (element, ...classNames) => {
   removeClass(element, DND_PREFIX, ...classNames);
 };
+
+export const getClassQuery = (classNames: string | string[]): string => {
+  if (typeof classNames === 'string') {
+    classNames = classNames.split(' ');
+  }
+
+  return classNames.map((className) => `.${className}`).join('');
+};

@@ -12,3 +12,10 @@
     gap: 5px;
   }
 }
+
+form[data-freeform-disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+
+  transition: opacity 0.3s ease-in-out;
+}

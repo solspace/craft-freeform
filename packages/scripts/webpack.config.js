@@ -9,7 +9,7 @@ module.exports = {
   target: ['web', 'es5'],
 
   entry: () =>
-    glob.sync('./src/components/**/*.{js,ts}').reduce((obj, el) => {
+    glob.sync('./src/components/**/!(*.*).{js,ts}').reduce((obj, el) => {
       obj[`./${el}`] = `./${el}`;
 
       return obj;

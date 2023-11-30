@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Library\DataObjects\Integrations\Integration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -40,17 +39,7 @@ class IntegrationDTOProvider
 
     private function createDTOFromModel(IntegrationInterface $integration): ?Integration
     {
-        $reflection = new \ReflectionClass($integration);
-
-        $typeAttributes = $reflection->getAttributes(Type::class);
-        $type = reset($typeAttributes);
-
-        $type = $type ? $type->newInstance() : null;
-
-        /** @var Type $type */
-        if (!$type) {
-            return null;
-        }
+        $type = $integration->getTypeDefinition();
 
         $icon = $type->iconPath;
         if ($icon) {
@@ -59,10 +48,12 @@ class IntegrationDTOProvider
 
         $dto = new Integration();
         $dto->id = $integration->getId();
+        $dto->uid = $integration->getUid();
         $dto->name = $integration->getName();
         $dto->handle = $integration->getHandle();
         $dto->enabled = (bool) $integration->isEnabled();
-        $dto->type = $this->typeProvider->getTypeShorthand($integration);
+        $dto->type = $type->type;
+        $dto->shortName = $type->shortName;
         $dto->icon = $icon;
         $dto->properties = $this->propertyProvider->getEditableProperties($integration);
         $dto->properties->removeFlagged(

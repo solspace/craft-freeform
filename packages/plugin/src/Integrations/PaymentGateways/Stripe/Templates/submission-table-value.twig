@@ -1,0 +1,103 @@
+{% set method = payment.paymentMethod %}
+
+<style>
+    .stripe-payment {
+        display: flex;
+        justify-content: start;
+        align-items: center;
+        gap: 10px;
+
+        white-space: nowrap;
+
+        .stripe-amount {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .stripe-status {
+            width: 10px;
+            height: 10px;
+
+            border-radius: 50%;
+
+            background-color: #dc3545;
+
+            &.succeeded {
+                background-color: #28a745;
+            }
+        }
+
+        .payment-method {
+
+            .icon {
+                grid-area: icon;
+                width: 40px;
+            }
+
+            &.card {
+                display: flex;
+                align-items: center;
+                gap: 5px;
+
+                .brand {
+                    grid-area: brand;
+                    font-weight: bold;
+                }
+
+                .card-number {
+                    grid-area: card-number;
+
+                    font-size: 0.8em;
+                    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+                    &:before {
+                        content: "•••• ";
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<div class="stripe-payment">
+    <div class="stripe-status {{ payment.status }}" title="{{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}">
+    </div>
+    <div>
+        <a href="{{ payment.link }}" target="_blank">
+            {{ amount }}{{ currency }}
+            <span class="icon-link-ext"></span>
+        </a>
+    </div>
+    {% if paymentMethod %}
+        <div class="payment-method {{ paymentMethod.type }}">
+
+            {% if paymentMethod.type == "card" %}
+
+                <div class="icon">
+                    {% if paymentMethodIcon %}
+                        <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" title="{{ paymentMethod.details.brand }}">
+                    {% endif %}
+                </div>
+                <div class="card-number">
+                    {{ paymentMethod.details.last4 }}
+                </div>
+
+            {% elseif paymentMethodIcon %}
+
+                <div class="icon">
+                    <img src="{{ paymentMethodIcon }}"
+                         title="{{ paymentMethod.type }}"
+                         alt="Payment Method Icon"
+                         class="{{ paymentMethod.type }}"
+                    />
+                </div>
+
+            {% else %}
+                {{ paymentMethod.type|capitalize|t('freeform') }}
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>

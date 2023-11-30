@@ -13,13 +13,13 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Records\EmailMarketingFieldRecord;
 use Solspace\Freeform\Records\EmailMarketingListRecord;
+use Solspace\Freeform\Services\BaseService;
 
-class EmailMarketingService extends AbstractIntegrationService
+class EmailMarketingService extends BaseService
 {
     public function getListObjectById(?int $id): ?ListObject
     {
@@ -156,15 +156,5 @@ class EmailMarketingService extends AbstractIntegrationService
             ),
             $existingRecords
         );
-    }
-
-    protected function getIntegrationType(): string
-    {
-        return IntegrationInterface::TYPE_EMAIL_MARKETING;
-    }
-
-    protected function getIntegrationInterface(): string
-    {
-        return EmailMarketingIntegrationInterface::class;
     }
 }

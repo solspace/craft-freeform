@@ -76,8 +76,8 @@ class OAuthController extends BaseController
             \Craft::$app->session->setError(Freeform::t('Integration not saved'));
         }
 
-        $type = $integrationsService->getIntegrationType($integration);
+        $type = $integration->getTypeDefinition()->type;
 
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$type.'/'.$integration->getId()));
+        return $this->redirect(UrlHelper::cpUrl('freeform/settings/integrations/'.$type.'/'.$integration->getId()));
     }
 }

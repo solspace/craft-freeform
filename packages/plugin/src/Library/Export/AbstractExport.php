@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
-use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
@@ -108,10 +107,6 @@ abstract class AbstractExport implements ExportInterface
                         if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
                             $value = (array) json_decode($value, true);
                         }
-                    }
-
-                    if ($field instanceof ObscureValueInterface) {
-                        $value = $field->getActualValue($value);
                     }
 
                     if ($field instanceof FileUploadField && \is_array($value)) {

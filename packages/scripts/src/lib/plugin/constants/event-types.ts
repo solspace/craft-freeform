@@ -1,18 +1,22 @@
 const events = {
   form: {
     ready: 'freeform-ready',
-    onReset: 'freeform-on-reset',
-    onSubmit: 'freeform-on-submit',
+    reset: 'freeform-on-reset',
+    submit: 'freeform-on-submit',
     removeMessages: 'freeform-remove-messages',
     fieldRemoveMessages: 'freeform-remove-field-messages',
     renderSuccess: 'freeform-render-success',
     renderFieldErrors: 'freeform-render-field-errors',
     renderFormErrors: 'freeform-render-form-errors',
+    ajaxBeforeSuccess: 'freeform-before-ajax-success',
     ajaxSuccess: 'freeform-ajax-success',
     ajaxError: 'freeform-ajax-error',
     ajaxBeforeSubmit: 'freeform-ajax-before-submit',
     ajaxAfterSubmit: 'freeform-ajax-after-submit',
     handleActions: 'freeform-handle-actions',
+  } as const,
+  rules: {
+    applied: 'freeform-rules-applied',
   } as const,
   table: {
     onAddRow: 'freeform-field-table-on-add-row',

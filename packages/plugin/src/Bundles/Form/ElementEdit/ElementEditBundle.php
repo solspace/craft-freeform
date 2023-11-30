@@ -4,13 +4,13 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 use yii\base\Event;
 
@@ -50,7 +50,7 @@ class ElementEditBundle extends FeatureBundle
         $form->disableAjaxReset();
 
         /** @var ElementIntegration[] $integrations */
-        $integrations = $this->integrationsProvider->getForForm($form, IntegrationInterface::TYPE_ELEMENTS);
+        $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_ELEMENTS);
         $integration = reset($integrations);
 
         if (!$elementId || !$integration) {

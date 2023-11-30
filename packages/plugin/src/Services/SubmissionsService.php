@@ -23,12 +23,14 @@ use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Events\Submissions\RenderSubmissionFieldEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Twig\Markup;
 use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -38,6 +40,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
     public const EVENT_POST_PROCESS = 'postProcess';
+    public const EVENT_RENDER_FIELD = 'render-field';
+
+    private const DEFAULT_FIELD_TEMPLATE = 'freeform/submissions/fields/_default';
 
     /** @var Submission[] */
     private static array $submissionCache = [];
@@ -335,6 +340,32 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return array_unique($ids);
     }
 
+    public function renderSubmissionField(
+        FieldInterface $field,
+        Submission $submission,
+    ): Markup {
+        $event = new RenderSubmissionFieldEvent($field, $submission);
+        $this->trigger(self::EVENT_RENDER_FIELD, $event);
+
+        if ($event->getOutput()) {
+            return $event->getOutput();
+        }
+
+        $templatePath = 'freeform/submissions/fields/'.$field->getType();
+        $hasTemplate = file_exists(\Craft::$app->view->resolveTemplate($templatePath));
+
+        $output = \Craft::$app->view->renderTemplate(
+            $hasTemplate ? $templatePath : self::DEFAULT_FIELD_TEMPLATE,
+            [
+                'field' => $field,
+                'submission' => $submission,
+                'fieldRenderer' => [$this, 'renderSubmissionField'],
+            ]
+        );
+
+        return new Markup($output, 'UTF-8');
+    }
+
     /**
      * Removes all old submissions according to the submission age set in settings.
      *
@@ -368,6 +399,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $assetIds = [];
         foreach ($query->batch() as $results) {
+            $deletableIds = [];
+
             /** @var Submission $submission */
             foreach ($results as $submission) {
                 $submission = $this->getSubmission($submission->getId());
@@ -379,10 +412,16 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                     }
                 }
 
-                if (\Craft::$app->elements->deleteElement($submission)) {
-                    ++$deletedSubmissions;
-                }
+                $deletableIds[] = $submission->id;
             }
+
+            \Craft::$app->db
+                ->createCommand()
+                ->delete(Table::ELEMENTS, ['id' => $deletableIds])
+                ->execute()
+            ;
+
+            $deletedSubmissions += \count($deletableIds);
         }
 
         $assetIds = array_unique($assetIds);

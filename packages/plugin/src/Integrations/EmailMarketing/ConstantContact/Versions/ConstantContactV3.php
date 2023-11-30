@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\EmailMarketing\ConstantContact\BaseConstantContactIntegration;
 
 #[Type(
-    name: 'Constant Contact (v3)',
+    name: 'Constant Contact',
+    type: Type::TYPE_EMAIL_MARKETING,
+    version: 'v3',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

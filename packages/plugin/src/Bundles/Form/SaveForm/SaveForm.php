@@ -9,6 +9,7 @@ use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\SaveForm\Actions\SaveFormAction;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\Pro\SaveField;
@@ -29,8 +30,9 @@ class SaveForm extends FeatureBundle
     public const CLEANUP_CACHE_KEY = 'save-and-continue-cleanup';
     public const CLEANUP_CACHE_TTL = 60 * 60; // 1 hour
 
-    public function __construct()
-    {
+    public function __construct(
+        private NotificationTemplateProvider $templateProvider,
+    ) {
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleSave']);
 
         $this->cleanup();
@@ -46,7 +48,7 @@ class SaveForm extends FeatureBundle
         return $key.\Craft::$app->getConfig()->getGeneral()->securityKey;
     }
 
-    public function handleSave(HandleRequestEvent $event)
+    public function handleSave(HandleRequestEvent $event): void
     {
         if ($event->getRequest()->isConsoleRequest) {
             return;
@@ -120,72 +122,70 @@ class SaveForm extends FeatureBundle
      */
     private function checkEmailField(Form $form): bool
     {
-        /** @var SaveField[] $saveButtons */
-        $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
-        foreach ($saveButtons as $button) {
-            /** @var EmailField $emailField */
-            $emailField = $form->get($button->getEmailFieldHash());
-            if (!$emailField) {
-                continue;
-            }
+        $button = $form->getCurrentPage()->getButtons()->getSave();
 
-            $isRequired = $emailField->isRequired();
-            $recipients = $emailField->getRecipients();
+        /** @var EmailField $emailField */
+        $emailField = $form->get($button->getEmailFieldUid());
+        if (!$emailField) {
+            return true;
+        }
 
-            if ($isRequired && empty($recipients)) {
-                return false;
-            }
+        $isRequired = $emailField->isRequired();
+        $recipients = $emailField->getRecipients();
+
+        if ($isRequired && empty($recipients)) {
+            return false;
         }
 
         return true;
     }
 
-    private function sendNotification(Form $form, string $token, string $key)
+    private function sendNotification(Form $form, string $token, string $key): void
     {
-        $notificationService = Freeform::getInstance()->notifications;
         $mailer = Freeform::getInstance()->mailer;
 
-        /** @var SaveField[] $saveButtons */
-        $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
-        foreach ($saveButtons as $button) {
-            /** @var EmailField $emailField */
-            $emailField = $form->get($button->getEmailFieldHash());
-            $notification = $notificationService->getNotificationById($button->getNotificationId());
-            if (!$emailField || !$notification) {
-                continue;
-            }
+        $button = $form->getCurrentPage()->getButtons()->getSave();
 
-            $recipients = $mailer->processRecipients($emailField->getRecipients());
-            if (empty($recipients)) {
-                continue;
-            }
+        /** @var EmailField $emailField */
+        $emailField = $form->get($button->getEmailFieldUid());
+        $notification = $this->templateProvider->getNotificationTemplate($button->getNotificationId());
+        if (!$emailField || !$notification) {
+            return;
+        }
 
-            try {
-                $message = $mailer->compileMessage($notification, [
+        $recipients = $mailer->processRecipients($emailField->getRecipients());
+        if (empty($recipients)) {
+            return;
+        }
+
+        try {
+            $message = $mailer->compileMessage(
+                $notification,
+                [
                     'dateCreated' => new Carbon(),
                     'form' => $form,
                     'token' => $token,
                     'key' => $key,
-                ]);
+                ]
+            );
 
-                $message->setTo($recipients);
+            $message->setTo($recipients);
 
-                \Craft::$app->mailer->send($message);
-            } catch (\Exception $exception) {
-                Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION)->warning(
-                    $exception->getMessage(),
-                    ['form' => $form->getHandle(), 'context' => 'saving form', 'recipients' => $recipients]
-                );
-            }
+            \Craft::$app->mailer->send($message);
+        } catch (\Exception $exception) {
+            Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION)->warning(
+                $exception->getMessage(),
+                ['form' => $form->getHandle(), 'context' => 'saving form', 'recipients' => $recipients]
+            );
         }
     }
 
-    private function redirectRequest(HandleRequestEvent $event, Form $form, string $token, string $key)
+    private function redirectRequest(HandleRequestEvent $event, Form $form, string $token, string $key): void
     {
         $returnUrl = $form->getProperties()->get(SaveFormsHelper::BAG_REDIRECT, '');
         if (empty($returnUrl)) {
             /** @var SaveField[] $saveButtons */
-            $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
+            $saveButtons = $form->getCurrentPage()->getButtons()->getSave();
             foreach ($saveButtons as $button) {
                 $returnUrl = $button->getUrl();
                 if (!empty($returnUrl)) {
@@ -220,7 +220,7 @@ class SaveForm extends FeatureBundle
         }
     }
 
-    private function cleanupForSession($sessionId)
+    private function cleanupForSession($sessionId): void
     {
         if (!$sessionId) {
             return;
@@ -252,7 +252,7 @@ class SaveForm extends FeatureBundle
         }
     }
 
-    private function cleanup()
+    private function cleanup(): void
     {
         if (Freeform::isLocked(self::CLEANUP_CACHE_KEY, self::CLEANUP_CACHE_TTL)) {
             return;

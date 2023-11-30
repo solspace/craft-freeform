@@ -13,11 +13,11 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Records\CrmFieldRecord;
+use Solspace\Freeform\Services\BaseService;
 
-class CrmService extends AbstractIntegrationService
+class CrmService extends BaseService
 {
     /**
      * @return FieldObject[]
@@ -81,15 +81,5 @@ class CrmService extends AbstractIntegrationService
             ),
             $existingRecords
         );
-    }
-
-    protected function getIntegrationType(): string
-    {
-        return IntegrationInterface::TYPE_CRM;
-    }
-
-    protected function getIntegrationInterface(): string
-    {
-        return CRMIntegrationInterface::class;
     }
 }

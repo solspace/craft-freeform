@@ -2,21 +2,31 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Label = styled.label`
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.xs};
 
   height: 18px;
   margin-bottom: 4px;
   font-weight: bold;
   color: ${colors.gray550};
 
-  &.is-required {
-    &:after {
-      content: '*';
-      padding-left: 2px;
-      position: absolute;
+  .required {
+    position: relative;
+    top: -5px;
+    left: -5px;
+  }
+`;
 
-      color: ${colors.error};
-    }
+const iconSize = 16;
+export const LabelIcon = styled.div`
+  position: relative;
+  top: -1px;
+  &,
+  svg {
+    width: ${iconSize}px;
+    height: ${iconSize}px;
+    font-size: ${iconSize}px;
   }
 `;
 
@@ -33,6 +43,7 @@ export const FieldCellWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
+  height: 100%;
   padding: ${spacings.sm} ${spacings.md};
   margin: 0;
 

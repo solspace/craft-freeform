@@ -6,7 +6,6 @@ use craft\events\DefineSourceTableAttributesEvent;
 use craft\services\ElementSources;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -38,11 +37,6 @@ class CustomSourceFields extends FeatureBundle
                 $form = $forms[$formId];
 
                 $fields = $form->getLayout()->getFields()->getStorableFields();
-                foreach ($fields as $index => $field) {
-                    if ($field instanceof CreditCardDetailsField) {
-                        unset($fields[$index]);
-                    }
-                }
             }
 
             foreach ($fields as $field) {

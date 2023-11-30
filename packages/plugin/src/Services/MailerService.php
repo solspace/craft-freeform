@@ -25,15 +25,16 @@ use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
@@ -300,7 +301,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
             if ($field instanceof NoStorageInterface
                 || $field instanceof FileUploadInterface
-                || $field instanceof PaymentInterface
+                || $field instanceof PaymentFieldInterface
                 || $field instanceof SignatureField
             ) {
                 continue;
@@ -316,11 +317,8 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         // TODO: offload this call to payments plugin with an event
-        if ($submission && $form->getLayout()->hasFields(PaymentInterface::class)) {
-            $payments = Freeform::getInstance()->payments->getPaymentDetails(
-                $submission->getId(),
-                $submission->getForm()
-            );
+        if ($submission && $form->getLayout()->hasFields(PaymentFieldInterface::class)) {
+            $payments = PaymentRecord::findAll(['submissionId' => $submission->getId()]);
             $postedValues['payments'] = $payments;
         }
 

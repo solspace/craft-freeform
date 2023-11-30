@@ -1,0 +1,147 @@
+<style>
+    .stripe-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .data {
+            align-items: center !important;
+
+            .heading, .value {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+
+        .stripe-logo {
+            width: 50px;
+
+            background: #6772e5;
+            border-radius: 4px;
+        }
+
+        .stripe-amount .value {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .stripe-status {
+            font-weight: bold;
+
+            &.succeeded {
+                color: #28a745;
+            }
+
+            &.failed {
+                color: #dc3545;
+            }
+        }
+
+        .payment-method {
+
+            .icon {
+                width: 60px;
+            }
+
+            &.card {
+                display: grid;
+                grid-template-columns: min-content max-content;
+                grid-template-areas: 'icon brand' 'card-number card-number';
+                column-gap: 10px;
+                row-gap: 5px;
+
+                .icon {
+                    grid-area: icon;
+                }
+
+                .brand {
+                    grid-area: brand;
+                    font-weight: bold;
+                }
+
+                .card-number {
+                    grid-area: card-number;
+
+                    font-size: 0.8em;
+                    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+                    &:before {
+                        content: "•••• •••• •••• ";
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<div class="stripe-panel meta read-only">
+    <div class="data">
+        <div class="heading">
+            <div class="stripe-logo">
+                {{ stripeSvg|raw }}
+            </div>
+        </div>
+        <div class="value">
+            {% if payment.type == "payment" %}
+                {{ "Single Payment"|t('freeform') }}
+            {% else %}
+                {{ "Subscription"|t('freeform') }}
+            {% endif %}
+        </div>
+    </div>
+    <div class="data stripe-amount">
+        <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+        <div class="value">
+            {{ amount }}{{ currency }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
+        <div class="value stripe-status {{ payment.status == "succeeded" ? "succeeded" : "failed" }}">
+            {{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ "Method"|t('freeform') }}</h5>
+        <div class="value payment-method {{ paymentMethod.type }}">
+
+            {% if paymentMethod.type == "card" %}
+
+                <div class="icon">
+                    {% if paymentMethodIcon %}
+                        <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="stripe-logo">
+                    {% endif %}
+                </div>
+                <div class="brand">
+                    {{ paymentMethod.details.brand|capitalize|t('freeform') }}
+                </div>
+                <div class="card-number">
+                    {{ paymentMethod.details.last4 }}
+                </div>
+
+            {% elseif paymentMethodIcon %}
+
+                <div class="icon">
+                    <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="{{ paymentMethod.type }}">
+                </div>
+
+            {% else %}
+
+                {{ paymentMethod.type|capitalize|t('freeform') }}
+
+            {% endif %}
+
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading"></h5>
+        <div class="value">
+            <a href="{{ payment.link }}" target="_blank">
+                {{ 'Open in Stripe'|t('freeform') }}
+                <span class="icon-link-ext"></span>
+            </a>
+        </div>
+    </div>
+
+</div>
+<hr>

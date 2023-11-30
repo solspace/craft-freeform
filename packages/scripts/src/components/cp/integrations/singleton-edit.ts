@@ -16,7 +16,7 @@ $(() => {
       .hide();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const url = (Craft as any).getCpUrl(`freeform/settings/other/${name}`);
+    const url = (Craft as any).getCpUrl(`freeform/settings/integrations/single/${name}`);
 
     window.history.pushState({}, '', url);
 

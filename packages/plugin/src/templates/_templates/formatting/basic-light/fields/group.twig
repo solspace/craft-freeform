@@ -1,8 +1,10 @@
 {% import "freeform/_templates/formatting/basic-light/_row.twig" as rowMacro %}
 
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
+
     {{ field.renderLabel }}
     {{ field.renderInstructions }}
 
     {{ rowMacro.render(field.layout, form) }}
-</div>
+
+{{ field.renderContainerClosingTag }}

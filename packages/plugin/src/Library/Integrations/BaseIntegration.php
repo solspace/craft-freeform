@@ -24,6 +24,7 @@ abstract class BaseIntegration implements IntegrationInterface
 {
     public function __construct(
         private ?int $id,
+        private ?string $uid,
         private bool $enabled,
         private string $handle,
         private string $name,
@@ -34,6 +35,11 @@ abstract class BaseIntegration implements IntegrationInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUid(): ?string
+    {
+        return $this->uid;
     }
 
     public function setId(int $id): self

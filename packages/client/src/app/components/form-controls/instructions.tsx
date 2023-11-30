@@ -11,7 +11,16 @@ const FormInstructions: React.FC<Props> = ({ instructions }) => {
     return null;
   }
 
-  return <Instructions>{instructions}</Instructions>;
+  const parts = instructions.split(/`([^`]+)`/g);
+  const compiledInstructions = parts.map((part, index) => {
+    // Odd indices contain the text inside backticks
+    if (index % 2 !== 0) {
+      return <code key={index}>{part}</code>;
+    }
+    return part;
+  });
+
+  return <Instructions>{compiledInstructions}</Instructions>;
 };
 
 export default FormInstructions;

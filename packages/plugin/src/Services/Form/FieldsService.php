@@ -3,15 +3,19 @@
 namespace Solspace\Freeform\Services\Form;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 use Solspace\Freeform\Services\FormsService;
+use yii\base\Event;
 
 class FieldsService extends BaseService
 {
+    private array $fieldCache = [];
+
     public function __construct(
         $config = [],
         private PropertyProvider $propertyProvider,
@@ -90,6 +94,10 @@ class FieldsService extends BaseService
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
+        if (isset($this->fieldCache[$record->id])) {
+            return $this->fieldCache[$record->id];
+        }
+
         $type = $record->type;
 
         $metadata = json_decode($record->metadata, true);
@@ -111,6 +119,14 @@ class FieldsService extends BaseService
         /** @var FieldInterface $field */
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
+
+        $this->fieldCache[$record->id] = $field;
+
+        Event::trigger(
+            FieldInterface::class,
+            FieldInterface::EVENT_AFTER_SET_PROPERTIES,
+            new FieldPropertiesEvent($field)
+        );
 
         return $field;
     }

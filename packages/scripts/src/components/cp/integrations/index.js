@@ -28,7 +28,6 @@ $(function () {
   const $authChecker = $('#auth-checker');
   const pendingStatusCheck = $('.pending-status-check', $authChecker);
   const integrationId = pendingStatusCheck.data('id');
-  const type = pendingStatusCheck.data('type');
 
   if (integrationId) {
     const data = {
@@ -38,7 +37,7 @@ $(function () {
     data[Craft.csrfTokenName] = Craft.csrfTokenValue;
 
     $.ajax({
-      url: Craft.getCpUrl(`freeform/${type}/check`),
+      url: Craft.getCpUrl(`freeform/integrations/check`),
       data: data,
       type: 'post',
       dataType: 'json',

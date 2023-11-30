@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\ActiveCampaign\BaseActiveCampaignIntegration;
 
 #[Type(
-    name: 'ActiveCampaign (v3)',
+    name: 'ActiveCampaign',
+    type: Type::TYPE_CRM,
+    version: 'v3',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

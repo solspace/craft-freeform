@@ -12,7 +12,12 @@ import { hasErrors } from '@ff-client/utils/errors';
 
 import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-layout';
 
-import { FieldCellWrapper, Instructions, Label } from './cell.styles';
+import {
+  FieldCellWrapper,
+  Instructions,
+  Label,
+  LabelIcon,
+} from './cell.styles';
 import { useFieldPreview } from './use-field-preview';
 
 type Props = {
@@ -54,14 +59,12 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       }}
     >
       {!type.implements.includes('inputOnly') && (
-        <Label
-          className={classes(
-            field.properties.required ? 'label is-required' : 'label'
-          )}
-        >
+        <Label className="label">
+          <LabelIcon dangerouslySetInnerHTML={{ __html: type.icon }} />
           <LoadingText loading={isLoadingPreview} spinner>
             {field.properties.label || type?.name}
           </LoadingText>
+          {field.properties.required && <span className="required" />}
         </Label>
       )}
 

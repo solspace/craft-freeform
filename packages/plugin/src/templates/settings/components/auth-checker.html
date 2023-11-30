@@ -4,7 +4,7 @@
     </div>
     <div class="not-authorized">
         {{ 'Not able to authorize.'|t('freeform') }}
-        <a href="{{ url("freeform/"~integration.type~"/authenticate/" ~ integration.handle) }}" class="">
+        <a href="{{ url("freeform/integrations/authenticate/" ~ integration.id) }}" class="">
             {{ "Click here to re-authorize"|t("freeform") }}
         </a>
         <div class="errors"></div>

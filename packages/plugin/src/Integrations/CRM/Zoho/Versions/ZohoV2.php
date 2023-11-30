@@ -24,7 +24,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Zoho\BaseZohoIntegration;
 
 #[Type(
-    name: 'Zoho (v2)',
+    name: 'Zoho',
+    type: Type::TYPE_CRM,
+    version: 'v2',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

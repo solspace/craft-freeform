@@ -8,24 +8,24 @@
     }
 }) %}
 
-<div{{ field.attributes.container }}>
+{{ field.renderContainerOpeningTag }}
 
-{{ field.renderLabel }}
-{% for index, option in field.options %}
-    <div class="flex items-center mb-1">
-        <input type="radio"
-                name="{{ field.handle }}"
-                value="{{ option.value }}"
-                id="{{ field.idAttribute }}-{{ index }}"
-                class="{{ field.attributes.input.get("class") }}{{ field.hasErrors ? ' border-red-500' }}"
-                {{ option.value == field.value ? "checked" }}
-        />
-        <label for="{{ field.idAttribute }}-{{ index }}" class="ml-2 font-normal text-slate-600">
-            {{ option.label|t('freeform')|raw }}
-        </label>
-    </div>
-{% endfor %}
-{{ field.renderInstructions }}
-{{ field.renderErrors }}
+    {{ field.renderLabel }}
+    {% for index, option in field.options %}
+        <div class="flex items-center mb-1">
+            <input type="radio"
+                    name="{{ field.handle }}"
+                    value="{{ option.value }}"
+                    id="{{ field.idAttribute }}-{{ index }}"
+                    class="{{ field.attributes.input.get("class") }}{{ field.hasErrors ? ' border-red-500' }}"
+                    {{ option.value == field.value ? "checked" }}
+            />
+            <label for="{{ field.idAttribute }}-{{ index }}" class="ml-2 font-normal text-slate-600">
+                {{ option.label|t('freeform')|raw }}
+            </label>
+        </div>
+    {% endfor %}
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
 
-</div>
+{{ field.renderContainerClosingTag }}

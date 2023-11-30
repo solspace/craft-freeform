@@ -18,15 +18,6 @@ interface IntegrationInterface
 {
     public const EVENT_AFTER_RESPONSE = 'after-response';
 
-    public const TYPE_EMAIL_MARKETING = 'email-marketing';
-    public const TYPE_CRM = 'crm';
-    public const TYPE_PAYMENT_GATEWAYS = 'payment-gateways';
-    public const TYPE_ELEMENTS = 'elements';
-    public const TYPE_CAPTCHAS = 'captchas';
-    public const TYPE_WEBHOOKS = 'webhooks';
-    public const TYPE_OTHER = 'other';
-    public const TYPE_SINGLETON = 'singleton';
-
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_AS_HIDDEN_IN_INSTANCE = 'as-hidden-in-instance';
     public const FLAG_INSTANCE_ONLY = 'instance';
@@ -35,6 +26,8 @@ interface IntegrationInterface
     public const FLAG_READONLY = 'readonly';
 
     public function getId(): ?int;
+
+    public function getUid(): ?string;
 
     public function setId(int $id): self;
 

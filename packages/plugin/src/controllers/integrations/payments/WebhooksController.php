@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\integrations\payments;
 
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Stripe\Event;
 use yii\web\HttpException;
 

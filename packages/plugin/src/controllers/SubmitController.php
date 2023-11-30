@@ -12,14 +12,18 @@
 
 namespace Solspace\Freeform\controllers;
 
+use Solspace\Commons\Helpers\CryptoHelper;
+use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 use yii\filters\Cors;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -30,22 +34,10 @@ class SubmitController extends BaseController
 
     public function actionIndex(): ?Response
     {
-        $this->requirePostRequest();
-
         $request = \Craft::$app->getRequest();
         $isAjaxRequest = $request->getIsAjax();
 
-        $formId = SessionContext::getPostedFormId();
-        $form = $this->getFormsService()->getFormById($formId);
-        if (!$form) {
-            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
-
-            if (!$isAjaxRequest) {
-                throw new FreeformException($message);
-            }
-
-            return $this->asJson(['success' => false, 'message' => $message]);
-        }
+        $form = $this->getFormFromRequest();
 
         $requestHandled = $form->handleRequest($request);
         $submissionsService = $this->getSubmissionsService();
@@ -72,6 +64,43 @@ class SubmitController extends BaseController
         }
 
         return null;
+    }
+
+    public function actionQuickSave(): Response
+    {
+        $request = \Craft::$app->getRequest();
+
+        $token = $request->post('token', 'qs-'.CryptoHelper::getUniqueToken(30));
+        $secret = $request->post('storage-secret');
+        if (!$secret) {
+            throw new NotFoundHttpException('No secret provided');
+        }
+
+        $form = $this->getFormFromRequest();
+        $form->handleRequest($request);
+
+        $bag = new SessionBag($form->getId(), $form->getProperties()->toArray(), $form->getAttributes()->toArray());
+
+        $serialized = json_encode($bag);
+        $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $secret));
+
+        $record = new SavedFormRecord();
+        $record->formId = $form->getId();
+        $record->token = $token;
+
+        $record->sessionId = \Craft::$app->getSession()->getId();
+        $record->payload = $payload;
+        $record->save();
+
+        Event::on(
+            Form::class,
+            Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD,
+            function (PrepareAjaxResponsePayloadEvent $event) use ($record) {
+                $event->add('storageToken', $record->token);
+            }
+        );
+
+        return $this->toAjaxResponse($form);
     }
 
     public function behaviors(): array
@@ -151,5 +180,31 @@ class SubmitController extends BaseController
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
 
         return $this->asJson($event->getPayload());
+    }
+
+    private function getFormFromRequest(): Form
+    {
+        $this->requirePostRequest();
+
+        $request = \Craft::$app->getRequest();
+        $isAjaxRequest = $request->getIsAjax();
+
+        $formId = SessionContext::getPostedFormId();
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
+            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
+
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            $response = $this->asJson(['success' => false, 'message' => $message]);
+            $response->setStatusCode(404);
+            $response->send();
+
+            exit;
+        }
+
+        return $form;
     }
 }

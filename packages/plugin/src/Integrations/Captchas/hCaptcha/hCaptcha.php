@@ -19,6 +19,7 @@ use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInte
 #[Edition(Edition::PRO)]
 #[Type(
     name: 'hCaptcha',
+    type: Type::TYPE_CAPTCHAS,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]

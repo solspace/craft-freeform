@@ -4,7 +4,7 @@
 
     {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
         <div class="buttons">
-            <a href="{{ url('freeform/settings/'~type~'/new') }}" class="btn submit add icon">
+            <a href="{{ url('freeform/settings/integrations/'~type~'/new') }}" class="btn submit add icon">
                 {{ "New Integration"|t('freeform') }}
             </a>
         </div>
@@ -37,10 +37,22 @@
                         </div>
                     </td>
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
+                        <a href="{{ url('freeform/settings/integrations/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
                     </th>
                     <td data-title="{{ "Service Provider"|t('freeform') }}" class="code">
                         {{ integration.integrationObject.typeDefinition.name }}
+
+                        {% set version = integration.integrationObject.typeDefinition.version %}
+                        {% if version %}
+                            <span class="integration-version">
+                                {{- '' -}}
+                                {%- if version starts with 'v' -%}
+                                    <span class="prefix-v">v</span>
+                                {%- endif -%}
+                                <span class="version-number">{{- version|replace('v', '') -}}</span>
+                                {{- '' -}}
+                            </span>
+                        {% endif %}
                     </td>
                     <td class="thin">
                         <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
@@ -71,7 +83,7 @@
     tableSelector: '#integrations',
     noObjectsSelector: '#no-integrations',
     newObjectBtnSelector: '#new-integration',
-    deleteAction: 'freeform/integrations/{{ type }}/delete',
+    deleteAction: 'freeform/integrations/integrations/{{ type }}/delete',
     confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t('freeform') }}'
     });
 {% endjs %}

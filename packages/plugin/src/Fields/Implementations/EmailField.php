@@ -23,6 +23,8 @@ use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 #[Type(
     name: 'Email',
@@ -69,10 +71,14 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
      * Either returns an ["email", "email"] array
      * Or an array with keys as recipient names, like ["Jon Doe" => "email", ..]
      */
-    public function getRecipients(): array
+    public function getRecipients(): RecipientCollection
     {
-        $recipients = [$this->getValue()];
+        $collection = new RecipientCollection();
 
-        return array_filter($recipients);
+        if ($this->getValue()) {
+            $collection->add(new Recipient($this->getValue()));
+        }
+
+        return $collection;
     }
 }

@@ -2,13 +2,17 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
+use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Rules\Rule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use yii\base\Event;
 
 class RuleValidator
 {
+    public const EVENT_PROCESS_POSTED_RULE_VALUE = 'process-posted-rule-value';
+
     public function __construct(
         private RuleProvider $ruleProvider,
         private ConditionValidator $conditionValidator,
@@ -28,7 +32,14 @@ class RuleValidator
         $matchesAll = true;
         foreach ($conditions as $condition) {
             $isConditionFieldHidden = $this->isFieldHidden($form, $condition->getField());
-            $postedValue = $isConditionFieldHidden ? null : $condition->getField()->getValue();
+            if ($isConditionFieldHidden) {
+                $postedValue = null;
+            } else {
+                $event = new ProcessPostedRuleValueEvent($condition->getField());
+                Event::trigger($this, self::EVENT_PROCESS_POSTED_RULE_VALUE, $event);
+
+                $postedValue = $event->getValue();
+            }
 
             $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
             if ($valueMatch) {

@@ -1,0 +1,18 @@
+{% import "_includes/forms" as forms %}
+
+{% set checkboxInput %}
+    {{ forms.checkboxField({
+        label: field.label,
+        name: field.handle,
+        id: field.handle,
+        checked: submission[field.handle].value ? true : false,
+        value: field.defaultValue,
+    }) }}
+{% endset %}
+
+{{ forms.field({
+    label: null,
+    class: "checkbox-field",
+    errors: submission.errors(field.handle),
+    required: field.required,
+}, checkboxInput) }}

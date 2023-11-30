@@ -1,4 +1,8 @@
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type {
+  GenericValue,
+  OptionCollection,
+  Property,
+} from '@ff-client/types/properties';
 
 export enum Source {
   Custom = 'custom',
@@ -6,11 +10,20 @@ export enum Source {
   Predefined = 'predefined',
 }
 
-export const sourceLabels: { [key in Source]: string } = {
-  custom: 'Custom',
-  elements: 'Elements',
-  predefined: 'Predefined',
-};
+export const sourceLabels: OptionCollection = [
+  {
+    value: 'custom',
+    label: 'Custom',
+  },
+  {
+    value: 'elements',
+    label: 'Elements',
+  },
+  {
+    value: 'predefined',
+    label: 'Predefined',
+  },
+];
 
 export type Option = {
   label: string;

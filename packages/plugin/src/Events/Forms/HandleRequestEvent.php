@@ -9,17 +9,8 @@ use yii\web\Request;
 
 class HandleRequestEvent extends CancelableArrayableEvent implements FormEventInterface
 {
-    /** @var Form */
-    private $form;
-
-    /** @var Request */
-    private $request;
-
-    public function __construct(Form $form, Request $request)
+    public function __construct(private Form $form, private Request $request)
     {
-        $this->form = $form;
-        $this->request = $request;
-
         parent::__construct();
     }
 

@@ -20,14 +20,12 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Submissions\UpdateEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
-use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
-use Solspace\Freeform\Models\Pro\Payments\AbstractPaymentModel;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
@@ -200,11 +198,6 @@ class SubmissionsController extends BaseController
             ),
         ];
 
-        $paymentDetails = $this->getSubmissionPaymentDetails($submission);
-        if ($paymentDetails) {
-            $variables['payments'] = $paymentDetails;
-        }
-
         return $this->renderTemplate(
             $this->getTemplateBasePath().'/edit',
             $variables
@@ -280,26 +273,6 @@ class SubmissionsController extends BaseController
     protected function getTemplateBasePath(): string
     {
         return self::TEMPLATE_BASE_PATH;
-    }
-
-    private function getSubmissionPaymentDetails(Submission $submission): ?AbstractPaymentModel
-    {
-        $form = $submission->getForm();
-        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
-
-        if (\count($paymentFields) > 0) {
-            $paymentField = reset($paymentFields);
-            $paymentProperties = $form->getPaymentProperties();
-            $integrationId = $paymentProperties->getIntegrationId();
-            $integrationModel = $this->getPaymentGatewaysService()->getIntegrationById($integrationId);
-            $integration = $integrationModel->getIntegrationObject();
-            $token = $submission->{$paymentField->getHandle()}->getValue();
-            $details = $integration->getPaymentDetails($submission->getId(), $token);
-
-            return false !== $details ? $details : null;
-        }
-
-        return null;
     }
 
     private function removeStaleAssets(Submission $submission, array $post = [])

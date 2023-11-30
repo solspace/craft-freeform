@@ -85,24 +85,6 @@
                             }) }}
                         {% endif %}
 
-                        {# FOR FREEFORM PAYMENTS #}
-                        {% if field.layoutRows is defined %}
-                            {% for layoutRow in field.layoutRows %}
-                                <div class="freeform-row {{ form.customAttributes.rowClass }}">
-                                    {% for layoutField in layoutRow %}
-                                        <div class="{{ columnClass }}">
-                                            {{ layoutField.render({
-                                                class: class,
-                                                labelClass: labelClass,
-                                                errorClass: errorClass,
-                                                instructionsClass: instructionsClass,
-                                            }) }}
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endfor %}
-                        {% endif %}
-
                     </div>
                 {% endfor %}
             </div>

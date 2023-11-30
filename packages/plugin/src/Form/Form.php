@@ -33,13 +33,13 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Settings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
@@ -276,7 +276,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public function isCaptchaEnabled(): bool
     {
-        if (\count($this->getLayout()->getFields(PaymentInterface::class))) {
+        if (\count($this->getLayout()->getFields(PaymentFieldInterface::class))) {
             return false;
         }
 

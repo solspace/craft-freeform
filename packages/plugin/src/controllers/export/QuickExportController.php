@@ -7,11 +7,9 @@ use craft\db\Table;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
@@ -70,10 +68,6 @@ class QuickExportController extends BaseController
 
                     if (is_numeric($fieldId)) {
                         $field = $form->getLayout()->getField($fieldId);
-                        if (!$field || $field instanceof CreditCardDetailsField) {
-                            continue;
-                        }
-
                         $label = $field->getLabel();
 
                         $storedFieldIds[] = $field->getId();
@@ -118,30 +112,6 @@ class QuickExportController extends BaseController
                     || !$field->getId()
                     || \in_array($field->getId(), $storedFieldIds, true)
                 ) {
-                    continue;
-                }
-
-                if ($field instanceof CreditCardDetailsField) {
-                    $fieldSetting['cc_amount'] = [
-                        'label' => 'Payment Amount',
-                        'checked' => true,
-                    ];
-
-                    $fieldSetting['cc_currency'] = [
-                        'label' => 'Payment Currency',
-                        'checked' => true,
-                    ];
-
-                    $fieldSetting['cc_status'] = [
-                        'label' => 'Payment Status',
-                        'checked' => true,
-                    ];
-
-                    $fieldSetting['cc_card'] = [
-                        'label' => 'Payment Card',
-                        'checked' => true,
-                    ];
-
                     continue;
                 }
 

@@ -1,9 +1,0 @@
-{% set type = 'unknown' %}
-{% if payment and payment.type %}
-  {% set type = payment.type %}
-{% endif %}
-{% if type == 'unknown' %}
-  N/A
-{% else %}
-  {{ type|capitalize }}
-{% endif %}

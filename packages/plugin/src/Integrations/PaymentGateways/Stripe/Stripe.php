@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 
-use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
@@ -18,7 +17,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
-use Solspace\Freeform\Library\Payments\PaymentInterface;
 use Stripe as StripeAPI;
 use Stripe\StripeClient;
 
@@ -62,20 +60,6 @@ class Stripe extends PaymentGatewayIntegration
     protected string $webhookSecret = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[Input\Boolean(
-        label: 'Suppress Email Notifications & Integrations when Payments Fail',
-        instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
-    )]
-    protected bool $suppressOnFail = false;
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[Input\Boolean(
-        label: 'Send Success Email from Stripe to Submitter',
-        instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
-    )]
-    protected bool $sendOnSuccess = true;
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(
         label: 'Customer Mapping',
@@ -108,21 +92,6 @@ class Stripe extends PaymentGatewayIntegration
     public function getWebhookSecret(): string
     {
         return $this->getProcessedValue($this->webhookSecret);
-    }
-
-    public function isSuppressOnFail(): bool
-    {
-        return $this->suppressOnFail;
-    }
-
-    public function isSendOnSuccess(): bool
-    {
-        return $this->sendOnSuccess;
-    }
-
-    public function getWebhookUrl(): string
-    {
-        return UrlHelper::url('freeform/payment-webhooks/stripe/'.$this->getId());
     }
 
     public function checkConnection(Client $client): bool
@@ -194,21 +163,6 @@ class Stripe extends PaymentGatewayIntegration
                 new FieldObject('country', 'Country', FieldObject::TYPE_STRING, $category),
             ],
             default => [],
-        };
-    }
-
-    /**
-     * Returns link to stripe dashboard for selected resource.
-     *
-     * @param string $resourceId stripe resource id
-     * @param string $type       resource type
-     */
-    public function getExternalDashboardLink(string $resourceId, string $type): string
-    {
-        return match ($type) {
-            PaymentInterface::TYPE_SINGLE => "https://dashboard.stripe.com/payments/{$resourceId}",
-            PaymentInterface::TYPE_SUBSCRIPTION => "https://dashboard.stripe.com/subscriptions/{$resourceId}",
-            default => '',
         };
     }
 

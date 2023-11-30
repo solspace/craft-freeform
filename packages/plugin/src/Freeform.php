@@ -37,8 +37,6 @@ use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
 use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
-use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
-use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
@@ -207,7 +205,6 @@ class Freeform extends Plugin
         $this->initEventListeners();
         $this->initBetaAssets();
         $this->initPaymentAssets();
-        $this->initHookHandlers();
         $this->initCleanupJobs();
         $this->initTasks();
         $this->initContainerItems();
@@ -610,17 +607,6 @@ class Freeform extends Plugin
                 $event->getView()->registerAssetBundle(PaymentsBundle::class);
             }
         );
-    }
-
-    // TODO: move into a feature bundle
-    private function initHookHandlers(): void
-    {
-        if (!$this->isPro()) {
-            return;
-        }
-
-        SubmissionHookHandler::registerHooks();
-        FormHookHandler::registerHooks();
     }
 
     // TODO: move into a feature bundle

@@ -19,12 +19,10 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
-use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
 
@@ -132,16 +130,6 @@ class FreeformVariable
         return Template::raw($output);
     }
 
-    /**
-     * @param int|string $submissionId
-     *
-     * @return null|PaymentModel
-     */
-    public function payments($submissionId)
-    {
-        return $this->getPaymentsService()->getPaymentDetails((int) $submissionId);
-    }
-
     public function getLoggerService(): LoggerService
     {
         return Freeform::getInstance()->logger;
@@ -213,10 +201,5 @@ class FreeformVariable
     private function getSettingsService(): SettingsService
     {
         return Freeform::getInstance()->settings;
-    }
-
-    private function getPaymentsService(): PaymentsService
-    {
-        return Freeform::getInstance()->payments;
     }
 }

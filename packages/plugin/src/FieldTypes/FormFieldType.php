@@ -81,13 +81,7 @@ class FormFieldType extends Field
             return $value;
         }
 
-        $form = Freeform::getInstance()->forms->getFormById((int) $value);
-
-        if ($form) {
-            return $form->getForm();
-        }
-
-        return null;
+        return Freeform::getInstance()->forms->getFormById((int) $value);
     }
 
     public function getContentGqlType(): Type|array

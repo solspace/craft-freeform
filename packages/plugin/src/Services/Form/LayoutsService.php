@@ -22,6 +22,8 @@ class LayoutsService extends BaseService
     private array $layouts = [];
     private array $rows = [];
 
+    private array $formLayouts = [];
+
     public function __construct(
         $config = [],
         private ?FieldsService $fieldsService = null,
@@ -31,39 +33,43 @@ class LayoutsService extends BaseService
 
     public function getLayout(Form $form): FormLayout
     {
-        $formLayout = new FormLayout();
+        if (!isset($this->formLayouts[$form->getId()])) {
+            $formLayout = new FormLayout();
 
-        $pages = $this->getPages($form);
-        $rows = $this->getRows($form);
-        $fields = $this->getFields($form);
+            $pages = $this->getPages($form);
+            $rows = $this->getRows($form);
+            $fields = $this->getFields($form);
 
-        foreach ($pages as $index => $pageData) {
-            $pageData['index'] = $index;
-            $layout = new Layout($pageData['layoutUid']);
+            foreach ($pages as $index => $pageData) {
+                $pageData['index'] = $index;
+                $layout = new Layout($pageData['layoutUid']);
 
-            $page = new Page($layout, $pageData);
-            $formLayout->getPages()->add($page);
+                $page = new Page($layout, $pageData);
+                $formLayout->getPages()->add($page);
 
-            $this->attachRows(
-                $form,
-                $layout,
-                $rows,
-                $fields,
-                $page,
-                $formLayout,
-            );
+                $this->attachRows(
+                    $form,
+                    $layout,
+                    $rows,
+                    $fields,
+                    $page,
+                    $formLayout,
+                );
+            }
+
+            if (empty($pages)) {
+                $formLayout->getPages()->add(
+                    new Page(
+                        new Layout(''),
+                        ['label' => 'Page 1']
+                    )
+                );
+            }
+
+            $this->formLayouts[$form->getId()] = $formLayout;
         }
 
-        if (empty($pages)) {
-            $formLayout->getPages()->add(
-                new Page(
-                    new Layout(''),
-                    ['label' => 'Page 1']
-                )
-            );
-        }
-
-        return $formLayout;
+        return $this->formLayouts[$form->getId()];
     }
 
     public function getPages(Form $form): array

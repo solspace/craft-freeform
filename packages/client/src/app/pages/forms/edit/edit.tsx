@@ -9,6 +9,7 @@ import {
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
 import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
+import { useNotificationQueryReset } from '@ff-client/queries/notifications';
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
@@ -25,6 +26,8 @@ type RouteParams = {
 export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
   const dispatch = useAppDispatch();
+
+  const resetNotifications = useNotificationQueryReset();
 
   useQueryFormSettings();
   useQueryFormIntegrations(formId && Number(formId));
@@ -50,7 +53,9 @@ export const Edit: React.FC = () => {
     dispatch(pageActions.set(pages));
     dispatch(layoutActions.set(layouts));
     dispatch(rowActions.set(rows));
-    dispatch(notificationActions.set([]));
+
+    resetNotifications();
+    dispatch(notificationActions.clear());
 
     if (pages.length === 0) {
       dispatch(addNewPage());

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.0.0-beta.10 <span>Unreleased</span>
+## 5.0.0-beta.10 - 2023-12-01
 
 > [!WARNING]
 > This version is still in beta and not recommended for production use. There is no migration from Freeform 4 yet, but will be available soon.
@@ -8,13 +8,13 @@
 > [!NOTE]
 > This version now includes support for Stripe payments.
 
-### Additions
+### Added
 - Added support for the Stripe Payment Element.
 - Added support for Stripe Link, Apple Pay, Google Pay, PayPal (within Europe), Bank payments, deferred payments and many other options.
 - Added ability to include more than one Stripe payment element field in a form. When used with conditional rules, you can show/hide one Stripe element at a time (e.g. use a dropdown field to allow the user to choose between one-time or recurring payments).
 - Added setting for captchas inside the form builder to force a country code, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.
 
-### Fixes
+### Fixed
 - Fixed a bug where saving another Craft element with a value for the Freeform Form field type would error.
 - Fixed a bug where the form builder wouldn't let you delete the last email notification for a form.
 - Fixed a bug where fields inside of Group fields weren't being ordered/grouped as expected when viewing in the CP, exporting, submissions object on front-end.
@@ -187,6 +187,8 @@
     - **Custom field types** are available to be created now.
 - **Email Notifications**
     - Configure email notifications in the form builder using complex conditional rules based on field data.
+- **Integrations**
+    - Captchas now include a setting inside the form builder to force a country code, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.
 - **Templating**
     - The **Template Overrides** feature enables modification of attributes for the form, fields, and buttons, as well as overriding field labels, values, and instructions at the template-level.
     - The **Settings** object allows you to access all of the form's settings assigned to it in the form builder, e.g. `form.settings.errorMessage`.
@@ -194,6 +196,10 @@
     - The `labels` and `labelsAsString` methods are now available for all _option_ field types. This allows you to choose between displaying option labels instead of values when loading submission data in front end or email notifications.
     - The `implements` method is available to all fields for Twig-friendly implementation checks, e.g. `field.implements('options')`.
     - The global `freeform` variable allows shorthand for template queries, e.g. `freeform.form` instead of `craft.freeform.form`.
+- **Stripe Payments**
+    - The Pro edition now includes fresh support for the newer **Stripe Payment Element**.
+    - Support for **Stripe Link**, **Apple Pay**, **Google Pay**, **PayPal** (within Europe), **bank payments**, **deferred payments** and many other options.
+    - Ability to include more than one Stripe payment element field in a form. When used with conditional rules, you can show/hide one Stripe element at a time (e.g. use a dropdown field to allow the user to choose between one-time or recurring payments).
 
 ### Changed
 - **Control Panel**
@@ -292,6 +298,18 @@
     - The `extraPostUrl`, `extraPostTriggerPhrase`, `gtmId`, and `gtmEventName` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the new interface instead (TBD).
     - The `inputAttributes`, `labelAttributes`, `errorAttributes`, and `instructionAttributes` fields have been removed from `FreeformFormInterface` in GraphQL. Please use the `FreeformAttributesInterface` instead.
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
+- **Stripe Payments**
+    - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+# 4.1.13 - 2023-11-23
+
+### Changed
+- Updated all references to field names in the control panel and exported files to use the default field label as a fallback if the field label is blank in the form settings. To preserve legacy functionality, rendering forms on the front end will continue showing the field label blank.
+
+## 4.1.12.1 - 2023-11-15
+
+### Fixed
+- Fixed a bug where some Freeform widgets would error in the Craft dashboard due to a change in the previous version (4.1.12).
 
 ## 4.1.12 - 2023-11-09
 

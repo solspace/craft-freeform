@@ -1,8 +1,31 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.10 <span>Unreleased</span>
+
+> [!WARNING]
+> This version is still in beta and not recommended for production use. There is no migration from Freeform 4 yet, but will be available soon.
+
+> [!NOTE]
+> This version now includes support for Stripe payments.
+
+### Additions
+- Added support for the Stripe Payment Element.
+- Added support for Stripe Link, Apple Pay, Google Pay, PayPal (within Europe), Bank payments, deferred payments and many other options.
+- Added ability to include more than one Stripe payment element field in a form. When used with conditional rules, you can show/hide one Stripe element at a time (e.g. use a dropdown field to allow the user to choose between one-time or recurring payments).
+- Added setting for captchas inside the form builder to force a country code, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.
+
+### Fixes
+- Fixed a bug where saving another Craft element with a value for the Freeform Form field type would error.
+- Fixed a bug where the form builder wouldn't let you delete the last email notification for a form.
+- Fixed a bug where fields inside of Group fields weren't being ordered/grouped as expected when viewing in the CP, exporting, submissions object on front-end.
+- Fixed a bug where the Users element source for field options wasn't loading any options for Labels/Values/Orderby dropdowns.
+- Fixed a bug where Dropdown fields were not remembering the option chosen when editing a submission on the front end.
+- Fixed a bug where submissions flagged as spam (e.g. from Honeypot) were still sending email notifications.
+
 ## 5.0.0-beta.9 - 2023-11-10
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - Fields can now be individually encrypted.
@@ -17,7 +40,8 @@
 
 ## 5.0.0-beta.8 - 2023-10-17
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - Added support and checks for a free Express edition.
@@ -32,7 +56,8 @@
 
 ## 5.0.0-beta.7 - 2023-10-12
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - Added a Favorite fields manager area inside the form builder.
@@ -47,7 +72,8 @@
 
 ## 5.0.0-beta.6 - 2023-10-05
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - A wide range of form builder settings can now have default values set for them, and can also be locked to that value. For example, you can force the Tailwind 3 formatting template to be used for every form.
@@ -68,7 +94,8 @@
 
 ## 5.0.0-beta.5 - 2023-09-29
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - Added singleton integration configurator to Freeform settings.
@@ -87,7 +114,8 @@
 
 ## 5.0.0-beta.4 - 2023-09-22
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - Added inline setup guides for all integrations.
@@ -106,7 +134,8 @@
 
 ## 5.0.0-beta.3 - 2023-09-15
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - The `labels` and `labelsAsString` methods are now available for all _option_ field types. This allows you to choose between displaying option labels instead of values when loading submission data in front end or email notifications.
@@ -126,7 +155,8 @@
 
 ## 5.0.0-beta.2 - 2023-09-07
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Fixed
 - Fixed a bug where the Success Behavior of forms was not working correctly with non-AJAX forms.
@@ -140,7 +170,8 @@
 
 ## 5.0.0-beta.1 - 2023-09-06
 
-> {warning} This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
+> [!WARNING]
+> This version is still in beta and not recommended for production use. Stripe Payments are not currently supported and there is no migration from Freeform 4 yet, but these features will be available soon.
 
 ### Added
 - **Form Builder**
@@ -359,7 +390,8 @@
 
 ## 4.1.0 - 2023-06-13
 
-> {warning} If currently using GraphQL and/or headless javascript frameworks such as Vue.js, Next.js, React JS, etc, please proceed carefully and test your forms thoroughly after updating.
+> [!IMPORTANT]
+> If currently using GraphQL and/or headless javascript frameworks such as Vue.js, Next.js, React JS, etc, please proceed carefully and test your forms thoroughly after updating.
 
 ### Added
 - Added support for GraphQL Mutations.
@@ -628,7 +660,8 @@
 
 ## 4.0.0 - 2022-08-05
 
-> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
+> [!WARNING]
+> This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
 
 ### Added
 - Added compatibility with Craft 4.x.
@@ -1084,7 +1117,8 @@
 
 ## 3.12.4 - 2021-11-17
 
-> {warning} Freeform 3.12+ introduces additional Form Session Context options for processing forms. For sites that have already upgraded to 3.12.0 - 3.12.3, we recommend switching the Freeform Session Context setting to "Encrypted Payload" instead of "PHP Sessions" and carefully reviewing your forms. If you prefer to continue using PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
+> [!IMPORTANT]
+> Freeform 3.12+ introduces additional Form Session Context options for processing forms. For sites that have already upgraded to 3.12.0 - 3.12.3, we recommend switching the Freeform Session Context setting to "Encrypted Payload" instead of "PHP Sessions" and carefully reviewing your forms. If you prefer to continue using PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
 
 ### Changed
 - Updated default Form Session Context to "Encrypted Payload" instead of PHP Sessions. If you previously updated to Freeform 3.12 and/or prefer to continue to use PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
@@ -1113,7 +1147,8 @@
 
 ## 3.12.0 - 2021-11-10
 
-> {warning} Freeform 3.12+ introduces additional Form Session Context options for processing forms. The default Form Session Context will be switched to "Encrypted Payload" instead of "PHP Sessions" upon upgrade. If you prefer to continue to use PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
+> [!IMPORTANT]
+> Freeform 3.12+ introduces additional Form Session Context options for processing forms. The default Form Session Context will be switched to "Encrypted Payload" instead of "PHP Sessions" upon upgrade. If you prefer to continue to use PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
 
 ### Added
 - Added a Drag & Drop File Upload field type (Pro).
@@ -1278,7 +1313,8 @@
 
 ## 3.11.0 - 2021-04-20
 
-> {warning} Freeform 3.11+ introduces changes to how its front-end scripts are inserted into pages (as static URLs). If you have server rules applied to JS and CSS files, you may run into issues. If this is the case, you can switch the behavior back to previous approaches ('As Files' introduced in 3.10 or 'Inline' as it worked previously before 3.10+). This is a new setting available in the General Settings of Freeform or with Project Config as `scriptInsertType: files`.
+> [!IMPORTANT]
+> Freeform 3.11+ introduces changes to how its front-end scripts are inserted into pages (as static URLs). If you have server rules applied to JS and CSS files, you may run into issues. If this is the case, you can switch the behavior back to previous approaches ('As Files' introduced in 3.10 or 'Inline' as it worked previously before 3.10+). This is a new setting available in the General Settings of Freeform or with Project Config as `scriptInsertType: files`.
 
 ### Added
 - Added the ability to edit other Craft Elements, including special support for Craft Users.
@@ -1824,7 +1860,8 @@
 
 ## 3.6.0 - 2020-01-23
 
-> {warning} Freeform 3.6+ is now only available for Craft 3.4+, as this update includes various Craft 3.4+ compatibility fixes and changes. Also, existing Zoho CRM users will need to update and reauthorize their integrations due to a change made for better compatibility with European accounts.
+> [!IMPORTANT]
+> Freeform 3.6+ is now only available for Craft 3.4+, as this update includes various Craft 3.4+ compatibility fixes and changes. Also, existing Zoho CRM users will need to update and reauthorize their integrations due to a change made for better compatibility with European accounts.
 
 ### Changed
 - Updated Freeform for compatibility with Craft 3.4+.
@@ -1994,7 +2031,8 @@
 
 ## 3.3.0 - 2019-08-20
 
-> {warning} This update includes a large change to the Stripe Payments integration to support the [Strong Customer Authentication (SCA)](https://stripe.com/docs/strong-customer-authentication) changes to the Stripe API. Please read changelog carefully and review notes in the [Freeform Payments documentation](https://docs.solspace.com/craft/freeform/v3/api-integrations/payments/#strong-customer-authentication-sca) to see what possible breaking changes might affect your forms and/or form flow.
+> [!IMPORTANT]
+> This update includes a large change to the Stripe Payments integration to support the [Strong Customer Authentication (SCA)](https://stripe.com/docs/strong-customer-authentication) changes to the Stripe API. Please read changelog carefully and review notes in the [Freeform Payments documentation](https://docs.solspace.com/craft/freeform/v3/api-integrations/payments/#strong-customer-authentication-sca) to see what possible breaking changes might affect your forms and/or form flow.
 
 ### Added
 - Added Notes feature for submissions. Allows you to add private notes when updating a submission inside the control panel.
@@ -2046,7 +2084,8 @@
 
 ## 3.2.2 - 2019-07-17
 
-> {warning} This update includes a change to the default loading of the Date & Time field type date picker. If you're using this field type in your custom templates (default sample ones have been updated), please be sure to review and/or remove the `addEventListener("flatpickr-ready"...` JS code from your templates.
+> [!IMPORTANT]
+> This update includes a change to the default loading of the Date & Time field type date picker. If you're using this field type in your custom templates (default sample ones have been updated), please be sure to review and/or remove the `addEventListener("flatpickr-ready"...` JS code from your templates.
 
 ### Added
 - Added a `Default Formatting Template` general setting, allowing you to set the default formatting template for all new forms.
@@ -2157,7 +2196,8 @@
 
 ## 3.0.0 - 2019-06-11
 
-> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. [Please follow the upgrading guide available here](https://docs.solspace.com/craft/freeform/v3/setup/updating-freeform-2.html)!
+> [!WARNING]
+> This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. [Please follow the upgrading guide available here](https://docs.solspace.com/craft/freeform/v3/setup/updating-freeform-2.html)!
 
 ### Added
 - Added support for editing submissions (Pro).

@@ -135,6 +135,13 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
+    #[Input\Text(
+        label: 'Locale',
+        instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',
+        placeholder: 'en',
+    )]
+    private string $locale = '';
+
     public function getSiteKey(): ?string
     {
         return $this->getProcessedValue($this->siteKey);
@@ -183,6 +190,11 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     public function getErrorMessage(): string
     {
         return $this->errorMessage;
+    }
+
+    public function getLocale(): string
+    {
+        return strtolower($this->locale);
     }
 
     public function validate(Form $form): void

@@ -23,10 +23,11 @@ export type hCaptchaConfig = {
   version?: Version;
   lazyLoad?: boolean;
   action?: string;
+  locale?: string;
 };
 
 export const loadHCaptcha = (form: HTMLFormElement, config: hCaptchaConfig): Promise<void> => {
-  const { lazyLoad = false } = config;
+  const { locale, lazyLoad = false } = config;
 
   const loadScript = () =>
     new Promise<void>((resolve, reject) => {
@@ -37,8 +38,14 @@ export const loadHCaptcha = (form: HTMLFormElement, config: hCaptchaConfig): Pro
         return;
       }
 
+      const scriptUrl = new URL(url);
+
+      if (locale) {
+        scriptUrl.searchParams.append('hl', locale);
+      }
+
       const script = document.createElement('script');
-      script.src = url;
+      script.src = String(scriptUrl);
       script.async = true;
       script.defer = true;
       script.id = scriptId;

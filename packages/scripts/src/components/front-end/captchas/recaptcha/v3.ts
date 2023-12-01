@@ -4,14 +4,14 @@ import type { FreeformEvent } from 'types/events';
 import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
 import { loadReCaptcha } from './utils/script-loader';
 
-const form: HTMLFormElement = document.querySelector('form[data-id="{formAnchor}"]') as HTMLFormElement;
+const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
 const config: reCaptchaConfig = {
-  sitekey: '{siteKey}',
-  theme: '{theme}' as Theme,
-  size: '{size}' as Size,
-  lazyLoad: Boolean('{lazyLoad}'),
-  version: '{version}' as Version,
-  action: '{action}',
+  sitekey: '{{ siteKey }}',
+  theme: '{{ theme }}' as Theme,
+  size: '{{ size }}' as Size,
+  lazyLoad: Boolean('{{ lazyLoad }}'),
+  version: '{{ version }}' as Version,
+  action: '{{ action }}',
 } as const;
 
 const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement => {

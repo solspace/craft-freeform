@@ -77,7 +77,7 @@ class RenderTemplates extends FeatureBundle
                 [
                     'field' => $field,
                     'amount' => $this->priceService->getFormattedAmount($payment->amount, $payment->currency),
-                    'currency' => $this->priceService->getCurrencySymbol($payment?->currency),
+                    'currency' => $payment?->currency,
                     'stripeSvg' => $stripeSvg,
                     'paymentMethodIcon' => $this->iconService->getIconFromPaymentMethod($paymentMethod),
                     'paymentMethod' => $paymentMethod,
@@ -103,7 +103,7 @@ class RenderTemplates extends FeatureBundle
         $context['payment'] = $payment;
         $context['stripeSvg'] = file_get_contents(__DIR__.'/../Assets/stripe.svg');
         $context['amount'] = $this->priceService->getFormattedAmount($payment->amount, $payment->currency);
-        $context['currency'] = $this->priceService->getCurrencySymbol($payment->currency);
+        $context['currency'] = $payment->currency;
         $context['paymentMethodIcon'] = $this->iconService->getIconFromPaymentMethod($payment->getPaymentMethod());
         $context['paymentMethod'] = $payment->getPaymentMethod();
 
@@ -144,7 +144,7 @@ class RenderTemplates extends FeatureBundle
                 [
                     'field' => $field,
                     'amount' => $this->priceService->getFormattedAmount($payment->amount, $payment->currency),
-                    'currency' => $this->priceService->getCurrencySymbol($payment?->currency),
+                    'currency' => $payment?->currency,
                     'paymentMethodIcon' => $this->iconService->getIconFromPaymentMethod($paymentMethod),
                     'paymentMethod' => $paymentMethod,
                     'submission' => $event->getSubmission(),

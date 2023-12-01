@@ -50,28 +50,24 @@ class hCaptchaBundle extends FeatureBundle
             '@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js'
         );
 
-        $script = file_get_contents($scriptPath);
-        $script = str_replace(
-            [
-                '{siteKey}',
-                '{formAnchor}',
-                '{theme}',
-                '{size}',
-                '{lazyLoad}',
-                '{version}',
-            ],
-            [
-                $integration->getSiteKey(),
-                $form->getAnchor(),
-                $integration->getTheme(),
-                $integration->getSize(),
-                $integration->isTriggerOnInteract() ? '1' : '',
-                $integration->getVersion(),
-            ],
-            $script
-        );
+        $locale = $integration->getLocale();
+        if (empty($locale)) {
+            $locale = \Craft::$app->locale->getLanguageID();
+        }
 
-        $event->addChunk("<script type='text/javascript'>{$script}</script>");
+        $script = file_get_contents($scriptPath);
+        $event->addChunk(
+            "<script type='text/javascript'>{$script}</script>",
+            [
+                'siteKey' => $integration->getSiteKey(),
+                'formAnchor' => $form->getAnchor(),
+                'theme' => $integration->getTheme(),
+                'size' => $integration->getSize(),
+                'lazyLoad' => $integration->isTriggerOnInteract() ? '1' : '',
+                'version' => $integration->getVersion(),
+                'locale' => $locale,
+            ]
+        );
     }
 
     public function triggerValidation(ValidationEvent $event): void

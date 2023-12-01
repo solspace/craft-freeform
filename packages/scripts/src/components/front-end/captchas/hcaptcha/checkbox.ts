@@ -4,13 +4,14 @@ import type { FreeformEvent } from 'types/events';
 import type { hCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
 import { loadHCaptcha } from './utils/script-loader';
 
-const form: HTMLFormElement = document.querySelector('form[data-id="{formAnchor}"]') as HTMLFormElement;
+const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
 const config: hCaptchaConfig = {
-  sitekey: '{siteKey}',
-  theme: '{theme}' as Theme,
-  size: '{size}' as Size,
-  lazyLoad: Boolean('{lazyLoad}'),
-  version: '{version}' as Version,
+  sitekey: '{{ siteKey }}',
+  theme: '{{ theme }}' as Theme,
+  size: '{{ size }}' as Size,
+  lazyLoad: Boolean('{{ lazyLoad }}'),
+  version: '{{ version }}' as Version,
+  locale: '{{ locale }}',
 } as const;
 
 let captchaId: string;

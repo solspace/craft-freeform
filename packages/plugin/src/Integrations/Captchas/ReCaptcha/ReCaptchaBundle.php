@@ -50,30 +50,25 @@ class ReCaptchaBundle extends FeatureBundle
             '@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js'
         );
 
-        $script = file_get_contents($scriptPath);
-        $script = str_replace(
-            [
-                '{siteKey}',
-                '{formAnchor}',
-                '{theme}',
-                '{size}',
-                '{lazyLoad}',
-                '{version}',
-                '{action}',
-            ],
-            [
-                $integration->getSiteKey(),
-                $form->getAnchor(),
-                $integration->getTheme(),
-                $integration->getSize(),
-                $integration->isTriggerOnInteract() ? '1' : '',
-                $integration->getVersion(),
-                $integration->getAction(),
-            ],
-            $script
-        );
+        $locale = $integration->getLocale();
+        if (empty($locale)) {
+            $locale = \Craft::$app->locale->getLanguageID();
+        }
 
-        $event->addChunk("<script type='text/javascript'>{$script}</script>");
+        $script = file_get_contents($scriptPath);
+        $event->addChunk(
+            "<script type='text/javascript'>{$script}</script>",
+            [
+                'siteKey' => $integration->getSiteKey(),
+                'formAnchor' => $form->getAnchor(),
+                'theme' => $integration->getTheme(),
+                'size' => $integration->getSize(),
+                'lazyLoad' => $integration->isTriggerOnInteract() ? '1' : '',
+                'version' => $integration->getVersion(),
+                'action' => $integration->getAction(),
+                'locale' => $locale,
+            ]
+        );
     }
 
     public function triggerValidation(ValidationEvent $event): void

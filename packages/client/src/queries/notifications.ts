@@ -7,7 +7,7 @@ import type {
   TemplateType,
 } from '@ff-client/types/notifications';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
@@ -16,6 +16,14 @@ export const QKNotifications = {
   types: () => [...QKNotifications.all, 'types'] as const,
   templates: () => [...QKNotifications.all, 'templates'] as const,
   single: (id: number) => [...QKNotifications.all, 'forms', id] as const,
+};
+
+export const useNotificationQueryReset = (): (() => void) => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.removeQueries(QKNotifications.all);
+  };
 };
 
 export const useQueryNotificationTypes = (): UseQueryResult<

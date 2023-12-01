@@ -28,7 +28,7 @@ class NotificationPersistence extends FeatureBundle
     public function handleNotificationSave(PersistFormEvent $event): void
     {
         $notifications = $event->getPayload()->notifications ?? null;
-        if (!$notifications) {
+        if (null === $notifications) {
             return;
         }
 

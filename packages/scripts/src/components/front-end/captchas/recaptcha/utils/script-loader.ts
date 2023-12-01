@@ -24,10 +24,11 @@ export type reCaptchaConfig = {
   version?: Version;
   lazyLoad?: boolean;
   action?: string;
+  locale?: string;
 };
 
 export const loadReCaptcha = (form: HTMLFormElement, config: reCaptchaConfig): Promise<void> => {
-  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX } = config;
+  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX, locale } = config;
 
   const loadScript = () =>
     new Promise<void>((resolve, reject) => {
@@ -38,19 +39,23 @@ export const loadReCaptcha = (form: HTMLFormElement, config: reCaptchaConfig): P
         return;
       }
 
-      let scriptUrl = url;
+      const scriptUrl = new URL(url);
       switch (version) {
         case Version.V3:
-          scriptUrl += `?render=${sitekey}`;
+          scriptUrl.searchParams.append('render', sitekey);
           break;
 
         default:
-          scriptUrl += '?render=explicit';
+          scriptUrl.searchParams.append('render', 'explicit');
           break;
       }
 
+      if (locale) {
+        scriptUrl.searchParams.append('hl', locale);
+      }
+
       const script = document.createElement('script');
-      script.src = scriptUrl;
+      script.src = String(scriptUrl);
       script.async = true;
       script.defer = true;
       script.id = scriptId;

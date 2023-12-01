@@ -31,6 +31,10 @@ export const notificationsSlice = createSlice({
   name: 'notifications',
   initialState,
   reducers: {
+    clear: (state) => {
+      state.initialized = false;
+      state.items.length = 0;
+    },
     set: (state, action: PayloadAction<Notification[]>) => {
       state.initialized = true;
       state.items.length = 0;

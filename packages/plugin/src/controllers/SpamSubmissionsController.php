@@ -43,6 +43,8 @@ class SpamSubmissionsController extends SubmissionsController
         $post = \Craft::$app->request->post();
 
         $submissionId = $post['submissionId'] ?? null;
+
+        /** @var SpamSubmission $model */
         $model = $this->getSpamSubmissionsService()->getSubmissionById($submissionId);
 
         if (!$model) {

@@ -8,7 +8,7 @@ use yii\web\Response;
 
 class UserController extends BaseApiController
 {
-    public function actionAttributes(): Response
+    public function actionAttributeMapping(): Response
     {
         return $this->asJson([
             ['id' => 'username', 'label' => 'Username', 'required' => true],
@@ -20,7 +20,7 @@ class UserController extends BaseApiController
         ]);
     }
 
-    public function actionFields(): Response
+    public function actionFieldMapping(): Response
     {
         $layout = \Craft::$app->getUser()->getIdentity()->getFieldLayout();
 
@@ -36,7 +36,7 @@ class UserController extends BaseApiController
         return $this->asJson($fields);
     }
 
-    public function actionGetFields(): Response
+    public function actionFieldOptions(): Response
     {
         $collection = new OptionCollection();
         $collection

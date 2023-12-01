@@ -2,18 +2,18 @@
 {% import "_includes/forms" as forms %}
 {% import "freeform/submissions/macros/row" as rowMacro %}
 
-{% set title = "{title}"|t('freeform', {title: title}) %}
-{% set selectedSubnavItem = "submissions" %}
-{% set saveShortcutRedirect = 'freeform/submissions/{id}' %}
-{% set fullPageForm = true %}
-{% set actionUrl = 'freeform/submissions/save' %}
+{% set title = title|default("{title}"|t('freeform', {title: title})) %}
+{% set selectedSubnavItem = selectedSubnavItem|default("submissions") %}
+{% set saveShortcutRedirect = saveShortcutRedirect|default('freeform/submissions/{id}') %}
+{% set fullPageForm = fullPageForm|default(true) %}
+{% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
-{% set crumbs = [
+{% set crumbs = crumbs|default([
     { label: craft.freeform.name, url: url('freeform') },
     { label: "Forms"|t("freeform"), url: url('freeform/forms') },
     { label: submission.form.name, url: url('freeform/forms/' ~ submission.getForm().id) },
     { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
-] %}
+]) %}
 
 {% block actionButton %}
     <div class="buttons">

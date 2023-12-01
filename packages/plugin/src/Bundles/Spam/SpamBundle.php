@@ -27,10 +27,9 @@ class SpamBundle extends FeatureBundle
     public function processSpamSubmission(ProcessSubmissionEvent $event): void
     {
         // TODO: refactor due to mailing list field changes
-        $form = $event->getForm();
         $submission = $event->getSubmission();
 
-        if (!$submission instanceof SpamSubmission || !$submission->id) {
+        if (!$submission instanceof SpamSubmission || !$submission->id || !$submission->isSpam) {
             return;
         }
 

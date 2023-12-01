@@ -104,7 +104,7 @@ abstract class AbstractExport implements ExportInterface
                     $handle = $field->getHandle();
 
                     if ($field instanceof MultiValueInterface) {
-                        if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
+                        if (\is_string($value) && preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
                             $value = (array) json_decode($value, true);
                         }
                     }

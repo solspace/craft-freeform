@@ -44,12 +44,12 @@ class User extends ElementIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/attributes')]
+    #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/attributes/mapping')]
     protected ?FieldMapping $attributeMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/fields')]
+    #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/fields/mapping')]
     protected ?FieldMapping $fieldMapping = null;
     private static array $existingUserCache = [];
 

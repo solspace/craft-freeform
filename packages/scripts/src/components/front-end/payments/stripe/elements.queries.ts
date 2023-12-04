@@ -14,16 +14,14 @@ type UpdateAmountResponse = {
 };
 
 const paymentIntents = {
-  create: async (integration: string, form: HTMLFormElement): Promise<ClientSecretResponse> => {
+  create: async (integration: string, form: HTMLFormElement) => {
     const formData = new FormData(form);
     formData.set('method', 'post');
     formData.delete('action');
 
-    const { data } = await axios.post<ClientSecretResponse>('/freeform/payments/stripe/payment-intents', formData, {
+    return axios.post<ClientSecretResponse>('/freeform/payments/stripe/payment-intents', formData, {
       headers: { 'FF-STRIPE-INTEGRATION': integration },
     });
-
-    return data;
   },
   updateAmount: async (integration: string, form: HTMLFormElement, id: string): Promise<UpdateAmountResponse> => {
     const formData = new FormData(form);

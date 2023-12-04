@@ -142,12 +142,12 @@ class StripePriceService
         return $price;
     }
 
-    private function getDynamicAmount(Form $form, StripeField $field): string
+    private function getDynamicAmount(Form $form, StripeField $field): float
     {
         $amount = 0;
         $formField = $form->get($field->getAmountField()?->getId());
         if ($formField) {
-            $amount = $formField->getValue();
+            $amount = (float) $formField->getValue();
         }
 
         return $amount;

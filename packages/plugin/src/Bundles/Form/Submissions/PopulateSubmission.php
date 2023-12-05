@@ -49,7 +49,7 @@ class PopulateSubmission extends FeatureBundle
             $data[$field->getHandle()] = $field->getValue();
         }
 
-        $submission->setFormFieldValues($data);
+        $submission->setFormFieldValues($data, false);
 
         $dateCreated = new \DateTime();
         if (!$submission->id) {

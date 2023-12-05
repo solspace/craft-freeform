@@ -105,6 +105,7 @@ class FileHelper
         'audio/mp3' => 'mp3',
         'video/mp4' => 'mp4',
         'video/mpeg' => 'mpeg',
+        'application/vnd.ms-outlook' => 'msg',
         'application/oda' => 'oda',
         'application/vnd.oasis.opendocument.text' => 'odt',
         'application/vnd.oasis.opendocument.formula' => 'odf',

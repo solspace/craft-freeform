@@ -30,101 +30,131 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
   field.innerHTML = 'Loading...';
 
-  const { id, secret } = await queries.paymentIntents.create(field.dataset.integration, form);
-
-  // Set the PaymentIntent ID as the field value
-  (field.previousSibling as HTMLInputElement).value = id;
-
-  // Dispatch an event which lets other scripts modify the appearance of the Stripe element
-  const event = dispatchCustomEvent<StripeAppearanceEvent>(events.render.appearance, { bubbles: true }, [field]);
-
-  let elements = stripe.elements({
-    clientSecret: secret,
-    appearance: event.appearance,
-  });
-
-  const paymentElementOptions: StripePaymentElementOptions = {
-    layout: 'auto',
-  };
-
-  let paymentElement = elements.create('payment', paymentElementOptions);
-  paymentElement.mount(field);
-  paymentElement.on('change', () => {
-    // console.log('payment change', event);
-  });
-
   const amountFieldHandles = field.dataset.amountFields?.split(';') ?? [];
 
-  // Listen for changes to the amount, interval and interval count fields
-  amountFieldHandles.forEach((amountFieldHandle) => {
-    (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
-      workers.push(amountFieldHandle);
-      form.freeform.disableForm();
-      const paymentIntentId = elementMap.get(field).paymentIntent.id;
+  queries.paymentIntents
+    .create(field.dataset.integration, form)
+    .then(({ data: { id, secret } }) => {
+      // Set the PaymentIntent ID as the field value
+      (field.previousSibling as HTMLInputElement).value = id;
 
-      queries.paymentIntents
-        .updateAmount(field.dataset.integration, form, paymentIntentId)
-        .then(({ id, client_secret }) => {
-          // If a client_secret is returned - we need to recreate the Stripe element
-          if (client_secret) {
-            paymentElement.unmount();
-            elements = stripe.elements({ clientSecret: client_secret });
+      // Dispatch an event which lets other scripts modify the appearance of the Stripe element
+      const event = dispatchCustomEvent<StripeAppearanceEvent>(events.render.appearance, { bubbles: true }, [field]);
 
-            paymentElement = elements.create('payment', paymentElementOptions);
-            paymentElement.mount(field);
+      let elements = stripe.elements({
+        clientSecret: secret,
+        appearance: event.appearance,
+      });
 
-            elementMap.set(field, {
-              elements,
-              paymentIntent: {
-                id,
-                secret: client_secret,
-              },
+      const paymentElementOptions: StripePaymentElementOptions = {
+        layout: 'auto',
+      };
+
+      let paymentElement = elements.create('payment', paymentElementOptions);
+      paymentElement.mount(field);
+      paymentElement.on('change', () => {
+        // console.log('payment change', event);
+      });
+
+      // Listen for changes to the amount, interval and interval count fields
+      amountFieldHandles.forEach((amountFieldHandle) => {
+        (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
+          workers.push(amountFieldHandle);
+          form.freeform.disableForm();
+          const paymentIntentId = elementMap.get(field).paymentIntent.id;
+
+          queries.paymentIntents
+            .updateAmount(field.dataset.integration, form, paymentIntentId)
+            .then(({ id, client_secret }) => {
+              // If a client_secret is returned - we need to recreate the Stripe element
+              if (client_secret) {
+                paymentElement.unmount();
+                elements = stripe.elements({ clientSecret: client_secret });
+
+                paymentElement = elements.create('payment', paymentElementOptions);
+                paymentElement.mount(field);
+
+                elementMap.set(field, {
+                  elements,
+                  paymentIntent: {
+                    id,
+                    secret: client_secret,
+                  },
+                });
+              } else {
+                elements.fetchUpdates();
+              }
+            })
+            .catch((error) => {
+              form.freeform._renderFieldErrors({
+                [amountFieldHandle]: [error.response.data.message],
+              });
+            })
+            .finally(() => {
+              workers.pop();
+              if (!workers.length) {
+                form.freeform.enableForm();
+              }
             });
-          } else {
-            elements.fetchUpdates();
-          }
-        })
-        .finally(() => {
-          workers.pop();
-          if (!workers.length) {
-            form.freeform.enableForm();
-          }
         });
+      });
+
+      // Listen for changes to any mapped fields which affect the Customer
+      const hasCustomMapping = fieldMapping.some(({ target }) => target === undefined);
+      const listener = (source: string) => (event: Event) => {
+        const value = (event.target as HTMLInputElement).value;
+
+        queries.customers.update({
+          integration: field.dataset.integration,
+          form,
+          paymentIntentId: id,
+          key: source,
+          value,
+        });
+      };
+
+      // If there's a custom mapping present, we need to listen to all input changes
+      if (hasCustomMapping) {
+        const allFields = form.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]), select, textarea');
+
+        allFields.forEach((field) => {
+          field.addEventListener('change', listener(field.name));
+        });
+      } else {
+        fieldMapping.forEach(({ source, target }) => {
+          (form[target] as HTMLInputElement)?.addEventListener('change', listener(source));
+        });
+      }
+
+      elementMap.set(field, {
+        elements,
+        paymentIntent: {
+          id,
+          secret,
+        },
+      });
+    })
+    .catch((error) => {
+      elementMap.delete(field);
+      field.innerHTML = 'Could not load payment element.';
+
+      const errors: Record<string, string[]> = {};
+      amountFieldHandles.forEach((amountFieldHandle) => {
+        errors[amountFieldHandle] = [error.response.data.message];
+      });
+
+      form.freeform._renderFieldErrors(errors);
+
+      const executeOnce = () => {
+        initStripe(props)(container);
+
+        amountFieldHandles.forEach((amountFieldHandle) => {
+          (form[amountFieldHandle] as HTMLInputElement)?.removeEventListener('change', executeOnce);
+        });
+      };
+
+      amountFieldHandles.forEach((amountFieldHandle) => {
+        (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', executeOnce);
+      });
     });
-  });
-
-  // Listen for changes to any mapped fields which affect the Customer
-  const hasCustomMapping = fieldMapping.some(({ target }) => target === undefined);
-  const listener = (source: string) => (event: Event) => {
-    const value = (event.target as HTMLInputElement).value;
-
-    queries.customers.update({
-      integration: field.dataset.integration,
-      form,
-      paymentIntentId: id,
-      key: source,
-      value,
-    });
-  };
-
-  // If there's a custom mapping present, we need to listen to all input changes
-  if (hasCustomMapping) {
-    const allFields = form.querySelectorAll<HTMLInputElement>('input:not([type="hidden"]), select, textarea');
-
-    allFields.forEach((field) => {
-      field.addEventListener('change', listener(field.name));
-    });
-  } else {
-    fieldMapping.forEach(({ source, target }) => {
-      (form[target] as HTMLInputElement)?.addEventListener('change', listener(source));
-    });
-  }
-
-  elementMap.set(field, {
-    elements,
-    paymentIntent: {
-      id,
-      secret,
-    },
-  });
 };

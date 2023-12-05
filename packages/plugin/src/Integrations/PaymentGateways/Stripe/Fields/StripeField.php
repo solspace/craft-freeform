@@ -12,6 +12,8 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\Currency\CurrencyOptionsGenerator;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -169,7 +171,11 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         label: 'Payment Amount Field',
         instructions: 'Select a Number field which will determine the payment amount.',
         emptyOption: 'No field selected',
-        implements: [NumericInterface::class],
+        implements: [
+            NumericInterface::class,
+            TextInterface::class,
+            OptionsInterface::class,
+        ],
     )]
     protected ?FieldInterface $amountField = null;
 

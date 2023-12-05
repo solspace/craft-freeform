@@ -24,3 +24,12 @@ export type StripeFunctionConstructorProps = {
   stripe: Stripe;
   form: HTMLFormElement;
 };
+
+export type StripeTheme = 'stripe' | 'night' | 'flat';
+export type StripeLayout = 'tabs' | 'accordion' | 'accordion-radios';
+
+export type ElementConfig = {
+  theme: StripeTheme;
+  layout: StripeLayout;
+  floatingLabels: boolean;
+};

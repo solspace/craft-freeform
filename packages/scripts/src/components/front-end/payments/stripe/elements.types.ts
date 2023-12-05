@@ -11,6 +11,7 @@ export type Config = {
 };
 
 export type StripeElement = {
+  empty: boolean;
   elements: StripeElements;
   paymentIntent: {
     id: string;

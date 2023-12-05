@@ -30,17 +30,21 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
   const { elementMap, stripe, form } = props;
 
   const containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
-  if (containers.length > 0) {
-    event.preventDefault();
-    event.freeform.lockSubmit();
-  }
-
   containers.forEach(async (container) => {
     const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
     const {
+      empty,
       elements,
       paymentIntent: { id, secret },
     } = elementMap.get(field);
+
+    const isRequired = field.dataset.required !== undefined;
+    if (empty && !isRequired) {
+      return;
+    }
+
+    event.preventDefault();
+    event.freeform.lockSubmit();
 
     const token = await event.freeform.quickSave(secret, id);
     if (!token) {

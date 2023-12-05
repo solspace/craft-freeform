@@ -315,6 +315,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
         $stripeAttributes = (new Attributes())
             ->set('class', 'freeform-stripe-card')
+            ->set('data-required', $this->isRequired())
             ->set('data-integration', $id)
             ->set('data-amount-fields', !empty($amountFields) ? implode(';', $amountFields) : false)
         ;

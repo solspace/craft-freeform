@@ -15,9 +15,8 @@ namespace Solspace\Freeform\Services\Integrations;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Records\CrmFieldRecord;
-use Solspace\Freeform\Services\BaseService;
 
-class CrmService extends BaseService
+class CrmService extends IntegrationsService
 {
     /**
      * @return FieldObject[]

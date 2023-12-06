@@ -36,7 +36,7 @@ class NumberField extends TextField implements NumericInterface
         instructions: 'The step',
         min: 0,
     )]
-    protected int $step = 1;
+    protected ?int $step = 1;
 
     public function getValue(): mixed
     {
@@ -89,7 +89,7 @@ class NumberField extends TextField implements NumericInterface
 
     public function getStep(): float
     {
-        return $this->step;
+        return $this->step ?? 1;
     }
 
     public function getContentGqlType(): GQLType|array

@@ -1,5 +1,35 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.11 - 2023-12-06
+
+> [!WARNING]
+> This version is still in beta and not recommended for production use. There is no migration from Freeform 4 yet, but will be available soon.
+
+### Added
+- Added a refresh button to all dynamic dropdowns in the form builder.
+
+### Changed
+- Updated the form handle and field handles to no longer automatically change when editing the form name and field labels at a later time.
+- Updated the Stripe integration to include Appearance customization inside the builder.
+- Updated the Stripe field to optionally be required.
+
+### Fixed
+- Fixed a bug where the Decimal Count and Step settings for the Number field would error on the front end if set to empty.
+- Fixed a bug where populating field values with Element options could result in blank labels/values if the element was empty for that field. A fallback is set to `title` or `id` on empty options.
+- Fixed a bug where the Submissions _Export as CSV_ feature was not working.
+- Fixed a bug where Opinion Scale fields were not correctly loading recipient mappings in the builder for User Select notifications.
+- Fixed a bug where the Predefined options' Language value for _Luba-Katanga_ was missing.
+- Fixed a bug where Favorite field adding was not working correctly.
+- Fixed a bug where editing multi-page submissions on the front end was not working correctly.
+- Fixed a bug where using a dynamic Amount field for Stripe could break the form if the beginning value was empty or `0`.
+
+### Deprecated
+- The _PHP Sessions_ and _Database Table_ options for the Freeform Session Context setting are deprecated and are planned to be removed in Freeform 6. Encrypted Payload continues to be the assumed and recommended approach, but can still be overrided to PHP Sessions or Database Table in project config.
+
+### Removed
+- The **Freeform Session Context** setting has been removed. _Encrypted Payload_ continues to be the assumed and recommended approach, but can still be overrided to _PHP Sessions_ or _Database Table_ deprecated options in project config.
+- Removed the `freeform_lock` database table.
+
 ## 5.0.0-beta.10 - 2023-12-01
 
 > [!WARNING]
@@ -266,6 +296,9 @@
 - **Javascript**
     - The defaults for `errorClassBanner`, `errorClassList`, `errorClassField` and `successClassBanner` plugin options for JS overrides have been adjusted to `freeform-form-errors`, `freeform-errors`, `freeform-has-errors` and `freeform-form-success`, respectively (`ff-` changed to `freeform-`).
 
+### Deprecated
+- The _PHP Sessions_ and _Database Table_ options for the Freeform Session Context setting are deprecated and are planned to be removed in Freeform 6. Encrypted Payload continues to be the assumed and recommended approach, but can still be overrided to PHP Sessions or Database Table in project config.
+
 ### Removed
 - **Control Panel**
     - The **Field Manager** area (**Freeform → Fields**) has been removed, as fields are no longer globally shared unless they are saved as Favorites.
@@ -286,6 +319,8 @@
         - `ajaxByDefault` - - use `value: '1'` under `defaults:` → `settings:` → `processing:` → `ajax:` instead.
     - The `freeformHoneypot`, `freeformHoneypotEnhancement`, `customHoneypotName`, `customErrorMessage`, `recaptchaBehaviour`, `recaptchaEnabled`, `recaptchaErrorMessage`, `recaptchaKey`, `recaptchaSecret`, `recaptchaLazyLoad`, `recaptchaMinScore`, `recaptchaSize`, `recaptchaTheme` and `recaptchaType` settings have been removed from **Project Config**, as Honeypot and Captchas are stored as integrations now.
     - The **Additional Optional Checks** setting for the **Update Warnings & Notices** feature has been removed.
+    - The **Freeform Session Context** setting has been removed. _Encrypted Payload_ continues to be the assumed and recommended approach, but can still be overrided to _PHP Sessions_ or _Database Table_ deprecated options in project config.
+    - The `freeform_lock` database table has been removed as it is no longer used.
 - **Templating**
     - The **Bootstrap 3**, **Bootstrap 4**, **Bootstrap 5 Multipage All Fields** and **Tailwind 1** formatting templates have been removed.
     - The `overrideValues` parameter for Form queries has been removed. Please use the `value` parameter in the new **Template Overrides** feature.

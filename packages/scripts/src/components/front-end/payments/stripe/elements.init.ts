@@ -67,7 +67,6 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       // Store state of the element emptiness
       // Non-required, empty elements will not prevent form from submitting
       paymentElement.on('change', (event) => {
-        console.log(event);
         elementMap.get(field).empty = event.empty && !event.complete;
       });
 

@@ -82,19 +82,31 @@
 
     <h2>{{ "Form Sessions"|t('freeform') }}</h2>
 
-    {{ forms.selectField({
-        label: "Freeform Session Context"|t('freeform'),
-        instructions: "Choose the way form context is passed between form submits."|t('freeform'),
-        id: 'session-context',
-        name: "settings[sessionContext]",
-        value: settings.sessionContext,
-        errors: settings.errors("sessionContext"),
-        options: {
-            "payload": "As an encrypted payload (recommended)"|t('freeform'),
-            "session": "Using PHP's sessions"|t('freeform'),
-            "database": "Using a database table"|t('freeform'),
-        },
-    }) }}
+    {% if settings.sessionContext != "payload" %}
+
+        {{ forms.selectField({
+            label: "Freeform Session Context"|t('freeform'),
+            instructions: "Choose the way form context is passed between form submits."|t('freeform'),
+            id: 'session-context',
+            name: "settings[sessionContext]",
+            value: settings.sessionContext,
+            errors: settings.errors("sessionContext"),
+            options: {
+                "payload": "As an encrypted payload (recommended)"|t('freeform'),
+                "session": "Using PHP's sessions"|t('freeform'),
+                "database": "Using a database table"|t('freeform'),
+            },
+        }) }}
+
+    {% else %}
+
+        {{ forms.hidden({
+            id: 'session-context',
+            name: "settings[sessionContext]",
+            value: settings.sessionContext,
+        }) }}
+
+    {% endif %}
 
     <div id="session-time" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
         {{ forms.autosuggestField({

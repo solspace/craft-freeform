@@ -4,7 +4,7 @@ import {
   Source,
 } from '@components/form-controls/control-types/options/options.types';
 import type { Field } from '@editor/store/slices/layout/fields';
-import { Implementation } from '@ff-client/types/fields';
+import { Implementation, Type } from '@ff-client/types/fields';
 import {
   type FieldType,
   type OptionCollection,
@@ -20,13 +20,25 @@ type FieldOptions = (
 
 export const useFieldOptions: FieldOptions = (field, type) => {
   let optionsConfiguration: OptionsConfiguration | undefined;
-  if (type?.implements.includes(Implementation.GeneratedOptions)) {
-    const optionsProperty = type?.properties.find(
-      (property) => property.type === PropertyType.Options
-    );
 
-    if (optionsProperty) {
-      optionsConfiguration = field?.properties[optionsProperty.handle];
+  if (type?.type === Type.OpinionScale) {
+    optionsConfiguration = {
+      source: Source.Custom,
+      options: field.properties.scales.map((scale: [string, string]) => ({
+        label: scale[1] || scale[0],
+        value: scale[0],
+      })),
+      useCustomValues: true,
+    };
+  } else {
+    if (type?.implements.includes(Implementation.GeneratedOptions)) {
+      const optionsProperty = type?.properties.find(
+        (property) => property.type === PropertyType.Options
+      );
+
+      if (optionsProperty) {
+        optionsConfiguration = field?.properties[optionsProperty.handle];
+      }
     }
   }
 

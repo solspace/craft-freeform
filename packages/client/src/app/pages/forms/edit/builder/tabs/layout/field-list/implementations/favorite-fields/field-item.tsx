@@ -22,7 +22,7 @@ export const FieldItem: React.FC<Props> = ({ favorite }) => {
   const dispatch = useAppDispatch();
   const { ref } = useBaseFieldDrag(clonedFieldType);
 
-  if (!fieldType) {
+  if (!fieldType || !clonedFieldType) {
     return null;
   }
 

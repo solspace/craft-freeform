@@ -16,11 +16,16 @@ type Props = {
 export const FieldComponent: React.FC<Props> = ({ property, field }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
-  const state = useSelector(fieldSelectors.one(field.uid))?.properties || {};
+
+  const fieldState = useSelector(fieldSelectors.one(field.uid));
+  const context = {
+    id: fieldState.id,
+    ...(fieldState?.properties || {}),
+  };
 
   const generateUpdateHandler = useValueUpdateGenerator(
     type.properties,
-    state,
+    context,
     (handle, value) => {
       dispatch(
         fieldActions.edit({

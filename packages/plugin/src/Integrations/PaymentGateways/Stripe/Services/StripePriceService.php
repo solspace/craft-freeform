@@ -112,7 +112,7 @@ class StripePriceService
             $product = $stripe->products->create(['name' => $productName]);
         }
 
-        $lookupKey = "{$amount}{$currency}-{$interval}:{$intervalCount}";
+        $lookupKey = "[{$product->id}]{$amount}{$currency}-{$interval}:{$intervalCount}";
 
         $price = $stripe
             ->prices

@@ -67,7 +67,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       // Store state of the element emptiness
       // Non-required, empty elements will not prevent form from submitting
       paymentElement.on('change', (event) => {
-        elementMap.get(field).empty = event.empty;
+        console.log(event);
+        elementMap.get(field).empty = event.empty && !event.complete;
       });
 
       // Listen for changes to the amount, interval and interval count fields
@@ -87,6 +88,9 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
                 paymentElement = elements.create('payment', event.paymentOptions);
                 paymentElement.mount(field);
+                paymentElement.on('change', (event) => {
+                  elementMap.get(field).empty = event.empty && !event.complete;
+                });
 
                 elementMap.set(field, {
                   empty: true,

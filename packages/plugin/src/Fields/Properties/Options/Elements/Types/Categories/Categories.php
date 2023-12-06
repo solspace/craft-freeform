@@ -112,7 +112,11 @@ class Categories implements OptionTypeProviderInterface
             $value = ElementHelper::extractFieldValue($entry, $this->getValue());
             $label = ElementHelper::extractFieldValue($entry, $this->getLabel());
 
-            if (null !== $value && null !== $label) {
+            if (null !== $value) {
+                if (null === $label) {
+                    $label = $entry?->title ?: $entry->id;
+                }
+
                 $collection->add($value, $label);
             }
         }

@@ -90,7 +90,11 @@ class Users implements OptionTypeProviderInterface
             $value = ElementHelper::extractFieldValue($user, $this->getValue());
             $label = ElementHelper::extractFieldValue($user, $this->getLabel());
 
-            if (null !== $value && null !== $label) {
+            if (null !== $value) {
+                if (null === $label) {
+                    $label = $user->id;
+                }
+
                 $collection->add($value, $label);
             }
         }

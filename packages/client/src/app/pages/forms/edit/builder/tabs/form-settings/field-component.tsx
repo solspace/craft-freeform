@@ -22,7 +22,14 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
   ).properties;
 
   const formErrors = useSelector(formSelectors.errors);
-  const context = useSelector(formSelectors.settings.one(namespace));
+  const form = useSelector(formSelectors.current);
+  const settings = useSelector(formSelectors.settings.one(namespace));
+
+  const context = {
+    ...settings,
+    isNew: form.isNew,
+  };
+
   const value = context[property.handle];
 
   const generateUpdateHandler = useValueUpdateGenerator(

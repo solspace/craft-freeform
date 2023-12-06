@@ -576,6 +576,8 @@ class FormsService extends BaseService implements FormHandlerInterface
                     'forms.handle',
                     'forms.metadata',
                     'forms.spamBlockCount',
+                    'forms.dateCreated',
+                    'forms.dateUpdated',
                 ]
             )
             ->from(FormRecord::TABLE.' forms')

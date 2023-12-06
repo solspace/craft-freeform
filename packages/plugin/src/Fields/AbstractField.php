@@ -58,7 +58,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[Middleware('injectInto', [
         'target' => 'handle',
         'camelize' => true,
-        'onlyNew' => true,
+        'bypassConditions' => [['name' => 'id', 'isTrue' => true]],
     ])]
     #[Validators\Required]
     protected string $label = '';

@@ -80,6 +80,13 @@ class FormPersistence extends FeatureBundle
         }
 
         if (!$record->id) {
+            $errors = $record->getErrors();
+            if (isset($errors['handle'])) {
+                $errors['name'] = $errors['handle'];
+                unset($errors['handle']);
+            }
+            $event->addErrorsToResponse('form', $errors);
+
             return;
         }
 

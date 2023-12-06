@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
+use Carbon\Carbon;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\FieldsService;
@@ -59,6 +60,9 @@ class FormTransformer
         $typeClass = $form::class;
         $settings = $form->getSettings();
 
+        // Only forms made in the last hour are considered new
+        $isNew = $form->getDateCreated()->greaterThanOrEqualTo(Carbon::now()->subHour());
+
         return (object) [
             'id' => $form->getId(),
             'uid' => $form->getUid(),
@@ -66,6 +70,7 @@ class FormTransformer
             'name' => $settings->name,
             'handle' => $settings->handle,
             'settings' => $settings->toArray(),
+            'isNew' => $isNew,
         ];
     }
 

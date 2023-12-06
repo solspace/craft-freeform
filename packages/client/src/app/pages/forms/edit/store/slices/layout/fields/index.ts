@@ -12,6 +12,7 @@ type FieldErrors = {
 };
 
 export type Field = Pick<FieldType, 'typeClass'> & {
+  id?: number;
   uid: string;
   properties: PropertyValueCollection;
   errors?: FieldErrors;

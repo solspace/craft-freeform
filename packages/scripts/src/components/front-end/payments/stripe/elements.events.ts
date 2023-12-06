@@ -1,9 +1,10 @@
-import type { Appearance } from '@stripe/stripe-js';
+import type { StripeElementsOptionsClientSecret, StripePaymentElementOptions } from '@stripe/stripe-js';
 
 const prefix: string = 'freeform-stripe';
 
 export type StripeAppearanceEvent = {
-  appearance?: Appearance;
+  elementOptions: StripeElementsOptionsClientSecret;
+  paymentOptions: StripePaymentElementOptions;
 };
 
 const events = {

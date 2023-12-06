@@ -4,6 +4,7 @@ namespace Solspace\Freeform\controllers\api\fields;
 
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FieldTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 
 class FormsController extends BaseApiController
 {
@@ -24,6 +25,7 @@ class FormsController extends BaseApiController
 
         foreach ($this->getFormsService()->getAllForms() as $form) {
             $fields = $form->getLayout()->getFields()->getIterator()->getArrayCopy();
+            $fields = array_filter($fields, fn ($field) => !$field instanceof GroupField);
             $fields = array_map([$this->fieldTransformer, 'transform'], $fields);
 
             $forms[] = (object) [

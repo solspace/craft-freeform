@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Form;
 
+use Carbon\Carbon;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -128,6 +129,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private bool $graphqlPosted = false;
     private array $graphqlArguments = [];
 
+    private Carbon $dateCreated;
+    private Carbon $dateUpdated;
+
     private ?Submission $submission = null;
 
     public function __construct(
@@ -137,6 +141,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
+
+        $this->dateCreated = new Carbon($config['dateCreated']);
+        $this->dateUpdated = new Carbon($config['dateUpdated']);
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
@@ -452,6 +459,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function isGraphQLPosted(): bool
     {
         return $this->graphqlPosted;
+    }
+
+    public function getDateCreated(): Carbon
+    {
+        return $this->dateCreated;
+    }
+
+    public function getDateUpdated(): Carbon
+    {
+        return $this->dateUpdated;
     }
 
     #[Ignore]

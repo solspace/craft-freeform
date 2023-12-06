@@ -18,6 +18,7 @@ const initialState: FormState = {
   type: 'Solspace\\Freeform\\Form\\Types\\Regular',
   name: 'New Form',
   handle: 'newForm',
+  isNew: true,
   settings: {},
   errors: {},
 };

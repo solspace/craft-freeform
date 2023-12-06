@@ -11,6 +11,7 @@ export type Config = {
 };
 
 export type StripeElement = {
+  empty: boolean;
   elements: StripeElements;
   paymentIntent: {
     id: string;
@@ -22,4 +23,13 @@ export type StripeFunctionConstructorProps = {
   elementMap: WeakMap<HTMLDivElement, StripeElement>;
   stripe: Stripe;
   form: HTMLFormElement;
+};
+
+export type StripeTheme = 'stripe' | 'night' | 'flat';
+export type StripeLayout = 'tabs' | 'accordion' | 'accordion-radios';
+
+export type ElementConfig = {
+  theme: StripeTheme;
+  layout: StripeLayout;
+  floatingLabels: boolean;
 };

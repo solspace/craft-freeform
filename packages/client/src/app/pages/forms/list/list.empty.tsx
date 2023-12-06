@@ -19,6 +19,7 @@ const generateFormData = (
   type: '',
   name,
   handle: '',
+  isNew: true,
   chartData,
   counters: {
     submissions,

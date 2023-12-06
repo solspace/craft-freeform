@@ -30,13 +30,13 @@ class NumberField extends TextField implements NumericInterface
         placeholder: 'Leave blank for no decimals',
         min: 0,
     )]
-    protected int $decimalCount = 0;
+    protected ?int $decimalCount = 0;
 
     #[Input\Integer(
         instructions: 'The step',
         min: 0,
     )]
-    protected int $step = 1;
+    protected ?int $step = 1;
 
     public function getValue(): mixed
     {
@@ -77,9 +77,9 @@ class NumberField extends TextField implements NumericInterface
         return $max;
     }
 
-    public function getDecimalCount(): ?int
+    public function getDecimalCount(): int
     {
-        return $this->decimalCount;
+        return $this->decimalCount ?? 0;
     }
 
     public function isAllowNegative(): bool
@@ -89,7 +89,7 @@ class NumberField extends TextField implements NumericInterface
 
     public function getStep(): float
     {
-        return $this->step;
+        return $this->step ?? 1;
     }
 
     public function getContentGqlType(): GQLType|array

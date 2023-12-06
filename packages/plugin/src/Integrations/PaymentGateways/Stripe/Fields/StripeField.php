@@ -12,6 +12,8 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\Currency\CurrencyOptionsGenerator;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -169,7 +171,11 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         label: 'Payment Amount Field',
         instructions: 'Select a Number field which will determine the payment amount.',
         emptyOption: 'No field selected',
-        implements: [NumericInterface::class],
+        implements: [
+            NumericInterface::class,
+            TextInterface::class,
+            OptionsInterface::class,
+        ],
     )]
     protected ?FieldInterface $amountField = null;
 
@@ -198,6 +204,37 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         instructions: 'Enter a URL to redirect to after a failed payment. You can use the `form` and `paymentIntent` objects in twig.',
     )]
     protected string $redirectFailed = '';
+
+    #[Section(
+        handle: 'appearance',
+        label: 'Appearance',
+        icon: __DIR__.'/Icons/appearance.svg',
+        order: 4,
+    )]
+    #[Input\Select(
+        instructions: 'Choose the base theme to be used for styling the appearance of the Stripe field. Styles can be further fine-tuned at template-level using JS overrides.',
+        options: [
+            'default' => 'Default',
+            'night' => 'Dark',
+            'flat' => 'Minimal',
+        ],
+    )]
+    protected string $theme = 'default';
+
+    #[Section('appearance')]
+    #[Input\Select(
+        instructions: 'Choose the layout for the Stripe field.',
+        options: [
+            'tabs' => 'Tabs',
+            'accordion-radios' => 'Accordion with radio buttons',
+            'accordion' => 'Accordion without radio buttons',
+        ],
+    )]
+    protected string $layout = 'tabs';
+
+    #[Section('appearance')]
+    #[Input\Boolean]
+    protected bool $floatingLabels = false;
 
     public function getType(): string
     {
@@ -284,6 +321,21 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         return $this->redirectFailed;
     }
 
+    public function getTheme(): string
+    {
+        return $this->theme;
+    }
+
+    public function getLayout(): string
+    {
+        return $this->layout;
+    }
+
+    public function isFloatingLabels(): bool
+    {
+        return $this->floatingLabels;
+    }
+
     protected function getInputHtml(): string
     {
         $id = HashHelper::hash([
@@ -309,8 +361,12 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
         $stripeAttributes = (new Attributes())
             ->set('class', 'freeform-stripe-card')
+            ->set('data-required', $this->isRequired())
             ->set('data-integration', $id)
             ->set('data-amount-fields', !empty($amountFields) ? implode(';', $amountFields) : false)
+            ->set('data-layout', $this->getLayout())
+            ->set('data-theme', $this->getTheme())
+            ->set('data-floating-labels', $this->isFloatingLabels())
         ;
         $output .= '<div'.$stripeAttributes.'></div>';
 

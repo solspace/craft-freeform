@@ -17,9 +17,8 @@ use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\List
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Records\EmailMarketingFieldRecord;
 use Solspace\Freeform\Records\EmailMarketingListRecord;
-use Solspace\Freeform\Services\BaseService;
 
-class EmailMarketingService extends BaseService
+class EmailMarketingService extends IntegrationsService
 {
     public function getListObjectById(?int $id): ?ListObject
     {

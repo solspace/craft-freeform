@@ -271,12 +271,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('issueDate', $this->dateTime()->notNull())
                 ->addForeignKey('feedId', 'freeform_feeds', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_lock'))
-                ->addField('id', $this->primaryKey())
-                ->addField('key', $this->string()->notNull())
-                ->addIndex(['key', 'dateCreated'])
-                ->addIndex(['dateCreated']),
-
             (new Table('freeform_notification_log'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(30)->notNull())

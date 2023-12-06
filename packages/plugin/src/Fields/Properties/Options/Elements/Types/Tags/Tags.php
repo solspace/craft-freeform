@@ -112,7 +112,11 @@ class Tags implements OptionTypeProviderInterface
             $value = ElementHelper::extractFieldValue($tag, $this->getValue());
             $label = ElementHelper::extractFieldValue($tag, $this->getLabel());
 
-            if (null !== $value && null !== $label) {
+            if (null !== $value) {
+                if (null === $label) {
+                    $label = $tag?->title ?: $tag->id;
+                }
+
                 $collection->add($value, $label);
             }
         }

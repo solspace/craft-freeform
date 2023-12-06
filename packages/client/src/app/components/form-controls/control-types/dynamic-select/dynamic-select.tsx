@@ -10,10 +10,13 @@ import type {
   DynamicSelectProperty,
   OptionCollection,
 } from '@ff-client/types/properties';
+import RefreshIcon from '@ff-icons/actions/refresh.svg';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { extractParameter } from '../namespaced/field-mapping/mapping.utilities';
+
+import { DropdownContainer, RefreshButton } from './dynamic-select.styles';
 
 const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   value,
@@ -31,7 +34,7 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
     });
   }
 
-  const { data, isFetching, isFetched } = useQuery(
+  const { data, isFetching, isFetched, refetch } = useQuery(
     ['dynamic-select', source, params],
     () =>
       axios.get<OptionCollection>(source, { params }).then((res) => res.data),
@@ -57,13 +60,23 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
 
   return (
     <Control property={property} errors={errors}>
-      <Dropdown
-        loading={isFetching}
-        value={value}
-        onChange={updateValue}
-        emptyOption={emptyOption}
-        options={data}
-      />
+      <DropdownContainer>
+        <Dropdown
+          loading={isFetching}
+          value={value}
+          onChange={updateValue}
+          emptyOption={emptyOption}
+          options={data}
+        />
+
+        <RefreshButton
+          className="btn"
+          disabled={isFetching}
+          onClick={() => refetch()}
+        >
+          <RefreshIcon />
+        </RefreshButton>
+      </DropdownContainer>
     </Control>
   );
 };

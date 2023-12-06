@@ -4,13 +4,11 @@ namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\FieldInterface;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class FieldTransformer
 {
     public function __construct(
         private PropertyProvider $propertyProvider,
-        private PropertyAccessor $propertyAccess
     ) {
     }
 
@@ -42,6 +40,7 @@ class FieldTransformer
         }
 
         return (object) [
+            'id' => $field->getId(),
             'uid' => $field->getUid(),
             'label' => $field->getLabel(),
             'rowUid' => $field->getRowUid(),

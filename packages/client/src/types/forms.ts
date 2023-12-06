@@ -14,6 +14,7 @@ export type Form = {
   type: string;
   name: string;
   handle: string;
+  isNew: boolean;
   settings: {
     [namespace: string]: SettingsNamespace;
   };

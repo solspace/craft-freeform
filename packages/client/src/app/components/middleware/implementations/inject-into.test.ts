@@ -29,4 +29,72 @@ describe('injectInto middleware', () => {
 
     expect(callback).toHaveBeenCalledWith('myProp', 'myTestValue');
   });
+
+  describe('conditional injector', () => {
+    it('bypasses injector with condition that matches', () => {
+      const callback = jest.fn();
+      injectInto(
+        'My Test Value',
+        {
+          target: 'myProp',
+          bypassConditions: [{ name: 'myCondition', isTrue: true }],
+        },
+        { myCondition: true },
+        callback
+      );
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('bypasses injector with several conditions with one matching', () => {
+      const callback = jest.fn();
+      injectInto(
+        'My Test Value',
+        {
+          target: 'myProp',
+          bypassConditions: [
+            { name: 'myCondition', isTrue: true },
+            { name: 'myCondition2', isTrue: true },
+          ],
+        },
+        { myCondition2: true },
+        callback
+      );
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('bypasses injector with several conditions that should not match', () => {
+      const callback = jest.fn();
+      injectInto(
+        'My Test Value',
+        {
+          target: 'myProp',
+          bypassConditions: [
+            { name: 'myCondition', isTrue: false },
+            { name: 'myCondition2', isTrue: false },
+          ],
+        },
+        { myCondition: true, myCondition2: false },
+        callback
+      );
+
+      expect(callback).not.toHaveBeenCalled();
+    });
+
+    it('calls injector when condition does not match', () => {
+      const callback = jest.fn();
+      injectInto(
+        'My Test Value',
+        {
+          target: 'myProp',
+          bypassConditions: [{ name: 'myCondition', isTrue: true }],
+        },
+        { myCondition2: true },
+        callback
+      );
+
+      expect(callback).toHaveBeenCalledWith('myProp', 'My Test Value');
+    });
+  });
 });

@@ -1,11 +1,11 @@
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { StripePaymentElementOptions } from '@stripe/stripe-js';
 
+import { generateElementOptions } from './elements.appearance';
 import config from './elements.config';
 import type { StripeAppearanceEvent } from './elements.events';
 import events from './elements.events';
 import queries from './elements.queries';
-import type { StripeFunctionConstructorProps } from './elements.types';
+import type { StripeFunctionConstructorProps, StripeLayout, StripeTheme } from './elements.types';
 
 const { fieldMapping } = config;
 const workers: string[] = [];
@@ -24,6 +24,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
   // Store an empty entry in the elementMap to prevent duplicate initialization
   elementMap.set(field, {
+    empty: true,
     elements: null,
     paymentIntent: null,
   });
@@ -38,22 +39,35 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       // Set the PaymentIntent ID as the field value
       (field.previousSibling as HTMLInputElement).value = id;
 
-      // Dispatch an event which lets other scripts modify the appearance of the Stripe element
-      const event = dispatchCustomEvent<StripeAppearanceEvent>(events.render.appearance, { bubbles: true }, [field]);
-
-      let elements = stripe.elements({
-        clientSecret: secret,
-        appearance: event.appearance,
+      const { elementOptions, paymentOptions } = generateElementOptions({
+        theme: field.dataset?.theme as StripeTheme,
+        layout: field.dataset?.layout as StripeLayout,
+        floatingLabels: field.dataset.floatingLabels !== undefined,
       });
 
-      const paymentElementOptions: StripePaymentElementOptions = {
-        layout: 'auto',
-      };
+      // Dispatch an event which lets other scripts modify the appearance of the Stripe element
+      const event = dispatchCustomEvent<StripeAppearanceEvent>(
+        events.render.appearance,
+        {
+          bubbles: true,
+          elementOptions,
+          paymentOptions,
+        },
+        [field]
+      );
 
-      let paymentElement = elements.create('payment', paymentElementOptions);
+      let elements = stripe.elements({
+        ...event.elementOptions,
+        clientSecret: secret,
+      });
+
+      let paymentElement = elements.create('payment', event.paymentOptions);
       paymentElement.mount(field);
-      paymentElement.on('change', () => {
-        // console.log('payment change', event);
+
+      // Store state of the element emptiness
+      // Non-required, empty elements will not prevent form from submitting
+      paymentElement.on('change', (event) => {
+        elementMap.get(field).empty = event.empty && !event.complete;
       });
 
       // Listen for changes to the amount, interval and interval count fields
@@ -71,10 +85,14 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
                 paymentElement.unmount();
                 elements = stripe.elements({ clientSecret: client_secret });
 
-                paymentElement = elements.create('payment', paymentElementOptions);
+                paymentElement = elements.create('payment', event.paymentOptions);
                 paymentElement.mount(field);
+                paymentElement.on('change', (event) => {
+                  elementMap.get(field).empty = event.empty && !event.complete;
+                });
 
                 elementMap.set(field, {
+                  empty: true,
                   elements,
                   paymentIntent: {
                     id,
@@ -127,6 +145,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       }
 
       elementMap.set(field, {
+        empty: true,
         elements,
         paymentIntent: {
           id,

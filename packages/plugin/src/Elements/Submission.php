@@ -526,6 +526,15 @@ class Submission extends Element
         return $event->actions;
     }
 
+    public function getFieldCollection(): FieldCollection
+    {
+        if (null === $this->fieldCollection && $this->getForm()) {
+            $this->fieldCollection = $this->getForm()->getLayout()->getFields()->cloneCollection();
+        }
+
+        return $this->fieldCollection;
+    }
+
     protected static function defineSources(string $context = null): array
     {
         static $sources;
@@ -714,15 +723,6 @@ class Submission extends Element
     private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
-    }
-
-    private function getFieldCollection(): FieldCollection
-    {
-        if (null === $this->fieldCollection && $this->getForm()) {
-            $this->fieldCollection = $this->getForm()->getLayout()->getFields()->cloneCollection();
-        }
-
-        return $this->fieldCollection;
     }
 
     private function getNewIncrementalId(): int

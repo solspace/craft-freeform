@@ -78,6 +78,7 @@ class SubmissionsController extends BaseController
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
 
+        /** @var Submission[] $submissions */
         $submissions = Submission::find()->id($submissionIds)->all();
 
         if (!$submissions) {
@@ -107,10 +108,6 @@ class SubmissionsController extends BaseController
 
             if (!$canRead && !$canReadSpecific && !$canManage && !$canManageSpecific) {
                 throw new ForbiddenHttpException('User is not permitted to perform this action');
-            }
-
-            if (!$form) {
-                throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $form->getId()]));
             }
 
             $fields = $submission->getFieldCollection();

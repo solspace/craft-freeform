@@ -28,6 +28,7 @@ export enum PropertyType {
   MinMax = 'minMax',
   NotificationTemplate = 'notificationTemplate',
   Options = 'options',
+  OptionPicker = 'optionPicker',
   PageButton = 'pageButton',
   PageButtonsLayout = 'pageButtonsLayout',
   RecipientMapping = 'recipientMapping',
@@ -151,6 +152,10 @@ export type OptionsProperty = BaseProperty<
   OptionsConfiguration,
   PropertyType.Options
 >;
+export type OptionPickerProperty = BaseProperty<
+  string[],
+  PropertyType.OptionPicker
+>;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   dateFormat?: string;
@@ -247,6 +252,7 @@ export type Property =
   | MinMaxProperty
   | NotificationTemplateProperty
   | OptionsProperty
+  | OptionPickerProperty
   | PageButtonProperty
   | PageButtonsLayoutProperty
   | RecipientMappingProperty

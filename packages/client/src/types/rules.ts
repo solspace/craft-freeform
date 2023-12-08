@@ -9,6 +9,10 @@ export const enum Operator {
   NotContains = 'notContains',
   StartsWith = 'startsWith',
   EndsWith = 'endsWith',
+  IsEmpty = 'isEmpty',
+  IsNotEmpty = 'isNotEmpty',
+  IsOneOf = 'isOneOf',
+  IsNotOneOf = 'isNotOneOf',
 }
 
 type OperatorTypeKeys = 'boolean' | 'numeric' | 'string' | 'negative';
@@ -19,10 +23,16 @@ type OperatorTypes = {
 export const operatorTypes: OperatorTypes = {
   boolean: [Operator.Equals, Operator.NotEquals],
   numeric: [
+    Operator.Equals,
+    Operator.NotEquals,
     Operator.GreaterThan,
     Operator.GreaterThanOrEquals,
     Operator.LessThan,
     Operator.LessThanOrEquals,
+    Operator.IsEmpty,
+    Operator.IsNotEmpty,
+    Operator.IsOneOf,
+    Operator.IsNotOneOf,
   ],
   string: [
     Operator.Equals,
@@ -31,6 +41,10 @@ export const operatorTypes: OperatorTypes = {
     Operator.NotContains,
     Operator.StartsWith,
     Operator.EndsWith,
+    Operator.IsEmpty,
+    Operator.IsNotEmpty,
+    Operator.IsOneOf,
+    Operator.IsNotOneOf,
   ],
   negative: [Operator.NotEquals, Operator.NotContains],
 };

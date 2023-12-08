@@ -17,6 +17,10 @@ const operatorOptions: OperatorOptions = {
   [Operator.NotContains]: translate('does not contain'),
   [Operator.StartsWith]: translate('starts with'),
   [Operator.EndsWith]: translate('ends with'),
+  [Operator.IsEmpty]: translate('is empty'),
+  [Operator.IsNotEmpty]: translate('is not empty'),
+  [Operator.IsOneOf]: translate('is one of'),
+  [Operator.IsNotOneOf]: translate('is not one of'),
 };
 
 type Props = {

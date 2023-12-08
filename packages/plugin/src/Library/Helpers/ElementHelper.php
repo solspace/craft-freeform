@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Helpers;
 
 use craft\base\ElementInterface;
 use craft\elements\db\ElementQuery;
+use craft\fields\data\MultiOptionsFieldData;
 
 class ElementHelper
 {
@@ -28,6 +29,23 @@ class ElementHelper
 
         if ($value instanceof ElementQuery) {
             return $value->one()?->title;
+        }
+
+        if ($value instanceof MultiOptionsFieldData) {
+            $options = $value->getOptions();
+
+            $values = [];
+            foreach ($options as $option) {
+                if ($option->selected) {
+                    $values[] = $option->label ?: $option->value;
+                }
+            }
+
+            return implode(', ', $values);
+        }
+
+        if (\is_object($value)) {
+            return (string) $value;
         }
 
         return $value;

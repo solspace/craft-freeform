@@ -3,14 +3,12 @@
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories;
 
 use craft\elements\Category;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
-use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
-use Solspace\Freeform\Library\Helpers\ElementHelper;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
 
-class Categories implements OptionTypeProviderInterface
+class Categories extends BaseOptionProvider
 {
     #[Input\Select(
         label: 'Site ID',
@@ -97,30 +95,13 @@ class Categories implements OptionTypeProviderInterface
         return $this->sort;
     }
 
-    public function generateOptions(): OptionCollection
+    protected function getElements(): array
     {
-        $collection = new OptionCollection();
-
-        $categories = Category::find()
+        return Category::find()
             ->siteId($this->getSiteId() ?: null)
             ->groupId($this->getGroupId() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;
-
-        foreach ($categories as $entry) {
-            $value = ElementHelper::extractFieldValue($entry, $this->getValue());
-            $label = ElementHelper::extractFieldValue($entry, $this->getLabel());
-
-            if (null !== $value) {
-                if (null === $label) {
-                    $label = $entry?->title ?: $entry->id;
-                }
-
-                $collection->add($value, $label);
-            }
-        }
-
-        return $collection;
     }
 }

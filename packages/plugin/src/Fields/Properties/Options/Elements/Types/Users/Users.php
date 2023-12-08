@@ -3,13 +3,11 @@
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users;
 
 use craft\elements\User;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
-use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
-use Solspace\Freeform\Library\Helpers\ElementHelper;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
 
-class Users implements OptionTypeProviderInterface
+class Users extends BaseOptionProvider
 {
     #[Input\Select(
         label: 'Group',
@@ -76,29 +74,12 @@ class Users implements OptionTypeProviderInterface
         return $this->sort;
     }
 
-    public function generateOptions(): OptionCollection
+    protected function getElements(): array
     {
-        $collection = new OptionCollection();
-
-        $users = User::find()
+        return User::find()
             ->groupId($this->getGroupId() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;
-
-        foreach ($users as $user) {
-            $value = ElementHelper::extractFieldValue($user, $this->getValue());
-            $label = ElementHelper::extractFieldValue($user, $this->getLabel());
-
-            if (null !== $value) {
-                if (null === $label) {
-                    $label = $user->id;
-                }
-
-                $collection->add($value, $label);
-            }
-        }
-
-        return $collection;
     }
 }

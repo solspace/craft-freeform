@@ -3,15 +3,13 @@
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries;
 
 use craft\elements\Entry;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
-use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
-use Solspace\Freeform\Library\Helpers\ElementHelper;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
 
-class Entries implements OptionTypeProviderInterface
+class Entries extends BaseOptionProvider
 {
     #[Input\Select(
         label: 'Site ID',
@@ -113,31 +111,14 @@ class Entries implements OptionTypeProviderInterface
         return $this->sort;
     }
 
-    public function generateOptions(): OptionCollection
+    protected function getElements(): array
     {
-        $collection = new OptionCollection();
-
-        $entries = Entry::find()
+        return Entry::find()
             ->siteId($this->getSiteId() ?: null)
             ->sectionId($this->getSectionId() ?: null)
             ->typeId($this->getEntryTypeId() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;
-
-        foreach ($entries as $entry) {
-            $value = ElementHelper::extractFieldValue($entry, $this->getValue());
-            $label = ElementHelper::extractFieldValue($entry, $this->getLabel());
-
-            if (null !== $value) {
-                if (null === $label) {
-                    $label = $entry?->title ?: $entry->id;
-                }
-
-                $collection->add($value, $label);
-            }
-        }
-
-        return $collection;
     }
 }

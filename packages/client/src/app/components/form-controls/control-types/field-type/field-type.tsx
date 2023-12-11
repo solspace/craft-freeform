@@ -21,6 +21,10 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
   const { data: types } = useFetchFieldTypes();
   const field = context as Field;
 
+  if (!field?.typeClass) {
+    return null;
+  }
+
   return (
     <FormComponent
       value={field.typeClass}

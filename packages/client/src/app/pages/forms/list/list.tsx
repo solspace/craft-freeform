@@ -35,6 +35,10 @@ export const List: React.FC = () => {
   };
 
   useEffect(() => {
+    document.title = translate('Forms');
+  });
+
+  useEffect(() => {
     sortableRef.current = new Sortable(gridRef.current, {
       animation: 150,
       onEnd: onSortEnd,

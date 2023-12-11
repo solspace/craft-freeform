@@ -92,9 +92,8 @@ class JavascriptTestBundle extends FeatureBundle
         }
 
         /** @var array $postValues */
-        $postValues = \Craft::$app->request->post();
-
-        if (isset($postValues[$jsTestInputName]) && '' === $postValues[$jsTestInputName]) {
+        $postedValue = \Craft::$app->request->post($jsTestInputName);
+        if ('' === $postedValue) {
             return;
         }
 

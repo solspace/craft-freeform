@@ -54,6 +54,8 @@ export const Edit: React.FC = () => {
     dispatch(layoutActions.set(layouts));
     dispatch(rowActions.set(rows));
 
+    document.title = data.name;
+
     resetNotifications();
     dispatch(notificationActions.clear());
 

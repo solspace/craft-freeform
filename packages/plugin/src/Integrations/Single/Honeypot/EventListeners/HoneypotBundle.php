@@ -94,10 +94,8 @@ class HoneypotBundle extends FeatureBundle
                 return;
             }
         } else {
-            /** @var array $postValues */
-            $postValues = \Craft::$app->request->post();
-
-            if (isset($postValues[$honeypotName]) && '' === $postValues[$honeypotName]) {
+            $postedValue = \Craft::$app->request->post($honeypotName);
+            if ('' === $postedValue) {
                 return;
             }
         }

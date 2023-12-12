@@ -41,8 +41,8 @@ class Spam
     public $captchaType = '';
 
     /** @var bool */
-    public bool $bypassSpamCheckOnLoggedInUsers;
+    public $bypassSpamCheckOnLoggedInUsers = false;
 
     /** @var int */
-    public int $submissionThrottlingCount;
+    public $submissionThrottlingCount = 0;
 }

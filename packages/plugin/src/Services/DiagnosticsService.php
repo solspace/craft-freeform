@@ -8,13 +8,13 @@ use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\Gmail;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -34,9 +34,8 @@ class DiagnosticsService extends BaseService
         $system = $this->getSummary()->statistics->system;
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
-
         return [
-             new DiagnosticItem(
+            new DiagnosticItem(
                 'Freeform <b>{{ value.isPro ? "Pro " }}{{ value.version }}</b>',
                 [
                     'isPro' => Freeform::getInstance()->isPro(),
@@ -58,7 +57,7 @@ class DiagnosticsService extends BaseService
                     new SuggestionValidator(
                         fn ($value) => version_compare($value['version'], '4.5.0', '<'),
                         'Potential Craft Compatibility issue',
-                        "This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available."
+                        'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),
                 ]
             ),
@@ -74,7 +73,7 @@ class DiagnosticsService extends BaseService
                     new SuggestionValidator(
                         fn ($value) => version_compare($value, '8.2.0', '<='),
                         'Potential PHP Compatibility issue',
-                        "This version of Freeform may not be fully compatible with this version of PHP and may encounter issues. Please check if there are any updates available."
+                        'This version of Freeform may not be fully compatible with this version of PHP and may encounter issues. Please check if there are any updates available.'
                     ),
                 ]
             ),
@@ -114,39 +113,42 @@ class DiagnosticsService extends BaseService
                 \ini_get('memory_limit'),
                 [
                     new SuggestionValidator(
-                    function ($value) {
-                        preg_match('/^(-?\d+)(\w)?/', $value, $matches);
-                        $number = (int) ($matches[1] ?? -1);
-                        $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
+                        function ($value) {
+                            preg_match('/^(-?\d+)(\w)?/', $value, $matches);
+                            $number = (int) ($matches[1] ?? -1);
+                            $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
 
-                        $multiplier = 1;
+                            $multiplier = 1;
 
-                        switch ($measurement) {
-                            case 'k':
-                                $multiplier = 1024;
-                                break;
+                            switch ($measurement) {
+                                case 'k':
+                                    $multiplier = 1024;
 
-                            case 'm':
-                                $multiplier = 1024 ** 2;
-                                break;
+                                    break;
 
-                            case 'g':
-                                $multiplier = 1024 ** 3;
-                                break;
-                        }
+                                case 'm':
+                                    $multiplier = 1024 ** 2;
 
-                        $bytes = $number * $multiplier;
-                        $min256M = 256 * 1024 ** 2; // 256M in bytes
+                                    break;
 
-                        if ($bytes >= $min256M) {
-                            return true; // At least 256M
-                        }
+                                case 'g':
+                                    $multiplier = 1024 ** 3;
 
-                        return false;
-                    },
-                    'Memory Limit suggestion',
-                    'Freeform recommends a minimum memory limit of 256M. Please consider increasing the memory limit.'
-                ),
+                                    break;
+                            }
+
+                            $bytes = $number * $multiplier;
+                            $min256M = 256 * 1024 ** 2; // 256M in bytes
+
+                            if ($bytes >= $min256M) {
+                                return true; // At least 256M
+                            }
+
+                            return false;
+                        },
+                        'Memory Limit suggestion',
+                        'Freeform recommends a minimum memory limit of 256M. Please consider increasing the memory limit.'
+                    ),
                     new WarningValidator(
                         function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
@@ -297,10 +299,10 @@ class DiagnosticsService extends BaseService
 
         foreach ($integrations as $integration) {
             $name = $integration['name'];
-            $version = isset($integration['version']) && $integration['version'] !== '' ? "({$integration['version']})" : '';
+            $version = isset($integration['version']) && '' !== $integration['version'] ? "({$integration['version']})" : '';
             $count = $integration['count'];
 
-            $plural = $count != 1 ? 's' : '';
+            $plural = 1 != $count ? 's' : '';
             $label = "{$name}{$version} : <b>{$count} form{$plural}</b>";
 
             $diagnosticItems[] = new DiagnosticItem($label, ['value' => $integration]);
@@ -309,15 +311,13 @@ class DiagnosticsService extends BaseService
         return $diagnosticItems;
     }
 
-
-
     public function getFreeformFormType()
     {
         $freeform = Freeform::getInstance();
         $statistics = $this->getSummary()->statistics;
 
         if ($freeform->isPro()) {
-            $diagnosticItems = [
+            return [
                 new DiagnosticItem(
                     'Regular: <b>{{ value }} form{{ value != 1 ? "s" : "" }}</b>',
                     $statistics->totals->regularForm
@@ -327,11 +327,9 @@ class DiagnosticsService extends BaseService
                     $statistics->totals->payment
                 ),
             ];
-
-            return $diagnosticItems;
-        } else {
-            return []; // Or any other action for non-Pro users
         }
+
+        return []; // Or any other action for non-Pro users
     }
 
     public function getFreeformConfigurations()
@@ -355,7 +353,7 @@ class DiagnosticsService extends BaseService
                         new NoticeValidator(
                             fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value,
                             '',
-                            "Please make sure you are adding Freeform’s scripts manually."
+                            'Please make sure you are adding Freeform’s scripts manually.'
                         ),
                     ]
                 ),
@@ -399,10 +397,10 @@ class DiagnosticsService extends BaseService
                     'Spam Protection Behavior : <b>{{ value }}</b>',
                     $this->getSummary()->statistics->spam->spamProtectionBehavior
                 ),
-                 new DiagnosticItem(
-                     'Bypass All Spam Checks for Logged in Users: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
-                     $this->getSummary()->statistics->spam->bypassSpamCheckOnLoggedInUsers
-                 ),
+                new DiagnosticItem(
+                    'Bypass All Spam Checks for Logged in Users: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    $this->getSummary()->statistics->spam->bypassSpamCheckOnLoggedInUsers
+                ),
                 new DiagnosticItem(
                     'Form Submission Throttling: <b>{{ value }} per minutes</b>',
                     $this->getSummary()->statistics->spam->submissionThrottlingCount
@@ -477,9 +475,7 @@ class DiagnosticsService extends BaseService
                         ),
                     ]
                 ),
-
             ],
-
 
             'Reliabllity' => [
                 new DiagnosticItem(
@@ -499,14 +495,14 @@ class DiagnosticsService extends BaseService
                                 return !$value;
                             },
                             '{{ extra.count }} Errors logged in the Freeform Error Log',
-                            "Please check the <a href=\"{{ extra.url }}\">error log </a> to see if there any serious issues.",
+                            'Please check the <a href="{{ extra.url }}">error log </a> to see if there any serious issues.',
                             [
                                 'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
                                 'count' => Freeform::getInstance()->logger->getLogReader()->count(),
                             ]
                         ),
                     ]
-                )
+                ),
             ],
         ];
     }
@@ -610,7 +606,8 @@ class DiagnosticsService extends BaseService
             ->from(FormIntegrationRecord::TABLE.' forms_integrations')
             ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = forms_integrations.integrationId')
             ->where(['forms_integrations.enabled' => true])
-            ->all();
+            ->all()
+        ;
 
         $integrationsByForm = [];
 
@@ -619,12 +616,12 @@ class DiagnosticsService extends BaseService
             if (!isset($integrationsByForm[$id])) {
                 $integrationsByForm[$id] = [
                     'name' => $this->integrationTypeProvider->getTypeDefinition($integration['class'])->name,
-                    'version'=> $this->integrationTypeProvider->getTypeDefinition($integration['class'])->version,
+                    'version' => $this->integrationTypeProvider->getTypeDefinition($integration['class'])->version,
                     'count' => 0,
                 ];
             }
 
-            $integrationsByForm[$id]['count']++;
+            ++$integrationsByForm[$id]['count'];
         }
 
         return $integrationsByForm;

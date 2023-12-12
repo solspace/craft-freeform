@@ -5,10 +5,10 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Connections\Entries;
 use Solspace\Freeform\Library\Connections\Users;
@@ -437,7 +437,7 @@ class SummaryService extends Component
 
         $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_PAYMENT_GATEWAYS);
         foreach ($integrations as $integration) {
-            $classes[] = get_class($integration);
+            $classes[] = $integration::class;
         }
 
         return $classes;
@@ -449,7 +449,7 @@ class SummaryService extends Component
 
         $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_WEBHOOKS);
         foreach ($integrations as $integration) {
-            $classes[] = get_class($integration);
+            $classes[] = $integration::class;
         }
 
         return $classes;
@@ -457,11 +457,11 @@ class SummaryService extends Component
 
     private function getEmailMarketingIntegrations(): array
     {
-         $classes = [];
+        $classes = [];
 
         $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_EMAIL_MARKETING);
         foreach ($integrations as $integration) {
-            $classes[] = get_class($integration);
+            $classes[] = $integration::class;
         }
 
         return $classes;
@@ -473,7 +473,7 @@ class SummaryService extends Component
 
         $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_CRM);
         foreach ($integrations as $integration) {
-            $classes[] = get_class($integration);
+            $classes[] = $integration::class;
         }
 
         return $classes;

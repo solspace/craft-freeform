@@ -25,16 +25,13 @@
 
 .banner {
   margin-bottom: 20px;
-
+  position: relative;
   border-radius: 6px;
   border-style: solid;
   border-width: 2px;
 
-  overflow: hidden;
-
   h2 {
     position: relative;
-
     margin: 0;
     padding: 10px 10px 10px 35px;
     color: #ffffff;
@@ -63,70 +60,52 @@
     }
   }
 
-  &-info {
-    display: grid;
-    grid-template-columns: 60px auto;
-    gap: 20px;
-    align-items: center;
+  &-check {
+    border-color: #60aa55;
 
-    padding: 10px 20px;
-
-    background: #60aa55;
-    border: transparent;
-    color: #ffffff;
-
-    .heading {
-      margin: 0;
-      padding: 10px 0 5px;
-
-      font-size: 28px;
+    h2,
+    svg {
+      color: #60aa55;
     }
+  }
 
-    p {
-      margin: 0;
-      padding: 0;
-    }
+  &-close {
+    cursor: pointer;
+    height: 16x;
+    width: 16px;
+    margin: 10px 10px 10px 35px;
+  }
 
-    .checkmark-icon {
-      display: block;
-      height: 50px;
-      width: 50px;
+  &-warnings,
+  &-suggestions,
+  &-check {
+    h2 {
+      svg {
+        position: absolute;
+        top: 12px;
+        left: 10px;
 
-      border-radius: 50%;
-      background: #ffffff;
-
-      &:before {
-        color: #60aa55;
-        font-size: 40px;
+        width: 16px;
+        height: 16px;
       }
     }
   }
 
-  &-warning,
-  &-suggestions {
-    svg {
-      position: absolute;
-      top: 12px;
-      left: 10px;
-
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  &-warning {
+  &-warnings {
     border-color: #f28d03;
 
-    h2 {
-      background: #f28d03;
+    h2,
+    svg {
+      color: #f28d03;
     }
   }
 
   &-suggestions {
     border-color: #009adb;
 
-    h2 {
-      background: #009adb;
+    h2,
+    svg {
+      color: #009adb;
     }
   }
 }
@@ -134,7 +113,17 @@
 .gridy {
   display: grid;
   gap: 40px;
-  grid-template-columns: 30% auto;
+  grid-template-columns: 35% auto;
+
+  @media (max-width: 750px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.diag {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .diag-list {
@@ -142,40 +131,85 @@
     > li {
       padding: 1px 0;
 
+      svg {
+        position: relative;
+        top: 3px;
+
+        flex-basis: 14px;
+
+        width: 14px;
+        height: 14px;
+      }
+
       h3 {
-        padding: 5px 0 0;
+        padding: 5px 0 10px 0;
         margin: 0;
       }
 
       > ul:not(.notices) {
-        padding-left: 10px;
-
         > li {
           padding: 1px 0;
-          list-style: '-' inside;
+
+          &:last-child {
+            margin-bottom: 10px;
+          }
         }
       }
 
       ul.notices {
-        padding-left: 10px;
-
         > li {
-          display: flex;
-          gap: 5px;
-
-          color: #009adb;
           font-style: italic;
+          font-size: 13px;
 
-          svg {
-            position: relative;
-            top: 3px;
+          &.suggestionvalidator {
+            color: #009adb;
+          }
 
-            flex-basis: 14px;
+          &.warningvalidator {
+            color: #f28d03;
 
-            width: 14px;
-            height: 14px;
+            > a {
+              color: #f28d03;
+              text-decoration: underline;
+            }
           }
         }
+      }
+    }
+  }
+}
+
+.items {
+  display: flex;
+  gap: 5px;
+
+  > .item {
+    display: flex;
+    gap: 5px;
+
+    svg {
+      position: relative;
+      top: 3px;
+
+      flex-basis: 14px;
+
+      width: 14px;
+      height: 14px;
+    }
+
+    &-warnings {
+      color: #f28d03;
+
+      svg {
+        color: #f28d03;
+      }
+    }
+
+    &-suggestions {
+      color: #009adb;
+
+      svg {
+        color: #009adb;
       }
     }
   }

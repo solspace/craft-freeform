@@ -39,4 +39,10 @@ class Spam
 
     /** @var string */
     public $captchaType = '';
+
+    /** @var bool */
+    public bool $bypassSpamCheckOnLoggedInUsers;
+
+    /** @var int */
+    public int $submissionThrottlingCount;
 }

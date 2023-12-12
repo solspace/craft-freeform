@@ -26,6 +26,7 @@ use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -122,6 +123,15 @@ class FormsService extends BaseService implements FormHandlerInterface
             ->select('id')
             ->column()
         ;
+    }
+
+    public function getAllRegularFormIds(): array
+    {
+        return $this
+            ->getFormQuery()
+            ->select('id')
+            ->where(['type' => Regular::class])
+            ->column();
     }
 
     public function getAllFormNames(bool $indexById = true): array

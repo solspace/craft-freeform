@@ -8,7 +8,16 @@ class Totals
     public $forms = 0;
 
     /** @var int */
+    public $regularForm = 0;
+
+    /** @var int */
     public $fields = 0;
+
+    /** @var int */
+    public $favoriteFields = 0;
+
+    /** @var int */
+    public $payment = 0;
 
     /** @var int */
     public $emailNotifications = 0;

@@ -8,6 +8,7 @@ use craft\db\Table;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Connections\Entries;
 use Solspace\Freeform\Library\Connections\Users;
@@ -57,7 +58,10 @@ class SummaryService extends Component
 
         $totals = new Totals();
         $totals->forms = \count($freeform->forms->getAllFormIds());
+        $totals->regularForm = \count($freeform->forms->getAllRegularFormIds());
         $totals->fields = $freeform->fields->getAllFieldCount();
+        $totals->favoriteFields = $freeform->fields->getFavoriteFieldCount();
+        $totals->payment = $freeform->fields->getFormsWithStripeFieldCount();
         $totals->emailNotifications = \count($freeform->notifications->getAllNotifications());
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);
@@ -131,6 +135,8 @@ class SummaryService extends Component
         $spam->submissionThrottling = (bool) $settingsService->getSettingsModel()->submissionThrottlingCount;
         $spam->minSubmitTime = (bool) $settingsService->getSettingsModel()->minimumSubmitTime;
         $spam->submitExpiration = (bool) $settingsService->getSettingsModel()->formSubmitExpiration;
+        $spam->submissionThrottlingCount = (int) $settingsService->getSettingsModel()->submissionThrottlingCount;
+        $spam->bypassSpamCheckOnLoggedInUsers = $settingsService->getSettingsModel()->bypassSpamCheckOnLoggedInUsers;
 
         // TODO: reimplement using integrations
         // $spam->captcha = (bool) $settingsService->getSettingsModel()->recaptchaEnabled;
@@ -427,42 +433,50 @@ class SummaryService extends Component
 
     private function getPaymentGateways(): array
     {
-        $integrations = [];
-        foreach (Freeform::getInstance()->paymentGateways->getAllIntegrations() as $integration) {
-            $integrations[] = $integration->class;
+        $classes = [];
+
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_PAYMENT_GATEWAYS);
+        foreach ($integrations as $integration) {
+            $classes[] = get_class($integration);
         }
 
-        return $integrations;
+        return $classes;
     }
 
     private function getWebhooks(): array
     {
-        $integrations = [];
-        foreach (Freeform::getInstance()->webhooks->getAllIntegrations() as $webhook) {
-            $integrations[] = $webhook->type;
+        $classes = [];
+
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_WEBHOOKS);
+        foreach ($integrations as $integration) {
+            $classes[] = get_class($integration);
         }
 
-        return $integrations;
+        return $classes;
     }
 
     private function getEmailMarketingIntegrations(): array
     {
-        $integrations = [];
-        foreach (Freeform::getInstance()->emailMarketing->getAllIntegrations() as $integration) {
-            $integrations[] = $integration->class;
+         $classes = [];
+
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_EMAIL_MARKETING);
+        foreach ($integrations as $integration) {
+            $classes[] = get_class($integration);
         }
 
-        return $integrations;
+        return $classes;
     }
 
     private function getCrmIntegrations(): array
     {
-        $integrations = [];
-        foreach (Freeform::getInstance()->crm->getAllIntegrations() as $integration) {
-            $integrations[] = $integration->class;
+        $classes = [];
+
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_CRM);
+        foreach ($integrations as $integration) {
+            $classes[] = get_class($integration);
         }
 
-        return $integrations;
+        return $classes;
     }
 
     private function getPlugins(): array

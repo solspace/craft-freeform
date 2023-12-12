@@ -109,11 +109,13 @@ class DiagnosticItem
                 switch ($validator::class) {
                     case WarningValidator::class:
                         $this->warnings[] = $notificationItem;
+                        $this->notices[] = $notificationItem;
 
                         break;
 
                     case SuggestionValidator::class:
                         $this->suggestions[] = $notificationItem;
+                        $this->notices[] = $notificationItem;
 
                         break;
 

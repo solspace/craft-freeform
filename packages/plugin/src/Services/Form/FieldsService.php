@@ -8,8 +8,10 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use yii\base\Event;
 
 class FieldsService extends BaseService
@@ -134,6 +136,22 @@ class FieldsService extends BaseService
     public function getAllFieldCount(): int
     {
         return FormFieldRecord::find()->count();
+    }
+
+    public function getFavoriteFieldCount(): int
+    {
+        return FavoriteFieldRecord::find()->count();
+    }
+
+    public function getFormsWithStripeFieldCount(): int
+    {
+        $count = FormFieldRecord::find()
+            ->select('formId')
+            ->distinct()
+            ->where(['type' => StripeField::class])
+            ->count();
+
+        return $count;
     }
 
     /**

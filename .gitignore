@@ -24,3 +24,5 @@ http-client.private.env.json
 packages/client/coverage/
 
 packages/client/src/request-mocks/http-client.env.json
+cghooks.lock
+

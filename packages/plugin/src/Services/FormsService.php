@@ -27,6 +27,7 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
@@ -120,6 +121,16 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this
             ->getFormQuery()
             ->select('id')
+            ->column()
+        ;
+    }
+
+    public function getAllRegularFormIds(): array
+    {
+        return $this
+            ->getFormQuery()
+            ->select('id')
+            ->where(['type' => Regular::class])
             ->column()
         ;
     }

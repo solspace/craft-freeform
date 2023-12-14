@@ -24,7 +24,7 @@
 }
 
 .banner {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   position: relative;
   border-radius: 6px;
   border-style: solid;
@@ -61,11 +61,11 @@
   }
 
   &-check {
-    border-color: #60aa55;
+    border-color: var(--enabled-color);
 
     h2,
     svg {
-      color: #60aa55;
+      color: var(--enabled-color);
     }
   }
 
@@ -92,30 +92,31 @@
   }
 
   &-warnings {
-    border-color: #f28d03;
+    border-color: var(--warning-color);
 
     h2,
     svg {
-      color: #f28d03;
+      color: var(--warning-color);
     }
   }
 
   &-suggestions {
-    border-color: #009adb;
+    border-color: var(--notice-color);
 
     h2,
     svg {
-      color: #009adb;
+      color: var(--notice-color);
     }
   }
 }
 
 .gridy {
   display: grid;
-  gap: 40px;
-  grid-template-columns: 35% auto;
+  gap: 50px;
+  grid-template-columns: 40% auto;
+  margin-top: 20px;
 
-  @media (max-width: 750px) {
+  @media (max-width: 1050px) {
     grid-template-columns: 1fr;
   }
 }
@@ -123,13 +124,18 @@
 .diag {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .diag-list {
+
+  > h2 {
+    margin: 6px 0;
+  }
+
   > ul {
     > li {
-      padding: 1px 0;
+      padding: 2px 0;
 
       svg {
         position: relative;
@@ -162,14 +168,14 @@
           font-size: 12px;
 
           &.suggestionvalidator {
-            color: #009adb;
+            color: var(--notice-color);
           }
 
           &.warningvalidator {
-            color: #f28d03;
+            color: var(--warning-color);
 
             > a {
-              color: #f28d03;
+              color: var(--warning-color);
               text-decoration: underline;
             }
           }
@@ -198,18 +204,18 @@
     }
 
     &-warnings {
-      color: #f28d03;
+      color: var(--warning-color);
 
       svg {
-        color: #f28d03;
+        color: var(--warning-color);
       }
     }
 
     &-suggestions {
-      color: #009adb;
+      color: var(--notice-color);
 
       svg {
-        color: #009adb;
+        color: var(--notice-color);
       }
     }
   }

@@ -138,10 +138,10 @@ class DiagnosticsService extends BaseService
                             }
 
                             $bytes = $number * $multiplier;
-                            $min256M = 512 * 1024 ** 2; // 256M in bytes
+                            $min512M = 512 * 1024 ** 2; // 512M in bytes
 
-                            if ($bytes >= $min256M) {
-                                return true; // At least 256M
+                            if ($bytes >= $min512M) {
+                                return true; // At least 512M
                             }
 
                             return false;
@@ -303,7 +303,7 @@ class DiagnosticsService extends BaseService
             $count = $integration['count'];
 
             $plural = 1 != $count ? 's' : '';
-            $label = "{$name}{$version} : <b>{$count} form{$plural}</b>";
+            $label = "{$name}{$version}: <b>{$count}</b> form{$plural}";
 
             $diagnosticItems[] = new DiagnosticItem($label, ['value' => $integration]);
         }
@@ -319,11 +319,11 @@ class DiagnosticsService extends BaseService
         if ($freeform->isPro()) {
             return [
                 new DiagnosticItem(
-                    'Regular: <b>{{ value }} form{{ value != 1 ? "s" : "" }}</b>',
+                    'Regular: <b>{{ value }}</b> form{{ value != 1 ? "s" : "" }}',
                     $statistics->totals->regularForm
                 ),
                 new DiagnosticItem(
-                    'Payments: <b>{{ value }} form{{ value != 1 ? "s" : "" }}</b>',
+                    'Payments: <b>{{ value }}</b> form{{ value != 1 ? "s" : "" }}',
                     $statistics->totals->payment
                 ),
             ];
@@ -495,7 +495,7 @@ class DiagnosticsService extends BaseService
                                 return !$value;
                             },
                             '{{ extra.count }} Errors logged in the Freeform Error Log',
-                            'Please check the <a href="{{ extra.url }}">error log </a> to see if there any serious issues.',
+                            'Please check the <a href="{{ extra.url }}">error log </a> to see if there are any serious issues.',
                             [
                                 'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
                                 'count' => Freeform::getInstance()->logger->getLogReader()->count(),

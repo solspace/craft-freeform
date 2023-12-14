@@ -162,7 +162,7 @@ class DiagnosticsService extends BaseService
                             return -1 === $bytes || $bytes >= $min;
                         },
                         'Memory Limit issue',
-                        'Does not meet the required minimum of 256M. Please consider increasing the memory limit.'
+                        'Freeform requires a minimum memory limit of 256M but recommends using at least 512M. Please consider increasing the memory limit.'
                     ),
                 ]
             ),

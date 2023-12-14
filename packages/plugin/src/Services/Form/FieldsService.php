@@ -6,7 +6,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -141,16 +140,6 @@ class FieldsService extends BaseService
     public function getFavoriteFieldCount(): int
     {
         return FavoriteFieldRecord::find()->count();
-    }
-
-    public function getFormsWithStripeFieldCount(): int
-    {
-        return FormFieldRecord::find()
-            ->select('formId')
-            ->distinct()
-            ->where(['type' => StripeField::class])
-            ->count()
-        ;
     }
 
     /**

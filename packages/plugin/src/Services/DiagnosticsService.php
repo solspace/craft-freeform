@@ -10,12 +10,14 @@ use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 
@@ -28,7 +30,10 @@ class DiagnosticsService extends BaseService
         parent::__construct($config);
     }
 
-    public function getServerChecks()
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getServerChecks(): array
     {
         $trueOrFalse = function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
@@ -231,7 +236,10 @@ class DiagnosticsService extends BaseService
         ];
     }
 
-    public function getFreeformStats()
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformStats(): array
     {
         $freeform = Freeform::getInstance();
         $statistics = $this->getSummary()->statistics;
@@ -302,11 +310,10 @@ class DiagnosticsService extends BaseService
 
         foreach ($integrations as $integration) {
             $name = $integration['name'];
-            $version = isset($integration['version']) && '' !== $integration['version'] ? "({$integration['version']})" : '';
+            $version = $integration['version'];
             $count = $integration['count'];
 
-            $plural = 1 != $count ? 's' : '';
-            $label = "{$name}{$version}: <b>{$count}</b> form{$plural}";
+            $label = "{$name}".($version ? " ({$version}):" : ':')."<b>{$count}</b> ".(1 === $count ? 'form' : 'forms');
 
             $diagnosticItems[] = new DiagnosticItem($label, ['value' => $integration]);
         }
@@ -314,6 +321,9 @@ class DiagnosticsService extends BaseService
         return $diagnosticItems;
     }
 
+    /**
+     * @return DiagnosticItem[]
+     */
     public function getFreeformFormType(): array
     {
         $freeform = Freeform::getInstance();
@@ -322,12 +332,12 @@ class DiagnosticsService extends BaseService
         if ($freeform->isPro()) {
             return [
                 new DiagnosticItem(
-                    'Regular: <b>{{ value }}</b> form{{ value != 1 ? "s" : "" }}',
+                    'Regular: <b>{{ value }}</b> {{ value != 1 ? "forms" : "form" }}',
                     $statistics->totals->regularForm
                 ),
                 new DiagnosticItem(
-                    'Payments: <b>{{ value }}</b> form{{ value != 1 ? "s" : "" }}',
-                    $statistics->totals->payment
+                    'Payments: <b>{{ value }}</b> {{ value != 1 ? "forms" : "form" }}',
+                    $this->getFormsWithPaymentIntrgrations()
                 ),
             ];
         }
@@ -335,7 +345,10 @@ class DiagnosticsService extends BaseService
         return []; // Or any other action for non-Pro users
     }
 
-    public function getFreeformConfigurations()
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformConfigurations(): array
     {
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
@@ -605,10 +618,10 @@ class DiagnosticsService extends BaseService
     private function getIntegrationCount(): array
     {
         $integrations = (new Query())
-            ->select(['forms_integrations.id', 'forms_integrations.integrationId', 'forms_integrations.formId', 'integrations.class'])
-            ->from(FormIntegrationRecord::TABLE.' forms_integrations')
-            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = forms_integrations.integrationId')
-            ->where(['forms_integrations.enabled' => true])
+            ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class'])
+            ->from(FormIntegrationRecord::TABLE.' fi')
+            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
+            ->where(['fi.enabled' => true])
             ->all()
         ;
 
@@ -617,9 +630,11 @@ class DiagnosticsService extends BaseService
         foreach ($integrations as $integration) {
             $id = $integration['integrationId'];
             if (!isset($integrationsByForm[$id])) {
+                $type = $this->integrationTypeProvider->getTypeDefinition($integration['class']);
+
                 $integrationsByForm[$id] = [
-                    'name' => $this->integrationTypeProvider->getTypeDefinition($integration['class'])->name,
-                    'version' => $this->integrationTypeProvider->getTypeDefinition($integration['class'])->version,
+                    'name' => $type->name,
+                    'version' => $type->version ?? '',
                     'count' => 0,
                 ];
             }
@@ -628,5 +643,15 @@ class DiagnosticsService extends BaseService
         }
 
         return $integrationsByForm;
+    }
+
+    private function getFormsWithPaymentIntrgrations(): int
+    {
+        return FormFieldRecord::find()
+            ->select('formId')
+            ->distinct()
+            ->where(['type' => StripeField::class])
+            ->count()
+        ;
     }
 }

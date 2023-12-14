@@ -9,6 +9,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Connections\Entries;
 use Solspace\Freeform\Library\Connections\Users;
@@ -58,10 +59,9 @@ class SummaryService extends Component
 
         $totals = new Totals();
         $totals->forms = \count($freeform->forms->getAllFormIds());
-        $totals->regularForm = \count($freeform->forms->getAllRegularFormIds());
+        $totals->regularForm = \count($freeform->forms->getAllForms(Regular::class));
         $totals->fields = $freeform->fields->getAllFieldCount();
         $totals->favoriteFields = $freeform->fields->getFavoriteFieldCount();
-        $totals->payment = $freeform->fields->getFormsWithStripeFieldCount();
         $totals->emailNotifications = \count($freeform->notifications->getAllNotifications());
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);

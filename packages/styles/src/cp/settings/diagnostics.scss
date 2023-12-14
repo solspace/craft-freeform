@@ -71,7 +71,7 @@
 
   &-close {
     cursor: pointer;
-    height: 16x;
+    height: 16px;
     width: 16px;
     margin: 10px 10px 10px 35px;
   }
@@ -152,7 +152,7 @@
         margin: 0;
       }
 
-      > ul:not(.notices) {
+      > ul:not(.validators) {
         > li {
           padding: 1px 0;
 
@@ -162,7 +162,7 @@
         }
       }
 
-      ul.notices {
+      ul.validators {
         > li {
           font-style: italic;
           font-size: 12px;

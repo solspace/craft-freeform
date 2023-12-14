@@ -36,9 +36,9 @@ class DiagnosticsService extends BaseService
 
         return [
             new DiagnosticItem(
-                'Freeform <b>{{ value.isPro ? "Pro " }}{{ value.version }}</b>',
+                'Freeform <b>{{ value.edition|capitalize }} {{ value.version }}</b>',
                 [
-                    'isPro' => Freeform::getInstance()->isPro(),
+                    'edition' => Freeform::getInstance()->edition,
                     'version' => Freeform::getInstance()->getVersion(),
                 ]
             ),
@@ -292,7 +292,10 @@ class DiagnosticsService extends BaseService
         return $diagnosticItems;
     }
 
-    public function getFreeformIntegrations()
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformIntegrations(): array
     {
         $integrations = $this->getIntegrationCount();
         $diagnosticItems = [];
@@ -311,7 +314,7 @@ class DiagnosticsService extends BaseService
         return $diagnosticItems;
     }
 
-    public function getFreeformFormType()
+    public function getFreeformFormType(): array
     {
         $freeform = Freeform::getInstance();
         $statistics = $this->getSummary()->statistics;

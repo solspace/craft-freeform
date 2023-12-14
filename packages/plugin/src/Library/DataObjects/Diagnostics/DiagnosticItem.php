@@ -59,6 +59,15 @@ class DiagnosticItem
         return $this->renderMarkup($string, ['value' => $this->value]);
     }
 
+    public function getValidationClasses(): array
+    {
+        return array_filter([
+            $this->getNotices() ? 'item-notices' : null,
+            $this->getWarnings() ? 'item-warnings' : null,
+            $this->getSuggestions() ? 'item-suggestions' : null,
+        ]);
+    }
+
     public function getWarnings(): array
     {
         return $this->warnings;
@@ -74,6 +83,15 @@ class DiagnosticItem
         return $this->notices;
     }
 
+    public function getAllValidators(): array
+    {
+        return array_merge(
+            $this->getNotices(),
+            $this->getSuggestions(),
+            $this->getWarnings(),
+        );
+    }
+
     public function getColor(): string
     {
         if ($this->colorOverride) {
@@ -87,12 +105,12 @@ class DiagnosticItem
         return self::COLOR_PASS;
     }
 
-    private function addValidator(AbstractValidator $validator)
+    private function addValidator(AbstractValidator $validator): void
     {
         $this->validators[] = $validator;
     }
 
-    private function validate()
+    private function validate(): void
     {
         foreach ($this->validators as $validator) {
             if (!$validator->validate($this->value)) {
@@ -109,13 +127,11 @@ class DiagnosticItem
                 switch ($validator::class) {
                     case WarningValidator::class:
                         $this->warnings[] = $notificationItem;
-                        $this->notices[] = $notificationItem;
 
                         break;
 
                     case SuggestionValidator::class:
                         $this->suggestions[] = $notificationItem;
-                        $this->notices[] = $notificationItem;
 
                         break;
 

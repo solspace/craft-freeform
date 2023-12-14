@@ -4,45 +4,18 @@ namespace Solspace\Freeform\Library\DataObjects\Summary\Statistics;
 
 class Spam
 {
-    /** @var string */
-    public $spamProtectionBehavior = false;
-
-    /** @var bool */
-    public $spamFolder = false;
-
-    /** @var bool */
-    public $purgeSpam = false;
-
-    /** @var int */
-    public $purgeInterval = 0;
-
-    /** @var bool */
-    public $blockEmail = false;
-
-    /** @var bool */
-    public $blockKeywords = false;
-
-    /** @var bool */
-    public $blockIp = false;
-
-    /** @var bool */
-    public $submissionThrottling = false;
-
-    /** @var bool */
-    public $minSubmitTime = false;
-
-    /** @var bool */
-    public $submitExpiration = false;
-
-    /** @var bool */
-    public $captcha = false;
-
-    /** @var string */
-    public $captchaType = '';
-
-    /** @var bool */
-    public $bypassSpamCheckOnLoggedInUsers = false;
-
-    /** @var int */
-    public $submissionThrottlingCount = 0;
+    public ?bool $spamProtectionBehavior = false;
+    public ?bool $spamFolder = false;
+    public ?bool $purgeSpam = false;
+    public ?int $purgeInterval = 0;
+    public ?bool $blockEmail = false;
+    public ?bool $blockKeywords = false;
+    public ?bool $blockIp = false;
+    public ?bool $submissionThrottling = false;
+    public ?bool $minSubmitTime = false;
+    public ?bool $submitExpiration = false;
+    public ?bool $captcha = false;
+    public ?string $captchaType = '';
+    public ?bool $bypassSpamCheckOnLoggedInUsers = false;
+    public ?int $submissionThrottlingCount = 0;
 }

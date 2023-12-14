@@ -22,44 +22,37 @@
             {%- if item is iterable or item.markup -%}
                 <li>
                     {% if item is iterable %}
+
                         <h3>{{ key }}</h3>
                         {{ _self.renderItems(item) }}
+
                     {% else %}
+
                         <div class="items">
-                            <div class="item item
-									{%- if item.notices and (item.notices|length > 1 and item.notices|filter(notice => notice.type == 'WarningValidator')|length > 0) or (item.notices|length == 1 and item.notices[0].type == 'WarningValidator') -%}
-									  -warnings
-									  {%- elseif item.notices and item.notices[0].type == 'SuggestionValidator' -%}
-									  -suggestions
-									{%- endif -%}">
+                            <div class="item {{ item.validationClasses|join(' ') }}">
+                                {{ key }}
                                 {{ item.markup }}
-                                {{" "}}
-                                {% if item.notices %}
-                                    {% set renderWarning = false %}
-                                    {% for notice in item.notices %}
-                                        {% if notice.type == 'WarningValidator' %}
-                                            {% set renderWarning = true %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    {% if renderWarning %}
-                                        {{ _self.renderIcon('WarningValidator') }}
-                                    {% elseif item.notices[0].type == 'SuggestionValidator' %}
-                                        {{ _self.renderIcon('SuggestionValidator') }}
-                                    {% endif %}
+
+                                {% if item.warnings %}
+                                    {{ _self.renderIcon('WarningValidator') }}
+                                {% endif %}
+
+                                {% if item.suggestions %}
+                                    {{ _self.renderIcon('SuggestionValidator') }}
                                 {% endif %}
                             </div>
                         </div>
 
-
-                        {% if item.notices %}
-                            <ul class="notices">
-                                {% for notice in item.notices %}
-                                    <li class="{{ notice.type|lower }}">
-                                        {{ notice.message }}
+                        {% if item.allValidators %}
+                            <ul class="validators">
+                                {% for validator in item.allValidators %}
+                                    <li class="{{ validator.type|lower }}">
+                                        {{ validator.message }}
                                     </li>
                                 {% endfor %}
                             </ul>
                         {% endif %}
+
                     {% endif %}
                 </li>
             {%- endif -%}

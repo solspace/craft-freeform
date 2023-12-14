@@ -117,71 +117,48 @@ class DiagnosticsService extends BaseService
                 'Memory Limit: <b>{{ value }}</b>',
                 \ini_get('memory_limit'),
                 [
+                    // Suggestion validator for memory limits between 256M and 511M
                     new SuggestionValidator(
                         function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
                             $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
 
-                            $multiplier = 1;
-
-                            switch ($measurement) {
-                                case 'k':
-                                    $multiplier = 1024;
-
-                                    break;
-
-                                case 'm':
-                                    $multiplier = 1024 ** 2;
-
-                                    break;
-
-                                case 'g':
-                                    $multiplier = 1024 ** 3;
-
-                                    break;
-                            }
+                            $multiplier = match ($measurement) {
+                                'k' => 1024,
+                                'm' => 1024 ** 2,
+                                'g' => 1024 ** 3,
+                                default => 1,
+                            };
 
                             $bytes = $number * $multiplier;
-                            $min512M = 512 * 1024 ** 2; // 512M in bytes
+                            $min256M = 256 * 1024 ** 2; // 256M in bytes
+                            $max511M = 511 * 1024 ** 2; // 511M in bytes
 
-                            if ($bytes >= $min512M) {
-                                return true; // At least 512M
-                            }
-
-                            return false;
+                            // Trigger the suggestion if the memory limit is outside the range of 256M to 511M
+                            return $bytes < $min256M || $bytes >= $max511M;
                         },
                         'Memory Limit suggestion',
                         'Freeform recommends a memory limit of 512M or greater. Please consider increasing the memory limit.'
                     ),
+                    // Warning validator for memory limits below 256M
                     new WarningValidator(
                         function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
                             $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
 
-                            $multiplier = 1;
-
-                            switch ($measurement) {
-                                case 'k':
-                                    $multiplier = 1024;
-
-                                    break;
-
-                                case 'm':
-                                    $multiplier = 1024 ** 2;
-
-                                    break;
-
-                                case 'g':
-                                    $multiplier = 1024 ** 3;
-
-                                    break;
-                            }
+                            $multiplier = match ($measurement) {
+                                'k' => 1024,
+                                'm' => 1024 ** 2,
+                                'g' => 1024 ** 3,
+                                default => 1,
+                            };
 
                             $bytes = $number * $multiplier;
-                            $min = 256 * (1024 ** 2);
+                            $min = 256 * (1024 ** 2); // 256M in bytes
 
+                            // Trigger the warning if the memory limit is less than 256M
                             return -1 === $bytes || $bytes >= $min;
                         },
                         'Memory Limit issue',
@@ -337,7 +314,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     'Payments: <b>{{ value }}</b> {{ value != 1 ? "forms" : "form" }}',
-                    $this->getFormsWithPaymentIntrgrations()
+                    $this->getFormsWithPaymentIntegrations()
                 ),
             ];
         }
@@ -645,7 +622,7 @@ class DiagnosticsService extends BaseService
         return $integrationsByForm;
     }
 
-    private function getFormsWithPaymentIntrgrations(): int
+    private function getFormsWithPaymentIntegrations(): int
     {
         return FormFieldRecord::find()
             ->select('formId')

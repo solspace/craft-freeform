@@ -28,7 +28,7 @@
   position: relative;
   border-radius: 6px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1px;
 
   h2 {
     position: relative;
@@ -159,7 +159,7 @@
       ul.notices {
         > li {
           font-style: italic;
-          font-size: 13px;
+          font-size: 12px;
 
           &.suggestionvalidator {
             color: #009adb;

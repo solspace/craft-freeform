@@ -95,9 +95,9 @@
     <div class="gridy">
         {% set leftSections = [
             {'title': "Server Checks"|t('freeform'), 'items': server},
-            {'title': "Freeform Statistics"|t('freeform'), 'items': stats},
-            {'title': "Freeform Integrations"|t('freeform'), 'items': integrations},
-            {'title': "Form Types Configured"|t('freeform'), 'items': formType}
+            {'title': "Statistics"|t('freeform'), 'items': stats},
+            {'title': "Integrations"|t('freeform'), 'items': integrations},
+            {'title': "Form Types"|t('freeform'), 'items': formType}
         ] %}
         <div class="diag">
             {% for section in leftSections %}

@@ -55,7 +55,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum Craft version Freeform supports is 4.0.0 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.5.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.6.0', '<'),
                         'Potential Craft Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),
@@ -138,7 +138,7 @@ class DiagnosticsService extends BaseService
                             }
 
                             $bytes = $number * $multiplier;
-                            $min256M = 256 * 1024 ** 2; // 256M in bytes
+                            $min256M = 512 * 1024 ** 2; // 256M in bytes
 
                             if ($bytes >= $min256M) {
                                 return true; // At least 256M
@@ -147,7 +147,7 @@ class DiagnosticsService extends BaseService
                             return false;
                         },
                         'Memory Limit suggestion',
-                        'Freeform recommends a minimum memory limit of 256M. Please consider increasing the memory limit.'
+                        'Freeform recommends a memory limit of 512M or greater. Please consider increasing the memory limit.'
                     ),
                     new WarningValidator(
                         function ($value) {
@@ -175,12 +175,12 @@ class DiagnosticsService extends BaseService
                             }
 
                             $bytes = $number * $multiplier;
-                            $min = 128 * (1024 ** 2);
+                            $min = 256 * (1024 ** 2);
 
                             return -1 === $bytes || $bytes >= $min;
                         },
                         'Memory Limit issue',
-                        'Does not meet the required minimum of 128M'
+                        'Does not meet the required minimum of 256M. Please consider increasing the memory limit.'
                     ),
                 ]
             ),
@@ -191,7 +191,7 @@ class DiagnosticsService extends BaseService
                     new SuggestionValidator(
                         fn ($value) => 'misaligned_from' !== $value['issues'],
                         'Potential Email Configuration issue',
-                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings"
+                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings. This could potentially cause issues."
                     ),
                 ]
             ),
@@ -477,7 +477,7 @@ class DiagnosticsService extends BaseService
                 ),
             ],
 
-            'Reliabllity' => [
+            'Reliability' => [
                 new DiagnosticItem(
                     'Developer Digest Email: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
                     \count($this->getSettingsService()->getDigestRecipients()) > 0

@@ -290,6 +290,17 @@ class DiagnosticsService extends BaseService
             $version = $integration['version'];
             $count = $integration['count'];
 
+            // Mapping versions to their display names
+            $versionMap = [
+                'checkbox' => 'Checkbox',
+                'invisible' => 'Invisible',
+                'v2-checkbox' => 'v2 Checkbox',
+                'v2-invisible' => 'v2 Invisible',
+            ];
+
+            // Modify version text based on specific conditions or use defaults
+            $version = $versionMap[strtolower($version)] ?? $version;
+
             $label = "{$name}".($version ? " ({$version}):" : ':')."<b>{$count}</b> ".(1 === $count ? 'form' : 'forms');
 
             $diagnosticItems[] = new DiagnosticItem($label, ['value' => $integration]);

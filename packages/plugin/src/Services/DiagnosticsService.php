@@ -595,7 +595,7 @@ class DiagnosticsService extends BaseService
     private function getIntegrationCount(): array
     {
         $integrations = (new Query())
-            ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class'])
+            ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class', 'integrations.metadata'])
             ->from(FormIntegrationRecord::TABLE.' fi')
             ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
             ->where(['fi.enabled' => true])
@@ -606,12 +606,16 @@ class DiagnosticsService extends BaseService
 
         foreach ($integrations as $integration) {
             $id = $integration['integrationId'];
+
             if (!isset($integrationsByForm[$id])) {
                 $type = $this->integrationTypeProvider->getTypeDefinition($integration['class']);
 
+                // Check if the version exists in the type; otherwise, use metadata
+                $version = $type->version ?? json_decode($integration['metadata'], true)['version'] ?? null;
+
                 $integrationsByForm[$id] = [
                     'name' => $type->name,
-                    'version' => $type->version ?? '',
+                    'version' => $version ?? '', // Provide a default value if version is not found
                     'count' => 0,
                 ];
             }

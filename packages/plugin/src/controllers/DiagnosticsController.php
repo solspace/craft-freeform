@@ -26,9 +26,11 @@ class DiagnosticsController extends BaseController
 
         $server = $diagnostics->getServerChecks();
         $stats = $diagnostics->getFreeformStats();
-        $checks = $diagnostics->getFreeformChecks();
+        $configurations = $diagnostics->getFreeformConfigurations();
+        $integrations = $diagnostics->getFreeformIntegrations();
+        $formType = $diagnostics->getFreeformFormType();
 
-        $combined = array_merge($server, $stats, $checks);
+        $combined = array_merge($server, $stats, $configurations);
         [$warnings, $suggestions] = $this->compileBanners($combined);
 
         return $this->renderTemplate(
@@ -36,7 +38,9 @@ class DiagnosticsController extends BaseController
             [
                 'server' => $server,
                 'stats' => $stats,
-                'checks' => $checks,
+                'configurations' => $configurations,
+                'integrations' => $integrations,
+                'formType' => $formType,
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
             ]

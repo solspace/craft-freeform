@@ -115,13 +115,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $forms;
     }
 
-    public function getAllFormIds(): array
+    public function getAllFormIds(?string $type = null): array
     {
-        return $this
-            ->getFormQuery()
-            ->select('id')
-            ->column()
-        ;
+        $query = $this->getFormQuery()->select('id');
+        if (null !== $type) {
+            $query->where(['type' => $type]);
+        }
+
+        return $query->column();
     }
 
     public function getAllFormNames(bool $indexById = true): array

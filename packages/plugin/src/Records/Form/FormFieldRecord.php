@@ -52,8 +52,6 @@ class FormFieldRecord extends ActiveRecord
 
     public function validateFormHandleUniqueness($attribute)
     {
-        // Decode the metadata JSON to a PHP object/array
-        $metadata = json_decode($this->metadata);
         if (!isset($metadata->handle)) {
             return;
         }

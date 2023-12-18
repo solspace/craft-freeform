@@ -100,7 +100,7 @@ class FieldsService extends BaseService
 
         $type = $record->type;
 
-        $metadata = json_decode($record->metadata, true);
+        $metadata = $record->metadata;
         $properties = array_merge(
             [
                 'id' => $record->id,

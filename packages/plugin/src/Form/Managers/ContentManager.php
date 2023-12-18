@@ -97,8 +97,7 @@ class ContentManager
     {
         $table = $this->table;
         foreach ($this->fields as $field) {
-            $metadata = json_decode($field->metadata);
-            $handle = $metadata->handle ?? null;
+            $handle = $field->metadata->handle ?? null;
             if (!$handle) {
                 continue;
             }
@@ -158,8 +157,7 @@ class ContentManager
                 continue;
             }
 
-            $metadata = json_decode($field->metadata);
-            $handle = $metadata->handle ?? null;
+            $handle = $field->metadata->handle ?? null;
             if (!$handle) {
                 continue;
             }

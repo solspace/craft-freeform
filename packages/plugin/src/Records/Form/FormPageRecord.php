@@ -19,7 +19,6 @@ use craft\db\ActiveRecord;
  * @property int       $formId
  * @property int       $layoutId
  * @property string    $label
- * @property string    $handle
  * @property int       $order
  * @property string    $metadata
  * @property \DateTime $dateCreated

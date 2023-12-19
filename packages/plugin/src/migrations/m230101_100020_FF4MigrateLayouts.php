@@ -20,6 +20,8 @@ class m230101_100020_FF4MigrateLayouts extends Migration
         'cc_cvc',
         'mailing_list',
         'recaptcha',
+        'submit',
+        'save',
     ];
 
     public function safeUp(): bool
@@ -162,6 +164,31 @@ class m230101_100020_FF4MigrateLayouts extends Migration
             ['id'],
             'CASCADE'
         );
+
+        // --------------------------------------------------------------
+
+        $this->createTable(
+            '{{%freeform_favorite_fields}}',
+            [
+                'id' => $this->primaryKey(),
+                'userId' => $this->integer(),
+                'label' => $this->string(255)->notNull(),
+                'type' => $this->string(255)->notNull(),
+                'metadata' => $this->json(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]
+        );
+
+        $this->addForeignKey(
+            null,
+            '{{%freeform_favorite_fields}}',
+            ['userId'],
+            '{{%users}}',
+            ['id'],
+            'CASCADE'
+        );
     }
 
     private function migrateLayoutData(): void
@@ -254,7 +281,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                             'formId' => $formId,
                             'rowId' => $row->id,
                             'order' => $fieldOrder++,
-                            'type' => $this->getClass($props),
+                            'type' => $this->getFieldClass($props),
                             'metadata' => $this->extractMetadata($props),
                             'uid' => StringHelper::UUID(),
                         ]);
@@ -271,7 +298,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
         }
     }
 
-    private function getClassFromType(\stdClass $data): string
+    private function getFieldClass(\stdClass $data): string
     {
         $type = $data->type;
 
@@ -318,12 +345,24 @@ class m230101_100020_FF4MigrateLayouts extends Migration
 
     private function extractMetadata(\stdClass $data): array
     {
+        $defaultValue = $data->value ?? null;
+        if (\in_array($data->type, ['checkbox_group', 'multiple_select'])) {
+            $defaultValue = $data->values ?? [];
+            if (\is_string($defaultValue)) {
+                if (empty($defaultValue)) {
+                    $defaultValue = [];
+                } else {
+                    $defaultValue = [$defaultValue];
+                }
+            }
+        }
+
         $base = [
             'label' => $data->label ?? '',
             'handle' => $data->handle ?? '',
-            'required' => (bool) $data?->required,
+            'required' => (bool) ($data->required ?? false),
             'instructions' => $data->instructions ?? '',
-            'defaultValue' => $data->value ?? null,
+            'defaultValue' => $defaultValue,
             'encrypted' => false,
             'attributes' => [
                 'input' => $data->inputAttributes ?? [],
@@ -340,7 +379,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
             'minLength' => $data->minLength ?? null,
             'maxLength' => $data->maxLength ?? null,
             // Checkbox
-            'checked' => $data->checked ?? null,
+            'checkedByDefault' => (bool) ($data->checked ?? null),
             // Options
             'options' => $data->options ?? null,
             // File
@@ -403,9 +442,26 @@ class m230101_100020_FF4MigrateLayouts extends Migration
     private function processFieldExceptions(\stdClass $data): array
     {
         return match ($data->type) {
-            'select', 'checkbox_group', 'radio_group' => $this->processOptions($data),
+            'select', 'checkbox_group', 'radio_group', 'multiple_select' => $this->processOptions($data),
+            'opinion_scale' => $this->processOpinionScale($data),
+            'dynamic_recipients' => $this->processDynamicRecipients($data),
+            'rich_text', 'html' => ['content' => $data->value ?? ''],
             default => [],
         };
+    }
+
+    private function processOpinionScale(\stdClass $data): array
+    {
+        return [
+            'scales' => array_map(
+                fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
+                $data->scales,
+            ),
+            'legends' => array_map(
+                fn ($legend) => [$legend->legend ?? ''],
+                $data->legends,
+            ),
+        ];
     }
 
     private function processOptions(\stdClass $data): array
@@ -448,7 +504,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'title',
+                        'label' => $configuration->label ?? 'username',
                         'value' => $configuration->value ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
@@ -484,6 +540,48 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                 ],
             ],
         };
+    }
+
+    private function processDynamicRecipients(\stdClass $data): array
+    {
+        $selectedEmail = $data->value ?? '';
+        if ($data->showAsCheckboxes) {
+            $selectedEmail = $data->values ?? [];
+        }
+
+        $emailIndexes = [];
+        $options = [];
+        $iterator = 1;
+        foreach ($data->options as $option) {
+            $emailIndexes[$option->value] = $iterator;
+
+            $options[] = [
+                'value' => $iterator,
+                'label' => $option->label,
+            ];
+
+            ++$iterator;
+        }
+
+        if (\is_string($selectedEmail)) {
+            $selectedEmail = $emailIndexes[$selectedEmail] ?? '';
+        } else {
+            $selectedEmail = array_filter(
+                array_map(
+                    fn ($email) => $emailIndexes[$email] ?? '',
+                    $selectedEmail,
+                )
+            );
+        }
+
+        return [
+            'defaultValue' => $selectedEmail,
+            'optionConfiguration' => [
+                'source' => 'custom',
+                'options' => $options,
+                'useCustomValues' => true,
+            ],
+        ];
     }
 
     private function getPredefinedOptionConfiguration(\stdClass $data): array

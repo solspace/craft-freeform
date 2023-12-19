@@ -32,7 +32,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
     use MultipleValueTrait;
 
     #[Hidden]
-    protected array $defaultValue = [];
+    protected ?array $defaultValue = [];
 
     public function getType(): string
     {
@@ -41,7 +41,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
 
     public function getDefaultValue(): array
     {
-        return $this->defaultValue;
+        return $this->defaultValue ?? [];
     }
 
     public function getInputHtml(): string

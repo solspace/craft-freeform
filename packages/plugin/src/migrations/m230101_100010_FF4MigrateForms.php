@@ -85,7 +85,7 @@ class m230101_100010_FF4MigrateForms extends Migration
 
             $this->update(
                 '{{%freeform_forms}}',
-                ['metadata' => json_encode($metadata)],
+                ['metadata' => $metadata],
                 ['id' => $id],
             );
         }

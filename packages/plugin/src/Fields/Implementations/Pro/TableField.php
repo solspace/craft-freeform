@@ -80,7 +80,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         label: 'Add Button Markup',
         instructions: 'Set the markup for the add button.',
     )]
-    protected ?string $addButtonMarkup;
+    protected ?string $addButtonMarkup = null;
 
     #[Input\Text(
         label: 'Remove Button Label',
@@ -92,7 +92,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         label: 'Remove Button Markup',
         instructions: 'Set the markup for the remove button.',
     )]
-    protected ?string $removeButtonMarkup;
+    protected ?string $removeButtonMarkup = null;
 
     #[Section('attributes')]
     #[ValueTransformer(TableAttributesTransformer::class)]

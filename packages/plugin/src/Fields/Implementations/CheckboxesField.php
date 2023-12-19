@@ -35,7 +35,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     use OneLineTrait;
 
     #[Hidden]
-    protected array $defaultValue = [];
+    protected ?array $defaultValue = [];
 
     /**
      * Return the field TYPE.
@@ -47,7 +47,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
 
     public function getDefaultValue(): array
     {
-        return $this->defaultValue;
+        return $this->defaultValue ?? [];
     }
 
     /**

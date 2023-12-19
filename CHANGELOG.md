@@ -1,9 +1,9 @@
 # Solspace Freeform Changelog
 
-## 3.13.33 - 2023-10-19
+## 3.13.33 - 2023-12-19
 
 ### Added
-- Added support for additional mimetype file upload validation on `.dwg`, `.dxf`, `.msg`, `.sia`, `.stl`, `.stp`, and `.step`. 
+- Added support for additional mimetype file upload validation on `.dwg`, `.dxf`, `.msg`, `.sia`, `.stl`, `.stp`, and `.step`.
 
 ## 3.13.32 - 2023-07-24
 

@@ -46,3 +46,26 @@ export const SectionIcon = styled.div`
   width: 18px;
   height: 18px;
 `;
+
+export const SidebarSeperator = styled.div`
+  border-bottom: solid 1px ${colors.gray200};
+  margin: ${spacings.lg} 0;
+`;
+
+export const SidebarMeta = styled.p`
+  font-size: 0.75rem;
+  color: ${colors.gray400};
+  padding: 0 ${spacings.md};
+  margin: 0 0 ${spacings.xs};
+`;
+
+export const SidebarMetaUserLink = styled.a`
+  color: ${colors.gray400};
+  text-decoration: underline;
+  font-weight: 600;
+  
+  &:hover {
+    color: ${colors.gray500};
+    text-decoration: none;
+  }
+`;

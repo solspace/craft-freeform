@@ -36,3 +36,8 @@ export type FormSettingNamespace = {
   sections: Section[];
   properties: Property[];
 };
+
+export type FormOwnership = {
+  dateCreated: string;
+  dateUpdated: string;
+}

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { useQueryFormSettings } from '@ff-client/queries/forms';
+import {useQueryFormOwnership, useQueryFormSettings} from '@ff-client/queries/forms';
 import type { FormSettingNamespace } from '@ff-client/types/forms';
 import type { Section } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
@@ -13,16 +13,24 @@ import {
   SectionIcon,
   SectionLink,
   SectionWrapper,
+  SidebarSeperator,
+  SidebarMeta,
+  SidebarMetaUserLink
 } from './settings.sidebar.styles';
 
 export const SettingsSidebar: React.FC = () => {
   const navigate = useNavigate();
-  const { sectionHandle } = useParams();
+  const { formId, sectionHandle } = useParams();
 
   const formErrors = useSelector(formSelectors.errors);
 
   const { data } = useQueryFormSettings();
   if (!data) {
+    return null;
+  }
+
+  const { data: ownership } = useQueryFormOwnership(Number(formId || 0));
+  if (!ownership) {
     return null;
   }
 
@@ -70,6 +78,15 @@ export const SettingsSidebar: React.FC = () => {
           ))
         )}
       </SectionWrapper>
+      <SidebarSeperator />
+        <SectionWrapper>
+          <SidebarMeta>
+            Created by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.dateCreated }
+          </SidebarMeta>
+          <SidebarMeta>
+            Last Updated by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.dateUpdated }
+          </SidebarMeta>
+        </SectionWrapper>
     </Sidebar>
   );
 };

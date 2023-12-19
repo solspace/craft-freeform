@@ -75,6 +75,21 @@ class FormsController extends BaseApiController
         return $this->response;
     }
 
+    public function actionOwnership(int $id): Response
+    {
+        $form = $this->getFormsService()->getFormById($id);
+
+        $data = [
+            'dateCreated' => $form->getDateCreated()->format('n/j/Y, g:i A'),
+            'dateUpdated' => $form->getDateUpdated()->format('n/j/Y, g:i A'),
+        ];
+
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $this->serializer->serialize($data, 'json');
+
+        return $this->response;
+    }
+
     protected function get(): array
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);

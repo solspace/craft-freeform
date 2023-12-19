@@ -38,6 +38,12 @@ export type FormSettingNamespace = {
 };
 
 export type FormOwnership = {
-  dateCreated: string;
-  dateUpdated: string;
+  created: {
+    datetime: string;
+    user: {};
+  };
+  updated: {
+    datetime: string;
+    user: {};
+  };
 }

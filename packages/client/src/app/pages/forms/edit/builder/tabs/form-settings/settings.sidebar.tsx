@@ -81,10 +81,10 @@ export const SettingsSidebar: React.FC = () => {
       <SidebarSeperator />
         <SectionWrapper>
           <SidebarMeta>
-            Created by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.dateCreated }
+            Created by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.created.datetime }
           </SidebarMeta>
           <SidebarMeta>
-            Last Updated by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.dateUpdated }
+            Last Updated by <SidebarMetaUserLink href="#">Admin</SidebarMetaUserLink> at:<br/> { ownership.updated.datetime }
           </SidebarMeta>
         </SectionWrapper>
     </Sidebar>

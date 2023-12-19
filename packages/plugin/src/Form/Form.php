@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Form;
 
 use Carbon\Carbon;
 use craft\helpers\Template;
+use craft\elements\User;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
@@ -131,6 +132,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private Carbon $dateCreated;
     private Carbon $dateUpdated;
+
+    private int $createdId;
+    private int $updatedId;
 
     private ?Submission $submission = null;
 
@@ -469,6 +473,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getDateUpdated(): Carbon
     {
         return $this->dateUpdated;
+    }
+
+    public function getCreatedBy(): User
+    {
+        return User::findOne($this->createdId);
+    }
+
+    public function getUpdatedBy(): User
+    {
+        return User::findOne($this->updatedId);
     }
 
     #[Ignore]

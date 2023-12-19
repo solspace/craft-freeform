@@ -78,10 +78,26 @@ class FormsController extends BaseApiController
     public function actionOwnership(int $id): Response
     {
         $form = $this->getFormsService()->getFormById($id);
+        $createdBy = $form->getCreatedBy();
+        $updatedBy = $form->getUpdatedBy();
 
         $data = [
-            'dateCreated' => $form->getDateCreated()->format('n/j/Y, g:i A'),
-            'dateUpdated' => $form->getDateUpdated()->format('n/j/Y, g:i A'),
+            'created' => [
+                'datetime' => $form->getDateCreated()->format('n/j/Y, g:i A'),
+                'user' => [
+                    'id' => $createdBy->getId(),
+                    'url' => $createdBy->getUrl(),
+                    'name' => $createdBy->getFieldValue('fullName') ?? $createdBy->getFieldValue('username')
+                ]
+            ],
+            'updated' => [
+                'datetime' => $form->getDateUpdated()->format('n/j/Y, g:i A'),
+                'user' => [
+                    'id' => $updatedBy->getId(),
+                    'url' => $updatedBy->getUrl(),
+                    'name' => $updatedBy->getFieldValue('fullName') ?? $createdBy->getFieldValue('username')
+                ]
+            ],
         ];
 
         $this->response->format = Response::FORMAT_JSON;

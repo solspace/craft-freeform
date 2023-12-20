@@ -5,13 +5,15 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
+use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
+use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
 
-class m230101_100020_FF4MigrateLayouts extends Migration
+class m230101_100040_FF4to5_MigrateData extends Migration
 {
     private const IGNORED_FIELD_TYPES = [
         'cc_details',
@@ -26,7 +28,6 @@ class m230101_100020_FF4MigrateLayouts extends Migration
 
     public function safeUp(): bool
     {
-        $this->addLayoutTables();
         $this->migrateLayoutData();
 
         return true;
@@ -34,161 +35,9 @@ class m230101_100020_FF4MigrateLayouts extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100020_FF4MigrateLayouts cannot be reverted.\n";
+        echo "m230101_100040_FF4to5_MigrateData cannot be reverted.\n";
 
         return false;
-    }
-
-    private function addLayoutTables(): void
-    {
-        $this->createTable(
-            '{{%freeform_forms_layouts}}',
-            [
-                'id' => $this->primaryKey(),
-                'formId' => $this->integer()->notNull(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]
-        );
-
-        $this->createIndex(null, '{{%freeform_forms_layouts}}', ['formId']);
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_layouts}}',
-            ['formId'],
-            '{{%freeform_forms}}',
-            ['id'],
-            'CASCADE'
-        );
-
-        // --------------------------------------------------------------
-
-        $this->createTable(
-            '{{%freeform_forms_pages}}',
-            [
-                'id' => $this->primaryKey(),
-                'formId' => $this->integer()->notNull(),
-                'layoutId' => $this->integer()->notNull(),
-                'label' => $this->string(255)->notNull(),
-                'order' => $this->integer()->defaultValue(0),
-                'metadata' => $this->json(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ],
-        );
-
-        $this->createIndex(null, '{{%freeform_forms_pages}}', ['formId', 'order']);
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_pages}}',
-            ['formId'],
-            '{{%freeform_forms}}',
-            ['id'],
-            'CASCADE'
-        );
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_pages}}',
-            ['layoutId'],
-            '{{%freeform_forms_layouts}}',
-            ['id'],
-            'CASCADE'
-        );
-
-        // --------------------------------------------------------------
-
-        $this->createTable(
-            '{{%freeform_forms_rows}}',
-            [
-                'id' => $this->primaryKey(),
-                'formId' => $this->integer()->notNull(),
-                'layoutId' => $this->integer()->notNull(),
-                'order' => $this->integer()->defaultValue(0),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]
-        );
-
-        $this->createIndex(null, '{{%freeform_forms_rows}}', ['formId', 'order']);
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_rows}}',
-            ['formId'],
-            '{{%freeform_forms}}',
-            ['id'],
-            'CASCADE'
-        );
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_rows}}',
-            ['layoutId'],
-            '{{%freeform_forms_layouts}}',
-            ['id'],
-            'CASCADE'
-        );
-
-        // --------------------------------------------------------------
-
-        $this->createTable(
-            '{{%freeform_forms_fields}}',
-            [
-                'id' => $this->primaryKey(),
-                'formId' => $this->integer()->notNull(),
-                'type' => $this->string(255)->notNull(),
-                'metadata' => $this->json(),
-                'rowId' => $this->integer()->null(),
-                'order' => $this->integer()->defaultValue(0),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]
-        );
-
-        $this->createIndex(null, '{{%freeform_forms_fields}}', ['rowId', 'order']);
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_fields}}',
-            ['formId'],
-            '{{%freeform_forms}}',
-            ['id'],
-            'CASCADE'
-        );
-        $this->addForeignKey(
-            null,
-            '{{%freeform_forms_fields}}',
-            ['rowId'],
-            '{{%freeform_forms_rows}}',
-            ['id'],
-            'CASCADE'
-        );
-
-        // --------------------------------------------------------------
-
-        $this->createTable(
-            '{{%freeform_favorite_fields}}',
-            [
-                'id' => $this->primaryKey(),
-                'userId' => $this->integer(),
-                'label' => $this->string(255)->notNull(),
-                'type' => $this->string(255)->notNull(),
-                'metadata' => $this->json(),
-                'dateCreated' => $this->dateTime()->notNull(),
-                'dateUpdated' => $this->dateTime()->notNull(),
-                'uid' => $this->uid(),
-            ]
-        );
-
-        $this->addForeignKey(
-            null,
-            '{{%freeform_favorite_fields}}',
-            ['userId'],
-            '{{%users}}',
-            ['id'],
-            'CASCADE'
-        );
     }
 
     private function migrateLayoutData(): void
@@ -287,6 +136,9 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                         ]);
                         $field->save();
 
+                        $this->processDynamicNotifications($field, $props);
+                        $this->processEmailNotifications($field, $props);
+
                         $hasFields = true;
                     }
 
@@ -295,6 +147,8 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                     }
                 }
             }
+
+            $this->processAdminNotifications($formId, $properties->admin_notifications ?? null);
         }
     }
 
@@ -365,11 +219,11 @@ class m230101_100020_FF4MigrateLayouts extends Migration
             'defaultValue' => $defaultValue,
             'encrypted' => false,
             'attributes' => [
-                'input' => $data->inputAttributes ?? [],
+                'input' => $this->parseAttributes($data->inputAttributes ?? []),
                 'container' => [],
-                'label' => $data->labelAttributes ?? [],
-                'error' => $data->errorAttributes ?? [],
-                'instructions' => $data->instructionAttributes ?? [],
+                'label' => $this->parseAttributes($data?->labelAttributes ?? []),
+                'error' => $this->parseAttributes($data?->errorAttributes ?? []),
+                'instructions' => $this->parseAttributes($data->instructionAttributes ?? []),
             ],
         ];
 
@@ -553,10 +407,10 @@ class m230101_100020_FF4MigrateLayouts extends Migration
         $options = [];
         $iterator = 1;
         foreach ($data->options as $option) {
-            $emailIndexes[$option->value] = $iterator;
+            $emailIndexes[$option->value] = $option->label;
 
             $options[] = [
-                'value' => $iterator,
+                'value' => $option->label,
                 'label' => $option->label,
             ];
 
@@ -568,7 +422,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
         } else {
             $selectedEmail = array_filter(
                 array_map(
-                    fn ($email) => $emailIndexes[$email] ?? '',
+                    fn ($email) => $emailIndexes[$email] ?? null,
                     $selectedEmail,
                 )
             );
@@ -579,7 +433,7 @@ class m230101_100020_FF4MigrateLayouts extends Migration
             'optionConfiguration' => [
                 'source' => 'custom',
                 'options' => $options,
-                'useCustomValues' => true,
+                'useCustomValues' => false,
             ],
         ];
     }
@@ -725,5 +579,107 @@ class m230101_100020_FF4MigrateLayouts extends Migration
                     ],
                 ];
         }
+    }
+
+    private function processAdminNotifications(int $formId, ?\stdClass $data): void
+    {
+        if (null === $data) {
+            return;
+        }
+
+        $recipients = FreeformStringHelper::extractSeparatedValues($data->recipients ?? '', ',');
+        if (empty($recipients)) {
+            return;
+        }
+
+        $notification = new FormNotificationRecord();
+        $notification->formId = $formId;
+        $notification->class = 'Solspace\Freeform\Notifications\Types\Admin\Admin';
+        $notification->enabled = true;
+        $notification->dateCreated = new \DateTime();
+        $notification->dateUpdated = new \DateTime();
+        $notification->uid = StringHelper::UUID();
+        $notification->metadata = [
+            'name' => 'Admin notification',
+            'enabled' => true,
+            'template' => $data->notificationId ?? null,
+            'recipients' => array_map(
+                fn ($recipient) => [
+                    'name' => '',
+                    'email' => $recipient,
+                ],
+                $recipients,
+            ),
+        ];
+        $notification->save();
+    }
+
+    private function processDynamicNotifications(FormFieldRecord $record, \stdClass $props): void
+    {
+        if ('dynamic_recipients' !== $props->type) {
+            return;
+        }
+
+        $notificationId = $props->notificationId ?: null;
+
+        $notification = new FormNotificationRecord();
+        $notification->formId = $record->formId;
+        $notification->class = 'Solspace\Freeform\Notifications\Types\Dynamic\Dynamic';
+        $notification->enabled = true;
+        $notification->dateCreated = new \DateTime();
+        $notification->dateUpdated = new \DateTime();
+        $notification->uid = StringHelper::UUID();
+        $notification->metadata = [
+            'name' => $record->metadata['label'] ?? 'Dynamic Notification',
+            'enabled' => true,
+            'field' => $record->uid,
+            'template' => $notificationId,
+            'recipientMapping' => array_map(
+                fn ($option) => [
+                    'value' => $option->label,
+                    'template' => '',
+                    'recipients' => [['name' => '', 'email' => $option->value]],
+                ],
+                $props->options,
+            ),
+        ];
+
+        $notification->save();
+    }
+
+    private function processEmailNotifications(FormFieldRecord $record, \stdClass $props): void
+    {
+        if ('email' !== $props->type) {
+            return;
+        }
+
+        $notification = new FormNotificationRecord();
+        $notification->formId = $record->formId;
+        $notification->class = 'Solspace\Freeform\Notifications\Types\EmailField\EmailField';
+        $notification->enabled = true;
+        $notification->dateCreated = new \DateTime();
+        $notification->dateUpdated = new \DateTime();
+        $notification->uid = StringHelper::UUID();
+        $notification->metadata = [
+            'name' => $record->metadata['label'] ?? 'Email Notification',
+            'enabled' => true,
+            'field' => $record->uid,
+            'template' => $props->notificationId ?? null,
+        ];
+
+        $notification->save();
+    }
+
+    private function parseAttributes(array $attributes = []): array
+    {
+        $parsed = [];
+        foreach ($attributes as $attribute) {
+            $attr = $attribute->attribute ?? $attribute->value ?? '';
+            $value = $attribute->value ?? '';
+
+            $parsed[$attr] = $value;
+        }
+
+        return $parsed;
     }
 }

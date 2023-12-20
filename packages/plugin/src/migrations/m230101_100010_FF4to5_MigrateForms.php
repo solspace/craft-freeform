@@ -10,7 +10,7 @@ use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Settings;
 
-class m230101_100010_FF4MigrateForms extends Migration
+class m230101_100010_FF4to5_MigrateForms extends Migration
 {
     public function safeUp(): bool
     {
@@ -40,6 +40,14 @@ class m230101_100010_FF4MigrateForms extends Migration
             $general = new GeneralSettings();
             $behavior = new BehaviorSettings();
 
+            $oldAttributes = $form->tagAttributes ?? [];
+            $attributes = [];
+            foreach ($oldAttributes as $oldAttribute) {
+                $attr = $oldAttribute->attribute ?? $oldAttribute->value ?? '';
+                $value = $oldAttribute->value ?? '';
+                $attributes[$attr] = $value;
+            }
+
             $propertyProvider->setObjectProperties(
                 $general,
                 [
@@ -51,7 +59,7 @@ class m230101_100010_FF4MigrateForms extends Migration
                     'description' => $form->description,
                     'color' => $form->color,
                     'attributes' => [
-                        'form' => [],
+                        'form' => $attributes,
                         'row' => [],
                         'success' => [],
                         'errors' => [],
@@ -95,7 +103,7 @@ class m230101_100010_FF4MigrateForms extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100010_FF4MigrateForms cannot be reverted.\n";
+        echo "m230101_100010_FF4to5_MigrateForms cannot be reverted.\n";
 
         return false;
     }

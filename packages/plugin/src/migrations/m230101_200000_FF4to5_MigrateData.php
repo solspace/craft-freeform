@@ -323,11 +323,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         return [
             'scales' => array_map(
                 fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
-                $data->scales,
+                $data->scales ?? [],
             ),
             'legends' => array_map(
                 fn ($legend) => [$legend->legend ?? ''],
-                $data->legends,
+                $data->legends ?? [],
             ),
         ];
     }

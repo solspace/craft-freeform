@@ -53,7 +53,7 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 [
                     'name' => $form->name,
                     'handle' => $form->handle,
-                    'type' => $data['type'],
+                    'type' => $formData->formType ?? $data['type'] ?? 'Solspace\Freeform\Form\Types\Regular',
                     'submissionTitle' => $form->submissionTitleFormat,
                     'formattingTemplate' => $form->formTemplate,
                     'description' => $form->description,

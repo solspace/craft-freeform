@@ -395,10 +395,10 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 ],
             ],
             'predefined' => [
-                'optionConfiguration' => [
-                    'source' => 'predefined',
-                    ...$this->getPredefinedOptionConfiguration($data),
-                ],
+                'optionConfiguration' => array_merge(
+                    ['source' => 'predefined'],
+                    $this->getPredefinedOptionConfiguration($data),
+                ),
             ],
             default => [
                 'optionConfiguration' => [
@@ -737,8 +737,6 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 $this->processCriteria($ruleRecord->id, $pageRule->criteria);
             }
         }
-
-        $test = '';
     }
 
     private function processCriteria(int $ruleId, array $criteriaList): void

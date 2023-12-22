@@ -28,14 +28,12 @@ use craft\web\UploadedFile;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Events\Files\UploadEvent;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
-use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\ErrorException;
 use yii\base\Exception;
@@ -47,8 +45,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
     public const EVENT_BEFORE_UPLOAD = 'beforeUpload';
     public const EVENT_AFTER_UPLOAD = 'afterUpload';
-
-    private static array $fileUploadFieldIds = [];
 
     /**
      * Uploads a file and flags it as "unfinalized"
@@ -374,27 +370,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $volume = \Craft::$app->getVolumes()->getVolumeByUid($parts[1]);
 
         return $volume ? $volume->id : null;
-    }
-
-    /**
-     * Returns an array of all fields which are of type FILE.
-     */
-    public function getFileUploadFieldIds(): array
-    {
-        if (null === self::$fileUploadFieldIds) {
-            $fileUploadFieldIds = (new Query())
-                ->select(['id'])
-                ->from(FieldRecord::TABLE)
-                ->where(['type' => FieldInterface::TYPE_FILE])
-                ->column()
-            ;
-
-            $fileUploadFieldIds = array_map('intval', $fileUploadFieldIds);
-
-            self::$fileUploadFieldIds = $fileUploadFieldIds;
-        }
-
-        return self::$fileUploadFieldIds;
     }
 
     /**

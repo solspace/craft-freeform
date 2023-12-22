@@ -21,7 +21,7 @@ use yii\db\ActiveQuery;
  * @property int       $rowId
  * @property int       $order
  * @property string    $type
- * @property string    $metadata
+ * @property array     $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid

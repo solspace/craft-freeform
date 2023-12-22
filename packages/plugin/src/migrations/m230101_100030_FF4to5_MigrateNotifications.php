@@ -4,7 +4,7 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 
-class m230101_100020_FF4to5_MigrateNotifications extends Migration
+class m230101_100030_FF4to5_MigrateNotifications extends Migration
 {
     public function safeUp(): bool
     {

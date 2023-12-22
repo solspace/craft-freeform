@@ -4,7 +4,7 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 
-class m230101_100100_FF4RemoveOldTables extends Migration
+class m230101_300100_FF4RemoveOldTables extends Migration
 {
     public function safeUp(): bool
     {

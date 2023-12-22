@@ -6,14 +6,20 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
 use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Library\Rules\Condition;
+use Solspace\Freeform\Library\Rules\Rule;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\PageRuleRecord;
+use Solspace\Freeform\Records\Rules\RuleConditionRecord;
+use Solspace\Freeform\Records\Rules\RuleRecord;
 
-class m230101_100040_FF4to5_MigrateData extends Migration
+class m230101_200000_FF4to5_MigrateData extends Migration
 {
     private const IGNORED_FIELD_TYPES = [
         'cc_details',
@@ -25,6 +31,9 @@ class m230101_100040_FF4to5_MigrateData extends Migration
         'submit',
         'save',
     ];
+
+    private array $pageMap = [];
+    private array $fieldMap = [];
 
     public function safeUp(): bool
     {
@@ -107,6 +116,8 @@ class m230101_100040_FF4to5_MigrateData extends Migration
                 ]);
                 $pageRecord->save();
 
+                $this->pageMap['page'.$pageIndex] = $pageRecord;
+
                 $rowOrder = 0;
                 foreach ($pageData as $rowData) {
                     $row = new FormRowRecord([
@@ -136,6 +147,8 @@ class m230101_100040_FF4to5_MigrateData extends Migration
                         ]);
                         $field->save();
 
+                        $this->fieldMap[$fieldHash] = $field;
+
                         $this->processDynamicNotifications($field, $props);
                         $this->processEmailNotifications($field, $props);
 
@@ -149,6 +162,7 @@ class m230101_100040_FF4to5_MigrateData extends Migration
             }
 
             $this->processAdminNotifications($formId, $properties->admin_notifications ?? null);
+            $this->processRules($formId, $properties);
         }
     }
 
@@ -668,6 +682,81 @@ class m230101_100040_FF4to5_MigrateData extends Migration
         ];
 
         $notification->save();
+    }
+
+    private function processRules(int $formId, \stdClass $props): void
+    {
+        $rules = $props->rules ?? null;
+        if (!$rules || empty($rules->list)) {
+            return;
+        }
+
+        foreach ($rules->list as $data) {
+            $ruleRecord = null;
+
+            foreach ($data->fieldRules as $fieldRule) {
+                $targetFieldRecord = $this->fieldMap[$fieldRule->hash] ?? null;
+                if (!$targetFieldRecord) {
+                    continue;
+                }
+
+                $ruleRecord = new RuleRecord([
+                    'uid' => StringHelper::UUID(),
+                    'combinator' => $fieldRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                ]);
+                $ruleRecord->save();
+
+                $fieldRuleRecord = new FieldRuleRecord([
+                    'id' => $ruleRecord->id,
+                    'fieldId' => $targetFieldRecord->id,
+                    'display' => $fieldRule->show ? 'show' : 'hide',
+                ]);
+                $fieldRuleRecord->save();
+
+                $this->processCriteria($ruleRecord->id, $fieldRule->criteria);
+            }
+
+            foreach ($data->gotoRules as $pageRule) {
+                $targetPageRecord = $this->pageMap[$pageRule->targetPageHash] ?? null;
+                if (!$targetPageRecord) {
+                    continue;
+                }
+
+                $ruleRecord = new RuleRecord([
+                    'uid' => StringHelper::UUID(),
+                    'combinator' => $pageRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                ]);
+                $ruleRecord->save();
+
+                $pageRuleRecord = new PageRuleRecord([
+                    'id' => $ruleRecord->id,
+                    'pageId' => $targetPageRecord->id,
+                ]);
+                $pageRuleRecord->save();
+
+                $this->processCriteria($ruleRecord->id, $pageRule->criteria);
+            }
+        }
+
+        $test = '';
+    }
+
+    private function processCriteria(int $ruleId, array $criteriaList): void
+    {
+        foreach ($criteriaList as $criteria) {
+            $conditionField = $this->fieldMap[$criteria->hash] ?? null;
+            if (!$conditionField) {
+                continue;
+            }
+
+            $conditionRecord = new RuleConditionRecord([
+                'ruleId' => $ruleId,
+                'fieldId' => $conditionField->id,
+                'operator' => $criteria->equals ? Condition::TYPE_EQUALS : Condition::TYPE_NOT_EQUALS,
+                'value' => $criteria->value,
+            ]);
+            $conditionRecord->save();
+        }
     }
 
     private function parseAttributes(array $attributes = []): array

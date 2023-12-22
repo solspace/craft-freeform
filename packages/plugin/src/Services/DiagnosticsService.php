@@ -2,29 +2,53 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\db\Query;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\Gmail;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
 
 class DiagnosticsService extends BaseService
 {
-    public function getServerChecks()
+    public function __construct(
+        $config = [],
+        private IntegrationTypeProvider $integrationTypeProvider,
+    ) {
+        parent::__construct($config);
+    }
+
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getServerChecks(): array
     {
         $trueOrFalse = function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
+        [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
         return [
             new DiagnosticItem(
-                'Craft {{ value.edition == "pro" ? "Pro " }}{{ value.version }}',
+                'Freeform <b>{{ value.edition|capitalize }} {{ value.version }}</b>',
+                [
+                    'edition' => Freeform::getInstance()->edition,
+                    'version' => Freeform::getInstance()->getVersion(),
+                ]
+            ),
+            new DiagnosticItem(
+                'Craft <b>{{ value.edition == "pro" ? "Pro " }}{{ value.version }}</b>',
                 [
                     'version' => $system->craftVersion,
                     'edition' => $system->craftEdition,
@@ -33,33 +57,33 @@ class DiagnosticsService extends BaseService
                     new WarningValidator(
                         fn ($value) => version_compare($value['version'], '4.0.0', '>='),
                         'Craft compatibility issue',
-                        'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
+                        'The current minimum Craft version Freeform supports is 4.0.0 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.5.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.6.0', '<'),
                         'Potential Craft Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
+                        'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),
                 ]
             ),
             new DiagnosticItem(
-                'PHP {{ value }}',
+                'PHP <b>{{ value }}</b>',
                 $system->phpVersion,
                 [
                     new WarningValidator(
                         fn ($value) => version_compare($value, '8.0.2', '>='),
                         'PHP Compatibility issue',
-                        'You have an incompatible version of PHP installed for this site environment. This version of Freeform currently supports PHP 8.0.2 and greater.'
+                        'The current minimum PHP version Freeform supports is 8.0.2 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value, '8.2', '<'),
+                        fn ($value) => version_compare($value, '8.2.0', '<='),
                         'Potential PHP Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please confirm you're using a version of Freeform tested for compatibility with this version of PHP."
+                        'This version of Freeform may not be fully compatible with this version of PHP and may encounter issues. Please check if there are any updates available.'
                     ),
                 ]
             ),
             new DiagnosticItem(
-                '{{ value.driver == "pgsql" ? "PostgreSQL" : "MySQL" }} {{ value.version }}',
+                '{{ value.driver == "pgsql" ? "PostgreSQL" : "MySQL" }} <b>{{ value.version }}</b>',
                 [
                     'driver' => $system->databaseDriver,
                     'version' => \Craft::$app->db->getServerVersion(),
@@ -74,7 +98,7 @@ class DiagnosticsService extends BaseService
                             return version_compare($value['version'], '5.5', '>');
                         },
                         'MySQL Compatibility issue',
-                        'You have an incompatible version of MySQL installed for this site environment. The current minimum MySQL version Freeform supports is 5.5.x and greater.'
+                        'The current minimum MySQL version Freeform supports is 5.5.x or greater.'
                     ),
                     new WarningValidator(
                         function ($value) {
@@ -85,160 +109,61 @@ class DiagnosticsService extends BaseService
                             return version_compare($value['version'], '9.5', '>');
                         },
                         'PostgreSQL Compatibility issue',
-                        'You have an incompatible version of PostgreSQL installed for this site environment. The current minimum PostgreSQL version Freeform supports is 9.5.x and greater.'
+                        'The current minimum PostgreSQL version Freeform supports is 9.5.x or greater.'
                     ),
                 ]
             ),
             new DiagnosticItem(
-                'Memory Limit: [color]{{ value }}[/color]',
+                'Memory Limit: <b>{{ value }}</b>',
                 \ini_get('memory_limit'),
                 [
+                    // Suggestion validator for memory limits between 256M and 511M
+                    new SuggestionValidator(
+                        function ($value) {
+                            preg_match('/^(-?\d+)(\w)?/', $value, $matches);
+                            $number = (int) ($matches[1] ?? -1);
+                            $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
+
+                            $multiplier = match ($measurement) {
+                                'k' => 1024,
+                                'm' => 1024 ** 2,
+                                'g' => 1024 ** 3,
+                                default => 1,
+                            };
+
+                            $bytes = $number * $multiplier;
+                            $min256M = 256 * 1024 ** 2; // 256M in bytes
+                            $max511M = 511 * 1024 ** 2; // 511M in bytes
+
+                            // Trigger the suggestion if the memory limit is outside the range of 256M to 511M
+                            return $bytes < $min256M || $bytes >= $max511M;
+                        },
+                        'Memory Limit suggestion',
+                        'Freeform recommends a memory limit of 512M or greater. Please consider increasing the memory limit.'
+                    ),
+                    // Warning validator for memory limits below 256M
                     new WarningValidator(
                         function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
                             $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
 
-                            $multiplier = 1;
-
-                            switch ($measurement) {
-                                case 'k':
-                                    $multiplier = 1024;
-
-                                    break;
-
-                                case 'm':
-                                    $multiplier = 1024 ** 2;
-
-                                    break;
-
-                                case 'g':
-                                    $multiplier = 1024 ** 3;
-
-                                    break;
-                            }
+                            $multiplier = match ($measurement) {
+                                'k' => 1024,
+                                'm' => 1024 ** 2,
+                                'g' => 1024 ** 3,
+                                default => 1,
+                            };
 
                             $bytes = $number * $multiplier;
-                            $min = 128 * (1024 ** 2);
+                            $min = 256 * (1024 ** 2); // 256M in bytes
 
+                            // Trigger the warning if the memory limit is less than 256M
                             return -1 === $bytes || $bytes >= $min;
                         },
                         'Memory Limit issue',
-                        'Craft and Freeform recommend a minimum memory limit of 256M. Please consider increasing the memory limit for this server environment to avoid any potential issues.'
+                        'Freeform requires a minimum memory limit of 256M but recommends using at least 512M. Please consider increasing the memory limit.'
                     ),
-                ]
-            ),
-            new DiagnosticItem(
-                'PHP Sessions: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
-                [
-                    new WarningValidator(
-                        $trueOrFalse,
-                        'Potential issue with PHP Sessions',
-                        'We attempted to test your environment for a valid PHP session and it failed. It’s possible either your environment does not have them enabled or you have an invalid path set to the PHP Sessions directory.'
-                    ),
-                ]
-            ),
-            new DiagnosticItem(
-                'BC Math extension: [color]{{ value ? "Enabled" : "Not Found" }}[/color]',
-                \extension_loaded('bcmath'),
-                [
-                    new WarningValidator(
-                        $trueOrFalse,
-                        'Missing BC Math PHP extension',
-                        'Some parts of Freeform depend on having the BC Math extension enabled for your environment. Please have one of them enabled to avoid potential issues with Freeform.'
-                    ),
-                ]
-            ),
-            new DiagnosticItem(
-                'ImageMagick extension: [color]{{ value ? "Enabled" : "Not Found" }}[/color]',
-                \extension_loaded('imagick') || \extension_loaded('gd'),
-                [
-                    new WarningValidator(
-                        $trueOrFalse,
-                        'Missing GD extension or ImageMagick extension',
-                        'Some parts of Freeform depend on having either the GD extension or ImageMagick extension enabled for your environment. Please have one of them enabled to avoid potential issues with Freeform.'
-                    ),
-                ]
-            ),
-        ];
-    }
-
-    public function getFreeformStats()
-    {
-        $freeform = Freeform::getInstance();
-        $statistics = $this->getSummary()->statistics;
-
-        $formTemplates = $freeform->settings->getCustomFormTemplates();
-        $emailTemplates = $freeform->notifications->getAllNotifications();
-
-        $integrations = $freeform->integrations->getAllIntegrations();
-        $webhooks = $freeform->webhooks->getAllIntegrations();
-
-        $isSpamFolderEnabled = $freeform->settings->isSpamFolderEnabled();
-
-        $integrationList = [];
-        foreach ($integrations as $integration) {
-            $integrationList[] = $integration->name;
-        }
-
-        foreach ($webhooks as $webhook) {
-            $integrationList[] = $webhook->name;
-        }
-
-        $formTypes = [];
-        foreach ($freeform->formTypes->getTypes(false) as $formType) {
-            $formTypes[] = $formType['name'];
-        }
-
-        return [
-            new DiagnosticItem(
-                '<b>{{ value }}</b> Forms',
-                $statistics->totals->forms
-            ),
-            new DiagnosticItem(
-                '<b>{{ value }}</b> Fields',
-                $statistics->totals->fields
-            ),
-            new DiagnosticItem(
-                '<b>{{ value }}</b> Submissions',
-                $statistics->totals->submissions
-            ),
-            new DiagnosticItem(
-                $isSpamFolderEnabled
-                    ? '<b>{{ value }}</b> Submissions marked as Spam'
-                    : '<b>{{ value }}</b> Submissions blocked as Spam',
-                $statistics->totals->spam
-            ),
-            new DiagnosticItem(
-                '<b>{{ value }}</b> Formatting templates',
-                \count($formTemplates)
-            ),
-            new DiagnosticItem(
-                '<b>{{ value }}</b> Email Notification templates',
-                \count($emailTemplates)
-            ),
-            new DiagnosticItem(
-                '<b>{{ value|length }}</b> API integrations{{ value|length ? ": " }}{{ value|join(", ") }}',
-                $integrationList
-            ),
-            new DiagnosticItem(
-                '<b>{{ value|length }}</b> Additional form types{{ value|length ? ": " }}{{ value|join(", ") }}',
-                $formTypes
-            ),
-        ];
-    }
-
-    public function getFreeformChecks()
-    {
-        [$emailTransport, $emailIssues] = $this->getEmailSettings();
-
-        return [
-            new DiagnosticItem(
-                'Freeform {{ value.isPro ? "Pro " }}{{ value.version }}',
-                [
-                    'isPro' => Freeform::getInstance()->isPro(),
-                    'version' => Freeform::getInstance()->getVersion(),
                 ]
             ),
             new DiagnosticItem(
@@ -248,228 +173,341 @@ class DiagnosticsService extends BaseService
                     new SuggestionValidator(
                         fn ($value) => 'misaligned_from' !== $value['issues'],
                         'Potential Email Configuration issue',
-                        "When using SMTP for the Craft Email settings, the 'From Email' in email notification templates should always contain a matching email address, otherwise the notifications may not send. If you wish to have a different email address for this, consider using 'Reply to Email' instead."
-                    ),
-                    new NoticeValidator(
-                        fn ($value) => 'misaligned_from' !== $value['issues'],
-                        'Potential Email Configuration issue',
-                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings."
+                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings. This could potentially cause issues."
                     ),
                 ]
             ),
-            'Spam settings' => [
+            new DiagnosticItem(
+                'PHP Sessions: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
+                [
+                    new WarningValidator(
+                        $trueOrFalse,
+                        'Potential issue with PHP Sessions',
+                        'Tested server environment for a valid PHP session and it failed.'
+                    ),
+                ]
+            ),
+            new DiagnosticItem(
+                'BC Math extension: <b>{{ value ? "Enabled" : "Not Found" }}</b>',
+                \extension_loaded('bcmath'),
+                [
+                    new WarningValidator(
+                        $trueOrFalse,
+                        'Missing BC Math PHP extension',
+                        'Missing BC Math PHP extension'
+                    ),
+                ]
+            ),
+            new DiagnosticItem(
+                'ImageMagick extension: <b>{{ value ? "Enabled" : "Not Found" }}</b>',
+                \extension_loaded('imagick') || \extension_loaded('gd'),
+                [
+                    new WarningValidator(
+                        $trueOrFalse,
+                        'Missing GD extension or ImageMagick extension',
+                        'Missing GD extension or ImageMagick extension'
+                    ),
+                ]
+            ),
+        ];
+    }
+
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformStats(): array
+    {
+        $freeform = Freeform::getInstance();
+        $statistics = $this->getSummary()->statistics;
+
+        $formTemplates = $freeform->settings->getCustomFormTemplates();
+        $successTemplates = $freeform->settings->getSuccessTemplates();
+        $emailTemplates = $freeform->notifications->getAllNotifications();
+        $formTypes = $freeform->formTypes->getTypes();
+        $integrations = $freeform->integrations->getAllIntegrations();
+
+        $diagnosticItems = [
+            new DiagnosticItem(
+                'Forms: <b>{{ value }}</b>',
+                $statistics->totals->forms
+            ),
+            new DiagnosticItem(
+                'Fields: <b>{{ value }}</b>',
+                $statistics->totals->fields
+            ),
+            new DiagnosticItem(
+                'Favorites Fields: <b>{{ value }}</b>',
+                $statistics->totals->favoriteFields
+            ),
+            new DiagnosticItem(
+                'Submissions: <b>{{ value }}</b>',
+                $statistics->totals->submissions
+            ),
+            new DiagnosticItem(
+                'Spam Submissions: <b>{{ value }}</b>',
+                $statistics->totals->spam
+            ),
+            new DiagnosticItem(
+                'Formatting templates: <b>{{ value }}</b>',
+                \count($formTemplates)
+            ),
+            new DiagnosticItem(
+                'Email Notification templates: <b>{{ value }}</b>',
+                \count($emailTemplates)
+            ),
+            new DiagnosticItem(
+                'Success templates: <b>{{ value }}</b>',
+                \count($successTemplates)
+            ),
+            new DiagnosticItem(
+                'Integrations: <b>{{ value }}</b>',
+                \count($integrations)
+            ),
+        ];
+
+        // Check if Freeform Pro is enabled, then add the Form types item
+        if ($freeform->isPro()) {
+            $diagnosticItems[] = new DiagnosticItem(
+                'Form types: <b>{{ value|length }}</b>',
+                \count($formTypes)
+            );
+        }
+
+        return $diagnosticItems;
+    }
+
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformIntegrations(): array
+    {
+        $integrations = $this->getIntegrationCount();
+        $diagnosticItems = [];
+
+        foreach ($integrations as $integration) {
+            $name = $integration['name'];
+            $version = $integration['version'];
+            $count = $integration['count'];
+
+            // Mapping versions to their display names
+            $versionMap = [
+                'checkbox' => 'Checkbox',
+                'invisible' => 'Invisible',
+                'v2-checkbox' => 'v2 Checkbox',
+                'v2-invisible' => 'v2 Invisible',
+            ];
+
+            // Modify version text based on specific conditions or use defaults
+            $version = $versionMap[strtolower($version)] ?? $version;
+
+            $label = "{$name}".($version ? " ({$version}):" : ':')."<b>{$count}</b> ".(1 === $count ? 'form' : 'forms');
+
+            $diagnosticItems[] = new DiagnosticItem($label, ['value' => $integration]);
+        }
+
+        return $diagnosticItems;
+    }
+
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformFormType(): array
+    {
+        $freeform = Freeform::getInstance();
+        $statistics = $this->getSummary()->statistics;
+
+        if ($freeform->isPro()) {
+            return [
                 new DiagnosticItem(
-                    'Spam Folder: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                    $this->getSummary()->statistics->spam->spamFolder,
-                    [
-                        new SuggestionValidator(
-                            fn ($value) => $value,
-                            'Enable built-in Spam Folder',
-                            'Freeform includes a built-in Spam Folder. It is beneficial for most sites to have this enabled to catch false positives due to spam configuration issues or rare cases. Freeform will let through spammy submissions but flag them as spam instead of blocking them outright. The benefit is that you can see false positives and learn why they were flagged as spam. You can also recover these and trigger proper email notifications, etc. <a href="{{ extra.url }}">Enable Spam Folder ></a>',
-                            ['url' => UrlHelper::cpUrl('freeform/settings/spam')]
-                        ),
-                        new NoticeValidator(
-                            fn ($value) => $value,
-                            '',
-                            'It is beneficial for most sites to have this enabled to catch false positives and/or look for patterns with spam.'
-                        ),
-                    ],
-                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
+                    'Regular: <b>{{ value }}</b> {{ value != 1 ? "forms" : "form" }}',
+                    $statistics->totals->regularForm
                 ),
                 new DiagnosticItem(
-                    'Spam Blocking: [color]{{ value|join(", ") }}[/color]',
-                    $this->getSpamBlockers(),
-                    [],
-                    fn () => DiagnosticItem::COLOR_BASE
+                    'Payments: <b>{{ value }}</b> {{ value != 1 ? "forms" : "form" }}',
+                    $this->getFormsWithPaymentIntegrations()
                 ),
-                new DiagnosticItem(
-                    'Captcha Service: [color]{{ value.enabled ? value.type : "Disabled" }}[/color]',
-                    [
-                        'enabled' => $this->getSummary()->statistics->spam->captcha,
-                        'type' => $this->getCaptchaType(),
-                    ],
-                    [],
-                    fn () => DiagnosticItem::COLOR_BASE
-                ),
-            ],
+            ];
+        }
+
+        return []; // Or any other action for non-Pro users
+    }
+
+    /**
+     * @return DiagnosticItem[]
+     */
+    public function getFreeformConfigurations(): array
+    {
+        [$emailTransport, $emailIssues] = $this->getEmailSettings();
+
+        return [
             'General Settings' => [
                 new DiagnosticItem(
-                    'Disable Submit Button on Form Submit: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                    $this->getSummary()->statistics->settings->disableSubmit,
-                    [],
-                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
+                    'Disable Submit Button on Form Submit: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    $this->getSummary()->statistics->settings->disableSubmit
                 ),
                 new DiagnosticItem(
-                    'Automatically Scroll to Form on Errors and Multipage forms: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
+                    'Automatically Scroll to Form on Errors and Multipage forms: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
                     $this->getSummary()->statistics->settings->autoScroll,
-                    [],
-                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
-                    'Freeform Script Insertion Location: [color]{{ value|capitalize }}[/color]',
+                    'Freeform Script Insertion Location: <b>{{ value|capitalize }}</b>',
                     $this->getSummary()->statistics->settings->jsInsertLocation,
                     [
                         new NoticeValidator(
                             fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value,
                             '',
-                            "Please be sure to manually load Freeform's JS and CSS with the 'freeform.loadFreeformPlugin()' function in your template(s)."
+                            'Please make sure you are adding Freeform’s scripts manually.'
                         ),
-                    ],
-                    fn () => DiagnosticItem::COLOR_BASE
+                    ]
                 ),
                 new DiagnosticItem(
-                    'Freeform Script Insert Type: [color]{{ value }}[/color]',
-                    $this->getJsInsertType(),
-                    [],
-                    fn () => DiagnosticItem::COLOR_BASE
+                    'Freeform Script Insert Type: <b>{{ value }}</b>',
+                    $this->getJsInsertType()
                 ),
                 new DiagnosticItem(
-                    'Freeform Session Context: [color]{{ value }}[/color]',
+                    'Freeform Session Context: <b>{{ value }}</b>',
                     $this->getSettingsService()->getSettingsModel()->getSessionContextHumanReadable(),
-                    [],
-                    fn () => DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
-                    'Enable Search Index Updating on New Submissions: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                    $this->getSettingsService()->getSettingsModel()->updateSearchIndexes,
-                    [],
-                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
+                    'Enable Search Index Updating on New Submissions: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    $this->getSettingsService()->getSettingsModel()->updateSearchIndexes
                 ),
                 new DiagnosticItem(
-                    'Automatically Purge Submission Data: [color]{{ value.enabled ? "Enabled, "~value.interval~" days" : "Disabled"  }}[/color]',
+                    'Automatically Purge Submission Data: <b>{{ value.enabled ? "Enabled, "~value.interval~" days" : "Disabled"  }}</b>',
                     [
                         'enabled' => $this->getSummary()->statistics->settings->purgeSubmissions,
                         'interval' => $this->getSummary()->statistics->settings->purgeInterval,
                     ],
-                    [],
-                    fn () => DiagnosticItem::COLOR_BASE
                 ),
             ],
-            new DiagnosticItem(
-                'Formatting Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
-                $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
-                [
-                    new NoticeValidator(
-                        function ($value) {
-                            if ($value) {
-                                if ('/' !== substr($value, 0, 1)) {
-                                    $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+            'Spam Controls' => [
+                new DiagnosticItem(
+                    'Spam Folder: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    $this->getSummary()->statistics->spam->spamFolder,
+                    [
+                        new SuggestionValidator(
+                            fn ($value) => $value,
+                            '',
+                            'Most websites can benefit from using this feature because it helps detect false positives.'
+                        ),
+                    ]
+                ),
+                new DiagnosticItem(
+                    'Spam Blocking: <b>{{ value|join(", ") }}</b>',
+                    $this->getSpamBlockers()
+                ),
+                new DiagnosticItem(
+                    'Spam Protection Behavior : <b>{{ value }}</b>',
+                    $this->getSummary()->statistics->spam->spamProtectionBehavior
+                ),
+                new DiagnosticItem(
+                    'Bypass All Spam Checks for Logged in Users: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    $this->getSummary()->statistics->spam->bypassSpamCheckOnLoggedInUsers
+                ),
+                new DiagnosticItem(
+                    'Form Submission Throttling: <b>{{ value }} per minutes</b>',
+                    $this->getSummary()->statistics->spam->submissionThrottlingCount
+                ),
+            ],
+
+            'Template Directories' => [
+                new DiagnosticItem(
+                    'Formatting Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
+                    $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
+                    [
+                        new NoticeValidator(
+                            function ($value) {
+                                if ($value) {
+                                    if ('/' !== substr($value, 0, 1)) {
+                                        $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                    }
+
+                                    return file_exists($value) && is_dir($value);
                                 }
 
-                                return file_exists($value) && is_dir($value);
-                            }
+                                return true;
+                            },
+                            '',
+                            'Formatting Templates Directory Path: Not set correctly'
+                        ),
+                    ]
+                ),
+                new DiagnosticItem(
+                    'Email Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
+                    $this->getSettingsService()->getSettingsModel()->emailTemplateDirectory,
+                    [
+                        new NoticeValidator(
+                            function ($value) {
+                                if ($value) {
+                                    if ('/' !== substr($value, 0, 1)) {
+                                        $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                    }
 
-                            return true;
-                        },
-                        '',
-                        'Formatting Templates Directory Path: Not set correctly'
-                    ),
-                ],
-                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Email Template Storage Type: [color]{{ value }}[/color]',
-                $this->getSettingsService()->getSettingsModel()->getEmailStorageTypeName(),
-                [],
-                fn () => DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Email Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
-                $this->getSettingsService()->getSettingsModel()->emailTemplateDirectory,
-                [
-                    new NoticeValidator(
-                        function ($value) {
-                            if ($value) {
-                                if ('/' !== substr($value, 0, 1)) {
-                                    $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                    return file_exists($value) && is_dir($value);
                                 }
 
-                                return file_exists($value) && is_dir($value);
-                            }
+                                return true;
+                            },
+                            '',
+                            'Email Notification Templates Directory Path: Not set correctly'
+                        ),
+                    ]
+                ),
+                new DiagnosticItem(
+                    'Email Template Storage Type: <b>{{ value }}</b>',
+                    $this->getSettingsService()->getSettingsModel()->getEmailStorageTypeName()
+                ),
+                new DiagnosticItem(
+                    'Success Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
+                    $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
+                    [
+                        new NoticeValidator(
+                            function ($value) {
+                                if ($value) {
+                                    if ('/' !== substr($value, 0, 1)) {
+                                        $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                    }
 
-                            return true;
-                        },
-                        '',
-                        'Email Notification Templates Directory Path: Not set correctly'
-                    ),
-                ],
-                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Success Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
-                $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
-                [
-                    new NoticeValidator(
-                        function ($value) {
-                            if ($value) {
-                                if ('/' !== substr($value, 0, 1)) {
-                                    $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                    return file_exists($value) && is_dir($value);
                                 }
 
-                                return file_exists($value) && is_dir($value);
-                            }
+                                return true;
+                            },
+                            '',
+                            'Success Templates Directory Path: Not set correctly'
+                        ),
+                    ]
+                ),
+            ],
 
-                            return true;
-                        },
-                        '',
-                        'Success Templates Directory Path: Not set correctly'
-                    ),
-                ],
-                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Developer Digest Email: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                \count($this->getSettingsService()->getDigestRecipients()) > 0,
-                [
-                    new SuggestionValidator(
-                        fn ($value) => $value,
-                        'Enable the Developer Digest feature',
-                        "The Developer Digest sends weekly or daily emails on the day specified to any email address(es) you specify. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices. This is very beneficial for keeping your finger on the pulse of this website."
-                    ),
-                ],
-                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Update Warnings & Notices: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                (bool) $this->getSettingsService()->getSettingsModel()->displayFeed,
-                [
-                    new SuggestionValidator(
-                        fn ($value) => $value,
-                        'Enable the Update Warnings & Notices feature',
-                        'Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes for bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com.'
-                    ),
-                ],
-                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                'Errors logged: [color]{{ value ? value~" errors found" : "None found" }}[/color]',
-                Freeform::getInstance()->logger->getLogReader()->count(),
-                [
-                    new WarningValidator(
-                        function ($value) {
-                            return !$value;
-                        },
-                        '{{ extra.count }} Errors logged in the Freeform Error Log',
-                        "Please check out the Freeform error log to see the issues logged. These could potentially be harmless notices or issues that are preventing Freeform from working correctly. Also take note of the dates for each, as it's possible they may just be old errors that are no longer an issue. <a href=\"{{ extra.url }}\">View Freeform error log ></a>",
-                        [
-                            'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
-                            'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                        ]
-                    ),
-                ],
-                fn ($value) => $value > 0 ? DiagnosticItem::COLOR_ERROR : DiagnosticItem::COLOR_BASE
-            ),
-            new DiagnosticItem(
-                null,
-                Freeform::getInstance()->forms->isPossibleLoadingStaticScripts(),
-                [
-                    new WarningValidator(
-                        fn ($value) => $value,
-                        'Freeform Script Insert Check Failed',
-                        'It appears that your server has rewrite rules checking if URLs are actual files, which can cause issues with Freeform\'s script loading in the front end and forms not working correctly. Please change the "Freeform Script Insert Type" setting to "As Files" instead.',
-                    ),
-                ],
-            ),
+            'Reliability' => [
+                new DiagnosticItem(
+                    'Developer Digest Email: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    \count($this->getSettingsService()->getDigestRecipients()) > 0
+                ),
+                new DiagnosticItem(
+                    'Update Warnings & Notices: <b>{{ value ? "Enabled" : "Disabled" }}</b>',
+                    (bool) $this->getSettingsService()->getSettingsModel()->displayFeed
+                ),
+                new DiagnosticItem(
+                    'Errors logged: <b>{{ value ? value~" errors found" : "None found" }}</b>',
+                    Freeform::getInstance()->logger->getLogReader()->count(),
+                    [
+                        new WarningValidator(
+                            function ($value) {
+                                return !$value;
+                            },
+                            '{{ extra.count }} Errors logged in the Freeform Error Log',
+                            'Please check the <a href="{{ extra.url }}">error log </a> to see if there are any serious issues.',
+                            [
+                                'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
+                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
+                            ]
+                        ),
+                    ]
+                ),
+            ],
         ];
     }
 
@@ -545,14 +583,6 @@ class DiagnosticsService extends BaseService
         return $blockers;
     }
 
-    private function getCaptchaType(): ?string
-    {
-        return match ($this->getSummary()->statistics->spam->captchaType) {
-            // TODO: reimplement
-            default => null,
-        };
-    }
-
     private function getJsInsertType(): string
     {
         return match ($this->getSummary()->statistics->settings->jsInsertType) {
@@ -571,5 +601,49 @@ class DiagnosticsService extends BaseService
         }
 
         return $summary;
+    }
+
+    private function getIntegrationCount(): array
+    {
+        $integrations = (new Query())
+            ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class', 'integrations.metadata'])
+            ->from(FormIntegrationRecord::TABLE.' fi')
+            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
+            ->where(['fi.enabled' => true])
+            ->all()
+        ;
+
+        $integrationsByForm = [];
+
+        foreach ($integrations as $integration) {
+            $id = $integration['integrationId'];
+
+            if (!isset($integrationsByForm[$id])) {
+                $type = $this->integrationTypeProvider->getTypeDefinition($integration['class']);
+
+                // Check if the version exists in the type; otherwise, use metadata
+                $version = $type->version ?? json_decode($integration['metadata'], true)['version'] ?? null;
+
+                $integrationsByForm[$id] = [
+                    'name' => $type->name,
+                    'version' => $version ?? '', // Provide a default value if version is not found
+                    'count' => 0,
+                ];
+            }
+
+            ++$integrationsByForm[$id]['count'];
+        }
+
+        return $integrationsByForm;
+    }
+
+    private function getFormsWithPaymentIntegrations(): int
+    {
+        return FormFieldRecord::find()
+            ->select('formId')
+            ->distinct()
+            ->where(['type' => StripeField::class])
+            ->count()
+        ;
     }
 }

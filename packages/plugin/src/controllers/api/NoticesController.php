@@ -36,7 +36,6 @@ class NoticesController extends BaseApiController
         $notices = [];
         foreach ($messages as $message) {
             $data = $message->toArray();
-            $data['conditions'] = json_decode($data['conditions'], true);
 
             $notices[] = new Notification($data);
         }

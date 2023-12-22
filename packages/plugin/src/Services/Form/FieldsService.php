@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\FieldCollection;
+use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 use Solspace\Freeform\Services\FormsService;
@@ -134,6 +135,11 @@ class FieldsService extends BaseService
     public function getAllFieldCount(): int
     {
         return FormFieldRecord::find()->count();
+    }
+
+    public function getFavoriteFieldCount(): int
+    {
+        return FavoriteFieldRecord::find()->count();
     }
 
     /**

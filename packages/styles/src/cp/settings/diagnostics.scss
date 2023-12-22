@@ -24,17 +24,14 @@
 }
 
 .banner {
-  margin-bottom: 20px;
-
+  margin-bottom: 10px;
+  position: relative;
   border-radius: 6px;
   border-style: solid;
-  border-width: 2px;
-
-  overflow: hidden;
+  border-width: 1px;
 
   h2 {
     position: relative;
-
     margin: 0;
     padding: 10px 10px 10px 35px;
     color: #ffffff;
@@ -63,119 +60,162 @@
     }
   }
 
-  &-info {
-    display: grid;
-    grid-template-columns: 60px auto;
-    gap: 20px;
-    align-items: center;
+  &-check {
+    border-color: var(--enabled-color);
 
-    padding: 10px 20px;
-
-    background: #60aa55;
-    border: transparent;
-    color: #ffffff;
-
-    .heading {
-      margin: 0;
-      padding: 10px 0 5px;
-
-      font-size: 28px;
+    h2,
+    svg {
+      color: var(--enabled-color);
     }
+  }
 
-    p {
-      margin: 0;
-      padding: 0;
-    }
+  &-close {
+    cursor: pointer;
+    height: 16px;
+    width: 16px;
+    margin: 10px 10px 10px 35px;
+  }
 
-    .checkmark-icon {
-      display: block;
-      height: 50px;
-      width: 50px;
+  &-warnings,
+  &-suggestions,
+  &-check {
+    h2 {
+      svg {
+        position: absolute;
+        top: 12px;
+        left: 10px;
 
-      border-radius: 50%;
-      background: #ffffff;
-
-      &:before {
-        color: #60aa55;
-        font-size: 40px;
+        width: 16px;
+        height: 16px;
       }
     }
   }
 
-  &-warning,
-  &-suggestions {
+  &-warnings {
+    border-color: var(--warning-color);
+
+    h2,
     svg {
-      position: absolute;
-      top: 12px;
-      left: 10px;
-
-      width: 16px;
-      height: 16px;
-    }
-  }
-
-  &-warning {
-    border-color: #f28d03;
-
-    h2 {
-      background: #f28d03;
+      color: var(--warning-color);
     }
   }
 
   &-suggestions {
-    border-color: #009adb;
+    border-color: var(--notice-color);
 
-    h2 {
-      background: #009adb;
+    h2,
+    svg {
+      color: var(--notice-color);
     }
   }
 }
 
 .gridy {
   display: grid;
-  gap: 40px;
-  grid-template-columns: 30% auto;
+  gap: 50px;
+  grid-template-columns: 40% auto;
+  margin-top: 20px;
+
+  @media (max-width: 1050px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.diag {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .diag-list {
+
+  > h2 {
+    margin: 6px 0;
+  }
+
   > ul {
     > li {
-      padding: 1px 0;
+      padding: 2px 0;
+
+      svg {
+        position: relative;
+        top: 3px;
+
+        flex-basis: 14px;
+
+        width: 14px;
+        height: 14px;
+      }
 
       h3 {
-        padding: 5px 0 0;
+        padding: 5px 0 10px 0;
         margin: 0;
       }
 
-      > ul:not(.notices) {
-        padding-left: 10px;
-
+      > ul:not(.validators) {
         > li {
           padding: 1px 0;
-          list-style: '-' inside;
+
+          &:last-child {
+            margin-bottom: 10px;
+          }
         }
       }
 
-      ul.notices {
-        padding-left: 10px;
-
+      ul.validators {
         > li {
-          display: flex;
-          gap: 5px;
-
-          color: #009adb;
           font-style: italic;
+          font-size: 12px;
 
-          svg {
-            position: relative;
-            top: 3px;
+          &.suggestionvalidator {
+            color: var(--notice-color);
+          }
 
-            flex-basis: 14px;
+          &.warningvalidator {
+            color: var(--warning-color);
 
-            width: 14px;
-            height: 14px;
+            > a {
+              color: var(--warning-color);
+              text-decoration: underline;
+            }
           }
         }
+      }
+    }
+  }
+}
+
+.items {
+  display: flex;
+  gap: 5px;
+
+  > .item {
+    display: flex;
+    gap: 5px;
+
+    svg {
+      position: relative;
+      top: 3px;
+
+      flex-basis: 14px;
+
+      width: 14px;
+      height: 14px;
+    }
+
+    &-warnings {
+      color: var(--warning-color);
+
+      svg {
+        color: var(--warning-color);
+      }
+    }
+
+    &-suggestions {
+      color: var(--notice-color);
+
+      svg {
+        color: var(--notice-color);
       }
     }
   }

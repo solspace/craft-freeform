@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.12 - 2023-12-15
+
+> [!WARNING]
+> This version is still in beta and not recommended for production use. There is no migration from Freeform 4 yet, but will be available soon.
+
+### Changed
+- Updated the Diagnostics page in the control panel.
+- Updated behavior of field option populating to skip elements that are missing values when populating by Element data.
+
+### Fixed
+- Fixed a couple of visual bugs with the Favorite Fields manager.
+
 ## 5.0.0-beta.11 - 2023-12-06
 
 > [!WARNING]

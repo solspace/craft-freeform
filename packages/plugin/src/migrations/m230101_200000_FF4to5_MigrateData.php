@@ -606,6 +606,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             return;
         }
 
+        $notificationId = $data->notificationId ?? null;
+        if (!$notificationId) {
+            return;
+        }
+
         $notification = new FormNotificationRecord();
         $notification->formId = $formId;
         $notification->class = 'Solspace\Freeform\Notifications\Types\Admin\Admin';
@@ -616,7 +621,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $notification->metadata = [
             'name' => 'Admin notification',
             'enabled' => true,
-            'template' => $data->notificationId ?? null,
+            'template' => $notificationId,
             'recipients' => array_map(
                 fn ($recipient) => [
                     'name' => '',
@@ -635,6 +640,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         }
 
         $notificationId = $props->notificationId ?: null;
+        if (!$notificationId) {
+            return;
+        }
 
         $notification = new FormNotificationRecord();
         $notification->formId = $record->formId;
@@ -667,6 +675,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             return;
         }
 
+        $notificationId = $props->notificationId ?? null;
+        if (!$notificationId) {
+            return;
+        }
+
         $notification = new FormNotificationRecord();
         $notification->formId = $record->formId;
         $notification->class = 'Solspace\Freeform\Notifications\Types\EmailField\EmailField';
@@ -678,7 +691,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'name' => $record->metadata['label'] ?? 'Email Notification',
             'enabled' => true,
             'field' => $record->uid,
-            'template' => $props->notificationId ?? null,
+            'template' => $notificationId,
         ];
 
         $notification->save();

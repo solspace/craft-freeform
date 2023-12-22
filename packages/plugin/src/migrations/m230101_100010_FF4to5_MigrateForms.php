@@ -53,7 +53,7 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 [
                     'name' => $form->name,
                     'handle' => $form->handle,
-                    'type' => $form->formType,
+                    'type' => $data['type'],
                     'submissionTitle' => $form->submissionTitleFormat,
                     'formattingTemplate' => $form->formTemplate,
                     'description' => $form->description,

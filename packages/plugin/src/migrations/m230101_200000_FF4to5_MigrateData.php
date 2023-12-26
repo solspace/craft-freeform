@@ -249,8 +249,6 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $extra = array_filter([
             // Generic
             'placeholder' => $data->placeholder ?? null,
-            'minLength' => $data->minLength ?? null,
-            'maxLength' => $data->maxLength ?? null,
             // Checkbox
             'checkedByDefault' => (bool) ($data->checked ?? null),
             // Options
@@ -301,6 +299,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'useJsMask' => $data->useScript ?? null,
             // Number
             'step' => $data->step ?? null,
+            'decimalCount' => $data->decimalCount ?? null,
+            'allowNegative' => $data->allowNegative ?? null,
             // HTML
             'twig' => $data->twig ?? null,
             'content' => $data->content ?? null, // TODO: pull this from the default value if HTML field
@@ -322,6 +322,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'rich_text', 'html' => [
                 'handle' => $data->type.'_'.HashHelper::sha1(random_bytes(10).microtime(), 5),
                 'content' => $data->value ?? '',
+            ],
+            'number' => [
+                'minMaxValues' => [$data->minValue ?? null, $data->maxValue ?? null],
             ],
             default => [],
         };

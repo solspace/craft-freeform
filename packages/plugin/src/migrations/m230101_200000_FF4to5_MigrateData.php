@@ -330,6 +330,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'number' => [
                 'minMaxValues' => [$data->minValue ?? null, $data->maxValue ?? null],
             ],
+            'confirmation' => [
+                'targetField' => $this->fieldMap[$data->targetFieldHash]?->uid ?? null,
+            ],
             default => [],
         };
     }
@@ -811,11 +814,13 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $columns = $table->getColumnNames();
         $oldColumnName = null;
-        foreach ($columns as $column) {
-            if (preg_match('/.*_'.$props->id.'$/', $column)) {
-                $oldColumnName = $column;
+        if (isset($props->id)) {
+            foreach ($columns as $column) {
+                if (preg_match('/.*_'.$props->id.'$/', $column)) {
+                    $oldColumnName = $column;
 
-                break;
+                    break;
+                }
             }
         }
 
@@ -826,8 +831,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $newColumnName = $handle.'_'.$record->id;
 
-        $this->renameColumn($table->name, $oldColumnName, $newColumnName);
-        $this->alterColumn($table->name, $newColumnName, 'text');
+        $tableName = '{{%'.$table->name.'}}';
+
+        if ($oldColumnName) {
+            $this->renameColumn($tableName, $oldColumnName, $newColumnName);
+            $this->alterColumn($tableName, $newColumnName, 'text');
+        } else {
+            $this->addColumn($tableName, $newColumnName, $this->text());
+        }
     }
 
     private function parseAttributes(array $attributes = []): array

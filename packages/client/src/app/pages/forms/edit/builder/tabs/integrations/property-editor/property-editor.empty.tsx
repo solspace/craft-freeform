@@ -17,7 +17,7 @@ export const EmptyEditor: React.FC = () => {
       >
         <a
           className={classes('btn add icon')}
-          href={generateUrl('settings/crm')}
+          href={generateUrl('settings/integrations/crm')}
         >
           {translate('Add integration')}
         </a>

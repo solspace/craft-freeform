@@ -7,7 +7,9 @@ use craft\db\Query;
 use craft\helpers\StringHelper;
 use craft\helpers\StringHelper as CraftStringHelper;
 use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\Rule;
@@ -140,12 +142,17 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                             continue;
                         }
 
+                        $fieldClass = $this->getFieldClass($props);
+                        if (\in_array($props->type, ['html', 'rich_text'])) {
+                            $props->handle = $fieldHash;
+                        }
+
                         $field = new FormFieldRecord([
                             'formId' => $formId,
                             'rowId' => $row->id,
                             'order' => $fieldOrder++,
-                            'type' => $this->getFieldClass($props),
-                            'metadata' => $this->extractMetadata($props),
+                            'type' => $fieldClass,
+                            'metadata' => $this->extractMetadata($fieldClass, $props),
                             'uid' => StringHelper::UUID(),
                         ]);
                         $field->save();
@@ -216,7 +223,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         };
     }
 
-    private function extractMetadata(\stdClass $data): array
+    private function extractMetadata(string $fieldClass, \stdClass $data): array
     {
         $defaultValue = $data->value ?? null;
         if (\in_array($data->type, ['checkbox_group', 'multiple_select'])) {
@@ -230,9 +237,15 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
         }
 
+        $reflection = new \ReflectionClass($fieldClass);
+        $type = AttributeHelper::findAttribute($reflection, Type::class);
+
+        $label = $data->label ?? $type->name;
+        $handle = $data->handle ?? $data->type.'_'.HashHelper::sha1(random_bytes(10).microtime(), 5);
+
         $base = [
-            'label' => $data->label ?? '',
-            'handle' => $data->handle ?? '',
+            'label' => $label,
+            'handle' => $handle,
             'required' => (bool) ($data->required ?? false),
             'instructions' => $data->instructions ?? '',
             'defaultValue' => $defaultValue,
@@ -324,7 +337,6 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'opinion_scale' => $this->processOpinionScale($data),
             'dynamic_recipients' => $this->processDynamicRecipients($data),
             'rich_text', 'html' => [
-                'handle' => $data->type.'_'.HashHelper::sha1(random_bytes(10).microtime(), 5),
                 'content' => $data->value ?? '',
             ],
             'number' => [

@@ -67,7 +67,7 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
                 return $content;
             }
 
-            $settings = Freeform::getInstance()->getDefaults();
+            $settings = Freeform::getInstance()->settings->getSettingsModel()->defaults;
             if ($settings->twigInHtml) {
                 $variables = [
                     'form' => $this->getForm(),
@@ -75,7 +75,7 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
                     'allFields' => $this->getForm()->getLayout()->getFields(),
                 ];
 
-                if ($settings->twigInHtmlIsolatedMode) {
+                if ($settings->twigIsolation) {
                     return (new IsolatedTwig())->render($content, $variables);
                 }
 

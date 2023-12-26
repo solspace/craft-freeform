@@ -296,6 +296,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'maxRows' => $data->maxRows ?? null,
             'tableLayout' => $data->tableLayout ?? null,
             'useScript' => $data->useScript ?? null,
+            // Regex
+            'pattern' => $data->pattern ?? null,
+            'message' => $data->message ?? null,
             // Phone
             'useJsMask' => $data->useScript ?? null,
             // Number

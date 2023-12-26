@@ -5,7 +5,10 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
+use craft\helpers\StringHelper as CraftStringHelper;
 use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\Rule;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -148,6 +151,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         $field->save();
 
                         $this->fieldMap[$fieldHash] = $field;
+
+                        $this->renameDatabaseColumn($formId, $field, $props);
 
                         $this->processDynamicNotifications($field, $props);
                         $this->processEmailNotifications($field, $props);
@@ -313,7 +318,10 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'select', 'checkbox_group', 'radio_group', 'multiple_select' => $this->processOptions($data),
             'opinion_scale' => $this->processOpinionScale($data),
             'dynamic_recipients' => $this->processDynamicRecipients($data),
-            'rich_text', 'html' => ['content' => $data->value ?? ''],
+            'rich_text', 'html' => [
+                'handle' => $data->type.'_'.HashHelper::sha1(random_bytes(10).microtime(), 5),
+                'content' => $data->value ?? '',
+            ],
             default => [],
         };
     }
@@ -768,6 +776,50 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ]);
             $conditionRecord->save();
         }
+    }
+
+    private function renameDatabaseColumn(int $formId, FormFieldRecord $record, \stdClass $props): void
+    {
+        $reflection = new \ReflectionClass($record->type);
+        if ($reflection->implementsInterface(NoStorageInterface::class)) {
+            return;
+        }
+
+        $schema = $this->db->getSchema();
+        $tables = $schema->getTableSchemas();
+
+        $table = null;
+        foreach ($tables as $databaseTable) {
+            if (preg_match('/^freeform_submissions_.*_'.$formId.'$/', $databaseTable->name)) {
+                $table = $databaseTable;
+
+                break;
+            }
+        }
+
+        if (!$table) {
+            return;
+        }
+
+        $columns = $table->getColumnNames();
+        $oldColumnName = null;
+        foreach ($columns as $column) {
+            if (preg_match('/.*_'.$props->id.'$/', $column)) {
+                $oldColumnName = $column;
+
+                break;
+            }
+        }
+
+        $handle = $record->metadata['handle'];
+        $handle = CraftStringHelper::toKebabCase($handle, '_');
+        $handle = CraftStringHelper::truncate($handle, 50, '');
+        $handle = trim($handle, '-_');
+
+        $newColumnName = $handle.'_'.$record->id;
+
+        $this->renameColumn($table->name, $oldColumnName, $newColumnName);
+        $this->alterColumn($table->name, $newColumnName, 'text');
     }
 
     private function parseAttributes(array $attributes = []): array

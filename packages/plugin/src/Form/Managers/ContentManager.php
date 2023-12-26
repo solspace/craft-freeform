@@ -97,7 +97,7 @@ class ContentManager
     {
         $table = $this->table;
         foreach ($this->fields as $field) {
-            $handle = $field->metadata->handle ?? null;
+            $handle = $field->metadata['handle'] ?? null;
             if (!$handle) {
                 continue;
             }
@@ -157,7 +157,7 @@ class ContentManager
                 continue;
             }
 
-            $handle = $field->metadata->handle ?? null;
+            $handle = $field->metadata['handle'] ?? null;
             if (!$handle) {
                 continue;
             }

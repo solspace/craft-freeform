@@ -31,7 +31,6 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         'cc_number',
         'cc_expiry',
         'cc_cvc',
-        'mailing_list',
         'recaptcha',
         'submit',
         'save',
@@ -143,7 +142,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         }
 
                         $fieldClass = $this->getFieldClass($props);
-                        if (\in_array($props->type, ['html', 'rich_text'])) {
+                        if (\in_array($props->type, ['html', 'rich_text', 'mailing_list'])) {
                             $props->handle = $fieldHash;
                         }
 
@@ -192,6 +191,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
 
             return 'Solspace\Freeform\Fields\Implementations\DropdownField';
+        }
+
+        if ('mailing_list' === $type) {
+            if ($data->hidden ?? false) {
+                return 'Solspace\Freeform\Fields\Implementations\HiddenField';
+            }
+
+            return 'Solspace\Freeform\Fields\Implementations\CheckboxField';
         }
 
         return match ($type) {
@@ -344,6 +351,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ],
             'confirmation' => [
                 'targetField' => $this->fieldMap[$data->targetFieldHash]?->uid ?? null,
+            ],
+            'mailing_list' => [
+                'checkedByDefault' => (bool) ($data->value ?? false),
             ],
             default => [],
         };

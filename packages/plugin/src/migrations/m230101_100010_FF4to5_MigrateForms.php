@@ -55,7 +55,7 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                     'handle' => $form->handle,
                     'type' => $formData->formType ?? $data['type'] ?? 'Solspace\Freeform\Form\Types\Regular',
                     'submissionTitle' => $form->submissionTitleFormat,
-                    'formattingTemplate' => $form->formTemplate,
+                    'formattingTemplate' => $this->transformTemplate($form->formTemplate),
                     'description' => $form->description,
                     'color' => $form->color,
                     'attributes' => [
@@ -106,5 +106,22 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
         echo "m230101_100010_FF4to5_MigrateForms cannot be reverted.\n";
 
         return false;
+    }
+
+    private function transformTemplate(string $template): string
+    {
+        return match ($template) {
+            'basic-dark.twig' => 'basic-dark/index.twig',
+            'basic-light.twig' => 'basic-light/index.twig',
+            'basic-floating-labels.twig' => 'basic-floating-labels/index.twig',
+            'bootstrap-5.twig', 'bootstrap-3.twig', 'bootstrap-4.twig' => 'bootstrap-5/index.twig',
+            'bootstrap-5-dark.twig' => 'bootstrap-5-dark/index.twig',
+            'bootstrap-5-floating-labels.twig' => 'bootstrap-5-floating-labels/index.twig',
+            'bootstrap-5-multipage-all-fields.twig' => 'multipage-all-fields/index.twig',
+            'conversational.twig' => 'conversational/index.twig',
+            'foundation-6.twig' => 'foundation-6/index.twig',
+            'tailwind-3.twig', 'tailwind-1.twig' => 'tailwind-3/index.twig',
+            default => $template,
+        };
     }
 }

@@ -255,6 +255,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'checkedByDefault' => (bool) ($data->checked ?? null),
             // Options
             'options' => $data->options ?? null,
+            'oneLine' => $data->oneLine ?? null,
             // File
             'assetSourceId' => $data->assetSourceId ?? null,
             'fileKinds' => $data->fileKinds ?? null,

@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Integrations\Webhooks;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -40,7 +40,7 @@ class WebhooksBundle extends FeatureBundle
     {
         $path = \Craft::getAlias('@freeform/Integrations/Webhooks');
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
         $classes = array_keys($classMap);
 
         foreach ($classes as $class) {

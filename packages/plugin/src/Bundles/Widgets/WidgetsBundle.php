@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Widgets;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use craft\base\Widget;
 use craft\events\RegisterComponentTypesEvent;
 use craft\services\Dashboard;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 use yii\base\Event;
 
@@ -25,7 +25,7 @@ class WidgetsBundle extends FeatureBundle
                 }
 
                 $freeformPath = \Craft::getAlias('@freeform');
-                $classMap = ClassMapGenerator::createMap($freeformPath.'/Widgets');
+                $classMap = ClassMapHelper::getMap($freeformPath.'/Widgets');
 
                 $isPro = Freeform::getInstance()->isPro();
 

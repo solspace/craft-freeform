@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
@@ -33,7 +33,7 @@ class PaymentsBundle extends FeatureBundle
     {
         $path = \Craft::getAlias('@freeform/Integrations/PaymentGateways');
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
         $classes = array_keys($classMap);
 
         foreach ($classes as $class) {

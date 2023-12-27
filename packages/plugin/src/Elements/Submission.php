@@ -29,6 +29,7 @@ use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\FieldCollection;
@@ -409,6 +410,10 @@ class Submission extends Element
 
         $contentData = [];
         foreach ($this as $field) {
+            if ($field instanceof NoStorageInterface) {
+                continue;
+            }
+
             $value = $field->getValue();
 
             if (\is_array($value)) {

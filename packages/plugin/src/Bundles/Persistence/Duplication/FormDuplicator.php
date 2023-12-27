@@ -82,7 +82,7 @@ class FormDuplicator
 
         $i = 0;
         do {
-            $metadata = json_decode($clone->metadata);
+            $metadata = (object) $clone->metadata;
             $metadata->general->name = $clone->name;
             $metadata->general->handle = $clone->handle;
             $clone->metadata = json_encode($metadata);
@@ -170,9 +170,9 @@ class FormDuplicator
             $clone->rowId = $this->rows[$field->rowId]->id;
 
             if (GroupField::class === $clone->type) {
-                $metadata = json_decode($clone->metadata);
-                $metadata->layout = $this->layoutsUids[$metadata->layout]->uid;
-                $clone->metadata = json_encode($metadata);
+                $metadata = $clone->metadata;
+                $metadata['layout'] = $this->layoutsUids[$metadata['layout']]->uid;
+                $clone->metadata = $metadata;
             }
 
             $clone->save();

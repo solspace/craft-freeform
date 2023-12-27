@@ -13,7 +13,7 @@ use Solspace\Freeform\Models\Pro\ExportProfileModel;
  * @property string $fileType
  * @property string $fileName
  * @property string $frequency
- * @property string $recipients
+ * @property array  $recipients
  * @property string $subject
  * @property string $message
  */

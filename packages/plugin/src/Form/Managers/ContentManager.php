@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Form\Managers;
 
 use craft\db\Connection;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager\TableInfo;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -13,11 +14,20 @@ class ContentManager
 {
     private ?TableInfo $table = null;
 
+    private array $noStorageFields = [];
+
     /**
      * @param FormFieldRecord[] $fields
      */
     public function __construct(private Form $form, private array $fields)
     {
+        foreach ($this->fields as $field) {
+            $reflection = new \ReflectionClass($field->type);
+            if ($reflection->implementsInterface(NoStorageInterface::class)) {
+                $this->noStorageFields[] = $field->id;
+            }
+        }
+
         $this->getTableSchema();
     }
 
@@ -128,6 +138,10 @@ class ContentManager
 
         $usedFieldIds = [];
         foreach ($this->fields as $field) {
+            if ($this->isNoStorage($field)) {
+                continue;
+            }
+
             $usedFieldIds[] = (int) $field->id;
         }
 
@@ -154,6 +168,10 @@ class ContentManager
 
         foreach ($this->fields as $field) {
             if (\in_array($field->id, $existingFieldIds, true)) {
+                continue;
+            }
+
+            if ($this->isNoStorage($field)) {
                 continue;
             }
 
@@ -193,6 +211,11 @@ class ContentManager
                 return;
             }
         }
+    }
+
+    private function isNoStorage(FormFieldRecord $record): bool
+    {
+        return \in_array($record->id, $this->noStorageFields, true);
     }
 
     private function getDb(): Connection

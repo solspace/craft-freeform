@@ -231,6 +231,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('amount', $this->float(2))
                 ->addField('currency', $this->string(3))
                 ->addField('status', $this->string(40))
+                ->addField('link', $this->string(255)->null())
                 ->addField('metadata', $this->json())
                 ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)

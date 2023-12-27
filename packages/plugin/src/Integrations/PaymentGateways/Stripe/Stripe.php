@@ -11,9 +11,11 @@ use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapp
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Properties\WebhookUrlGenerator;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
@@ -59,6 +61,18 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected string $webhookSecret = '';
 
+    #[Input\Boolean(
+        label: 'Suppress Email Notifications & Integrations when Payments Fail',
+        instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
+    )]
+    protected bool $suppressOnFail = false;
+
+    #[Input\Boolean(
+        label: 'Send Success Email from Stripe to Submitter',
+        instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, automatically triggering Stripe to send a successful email notification.",
+    )]
+    protected bool $sendSuccessMail = false;
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(
@@ -79,6 +93,15 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected ?FieldMapping $addressMapping = null;
 
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_READONLY)]
+    #[ValueGenerator(WebhookUrlGenerator::class)]
+    #[Input\Text(
+        label: 'Webhook URL',
+        instructions: 'Use this URL when making a Stripe webhook.',
+    )]
+    protected string $webhookUrl = '';
+
     public function getPublicKey(): string
     {
         return $this->getProcessedValue($this->publicKey);
@@ -92,6 +115,16 @@ class Stripe extends PaymentGatewayIntegration
     public function getWebhookSecret(): string
     {
         return $this->getProcessedValue($this->webhookSecret);
+    }
+
+    public function isSuppressOnFail(): bool
+    {
+        return $this->suppressOnFail;
+    }
+
+    public function isSendSuccessMail(): bool
+    {
+        return $this->sendSuccessMail;
     }
 
     public function checkConnection(Client $client): bool

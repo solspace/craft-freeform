@@ -208,4 +208,32 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
     }
+
+    public function testNotificationsKeyword()
+    {
+        $disabledFunctionality = new DisabledFunctionality(['notifications']);
+
+        $this->assertFalse($disabledFunctionality->isApi());
+        $this->assertFalse($disabledFunctionality->isElements());
+        $this->assertTrue($disabledFunctionality->isAdminNotifications());
+        $this->assertTrue($disabledFunctionality->isUserSelectNotifications());
+        $this->assertTrue($disabledFunctionality->isEmailFieldNotifications());
+        $this->assertTrue($disabledFunctionality->isConditionalNotifications());
+        $this->assertFalse($disabledFunctionality->isPayments());
+        $this->assertFalse($disabledFunctionality->isWebhooks());
+    }
+
+    public function testShorthandKeyword()
+    {
+        $disabledFunctionality = new DisabledFunctionality(['api']);
+
+        $this->assertTrue($disabledFunctionality->isApi());
+        $this->assertFalse($disabledFunctionality->isElements());
+        $this->assertFalse($disabledFunctionality->isAdminNotifications());
+        $this->assertFalse($disabledFunctionality->isUserSelectNotifications());
+        $this->assertFalse($disabledFunctionality->isEmailFieldNotifications());
+        $this->assertFalse($disabledFunctionality->isConditionalNotifications());
+        $this->assertFalse($disabledFunctionality->isPayments());
+        $this->assertFalse($disabledFunctionality->isWebhooks());
+    }
 }

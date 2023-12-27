@@ -57,6 +57,10 @@ class CallbackController extends BaseStripeController
             'formId' => $form->getId(),
         ]);
 
+        if (PaymentIntent::STATUS_SUCCEEDED !== $paymentIntent->status && $integration->isSuppressOnFail()) {
+            $form->disableFunctionality(['notifications', 'api']);
+        }
+
         $this->callbackService->handleSavedForm(
             $form,
             $integration,

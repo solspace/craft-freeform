@@ -149,6 +149,10 @@ class ExportProfileModel extends Model
 
                 if (is_numeric($fieldId)) {
                     $field = $form->get($fieldId);
+                    if (!$field) {
+                        continue;
+                    }
+
                     $label = $field->getLabel();
 
                     $storedFieldIds[] = $field->getId();

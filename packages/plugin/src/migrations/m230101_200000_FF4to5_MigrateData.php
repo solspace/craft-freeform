@@ -39,6 +39,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     private array $pageMap = [];
     private array $fieldMap = [];
 
+    private array $globalFieldData = [];
+
     public function safeUp(): bool
     {
         $this->migrateLayoutData();
@@ -62,7 +64,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ->column()
         ;
 
-        $fields = (new Query())
+        $this->globalFieldData = (new Query())
             ->select('*')
             ->from('{{%freeform_fields}}')
             ->indexBy('id')
@@ -244,11 +246,21 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
         }
 
-        $reflection = new \ReflectionClass($fieldClass);
-        $type = AttributeHelper::findAttribute($reflection, Type::class);
-
-        $label = $data->label ?? $type->name;
+        $label = $data->label ?? '';
         $handle = $data->handle ?? $data->type.'_'.HashHelper::sha1(random_bytes(10).microtime(), 5);
+
+        if (!$label) {
+            $globalField = $this->globalFieldData[$data->id ?? 0] ?? null;
+            if ($globalField) {
+                $label = $globalField['label'] ?? '';
+            }
+
+            if (!$label) {
+                $reflection = new \ReflectionClass($fieldClass);
+                $type = AttributeHelper::findAttribute($reflection, Type::class);
+                $label = $type->name;
+            }
+        }
 
         $base = [
             'label' => $label,

@@ -287,6 +287,10 @@ class ExportProfileModel extends Model
                 $fieldId = $id;
                 if (is_numeric($id)) {
                     $field = $form->get($id);
+                    if (!$field) {
+                        continue;
+                    }
+
                     $fieldId = 'sc.[['.Submission::getFieldColumnName($field).']]';
                 }
 

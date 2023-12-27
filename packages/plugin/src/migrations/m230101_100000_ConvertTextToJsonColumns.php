@@ -29,8 +29,6 @@ class m230101_100000_ConvertTextToJsonColumns extends Migration
         $this->alterColumn('{{%freeform_session_context}}', 'propertyBag', $this->json());
         $this->alterColumn('{{%freeform_session_context}}', 'attributeBag', $this->json());
 
-        $this->alterColumn('{{%freeform_saved_forms}}', 'payload', $this->json());
-
         return true;
     }
 
@@ -56,8 +54,6 @@ class m230101_100000_ConvertTextToJsonColumns extends Migration
 
         $this->alterColumn('{{%freeform_session_context}}', 'propertyBag', $this->mediumText());
         $this->alterColumn('{{%freeform_session_context}}', 'attributeBag', $this->mediumText());
-
-        $this->alterColumn('{{%freeform_saved_forms}}', 'payload', $this->mediumText());
 
         return true;
     }

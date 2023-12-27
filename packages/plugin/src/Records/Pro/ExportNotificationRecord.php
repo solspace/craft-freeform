@@ -33,7 +33,7 @@ class ExportNotificationRecord extends ActiveRecord
 
     public function getRecipientArray(): array
     {
-        return json_decode($this->recipients) ?? [];
+        return $this->recipients ?? [];
     }
 
     public function safeAttributes(): array

@@ -60,7 +60,6 @@ class NotificationsController extends BaseController
 
         $post = \Craft::$app->request->post();
         $post['recipients'] = StringHelper::extractSeparatedValues($post['recipients']);
-        $post['recipients'] = json_encode($post['recipients']);
 
         $id = \Craft::$app->request->post('notificationId');
         $record = $this->getNewOrExistingNotification($id);

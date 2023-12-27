@@ -148,7 +148,7 @@ class ExportProfileModel extends Model
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
-                    $field = $form->getLayout()->getField($fieldId);
+                    $field = $form->get($fieldId);
                     $label = $field->getLabel();
 
                     $storedFieldIds[] = $field->getId();

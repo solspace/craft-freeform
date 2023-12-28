@@ -11,12 +11,6 @@ class m230101_100000_ConvertTextToJsonColumns extends Migration
         $this->alterColumn('{{%freeform_forms}}', 'layoutJson', $this->json());
         $this->alterColumn('{{%freeform_forms}}', 'metadata', $this->json());
 
-        $this->alterColumn('{{%freeform_forms_fields}}', 'metadata', $this->json());
-        $this->alterColumn('{{%freeform_forms_integrations}}', 'metadata', $this->json());
-        $this->alterColumn('{{%freeform_forms_notifications}}', 'metadata', $this->json());
-        $this->alterColumn('{{%freeform_favorite_fields}}', 'metadata', $this->json());
-        $this->alterColumn('{{%freeform_integrations}}', 'metadata', $this->json());
-
         $this->alterColumn('{{%freeform_export_profiles}}', 'fields', $this->json());
         $this->alterColumn('{{%freeform_export_profiles}}', 'filters', $this->json());
 
@@ -36,12 +30,6 @@ class m230101_100000_ConvertTextToJsonColumns extends Migration
     {
         $this->alterColumn('{{%freeform_forms}}', 'layoutJson', $this->mediumText());
         $this->alterColumn('{{%freeform_forms}}', 'metadata', $this->mediumText());
-
-        $this->alterColumn('{{%freeform_forms_fields}}', 'metadata', $this->mediumText());
-        $this->alterColumn('{{%freeform_forms_integrations}}', 'metadata', $this->longText());
-        $this->alterColumn('{{%freeform_forms_notifications}}', 'metadata', $this->longText());
-        $this->alterColumn('{{%freeform_favorite_fields}}', 'metadata', $this->mediumText());
-        $this->alterColumn('{{%freeform_integrations}}', 'metadata', $this->longText());
 
         $this->alterColumn('{{%freeform_export_profiles}}', 'fields', $this->text());
         $this->alterColumn('{{%freeform_export_profiles}}', 'filters', $this->text());

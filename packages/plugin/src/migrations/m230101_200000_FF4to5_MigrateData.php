@@ -81,30 +81,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             foreach ($layoutData as $pageIndex => $pageData) {
                 $pageProps = $properties->{'page'.$pageIndex};
 
-                $defaultMetadata = [
-                    'buttons' => [
-                        'back' => [
-                            'label' => 'Back',
-                            'enabled' => true,
-                        ],
-                        'save' => [
-                            'label' => 'Save',
-                            'enabled' => false,
-                        ],
-                        'layout' => 'save back|submit',
-                        'submit' => [
-                            'label' => 'Submit',
-                            'enabled' => true,
-                        ],
-                        'attributes' => [
-                            'back' => new \stdClass(),
-                            'save' => new \stdClass(),
-                            'column' => new \stdClass(),
-                            'submit' => new \stdClass(),
-                            'container' => new \stdClass(),
-                        ],
-                    ],
-                ];
+                $defaultMetadata = ['buttons' => $this->processPageButtonData($pageData, $properties)];
 
                 $layout = new FormLayoutRecord([
                     'formId' => $formId,
@@ -873,6 +850,76 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         } else {
             $this->addColumn($tableName, $newColumnName, $this->text());
         }
+    }
+
+    private function processPageButtonData(array $rows, \stdClass $composer): array
+    {
+        $metadata = [
+            'back' => [
+                'label' => 'Back',
+                'enabled' => true,
+            ],
+            'save' => [
+                'label' => 'Save',
+                'enabled' => false,
+                'returnUrl' => '',
+                'emailField' => null,
+                'notificationId' => null,
+            ],
+            'layout' => 'save back|submit',
+            'submit' => [
+                'label' => 'Submit',
+                'enabled' => true,
+            ],
+            'attributes' => [
+                'back' => new \stdClass(),
+                'save' => new \stdClass(),
+                'column' => new \stdClass(),
+                'submit' => new \stdClass(),
+                'container' => new \stdClass(),
+            ],
+        ];
+
+        foreach ($rows as $row) {
+            foreach ($row->columns as $hash) {
+                $props = $composer->{$hash};
+
+                switch ($props->type) {
+                    case 'submit':
+                        $metadata['submit']['label'] = $props->labelNext;
+                        $metadata['back']['label'] = $props->labelPrev;
+                        $metadata['back']['enabled'] = !$props->disablePrev;
+                        $metadata['layout'] = match ($props->position) {
+                            'center' => ' save|back|submit ',
+                            'left' => 'back|submit|save ',
+                            'right' => ' save|back|submit',
+                            'spread' => 'back|save submit',
+                        };
+
+                        $attributes = $props->inputAttributes ?? null;
+                        if ($attributes) {
+                            $metadata['attributes']['submit'] = $this->parseAttributes($attributes);
+                        }
+
+                        break;
+
+                    case 'save':
+                        $metadata['save']['label'] = $props->label;
+                        $metadata['save']['enabled'] = true;
+                        $metadata['save']['emailField'] = $this->fieldMap[$props->emailFieldHash]?->uid ?? null;
+                        $metadata['save']['notificationId'] = $props->notificationId ?? null;
+
+                        $attributes = $props->inputAttributes ?? null;
+                        if ($attributes) {
+                            $metadata['attributes']['back'] = $this->parseAttributes($attributes);
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        return $metadata;
     }
 
     private function parseAttributes(array $attributes = []): array

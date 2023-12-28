@@ -35,6 +35,11 @@
     "template": "/submissions/view"
   },
   {
+    "urlParts": ["submissions\\/delete\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "submissions/delete/{form}/{id}",
+    "template": "/submissions/delete"
+  },
+  {
     "urlParts": ["custom\\/"],
     "urlPattern": "custom",
     "template": "/custom"

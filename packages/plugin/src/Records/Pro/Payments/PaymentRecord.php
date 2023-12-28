@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -28,7 +29,7 @@ use yii\db\ActiveQuery;
  * @property string $currency
  * @property string $status
  * @property string $link
- * @property string $metadata
+ * @property array  $metadata
  */
 class PaymentRecord extends ActiveRecord
 {

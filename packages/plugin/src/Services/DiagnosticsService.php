@@ -622,7 +622,7 @@ class DiagnosticsService extends BaseService
                 $type = $this->integrationTypeProvider->getTypeDefinition($integration['class']);
 
                 // Check if the version exists in the type; otherwise, use metadata
-                $version = $type->version ?? json_decode($integration['metadata'], true)['version'] ?? null;
+                $version = $type->version ?? $integration['metadata']['version'] ?? null;
 
                 $integrationsByForm[$id] = [
                     'name' => $type->name,

@@ -103,12 +103,9 @@ class PaymentIntentsController extends BaseStripeController
 
         $metadata = [
             'hash' => $hash,
-            'formId' => $form->getId(),
-            'formName' => $form->getName(),
+            'form' => $form->getName(),
             'formLink' => UrlHelper::cpUrl('freeform/forms/'.$form->getId()),
-            'fieldId' => $field->getId(),
             'fieldName' => $field->getLabel(),
-            'integrationId' => $integration->getId(),
             'integrationName' => $integration->getName(),
             'integrationLink' => UrlHelper::cpUrl(
                 'freeform/settings/integrations/payment-gateways/'.$integration->getId()
@@ -159,7 +156,7 @@ class PaymentIntentsController extends BaseStripeController
 
             $paymentIntent = $stripe
                 ->paymentIntents
-                ->create([
+                ->create(array_filter([
                     'customer' => $customer->id,
                     'amount' => $amount,
                     'currency' => $currency,
@@ -169,7 +166,8 @@ class PaymentIntentsController extends BaseStripeController
                     ],
                     'description' => $description,
                     'metadata' => $metadata,
-                ])
+                    'receipt_email' => $integration->isSendSuccessMail() ? $customer->email : null,
+                ]))
             ;
 
             $id = $paymentIntent->id;

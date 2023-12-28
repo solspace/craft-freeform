@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Library\Bundles;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 
 class BundleLoader
 {
@@ -15,7 +15,7 @@ class BundleLoader
             return;
         }
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
 
         /** @var \ReflectionClass[][] $loadableClasses */
         $loadableClasses = [];

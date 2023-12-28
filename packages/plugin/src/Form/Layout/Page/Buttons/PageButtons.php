@@ -34,13 +34,13 @@ class PageButtons
             'back|save submit',
             'submit back|save',
 
-            'save|back|submit',
+            'save|back|submit ',
             ' back|submit|save',
 
-            'back|submit|save',
+            'back|submit|save ',
             ' save|back|submit',
 
-            'submit|back|save',
+            'submit|back|save ',
             ' submit|back|save',
 
             ' back|submit|save ',

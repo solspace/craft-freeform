@@ -79,7 +79,7 @@ class ExportNotifications extends FeatureBundle
             $template->bodyText = $message;
 
             $message = $mailer->compileMessage($template, $variables);
-            $message->setTo($mailer->processRecipients(json_decode($notification->recipients)));
+            $message->setTo($mailer->processRecipients($notification->recipients));
 
             $data = $profile->getSubmissionData();
 

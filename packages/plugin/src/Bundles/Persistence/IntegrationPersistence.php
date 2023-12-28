@@ -58,7 +58,7 @@ class IntegrationPersistence extends FeatureBundle
 
             $metadata = [];
             if ($record) {
-                $metadata = json_decode($record->metadata, true);
+                $metadata = $record->metadata;
             } else {
                 $record = new FormIntegrationRecord();
                 $record->enabled = false;
@@ -66,7 +66,7 @@ class IntegrationPersistence extends FeatureBundle
                 $record->integrationId = $id;
             }
 
-            $encodedMetadata = json_encode((object) array_merge($metadata, $values));
+            $encodedMetadata = array_merge($metadata, $values);
 
             $matchEnabled = (bool) $record->enabled === (bool) $enabled;
             $matchMetadata = $encodedMetadata === $record->metadata;
@@ -76,7 +76,7 @@ class IntegrationPersistence extends FeatureBundle
                     continue;
                 }
             } else {
-                $originalMetadata = json_decode($integrationRecord->metadata);
+                $originalMetadata = $integrationRecord->metadata;
                 $enabledByDefault = $originalMetadata->enabledByDefault ?? null;
 
                 if (\is_bool($enabledByDefault)) {

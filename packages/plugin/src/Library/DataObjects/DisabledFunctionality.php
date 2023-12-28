@@ -61,6 +61,24 @@ class DisabledFunctionality
 
         if (\is_array($settings)) {
             foreach ($settings as $key => $value) {
+                if ('notifications' === $key) {
+                    $this->adminNotifications = $value;
+                    $this->userSelectNotifications = $value;
+                    $this->emailFieldNotifications = $value;
+                    $this->conditionalNotifications = $value;
+                }
+
+                if ('notifications' === $value) {
+                    $this->adminNotifications = true;
+                    $this->userSelectNotifications = true;
+                    $this->emailFieldNotifications = true;
+                    $this->conditionalNotifications = true;
+                }
+
+                if (\is_string($value) && isset($this->{$value})) {
+                    $this->{$value} = true;
+                }
+
                 if (isset($this->{$key})) {
                     $this->{$key} = (bool) $value;
                 }

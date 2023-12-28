@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.13 - 2023-12-28
+
+> [!WARNING]
+> This version is still in beta and not recommended for production use.
+
+> [!NOTE]
+> This version now includes a migration path from Freeform 4. Please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
+
+### Added
+- Added a migration path from Freeform 4. Please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
+
+### Fixed
+- Fixed various minor issues throughout the form builder and control panel.
+- Fixed a performance issue.
+- Fixed a bug where the Email Alert feature was not working correctly.
+- Fixed a bug where Export Profiles were not working correctly.
+- Fixed a bug where the Formatting Template setting in the form builder was not loading `.html` templates.
+- Fixed a bug where some Stripe Payments settings were not included.
+
 ## 5.0.0-beta.12 - 2023-12-15
 
 > [!WARNING]

@@ -906,8 +906,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                     case 'save':
                         $metadata['save']['label'] = $props->label;
                         $metadata['save']['enabled'] = true;
-                        $metadata['save']['emailField'] = $this->fieldMap[$props->emailFieldHash]?->uid ?? null;
-                        $metadata['save']['notificationId'] = $props->notificationId ?? null;
+
+                        if (isset($props->emailFieldHash)) {
+                            $metadata['save']['emailField'] = $this->fieldMap[$props->emailFieldHash]?->uid ?? null;
+                        }
+
+                        if (isset($props->notificationId)) {
+                            $metadata['save']['notificationId'] = $props->notificationId ?? null;
+                        }
 
                         $attributes = $props->inputAttributes ?? null;
                         if ($attributes) {

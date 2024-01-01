@@ -44,8 +44,7 @@ abstract class Property
         public ?string $placeholder = null,
         public ?int $width = null,
         public ?bool $disabled = null,
-    ) {
-    }
+    ) {}
 
     #[Ignore]
     public function hasFlag(...$name): bool

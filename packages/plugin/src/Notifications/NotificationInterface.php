@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Notifications;
 
-interface NotificationInterface
-{
-}
+interface NotificationInterface {}

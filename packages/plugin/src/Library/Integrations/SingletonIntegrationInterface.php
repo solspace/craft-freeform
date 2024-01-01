@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
-interface SingletonIntegrationInterface
-{
-}
+interface SingletonIntegrationInterface {}

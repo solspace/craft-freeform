@@ -24,8 +24,7 @@ class Condition
         private FieldInterface $field,
         private string $operator,
         private string $value
-    ) {
-    }
+    ) {}
 
     #[Groups(['builder'])]
     public function getUid(): string

@@ -10,8 +10,7 @@ class Required implements PropertyValidatorInterface
 {
     public function __construct(
         private string $message = 'This value is required.',
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value): array
     {

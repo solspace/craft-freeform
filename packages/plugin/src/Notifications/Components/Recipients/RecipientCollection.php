@@ -9,6 +9,17 @@ use Solspace\Freeform\Library\Collections\Collection;
  */
 class RecipientCollection extends Collection
 {
+    public static function fromArray(array $recipients): self
+    {
+        $collection = new self();
+
+        foreach ($recipients as $recipient) {
+            $collection->add(new Recipient($recipient));
+        }
+
+        return $collection;
+    }
+
     public function emailsToArray(): array
     {
         $recipients = [];

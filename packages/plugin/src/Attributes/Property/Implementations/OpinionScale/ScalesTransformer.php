@@ -14,8 +14,8 @@ class ScalesTransformer extends Transformer
             return $scales;
         }
 
-        foreach ($value as [$label, $val]) {
-            $scales[] = new Scale($label, $val);
+        foreach ($value as [$val, $label]) {
+            $scales[] = new Scale($val, $label);
         }
 
         return $scales;
@@ -30,7 +30,7 @@ class ScalesTransformer extends Transformer
 
         /** @var Scale $scale */
         foreach ($value as $scale) {
-            $data[] = [$scale->getLabel(), $scale->getValue()];
+            $data[] = [$scale->getValue(), $scale->getLabel()];
         }
 
         return $data;

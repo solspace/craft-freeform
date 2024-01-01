@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\CampaignMonitor;
 
-interface CampaignMonitorIntegrationInterface
-{
-}
+interface CampaignMonitorIntegrationInterface {}

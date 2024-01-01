@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "Reliable form builder that's ready for wherever your project takes you.",
-  "version": "5.0.0-beta.12",
+  "version": "5.0.0-beta.13",
   "type": "craft-plugin",
   "authors": [
     {
@@ -52,7 +52,7 @@
     "post-update-cmd": "cghooks update"
   },
   "extra": {
-    "schemaVersion": "5.0.15",
+    "schemaVersion": "5.0.16",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

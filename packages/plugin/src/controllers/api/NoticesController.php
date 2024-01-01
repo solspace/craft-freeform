@@ -36,7 +36,6 @@ class NoticesController extends BaseApiController
         $notices = [];
         foreach ($messages as $message) {
             $data = $message->toArray();
-            $data['conditions'] = json_decode($data['conditions'], true);
 
             $notices[] = new Notification($data);
         }
@@ -59,7 +58,7 @@ class NoticesController extends BaseApiController
         ];
     }
 
-    protected function delete(int $id): bool|null
+    protected function delete(int $id): null|bool
     {
         return $this->feedService->markFeedMessageAsRead($id);
     }

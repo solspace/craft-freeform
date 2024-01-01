@@ -27,6 +27,14 @@ use yii\web\Response;
 
 class SettingsController extends BaseController
 {
+    private const AVAILABLE_VIEWS = [
+        Freeform::VIEW_FORMS,
+        Freeform::VIEW_SUBMISSIONS,
+        Freeform::VIEW_NOTIFICATIONS,
+        Freeform::VIEW_SETTINGS,
+        Freeform::VIEW_EXPORT_PROFILES,
+    ];
+
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -48,6 +56,9 @@ class SettingsController extends BaseController
     public function actionDefaultView(): Response
     {
         $defaultView = $this->getSettingsModel()->defaultView;
+        if (!\in_array($defaultView, self::AVAILABLE_VIEWS, true)) {
+            $defaultView = Freeform::VIEW_FORMS;
+        }
 
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);

@@ -7,9 +7,7 @@ use Solspace\Freeform\Services\SettingsService;
 
 class SuccessTemplateGenerator implements ValueGeneratorInterface
 {
-    public function __construct(private SettingsService $settingsService)
-    {
-    }
+    public function __construct(private SettingsService $settingsService) {}
 
     public function generateValue(?object $referenceObject): ?string
     {

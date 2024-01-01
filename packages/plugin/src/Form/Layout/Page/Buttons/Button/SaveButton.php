@@ -6,7 +6,7 @@ use Solspace\Freeform\Form\Layout\Page\Buttons\Button;
 
 class SaveButton extends Button
 {
-    private string|int $notificationId;
+    private int|string $notificationId;
     private string $emailFieldUid;
     private string $redirectUrl;
 

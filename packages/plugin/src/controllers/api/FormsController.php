@@ -86,7 +86,7 @@ class FormsController extends BaseApiController
         );
     }
 
-    protected function getOne($id): array|object|null
+    protected function getOne($id): null|array|object
     {
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_ACCESS);
 
@@ -98,7 +98,7 @@ class FormsController extends BaseApiController
         return $this->formTransformer->transform($form);
     }
 
-    protected function post(int|string $id = null): array|object|null
+    protected function post(int|string $id = null): null|array|object
     {
         $this->requireFormPermission($id);
 
@@ -113,7 +113,7 @@ class FormsController extends BaseApiController
         return $event->getResponseData();
     }
 
-    protected function put(int|string $id = null): array|object|null
+    protected function put(int|string $id = null): null|array|object
     {
         $this->requireFormPermission($id);
 
@@ -128,7 +128,7 @@ class FormsController extends BaseApiController
         return $event->getResponseData();
     }
 
-    protected function delete(int $id): bool|null
+    protected function delete(int $id): null|bool
     {
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
 

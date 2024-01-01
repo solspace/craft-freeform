@@ -15,10 +15,10 @@ class Checkboxes extends Property implements OptionsInterface
         ?string $instructions = null,
         ?int $order = null,
         ?int $width = null,
-        string|int|null $value = null,
+        null|int|string $value = null,
         public ?bool $selectAll = false,
         public ?int $columns = 1,
-        public OptionCollection|array|string|null $options = null,
+        public null|array|OptionCollection|string $options = null,
     ) {
         parent::__construct(
             label: $label,

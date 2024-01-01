@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Database;
 
-interface SpamSubmissionHandlerInterface extends SubmissionHandlerInterface
-{
-}
+interface SpamSubmissionHandlerInterface extends SubmissionHandlerInterface {}

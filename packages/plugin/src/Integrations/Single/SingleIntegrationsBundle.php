@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\Single;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
@@ -23,7 +23,7 @@ class SingleIntegrationsBundle extends FeatureBundle
     {
         $path = \Craft::getAlias('@freeform/Integrations/Single');
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
         $classes = array_keys($classMap);
 
         foreach ($classes as $class) {

@@ -9,8 +9,7 @@ class OptionTypeTransformer
 {
     public function __construct(
         private PropertyProvider $propertyProvider,
-    ) {
-    }
+    ) {}
 
     public function transform(OptionTypeProviderInterface $sourceType): object
     {

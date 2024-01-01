@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions;
 
-class FreeformException extends \Exception
-{
-}
+class FreeformException extends \Exception {}

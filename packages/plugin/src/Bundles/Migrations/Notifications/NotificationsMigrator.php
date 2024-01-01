@@ -11,8 +11,7 @@ class NotificationsMigrator
     public function __construct(
         private SettingsService $settings,
         private NotificationFilesService $filesService,
-    ) {
-    }
+    ) {}
 
     public function migrate(bool $removeDbNotifications = false): bool
     {
@@ -57,7 +56,5 @@ class NotificationsMigrator
     }
 
     // TODO: update this to use the new tables instead of old layout JSON
-    private function changeFormOccurrences(array $idToFilenameMap)
-    {
-    }
+    private function changeFormOccurrences(array $idToFilenameMap) {}
 }

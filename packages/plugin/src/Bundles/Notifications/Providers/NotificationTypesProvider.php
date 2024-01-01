@@ -11,9 +11,7 @@ class NotificationTypesProvider
 {
     public const EVENT_REGISTER_NOTIFICATION_TYPES = 'registerNotificationTypes';
 
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
-    }
+    public function __construct(private PropertyProvider $propertyProvider) {}
 
     /**
      * @return Type[]

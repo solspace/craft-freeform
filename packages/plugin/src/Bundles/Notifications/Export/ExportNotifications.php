@@ -7,8 +7,10 @@ use craft\helpers\Db;
 use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
@@ -68,18 +70,25 @@ class ExportNotifications extends FeatureBundle
                 'date' => new Carbon(),
             ];
 
-            $template = NotificationTemplateRecord::create();
-            $template->fromName = \Craft::$app->projectConfig->get('email.fromName');
-            $template->fromEmail = \Craft::$app->projectConfig->get('email.fromEmail');
+            $record = NotificationTemplateRecord::create();
+            $record->id = 0;
+            $record->name = 'Export Notification';
+            $record->handle = 'export-notification';
+            $record->fromName = \Craft::$app->projectConfig->get('email.fromName');
+            $record->fromEmail = \Craft::$app->projectConfig->get('email.fromEmail');
 
-            $template->subject = $mailer->renderString($notification->subject, $variables);
+            $record->subject = $mailer->renderString($notification->subject, $variables);
 
             $message = $mailer->renderString($notification->message, $variables);
-            $template->bodyHtml = $message;
-            $template->bodyText = $message;
+            $record->bodyHtml = $message;
+            $record->bodyText = $message;
+
+            $template = NotificationTemplate::fromRecord($record);
+
+            $recipients = RecipientCollection::fromArray($notification->recipients);
 
             $message = $mailer->compileMessage($template, $variables);
-            $message->setTo($mailer->processRecipients(json_decode($notification->recipients)));
+            $message->setTo($mailer->processRecipients($recipients));
 
             $data = $profile->getSubmissionData();
 

@@ -393,6 +393,7 @@ class SettingsService extends BaseService
             ->in($path)
             ->sortByName()
             ->name('index.twig')
+            ->name('index.html')
         ;
 
         foreach ($fileIterator as $file) {
@@ -405,6 +406,7 @@ class SettingsService extends BaseService
             ->depth(0)
             ->sortByName()
             ->name('*.twig')
+            ->name('*.html')
         ;
 
         foreach ($rootFiles as $file) {

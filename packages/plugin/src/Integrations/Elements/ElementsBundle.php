@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Elements;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Elements\ElementFieldMappingHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
@@ -14,6 +13,7 @@ use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -54,7 +54,7 @@ class ElementsBundle extends FeatureBundle
     {
         $path = \Craft::getAlias('@freeform/Integrations/Elements');
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
         $classes = array_keys($classMap);
 
         foreach ($classes as $class) {

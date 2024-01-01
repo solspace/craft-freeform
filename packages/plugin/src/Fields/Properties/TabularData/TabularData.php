@@ -9,8 +9,7 @@ class TabularData implements \IteratorAggregate, \Countable
 {
     public function __construct(
         private array $rows = []
-    ) {
-    }
+    ) {}
 
     public function getIterator(): \ArrayIterator
     {

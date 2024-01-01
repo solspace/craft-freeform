@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Exceptions\Composer;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class ComposerException extends FreeformException
-{
-}
+class ComposerException extends FreeformException {}

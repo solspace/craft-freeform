@@ -15,8 +15,7 @@ class FieldMapItem
         private string $type,
         private string $source,
         private string $value,
-    ) {
-    }
+    ) {}
 
     public function getType(): string
     {

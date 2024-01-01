@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface NumericInterface
-{
-}
+interface NumericInterface {}

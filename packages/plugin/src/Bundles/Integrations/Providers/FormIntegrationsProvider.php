@@ -12,8 +12,7 @@ class FormIntegrationsProvider
 {
     public function __construct(
         private IntegrationsService $integrationsService
-    ) {
-    }
+    ) {}
 
     public function getById(?int $id): ?IntegrationInterface
     {

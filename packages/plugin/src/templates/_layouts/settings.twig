@@ -7,6 +7,7 @@
 
 {% set segment2 = craft.app.request.getSegment(2) %}
 {% set segment3 = craft.app.request.getSegment(3) %}
+{% set segment4 = craft.app.request.getSegment(4) %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -22,6 +23,7 @@
 {% endblock %}
 
 {% block sidebar %}
+    {% set segment = segment3~(segment4 ? '/'~segment4) %}
     <nav>
         <ul>
             {% for id, item in navItems %}
@@ -29,7 +31,7 @@
                     <li class="heading"><span>{{ item.heading }}</span></li>
                 {% else %}
                     <li>
-                        {% set selected = id == segment3 or id == segment2 %}
+                        {% set selected = id == segment %}
                         <a href="{{ url('freeform/settings/'~id) }}"{% if selected %} class="sel"{% endif %}>
                             {{ item.title | raw }}
                         </a>

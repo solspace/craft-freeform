@@ -15,17 +15,11 @@ use yii\base\Event;
 
 abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface
 {
-    public function onValidate(Form $form, Element $element): void
-    {
-    }
+    public function onValidate(Form $form, Element $element): void {}
 
-    public function onBeforeConnect(Form $form, Element $element): void
-    {
-    }
+    public function onBeforeConnect(Form $form, Element $element): void {}
 
-    public function onAfterConnect(Form $form, Element $element): void
-    {
-    }
+    public function onAfterConnect(Form $form, Element $element): void {}
 
     protected function getAssignedFormElement(Form $form): ?ElementInterface
     {

@@ -7,8 +7,7 @@ class Option
     public function __construct(
         private string $value,
         private string $label,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

@@ -7,6 +7,5 @@ class DefaultValue
 {
     public function __construct(
         public string $path,
-    ) {
-    }
+    ) {}
 }

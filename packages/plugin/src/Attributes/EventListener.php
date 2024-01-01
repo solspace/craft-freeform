@@ -7,6 +7,5 @@ class EventListener
 {
     public function __construct(
         public string $class
-    ) {
-    }
+    ) {}
 }

@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\Common;
 
-interface PaymentFieldInterface
-{
-}
+interface PaymentFieldInterface {}

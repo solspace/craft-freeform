@@ -9,9 +9,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvid
 
 class TemplateOptions implements OptionsGeneratorInterface
 {
-    public function __construct(private NotificationTemplateProvider $templateProvider)
-    {
-    }
+    public function __construct(private NotificationTemplateProvider $templateProvider) {}
 
     public function fetchOptions(?Property $property): OptionCollection
     {

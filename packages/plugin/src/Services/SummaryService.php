@@ -390,18 +390,6 @@ class SummaryService extends Component
                     }
                 }
             }
-
-            // $layout = json_decode($formModel->layoutJson, false);
-            // if (isset($layout->composer->properties->payment)) {
-            //     $paymentType = $layout->composer->properties->payment->paymentType ?? null;
-            //     if ('single' === $paymentType) {
-            //         $paymentSingle = true;
-            //     }
-            //
-            //     if (\in_array($paymentType, ['predefined_subscription', 'dynamic_subscription'], true)) {
-            //         $paymentSubscription = true;
-            //     }
-            // }
         }
 
         $fieldTypes = array_unique($fieldTypes);

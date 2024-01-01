@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface BooleanInterface
-{
-}
+interface BooleanInterface {}

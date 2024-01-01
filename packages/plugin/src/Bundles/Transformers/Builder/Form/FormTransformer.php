@@ -18,8 +18,7 @@ class FormTransformer
         private LayoutTransformer $layoutTransformer,
         private ChartsService $chartsService,
         private SubmissionsService $submissionsService,
-    ) {
-    }
+    ) {}
 
     public function transformList(array $forms): array
     {

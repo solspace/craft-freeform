@@ -40,8 +40,7 @@ class PropertyProvider
         private Container $container,
         private ImplementationProvider $implementationProvider,
         private DefaultsProvider $defaultsProvider,
-    ) {
-    }
+    ) {}
 
     public function setObjectProperties(
         object $object,
@@ -83,7 +82,7 @@ class PropertyProvider
         }
     }
 
-    public function getEditableProperties(string|object $object): PropertyCollection
+    public function getEditableProperties(object|string $object): PropertyCollection
     {
         $class = \is_string($object) ? $object : $object::class;
         $referenceObject = \is_string($object) ? null : $object;

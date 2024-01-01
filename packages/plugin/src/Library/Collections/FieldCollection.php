@@ -36,7 +36,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return null;
     }
 
-    public function getList(string|array|null $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
+    public function getList(null|array|string $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
     {
         if (null === $implements) {
             return $this;

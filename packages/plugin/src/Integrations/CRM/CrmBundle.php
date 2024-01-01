@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Integrations\CRM;
 
-use Composer\ClassMapGenerator\ClassMapGenerator;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
@@ -20,6 +19,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -52,7 +52,7 @@ class CrmBundle extends FeatureBundle
     {
         $path = \Craft::getAlias('@freeform/Integrations/CRM');
 
-        $classMap = ClassMapGenerator::createMap($path);
+        $classMap = ClassMapHelper::getMap($path);
         $classes = array_keys($classMap);
 
         foreach ($classes as $class) {

@@ -8,6 +8,4 @@ use Solspace\Freeform\Attributes\Property\Property;
  * @extends Property<bool>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Boolean extends Property
-{
-}
+class Boolean extends Property {}

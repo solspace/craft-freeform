@@ -12,9 +12,7 @@ class Edition implements CustomNormalizerInterface
     public const LITE = Freeform::EDITION_LITE;
     public const EXPRESS = Freeform::EDITION_EXPRESS;
 
-    public function __construct(public string $name)
-    {
-    }
+    public function __construct(public string $name) {}
 
     public function normalize(): string
     {

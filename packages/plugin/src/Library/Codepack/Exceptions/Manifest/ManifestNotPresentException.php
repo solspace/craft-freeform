@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Codepack\Exceptions\Manifest;
 
-class ManifestNotPresentException extends ManifestException
-{
-}
+class ManifestNotPresentException extends ManifestException {}

@@ -13,9 +13,7 @@ use Stripe\PaymentIntent;
 
 class StripeCallbackService
 {
-    public function __construct(private SubmissionsService $submissionsService)
-    {
-    }
+    public function __construct(private SubmissionsService $submissionsService) {}
 
     public function handleSavedForm(
         Form $form,
@@ -44,7 +42,7 @@ class StripeCallbackService
 
             $paymentIntent = $stripe->paymentIntents->retrieve(
                 $paymentIntent->id,
-                ['expand' => ['payment_method', 'invoice.subscription']]
+                ['expand' => ['customer', 'payment_method', 'invoice.subscription']]
             );
 
             $form->quickLoad($payload);
@@ -95,8 +93,7 @@ class StripeCallbackService
 
         if ($savedForm) {
             $submissionMetadata = [
-                'submissionId' => $form->getSubmission()->id,
-                'submissionLink' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
+                'submission' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
             ];
 
             if ($paymentIntent?->invoice?->subscription) {
@@ -113,6 +110,7 @@ class StripeCallbackService
                 $stripe->paymentIntents->update(
                     $paymentIntent->id,
                     [
+                        'receipt_email' => $paymentIntent->customer->email,
                         'metadata' => array_merge(
                             $paymentIntent->metadata->toArray(),
                             $submissionMetadata,

@@ -30,8 +30,7 @@ class FieldObject
         private string $type,
         private string $category,
         private bool $required = false
-    ) {
-    }
+    ) {}
 
     public static function getTypes(): array
     {

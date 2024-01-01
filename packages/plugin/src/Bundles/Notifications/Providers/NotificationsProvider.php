@@ -23,9 +23,7 @@ use Solspace\Freeform\Records\Form\FormNotificationRecord;
  */
 class NotificationsProvider
 {
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
-    }
+    public function __construct(private PropertyProvider $propertyProvider) {}
 
     public function getByForm(Form $form = null): array
     {
@@ -86,7 +84,7 @@ class NotificationsProvider
             return null;
         }
 
-        $metadata = json_decode($record->metadata, true);
+        $metadata = $record->metadata;
 
         $metadata['id'] = $record->id;
         $metadata['uid'] = $record->uid;

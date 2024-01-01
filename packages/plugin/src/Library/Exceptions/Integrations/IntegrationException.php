@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Exceptions\Integrations;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class IntegrationException extends FreeformException
-{
-}
+class IntegrationException extends FreeformException {}

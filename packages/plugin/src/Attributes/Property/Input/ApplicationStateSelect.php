@@ -13,7 +13,7 @@ class ApplicationStateSelect extends Property
         ?string $label = null,
         ?string $instructions = null,
         ?int $order = null,
-        string|int|null $value = null,
+        null|int|string $value = null,
         ?int $width = null,
         public ?string $emptyOption = null,
         public ?string $source = null,

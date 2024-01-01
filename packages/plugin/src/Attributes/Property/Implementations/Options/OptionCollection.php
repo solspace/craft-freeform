@@ -13,8 +13,7 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
 
     public function __construct(
         private ?string $label = null
-    ) {
-    }
+    ) {}
 
     public function getLabel(): ?string
     {

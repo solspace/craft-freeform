@@ -3,10 +3,6 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Models\FieldModel;
-use Solspace\Freeform\Records\FieldRecord;
 use yii\db\Query;
 
 /**
@@ -220,25 +216,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
 
     private function installPaymentsField()
     {
-        $fieldsService = Freeform::getInstance()->fields;
-
-        $id = (new Query())
-            ->select(['id'])
-            ->from(FieldRecord::TABLE)
-            ->where([
-                'handle' => 'payment',
-                'type' => FieldInterface::TYPE_CREDIT_CARD_DETAILS,
-            ])
-            ->scalar()
-        ;
-
-        if (!$id) {
-            $field = FieldModel::create();
-            $field->handle = 'payment';
-            $field->label = '';
-            $field->type = FieldInterface::TYPE_CREDIT_CARD_DETAILS;
-            $fieldsService->save($field);
-        }
+        // outdated
     }
 
     private function convertIntegrations()

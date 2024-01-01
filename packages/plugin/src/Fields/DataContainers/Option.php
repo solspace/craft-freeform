@@ -18,8 +18,7 @@ class Option
         private string $label,
         private string $value,
         private bool $checked = false
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

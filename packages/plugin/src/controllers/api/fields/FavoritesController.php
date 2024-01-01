@@ -29,7 +29,7 @@ class FavoritesController extends BaseApiController
         return $this->favoritesProvider->getFavoriteFields();
     }
 
-    protected function post(int|string $id = null): array|object|null
+    protected function post(int|string $id = null): null|array|object
     {
         $request = $this->request;
 
@@ -80,7 +80,7 @@ class FavoritesController extends BaseApiController
         return null;
     }
 
-    protected function put(int|string $id = null): array|object|null
+    protected function put(int|string $id = null): null|array|object
     {
         $post = $this->request->post();
 
@@ -124,7 +124,7 @@ class FavoritesController extends BaseApiController
         return null;
     }
 
-    protected function delete(int $id): bool|null
+    protected function delete(int $id): null|bool
     {
         $record = FavoriteFieldRecord::findOne(['id' => $id]);
         if (!$record) {

@@ -12,8 +12,7 @@ class RecipientMappingTransformer implements TransformerInterface
     public function __construct(
         private RecipientTransformer $recipientTransformer,
         private NotificationTemplateTransformer $templateTransformer,
-    ) {
-    }
+    ) {}
 
     public function transform($value): ?RecipientMappingCollection
     {

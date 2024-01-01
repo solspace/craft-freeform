@@ -183,7 +183,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsByHandle[$handle];
     }
 
-    public function getFormByHandleOrId(string|int $handleOrId): ?Form
+    public function getFormByHandleOrId(int|string $handleOrId): ?Form
     {
         if (is_numeric($handleOrId)) {
             return $this->getFormById($handleOrId);
@@ -559,7 +559,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
 
             return $returnUrl;
-        } catch (LoaderError|InvalidConfigException|SyntaxError|Exception) {
+        } catch (Exception|InvalidConfigException|LoaderError|SyntaxError) {
         }
 
         return null;
@@ -588,10 +588,6 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private function createForm(array $data): Form
     {
-        if (!\is_array($data['metadata'])) {
-            $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
-        }
-
         $type = $data['type'] ?? null;
         $reflection = new \ReflectionClass($type);
         if (!$reflection->isSubclassOf(Form::class)) {
@@ -600,7 +596,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $settings = new FormSettings($data['metadata'], $this->propertyProvider);
+        $metadata = json_decode($data['metadata'], true);
+        $settings = new FormSettings($metadata, $this->propertyProvider);
 
         return new $type(
             $data,

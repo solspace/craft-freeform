@@ -16,8 +16,7 @@ class RuleValidator
     public function __construct(
         private RuleProvider $ruleProvider,
         private ConditionValidator $conditionValidator,
-    ) {
-    }
+    ) {}
 
     public function isFieldHidden(Form $form, FieldInterface $field): bool
     {

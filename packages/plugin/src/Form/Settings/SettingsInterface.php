@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Form\Settings;
 
-interface SettingsInterface
-{
-}
+interface SettingsInterface {}

@@ -79,7 +79,11 @@ export const fieldsSlice = createSlice({
         const count = state.filter(
           (field) => field.typeClass === fieldType.typeClass
         ).length;
-        const label = `${fieldType.name} ${count + 1}`;
+
+        let label = fieldType.name;
+        if (count > 0) {
+          label += ` ${count}`;
+        }
 
         properties.label = label;
         properties.handle = camelCase(label);

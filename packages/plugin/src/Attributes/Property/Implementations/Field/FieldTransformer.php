@@ -8,9 +8,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 
 class FieldTransformer implements TransformerInterface
 {
-    public function __construct(private FieldProvider $fieldProvider)
-    {
-    }
+    public function __construct(private FieldProvider $fieldProvider) {}
 
     public function transform($value): ?FieldInterface
     {

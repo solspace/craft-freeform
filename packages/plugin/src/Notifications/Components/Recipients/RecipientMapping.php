@@ -10,8 +10,7 @@ class RecipientMapping
         private string $value,
         private ?NotificationTemplate $template,
         private RecipientCollection $recipients,
-    ) {
-    }
+    ) {}
 
     public function getValue(): string
     {

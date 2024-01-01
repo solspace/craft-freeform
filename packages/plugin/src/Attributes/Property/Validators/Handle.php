@@ -10,8 +10,7 @@ class Handle implements PropertyValidatorInterface
 {
     public function __construct(
         private string $message = 'Value is not a valid handle.',
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value): array
     {

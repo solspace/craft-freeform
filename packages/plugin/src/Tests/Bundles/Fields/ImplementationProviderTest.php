@@ -38,13 +38,7 @@ class ImplementationProviderTest extends TestCase
     }
 }
 
-interface TestInterface1
-{
-}
-interface AnotherMultiWordInterface
-{
-}
+interface TestInterface1 {}
+interface AnotherMultiWordInterface {}
 
-class TestThis implements TestInterface1, AnotherMultiWordInterface
-{
-}
+class TestThis implements TestInterface1, AnotherMultiWordInterface {}

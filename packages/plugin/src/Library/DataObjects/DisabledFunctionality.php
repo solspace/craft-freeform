@@ -39,7 +39,7 @@ class DisabledFunctionality
      *
      * @param mixed $settings
      */
-    public function __construct(bool|array $settings = null)
+    public function __construct(array|bool $settings = null)
     {
         if (true === $settings) {
             $this->api = true;

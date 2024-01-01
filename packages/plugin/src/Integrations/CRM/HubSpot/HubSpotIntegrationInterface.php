@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
-interface HubSpotIntegrationInterface
-{
-}
+interface HubSpotIntegrationInterface {}

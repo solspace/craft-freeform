@@ -8,7 +8,7 @@ use craft\fields\data\MultiOptionsFieldData;
 
 class ElementHelper
 {
-    public static function extractFieldValue(ElementInterface $element, string|int $field): mixed
+    public static function extractFieldValue(ElementInterface $element, int|string $field): mixed
     {
         $value = null;
         if (!is_numeric($field)) {

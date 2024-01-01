@@ -13,9 +13,7 @@ use Stripe\PaymentIntent;
 
 class StripeCallbackService
 {
-    public function __construct(private SubmissionsService $submissionsService)
-    {
-    }
+    public function __construct(private SubmissionsService $submissionsService) {}
 
     public function handleSavedForm(
         Form $form,

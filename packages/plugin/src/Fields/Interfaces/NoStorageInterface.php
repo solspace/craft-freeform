@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface NoStorageInterface
-{
-}
+interface NoStorageInterface {}

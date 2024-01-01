@@ -11,6 +11,4 @@ use Solspace\Freeform\Integrations\Webhooks\Generic\Generic;
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class Zapier extends Generic
-{
-}
+class Zapier extends Generic {}

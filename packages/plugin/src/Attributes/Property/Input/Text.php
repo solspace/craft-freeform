@@ -8,6 +8,4 @@ use Solspace\Freeform\Attributes\Property\Property;
  * @extends Property<string>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Text extends Property
-{
-}
+class Text extends Property {}

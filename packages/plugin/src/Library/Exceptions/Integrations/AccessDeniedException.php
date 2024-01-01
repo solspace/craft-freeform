@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\Integrations;
 
-class AccessDeniedException extends IntegrationException
-{
-}
+class AccessDeniedException extends IntegrationException {}

@@ -29,8 +29,7 @@ abstract class BaseIntegration implements IntegrationInterface
         private string $handle,
         private string $name,
         private Type $typeDefinition,
-    ) {
-    }
+    ) {}
 
     public function getId(): ?int
     {
@@ -84,9 +83,7 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(): void
-    {
-    }
+    public function onBeforeSave(): void {}
 
     public function getTypeDefinition(): Type
     {
@@ -99,7 +96,7 @@ abstract class BaseIntegration implements IntegrationInterface
         Event::trigger($this, self::EVENT_AFTER_RESPONSE, $event);
     }
 
-    protected function getProcessedValue(mixed $value): bool|string|null
+    protected function getProcessedValue(mixed $value): null|bool|string
     {
         return App::parseEnv($value);
     }

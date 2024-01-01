@@ -7,9 +7,7 @@ use Solspace\Freeform\Services\StatusesService;
 
 class DefaultStatusGenerator implements ValueGeneratorInterface
 {
-    public function __construct(private StatusesService $statusesService)
-    {
-    }
+    public function __construct(private StatusesService $statusesService) {}
 
     public function generateValue(?object $referenceObject): int
     {

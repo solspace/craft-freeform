@@ -75,7 +75,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
         return GQLType::listOf(GQLType::string());
     }
 
-    public function getContentGqlMutationArgumentType(): GQLType|array
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Multiple option values allowed.';

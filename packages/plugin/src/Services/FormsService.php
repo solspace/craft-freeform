@@ -183,7 +183,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsByHandle[$handle];
     }
 
-    public function getFormByHandleOrId(string|int $handleOrId): ?Form
+    public function getFormByHandleOrId(int|string $handleOrId): ?Form
     {
         if (is_numeric($handleOrId)) {
             return $this->getFormById($handleOrId);
@@ -559,7 +559,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
 
             return $returnUrl;
-        } catch (LoaderError|InvalidConfigException|SyntaxError|Exception) {
+        } catch (Exception|InvalidConfigException|LoaderError|SyntaxError) {
         }
 
         return null;

@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
-abstract class PaymentGatewayIntegration extends APIIntegration implements PaymentGatewayIntegrationInterface
-{
-}
+abstract class PaymentGatewayIntegration extends APIIntegration implements PaymentGatewayIntegrationInterface {}

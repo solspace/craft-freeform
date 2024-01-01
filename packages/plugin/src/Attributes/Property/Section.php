@@ -10,6 +10,5 @@ class Section
         public ?string $label = null,
         public ?string $icon = null,
         public ?int $order = null,
-    ) {
-    }
+    ) {}
 }

@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\Integrations;
 
-class CRMIntegrationNotFoundException extends IntegrationException
-{
-}
+class CRMIntegrationNotFoundException extends IntegrationException {}

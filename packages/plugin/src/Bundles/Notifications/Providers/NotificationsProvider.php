@@ -23,9 +23,7 @@ use Solspace\Freeform\Records\Form\FormNotificationRecord;
  */
 class NotificationsProvider
 {
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
-    }
+    public function __construct(private PropertyProvider $propertyProvider) {}
 
     public function getByForm(Form $form = null): array
     {

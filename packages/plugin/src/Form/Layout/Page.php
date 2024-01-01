@@ -55,7 +55,7 @@ class Page implements \IteratorAggregate
         return $this->layout->getRows();
     }
 
-    public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
+    public function getFields(null|array|string $implements = null, ?string $strategy = null): FieldCollection
     {
         return $this->layout->getFields()->getList($implements, $strategy);
     }

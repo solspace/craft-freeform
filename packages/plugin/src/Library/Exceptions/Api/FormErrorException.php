@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\Api;
 
-class FormErrorException extends ApiException
-{
-}
+class FormErrorException extends ApiException {}

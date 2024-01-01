@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\FieldExceptions;
 
-class InvalidFieldTypeException extends FieldException
-{
-}
+class InvalidFieldTypeException extends FieldException {}

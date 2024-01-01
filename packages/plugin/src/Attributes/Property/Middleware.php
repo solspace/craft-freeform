@@ -10,8 +10,7 @@ class Middleware implements CustomNormalizerInterface
     public function __construct(
         public string $name,
         public array $arguments = []
-    ) {
-    }
+    ) {}
 
     public function normalize(): array
     {

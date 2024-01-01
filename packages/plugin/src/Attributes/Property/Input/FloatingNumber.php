@@ -8,6 +8,4 @@ use Solspace\Freeform\Attributes\Property\Property;
  * @extends Property<float>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class FloatingNumber extends Property
-{
-}
+class FloatingNumber extends Property {}

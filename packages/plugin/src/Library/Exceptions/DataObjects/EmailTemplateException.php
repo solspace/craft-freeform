@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Exceptions\DataObjects;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class EmailTemplateException extends FreeformException
-{
-}
+class EmailTemplateException extends FreeformException {}

@@ -7,5 +7,5 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 interface IdentificatorInterface
 {
     #[Ignore]
-    public function getNormalizeIdentificator(): int|string|null;
+    public function getNormalizeIdentificator(): null|int|string;
 }

@@ -126,7 +126,7 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         return GQLType::listOf(FileUploadType::getType());
     }
 
-    public function getContentGqlMutationArgumentType(): GQLType|array
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
 

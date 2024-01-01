@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Insightly;
 
-interface InsightlyIntegrationInterface
-{
-}
+interface InsightlyIntegrationInterface {}

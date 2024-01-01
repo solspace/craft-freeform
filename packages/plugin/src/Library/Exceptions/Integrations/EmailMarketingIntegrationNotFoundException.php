@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\Integrations;
 
-class EmailMarketingIntegrationNotFoundException extends IntegrationException
-{
-}
+class EmailMarketingIntegrationNotFoundException extends IntegrationException {}

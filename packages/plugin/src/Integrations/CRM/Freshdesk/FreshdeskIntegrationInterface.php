@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Freshdesk;
 
-interface FreshdeskIntegrationInterface
-{
-}
+interface FreshdeskIntegrationInterface {}

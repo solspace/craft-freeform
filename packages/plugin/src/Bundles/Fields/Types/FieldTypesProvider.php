@@ -28,8 +28,7 @@ class FieldTypesProvider
         private PropertyProvider $propertyProvider,
         private ImplementationProvider $implementationProvider,
         private SectionProvider $sectionProvider,
-    ) {
-    }
+    ) {}
 
     public function getRegisteredTypes(): array
     {

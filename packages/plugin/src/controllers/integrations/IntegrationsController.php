@@ -203,7 +203,7 @@ class IntegrationsController extends BaseController
         return $this->integrationsService->getAllServiceProviders($type);
     }
 
-    protected function getNewOrExistingModel(int|string|null $id, string $type): IntegrationModel
+    protected function getNewOrExistingModel(null|int|string $id, string $type): IntegrationModel
     {
         $model = null;
         if (is_numeric($id)) {

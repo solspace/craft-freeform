@@ -92,7 +92,7 @@ class TestToIdentifier implements IdentificatorInterface
     public int $id = 123;
     public array $data = [1, 2, 3];
 
-    public function getNormalizeIdentificator(): int|string|null
+    public function getNormalizeIdentificator(): null|int|string
     {
         return $this->id;
     }

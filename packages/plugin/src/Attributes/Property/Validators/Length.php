@@ -11,8 +11,7 @@ class Length implements PropertyValidatorInterface
     public function __construct(
         private int $length = 255,
         private string $message = 'Value contains {current} characters, {max} allowed.',
-    ) {
-    }
+    ) {}
 
     public function validate(mixed $value): array
     {

@@ -121,7 +121,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private bool $finished = false;
     private bool $valid = false;
-    private bool|array $disableFunctionality = false;
+    private array|bool $disableFunctionality = false;
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
     private bool $formPosted = false;
@@ -644,7 +644,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return new DisabledFunctionality($disableSettings);
     }
 
-    public function disableFunctionality(array|bool|null $config = null): self
+    public function disableFunctionality(null|array|bool $config = null): self
     {
         $this->disableFunctionality = $config ?? true;
 

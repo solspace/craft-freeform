@@ -10,8 +10,7 @@ class IntegrationTransformer implements TransformerInterface
 {
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
-    ) {
-    }
+    ) {}
 
     public function transform($value): ?IntegrationInterface
     {

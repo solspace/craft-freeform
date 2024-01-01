@@ -41,8 +41,7 @@ class FormDuplicator
 
     public function __construct(
         private FormsService $formsService,
-    ) {
-    }
+    ) {}
 
     public function clone(int $id): bool
     {

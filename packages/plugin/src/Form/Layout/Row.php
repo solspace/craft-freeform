@@ -40,7 +40,7 @@ class Row implements \IteratorAggregate
         return $this->index;
     }
 
-    public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
+    public function getFields(null|array|string $implements = null, ?string $strategy = null): FieldCollection
     {
         return $this->fieldCollection->getList($implements, $strategy);
     }

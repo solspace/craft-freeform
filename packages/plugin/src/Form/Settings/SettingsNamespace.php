@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Form\Settings;
 
-abstract class SettingsNamespace implements SettingsInterface
-{
-}
+abstract class SettingsNamespace implements SettingsInterface {}

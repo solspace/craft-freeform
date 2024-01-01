@@ -23,7 +23,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 {
     public ?string $title = null;
 
-    public array|string|null $formIds = null;
+    public null|array|string $formIds = null;
 
     public ?bool $aggregate = null;
 

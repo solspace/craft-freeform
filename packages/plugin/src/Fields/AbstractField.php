@@ -385,7 +385,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->order;
     }
 
-    public function getNormalizeIdentificator(): int|string|null
+    public function getNormalizeIdentificator(): null|int|string
     {
         return $this->getUid();
     }
@@ -480,12 +480,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $description;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::string();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description = implode("\n", $description);

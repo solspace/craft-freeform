@@ -7,6 +7,4 @@ use Solspace\Freeform\Library\Collections\Collection;
 /**
  * @extends Collection<Condition>
  */
-class ConditionCollection extends Collection
-{
-}
+class ConditionCollection extends Collection {}

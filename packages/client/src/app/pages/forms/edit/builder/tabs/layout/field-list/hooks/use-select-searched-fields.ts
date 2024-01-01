@@ -7,6 +7,7 @@ import type {
   FieldForm,
   FieldType,
 } from '@ff-client/types/fields';
+// import type { Group, GroupData, GroupItem } from '@ff-client/types/groups';
 
 type SelectSearchedFields<T> = () => (data: T[]) => T[];
 
@@ -39,7 +40,7 @@ export const useSelectSearchedFavorites: SelectSearchedFields<
       }
 
       return data.filter((item) =>
-        item.label.toLowerCase().includes(searchQuery)
+        item.label.toLowerCase().includes(searchQuery.toLowerCase())
       );
     },
     [searchQuery]
@@ -61,7 +62,7 @@ export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
             ({
               ...form,
               fields: form.fields.filter((field) =>
-                field.label.toLowerCase().includes(searchQuery)
+                field.label.toLowerCase().includes(searchQuery.toLowerCase())
               ),
             }) as FieldForm
         )
@@ -70,3 +71,50 @@ export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
     [searchQuery]
   );
 };
+
+// export const useSelectSearchedGroups: SelectSearchedFields<Group> = () => {
+//   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
+
+//   return useCallback(
+//     (data: Group): GroupItem => {
+//       if (!searchQuery) {
+//         const unassignedTypes = data?.types
+//           .map((_, index) => index)
+//           .filter(
+//             (index) =>
+//               !data.groups?.hidden?.includes(index) &&
+//               !data.groups?.grouped?.some((group) => group.types.includes(index))
+//           );
+
+//         return {
+//           grouped: data.groups?.grouped || [],
+//           unassigned: unassignedTypes || [],
+//         };
+//       }
+
+//       const filteredGrouped = data.groups?.grouped
+//         .map((group) => ({
+//           ...group,
+//           types: group.types.filter(
+//             (item) =>
+//               data.types?.[item].toLowerCase().includes(searchQuery.toLowerCase())
+//           ),
+//         }))
+//         .filter((group) => group.types.length > 0);
+
+//       const unassignedTypes = data.types
+//         .map((_, index) => index)
+//         .filter(
+//           (index) =>
+//             !data.groups?.hidden?.includes(index) &&
+//             !filteredGrouped.some((group) => group.types.includes(index))
+//         );
+
+//       return {
+//         grouped: filteredGrouped || [],
+//         unassigned: unassignedTypes || [],
+//       };
+//     },
+//     [searchQuery]
+//   );
+// };

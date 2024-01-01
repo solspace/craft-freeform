@@ -232,6 +232,8 @@ class Settings extends Model
     /** @var bool */
     public $bypassSpamCheckOnLoggedInUsers;
 
+    public array $hiddenFieldTypes = [];
+
     public Defaults $defaults;
 
     /**
@@ -302,6 +304,8 @@ class Settings extends Model
         $this->saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
 
         $this->bypassSpamCheckOnLoggedInUsers = false;
+
+        $this->hiddenFieldTypes = [];
 
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);

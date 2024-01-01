@@ -7,14 +7,14 @@ import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
+import CloneIcon from '@ff-icons/actions/clone.svg';
+import CrossIcon from '@ff-icons/actions/cross.svg';
+import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
 
-import CloneIcon from './icons/clone.svg';
-import CrossIcon from './icons/cross.svg';
-import MoveIcon from './icons/move.svg';
 import {
   CardBody,
   CardWrapper,

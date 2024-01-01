@@ -74,7 +74,7 @@ export const GroupItemWrapper = styled.div<GroupItemWrapperProps>`
 `;
 
 GroupItemWrapper.defaultProps = {
-  $empty: 'Drag Field Here!',
+  $empty: 'Drag and drop any field here',
   color: colors.black,
 };
 
@@ -106,7 +106,7 @@ export const FieldTypes = styled.div<FieldTypesProps>`
 `;
 
 FieldTypes.defaultProps = {
-  $empty: 'Drag Field Here!',
+  $empty: 'Drag and drop any field here',
 };
 
 export const UHFieldWrapper = styled.div`

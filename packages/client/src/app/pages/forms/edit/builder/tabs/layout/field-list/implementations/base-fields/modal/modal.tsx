@@ -134,7 +134,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                   />
                 </GroupHeader>
                 <GroupItemWrapper
-                  $empty={translate('Drag Field Here!')}
+                  $empty={translate('Drag and drop any field here')}
                   ref={(el) => (fieldListRefs.current[group.uid] = el)}
                   color={group.color}
                 >
@@ -159,7 +159,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             </GroupLayout>
           ))}
           {state.groups?.grouped.length === 0 && (
-            <span>Please Click Add Group button to Added group here!</span>
+            <span>Click the 'Add Group' button on the right to begin.</span>
           )}
         </GroupWrapper>
         <FieldListWrapper>
@@ -175,7 +175,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
               <span>{translate('Unassigned')}</span>
 
               <FieldTypes
-                $empty={translate('Drag Field Here!')}
+                $empty={translate('Drag and drop any field here')}
                 ref={(el) => (fieldListRefs.current.unassigned = el)}
               >
                 {state.groups?.unassigned?.map((item) => (
@@ -192,7 +192,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
               <span>{translate('Hidden')}</span>
 
               <FieldTypes
-                $empty={translate('Drag Field Here!')}
+                $empty={translate('Drag and drop any field here')}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >
                 {state.groups?.hidden?.map((item) => (

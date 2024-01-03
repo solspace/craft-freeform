@@ -3,7 +3,7 @@
   count: totalSubmissions,
   links: disableLinks|default(false) ? [] : [
     { link: url("freeform/submissions"), label: "Manage"|t("freeform"), class: "", permission: "freeform-submissionsManage" },
-    craft.freeform.pro ? { link: url("freeform/export-profiles"), label: "Export"|t("freeform"), class: "", permission: "freeform-pro-exportProfilesAccess" } : null,
+    craft.freeform.pro ? { link: url("freeform/export/profiles"), label: "Export"|t("freeform"), class: "", permission: "freeform-pro-exportProfilesAccess" } : null,
     isSpamFolderEnabled ? { link: url("freeform/spam"), label: "Spam ("~totalSpam~")"|t("freeform"), class: "submit", permission: "freeform-submissionsManage" } : null,
   ],
 } %}

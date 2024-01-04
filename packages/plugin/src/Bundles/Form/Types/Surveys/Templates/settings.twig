@@ -9,11 +9,11 @@
     {{ redirectInput('freeform/settings/surveys') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Surveys & Polls"|t('freeform-surveys') }}</h2>
+    <h2 class="first">{{ "Surveys & Polls"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
-        label: "Highlight highest ranking option?"|t('freeform-surveys'),
-        instructions: "When enabled, Freeform will highlight the highest ranking option chosen for each question with an alternate color."|t('freeform-surveys'),
+        label: "Highlight Highest Ranking Option"|t('freeform'),
+        instructions: "The highest ranking option chosen for each question will be highlighted with an alternate color."|t('freeform'),
         name: "highlightHighest",
         on: settings.highlightHighest,
         errors: settings.errors("highlightHighest"),
@@ -47,8 +47,8 @@
 
 
     {{ forms.field({
-        label: "Survey & Poll Chart Types"|t('freeform-surveys'),
-        instructions: "Select the default chart types to use for each field type."|t('freeform-surveys'),
+        label: "Default Chart Types"|t('freeform'),
+        instructions: "Select the default chart types to use for each field type. These can be overrided per form inside the report view."|t('freeform'),
     }, chartTypes) }}
 
 {% endblock %}

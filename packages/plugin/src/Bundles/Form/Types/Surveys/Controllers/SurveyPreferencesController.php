@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Types\Surveys\Controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
-use Solspace\Freeform\Bundles\Form\Types\Surveys\Records\SurveyViewSettingsRecord;
+use Solspace\Freeform\Bundles\Form\Types\Surveys\Records\SurveyPreferencesRecord;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Survey;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\SurveysBundle;
 use Solspace\Freeform\controllers\BaseApiController;
@@ -18,7 +18,7 @@ class SurveyPreferencesController extends BaseApiController
         $form = $this->getForm($id);
 
         $settings = SurveySettings::fromSettings(Freeform::getInstance()->getSettings()->survey ?? []);
-        $userPreferences = SurveyViewSettingsRecord::findAll(['userId' => \Craft::$app->getUser()->getId()]);
+        $userPreferences = SurveyPreferencesRecord::findAll(['userId' => \Craft::$app->getUser()->getId()]);
 
         $canModifyForm = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE.':'.$form->getId())
             || PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE);
@@ -43,7 +43,7 @@ class SurveyPreferencesController extends BaseApiController
                 'reports' => $canManageReports,
             ],
             'fieldSettings' => array_map(
-                function (SurveyViewSettingsRecord $preference) {
+                function (SurveyPreferencesRecord $preference) {
                     return [
                         'id' => $preference->fieldId,
                         'chartType' => $preference->chartType,
@@ -64,13 +64,13 @@ class SurveyPreferencesController extends BaseApiController
 
         $userId = \Craft::$app->getUser()->getId();
 
-        $record = SurveyViewSettingsRecord::findOne([
+        $record = SurveyPreferencesRecord::findOne([
             'userId' => $userId,
             'fieldId' => $fieldId,
         ]);
 
         if (!$record) {
-            $record = new SurveyViewSettingsRecord();
+            $record = new SurveyPreferencesRecord();
             $record->userId = $userId;
             $record->fieldId = $fieldId;
         }

@@ -13,9 +13,9 @@ use craft\db\ActiveRecord;
  * @property string $dateUpdated
  * @property string $uid
  */
-class SurveyViewSettingsRecord extends ActiveRecord
+class SurveyPreferencesRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_surveys_view_settings}}';
+    public const TABLE = '{{%freeform_survey_preferences}}';
 
     public static function tableName(): string
     {

@@ -22,11 +22,15 @@ class AttachFormLinks extends FeatureBundle
                     return;
                 }
 
-                $data = $event->getFormData();
-                $label = Freeform::t('{count} Survey Results', ['count' => $data->counters['submissions']]);
+                $label = Freeform::t('Survey Results');
 
                 $event->add($label, '/surveys/'.$form->getHandle(), true);
             }
         );
+    }
+
+    public static function getPriority(): int
+    {
+        return 1500;
     }
 }

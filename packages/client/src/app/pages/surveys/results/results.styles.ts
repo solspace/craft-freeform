@@ -7,4 +7,7 @@ type WrapperProps = {
 export const ResultsWrapper = styled.div<WrapperProps>`
   --highlight: ${({ $highlightHighest }) =>
     $highlightHighest ? '#e02e39' : '#33414d'};
+
+  padding-bottom: 50px;
+  margin-bottom: 30px;
 `;

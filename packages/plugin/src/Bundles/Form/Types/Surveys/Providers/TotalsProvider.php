@@ -140,7 +140,8 @@ class TotalsProvider
                         if ($field instanceof OpinionScaleField) {
                             $hasOptions = true;
                             foreach ($field->getScales() as $scale) {
-                                [$value, $label] = $scale;
+                                $value = $scale->getValue();
+                                $label = $scale->getLabel();
                                 if ('' == $value || null == $value) {
                                     continue;
                                 }

@@ -9,9 +9,8 @@
     {{ redirectInput('freeform/settings/surveys') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "Surveys & Polls"|t('freeform') }}</h2>
-
     {{ forms.lightswitchField({
+        first: true,
         label: "Highlight Highest Ranking Option"|t('freeform'),
         instructions: "The highest ranking option chosen for each question will be highlighted with an alternate color."|t('freeform'),
         name: "highlightHighest",

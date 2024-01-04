@@ -257,7 +257,6 @@ class SettingsService extends BaseService
         }
 
         $event = new RegisterSettingsNavigationEvent($nav);
-
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);
 
         return $event->getNavigation();

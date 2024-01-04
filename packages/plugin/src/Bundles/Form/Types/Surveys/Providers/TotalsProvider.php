@@ -137,22 +137,6 @@ class TotalsProvider
                             }
                         }
 
-                        if ($field instanceof OpinionScaleField) {
-                            $hasOptions = true;
-                            foreach ($field->getScales() as $scale) {
-                                $value = $scale->getValue();
-                                $label = $scale->getLabel();
-                                if ('' == $value || null == $value) {
-                                    continue;
-                                }
-
-                                $breakdown = $totals->getBreakdown()->get($value);
-                                if (null === $breakdown) {
-                                    $totals->getBreakdown()->add(new AnswerBreakdown($totals, $label, $value), $value);
-                                }
-                            }
-                        }
-
                         if (empty($valueArray)) {
                             $totals->incrementSkipped();
 

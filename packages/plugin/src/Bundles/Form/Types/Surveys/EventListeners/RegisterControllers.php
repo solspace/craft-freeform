@@ -71,4 +71,9 @@ class RegisterControllers extends FeatureBundle
             }
         );
     }
+
+    public static function isProOnly(): bool
+    {
+        return true;
+    }
 }

@@ -33,4 +33,9 @@ class AttachFormLinks extends FeatureBundle
     {
         return 1500;
     }
+
+    public static function isProOnly(): bool
+    {
+        return true;
+    }
 }

@@ -8,6 +8,20 @@ import type {
 
 export type SettingsNamespace = Record<string, GenericValue>;
 
+type FormOwnershipMeta = {
+  datetime: string;
+  user: {
+    id: number;
+    url: string;
+    name: string;
+  }
+}
+
+type FormOwnership = {
+  created: FormOwnershipMeta;
+  updated: FormOwnershipMeta;
+}
+
 export type Form = {
   id?: number;
   uid: string;
@@ -18,6 +32,7 @@ export type Form = {
   settings: {
     [namespace: string]: SettingsNamespace;
   };
+  ownership?: FormOwnership;
 };
 
 export type ExtendedFormType = Form & {
@@ -36,14 +51,3 @@ export type FormSettingNamespace = {
   sections: Section[];
   properties: Property[];
 };
-
-export type FormOwnership = {
-  created: {
-    datetime: string;
-    user: {};
-  };
-  updated: {
-    datetime: string;
-    user: {};
-  };
-}

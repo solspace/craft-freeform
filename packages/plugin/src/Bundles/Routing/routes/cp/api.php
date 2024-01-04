@@ -14,7 +14,6 @@ return [
     'freeform/api/forms/sort' => 'freeform/api/forms/sort',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
-    'freeform/api/forms/<id:\d+>/ownership' => 'freeform/api/forms/ownership',
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',

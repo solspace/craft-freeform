@@ -4,6 +4,7 @@ namespace Solspace\Freeform\migrations;
 
 use Craft;
 use craft\db\Migration;
+use Solspace\Commons\Migrations\ForeignKey;
 
 /**
  * m231219_105754_AddUsersToFormsTable migration.
@@ -17,30 +18,34 @@ class m231219_105754_AddUsersToFormsTable extends Migration
     {
         $this->addColumn(
             '{{%freeform_forms}}',
-            'createdId',
+            'createdByUserId',
             $this->integer()->null()->after('order')
         );
 
         $this->addColumn(
             '{{%freeform_forms}}',
-            'updatedId',
+            'updatedByUserId',
             $this->integer()->null()->after('dateCreated')
         );
 
         $this->addForeignKey(
-            null,
+            'freeform_forms_createdByUserId_fk',
             '{{%freeform_forms}}',
-            'createdId',
+            'createdByUserId',
             '{{%users}}',
-            'id'
+            'id',
+            ForeignKey::CASCADE,
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
-            null,
+            'freeform_forms_updatedByUserId_fk',
             '{{%freeform_forms}}',
-            'updatedId',
+            'updatedByUserId',
             '{{%users}}',
-            'id'
+            'id',
+            ForeignKey::CASCADE,
+            ForeignKey::CASCADE
         );
 
         return true;
@@ -51,17 +56,24 @@ class m231219_105754_AddUsersToFormsTable extends Migration
      */
     public function safeDown(): bool
     {
-        $this->dropForeignKey('freeform_forms_createdId_fk', '{{%freeform_forms}}');
-        $this->dropForeignKey('freeform_forms_updatedId_fk', '{{%freeform_forms}}');
+        $this->dropForeignKey(
+            'freeform_forms_createdByUserId_fk',
+            '{{%freeform_forms}}'
+        );
 
-        $this->dropColumn(
-            '{{%freeform_forms}}',
-            'createdId',
+        $this->dropForeignKey(
+            'freeform_forms_updatedByUserId_fk',
+            '{{%freeform_forms}}'
         );
 
         $this->dropColumn(
             '{{%freeform_forms}}',
-            'updatedId',
+            'createdByUserId',
+        );
+
+        $this->dropColumn(
+            '{{%freeform_forms}}',
+            'updatedByUserId',
         );
 
         return true;

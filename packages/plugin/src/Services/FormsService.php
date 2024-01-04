@@ -577,7 +577,9 @@ class FormsService extends BaseService implements FormHandlerInterface
                     'forms.handle',
                     'forms.metadata',
                     'forms.spamBlockCount',
+                    'forms.createdByUserId',
                     'forms.dateCreated',
+                    'forms.updatedByUserId',
                     'forms.dateUpdated',
                 ]
             )

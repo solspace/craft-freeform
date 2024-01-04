@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
+use craft\config\GeneralConfig;
 use Carbon\Carbon;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
@@ -75,6 +76,7 @@ class FormTransformer
             'name' => $settings->name,
             'handle' => $settings->handle,
             'settings' => $settings->toArray(),
+            'ownership' => $this->getOwnership($form),
             'isNew' => $isNew,
         ];
     }
@@ -96,6 +98,47 @@ class FormTransformer
         }
 
         return $forms;
+    }
+
+    private function getOwnership(Form $form): array
+    {
+        $createdByUserUrl = "#";
+        $updatedByUserUrl = "#";
+        $currentUser = \Craft::$app->getUser()->getIdentity();
+        $ownership = [
+            'created' => [
+                'datetime' => $form->getDateCreated()->format('n/j/Y, g:i A')
+            ],
+            'updated' => [
+                'datetime' => $form->getDateUpdated()->format('n/j/Y, g:i A')
+            ]
+        ];
+
+        if ($form->getCreatedBy() !== null) {
+            if ($currentUser->id === $form->getCreatedBy()->id || $currentUser->can('editUsers')) {
+                $createdByUserUrl = $form->getCreatedBy()->cpEditUrl;
+            }
+
+            $ownership['created']['user'] = [
+                'id' => $form->getCreatedBy()->getId(),
+                'url' => $createdByUserUrl,
+                'name' => $form->getCreatedBy()->name
+            ];
+        }
+
+        if ($form->getUpdatedBy() !== null) {
+            if ($currentUser->id === $form->getUpdatedBy()->id || $currentUser->can('editUsers')) {
+                $updatedByUserUrl = $form->getUpdatedBy()->cpEditUrl;
+            }
+
+            $ownership['updated']['user'] = [
+                'id' => $form->getUpdatedBy()->getId(),
+                'url' => $updatedByUserUrl,
+                'name' => $form->getUpdatedBy()->name
+            ];
+        }
+
+        return $ownership;
     }
 
     private function attachLinks(array $forms, array $transformed): array

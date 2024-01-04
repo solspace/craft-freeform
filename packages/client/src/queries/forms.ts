@@ -2,7 +2,7 @@ import { useAppDispatch } from '@editor/store';
 import { formActions } from '@editor/store/slices/form';
 import type {
     ExtendedFormType,
-    Form, FormOwnership,
+    Form,
     FormSettingNamespace,
 } from '@ff-client/types/forms';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -75,13 +75,3 @@ export const useQueryFormSettings = (): UseQueryResult<
     { staleTime: Infinity, cacheTime: Infinity }
   );
 };
-
-export const useQueryFormOwnership = (id?: number): UseQueryResult<FormOwnership, AxiosError> => {
-    return useQuery<FormOwnership, AxiosError>(
-        QKForms.ownership(id),
-        () =>
-            axios.get<FormOwnership>(`/api/forms/${id}/ownership`)
-                .then((res) => res.data),
-        { staleTime: Infinity }
-    );
-}

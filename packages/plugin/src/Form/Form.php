@@ -133,8 +133,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private Carbon $dateCreated;
     private Carbon $dateUpdated;
 
-    private int $createdId;
-    private int $updatedId;
+    private ?int $createdByUserId;
+    private ?int $updatedByUserId;
 
     private ?Submission $submission = null;
 
@@ -148,6 +148,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         $this->dateCreated = new Carbon($config['dateCreated']);
         $this->dateUpdated = new Carbon($config['dateUpdated']);
+
+        $this->createdByUserId = $config['createdByUserId'] ?? null;
+        $this->updatedByUserId = $config['updatedByUserId'] ?? null;
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
@@ -475,14 +478,22 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->dateUpdated;
     }
 
-    public function getCreatedBy(): User
+    public function getCreatedBy(): ?User
     {
-        return User::findOne($this->createdId);
+        if (!$this->createdByUserId) {
+            return null;
+        }
+
+        return User::findOne($this->createdByUserId);
     }
 
-    public function getUpdatedBy(): User
+    public function getUpdatedBy(): ?User
     {
-        return User::findOne($this->updatedId);
+        if (!$this->updatedByUserId) {
+            return null;
+        }
+
+        return User::findOne($this->updatedByUserId);
     }
 
     #[Ignore]
@@ -769,6 +780,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
             'properties' => $this->getProperties(),
             'attributes' => $this->getAttributes(),
+            'createdBy' => $this->getCreatedBy(),
+            'updatedBy' => $this->getUpdatedBy(),
             'settings' => [
                 'behavior' => $settings->getBehavior(),
                 'general' => $settings->getGeneral(),

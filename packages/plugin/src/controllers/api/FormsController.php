@@ -75,37 +75,6 @@ class FormsController extends BaseApiController
         return $this->response;
     }
 
-    public function actionOwnership(int $id): Response
-    {
-        $form = $this->getFormsService()->getFormById($id);
-        $createdBy = $form->getCreatedBy();
-        $updatedBy = $form->getUpdatedBy();
-
-        $data = [
-            'created' => [
-                'datetime' => $form->getDateCreated()->format('n/j/Y, g:i A'),
-                'user' => [
-                    'id' => $createdBy->getId(),
-                    'url' => $createdBy->getUrl(),
-                    'name' => $createdBy->getFieldValue('fullName') ?? $createdBy->getFieldValue('username')
-                ]
-            ],
-            'updated' => [
-                'datetime' => $form->getDateUpdated()->format('n/j/Y, g:i A'),
-                'user' => [
-                    'id' => $updatedBy->getId(),
-                    'url' => $updatedBy->getUrl(),
-                    'name' => $updatedBy->getFieldValue('fullName') ?? $createdBy->getFieldValue('username')
-                ]
-            ],
-        ];
-
-        $this->response->format = Response::FORMAT_JSON;
-        $this->response->content = $this->serializer->serialize($data, 'json');
-
-        return $this->response;
-    }
-
     protected function get(): array
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);

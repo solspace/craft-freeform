@@ -66,7 +66,7 @@ export const Chart: React.FC = () => {
             fill={`url(#color${id})`}
           />
 
-          <YAxis domain={[0, maxY]} hide />
+          {maxY > 0 && <YAxis domain={[0, maxY]} hide />}
           <Tooltip content={<TooltipContent />} />
         </AreaChart>
       </ResponsiveContainer>

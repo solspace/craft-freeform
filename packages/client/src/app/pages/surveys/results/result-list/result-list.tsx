@@ -11,7 +11,7 @@ export const ResultList: React.FC = () => {
   const { data, isFetching } = useQuerySurveyResults();
 
   if (isFetching) {
-    return 'fetching';
+    return 'Loading...';
   }
 
   return (

@@ -381,7 +381,7 @@ class Install extends StreamlinedInstallMigration
                     ForeignKey::CASCADE
                 ),
 
-            (new Table('freeform_surveys_view_settings'))
+            (new Table('freeform_survey_preferences'))
                 ->addField('id', $this->primaryKey())
                 ->addField('userId', $this->integer()->notNull())
                 ->addField('fieldId', $this->integer()->notNull())

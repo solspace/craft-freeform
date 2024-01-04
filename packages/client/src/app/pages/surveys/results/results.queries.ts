@@ -13,7 +13,8 @@ import type {
 export const QKSurveyResults = {
   all: ['surveys', 'results'] as const,
   single: (handle: string) => [...QKSurveyResults.all, handle] as const,
-  preferences: () => [...QKSurveyResults.all, 'preferences'] as const,
+  preferences: (handle: string) =>
+    [...QKSurveyResults.single(handle), 'preferences'] as const,
   chart: (handle: string) =>
     [...QKSurveyResults.single(handle), 'chart'] as const,
 };
@@ -48,7 +49,7 @@ export const useQuerySurveyPreferences = (): UseQueryResult<
   const { handle } = useParams<RouteParams>();
 
   return useQuery<SurveyPreferences, AxiosError>(
-    QKSurveyResults.preferences(),
+    QKSurveyResults.preferences(handle),
     () =>
       axios.get(`/api/surveys/preferences/${handle}`).then((res) => res.data),
     { staleTime: Infinity }

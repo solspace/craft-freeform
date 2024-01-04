@@ -42,6 +42,7 @@ export const SpinnerContainer = styled(animated.span)`
 `;
 
 export const DotContainer = styled(animated.span)`
+  white-space: nowrap;
   overflow: hidden;
   transform-origin: center left;
 `;

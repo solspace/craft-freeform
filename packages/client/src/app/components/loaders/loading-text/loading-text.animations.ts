@@ -20,10 +20,11 @@ export const useSpinnerAnimation = (
 
 export const useDotAnimation = (
   loading: boolean,
-  instant: boolean
+  instant: boolean,
+  xl?: boolean
 ): SpringValues<{ width: number; opacity: number }> =>
   useSpring({
-    width: loading ? 15 : 0,
+    width: loading ? (xl ? 30 : 15) : 0,
     opacity: loading ? 1 : 0,
     immediate: instant,
     config,

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 type WrapperProps = {
-  $highlightHighest: boolean;
+  $highlightHighest?: boolean;
 };
 
 export const ResultsWrapper = styled.div<WrapperProps>`

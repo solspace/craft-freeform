@@ -14,13 +14,13 @@ type FormOwnershipMeta = {
     id: number;
     url: string;
     name: string;
-  }
-}
+  };
+};
 
 type FormOwnership = {
   created: FormOwnershipMeta;
   updated: FormOwnershipMeta;
-}
+};
 
 export type Form = {
   id?: number;

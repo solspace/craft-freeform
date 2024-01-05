@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 use Solspace\Commons\Migrations\ForeignKey;
 
@@ -11,9 +10,6 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m231219_105754_AddUsersToFormsTable extends Migration
 {
-    /**
-     * @inheritdoc
-     */
     public function safeUp(): bool
     {
         $this->addColumn(
@@ -51,9 +47,6 @@ class m231219_105754_AddUsersToFormsTable extends Migration
         return true;
     }
 
-    /**
-     * @inheritdoc
-     */
     public function safeDown(): bool
     {
         $this->dropForeignKey(

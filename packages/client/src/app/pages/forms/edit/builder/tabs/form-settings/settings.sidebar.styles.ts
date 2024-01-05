@@ -63,7 +63,7 @@ export const SidebarMetaUserLink = styled.a`
   color: ${colors.gray400};
   text-decoration: underline;
   font-weight: 600;
-  
+
   &:hover {
     color: ${colors.gray500};
     text-decoration: none;

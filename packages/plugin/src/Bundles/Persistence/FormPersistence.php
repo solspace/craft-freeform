@@ -70,7 +70,6 @@ class FormPersistence extends FeatureBundle
     public function handleFormUpdate(PersistFormEvent $event): void
     {
         $record = FormRecord::findOne(['id' => $event->getFormId()]);
-
         $record->updatedByUserId = $this->user->id;
 
         $this->update($event, $record);

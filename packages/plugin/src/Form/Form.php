@@ -14,8 +14,8 @@
 namespace Solspace\Freeform\Form;
 
 use Carbon\Carbon;
-use craft\helpers\Template;
 use craft\elements\User;
+use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;

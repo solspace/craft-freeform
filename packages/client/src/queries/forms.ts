@@ -1,9 +1,9 @@
 import { useAppDispatch } from '@editor/store';
 import { formActions } from '@editor/store/slices/form';
 import type {
-    ExtendedFormType,
-    Form,
-    FormSettingNamespace,
+  ExtendedFormType,
+  Form,
+  FormSettingNamespace,
 } from '@ff-client/types/forms';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
@@ -14,8 +14,6 @@ export const QKForms = {
   all: ['forms'] as const,
   single: (id: number) => [...QKForms.all, id] as const,
   settings: () => [...QKForms.all, 'settings'] as const,
-  ownership: (formId: number) =>
-    [...QKForms.single(formId), 'ownership'] as const,
 };
 
 export type FormWithStats = Form & {

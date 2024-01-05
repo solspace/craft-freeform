@@ -25,6 +25,8 @@ use Solspace\Freeform\Freeform;
  * @property string $handle
  * @property int    $order
  * @property int    $spamBlockCount
+ * @property int    $createdByUserId
+ * @property int    $updatedByUserId
  */
 class FormRecord extends ActiveRecord
 {

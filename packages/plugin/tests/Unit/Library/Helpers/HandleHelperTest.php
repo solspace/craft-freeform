@@ -15,15 +15,15 @@ class HandleHelperTest extends TestCase
     public function testGeneratesFromSimpleSentence(): void
     {
         $this->assertEquals(
-            'someLabelToHandle',
-            HandleHelper::generateHandle('Some label to handle')
+            'somelabeltohandle',
+            HandleHelper::generateHandle('some label to handle')
         );
     }
 
     public function testGeneratesFromMixedCaseLetters(): void
     {
         $this->assertEquals(
-            'someMIXedLettersHereANDTHERE',
+            'SomeMIXedLettersHereANDTHERE',
             HandleHelper::generateHandle('SomeMIXedLettersHereANDTHERE')
         );
     }
@@ -31,15 +31,15 @@ class HandleHelperTest extends TestCase
     public function testGeneratesFromComplexString()
     {
         $this->assertEquals(
-            '1234THiSISaComplexCase',
-            HandleHelper::generateHandle('€$$$ 123__-4 - THiS ISaComplex case')
+            '123__4THiSISaComplexcase',
+            HandleHelper::generateHandle('€$$$ 123__-4 - THiS ISaComplex case?')
         );
     }
 
     public function testGeneratesFromCyrillic()
     {
         $this->assertEquals(
-            'privetEtoRusskij',
+            'privetetorusskij',
             HandleHelper::generateHandle('привет это русский')
         );
     }
@@ -47,8 +47,24 @@ class HandleHelperTest extends TestCase
     public function testGeneratesFromJapaneseCharacters()
     {
         $this->assertEquals(
-            'oWeniHewase',
+            'owenihewase',
             HandleHelper::generateHandle('お問い合わせ')
+        );
+    }
+
+    public function testGeneratesFromMixedCaseWithSpacesAndDashes(): void
+    {
+        $this->assertEquals(
+            'SomeLabelTOhandle',
+            HandleHelper::generateHandle('Some Label-TO-handle')
+        );
+    }
+
+    public function testGeneratesFromUnderscoresAndCapitalizationAnywhere(): void
+    {
+        $this->assertEquals(
+            'My_Field_Handle',
+            HandleHelper::generateHandle('My_Field_Handle')
         );
     }
 }

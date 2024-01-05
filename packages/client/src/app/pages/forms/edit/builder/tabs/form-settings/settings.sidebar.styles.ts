@@ -61,20 +61,22 @@ export const SidebarMeta = styled.p`
 
 export const SidebarMetaUserLink = styled.a`
   color: ${colors.gray400};
-  text-decoration: ${props => props.href ? 'underline' : 'none'};
-  font-weight: ${props => props.href ? 600 : 400};
+  text-decoration: ${(props) => props.href ? 'underline' : 'none'};
+  font-weight: ${(props) => props.href ? 600 : 400};
 
-  ${({ href }) => href && css`
-		&:hover {
-			color: ${colors.gray500};
-			text-decoration: none;
-		}
-	`}
+  ${({ href }) => href &&
+		css`
+			&:hover {
+				color: ${colors.gray500};
+				text-decoration: none;
+			}
+		`}
 	
-	${({ href }) => !href && css`
-		&:hover {
-			text-decoration: none;
-			cursor: text;
-		}
-	`}
+	${({ href }) => !href &&
+		css`
+			&:hover {
+				text-decoration: none;
+				cursor: text;
+			}
+		`}
 `;

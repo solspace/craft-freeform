@@ -37,7 +37,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Created')
           )}
           &nbsp;
-          {translate('at')}:<br /> {format(ownership.created.datetime, "Pp")}
+          {translate('at')}:<br /> {format(ownership.created.datetime, 'Pp')}
         </SidebarMeta>
 
         <SidebarMeta>
@@ -55,7 +55,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Last Updated')
           )}
           &nbsp;
-          {translate('at')}:<br /> {format(ownership.updated.datetime, "Pp")}
+          {translate('at')}:<br /> {format(ownership.updated.datetime, 'Pp')}
         </SidebarMeta>
       </SectionWrapper>
     </>

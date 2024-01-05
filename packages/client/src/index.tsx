@@ -15,6 +15,7 @@ import '../config';
 import './utils/prototypes';
 
 import { Form, Forms } from './app/pages/forms';
+import { SurveyResults } from './app/pages/surveys/results/results';
 import { Welcome } from './app/pages/welcome/welcome';
 import { EscapeStackProvider } from './contexts/escape/escape.context';
 import ManualStyles from './styles/manual';
@@ -53,6 +54,7 @@ root.render(
                     <Route path=":formId/*" element={<Form />} />
                     <Route index element={<Forms />} />
                   </Route>
+                  <Route path="/surveys/:handle" element={<SurveyResults />} />
                   <Route path="welcome" element={<Welcome />} />
                 </Route>
               </Routes>

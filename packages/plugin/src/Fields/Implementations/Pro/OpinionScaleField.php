@@ -80,7 +80,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             $value = $scale->getValue();
             $label = $scale->getLabel();
 
-            $collection->add($label, $value);
+            $collection->add($value, $label);
         }
 
         return $collection;

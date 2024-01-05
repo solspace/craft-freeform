@@ -11,8 +11,7 @@ class FormTypeOptions implements OptionsGeneratorInterface
 {
     public function __construct(
         private TypesService $typesService
-    ) {
-    }
+    ) {}
 
     public function fetchOptions(?Property $property): OptionCollection
     {
@@ -20,7 +19,7 @@ class FormTypeOptions implements OptionsGeneratorInterface
 
         $types = $this->typesService->getTypes();
         foreach ($types as $type) {
-            $options->add($type['class'], $type['name']);
+            $options->add($type->class, $type->name);
         }
 
         return $options;

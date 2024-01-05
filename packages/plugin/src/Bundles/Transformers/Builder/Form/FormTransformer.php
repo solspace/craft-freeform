@@ -3,14 +3,18 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Carbon\Carbon;
+use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\SubmissionsService;
+use yii\base\Event;
 
 class FormTransformer
 {
+    public const EVENT_ATTACH_LINKS = 'attach-links';
+
     public function __construct(
         private FieldsService $fieldsService,
         private LayoutsService $layoutsService,
@@ -27,7 +31,9 @@ class FormTransformer
             $forms
         );
 
-        return $this->decorateWithSubmissionStatistics($transformed);
+        $transformed = $this->decorateWithSubmissionStatistics($transformed);
+
+        return $this->attachLinks($forms, $transformed);
     }
 
     public function transform(Form $form): object
@@ -90,5 +96,20 @@ class FormTransformer
         }
 
         return $forms;
+    }
+
+    private function attachLinks(array $forms, array $transformed): array
+    {
+        foreach ($transformed as $data) {
+            $form = array_filter($forms, fn (Form $form) => $form->getId() === $data->id);
+            $form = reset($form) ?? new \stdClass();
+
+            $event = new GenerateLinksEvent($form, $data);
+            Event::trigger($this, self::EVENT_ATTACH_LINKS, $event);
+
+            $data->links = $event->getLinks();
+        }
+
+        return $transformed;
     }
 }

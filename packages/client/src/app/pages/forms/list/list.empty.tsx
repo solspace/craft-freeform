@@ -21,6 +21,7 @@ const generateFormData = (
   handle: '',
   isNew: true,
   chartData,
+  links: [],
   counters: {
     submissions,
     spam,

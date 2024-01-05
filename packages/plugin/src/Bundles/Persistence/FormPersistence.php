@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\FormRecord;
@@ -73,6 +74,7 @@ class FormPersistence extends FeatureBundle
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
         $record->metadata = $this->getValidatedMetadata($payload, $event);
+        $record->type = $record->metadata['general']->type ?? Regular::class;
 
         if (!$event->hasErrors()) {
             $record->validate();

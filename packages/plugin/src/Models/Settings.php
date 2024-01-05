@@ -232,6 +232,8 @@ class Settings extends Model
     /** @var bool */
     public $bypassSpamCheckOnLoggedInUsers;
 
+    public array $surveys = [];
+
     public Defaults $defaults;
 
     /**

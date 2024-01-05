@@ -17,7 +17,6 @@ use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Fields;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Forms;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\General;
-use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Other;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Settings;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Spam;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\SubStats\PluginInfo;
@@ -203,22 +202,6 @@ class SummaryService extends Component
         $widgets->stats = $this->isWidgetUsed(StatisticsWidget::class);
 
         $summary->statistics->widgets = $widgets;
-
-        $feedInfo = $freeform->settings->getSettingsModel()->feedInfo ?? [];
-        if (!\is_array($feedInfo)) {
-            $feedInfo = [];
-        }
-
-        $other = new Other();
-        $other->jsFramework = \in_array('jsFramework', $feedInfo, true);
-        $other->caching = \in_array('caching', $feedInfo, true);
-        $other->customModule = \in_array('customModule', $feedInfo, true);
-        $other->gdpr = \in_array('gdpr', $feedInfo, true);
-        $other->editingSubmissions = \in_array('editingSubmissions', $feedInfo, true);
-        $other->displayingSubmissions = \in_array('displayingSubmissions', $feedInfo, true);
-        $other->graphQL = \in_array('graphQL', $feedInfo, true);
-
-        $summary->statistics->other = $other;
 
         return $summary;
     }

@@ -96,6 +96,8 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 ['metadata' => $metadata],
                 ['id' => $id],
             );
+
+            $this->dropColumn('{{%freeform_forms}}', 'layoutJson');
         }
 
         return true;

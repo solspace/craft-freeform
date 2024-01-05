@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import translate from '@ff-client/utils/translations';
+import { format } from 'date-fns';
 
 import {
   SectionWrapper,
@@ -36,7 +37,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Created')
           )}
           &nbsp;
-          {translate('at')}:<br /> {ownership.created.datetime}
+          {translate('at')}:<br /> {format(ownership.created.datetime, "Pp")}
         </SidebarMeta>
 
         <SidebarMeta>
@@ -54,7 +55,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Last Updated')
           )}
           &nbsp;
-          {translate('at')}:<br /> {ownership.updated.datetime}
+          {translate('at')}:<br /> {format(ownership.updated.datetime, "Pp")}
         </SidebarMeta>
       </SectionWrapper>
     </>

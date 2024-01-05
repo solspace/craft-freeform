@@ -101,15 +101,15 @@ class FormTransformer
 
     private function getOwnership(Form $form): array
     {
-        $createdByUserUrl = '#';
-        $updatedByUserUrl = '#';
+        $createdByUserUrl = null;
+        $updatedByUserUrl = null;
         $currentUser = \Craft::$app->getUser()->getIdentity();
         $ownership = [
             'created' => [
-                'datetime' => $form->getDateCreated()->format('n/j/Y, g:i A'),
+                'datetime' => $form->getDateCreated()->valueOf(),
             ],
             'updated' => [
-                'datetime' => $form->getDateUpdated()->format('n/j/Y, g:i A'),
+                'datetime' => $form->getDateUpdated()->valueOf(),
             ],
         ];
 

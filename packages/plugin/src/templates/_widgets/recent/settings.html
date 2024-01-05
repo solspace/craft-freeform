@@ -3,7 +3,7 @@
 
 {{ forms.textField({
     label: "Title"|t,
-    instructions: "Customize the widget title. Leave blank for default."|t,
+    instructions: "Enter a custom widget title, or leave blank to use default."|t,
     id: 'title',
     name: 'title',
     value: settings.title,
@@ -12,7 +12,7 @@
 
 {{ forms.textField({
     label: "Limit"|t,
-    instructions: "The maximum amount of submissions to show."|t,
+    instructions: "The maximum number of submissions to show."|t,
     id: 'limit',
     name: 'limit',
     value: settings.limit,
@@ -21,7 +21,7 @@
 
 {{ forms.checkboxSelectField({
     label: "Forms"|t,
-    instructions: "Which form submissions do you wish to show"|t,
+    instructions: "Select the forms for which submission data should be included."|t,
     id: 'formIds',
     name: 'formIds',
     options: formOptions,

@@ -49,9 +49,13 @@ export const Block: React.FC<Props> = ({
 
   useEffect(() => {
     if (preferences) {
-      const type =
-        preferences.fieldSettings.find((pref) => pref.id === field.id)
-          ?.chartType || Chart.Horizontal;
+      let type = preferences.fieldSettings.find((pref) => pref.id === field.id)
+        ?.chartType;
+
+      if (type === undefined) {
+        type = preferences.chartDefaults?.[field.class] || Chart.Horizontal;
+      }
+
       setChartType(type);
     } else {
       setChartType(Chart.Horizontal);

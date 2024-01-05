@@ -17,7 +17,7 @@ class SurveyPreferencesController extends BaseApiController
     {
         $form = $this->getForm($id);
 
-        $settings = SurveySettings::fromSettings(Freeform::getInstance()->getSettings()->survey ?? []);
+        $settings = SurveySettings::fromSettings(Freeform::getInstance()->getSettings()->surveys ?? []);
         $userPreferences = SurveyPreferencesRecord::findAll(['userId' => \Craft::$app->getUser()->getId()]);
 
         $canModifyForm = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE.':'.$form->getId())

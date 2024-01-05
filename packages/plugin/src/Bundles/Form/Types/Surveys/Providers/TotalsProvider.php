@@ -26,6 +26,7 @@ use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 
 class TotalsProvider
 {
@@ -50,6 +51,8 @@ class TotalsProvider
     public function get(Form $form): FormTotals
     {
         if (!isset($this->formTotalsCache[$form->getId()])) {
+            $encryptionKey = EncryptionHelper::getKey($form->getUid());
+
             $submissionsTable = Submission::TABLE;
             $elementsTable = Table::ELEMENTS;
             $contentTable = Submission::getContentTableName($form);
@@ -98,6 +101,12 @@ class TotalsProvider
 
                         if (!\is_array($valueArray)) {
                             $valueArray = [$valueArray];
+                        }
+
+                        foreach ($valueArray as $key => $value) {
+                            if (\is_string($value)) {
+                                $valueArray[$key] = EncryptionHelper::decrypt($encryptionKey, $value);
+                            }
                         }
 
                         $hasOptions = false;

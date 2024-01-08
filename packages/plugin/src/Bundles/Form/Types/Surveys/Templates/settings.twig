@@ -1,0 +1,78 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Surveys & Polls"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/surveys-settings/save">
+    {{ redirectInput('freeform/settings/surveys') }}
+    {{ csrfInput() }}
+
+    {{ forms.lightswitchField({
+        first: true,
+        label: "Highlight Highest Ranking Option"|t('freeform'),
+        instructions: "The highest ranking option chosen for each question will be highlighted with an alternate color."|t('freeform'),
+        name: "highlightHighest",
+        on: settings.highlightHighest,
+        errors: settings.errors("highlightHighest"),
+    }) }}
+
+    <hr>
+
+    {% set chartTypes %}
+        <table id="chart-types">
+            {% for fieldClass, chartType in settings.chartTypes %}
+                {% set type = fieldTypes[fieldClass] %}
+                <tr>
+                    <th>
+                        <div>
+                            <div class="icon">{{ type.icon|raw }}</div>
+                            <div class="name">{{ type.name }}</div>
+                        </div>
+                    </th>
+                    <td>
+                        {{ forms.select({
+                            name: "chartTypes["~fieldClass~"]",
+                            value: settings.chartTypes[fieldClass],
+                            options: options,
+                        }) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endset %}
+
+
+
+    {{ forms.field({
+        label: "Default Chart Types"|t('freeform'),
+        instructions: "Select the default chart types for each field type. These can be overridden for each form in the report view."|t('freeform'),
+    }, chartTypes) }}
+
+{% endblock %}
+
+{% css %}
+
+    table#chart-types {
+        margin-top: 15px;
+
+        td, th {
+            padding: 0 0 8px;
+            margin: 0;
+        }
+
+        th > div {
+            display: flex;
+            gap: 5px;
+
+            padding-right: 40px;
+        }
+
+        & .icon svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+{% endcss %}

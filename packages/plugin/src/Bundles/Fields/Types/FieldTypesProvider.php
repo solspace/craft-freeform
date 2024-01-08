@@ -90,6 +90,18 @@ class FieldTypesProvider
         return $this->fieldTypes;
     }
 
+    public function getFieldType(string $class): ?FieldType
+    {
+        $types = $this->getTypes();
+        foreach ($types as $type) {
+            if ($type->typeClass === $class) {
+                return $type;
+            }
+        }
+
+        return null;
+    }
+
     public function getTypeShorthands(): array
     {
         return array_map(

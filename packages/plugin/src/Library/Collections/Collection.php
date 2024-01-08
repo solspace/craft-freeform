@@ -21,11 +21,23 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * @param T $item
      */
-    public function add($item): self
+    public function add($item, mixed $key = null): self
     {
-        $this->items[] = $item;
+        if (null !== $key) {
+            $this->items[$key] = $item;
+        } else {
+            $this->items[] = $item;
+        }
 
         return $this;
+    }
+
+    /**
+     * @return T
+     */
+    public function get(mixed $key, mixed $defaultValue = null): mixed
+    {
+        return $this->items[$key] ?? $defaultValue;
     }
 
     /**

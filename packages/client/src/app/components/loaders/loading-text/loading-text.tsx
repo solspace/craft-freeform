@@ -26,6 +26,7 @@ type Props = ComponentPropsWithRef<'div'> & {
   loading?: boolean;
   spinner?: boolean;
   instant?: boolean;
+  xl?: boolean;
 };
 
 export type Dimensions = {
@@ -44,6 +45,7 @@ export const LoadingText: React.FC<Props> = ({
   loading,
   spinner,
   instant,
+  xl,
   ...props
 }) => {
   const textOriginalRef = React.useRef<HTMLSpanElement>(null);
@@ -73,7 +75,7 @@ export const LoadingText: React.FC<Props> = ({
   }, [textOriginalRef.current, children, loadingText]);
 
   const spinnerAnimation = useSpinnerAnimation(loading, instant);
-  const dotAnimation = useDotAnimation(loading, instant);
+  const dotAnimation = useDotAnimation(loading, instant, xl);
   const textAnimation = useTextAnimation(loading, loadingText, instant);
   const reverseTextAnimation = useReverseTextAnimation(loading, instant);
   const textContainerAnimation = useTextContainerAnimation(

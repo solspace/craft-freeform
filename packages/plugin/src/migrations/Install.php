@@ -386,6 +386,14 @@ class Install extends StreamlinedInstallMigration
                 ->addField('color', $this->string(10))
                 ->addField('label', $this->string())
                 ->addField('types', $this->json()->notNull()),
+
+            (new Table('freeform_survey_preferences'))
+                ->addField('id', $this->primaryKey())
+                ->addField('userId', $this->integer()->notNull())
+                ->addField('fieldId', $this->integer()->notNull())
+                ->addField('chartType', $this->string(200)->notNull())
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE),
         ];
     }
 

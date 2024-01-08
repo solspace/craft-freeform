@@ -17,6 +17,11 @@ export const QKForms = {
 };
 
 export type FormWithStats = Form & {
+  links: Array<{
+    label: string;
+    url: string;
+    internal: boolean;
+  }>;
   chartData: Array<{ uv: number }>;
   counters: {
     submissions: number;

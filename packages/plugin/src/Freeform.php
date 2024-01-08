@@ -33,12 +33,14 @@ use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
@@ -349,6 +351,15 @@ class Freeform extends Plugin
 
         $group = new FieldTypeGroupRecord();
         $group->label = 'Files';
+        $group->color = '#f5a623';
+        $group->types = [
+            FileUploadField::class,
+            FileDragAndDropField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Special';
         $group->color = '#5d9901';
         $group->types = [
             GroupField::class,

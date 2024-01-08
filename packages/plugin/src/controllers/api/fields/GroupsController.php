@@ -19,45 +19,67 @@ class GroupsController extends BaseApiController
 
     protected function get(): object
     {
-        $types = $this->fieldTypesProvider->getRegisteredTypes();
+        $freeform = Freeform::getInstance();
         $groups = FieldTypeGroupRecord::find()->all();
+        $types = $this->fieldTypesProvider->getRegisteredTypes();
 
-        $hiddenFieldTypes = Freeform::getInstance()->settings->getSettingsModel()->hiddenFieldTypes;
-
-        return (object) [
-            'types' => $types,
+        $response = (object) [
+            'types' => [],
             'groups' => [
-                'hidden' => $hiddenFieldTypes,
-                'grouped' => $groups,
+                'hidden' => [],
+                'grouped' => [],
             ],
         ];
+
+        if ($freeform->isPro()) {
+            $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
+            $unassignedTypes = array_diff($types, array_merge(...array_column($groups, 'types')), $hiddenFieldTypes);
+
+            $response->types = [...$unassignedTypes];
+            $response->groups = (object) [
+                'hidden' => $hiddenFieldTypes,
+                'grouped' => $groups,
+            ];
+
+            return $response;
+        }
+
+        $filteredGroups = array_map(function ($group) use ($types) {
+            $filteredTypes = array_filter($group->types, function ($type) use ($types) {
+                return \in_array($type, $types);
+            });
+
+            return (object) [
+                'uid' => $group->uid,
+                'label' => $group->label,
+                'color' => $group->color,
+                'types' => $filteredTypes,
+            ];
+        }, $groups);
+
+        $response->groups['grouped'] = array_values(array_filter($filteredGroups, function ($group) {
+            return !empty($group->types);
+        }));
+
+        return $response;
     }
 
-    protected function put(int|string|null $id = null): array|object|null
+    protected function put(null|int|string $id = null): null|array|object
     {
         $groups = $this->request->getBodyParam('grouped', []);
+        $hiddenTypes = $this->request->getBodyParam('hidden', []);
+        FieldTypeGroupRecord::deleteAll();
 
-        $validUid = [];
         foreach ($groups as $group) {
-            $uid = $group['uid'];
-            $validUid[] = $uid;
-
-            $groupRecord = FieldTypeGroupRecord::findOne(['uid' => $uid]);
-
-            if (!$groupRecord) {
-                $groupRecord = new FieldTypeGroupRecord(['uid' => $uid]);
-            }
-
-            // Set properties
+            $groupRecord = new FieldTypeGroupRecord();
+            $groupRecord->uid = $group['uid'];
             $groupRecord->label = $group['label'];
             $groupRecord->color = $group['color'];
             $groupRecord->types = $group['types'];
-
             $groupRecord->save();
         }
 
-        // Delete records with uids not in $validUid
-        FieldTypeGroupRecord::deleteAll(['not in', 'uid', $validUid]);
+        $this->getSettingsService()->saveSettings(['hiddenFieldTypes' => $hiddenTypes]);
 
         return null;
     }

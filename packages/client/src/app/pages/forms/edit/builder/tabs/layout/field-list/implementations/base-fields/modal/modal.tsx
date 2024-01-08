@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { SketchPicker } from 'react-color';
+import { Tooltip } from 'react-tippy';
 import { FormComponent } from '@components/form-controls';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import {
@@ -20,7 +22,7 @@ import {
   CloseAndMoveWrapper,
   ColorCircle,
   ColorPicker,
-  ColorPickerContainer,
+  ErrorBlock,
   FieldListWrapper,
   FieldTypes,
   GroupHeader,
@@ -34,56 +36,42 @@ import {
 } from './modal.styles';
 import { FieldItem } from './model.list-item';
 import { useGroupOperations } from './model.operations';
-import initializeSortable from './sortable.initializer';
+import {
+  initializeGroupedSortable,
+  initializeSortable,
+} from './sortable.initializer';
+
+type ColorPickerProps = {
+  groupUid: string | null;
+  color: string;
+};
 
 export const CreateModal: ModalType = ({ closeModal }) => {
   const [state, setState] = useState<Group>({});
-  const [colorPickerVisible, setColorPickerVisible] = useState<string | null>(
-    null
-  );
-  // eslint-disable-next-line unused-imports/no-unused-vars, @typescript-eslint/no-unused-vars
+  const [colorPicker, setColorPicker] = useState<ColorPickerProps>();
   const [errors, setErrors] = useState<ErrorList>();
   const [loaded, setLoaded] = useState(false);
 
   const fieldListRefs = useRef<FieldListRefs>({});
-  const {
-    addGroup,
-    removeGroup,
-    updateGroupInfo,
-    addItemToUnassigned,
-    syncFormRefs,
-  } = useGroupOperations(state, setState, fieldListRefs);
+  const { addGroup, updateGroupInfo, syncFromRefs } = useGroupOperations(
+    state,
+    setState,
+    fieldListRefs
+  );
 
   const { data } = useFetchGroups();
 
   useEffect(() => {
-    if (!data || loaded) {
-      return;
+    if (data && !loaded) {
+      setState(data);
+
+      setLoaded(true);
     }
-
-    const { types, groups } = data;
-    const unassignedTypes = types
-      .map((_, index) => index)
-      .filter(
-        (index) =>
-          !groups.hidden.includes(index) &&
-          !groups.grouped.some((group) => group.types.includes(index))
-      );
-
-    setState({
-      types,
-      groups: {
-        ...groups,
-        unassigned: unassignedTypes,
-      },
-    });
-
-    setLoaded(true);
   }, [data, loaded]);
 
   useEffect(() => {
-    initializeSortable(fieldListRefs, state);
-  }, [state]);
+    initializeSortable(fieldListRefs);
+  }, []);
 
   const updateMutation = useGroupMutation({
     onSuccess: () => {
@@ -102,26 +90,54 @@ export const CreateModal: ModalType = ({ closeModal }) => {
         <h1>{translate('Field Manager')}</h1>
       </ModalHeader>
       <ManagerWrapper>
-        <GroupWrapper ref={(el) => (fieldListRefs.current.groupWrapper = el)}>
+        <GroupWrapper
+          ref={(el) => (fieldListRefs.current.groupWrapper = el)}
+          $empty={translate(
+            "Click the 'Add Group' button on the right to begin."
+          )}
+        >
+          {errors?.length && (
+            <ErrorBlock>{translate('Something went wrong!')}</ErrorBlock>
+          )}
           {state.groups?.grouped?.map((group) => (
             <GroupLayout key={group.uid} data-id={group.uid}>
               <GroupType>
                 <GroupHeader>
-                  <ColorCircle
-                    color={group.color}
-                    onClick={() => setColorPickerVisible(group.uid)}
-                  />
-                  {colorPickerVisible === group.uid && (
-                    <ColorPickerContainer>
-                      <ColorPicker
-                        color={group.color}
-                        onChangeComplete={(color) => {
-                          updateGroupInfo('color', color.hex, group.uid);
-                          setColorPickerVisible(null);
-                        }}
-                      />
-                    </ColorPickerContainer>
-                  )}
+                  <Tooltip
+                    trigger="click"
+                    position="right"
+                    interactive
+                    interactiveBorder={0}
+                    size="small"
+                    theme="light"
+                    arrow
+                    html={
+                      <ColorPicker>
+                        <SketchPicker
+                          color={colorPicker?.color || group.color}
+                          onChange={(color) =>
+                            setColorPicker({
+                              groupUid: group.uid,
+                              color: color.hex,
+                            })
+                          }
+                          onChangeComplete={(color) => {
+                            updateGroupInfo('color', color.hex, group.uid);
+                          }}
+                        />
+                      </ColorPicker>
+                    }
+                  >
+                    <ColorCircle
+                      color={group.color}
+                      onClick={() =>
+                        setColorPicker({
+                          groupUid: group.uid,
+                          color: group.color,
+                        })
+                      }
+                    />
+                  </Tooltip>
                   <FormComponent
                     value={group.label}
                     property={{
@@ -135,21 +151,18 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 </GroupHeader>
                 <GroupItemWrapper
                   $empty={translate('Drag and drop any field here')}
-                  ref={(el) => (fieldListRefs.current[group.uid] = el)}
+                  ref={(el) => {
+                    initializeGroupedSortable(el, group.uid, fieldListRefs);
+                  }}
                   color={group.color}
                 >
                   {group.types?.map((item) => (
-                    <FieldItem
-                      key={item}
-                      typeIndex={item}
-                      typeClass={state.types[item]}
-                      addItemToUnassigned={() => addItemToUnassigned(item)}
-                    />
+                    <FieldItem key={item} typeClass={item} />
                   ))}
                 </GroupItemWrapper>
               </GroupType>
               <CloseAndMoveWrapper>
-                <button onClick={() => removeGroup(group.uid)}>
+                <button className="group-remove">
                   <CrossIcon />
                 </button>
                 <button className="handle">
@@ -158,9 +171,6 @@ export const CreateModal: ModalType = ({ closeModal }) => {
               </CloseAndMoveWrapper>
             </GroupLayout>
           ))}
-          {state.groups?.grouped.length === 0 && (
-            <span>Click the 'Add Group' button on the right to begin.</span>
-          )}
         </GroupWrapper>
         <FieldListWrapper>
           <button
@@ -178,30 +188,20 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 $empty={translate('Drag and drop any field here')}
                 ref={(el) => (fieldListRefs.current.unassigned = el)}
               >
-                {state.groups?.unassigned?.map((item) => (
-                  <FieldItem
-                    key={item}
-                    typeIndex={item}
-                    typeClass={state.types[item]}
-                    addItemToUnassigned={() => addItemToUnassigned(item)}
-                  />
+                {state.types?.map((item) => (
+                  <FieldItem key={item} typeClass={item} />
                 ))}
               </FieldTypes>
             </UHField>
             <UHField>
-              <span>{translate('Hidden')}</span>
+              <span>{translate('Hide Fields')}</span>
 
               <FieldTypes
                 $empty={translate('Drag and drop any field here')}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >
                 {state.groups?.hidden?.map((item) => (
-                  <FieldItem
-                    key={item}
-                    typeIndex={item}
-                    typeClass={state.types[item]}
-                    addItemToUnassigned={() => addItemToUnassigned(item)}
-                  />
+                  <FieldItem key={item} typeClass={item} />
                 ))}
               </FieldTypes>
             </UHField>
@@ -217,14 +217,11 @@ export const CreateModal: ModalType = ({ closeModal }) => {
         >
           {translate('Cancel')}
         </button>
-        <button
-          onClick={() => updateMutation.mutate(syncFormRefs())}
-          type="button"
-          className="btn submit"
-        >
+        <button type="button" className="btn submit">
           <LoadingText
             loadingText={translate('Saving')}
             loading={isLoading}
+            onClick={() => updateMutation.mutate(syncFromRefs())}
             spinner
           >
             {translate('Save')}

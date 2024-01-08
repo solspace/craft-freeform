@@ -1,18 +1,18 @@
 import React from 'react';
 import { useAppDispatch } from '@editor/store';
 import { fieldThunks } from '@editor/store/thunks/fields';
-import { useFieldType } from '@ff-client/queries/field-types';
+import type { FieldType } from '@ff-client/types/properties';
 
 import { Field } from '../../field-group/field/field';
 
 import { useBaseFieldDrag } from './field-item.drag';
 
 type Props = {
-  typeClass: string;
+  fieldType: FieldType;
 };
 
-export const FieldItem: React.FC<Props> = ({ typeClass }) => {
-  const fieldType = useFieldType(typeClass);
+export const FieldItem: React.FC<Props> = ({ fieldType }) => {
+  const { icon, name } = fieldType;
 
   const dispatch = useAppDispatch();
   const { ref } = useBaseFieldDrag(fieldType);
@@ -21,12 +21,5 @@ export const FieldItem: React.FC<Props> = ({ typeClass }) => {
     dispatch(fieldThunks.move.newField.newRow({ fieldType }));
   };
 
-  return (
-    <Field
-      label={fieldType?.name}
-      icon={fieldType?.icon}
-      onClick={onClick}
-      dragRef={ref}
-    />
-  );
+  return <Field icon={icon} label={name} onClick={onClick} dragRef={ref} />;
 };

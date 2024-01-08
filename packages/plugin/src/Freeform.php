@@ -29,6 +29,32 @@ use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
+use Solspace\Freeform\Fields\Implementations\EmailField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
+use Solspace\Freeform\Fields\Implementations\NumberField;
+use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
+use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
+use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
+use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
+use Solspace\Freeform\Fields\Implementations\RadiosField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
@@ -40,6 +66,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
+use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
@@ -271,27 +298,8 @@ class Freeform extends Plugin
      */
     public function afterInstall(): void
     {
-        $status = StatusRecord::create();
-        $status->name = 'Pending';
-        $status->handle = 'pending';
-        $status->color = 'light';
-        $status->sortOrder = 1;
-        $status->save();
-
-        $status = StatusRecord::create();
-        $status->name = 'Open';
-        $status->handle = 'open';
-        $status->color = 'green';
-        $status->sortOrder = 2;
-        $status->isDefault = 1;
-        $status->save();
-
-        $status = StatusRecord::create();
-        $status->name = 'Closed';
-        $status->handle = 'closed';
-        $status->color = 'grey';
-        $status->sortOrder = 3;
-        $status->save();
+        $this->createDefaultStatuses();
+        $this->createDefaultFieldGroups();
     }
 
     protected function createSettingsModel(): Settings
@@ -305,6 +313,110 @@ class Freeform extends Plugin
             'freeform/settings',
             ['settings' => $this->getSettings()]
         );
+    }
+
+    private function createDefaultStatuses(): void
+    {
+        $statuses = [
+            [
+                'name' => 'Pending',
+                'handle' => 'pending',
+                'color' => 'light',
+                'sortOrder' => 1,
+            ],
+            [
+                'name' => 'Open',
+                'handle' => 'open',
+                'color' => 'green',
+                'sortOrder' => 2,
+                'isDefault' => 1,
+            ],
+            [
+                'name' => 'Closed',
+                'handle' => 'closed',
+                'color' => 'grey',
+                'sortOrder' => 3,
+            ],
+        ];
+
+        foreach ($statuses as $statusData) {
+            $status = StatusRecord::create($statusData);
+            $status->save();
+        }
+    }
+
+    private function createDefaultFieldGroups(): void
+    {
+        $groups = [
+            [
+                'label' => 'Text',
+                'color' => '#007add',
+                'types' => [
+                    TextField::class,
+                    TextareaField::class,
+                    EmailField::class,
+                    NumberField::class,
+                    PhoneField::class,
+                    DatetimeField::class,
+                    WebsiteField::class,
+                    RegexField::class,
+                ],
+            ],
+            [
+                'label' => 'Options',
+                'color' => '#9013fe',
+                'types' => [
+                    DropdownField::class,
+                    MultipleSelectField::class,
+                    CheckboxField::class,
+                    CheckboxesField::class,
+                    RadiosField::class,
+                    OpinionScaleField::class,
+                    RatingField::class,
+                ],
+            ],
+            [
+                'label' => 'Files',
+                'color' => '#f5a623',
+                'types' => [
+                    FileUploadField::class,
+                    FileDragAndDropField::class,
+                ],
+            ],
+            [
+                'label' => 'Special',
+                'color' => '#5d9901',
+                'types' => [
+                    GroupField::class,
+                    TableField::class,
+                    ConfirmationField::class,
+                    PasswordField::class,
+                    SignatureField::class,
+                ],
+            ],
+            [
+                'label' => 'Content',
+                'color' => '#000000',
+                'types' => [
+                    HtmlField::class,
+                    RichTextField::class,
+                ],
+            ],
+            [
+                'label' => 'Hidden',
+                'color' => '#9b9b9b',
+                'types' => [
+                    HiddenField::class,
+                    InvisibleField::class,
+                ],
+            ],
+        ];
+
+        foreach ($groups as $groupData) {
+            $group = new FieldTypeGroupRecord();
+            $group->setAttributes($groupData);
+            $group->save();
+        }
     }
 
     private function initControllerMap(): void

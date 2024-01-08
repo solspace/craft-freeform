@@ -7,33 +7,22 @@ import { Icon, Name, Remove, Wrapper } from './model.list-item.styles';
 
 type Props = {
   typeClass: string;
-  typeIndex: number;
-  addItemToUnassigned?: () => void;
 };
 
-export const FieldItem: React.FC<Props> = ({
-  typeClass,
-  typeIndex,
-  addItemToUnassigned,
-}) => {
+export const FieldItem: React.FC<Props> = ({ typeClass }) => {
   const fieldType = useFieldType(typeClass);
   const { name, icon } = fieldType;
 
   const fieldItemRef = useRef<HTMLDivElement>(null);
   const hovering = useHover(fieldItemRef);
 
-  const removeFieldItem = (): void => {
-    fieldItemRef.current?.parentNode?.removeChild(fieldItemRef.current);
-    addItemToUnassigned();
-  };
-
   return (
-    <Wrapper data-types-index={typeIndex} ref={fieldItemRef} title={name}>
+    <Wrapper data-id={typeClass} ref={fieldItemRef} title={name}>
       <Icon dangerouslySetInnerHTML={{ __html: icon }} />
       <Name>{name}</Name>
 
-      {hovering && addItemToUnassigned && (
-        <Remove onClick={removeFieldItem} className="remove">
+      {hovering && (
+        <Remove className="remove field-item-remove">
           <CrossIcon />
         </Remove>
       )}

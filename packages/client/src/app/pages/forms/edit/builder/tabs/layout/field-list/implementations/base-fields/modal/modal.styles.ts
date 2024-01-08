@@ -1,4 +1,3 @@
-import { SketchPicker } from 'react-color';
 import { scrollBar } from '@ff-client/styles/mixins';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
@@ -8,7 +7,7 @@ interface GroupItemWrapperProps {
   color?: string;
 }
 
-interface FieldTypesProps {
+interface EmptyProps {
   $empty: string;
 }
 
@@ -19,27 +18,34 @@ export const ManagerWrapper = styled.div`
   height: 600px;
 `;
 
-export const GroupWrapper = styled.div`
-  padding: 25px ${spacings.lg};
-  display: flex;
-  flex-direction: column;
-  gap: ${spacings.md};
-
-  overflow-x: hidden;
-  overflow-y: auto;
-  ${scrollBar};
-`;
-
 export const GroupLayout = styled.div`
   position: relative;
   background-color: ${colors.white};
   padding: ${spacings.md};
   border-radius: ${borderRadius.md};
   border: 1px solid ${colors.hairline};
-
   display: flex;
   gap: ${spacings.md};
 `;
+
+export const GroupWrapper = styled.div<EmptyProps>`
+  padding: 25px ${spacings.lg};
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.md};
+  overflow-x: hidden;
+  overflow-y: auto;
+  ${scrollBar};
+
+  &:empty::before {
+    content: ${({ $empty }) => `"${$empty}"`};
+    display: block;
+  }
+`;
+
+GroupWrapper.defaultProps = {
+  $empty: "Click the 'Add Group' button on the right to begin.",
+};
 
 export const GroupType = styled.div`
   flex: 1;
@@ -78,8 +84,6 @@ GroupItemWrapper.defaultProps = {
   color: colors.black,
 };
 
-export const GroupField = styled.div``;
-
 export const CloseAndMoveWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -94,7 +98,7 @@ export const FieldListWrapper = styled.div`
   ${scrollBar};
 `;
 
-export const FieldTypes = styled.div<FieldTypesProps>`
+export const FieldTypes = styled.div<EmptyProps>`
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
@@ -130,49 +134,23 @@ export const UHField = styled.div`
   padding: ${spacings.xs} ${spacings.xs} ${spacings.xs} ${spacings.md};
 `;
 
-export const Icon = styled.div`
-  font-size: 10px;
-
-  &,
-  svg {
-    height: 20px;
-    width: 20px;
-  }
-`;
-
-export const DeleteButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
-`;
-
 export const ColorCircle = styled.div`
   width: 20px;
   height: 20px;
   border-radius: 50%;
+  border: 1px solid ${colors.gray100};
   cursor: pointer;
   background-color: ${({ color }) => color || colors.black};
+  position: relative;
 `;
 
-export const ColorPickerContainer = styled.div`
-  position: fixed;
-`;
-
-export const ColorPicker = styled(SketchPicker)`
-  position: absolute;
-  left: -240px;
-  top: -25px;
-
-  &::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 0;
-    border-style: solid;
-    border-width: 8px 0 8px 12px;
-    border-color: transparent transparent transparent white;
-    right: -10px;
-    top: 35px;
-    transform: translateY(-50%);
+export const ColorPicker = styled.div`
+  > .sketch-picker {
+    padding: 5px 1px 0px !important;
+    box-shadow: inherit !important;
   }
+`;
+
+export const ErrorBlock = styled.div`
+  color: ${colors.warning};
 `;

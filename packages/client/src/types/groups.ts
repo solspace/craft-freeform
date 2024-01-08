@@ -2,13 +2,12 @@ export type GroupData = {
   uid: string;
   label?: string;
   color?: string;
-  types: number[];
+  types: string[];
 };
 
 export type GroupItem = {
-  hidden?: number[];
+  hidden?: string[];
   grouped: GroupData[];
-  unassigned?: number[];
 };
 
 export type Group = {

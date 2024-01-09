@@ -9,7 +9,7 @@ import type {
 export type SettingsNamespace = Record<string, GenericValue>;
 
 type FormOwnershipMeta = {
-  datetime: number;
+  datetime: string;
   user: {
     id: number;
     url: string;

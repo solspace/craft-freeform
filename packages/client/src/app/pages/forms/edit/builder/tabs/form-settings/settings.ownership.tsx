@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import translate from '@ff-client/utils/translations';
 import { format } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 
 import {
   SectionWrapper,
@@ -13,6 +14,9 @@ import {
 
 export const SettingsOwnership: React.FC = () => {
   const { ownership } = useSelector(formSelectors.current);
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const createdAtDate = utcToZonedTime(new Date(ownership.created.datetime), timezone);
+  const updatedAtDate = utcToZonedTime(new Date(ownership.updated.datetime), timezone);
 
   if (!ownership) {
     return null;
@@ -37,7 +41,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Created')
           )}
           &nbsp;
-          {translate('at')}:<br /> {format(ownership.created.datetime, 'Pp')}
+          {translate('at')}:<br /> {format(createdAtDate, 'Pp')}
         </SidebarMeta>
 
         <SidebarMeta>
@@ -55,7 +59,7 @@ export const SettingsOwnership: React.FC = () => {
             translate('Last Updated')
           )}
           &nbsp;
-          {translate('at')}:<br /> {format(ownership.updated.datetime, 'Pp')}
+          {translate('at')}:<br /> {format(updatedAtDate, 'Pp')}
         </SidebarMeta>
       </SectionWrapper>
     </>

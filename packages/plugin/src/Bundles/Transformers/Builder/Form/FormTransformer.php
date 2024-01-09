@@ -106,10 +106,10 @@ class FormTransformer
         $currentUser = \Craft::$app->getUser()->getIdentity();
         $ownership = [
             'created' => [
-                'datetime' => $form->getDateCreated()->valueOf(),
+                'datetime' => $form->getDateCreated()->toISOString(),
             ],
             'updated' => [
-                'datetime' => $form->getDateUpdated()->valueOf(),
+                'datetime' => $form->getDateUpdated()->toISOString(),
             ],
         ];
 

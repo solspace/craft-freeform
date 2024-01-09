@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Library\DataObjects\Summary;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Fields;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Forms;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\General;
-use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Other;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Settings;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Spam;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\System;
@@ -38,9 +37,6 @@ class Statistics
     /** @var Widgets */
     public $widgets;
 
-    /** @var Other */
-    public $other;
-
     public function __construct()
     {
         $this->system = new System();
@@ -51,6 +47,5 @@ class Statistics
         $this->fields = new Fields();
         $this->forms = new Forms();
         $this->widgets = new Widgets();
-        $this->other = new Other();
     }
 }

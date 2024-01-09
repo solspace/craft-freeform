@@ -15,8 +15,14 @@ import {
 export const SettingsOwnership: React.FC = () => {
   const { ownership } = useSelector(formSelectors.current);
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const createdAtDate = utcToZonedTime(new Date(ownership.created.datetime), timezone);
-  const updatedAtDate = utcToZonedTime(new Date(ownership.updated.datetime), timezone);
+  const createdAtDate = utcToZonedTime(
+    new Date(ownership.created.datetime),
+    timezone
+  );
+  const updatedAtDate = utcToZonedTime(
+    new Date(ownership.updated.datetime),
+    timezone
+  );
 
   if (!ownership) {
     return null;

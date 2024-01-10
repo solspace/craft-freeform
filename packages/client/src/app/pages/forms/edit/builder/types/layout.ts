@@ -12,19 +12,21 @@ export type PageButton = {
   handle?: string;
 };
 
-export type PageButtonType = 'submit' | 'back' | 'save';
+export type PageButtons = {
+  layout: string;
+  attributes: AttributeCollection;
+  submitLabel: string;
+  back: boolean;
+  backLabel: string;
+  save: boolean;
+  saveLabel: string;
+};
 
 export type Page = {
   uid: string;
   label: string;
   layoutUid: string;
-  buttons?: {
-    layout: string;
-    attributes: AttributeCollection;
-    submit: PageButton;
-    back: PageButton;
-    save: PageButton;
-  };
+  buttons?: PageButtons;
   order: number;
 };
 

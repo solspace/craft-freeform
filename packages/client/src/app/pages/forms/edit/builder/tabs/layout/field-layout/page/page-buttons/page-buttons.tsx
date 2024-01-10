@@ -1,10 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type {
-  Page,
-  PageButton,
-  PageButtonType,
-} from '@editor/builder/types/layout';
+import type { Page, PageButton } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
@@ -49,16 +45,34 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         return;
       }
 
-      const button = {
-        ...page.buttons[buttonHandle as PageButtonType],
-        handle: buttonHandle,
-      };
+      switch (buttonHandle) {
+        case 'submit':
+          buttonGroup.push({
+            handle: 'submit',
+            label: page.buttons.submitLabel,
+            enabled: true,
+          });
+          break;
 
-      if (!button || !button.enabled) {
-        return;
+        case 'back':
+          buttonGroup.push({
+            handle: 'back',
+            label: page.buttons.backLabel,
+            enabled: page.buttons.back,
+          });
+          break;
+
+        case 'save':
+          buttonGroup.push({
+            handle: 'save',
+            label: page.buttons.saveLabel,
+            enabled: page.buttons.save,
+          });
+          break;
+
+        default:
+          return;
       }
-
-      buttonGroup.push(button);
     });
 
     buttonGroups.push(buttonGroup);

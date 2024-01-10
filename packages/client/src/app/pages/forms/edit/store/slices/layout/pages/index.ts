@@ -81,7 +81,7 @@ export const pagesSlice = createSlice({
         return;
       }
 
-      buttons[key as keyof typeof buttons] = value;
+      Object.assign(buttons, { [key]: value });
     },
   },
 });

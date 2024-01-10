@@ -12,7 +12,6 @@ use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Fields\Implementations\EmailField;
-use Solspace\Freeform\Fields\Implementations\Pro\SaveField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -122,10 +121,8 @@ class SaveForm extends FeatureBundle
      */
     private function checkEmailField(Form $form): bool
     {
-        $button = $form->getCurrentPage()->getButtons()->getSave();
-
         /** @var EmailField $emailField */
-        $emailField = $form->get($button->getEmailFieldUid());
+        $emailField = $form->get($form->getCurrentPage()->getButtons()->getEmailField());
         if (!$emailField) {
             return true;
         }
@@ -133,7 +130,7 @@ class SaveForm extends FeatureBundle
         $isRequired = $emailField->isRequired();
         $recipients = $emailField->getRecipients();
 
-        if ($isRequired && empty($recipients)) {
+        if ($isRequired && !$recipients->count()) {
             return false;
         }
 
@@ -144,11 +141,11 @@ class SaveForm extends FeatureBundle
     {
         $mailer = Freeform::getInstance()->mailer;
 
-        $button = $form->getCurrentPage()->getButtons()->getSave();
+        $pageButtons = $form->getCurrentPage()->getButtons();
 
         /** @var EmailField $emailField */
-        $emailField = $form->get($button->getEmailFieldUid());
-        $notification = $this->templateProvider->getNotificationTemplate($button->getNotificationId());
+        $emailField = $form->get($pageButtons->getEmailField());
+        $notification = $pageButtons->getNotificationTemplate();
         if (!$emailField || !$notification) {
             return;
         }
@@ -184,15 +181,7 @@ class SaveForm extends FeatureBundle
     {
         $returnUrl = $form->getProperties()->get(SaveFormsHelper::BAG_REDIRECT, '');
         if (empty($returnUrl)) {
-            /** @var SaveField[] $saveButtons */
-            $saveButtons = $form->getCurrentPage()->getButtons()->getSave();
-            foreach ($saveButtons as $button) {
-                $returnUrl = $button->getUrl();
-                if (!empty($returnUrl)) {
-                    break;
-                }
-            }
-
+            $returnUrl = $form->getCurrentPage()->getButtons()->getSaveRedirectUrl();
             if (empty($returnUrl)) {
                 $currentUrl = \Craft::$app->request->getUrl();
                 $returnUrl = UrlHelper::url($currentUrl, ['session-token' => '{token}', 'key' => '{key}']);

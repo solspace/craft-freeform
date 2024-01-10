@@ -186,7 +186,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
 
               <FieldTypes
                 $empty={translate(
-                    'Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.'
+                  'Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.'
                 )}
                 ref={(el) => (fieldListRefs.current.unassigned = el)}
               >
@@ -200,7 +200,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
 
               <FieldTypes
                 $empty={translate(
-                    'Drag and drop any fields here to hide them.'
+                  'Drag and drop any fields here to hide them.'
                 )}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >

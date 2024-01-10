@@ -33,7 +33,12 @@ class GroupsController extends BaseApiController
 
         if ($freeform->isPro()) {
             $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
-            $unassignedTypes = array_diff($types, array_merge(...array_column($groups, 'types')), $hiddenFieldTypes);
+            $flattenedAssignedTypes = array_merge(...array_column($groups, 'types'));
+            $unassignedTypes = array_diff(
+                $types,
+                $flattenedAssignedTypes,
+                $hiddenFieldTypes
+            );
 
             $response->types = [...$unassignedTypes];
             $response->groups = (object) [
@@ -45,9 +50,10 @@ class GroupsController extends BaseApiController
         }
 
         $filteredGroups = array_map(function ($group) use ($types) {
-            $filteredTypes = array_filter($group->types, function ($type) use ($types) {
-                return \in_array($type, $types);
-            });
+            $filteredTypes = array_filter(
+                $group->types,
+                fn ($type) => \in_array($type, $types)
+            );
 
             return (object) [
                 'uid' => $group->uid,
@@ -57,9 +63,12 @@ class GroupsController extends BaseApiController
             ];
         }, $groups);
 
-        $response->groups['grouped'] = array_values(array_filter($filteredGroups, function ($group) {
-            return !empty($group->types);
-        }));
+        $response->groups['grouped'] = array_values(
+            array_filter(
+                $filteredGroups,
+                fn ($group) => !empty($group->types)
+            )
+        );
 
         return $response;
     }

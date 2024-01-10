@@ -3,6 +3,9 @@ import Sortable from 'sortablejs';
 
 type SortableOptions = { [key: string]: Sortable.Options };
 
+const putCondition = (to: Sortable, from: Sortable): boolean =>
+  from.options.handle === '.handle' ? false : true;
+
 export const initializeSortable = (
   fieldListRefs: React.MutableRefObject<FieldListRefs>
 ): void => {
@@ -15,9 +18,6 @@ export const initializeSortable = (
   };
 
   const handleSortableInit = (): void => {
-    const putCondition = (to: Sortable, from: Sortable): boolean =>
-      from.options.handle === '.handle' ? false : true;
-
     const options: SortableOptions = {
       unassigned: {
         group: { name: 'shared', put: putCondition },

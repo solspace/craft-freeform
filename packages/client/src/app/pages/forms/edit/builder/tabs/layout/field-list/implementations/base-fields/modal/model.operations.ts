@@ -16,16 +16,16 @@ type GroupOperations = {
   syncFromRefs: () => GroupItem;
 };
 
+const generateRandomColor = (): string =>
+  `#${(Math.floor(Math.random() * 0xffffff) + 0x1000000)
+    .toString(16)
+    .slice(1)}`;
+
 export const useGroupOperations = (
   initialState: Group,
   setState: StateSetter<Group>,
   fieldListRefs: React.MutableRefObject<FieldListRefs>
 ): GroupOperations => {
-  const generateRandomColor = (): string =>
-    `#${(Math.floor(Math.random() * 0xffffff) + 0x1000000)
-      .toString(16)
-      .slice(1)}`;
-
   const addGroup = useCallback(() => {
     setState((prevState) => ({
       ...prevState,

@@ -6,7 +6,7 @@ import { useFetchGroups } from '@ff-client/queries/groups';
 import translate from '@ff-client/utils/translations';
 import EditIcon from '@ff-icons/actions/edit.icon.svg';
 
-import { ManagerFieldGroup } from '../../field-group/field-group';
+import { FieldGroup } from '../../field-group/field-group';
 import { LoaderFieldGroup } from '../../field-group/field-group.loader';
 import { List } from '../../field-group/field-group.styles';
 import { useSelectSearchedGroups } from '../../hooks/use-select-searched-fields';
@@ -46,8 +46,13 @@ export const BaseFields: React.FC = () => {
     );
   }
 
+  const getFieldItem = (type: string): React.ReactNode | null => {
+    const fieldType = fieldTypesData.find((item) => item.typeClass === type);
+    return fieldType && <FieldItem key={type} fieldType={fieldType} />;
+  };
+
   return (
-    <ManagerFieldGroup
+    <FieldGroup
       button={{
         icon: <EditIcon />,
         title: translate('Edit Manager'),
@@ -61,29 +66,15 @@ export const BaseFields: React.FC = () => {
           {group.types.length > 0 && (
             <>
               {group.label && <GroupName>{group.label}</GroupName>}
-              <List>
-                {group.types.map((type) => {
-                  const fieldType = fieldTypesData.find(
-                    (item) => item.typeClass === type
-                  );
-                  return <FieldItem key={type} fieldType={fieldType} />;
-                })}
-              </List>
+              <List>{group.types.map((type) => getFieldItem(type))}</List>
             </>
           )}
         </GroupWrapper>
       ))}
 
       {groupsData?.types && (
-        <List>
-          {groupsData?.types.map((type) => {
-            const fieldType = fieldTypesData.find(
-              (item) => item.typeClass === type
-            );
-            return <FieldItem key={type} fieldType={fieldType} />;
-          })}
-        </List>
+        <List>{groupsData?.types.map((type) => getFieldItem(type))}</List>
       )}
-    </ManagerFieldGroup>
+    </FieldGroup>
   );
 };

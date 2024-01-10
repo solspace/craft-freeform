@@ -1,7 +1,7 @@
 import React from 'react';
 import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import config, { Edition } from '@config/freeform/freeform.config';
-import { useFetchFieldTypes } from '@ff-client/queries/field-types';
+import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import { useFetchGroups } from '@ff-client/queries/groups';
 import translate from '@ff-client/utils/translations';
 import EditIcon from '@ff-icons/actions/edit.icon.svg';
@@ -19,37 +19,23 @@ const title = translate('Field Types');
 
 export const BaseFields: React.FC = () => {
   const select = useSelectSearchedGroups();
-  const {
-    data: groupsData,
-    isFetching: groupsFetching,
-    isError: groupsIsError,
-    error: groupsError,
-  } = useFetchGroups({ select });
-  const {
-    data: fieldTypesData,
-    isFetching: fieldTypesFetching,
-    isError: fieldTypesIsError,
-    error: fieldTypesError,
-  } = useFetchFieldTypes();
+  const { data, isFetching, isError, error } = useFetchGroups({ select });
   const openModal = useCreateModal();
+  const findType = useFieldTypeSearch();
 
-  const loading = groupsFetching || fieldTypesFetching;
-  const hasError = groupsIsError || fieldTypesIsError;
-
-  if (loading && (!groupsData || !fieldTypesData)) {
+  if (!data && isFetching) {
     return <LoaderFieldGroup words={[50, 70]} items={16} />;
   }
 
-  if (hasError) {
-    return (
-      <ErrorBlock>{groupsError.message || fieldTypesError.message}</ErrorBlock>
-    );
+  if (isError) {
+    return <ErrorBlock>{error.message}</ErrorBlock>;
   }
 
-  const getFieldItem = (type: string): React.ReactNode | null => {
-    const fieldType = fieldTypesData.find((item) => item.typeClass === type);
-    return fieldType && <FieldItem key={type} fieldType={fieldType} />;
-  };
+  const renderFieldItems = (types: string[]): React.ReactNode[] =>
+    types.map((type) => {
+      const fieldType = findType(type);
+      return fieldType && <FieldItem key={type} fieldType={fieldType} />;
+    });
 
   return (
     <FieldGroup
@@ -61,20 +47,18 @@ export const BaseFields: React.FC = () => {
       editionIsPro={config.editions.is(Edition.Pro)}
       title={title}
     >
-      {groupsData.groups.grouped?.map((group) => (
+      {data.groups.grouped?.map((group) => (
         <GroupWrapper key={group.uid} color={group.color}>
           {group.types.length > 0 && (
             <>
               {group.label && <GroupName>{group.label}</GroupName>}
-              <List>{group.types.map((type) => getFieldItem(type))}</List>
+              <List>{renderFieldItems(group.types)}</List>
             </>
           )}
         </GroupWrapper>
       ))}
 
-      {groupsData?.types && (
-        <List>{groupsData?.types.map((type) => getFieldItem(type))}</List>
-      )}
+      {data?.types && <List>{renderFieldItems(data.types)}</List>}
     </FieldGroup>
   );
 };

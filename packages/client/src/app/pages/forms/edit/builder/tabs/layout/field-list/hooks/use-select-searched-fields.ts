@@ -7,8 +7,44 @@ import type {
   FieldForm,
   FieldType,
 } from '@ff-client/types/fields';
+import type { Group } from '@ff-client/types/groups';
 
 type SelectSearchedFields<T> = () => (data: T[]) => T[];
+type SelectSearchedGroupFields<T> = () => (data: T) => T;
+
+export const useSelectSearchedGroups: SelectSearchedGroupFields<Group> = () => {
+  const searchQuery = useSelector(searchSelectors.query(Search.Fields));
+
+  return useCallback(
+    (data: Group): Group => {
+      if (!searchQuery) {
+        return data;
+      }
+
+      const filterTypes = data.types?.filter((type) =>
+        type.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+
+      const filteredGrouped = data.groups.grouped
+        .map((group) => ({
+          ...group,
+          types: group.types.filter((item) =>
+            item.toLowerCase().includes(searchQuery.toLowerCase())
+          ),
+        }))
+        .filter((group) => group.types.length > 0);
+
+      return {
+        types: filterTypes || [],
+        groups: {
+          ...data.groups,
+          grouped: filteredGrouped || [],
+        },
+      };
+    },
+    [searchQuery]
+  );
+};
 
 export const useSelectSearchedFields: SelectSearchedFields<FieldType> = () => {
   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
@@ -39,7 +75,7 @@ export const useSelectSearchedFavorites: SelectSearchedFields<
       }
 
       return data.filter((item) =>
-        item.label.toLowerCase().includes(searchQuery)
+        item.label.toLowerCase().includes(searchQuery.toLowerCase())
       );
     },
     [searchQuery]
@@ -61,7 +97,7 @@ export const useSelectSearchedForms: SelectSearchedFields<FieldForm> = () => {
             ({
               ...form,
               fields: form.fields.filter((field) =>
-                field.label.toLowerCase().includes(searchQuery)
+                field.label.toLowerCase().includes(searchQuery.toLowerCase())
               ),
             }) as FieldForm
         )

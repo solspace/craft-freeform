@@ -13,11 +13,10 @@ class Rule implements RuleInterface, IdentificatorInterface
         private string $uid,
         private string $combinator,
         private ConditionCollection $conditions
-    ) {
-    }
+    ) {}
 
     #[Ignore]
-    public function getNormalizeIdentificator(): int|string|null
+    public function getNormalizeIdentificator(): null|int|string
     {
         return $this->getUid();
     }

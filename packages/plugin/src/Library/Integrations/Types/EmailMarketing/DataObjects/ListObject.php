@@ -19,8 +19,7 @@ class ListObject
         private string $name,
         private int $memberCount = 0,
         private ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public function getResourceId(): string
     {

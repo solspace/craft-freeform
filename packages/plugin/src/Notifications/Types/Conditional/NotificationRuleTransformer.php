@@ -10,8 +10,7 @@ class NotificationRuleTransformer implements TransformerInterface
 {
     public function __construct(
         private NotificationRuleProvider $ruleProvider
-    ) {
-    }
+    ) {}
 
     public function transform($value): ?NotificationRule
     {

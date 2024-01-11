@@ -9,9 +9,7 @@ use Solspace\Freeform\Services\SettingsService;
 
 class SuccessTemplateOptions implements OptionsGeneratorInterface
 {
-    public function __construct(private SettingsService $settingsService)
-    {
-    }
+    public function __construct(private SettingsService $settingsService) {}
 
     public function fetchOptions(?Property $property): OptionCollection
     {

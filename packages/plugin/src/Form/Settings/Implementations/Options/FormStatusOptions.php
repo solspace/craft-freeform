@@ -9,9 +9,7 @@ use Solspace\Freeform\Services\StatusesService;
 
 class FormStatusOptions implements OptionsGeneratorInterface
 {
-    public function __construct(private StatusesService $statusesService)
-    {
-    }
+    public function __construct(private StatusesService $statusesService) {}
 
     public function fetchOptions(?Property $property): OptionCollection
     {

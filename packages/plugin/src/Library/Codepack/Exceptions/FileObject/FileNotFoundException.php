@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Codepack\Exceptions\FileObject;
 
-class FileNotFoundException extends FileObjectException
-{
-}
+class FileNotFoundException extends FileObjectException {}

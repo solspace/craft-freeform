@@ -10,6 +10,5 @@ class Type
         public string $typeShorthand,
         public string $iconPath,
         public ?string $previewTemplatePath = null,
-    ) {
-    }
+    ) {}
 }

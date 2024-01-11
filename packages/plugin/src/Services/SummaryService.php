@@ -6,18 +6,19 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Connections\Entries;
-use Solspace\Freeform\Library\Connections\Users;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Fields;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Forms;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\General;
-use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Other;
+use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Notifications;
+use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Rules;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Settings;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Spam;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\SubStats\PluginInfo;
@@ -25,6 +26,13 @@ use Solspace\Freeform\Library\DataObjects\Summary\Statistics\System;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Totals;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Widgets;
 use Solspace\Freeform\Library\Helpers\ArrayHelper;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
+use Solspace\Freeform\Records\Form\FormNotificationRecord;
+use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Widgets\Pro\LinearChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RadialChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RecentWidget;
@@ -62,7 +70,6 @@ class SummaryService extends Component
         $totals->regularForm = \count($freeform->forms->getAllFormIds(Regular::class));
         $totals->fields = $freeform->fields->getAllFieldCount();
         $totals->favoriteFields = $freeform->fields->getFavoriteFieldCount();
-        $totals->emailNotifications = \count($freeform->notifications->getAllNotifications());
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);
         $totals->errors = $freeform->logger->getLogReader()->count();
@@ -88,11 +95,16 @@ class SummaryService extends Component
         $general->fileNotifications = $hasFileNotifications;
         $general->customFormattingTemplates = \count($freeform->settings->getCustomFormTemplates()) > 0;
         $general->exportProfiles = \count($freeform->exportProfiles->getAllProfiles()) > 0;
-        $general->gtm = $composer->gtmEnabled;
-        $general->crm = $this->getCrmIntegrations();
-        $general->mailingLists = $this->getEmailMarketingIntegrations();
-        $general->webhooks = $this->getWebhooks();
-        $general->paymentGateways = $this->getPaymentGateways();
+
+        $general->integrations->crm = $this->getIntegrations(Type::TYPE_CRM);
+        $general->integrations->emailMarketing = $this->getIntegrations(Type::TYPE_EMAIL_MARKETING);
+        $general->integrations->paymentGateways = $this->getIntegrations(Type::TYPE_PAYMENT_GATEWAYS);
+        $general->integrations->webhooks = $this->getIntegrations(Type::TYPE_WEBHOOKS);
+        $general->integrations->elements = $this->getIntegrations(Type::TYPE_ELEMENTS);
+        $general->integrations->captchas = $this->getIntegrations(Type::TYPE_CAPTCHAS);
+        $general->integrations->single = $this->getIntegrations(Type::TYPE_SINGLE);
+        $general->integrations->other = $this->getIntegrations(Type::TYPE_OTHER);
+
         $general->payments->single = $composer->paymentsSingle;
         $general->payments->subscription = $composer->paymentsSubscription;
 
@@ -138,10 +150,6 @@ class SummaryService extends Component
         $spam->submissionThrottlingCount = (int) $settingsService->getSettingsModel()->submissionThrottlingCount;
         $spam->bypassSpamCheckOnLoggedInUsers = $settingsService->getSettingsModel()->bypassSpamCheckOnLoggedInUsers;
 
-        // TODO: reimplement using integrations
-        // $spam->captcha = (bool) $settingsService->getSettingsModel()->recaptchaEnabled;
-        // $spam->captchaType = $spam->captcha ? $settingsService->getSettingsModel()->recaptchaType : '';
-
         $summary->statistics->spam = $spam;
 
         $fieldTypes = $composer->fieldTypes;
@@ -151,11 +159,11 @@ class SummaryService extends Component
         $fields->textarea = $this->usesField('textarea', $fieldTypes);
         $fields->email = $this->usesField('email', $fieldTypes);
         $fields->hidden = $this->usesField('hidden', $fieldTypes);
-        $fields->select = $this->usesField('dropdown', $fieldTypes);
+        $fields->dropdown = $this->usesField('dropdown', $fieldTypes);
         $fields->multiSelect = $this->usesField('multiple-select', $fieldTypes);
         $fields->checkbox = $this->usesField('checkbox', $fieldTypes);
-        $fields->checkboxGroup = $this->usesField('checkboxes', $fieldTypes);
-        $fields->radioGroup = $this->usesField('radios', $fieldTypes);
+        $fields->checkboxes = $this->usesField('checkboxes', $fieldTypes);
+        $fields->radios = $this->usesField('radios', $fieldTypes);
         $fields->file = $this->usesField('file', $fieldTypes);
         $fields->fileDragAndDrop = $this->usesField('file-dnd', $fieldTypes);
         $fields->number = $this->usesField('number', $fieldTypes);
@@ -172,7 +180,6 @@ class SummaryService extends Component
         $fields->richText = $this->usesField('rich-text', $fieldTypes);
         $fields->confirm = $this->usesField('confirm', $fieldTypes);
         $fields->password = $this->usesField('password', $fieldTypes);
-        $fields->saveAndContinue = $this->usesField('save', $fieldTypes);
         $fields->usingSource = $composer->usingSource;
 
         $summary->statistics->fields = $fields;
@@ -185,15 +192,24 @@ class SummaryService extends Component
         $forms->optInDataStorage = $composer->optInDataStorage;
         $forms->limitSubmissionRate = $composer->limitSubmissionRate;
         $forms->formTagAttributes = $composer->formTagAttributes;
-        $forms->adminNotifications = $composer->adminNotifications;
         $forms->loadingIndicators = $composer->loadingIndicators;
-        $forms->conditionalRules->fields = $composer->conditionalRulesFields;
-        $forms->conditionalRules->pages = $composer->conditionalRulesPages;
-        $forms->elementConnections->entries = $composer->elementConnectionsEntries;
-        $forms->elementConnections->users = $composer->elementConnectionsUsers;
         $forms->types = $composer->types;
 
         $summary->statistics->forms = $forms;
+
+        $notifications = new Notifications();
+        $notifications->admin = $this->hasNotifications(Admin::class);
+        $notifications->conditional = $this->hasNotifications(Conditional::class);
+        $notifications->userSelect = $this->hasNotifications(Dynamic::class);
+        $notifications->emailField = $this->hasNotifications(EmailField::class);
+
+        $summary->statistics->notifications = $notifications;
+
+        $rules = new Rules();
+        $rules->fields = (bool) FieldRuleRecord::find()->count();
+        $rules->pages = (bool) PageRuleRecord::find()->count();
+
+        $summary->statistics->rules = $rules;
 
         $widgets = new Widgets();
         $widgets->linear = $this->isWidgetUsed(LinearChartsWidget::class);
@@ -203,22 +219,6 @@ class SummaryService extends Component
         $widgets->stats = $this->isWidgetUsed(StatisticsWidget::class);
 
         $summary->statistics->widgets = $widgets;
-
-        $feedInfo = $freeform->settings->getSettingsModel()->feedInfo ?? [];
-        if (!\is_array($feedInfo)) {
-            $feedInfo = [];
-        }
-
-        $other = new Other();
-        $other->jsFramework = \in_array('jsFramework', $feedInfo, true);
-        $other->caching = \in_array('caching', $feedInfo, true);
-        $other->customModule = \in_array('customModule', $feedInfo, true);
-        $other->gdpr = \in_array('gdpr', $feedInfo, true);
-        $other->editingSubmissions = \in_array('editingSubmissions', $feedInfo, true);
-        $other->displayingSubmissions = \in_array('displayingSubmissions', $feedInfo, true);
-        $other->graphQL = \in_array('graphQL', $feedInfo, true);
-
-        $summary->statistics->other = $other;
 
         return $summary;
     }
@@ -277,18 +277,11 @@ class SummaryService extends Component
         $multiPage = false;
         $builtInAjax = false;
         $notStoringSubmissions = false;
-        $postForwarding = false;
         $collectIp = false;
         $optInDataStorage = false;
         $limitSubmissionRate = false;
         $formTagAttributes = false;
-        $adminNotifications = false;
         $loadingIndicators = false;
-        $conditionalRulesFields = false;
-        $conditionalRulesPages = false;
-        $elementConnectionsEntries = false;
-        $elementConnectionsUsers = false;
-        $gtmEnabled = false;
         $types = [];
 
         foreach ($forms as $form) {
@@ -313,10 +306,6 @@ class SummaryService extends Component
                 $notStoringSubmissions = true;
             }
 
-            // if ($form->getExtraPostUrl()) {
-            //     $postForwarding = true;
-            // }
-
             if ($generalSettings->collectIpAddresses) {
                 $collectIp = true;
             }
@@ -333,83 +322,40 @@ class SummaryService extends Component
                 $formTagAttributes = true;
             }
 
-            // $recipients = $form->getAdminNotificationProperties()->getRecipients();
-            // $notificationId = $form->getAdminNotificationProperties()->getNotificationId();
-            // if ($recipients && $notificationId) {
-            //     $adminNotifications = true;
-            // }
-
             if ($behaviorSettings->showProcessingText || $behaviorSettings->showProcessingSpinner) {
-                $processingIndicators = true;
+                $loadingIndicators = true;
             }
-
-            // if ($form->isGtmEnabled()) {
-            //     $gtmEnabled = true;
-            // }
-
-            // foreach ($form->getPages() as $page) {
-            //     if (!$form->getRuleProperties()) {
-            //         continue;
-            //     }
-            //
-            //     if ($form->getRuleProperties()->hasActiveFieldRules($page->getIndex())) {
-            //         $conditionalRulesFields = true;
-            //     }
-            //
-            //     if ($form->getRuleProperties()->hasActiveGotoRules($page->getIndex())) {
-            //         $conditionalRulesPages = true;
-            //     }
-            // }
-
-            // foreach ($form->getConnectionProperties()->getList() as $connection) {
-            //     if ($connection instanceof Entries) {
-            //         $elementConnectionsEntries = true;
-            //     }
-            //
-            //     if ($connection instanceof Users) {
-            //         $elementConnectionsUsers = true;
-            //     }
-            // }
 
             foreach ($form->getLayout()->getFields() as $field) {
                 $fieldTypes[] = $field->getType();
 
-                if ($field instanceof OptionsConfigurationInterface) {
+                if ($field instanceof GeneratedOptionsInterface) {
                     $configuration = $field->getOptionConfiguration();
                     $source = $configuration->getSource();
 
-                    if (!\in_array(
-                        $source,
-                        [
-                            OptionsConfigurationInterface::SOURCE_CUSTOM,
-                            OptionsConfigurationInterface::SOURCE_PREDEFINED,
-                        ],
-                        true
-                    )) {
+                    if (OptionsConfigurationInterface::SOURCE_ELEMENTS === $source) {
                         $usingSource = true;
                     }
                 }
-            }
 
-            // $layout = json_decode($formModel->layoutJson, false);
-            // if (isset($layout->composer->properties->payment)) {
-            //     $paymentType = $layout->composer->properties->payment->paymentType ?? null;
-            //     if ('single' === $paymentType) {
-            //         $paymentSingle = true;
-            //     }
-            //
-            //     if (\in_array($paymentType, ['predefined_subscription', 'dynamic_subscription'], true)) {
-            //         $paymentSubscription = true;
-            //     }
-            // }
+                if ($field instanceof StripeField) {
+                    if (StripeField::PAYMENT_TYPE_SINGLE === $field->getPaymentType()) {
+                        $paymentSingle = true;
+                    }
+
+                    if (StripeField::PAYMENT_TYPE_SUBSCRIPTION === $field->getPaymentType()) {
+                        $paymentSubscription = true;
+                    }
+                }
+            }
         }
 
         $fieldTypes = array_unique($fieldTypes);
         $fieldTypes = array_filter($fieldTypes);
 
         return (object) [
-            'paymentsSingle' => false,
-            'paymentsSubscription' => false,
+            'paymentsSingle' => $paymentSingle,
+            'paymentsSubscription' => $paymentSubscription,
             'fieldTypes' => $fieldTypes,
             'usingSource' => $usingSource,
             'multiPage' => $multiPage,
@@ -420,60 +366,26 @@ class SummaryService extends Component
             'optInDataStorage' => $optInDataStorage,
             'limitSubmissionRate' => $limitSubmissionRate,
             'formTagAttributes' => $formTagAttributes,
-            'adminNotifications' => false,
-            'loadingIndicators' => false,
-            'conditionalRulesFields' => false,
-            'conditionalRulesPages' => false,
-            'elementConnectionsEntries' => false,
-            'elementConnectionsUsers' => false,
-            'gtmEnabled' => false,
+            'loadingIndicators' => $loadingIndicators,
             'types' => $types,
         ];
     }
 
-    private function getPaymentGateways(): array
+    private function getIntegrations(string $type): array
     {
         $classes = [];
 
-        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_PAYMENT_GATEWAYS);
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations($type);
         foreach ($integrations as $integration) {
-            $classes[] = $integration::class;
-        }
+            $integrationObject = $integration->getIntegrationObject();
+            if (!$integrationObject->isEnabled()) {
+                continue;
+            }
 
-        return $classes;
-    }
-
-    private function getWebhooks(): array
-    {
-        $classes = [];
-
-        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_WEBHOOKS);
-        foreach ($integrations as $integration) {
-            $classes[] = $integration::class;
-        }
-
-        return $classes;
-    }
-
-    private function getEmailMarketingIntegrations(): array
-    {
-        $classes = [];
-
-        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_EMAIL_MARKETING);
-        foreach ($integrations as $integration) {
-            $classes[] = $integration::class;
-        }
-
-        return $classes;
-    }
-
-    private function getCrmIntegrations(): array
-    {
-        $classes = [];
-
-        $integrations = Freeform::getInstance()->integrations->getAllIntegrations(Type::TYPE_CRM);
-        foreach ($integrations as $integration) {
-            $classes[] = $integration::class;
+            $integrationType = $integrationObject->getTypeDefinition();
+            $name = $integrationType->name;
+            $version = $integrationType->version;
+            $classes[] = $name.($version ? ' ('.$version.')' : '');
         }
 
         return $classes;
@@ -529,5 +441,21 @@ class SummaryService extends Component
         }
 
         return false;
+    }
+
+    private function hasNotifications(string $type): bool
+    {
+        static $notifications;
+
+        if (null === $notifications) {
+            $notifications = (new Query())
+                ->select('class')
+                ->from(FormNotificationRecord::TABLE)
+                ->groupBy('class')
+                ->column()
+            ;
+        }
+
+        return \in_array($type, $notifications, true);
     }
 }

@@ -20,9 +20,9 @@ use Solspace\Freeform\Resources\Bundles\StatisticsWidgetBundle;
 
 class StatisticsWidget extends Widget
 {
-    public array|string|null $statusIds = null;
+    public null|array|string $statusIds = null;
 
-    public array|string|null $formIds = null;
+    public null|array|string $formIds = null;
 
     public ?bool $showGlobalStatistics = null;
 

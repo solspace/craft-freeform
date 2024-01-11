@@ -8,9 +8,7 @@ use Solspace\Freeform\Services\Form\FieldsService;
 
 class FieldProvider
 {
-    public function __construct(private FieldsService $service)
-    {
-    }
+    public function __construct(private FieldsService $service) {}
 
     public function getFieldByFormAndUid(Form $form, ?string $uid): ?FieldInterface
     {

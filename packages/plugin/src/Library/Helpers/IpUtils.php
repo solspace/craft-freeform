@@ -23,9 +23,7 @@ class IpUtils
     /**
      * This class should not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets.

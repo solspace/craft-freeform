@@ -17,8 +17,7 @@ class NotificationRuleProvider
 
     public function __construct(
         private FieldTransformer $fieldTransformer
-    ) {
-    }
+    ) {}
 
     public function getByForm(Form $form): array
     {

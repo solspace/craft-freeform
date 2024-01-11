@@ -10,10 +10,10 @@ trait DefaultTextValueTrait
         label: 'Default value',
         instructions: 'Enter a default value for this field',
     )]
-    protected string $defaultValue = '';
+    protected ?string $defaultValue = '';
 
     public function getDefaultValue(): string
     {
-        return $this->defaultValue;
+        return $this->defaultValue ?? '';
     }
 }

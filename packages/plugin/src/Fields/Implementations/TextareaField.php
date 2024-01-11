@@ -38,7 +38,7 @@ class TextareaField extends AbstractField implements PlaceholderInterface, Defau
     #[Input\TextArea(
         instructions: 'The default value of this field.',
     )]
-    protected string $defaultValue = '';
+    protected ?string $defaultValue = '';
 
     #[Input\Integer(
         instructions: 'The number of rows in height for this field.',

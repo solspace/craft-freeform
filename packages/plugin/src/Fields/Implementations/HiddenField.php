@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Input\Hidden;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
@@ -30,6 +31,7 @@ class HiddenField extends TextField implements NoRenderInterface
     protected string $placeholder = '';
     protected bool $required = false;
 
+    #[Hidden]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     protected FieldAttributesCollection $attributes;
 

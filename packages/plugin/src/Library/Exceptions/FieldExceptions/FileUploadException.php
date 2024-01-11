@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\FieldExceptions;
 
-class FileUploadException extends FieldException
-{
-}
+class FileUploadException extends FieldException {}

@@ -92,7 +92,7 @@ class NumberField extends TextField implements NumericInterface
         return $this->step ?? 1;
     }
 
-    public function getContentGqlType(): GQLType|array
+    public function getContentGqlType(): array|GQLType
     {
         return NumberType::getType();
     }

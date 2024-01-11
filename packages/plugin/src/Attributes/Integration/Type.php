@@ -28,8 +28,7 @@ class Type
         public ?string $version = null,
         public ?string $readme = null,
         public ?string $iconPath = null,
-    ) {
-    }
+    ) {}
 
     public function __toString(): string
     {

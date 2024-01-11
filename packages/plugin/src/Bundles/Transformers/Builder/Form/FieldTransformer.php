@@ -9,8 +9,7 @@ class FieldTransformer
 {
     public function __construct(
         private PropertyProvider $propertyProvider,
-    ) {
-    }
+    ) {}
 
     public function transform(FieldInterface $field): object
     {

@@ -8,6 +8,5 @@ class FieldPropertySection
         public string $handle,
         public string $label,
         public ?int $order = null,
-    ) {
-    }
+    ) {}
 }

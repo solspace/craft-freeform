@@ -2,9 +2,4 @@
 
 namespace Solspace\Freeform\Library\FormTypes;
 
-interface FormTypeInterface
-{
-    public static function getTypeName(): string;
-
-    public static function getPropertyManifest(): array;
-}
+interface FormTypeInterface {}

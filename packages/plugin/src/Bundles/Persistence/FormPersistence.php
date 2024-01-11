@@ -2,9 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\Persistence;
 
+use craft\elements\User;
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\FormRecord;
@@ -13,10 +15,14 @@ use yii\base\Event;
 
 class FormPersistence extends FeatureBundle
 {
+    private ?User $user;
+
     public function __construct(
         private FormsService $formsService,
         private SettingsProvider $settingsProvider,
     ) {
+        $this->user = \Craft::$app->getUser()->getIdentity();
+
         Event::on(
             FormsController::class,
             FormsController::EVENT_CREATE_FORM,
@@ -55,6 +61,8 @@ class FormPersistence extends FeatureBundle
         $record->uid = $payload->uid;
         $record->type = $payload->type;
 
+        $record->createdByUserId = $this->user->id;
+
         $this->update($event, $record);
     }
 
@@ -73,6 +81,8 @@ class FormPersistence extends FeatureBundle
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
         $record->metadata = $this->getValidatedMetadata($payload, $event);
+        $record->type = $record->metadata['general']->type ?? Regular::class;
+        $record->updatedByUserId = $this->user->id;
 
         if (!$event->hasErrors()) {
             $record->validate();

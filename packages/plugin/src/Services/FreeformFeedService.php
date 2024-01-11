@@ -66,7 +66,7 @@ class FreeformFeedService extends Component
         ;
     }
 
-    public function getUnreadCount()
+    public function getUnreadCount(): int
     {
         return (int) (new Query())
             ->select('id')

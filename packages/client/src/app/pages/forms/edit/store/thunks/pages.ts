@@ -37,9 +37,11 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
           back: {},
           save: {},
         },
-        submit: { label: 'Submit', enabled: true },
-        back: { label: 'Back', enabled: true },
-        save: { label: 'Save', enabled: false },
+        submitLabel: 'Submit',
+        back: true,
+        backLabel: 'Back',
+        save: false,
+        saveLabel: 'Save',
       },
     })
   );

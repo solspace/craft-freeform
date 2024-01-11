@@ -18,10 +18,9 @@ class StripePriceService
 
     public function __construct(
         private IsolatedTwig $isolatedTwig,
-    ) {
-    }
+    ) {}
 
-    public function getFormattedAmount(string|int $amount, string $currency): string
+    public function getFormattedAmount(int|string $amount, string $currency): string
     {
         $currency = strtolower($currency);
         $isZeroDecimal = \in_array($currency, self::ZERO_DECIMAL_CURRENCIES, true);

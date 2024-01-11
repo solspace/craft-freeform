@@ -10,8 +10,7 @@ class EmailMarketingTransformer implements TransformerInterface
 {
     public function __construct(
         private EmailMarketingService $emailMarketingService
-    ) {
-    }
+    ) {}
 
     public function transform($value): ?ListObject
     {

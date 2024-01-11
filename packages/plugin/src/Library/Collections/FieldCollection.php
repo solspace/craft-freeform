@@ -22,8 +22,12 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         $this->fields = array_values($fields);
     }
 
-    public function get(int|string $identificator): ?FieldInterface
+    public function get(mixed $identificator): ?FieldInterface
     {
+        if ($identificator instanceof FieldInterface) {
+            $identificator = $identificator->getUid();
+        }
+
         foreach ($this->fields as $field) {
             if (
                 $field->getHandle() === $identificator
@@ -36,7 +40,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return null;
     }
 
-    public function getList(string|array|null $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
+    public function getList(null|array|string $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
     {
         if (null === $implements) {
             return $this;

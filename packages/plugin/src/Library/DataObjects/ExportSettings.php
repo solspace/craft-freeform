@@ -9,8 +9,7 @@ class ExportSettings
         private bool $exportLabels = false,
         private ?string $timezone = null,
         private bool $handlesAsNames = false
-    ) {
-    }
+    ) {}
 
     public function isRemoveNewlines(): bool
     {

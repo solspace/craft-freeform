@@ -148,7 +148,11 @@ class ExportProfileModel extends Model
                 $isChecked = (bool) $item['checked'];
 
                 if (is_numeric($fieldId)) {
-                    $field = $form->getLayout()->getField($fieldId);
+                    $field = $form->get($fieldId);
+                    if (!$field) {
+                        continue;
+                    }
+
                     $label = $field->getLabel();
 
                     $storedFieldIds[] = $field->getId();
@@ -283,6 +287,10 @@ class ExportProfileModel extends Model
                 $fieldId = $id;
                 if (is_numeric($id)) {
                     $field = $form->get($id);
+                    if (!$field) {
+                        continue;
+                    }
+
                     $fieldId = 'sc.[['.Submission::getFieldColumnName($field).']]';
                 }
 

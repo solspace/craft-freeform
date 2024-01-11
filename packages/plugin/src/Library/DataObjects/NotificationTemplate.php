@@ -37,7 +37,7 @@ class NotificationTemplate implements IdentificatorInterface
     private ?string $bcc = null;
 
     private bool $includeAttachments;
-    private string|array $presetAssets = [];
+    private array|string $presetAssets = [];
 
     private string $subject;
     private string $body;
@@ -144,7 +144,7 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->id;
     }
 
-    public function getNormalizeIdentificator(): int|string|null
+    public function getNormalizeIdentificator(): null|int|string
     {
         return $this->getId();
     }
@@ -204,7 +204,7 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->includeAttachments;
     }
 
-    public function getPresetAssets(): array|string|null
+    public function getPresetAssets(): null|array|string
     {
         return $this->presetAssets;
     }

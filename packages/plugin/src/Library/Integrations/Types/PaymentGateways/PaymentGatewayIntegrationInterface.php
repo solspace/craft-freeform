@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
-interface PaymentGatewayIntegrationInterface
-{
-}
+interface PaymentGatewayIntegrationInterface {}

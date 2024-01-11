@@ -1,20 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
+import CloneIcon from '@ff-icons/actions/clone.svg';
+import CrossIcon from '@ff-icons/actions/cross.svg';
+import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
 
-import CloneIcon from './icons/clone.svg';
-import CrossIcon from './icons/cross.svg';
-import MoveIcon from './icons/move.svg';
 import {
   CardBody,
   CardWrapper,
@@ -129,16 +128,17 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
           ))}
 
         <LinkList>
-          <li>
-            <a href={generateUrl(`submissions/${form.handle}`, false)}>
-              {form.counters.submissions} {translate('Submissions')}
-            </a>
-          </li>
-          <li>
-            <a href={generateUrl(`spam/${form.handle}`, false)}>
-              {form.counters.spam} {translate('Spam')}
-            </a>
-          </li>
+          {form.links.map((link, idx) =>
+            link.internal ? (
+              <NavLink key={idx} to={link.url}>
+                {link.label}
+              </NavLink>
+            ) : (
+              <li key={idx}>
+                <a href={link.url}>{link.label}</a>
+              </li>
+            )
+          )}
         </LinkList>
       </CardBody>
 

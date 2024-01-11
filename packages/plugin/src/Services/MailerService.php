@@ -352,7 +352,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $notificationPath = __DIR__.'/../templates/_emailTemplates/error-notify.twig';
+        $notificationPath = __DIR__.'/../templates/_templates/email/error-notify.twig';
         $notification = NotificationTemplate::fromFile($notificationPath);
 
         $code = null;

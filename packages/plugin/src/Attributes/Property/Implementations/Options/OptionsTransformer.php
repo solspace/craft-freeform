@@ -11,9 +11,7 @@ use Solspace\Freeform\Fields\Properties\Options\Predefined\Predefined;
 
 class OptionsTransformer extends Transformer
 {
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
-    }
+    public function __construct(private PropertyProvider $propertyProvider) {}
 
     public function transform($value): OptionsConfigurationInterface
     {

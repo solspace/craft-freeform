@@ -10,7 +10,7 @@ use Twig\Markup;
  * @property int    $feedId
  * @property string $message
  * @property string $type
- * @property string $conditions
+ * @property array  $conditions
  * @property bool   $seen
  * @property string $issueDate
  */
@@ -23,7 +23,7 @@ class FeedMessageRecord extends ActiveRecord
         return self::TABLE;
     }
 
-    public function getIcon()
+    public function getIcon(): Markup
     {
         switch ($this->type) {
             case 'new':

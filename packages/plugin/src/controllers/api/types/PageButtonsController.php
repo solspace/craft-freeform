@@ -24,7 +24,7 @@ class PageButtonsController extends BaseApiController
     {
         $properties = $this->propertyProvider->getEditableProperties(PageButtons::class);
 
-        return $this->asJson([
+        return $this->asSerializedJson([
             'sections' => $this->sectionProvider->getSections(PageButtons::class),
             'properties' => $properties,
         ]);

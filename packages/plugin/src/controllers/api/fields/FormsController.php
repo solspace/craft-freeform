@@ -19,7 +19,7 @@ class FormsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-    protected function get(): object|array
+    protected function get(): array|object
     {
         $forms = [];
 

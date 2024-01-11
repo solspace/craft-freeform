@@ -8,9 +8,7 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class NotificationTemplateTransformer implements TransformerInterface
 {
-    public function __construct(private NotificationTemplateProvider $provider)
-    {
-    }
+    public function __construct(private NotificationTemplateProvider $provider) {}
 
     public function transform($value): ?NotificationTemplate
     {
@@ -25,7 +23,7 @@ class NotificationTemplateTransformer implements TransformerInterface
         return null;
     }
 
-    public function reverseTransform($value): int|string|null
+    public function reverseTransform($value): null|int|string
     {
         if (!$value instanceof NotificationTemplate) {
             return null;

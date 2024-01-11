@@ -15,6 +15,5 @@ class SettingNamespace
         public ?string $handle = null,
         public ?int $order = null,
         public ?PropertyCollection $properties = null,
-    ) {
-    }
+    ) {}
 }

@@ -123,9 +123,9 @@ interface FieldInterface
 
     public function getContentGqlDescription(): array;
 
-    public function getContentGqlType(): Type|array;
+    public function getContentGqlType(): array|Type;
 
-    public function getContentGqlMutationArgumentType(): Type|array;
+    public function getContentGqlMutationArgumentType(): array|Type;
 
     public function includeInGqlSchema(): bool;
 

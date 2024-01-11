@@ -32,7 +32,7 @@ class RenderTableValueEvent extends Event
         return $this->output;
     }
 
-    public function setOutput(string|null $output): self
+    public function setOutput(null|string $output): self
     {
         $this->output = $output;
 

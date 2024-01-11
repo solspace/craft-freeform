@@ -17,7 +17,7 @@ class IntegrationsController extends BaseApiController
         return $this->integrationDTOProvider->getByCategory();
     }
 
-    protected function getOne(int|string $id): array|object|null
+    protected function getOne(int|string $id): null|array|object
     {
         return $this->integrationDTOProvider->getById($id);
     }

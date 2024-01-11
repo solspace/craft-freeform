@@ -10,9 +10,7 @@ class Flag implements CustomNormalizerInterface
     public const PRO = 'pro';
     public const LOCKED = 'locked';
 
-    public function __construct(public string $name)
-    {
-    }
+    public function __construct(public string $name) {}
 
     public function normalize(): string
     {

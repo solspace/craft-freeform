@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\Campaign;
 
-interface CampaignIntegrationInterface
-{
-}
+interface CampaignIntegrationInterface {}

@@ -9,8 +9,7 @@ class NotificationTemplateProvider
 {
     public function __construct(
         private NotificationsService $service,
-    ) {
-    }
+    ) {}
 
     /**
      * @return NotificationTemplate[]
@@ -42,7 +41,7 @@ class NotificationTemplateProvider
         );
     }
 
-    public function getNotificationTemplate(string|int $id): ?NotificationTemplate
+    public function getNotificationTemplate(int|string $id): ?NotificationTemplate
     {
         if (is_numeric($id)) {
             return $this->getDatabaseNotificationTemplate((int) $id);

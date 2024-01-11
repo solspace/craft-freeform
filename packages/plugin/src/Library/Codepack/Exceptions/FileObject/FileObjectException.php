@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Codepack\Exceptions\FileObject;
 
 use Solspace\Freeform\Library\Codepack\Exceptions\CodepackException;
 
-class FileObjectException extends CodepackException
-{
-}
+class FileObjectException extends CodepackException {}

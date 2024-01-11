@@ -5,7 +5,7 @@ export const CardBody = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: start;
 
   padding: ${spacings.xl} ${spacings.xl} 0;
 `;

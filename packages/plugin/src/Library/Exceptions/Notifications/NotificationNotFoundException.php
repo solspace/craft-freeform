@@ -14,6 +14,4 @@ namespace Solspace\Freeform\Library\Exceptions\Notifications;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class NotificationNotFoundException extends FreeformException
-{
-}
+class NotificationNotFoundException extends FreeformException {}

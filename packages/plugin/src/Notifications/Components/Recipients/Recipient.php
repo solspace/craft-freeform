@@ -7,8 +7,7 @@ class Recipient
     public function __construct(
         private string $email,
         private string $name = '',
-    ) {
-    }
+    ) {}
 
     public function getEmail(): string
     {

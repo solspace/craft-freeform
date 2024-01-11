@@ -308,7 +308,7 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
         }
     }
 
-    private function getOrCreateTag(Client $client, string $listId, string $tagName): int|string|null
+    private function getOrCreateTag(Client $client, string $listId, string $tagName): null|int|string
     {
         try {
             $existingTags = $this->fetchTags($client, $listId);

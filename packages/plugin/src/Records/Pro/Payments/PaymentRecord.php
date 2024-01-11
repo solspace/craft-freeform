@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -28,7 +29,7 @@ use yii\db\ActiveQuery;
  * @property string $currency
  * @property string $status
  * @property string $link
- * @property string $metadata
+ * @property array  $metadata
  */
 class PaymentRecord extends ActiveRecord
 {
@@ -61,7 +62,11 @@ class PaymentRecord extends ActiveRecord
 
     public function getPaymentMethod(): ?\stdClass
     {
-        $metadata = json_decode($this->metadata);
+        if (\is_string($this->metadata)) {
+            $metadata = json_decode($this->metadata);
+        } else {
+            $metadata = $this->metadata;
+        }
 
         if (!isset($metadata->type)) {
             return null;

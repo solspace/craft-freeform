@@ -28,8 +28,7 @@ class FieldTypesProvider
         private PropertyProvider $propertyProvider,
         private ImplementationProvider $implementationProvider,
         private SectionProvider $sectionProvider,
-    ) {
-    }
+    ) {}
 
     public function getRegisteredTypes(): array
     {
@@ -89,6 +88,18 @@ class FieldTypesProvider
         }
 
         return $this->fieldTypes;
+    }
+
+    public function getFieldType(string $class): ?FieldType
+    {
+        $types = $this->getTypes();
+        foreach ($types as $type) {
+            if ($type->typeClass === $class) {
+                return $type;
+            }
+        }
+
+        return null;
     }
 
     public function getTypeShorthands(): array

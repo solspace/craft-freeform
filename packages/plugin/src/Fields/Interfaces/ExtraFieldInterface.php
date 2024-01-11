@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface ExtraFieldInterface
-{
-}
+interface ExtraFieldInterface {}

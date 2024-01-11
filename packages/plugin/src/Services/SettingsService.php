@@ -257,7 +257,6 @@ class SettingsService extends BaseService
         }
 
         $event = new RegisterSettingsNavigationEvent($nav);
-
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);
 
         return $event->getNavigation();
@@ -393,6 +392,7 @@ class SettingsService extends BaseService
             ->in($path)
             ->sortByName()
             ->name('index.twig')
+            ->name('index.html')
         ;
 
         foreach ($fileIterator as $file) {
@@ -405,6 +405,7 @@ class SettingsService extends BaseService
             ->depth(0)
             ->sortByName()
             ->name('*.twig')
+            ->name('*.html')
         ;
 
         foreach ($rootFiles as $file) {

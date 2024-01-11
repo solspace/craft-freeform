@@ -26,7 +26,7 @@ class ExportExcel extends ExportCsv
     /**
      * @throws Exception
      */
-    public function export(): string|bool
+    public function export(): bool|string
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

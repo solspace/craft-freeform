@@ -10,9 +10,7 @@ use Solspace\Freeform\Form\Settings\SettingsInterface;
 
 class SettingsProvider
 {
-    public function __construct(private PropertyProvider $propertyProvider)
-    {
-    }
+    public function __construct(private PropertyProvider $propertyProvider) {}
 
     /**
      * @return SettingNamespace[]

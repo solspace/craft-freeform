@@ -59,9 +59,9 @@ class QuickExportController extends BaseController
                 $settingRecord->setting = [];
             }
 
-            $settingArray = \is_array($settingRecord->setting) ? $settingRecord->setting : json_decode($settingRecord->setting, true);
+            $settingArray = $settingRecord->setting;
 
-            if ($settingRecord && isset($settingArray[$form->getId()])) {
+            if (isset($settingArray[$form->getId()])) {
                 foreach ($settingArray[$form->getId()] as $fieldId => $item) {
                     $label = $item['label'];
                     $isChecked = (bool) $item['checked'];

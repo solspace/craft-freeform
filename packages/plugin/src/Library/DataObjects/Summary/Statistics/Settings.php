@@ -4,63 +4,24 @@ namespace Solspace\Freeform\Library\DataObjects\Summary\Statistics;
 
 class Settings
 {
-    /** @var bool */
-    public $customPluginName = false;
-
-    /** @var string */
-    public $defaultView = false;
-
-    /** @var bool */
-    public $renderHtmlInComposer = false;
-
-    /** @var bool */
-    public $ajaxEnabledByDefault = false;
-
-    /** @var bool */
-    public $includeDefaultFormattingTemplates = false;
-
-    /** @var bool */
-    public $removeNewlinesOnExport = false;
-
-    /** @var bool */
-    public $populateValuesFromGet = false;
-
-    /** @var bool */
-    public $disableSubmit = false;
-
-    /** @var bool */
-    public $autoScroll = false;
-
-    /** @var string */
-    public $jsInsertLocation = '';
-
-    /** @var string */
-    public $jsInsertType = '';
-
-    /** @var string */
-    public $sessionContextType = '';
-
-    /** @var bool */
-    public $purgeSubmissions = false;
-
-    /** @var int */
-    public $purgeInterval = false;
-
-    /** @var bool */
-    public $formattingTemplatesPath = false;
-
-    /** @var bool */
-    public $sendAlertsOnFailedNotifications = false;
-
-    /** @var bool */
-    public $notificationTemplatesPath = false;
-
-    /** @var bool */
-    public $successTemplatesPath = false;
-
-    /** @var bool */
-    public $modifiedStatuses = false;
-
-    /** @var bool */
-    public $demoTemplatesInstalled = false;
+    public bool $customPluginName = false;
+    public bool $defaultView = false;
+    public bool $renderHtmlInComposer = false;
+    public bool $ajaxEnabledByDefault = false;
+    public bool $includeDefaultFormattingTemplates = false;
+    public bool $removeNewlinesOnExport = false;
+    public bool $populateValuesFromGet = false;
+    public bool $disableSubmit = false;
+    public bool $autoScroll = false;
+    public string $jsInsertLocation = '';
+    public string $jsInsertType = '';
+    public string $sessionContextType = '';
+    public bool $purgeSubmissions = false;
+    public bool $purgeInterval = false;
+    public bool $formattingTemplatesPath = false;
+    public bool $sendAlertsOnFailedNotifications = false;
+    public bool $notificationTemplatesPath = false;
+    public bool $successTemplatesPath = false;
+    public bool $modifiedStatuses = false;
+    public bool $demoTemplatesInstalled = false;
 }

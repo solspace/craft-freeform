@@ -12,6 +12,4 @@
 
 namespace Solspace\Freeform\Library\Codepack\Exceptions;
 
-class CodepackException extends \Exception
-{
-}
+class CodepackException extends \Exception {}

@@ -11,6 +11,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class RegisterField extends FeatureBundle
@@ -33,7 +34,14 @@ class RegisterField extends FeatureBundle
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
-        $event->addType(StripeField::class);
+        $hasStripe = IntegrationRecord::find()
+            ->where(['class' => Stripe::class])
+            ->count()
+        ;
+
+        if ($hasStripe) {
+            $event->addType(StripeField::class);
+        }
     }
 
     public function attachStripeScripts(RenderTagEvent $event): void

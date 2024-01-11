@@ -28,9 +28,9 @@ const PageButtonLayout: React.FC<
   const { layouts } = property;
 
   const buttonState: Record<string, boolean> = {
-    save: context?.buttons?.save?.enabled,
-    back: context?.buttons?.back?.enabled,
-    submit: context?.buttons?.submit?.enabled,
+    save: context?.buttons?.save,
+    back: context?.buttons?.back,
+    submit: true,
   };
 
   return (

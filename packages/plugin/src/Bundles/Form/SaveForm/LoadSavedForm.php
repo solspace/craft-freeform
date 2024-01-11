@@ -52,6 +52,8 @@ class LoadSavedForm extends FeatureBundle
         $properties = $json['properties'] ?? [];
         $attributes = $json['attributes'] ?? [];
 
+        unset($attributes['method']);
+
         $properties[SaveFormsHelper::BAG_KEY_LOADED] = true;
 
         $form->getAttributes()->merge($attributes);

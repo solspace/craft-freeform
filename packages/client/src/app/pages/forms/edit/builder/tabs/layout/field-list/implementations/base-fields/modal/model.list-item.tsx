@@ -11,10 +11,15 @@ type Props = {
 
 export const FieldItem: React.FC<Props> = ({ typeClass }) => {
   const fieldType = useFieldType(typeClass);
-  const { name, icon } = fieldType;
 
   const fieldItemRef = useRef<HTMLDivElement>(null);
   const hovering = useHover(fieldItemRef);
+
+  if (!fieldType) {
+    return null;
+  }
+
+  const { name, icon } = fieldType;
 
   return (
     <Wrapper data-id={typeClass} ref={fieldItemRef} title={name}>

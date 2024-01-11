@@ -22,8 +22,12 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         $this->fields = array_values($fields);
     }
 
-    public function get(int|string $identificator): ?FieldInterface
+    public function get(mixed $identificator): ?FieldInterface
     {
+        if ($identificator instanceof FieldInterface) {
+            $identificator = $identificator->getUid();
+        }
+
         foreach ($this->fields as $field) {
             if (
                 $field->getHandle() === $identificator

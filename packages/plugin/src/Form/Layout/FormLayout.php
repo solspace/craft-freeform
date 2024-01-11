@@ -30,7 +30,7 @@ class FormLayout implements \IteratorAggregate
         return $this->getFields($implements)->count();
     }
 
-    public function getField(int|string $identificator): ?FieldInterface
+    public function getField(mixed $identificator): ?FieldInterface
     {
         return $this->fieldCollection->get($identificator);
     }

@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.15 - 2024-01-11
+
+> [!WARNING]
+> This version is still in beta. Proceed with caution if using in production environments. If upgrading from Freeform 4, please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
+
+### Added
+- Added created/updated dates and author information for each form inside the form builder.
+- Added a field type manager inside the form builder. It allows you to show/hide field types, arrange them into groups, and color code them.
+
+### Changed
+- Adjusted the summary feed JSON to account for changes in Freeform 5.
+
+### Fixed
+- Fixed a bug where the **Save** feature was missing some settings inside the form builder.
+- Fixed a bug where moving fields around in the layout could cause data loss for some fields.
+- Fixed a bug where the dropdown helper for forms with lots of pages (and not enough screen space to display them all) was not working correctly.
+
+### Removed
+- Removed the **Stats** widget as it isn't very relevant anymore.
+
 ## 5.0.0-beta.14 - 2024-01-05
 
 > [!WARNING]
@@ -252,6 +272,8 @@
 - **Form Builder**
     - Fields can be saved as **Favorites** for quick use in other forms.
     - Fields from other forms can be **searched** and reused in your form.
+    - A **Field Type Manager** has been added to the form builder. It allows you to show/hide field types, arrange them into groups, and color code them.
+    - Created/Updated dates and author information are now stored for each form and visible inside the form builder.
     - The **Limited Users** feature allows you to easily customize the form builder experience for specific users or groups, ensuring that these users are not overwhelmed by advanced settings and prevents them from accidentally breaking your forms or site.
     - Configure email notifications in the form builder using complex conditional rules based on field data.
     - A wide range of form builder settings can now have default values set for them, and can also be locked to that value. For example, you can force the Tailwind 3 formatting template to be used for every form.
@@ -354,6 +376,7 @@
     - The **What's New** feature has been removed in favor of using Craft's Announcements feature.
     - The **Resources** area inside the Freeform control panel has been removed.
     - The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
+    - The **Stats** widget has been removed as it isn't very relevant anymore.
 - **Settings**
     - The **Access Fields** and **Manage Fields** permissions have been removed as they are no longer applicable.
     - The **Display Order of Fields in the Form Builder** setting has been removed as it is no longer applicable.

@@ -18,7 +18,10 @@ return [
     'Name' => 'Name',
     'Handle' => 'Handle',
     'Delete' => 'Delete',
+    'Created' => 'Created',
+    'Created by' => 'Created by',
     'Last Updated' => 'Last Updated',
+    'Last Updated by' => 'Last Updated by',
     'Success Behavior' => 'Success Behavior',
     'Reload form with a Success banner above' => 'Reload form with a Success banner above',
     'Replace form with a Success message' => 'Replace form with a Success message',
@@ -33,6 +36,7 @@ return [
     'POST Forwarding Error Trigger' => 'POST Forwarding Error Trigger',
     'Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.' => 'Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
     'Enable Captchas' => 'Enable Captchas',
+    'at' => 'at',
 
     // Api Controller
     'Label is required' => 'Label is required',

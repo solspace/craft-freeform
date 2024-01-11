@@ -75,6 +75,7 @@ class FormTransformer
             'name' => $settings->name,
             'handle' => $settings->handle,
             'settings' => $settings->toArray(),
+            'ownership' => $this->getOwnership($form),
             'isNew' => $isNew,
         ];
     }
@@ -96,6 +97,48 @@ class FormTransformer
         }
 
         return $forms;
+    }
+
+    private function getOwnership(Form $form): array
+    {
+        $createdByUserUrl = null;
+        $updatedByUserUrl = null;
+        $currentUser = \Craft::$app->getUser()->getIdentity();
+        $formatter = \Craft::$app->getFormatter();
+        $ownership = [
+            'created' => [
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateCreated(), $formatter->timeZone)->toDateTimeLocalString(), 'short'),
+            ],
+            'updated' => [
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateUpdated(), $formatter->timeZone)->toDateTimeLocalString(), 'short'),
+            ],
+        ];
+
+        if (null !== $form->getCreatedBy()) {
+            if ($currentUser->id === $form->getCreatedBy()->id || $currentUser->can('editUsers')) {
+                $createdByUserUrl = $form->getCreatedBy()->cpEditUrl;
+            }
+
+            $ownership['created']['user'] = [
+                'id' => $form->getCreatedBy()->getId(),
+                'url' => $createdByUserUrl,
+                'name' => $form->getCreatedBy()->name,
+            ];
+        }
+
+        if (null !== $form->getUpdatedBy()) {
+            if ($currentUser->id === $form->getUpdatedBy()->id || $currentUser->can('editUsers')) {
+                $updatedByUserUrl = $form->getUpdatedBy()->cpEditUrl;
+            }
+
+            $ownership['updated']['user'] = [
+                'id' => $form->getUpdatedBy()->getId(),
+                'url' => $updatedByUserUrl,
+                'name' => $form->getUpdatedBy()->name,
+            ];
+        }
+
+        return $ownership;
     }
 
     private function attachLinks(array $forms, array $transformed): array

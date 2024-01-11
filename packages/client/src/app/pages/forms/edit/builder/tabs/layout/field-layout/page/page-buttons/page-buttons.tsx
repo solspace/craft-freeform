@@ -55,19 +55,21 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
           break;
 
         case 'back':
-          buttonGroup.push({
-            handle: 'back',
-            label: page.buttons.backLabel,
-            enabled: page.buttons.back,
-          });
+          page.buttons.back &&
+            buttonGroup.push({
+              handle: 'back',
+              label: page.buttons.backLabel,
+              enabled: page.buttons.back,
+            });
           break;
 
         case 'save':
-          buttonGroup.push({
-            handle: 'save',
-            label: page.buttons.saveLabel,
-            enabled: page.buttons.save,
-          });
+          page.buttons.save &&
+            buttonGroup.push({
+              handle: 'save',
+              label: page.buttons.saveLabel,
+              enabled: page.buttons.save,
+            });
           break;
 
         default:

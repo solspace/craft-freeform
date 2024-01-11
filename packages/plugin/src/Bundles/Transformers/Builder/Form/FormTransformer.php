@@ -107,10 +107,10 @@ class FormTransformer
         $formatter = \Craft::$app->getFormatter();
         $ownership = [
             'created' => [
-                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateCreated(), $formatter->timeZone)->toDateTimeLocalString(), "short"),
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateCreated(), $formatter->timeZone)->toDateTimeLocalString(), 'short'),
             ],
             'updated' => [
-                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateUpdated(), $formatter->timeZone)->toDateTimeLocalString(), "short"),
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateUpdated(), $formatter->timeZone)->toDateTimeLocalString(), 'short'),
             ],
         ];
 

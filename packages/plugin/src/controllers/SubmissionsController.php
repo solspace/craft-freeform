@@ -178,7 +178,7 @@ class SubmissionsController extends BaseController
         $tabs = array_reduce(
             array_map(
                 fn (Page $page) => [
-                    'tabId' => 'page' . $page->getIndex(),
+                    'tabId' => 'page'.$page->getIndex(),
                     'selected' => 0 === $page->getIndex(),
                     'url' => '#tab-'.$page->getIndex(),
                     'label' => $page->getLabel(),
@@ -186,7 +186,8 @@ class SubmissionsController extends BaseController
                 $layout->getPages()->getIterator()->getArrayCopy()
             ),
             function ($result, $item) {
-                $result['page' . $item['tabId']] = $item;
+                $result['page'.$item['tabId']] = $item;
+
                 return $result;
             },
             []
@@ -201,7 +202,7 @@ class SubmissionsController extends BaseController
             'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
             'fieldRenderer' => $fieldRenderer,
-            'tabs' => $tabs
+            'tabs' => $tabs,
         ];
 
         return $this->renderTemplate(

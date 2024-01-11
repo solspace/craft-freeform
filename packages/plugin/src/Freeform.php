@@ -29,6 +29,32 @@ use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
+use Solspace\Freeform\Fields\Implementations\EmailField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
+use Solspace\Freeform\Fields\Implementations\NumberField;
+use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
+use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
+use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
+use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
+use Solspace\Freeform\Fields\Implementations\RadiosField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
@@ -40,6 +66,7 @@ use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
+use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
@@ -267,7 +294,7 @@ class Freeform extends Plugin
     }
 
     /**
-     * On install - insert default statuses.
+     * On install - insert default statuses & groups.
      */
     public function afterInstall(): void
     {
@@ -292,6 +319,74 @@ class Freeform extends Plugin
         $status->color = 'grey';
         $status->sortOrder = 3;
         $status->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Text';
+        $group->color = '#007add';
+        $group->types = [
+            TextField::class,
+            TextareaField::class,
+            EmailField::class,
+            NumberField::class,
+            PhoneField::class,
+            DatetimeField::class,
+            WebsiteField::class,
+            RegexField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Options';
+        $group->color = '#9013fe';
+        $group->types = [
+            DropdownField::class,
+            MultipleSelectField::class,
+            CheckboxField::class,
+            CheckboxesField::class,
+            RadiosField::class,
+            OpinionScaleField::class,
+            RatingField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Files';
+        $group->color = '#f5a623';
+        $group->types = [
+            FileUploadField::class,
+            FileDragAndDropField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Special';
+        $group->color = '#5d9901';
+        $group->types = [
+            GroupField::class,
+            TableField::class,
+            ConfirmationField::class,
+            PasswordField::class,
+            SignatureField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Content';
+        $group->color = '#000000';
+        $group->types = [
+            HtmlField::class,
+            RichTextField::class,
+        ];
+        $group->save();
+
+        $group = new FieldTypeGroupRecord();
+        $group->label = 'Hidden';
+        $group->color = '#9b9b9b';
+        $group->types = [
+            HiddenField::class,
+            InvisibleField::class,
+        ];
+        $group->save();
     }
 
     protected function createSettingsModel(): Settings

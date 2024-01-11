@@ -1,24 +1,25 @@
-import type { PropsWithChildren, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import React from 'react';
 import classes from '@ff-client/utils/classes';
 
-import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
+import { FieldGroupWrapper, GroupTitle } from './field-group.styles';
 
-import 'react-loading-skeleton/dist/skeleton.css';
-
-type Props = {
+type FieldGroupProps = {
   title: string;
   disabled?: boolean;
+  editionIsPro?: boolean;
   button?: {
     icon: ReactNode;
     title?: string;
     onClick?: () => void;
   };
+  children?: ReactNode;
 };
 
-export const FieldGroup: React.FC<PropsWithChildren<Props>> = ({
+export const FieldGroup: React.FC<FieldGroupProps> = ({
   title,
   disabled,
+  editionIsPro,
   button,
   children,
 }) => {
@@ -26,13 +27,13 @@ export const FieldGroup: React.FC<PropsWithChildren<Props>> = ({
     <FieldGroupWrapper className={classes(disabled && 'disabled')}>
       <GroupTitle>
         {title}
-        {button && (
+        {button && (editionIsPro !== undefined ? editionIsPro : true) && (
           <button type="button" title={button.title} onClick={button.onClick}>
             {button.icon}
           </button>
         )}
       </GroupTitle>
-      <List>{children}</List>
+      {children}
     </FieldGroupWrapper>
   );
 };

@@ -104,12 +104,13 @@ class FormTransformer
         $createdByUserUrl = null;
         $updatedByUserUrl = null;
         $currentUser = \Craft::$app->getUser()->getIdentity();
+        $formatter = \Craft::$app->getFormatter();
         $ownership = [
             'created' => [
-                'datetime' => $form->getDateCreated()->toISOString(),
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateCreated(), $formatter->timeZone)->toDateTimeLocalString(), "short"),
             ],
             'updated' => [
-                'datetime' => $form->getDateUpdated()->toISOString(),
+                'datetime' => $formatter->asDatetime(Carbon::parse($form->getDateUpdated(), $formatter->timeZone)->toDateTimeLocalString(), "short"),
             ],
         ];
 

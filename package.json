@@ -9,7 +9,6 @@
   "description": "Freeform plugin for Craft CMS",
   "dependencies": {
     "d3-scale-chromatic": "^3.0.0",
-    "date-fns-tz": "^2.0.0",
     "install": "^0.13.0",
     "npm": "^9.8.1"
   },

@@ -14,8 +14,6 @@ class Spam
     public ?bool $submissionThrottling = false;
     public ?bool $minSubmitTime = false;
     public ?bool $submitExpiration = false;
-    public ?bool $captcha = false;
-    public ?string $captchaType = '';
     public ?bool $bypassSpamCheckOnLoggedInUsers = false;
     public ?int $submissionThrottlingCount = 0;
 }

@@ -30,6 +30,7 @@ export enum PropertyType {
   Options = 'options',
   OptionPicker = 'optionPicker',
   PageButton = 'pageButton',
+  SaveButton = 'saveButton',
   PageButtonsLayout = 'pageButtonsLayout',
   RecipientMapping = 'recipientMapping',
   Recipients = 'recipients',
@@ -217,6 +218,17 @@ export type PageButtonProperty = BaseProperty<
   PropertyType.PageButton
 > & { togglable: boolean; enabled: boolean };
 
+export type SaveButtonProperty = BaseProperty<
+  {
+    label: string;
+    enabled: boolean;
+    redirectUrl: string;
+    notificationId: number | string;
+    emailFieldUid: string;
+  },
+  PropertyType.SaveButton
+> & { togglable: boolean; enabled: boolean };
+
 export type FieldMappingProperty = BaseProperty<
   FieldMapping,
   PropertyType.FieldMapping
@@ -254,6 +266,7 @@ export type Property =
   | OptionsProperty
   | OptionPickerProperty
   | PageButtonProperty
+  | SaveButtonProperty
   | PageButtonsLayoutProperty
   | RecipientMappingProperty
   | RecipientsProperty

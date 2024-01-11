@@ -187,9 +187,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $event->getIsSet();
     }
 
-    public function get(string $fieldHandle): ?FieldInterface
+    public function get(mixed $fieldIdentificator): ?FieldInterface
     {
-        return $this->getLayout()->getField($fieldHandle);
+        return $this->getLayout()->getField($fieldIdentificator);
     }
 
     public function hasFieldType(string $type): bool

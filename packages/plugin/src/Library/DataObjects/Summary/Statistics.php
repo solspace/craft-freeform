@@ -5,6 +5,8 @@ namespace Solspace\Freeform\Library\DataObjects\Summary;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Fields;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Forms;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\General;
+use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Notifications;
+use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Rules;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Settings;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Spam;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\System;
@@ -13,29 +15,16 @@ use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Widgets;
 
 class Statistics
 {
-    /** @var System */
-    public $system;
-
-    /** @var Totals */
-    public $totals;
-
-    /** @var General */
-    public $general;
-
-    /** @var Settings */
-    public $settings;
-
-    /** @var Spam */
-    public $spam;
-
-    /** @var Fields */
-    public $fields;
-
-    /** @var Forms */
-    public $forms;
-
-    /** @var Widgets */
-    public $widgets;
+    public System $system;
+    public Totals $totals;
+    public General $general;
+    public Settings $settings;
+    public Spam $spam;
+    public Fields $fields;
+    public Forms $forms;
+    public Notifications $notifications;
+    public Rules $rules;
+    public Widgets $widgets;
 
     public function __construct()
     {
@@ -46,6 +35,8 @@ class Statistics
         $this->spam = new Spam();
         $this->fields = new Fields();
         $this->forms = new Forms();
+        $this->notifications = new Notifications();
+        $this->rules = new Rules();
         $this->widgets = new Widgets();
     }
 }

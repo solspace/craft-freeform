@@ -15,7 +15,7 @@ use yii\base\Event;
 
 class FormPersistence extends FeatureBundle
 {
-    private ?User $user = null;
+    private ?User $user;
 
     public function __construct(
         private FormsService $formsService,
@@ -62,7 +62,6 @@ class FormPersistence extends FeatureBundle
         $record->type = $payload->type;
 
         $record->createdByUserId = $this->user->id;
-        $record->updatedByUserId = $this->user->id;
 
         $this->update($event, $record);
     }
@@ -70,7 +69,6 @@ class FormPersistence extends FeatureBundle
     public function handleFormUpdate(PersistFormEvent $event): void
     {
         $record = FormRecord::findOne(['id' => $event->getFormId()]);
-        $record->updatedByUserId = $this->user->id;
 
         $this->update($event, $record);
     }
@@ -84,6 +82,7 @@ class FormPersistence extends FeatureBundle
 
         $record->metadata = $this->getValidatedMetadata($payload, $event);
         $record->type = $record->metadata['general']->type ?? Regular::class;
+        $record->updatedByUserId = $this->user->id;
 
         if (!$event->hasErrors()) {
             $record->validate();

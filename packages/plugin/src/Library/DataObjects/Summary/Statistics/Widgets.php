@@ -18,7 +18,4 @@ class Widgets
 
     /** @var bool */
     public $quickForm = false;
-
-    /** @var bool */
-    public $stats = false;
 }

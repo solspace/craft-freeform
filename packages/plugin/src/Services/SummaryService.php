@@ -28,7 +28,6 @@ use Solspace\Freeform\Widgets\Pro\LinearChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RadialChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RecentWidget;
 use Solspace\Freeform\Widgets\QuickFormWidget;
-use Solspace\Freeform\Widgets\StatisticsWidget;
 use yii\base\Component;
 
 class SummaryService extends Component
@@ -199,7 +198,6 @@ class SummaryService extends Component
         $widgets->radial = $this->isWidgetUsed(RadialChartsWidget::class);
         $widgets->recent = $this->isWidgetUsed(RecentWidget::class);
         $widgets->quickForm = $this->isWidgetUsed(QuickFormWidget::class);
-        $widgets->stats = $this->isWidgetUsed(StatisticsWidget::class);
 
         $summary->statistics->widgets = $widgets;
 

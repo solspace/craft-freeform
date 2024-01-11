@@ -8,5 +8,4 @@ class Widgets
     public bool $radial = false;
     public bool $recent = false;
     public bool $quickForm = false;
-    public bool $stats = false;
 }

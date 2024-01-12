@@ -8,6 +8,7 @@ use craft\db\Table;
 use craft\helpers\Db;
 use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Charts\LinearChartData;
 use Solspace\Freeform\Library\Charts\LinearItem;
@@ -150,6 +151,9 @@ class ChartsService extends BaseService
         return $this->getData($labels, $datasets);
     }
 
+    /**
+     * @param Form[] $forms
+     */
     public function getRadialFormSubmissionData(
         Carbon $rangeStart,
         Carbon $rangeEnd,
@@ -197,7 +201,7 @@ class ChartsService extends BaseService
 
             $color = ColorHelper::getRGBColor($forms[$formId]->color);
 
-            $labels[] = $forms[$formId]->name;
+            $labels[] = $forms[$formId]->getName();
             $data[] = 0;
             $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
             $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));

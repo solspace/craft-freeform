@@ -71,10 +71,10 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
             );
         }
 
-        $forms = $this->getFormService()->getAllForms();
+        $forms = $this->getFormService()->getAllFormIds();
         $formIdList = $this->formIds;
         if ('*' === $formIdList) {
-            $formIdList = array_keys($forms);
+            $formIdList = $forms;
         }
 
         $submissions = Submission::find()
@@ -94,17 +94,11 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public function getSettingsHtml(): string
     {
-        $forms = $this->getFormService()->getAllForms();
-        $formsOptions = [];
-        foreach ($forms as $form) {
-            $formsOptions[$form->id] = $form->name;
-        }
-
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/recent/settings',
             [
                 'settings' => $this,
-                'formOptions' => $formsOptions,
+                'formOptions' => $this->getFormService()->getAllFormNames(),
                 'dateRangeOptions' => $this->getWidgetsService()->getDateRanges(),
             ]
         );

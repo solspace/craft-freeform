@@ -88,17 +88,11 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public function getSettingsHtml(): string
     {
-        $forms = $this->getFormService()->getAllForms();
-        $formsOptions = [];
-        foreach ($forms as $form) {
-            $formsOptions[$form->id] = $form->name;
-        }
-
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/radial-charts/settings',
             [
                 'settings' => $this,
-                'formOptions' => $formsOptions,
+                'formOptions' => $this->getFormService()->getAllFormNames(),
                 'chartTypes' => [
                     WidgetsService::CHART_PIE => 'Pie',
                     WidgetsService::CHART_DONUT => 'Donut',
@@ -120,8 +114,8 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
             $formList = $forms;
         } else {
             foreach ($forms as $form) {
-                if (\in_array($form->id, $this->formIds, false)) {
-                    $formList[$form->id] = $form;
+                if (\in_array($form->getId(), $this->formIds)) {
+                    $formList[$form->getId()] = $form;
                 }
             }
         }

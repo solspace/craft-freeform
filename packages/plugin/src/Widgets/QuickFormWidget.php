@@ -13,9 +13,10 @@
 namespace Solspace\Freeform\Widgets;
 
 use craft\base\Widget;
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 
-class QuickFormWidget extends Widget
+class QuickFormWidget extends Widget implements ExtraWidgetInterface
 {
     public ?string $title = null;
 
@@ -57,6 +58,12 @@ class QuickFormWidget extends Widget
     public function getBodyHtml(): string
     {
         $freeform = Freeform::getInstance();
+        if (!$freeform->isPro()) {
+            return Freeform::t(
+                "Requires <a href='{link}'>Pro</a> edition",
+                ['link' => UrlHelper::cpUrl('plugin-store/freeform')]
+            );
+        }
 
         $form = $freeform->forms->getFormById($this->formId);
         $formCss = $freeform->forms->getFormattingTemplateCss('flexbox');
@@ -80,20 +87,11 @@ class QuickFormWidget extends Widget
     {
         $freeform = Freeform::getInstance();
 
-        $forms = $freeform->forms->getAllForms();
-        $formList = [];
-        foreach ($forms as $form) {
-            if (!$form) {
-                continue;
-            }
-            $formList[$form->id] = $form->name;
-        }
-
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/quick-form/settings',
             [
                 'settings' => $this,
-                'formList' => $formList,
+                'formList' => $freeform->forms->getAllFormNames(),
             ]
         );
     }

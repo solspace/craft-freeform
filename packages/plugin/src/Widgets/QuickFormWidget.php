@@ -29,9 +29,9 @@ class QuickFormWidget extends Widget implements ExtraWidgetInterface
         return Freeform::getInstance()->name.' '.Freeform::t('Quick Form');
     }
 
-    public static function iconPath(): string
+    public static function icon(): string
     {
-        return __DIR__.'/../icon-mask.svg';
+        return __DIR__.'/../../icon-mask.svg';
     }
 
     public function init(): void

@@ -38,7 +38,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         return Freeform::getInstance()->name.' '.Freeform::t('Linear Chart');
     }
 
-    public static function iconPath(): string
+    public static function icon(): string
     {
         return __DIR__.'/../../icon-mask.svg';
     }
@@ -129,7 +129,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $formIds = $this->formIds;
         if ('*' === $formIds) {
-            $formIds = array_keys($this->getFormService()->getAllFormIds());
+            $formIds = $this->getFormService()->getAllFormIds();
         }
 
         $chartData = $this->getChartsService()->getLinearSubmissionChartData(

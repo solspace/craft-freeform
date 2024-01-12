@@ -36,7 +36,7 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         return Freeform::getInstance()->name.' '.Freeform::t('Radial Chart');
     }
 
-    public static function iconPath(): string
+    public static function icon(): string
     {
         return __DIR__.'/../../icon-mask.svg';
     }

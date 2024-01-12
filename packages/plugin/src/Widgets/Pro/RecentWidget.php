@@ -33,7 +33,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
         return Freeform::getInstance()->name.' '.Freeform::t('Recent');
     }
 
-    public static function iconPath(): string
+    public static function icon(): string
     {
         return __DIR__.'/../../icon-mask.svg';
     }

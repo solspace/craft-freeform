@@ -38,7 +38,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         return Freeform::getInstance()->name.' '.Freeform::t('Linear Chart');
     }
 
-    public static function iconPath(): string
+    public static function icon(): string
     {
         return __DIR__.'/../../icon-mask.svg';
     }
@@ -109,17 +109,11 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public function getSettingsHtml(): string
     {
-        $forms = $this->getFormService()->getAllForms();
-        $formsOptions = [];
-        foreach ($forms as $form) {
-            $formsOptions[$form->id] = $form->name;
-        }
-
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/linear-charts/settings',
             [
                 'settings' => $this,
-                'formOptions' => $formsOptions,
+                'formOptions' => $this->getFormService()->getAllFormNames(),
                 'dateRangeOptions' => Freeform::getInstance()->widgets->getDateRanges(),
                 'chartTypes' => [
                     WidgetsService::CHART_LINE => 'Line',
@@ -135,7 +129,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $formIds = $this->formIds;
         if ('*' === $formIds) {
-            $formIds = array_keys($this->getFormService()->getAllForms());
+            $formIds = $this->getFormService()->getAllFormIds();
         }
 
         $chartData = $this->getChartsService()->getLinearSubmissionChartData(

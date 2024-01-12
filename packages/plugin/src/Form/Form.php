@@ -111,8 +111,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private ?int $id;
     private ?string $uid;
 
-    private array $currentPageRows = [];
-
     // TODO: create a collection to handle error messages
     private array $errors = [];
 

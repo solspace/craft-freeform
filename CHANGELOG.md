@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.16 - 2024-01-12
+
+> [!WARNING]
+> This version is still in beta. Proceed with caution if using in production environments. If upgrading from Freeform 4, please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
+
+### Fixed
+- Fixed several issues with Freeform widgets in the Craft Dashboard.
+- Fixed a bug where the summary feed would error if the "Purge Submissions" setting was disabled.
+
 ## 5.0.0-beta.15 - 2024-01-11
 
 > [!WARNING]

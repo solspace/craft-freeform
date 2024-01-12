@@ -19,10 +19,10 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
     formData.delete('action');
     formData.append('handle', handle);
 
-    const baseUrl = container.getAttribute('data-base-url');
+    const baseUrl = new URL(container.getAttribute('data-base-url'));
 
     axios
-      .post<FileMetadata[]>(`${baseUrl}/files`, formData, {
+      .post<FileMetadata[]>(`${baseUrl.origin}${baseUrl.pathname}/files${baseUrl.search}`, formData, {
         headers: {
           'Freeform-Preflight': true,
         },
@@ -108,10 +108,10 @@ export const handleFileUpload = (
   formData.append('handle', handle);
   formData.append(handle, file);
 
-  const baseUrl = container.getAttribute('data-base-url');
+  const baseUrl = new URL(container.getAttribute('data-base-url'));
 
   return axios
-    .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
+    .post<FileMetadata>(`${baseUrl.origin}${baseUrl.pathname}/files/upload${baseUrl.search}`, formData, {
       headers: { 'content-type': 'multipart/form-data' },
       cancelToken: token,
       onUploadProgress: (progress: ProgressEvent) => {

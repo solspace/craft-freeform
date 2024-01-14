@@ -10,6 +10,15 @@ export const notificationSelectors = {
       state.notifications.items.find(
         (notification) => notification.uid === uid
       ),
+  isFieldInEmailNotification:
+    (field: string) =>
+    (state: RootState): boolean =>
+      state.notifications.items.some(
+        (notification) =>
+          notification.className ===
+            'Solspace\\Freeform\\Notifications\\Types\\EmailField\\EmailField' &&
+          notification.field === field
+      ),
   count: {
     all: (state: RootState): number => state.notifications.items.length,
     ofType:

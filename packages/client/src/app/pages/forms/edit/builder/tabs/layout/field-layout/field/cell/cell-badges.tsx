@@ -27,17 +27,17 @@ export const FieldAssociationsBadges: React.FC<Props> = ({ uid }) => {
   return (
     <CellBadgesWrapper>
       {isRule && (
-        <Tooltip title={translate('This field have conditional rules!')}>
+        <Tooltip title={translate('Conditional rules are applied to this field')}>
           <RuleIcon />
         </Tooltip>
       )}
       {isEmailNotification && (
-        <Tooltip title={translate('This field have email notification on!')}>
+        <Tooltip title={translate('Email notifications are applied to this field')}>
           <EmailNotificationIcon />
         </Tooltip>
       )}
       {isIntegrations && (
-        <Tooltip title={translate('This field have integrations!')}>
+        <Tooltip title={translate('Integrations are applied to this field')}>
           <IntegrationIcon />
         </Tooltip>
       )}

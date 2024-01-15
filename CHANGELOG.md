@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.0.0-beta.17 - Unreleased
+
+> [!WARNING]
+> This version is still in beta. Proceed with caution if using in production environments. If upgrading from Freeform 4, please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
+
+### Fixed
+- Fixed a bug where field searching across other forms would display an error.
+
 ## 5.0.0-beta.16 - 2024-01-12
 
 > [!WARNING]
@@ -386,6 +394,7 @@
     - The **Resources** area inside the Freeform control panel has been removed.
     - The **Form Builder Tutorial** and **Install Demo Banner** settings have been removed.
     - The **Stats** widget has been removed as it isn't very relevant anymore.
+    - The **Form Values** widget has been removed.
 - **Settings**
     - The **Access Fields** and **Manage Fields** permissions have been removed as they are no longer applicable.
     - The **Display Order of Fields in the Form Builder** setting has been removed as it is no longer applicable.

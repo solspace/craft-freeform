@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout;
 
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\RowCollection;
@@ -19,6 +20,7 @@ class Page implements \IteratorAggregate
     private PageButtons $buttons;
 
     public function __construct(
+        private PropertyProvider $propertyProvider,
         private Layout $layout,
         array $config = [],
     ) {
@@ -27,7 +29,10 @@ class Page implements \IteratorAggregate
         $this->label = $config['label'] ?? '';
         $this->index = $config['index'] ?? 0;
 
-        $this->buttons = new PageButtons($config['metadata']['buttons'] ?? []);
+        $buttons = new PageButtons([]);
+        $this->propertyProvider->setObjectProperties($buttons, $config['metadata']['buttons'] ?? []);
+
+        $this->buttons = $buttons;
     }
 
     public function getId(): ?int

@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Form;
 
 use Carbon\Carbon;
+use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -110,8 +111,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private ?int $id;
     private ?string $uid;
 
-    private array $currentPageRows = [];
-
     // TODO: create a collection to handle error messages
     private array $errors = [];
 
@@ -132,6 +131,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private Carbon $dateCreated;
     private Carbon $dateUpdated;
 
+    private ?int $createdByUserId;
+    private ?int $updatedByUserId;
+
     private ?Submission $submission = null;
 
     public function __construct(
@@ -144,6 +146,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         $this->dateCreated = new Carbon($config['dateCreated']);
         $this->dateUpdated = new Carbon($config['dateUpdated']);
+
+        $this->createdByUserId = $config['createdByUserId'] ?? null;
+        $this->updatedByUserId = $config['updatedByUserId'] ?? null;
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
@@ -180,9 +185,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $event->getIsSet();
     }
 
-    public function get(string $fieldHandle): ?FieldInterface
+    public function get(mixed $fieldIdentificator): ?FieldInterface
     {
-        return $this->getLayout()->getField($fieldHandle);
+        return $this->getLayout()->getField($fieldIdentificator);
     }
 
     public function hasFieldType(string $type): bool
@@ -471,6 +476,24 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->dateUpdated;
     }
 
+    public function getCreatedBy(): ?User
+    {
+        if (!$this->createdByUserId) {
+            return null;
+        }
+
+        return User::findOne($this->createdByUserId);
+    }
+
+    public function getUpdatedBy(): ?User
+    {
+        if (!$this->updatedByUserId) {
+            return null;
+        }
+
+        return User::findOne($this->updatedByUserId);
+    }
+
     #[Ignore]
     public function getSubmission(): ?Submission
     {
@@ -755,6 +778,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
             'properties' => $this->getProperties(),
             'attributes' => $this->getAttributes(),
+            'createdBy' => $this->getCreatedBy(),
+            'updatedBy' => $this->getUpdatedBy(),
             'settings' => [
                 'behavior' => $settings->getBehavior(),
                 'general' => $settings->getGeneral(),

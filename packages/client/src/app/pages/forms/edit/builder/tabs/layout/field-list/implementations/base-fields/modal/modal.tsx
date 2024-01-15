@@ -182,10 +182,12 @@ export const CreateModal: ModalType = ({ closeModal }) => {
           </button>
           <UHFieldWrapper>
             <UHField className="unassigned">
-              <span>{translate('Unassigned')}</span>
+              <h3>{translate('Unassigned')}</h3>
 
               <FieldTypes
-                $empty={translate('Drag and drop any field here')}
+                $empty={translate(
+                  'Drag and drop any fields here. Unassigned fields will display at the bottom of the list of field types.'
+                )}
                 ref={(el) => (fieldListRefs.current.unassigned = el)}
               >
                 {state.types?.map((item) => (
@@ -194,10 +196,12 @@ export const CreateModal: ModalType = ({ closeModal }) => {
               </FieldTypes>
             </UHField>
             <UHField>
-              <span>{translate('Hide Fields')}</span>
+              <h3>{translate('Hidden')}</h3>
 
               <FieldTypes
-                $empty={translate('Drag and drop any field here')}
+                $empty={translate(
+                  'Drag and drop any fields here to hide them.'
+                )}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >
                 {state.groups?.hidden?.map((item) => (

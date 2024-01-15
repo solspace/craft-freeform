@@ -22,7 +22,11 @@ class Install extends StreamlinedInstallMigration
                 ->addField('spamBlockCount', $this->integer()->unsigned()->notNull()->defaultValue(0))
                 ->addField('metadata', $this->json())
                 ->addField('order', $this->integer())
-                ->addIndex(['order']),
+                ->addIndex(['order'])
+                ->addField('createdByUserId', $this->integer())
+                ->addField('updatedByUserId', $this->integer())
+                ->addForeignKey('createdByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE)
+                ->addForeignKey('updatedByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE),
 
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())
@@ -55,11 +59,11 @@ class Install extends StreamlinedInstallMigration
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('type', $this->string(255)->notNull())
                 ->addField('metadata', $this->json())
-                ->addField('rowId', $this->integer()->notNull())
+                ->addField('rowId', $this->integer())
                 ->addField('order', $this->integer())
                 ->addIndex(['rowId', 'order'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('rowId', 'freeform_forms_rows', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('rowId', 'freeform_forms_rows', 'id', ForeignKey::SET_NULL),
 
             (new Table('freeform_forms_integrations'))
                 ->addField('id', $this->primaryKey())

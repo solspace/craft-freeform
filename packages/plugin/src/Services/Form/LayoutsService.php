@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -27,6 +28,7 @@ class LayoutsService extends BaseService
     public function __construct(
         $config = [],
         private ?FieldsService $fieldsService = null,
+        private ?PropertyProvider $propertyProvider = null,
     ) {
         parent::__construct($config);
     }
@@ -44,7 +46,7 @@ class LayoutsService extends BaseService
                 $pageData['index'] = $index;
                 $layout = new Layout($pageData['layoutUid']);
 
-                $page = new Page($layout, $pageData);
+                $page = new Page($this->propertyProvider, $layout, $pageData);
                 $formLayout->getPages()->add($page);
 
                 $this->attachRows(
@@ -60,6 +62,7 @@ class LayoutsService extends BaseService
             if (empty($pages)) {
                 $formLayout->getPages()->add(
                     new Page(
+                        $this->propertyProvider,
                         new Layout(''),
                         ['label' => 'Page 1']
                     )

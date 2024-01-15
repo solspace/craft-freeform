@@ -26,12 +26,16 @@ class FormsController extends BaseApiController
         foreach ($this->getFormsService()->getAllForms() as $form) {
             $fields = $form->getLayout()->getFields()->getIterator()->getArrayCopy();
             $fields = array_filter($fields, fn ($field) => !$field instanceof GroupField);
-            $fields = array_map([$this->fieldTransformer, 'transform'], $fields);
+
+            $transformedFields = [];
+            foreach ($fields as $field) {
+                $transformedFields[] = $this->fieldTransformer->transform($field);
+            }
 
             $forms[] = (object) [
                 'uid' => $form->getUid(),
                 'name' => $form->getName(),
-                'fields' => $fields,
+                'fields' => $transformedFields,
             ];
         }
 

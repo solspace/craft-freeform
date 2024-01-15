@@ -2,14 +2,16 @@
 
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
-use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonAttributesTransformer;
-use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\ButtonTransformer;
-use Solspace\Freeform\Attributes\Property\Implementations\PageButtons\SaveButtonTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Form\Layout\Page\Buttons\Button\SaveButton;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class PageButtons
 {
@@ -55,21 +57,68 @@ class PageButtons
     )]
     private string $layout;
 
-    #[Section('general')]
-    #[ValueTransformer(ButtonTransformer::class)]
-    #[Input\Special\PageButton('Submit Button')]
-    private Button $submit;
+    #[Section(
+        handle: 'submit',
+        label: 'Submit',
+        icon: __DIR__.'/SectionIcons/submit.svg',
+    )]
+    #[Input\Text('Label', placeholder: 'Submit')]
+    private string $submitLabel = 'Submit';
 
-    #[Section('general')]
-    #[ValueTransformer(ButtonTransformer::class)]
-    #[Input\Special\PageButton(label: 'Back Button', togglable: true)]
-    private Button $back;
+    #[Section(
+        handle: 'back',
+        label: 'Back',
+        icon: __DIR__.'/SectionIcons/back.svg',
+    )]
+    #[Input\Boolean('Enable Back Button')]
+    private bool $back = false;
 
-    #[Section('general')]
-    #[Edition(Edition::PRO)]
-    #[ValueTransformer(SaveButtonTransformer::class)]
-    #[Input\Special\PageButton(label: 'Save Button', togglable: true, enabled: false)]
-    private SaveButton $save;
+    #[Section('back')]
+    #[VisibilityFilter('Boolean(buttons.back)')]
+    #[Input\Text('Label', placeholder: 'Back')]
+    private string $backLabel = 'Back';
+
+    #[Section(
+        handle: 'save',
+        label: 'Save',
+        icon: __DIR__.'/SectionIcons/save.svg',
+    )]
+    #[Input\Boolean('Enable Save Button')]
+    private bool $save = false;
+
+    #[Section('save')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Input\Text('Label', placeholder: 'Save')]
+    private string $saveLabel = 'Save';
+
+    #[Section('save')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Input\Text(
+        label: 'Redirect URL',
+        instructions: 'Specify the redirect URL when saving a form. You can use `token` and `key` variables to pass the submission token and key to the URL.',
+        placeholder: 'https://example.com',
+    )]
+    private string $saveRedirectUrl = '';
+
+    #[Section('save')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
+        label: 'Email Notification Recipient',
+        instructions: 'Select an email notification recipient.',
+        emptyOption: 'Select recipient...',
+        implements: [RecipientInterface::class],
+    )]
+    private ?FieldInterface $emailField = null;
+
+    #[Section('save')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[ValueTransformer(NotificationTemplateTransformer::class)]
+    #[Input\NotificationTemplate(
+        label: 'Email Notification Template',
+        instructions: 'Select an email notification template.',
+    )]
+    private ?NotificationTemplate $notificationTemplate = null;
 
     #[Section(
         handle: 'attributes',
@@ -118,10 +167,6 @@ class PageButtons
     {
         $this->layout = $config['layout'] ?? 'save back|submit';
         $this->attributes = new ButtonAttributesCollection($config['attributes'] ?? []);
-
-        $this->submit = new Button($config['submit'] ?? ['label' => 'Submit', 'enabled' => true]);
-        $this->back = new Button($config['back'] ?? ['label' => 'Back', 'enabled' => true]);
-        $this->save = new SaveButton($config['save'] ?? ['label' => 'Save', 'enabled' => false]);
     }
 
     public function getLayout(): string
@@ -140,15 +185,7 @@ class PageButtons
 
         $parsedLayout = [];
         foreach ($groups as $group) {
-            $buttonKeys = explode('|', $group);
-
-            $buttons = [];
-            foreach ($buttonKeys as $key) {
-                if (isset($this->{$key})) {
-                    $buttons[$key] = $this->{$key};
-                }
-            }
-            $parsedLayout[] = $buttons;
+            $parsedLayout[] = explode('|', $group);
         }
 
         return $parsedLayout;
@@ -159,18 +196,43 @@ class PageButtons
         return $this->attributes;
     }
 
-    public function getSubmit(): Button
+    public function getSubmitLabel(): string
     {
-        return $this->submit;
+        return $this->submitLabel;
     }
 
-    public function getBack(): Button
+    public function isBack(): bool
     {
         return $this->back;
     }
 
-    public function getSave(): SaveButton
+    public function getBackLabel(): string
+    {
+        return $this->backLabel;
+    }
+
+    public function isSave(): bool
     {
         return $this->save;
+    }
+
+    public function getSaveLabel(): string
+    {
+        return $this->saveLabel;
+    }
+
+    public function getSaveRedirectUrl(): string
+    {
+        return $this->saveRedirectUrl;
+    }
+
+    public function getEmailField(): ?FieldInterface
+    {
+        return $this->emailField;
+    }
+
+    public function getNotificationTemplate(): ?NotificationTemplate
+    {
+        return $this->notificationTemplate;
     }
 }

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import { SettingsOwnership } from '@editor/builder/tabs/form-settings/settings.ownership';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import type { FormSettingNamespace } from '@ff-client/types/forms';
@@ -70,6 +71,7 @@ export const SettingsSidebar: React.FC = () => {
           ))
         )}
       </SectionWrapper>
+      <SettingsOwnership />
     </Sidebar>
   );
 };

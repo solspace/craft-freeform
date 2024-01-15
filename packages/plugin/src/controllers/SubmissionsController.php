@@ -175,6 +175,24 @@ class SubmissionsController extends BaseController
 
         $fieldRenderer = [$submissionsService, 'renderSubmissionField'];
 
+        $tabs = array_reduce(
+            array_map(
+                fn (Page $page) => [
+                    'tabId' => 'page'.$page->getIndex(),
+                    'selected' => 0 === $page->getIndex(),
+                    'url' => '#tab-'.$page->getIndex(),
+                    'label' => $page->getLabel(),
+                ],
+                $layout->getPages()->getIterator()->getArrayCopy()
+            ),
+            function ($result, $item) {
+                $result['page'.$item['tabId']] = $item;
+
+                return $result;
+            },
+            []
+        );
+
         $variables = [
             'form' => $submission->getForm(),
             'submission' => $submission,
@@ -184,15 +202,7 @@ class SubmissionsController extends BaseController
             'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
             'fieldRenderer' => $fieldRenderer,
-            'tabs' => array_map(
-                fn (Page $page) => [
-                    'tabId' => $page->getIndex(),
-                    'selected' => 0 === $page->getIndex(),
-                    'url' => '#tab-'.$page->getIndex(),
-                    'label' => $page->getLabel(),
-                ],
-                $layout->getPages()->getIterator()->getArrayCopy()
-            ),
+            'tabs' => $tabs,
         ];
 
         return $this->renderTemplate(

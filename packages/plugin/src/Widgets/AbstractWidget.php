@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: gustavs
- * Date: 05/09/2017
- * Time: 19:38.
- */
 
 namespace Solspace\Freeform\Widgets;
 

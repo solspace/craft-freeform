@@ -383,6 +383,11 @@ class SummaryService extends Component
             $integrationType = $integrationObject->getTypeDefinition();
             $name = $integrationType->name;
             $version = $integrationType->version;
+
+            if (Type::TYPE_CAPTCHAS === $type) {
+                $version = $integration->metadata['version'] ?? null;
+            }
+
             $classes[] = $name.($version ? ' ('.$version.')' : '');
         }
 

@@ -9,7 +9,11 @@ import {
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
 import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
-import { useNotificationQueryReset } from '@ff-client/queries/notifications';
+import {
+  useNotificationQueryReset,
+  useQueryFormNotifications,
+} from '@ff-client/queries/notifications';
+import { useQueryFormRules } from '@ff-client/queries/rules';
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
@@ -26,23 +30,24 @@ type RouteParams = {
 export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
   const dispatch = useAppDispatch();
-
   const resetNotifications = useNotificationQueryReset();
 
   useQueryFormSettings();
-  useQueryFormIntegrations(formId && Number(formId));
+  const { isFetching: integrationsFetching } = useQueryFormIntegrations(
+    formId && Number(formId)
+  );
+  const { isFetching: rulesFetching } = useQueryFormRules(
+    formId && Number(formId)
+  );
+  const { isFetching: notificationsFetching } = useQueryFormNotifications(
+    formId && Number(formId)
+  );
   const { data, isFetching, isError, error } = useQuerySingleForm(
     formId && Number(formId)
   );
 
   useEffect(() => {
-    if (formId === undefined) {
-      return;
-    }
-
-    if (!data) {
-      return;
-    }
+    if (formId === undefined || !data) return;
 
     const {
       layout: { fields, pages, layouts, rows },
@@ -66,7 +71,12 @@ export const Edit: React.FC = () => {
     }
   }, [data, formId]);
 
-  if (isFetching) {
+  if (
+    isFetching ||
+    integrationsFetching ||
+    rulesFetching ||
+    notificationsFetching
+  ) {
     return <LoaderBuilder />;
   }
 

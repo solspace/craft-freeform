@@ -8,22 +8,24 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
-import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
+import {
+  useFormIntegrationsQueryReset,
+  useQueryFormIntegrations,
+} from '@ff-client/queries/integrations';
 import {
   useNotificationQueryReset,
   useQueryFormNotifications,
-  useQueryNotificationTypes,
 } from '@ff-client/queries/notifications';
 import {
   useQueryFormRules,
   useQueryNotificationRules,
+  useRulesQueryReset,
 } from '@ff-client/queries/rules';
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
 import { pageActions } from './store/slices/layout/pages';
 import { rowActions } from './store/slices/layout/rows';
-import { notificationActions } from './store/slices/notifications';
 import { addNewPage } from './store/thunks/pages';
 import { useAppDispatch } from './store';
 
@@ -35,25 +37,17 @@ export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
   const dispatch = useAppDispatch();
   const resetNotifications = useNotificationQueryReset();
+  const resetFormIntegrations = useFormIntegrationsQueryReset();
+  const resetRules = useRulesQueryReset();
 
   useQueryFormSettings();
-  const { isFetching: isFormRulesFetching } = useQueryFormRules(
-    formId && Number(formId)
-  );
-  const { isFetching: rulesFetching } = useQueryNotificationRules(
-    formId && Number(formId)
-  );
-  const { isFetching: notificationsFetching } = useQueryFormNotifications(
-    formId && Number(formId)
-  );
-  const { isFetching: integrationsFetching } = useQueryFormIntegrations(
-    formId && Number(formId)
-  );
+  useQueryFormRules(formId && Number(formId));
+  useQueryNotificationRules(formId && Number(formId));
+  useQueryFormNotifications(formId && Number(formId));
+  useQueryFormIntegrations(formId && Number(formId));
   const { data, isFetching, isError, error } = useQuerySingleForm(
     formId && Number(formId)
   );
-  const { isFetching: isNotificationTypesFetching } =
-    useQueryNotificationTypes();
 
   useEffect(() => {
     if (formId === undefined || !data) return;
@@ -71,7 +65,8 @@ export const Edit: React.FC = () => {
     document.title = data.name;
 
     resetNotifications();
-    dispatch(notificationActions.clear());
+    resetFormIntegrations();
+    resetRules();
 
     if (pages.length === 0) {
       dispatch(addNewPage());
@@ -80,14 +75,7 @@ export const Edit: React.FC = () => {
     }
   }, [data, formId]);
 
-  if (
-    isFetching ||
-    integrationsFetching ||
-    rulesFetching ||
-    notificationsFetching ||
-    isFormRulesFetching ||
-    isNotificationTypesFetching
-  ) {
+  if (isFetching) {
     return <LoaderBuilder />;
   }
 

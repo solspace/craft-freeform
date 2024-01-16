@@ -1,58 +1,49 @@
 import type { RootState } from '@editor/store';
+import { createSelector } from '@reduxjs/toolkit';
 
 import type { IntegrationEntry } from '.';
 
-type IntegrationValues = {
-  emailField?: string;
-  optInField?: string;
-  attributeMapping?: Record<string, { value: string }>;
-  customerMapping?: Record<string, { value: string }>;
-  addressMapping?: Record<string, { value: string }>;
-};
+interface NestedObject {
+  type: string;
+  value: string;
+}
 
-const allowedTypes = ['email-marketing', 'elements', 'payment-gateways'];
+interface FieldMappingObject {
+  [key: string]: NestedObject;
+}
 
 export const integrationSelectors = {
   one:
     (id: number) =>
     (state: RootState): IntegrationEntry | undefined =>
       state.integrations.find((item) => item.id === id),
-  isFieldInIntegrations:
-    (uid: string) =>
-    (state: RootState): boolean =>
-      state.integrations.some((obj) => {
-        const { type, values } = obj as {
-          type: string;
-          values: IntegrationValues;
-        };
+  isFieldInIntegrations: (uid: string) =>
+    createSelector(
+      (state: RootState) => state.integrations,
+      (integrations) => {
+        return Boolean(
+          integrations
+            .filter((integration) => integration.enabled)
+            .find((obj) =>
+              obj.properties.some((property) => {
+                if (property.type === 'field') {
+                  return obj.values[property.handle] === uid;
+                }
 
-        if (!allowedTypes.includes(type) || !values) {
-          return false;
-        }
+                if (property.type === 'fieldMapping') {
+                  const nestedObject = obj.values[
+                    property.handle
+                  ] as FieldMappingObject;
 
-        switch (type) {
-          case 'email-marketing':
-            return values.emailField === uid || values.optInField === uid;
+                  return Object.values(nestedObject).some(
+                    (nestedValue) => nestedValue.value === uid
+                  );
+                }
 
-          case 'elements':
-            return Object.values(values.attributeMapping || {}).some(
-              (attr) => attr.value === uid
-            );
-
-          case 'payment-gateways': {
-            const { customerMapping = {}, addressMapping = {} } = values || {};
-            return (
-              Object.values(customerMapping).some(
-                (customerAttr) => customerAttr.value === uid
-              ) ||
-              Object.values(addressMapping).some(
-                (addressAttr) => addressAttr.value === uid
-              )
-            );
-          }
-
-          default:
-            return false;
-        }
-      }),
+                return false;
+              })
+            )
+        );
+      }
+    ),
 } as const;

@@ -125,12 +125,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                             $props->handle = $fieldHash;
                         }
 
+                        $metadata = $this->extractMetadata($fieldClass, $props);
+
                         $field = new FormFieldRecord([
                             'formId' => $formId,
                             'rowId' => $row->id,
                             'order' => $fieldOrder++,
                             'type' => $fieldClass,
-                            'metadata' => $this->extractMetadata($fieldClass, $props),
+                            'metadata' => json_encode($metadata),
                             'uid' => StringHelper::UUID(),
                         ]);
                         $field->save();

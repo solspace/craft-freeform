@@ -13,7 +13,7 @@ use Solspace\Freeform\Models\Pro\ExportProfileModel;
  * @property string $fileType
  * @property string $fileName
  * @property string $frequency
- * @property array  $recipients
+ * @property string $recipients
  * @property string $subject
  * @property string $message
  */
@@ -33,7 +33,7 @@ class ExportNotificationRecord extends ActiveRecord
 
     public function getRecipientArray(): array
     {
-        return $this->recipients ?? [];
+        return json_decode($this->recipients) ?? [];
     }
 
     public function safeAttributes(): array

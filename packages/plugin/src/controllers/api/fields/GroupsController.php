@@ -33,7 +33,24 @@ class GroupsController extends BaseApiController
 
         if ($freeform->isPro()) {
             $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
-            $flattenedAssignedTypes = array_merge(...array_column($groups, 'types'));
+
+            $grouped = [];
+
+            $flattenedAssignedTypes = [];
+
+            foreach ($groups as $group) {
+                $types = json_decode($group['types'], true);
+
+                foreach ($types as $type) {
+                    $flattenedAssignedTypes[] = $type;
+                }
+
+                $grouped[] = [
+                    ...$group,
+                    'types' => $types,
+                ];
+            }
+
             $unassignedTypes = array_diff(
                 $types,
                 $flattenedAssignedTypes,
@@ -43,7 +60,7 @@ class GroupsController extends BaseApiController
             $response->types = [...$unassignedTypes];
             $response->groups = (object) [
                 'hidden' => $hiddenFieldTypes,
-                'grouped' => $groups,
+                'grouped' => $grouped,
             ];
 
             return $response;
@@ -84,7 +101,7 @@ class GroupsController extends BaseApiController
             $groupRecord->uid = $group['uid'];
             $groupRecord->label = $group['label'];
             $groupRecord->color = $group['color'];
-            $groupRecord->types = $group['types'];
+            $groupRecord->types = json_encode($group['types']);
             $groupRecord->save();
         }
 

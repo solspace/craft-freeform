@@ -84,7 +84,7 @@ class NotificationsProvider
             return null;
         }
 
-        $metadata = $record->metadata;
+        $metadata = json_decode($record->metadata, true);
 
         $metadata['id'] = $record->id;
         $metadata['uid'] = $record->uid;

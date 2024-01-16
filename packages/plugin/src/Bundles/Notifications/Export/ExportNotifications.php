@@ -10,7 +10,6 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
-use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
@@ -85,10 +84,8 @@ class ExportNotifications extends FeatureBundle
 
             $template = NotificationTemplate::fromRecord($record);
 
-            $recipients = RecipientCollection::fromArray($notification->recipients);
-
             $message = $mailer->compileMessage($template, $variables);
-            $message->setTo($mailer->processRecipients($recipients));
+            $message->setTo($mailer->processRecipients(json_decode($notification->recipients)));
 
             $data = $profile->getSubmissionData();
 

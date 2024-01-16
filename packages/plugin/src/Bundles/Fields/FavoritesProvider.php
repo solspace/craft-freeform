@@ -17,7 +17,7 @@ class FavoritesProvider
                 'uid' => $record->uid,
                 'label' => $record->label,
                 'typeClass' => $record->type,
-                'properties' => $record->metadata,
+                'properties' => json_decode($record->metadata),
             ];
         }
 

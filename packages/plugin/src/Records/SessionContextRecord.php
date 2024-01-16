@@ -21,8 +21,8 @@ use craft\db\ActiveRecord;
  * @property string $contextKey
  * @property string $sessionId
  * @property int    $formId
- * @property array  $propertyBag
- * @property array  $attributeBag
+ * @property string $propertyBag
+ * @property string $attributeBag
  */
 class SessionContextRecord extends ActiveRecord
 {

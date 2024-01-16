@@ -29,7 +29,7 @@ use yii\db\ActiveQuery;
  * @property string $currency
  * @property string $status
  * @property string $link
- * @property array  $metadata
+ * @property string $metadata
  */
 class PaymentRecord extends ActiveRecord
 {

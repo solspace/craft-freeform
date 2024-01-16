@@ -20,7 +20,7 @@ use craft\db\ActiveRecord;
  * @property int       $integrationId
  * @property int       $formId
  * @property bool      $enabled
- * @property array     $metadata
+ * @property string    $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid

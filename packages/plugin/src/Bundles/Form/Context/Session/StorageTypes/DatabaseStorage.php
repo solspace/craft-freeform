@@ -37,8 +37,8 @@ class DatabaseStorage implements FormContextStorageInterface
             );
 
             if ($record) {
-                $propertyBag = $record->propertyBag;
-                $attributeBag = $record->attributeBag;
+                $propertyBag = json_decode($record->propertyBag ?? '[]', true);
+                $attributeBag = json_decode($record->attributeBag ?? '[]', true);
                 $lastUpdate = new Carbon($record->dateUpdated, 'UTC');
 
                 $this->context[$key] = new SessionBag($form->getId(), $propertyBag, $attributeBag, $lastUpdate);

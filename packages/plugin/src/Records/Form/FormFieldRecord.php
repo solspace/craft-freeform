@@ -21,7 +21,7 @@ use yii\db\ActiveQuery;
  * @property int       $rowId
  * @property int       $order
  * @property string    $type
- * @property array     $metadata
+ * @property string    $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid
@@ -52,6 +52,7 @@ class FormFieldRecord extends ActiveRecord
 
     public function validateFormHandleUniqueness($attribute)
     {
+        $metadata = json_decode($this->metadata);
         if (!isset($metadata->handle)) {
             return;
         }

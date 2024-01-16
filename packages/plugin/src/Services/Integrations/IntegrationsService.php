@@ -375,7 +375,7 @@ class IntegrationsService extends BaseService
                 $metadata = [];
                 $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
                 if ($formIntegration) {
-                    $metadata = $formIntegration->metadata;
+                    $metadata = json_decode($formIntegration->metadata ?? '{}', true);
                     $enabled = $formIntegration->enabled;
                 }
 

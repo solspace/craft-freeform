@@ -606,6 +606,10 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private function createForm(array $data): Form
     {
+        if (!\is_array($data['metadata'])) {
+            $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
+        }
+
         $type = $data['type'] ?? null;
 
         try {
@@ -622,8 +626,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $metadata = json_decode($data['metadata'], true);
-        $settings = new FormSettings($metadata, $this->propertyProvider);
+        $settings = new FormSettings($data['metadata'], $this->propertyProvider);
 
         return new $type(
             $data,

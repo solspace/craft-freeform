@@ -42,7 +42,7 @@ class m240109_142124_UpdatePageButtonMetadata extends Migration
 
             $this->update(
                 '{{%freeform_forms_pages}}',
-                ['metadata' => $updatedMetadata],
+                ['metadata' => json_encode($updatedMetadata)],
                 ['id' => $id],
                 [],
                 false

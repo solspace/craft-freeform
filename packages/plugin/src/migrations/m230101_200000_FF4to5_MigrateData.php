@@ -835,7 +835,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
         }
 
-        $handle = $record->metadata['handle'];
+        $metadata = json_decode($record->metadata);
+        $handle = $metadata->handle;
         $handle = CraftStringHelper::toKebabCase($handle, '_');
         $handle = CraftStringHelper::truncate($handle, 50, '');
         $handle = trim($handle, '-_');

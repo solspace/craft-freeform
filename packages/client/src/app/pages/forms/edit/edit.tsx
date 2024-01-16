@@ -12,8 +12,12 @@ import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import {
   useNotificationQueryReset,
   useQueryFormNotifications,
+  useQueryNotificationTypes,
 } from '@ff-client/queries/notifications';
-import { useQueryFormRules } from '@ff-client/queries/rules';
+import {
+  useQueryFormRules,
+  useQueryNotificationRules,
+} from '@ff-client/queries/rules';
 
 import { Builder } from './builder/builder';
 import { LoaderBuilder } from './builder/builder.loader';
@@ -33,18 +37,23 @@ export const Edit: React.FC = () => {
   const resetNotifications = useNotificationQueryReset();
 
   useQueryFormSettings();
-  const { isFetching: integrationsFetching } = useQueryFormIntegrations(
+  const { isFetching: isFormRulesFetching } = useQueryFormRules(
     formId && Number(formId)
   );
-  const { isFetching: rulesFetching } = useQueryFormRules(
+  const { isFetching: rulesFetching } = useQueryNotificationRules(
     formId && Number(formId)
   );
   const { isFetching: notificationsFetching } = useQueryFormNotifications(
     formId && Number(formId)
   );
+  const { isFetching: integrationsFetching } = useQueryFormIntegrations(
+    formId && Number(formId)
+  );
   const { data, isFetching, isError, error } = useQuerySingleForm(
     formId && Number(formId)
   );
+  const { isFetching: isNotificationTypesFetching } =
+    useQueryNotificationTypes();
 
   useEffect(() => {
     if (formId === undefined || !data) return;
@@ -75,7 +84,9 @@ export const Edit: React.FC = () => {
     isFetching ||
     integrationsFetching ||
     rulesFetching ||
-    notificationsFetching
+    notificationsFetching ||
+    isFormRulesFetching ||
+    isNotificationTypesFetching
   ) {
     return <LoaderBuilder />;
   }

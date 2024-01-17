@@ -52,7 +52,11 @@ class FormFieldRecord extends ActiveRecord
 
     public function validateFormHandleUniqueness($attribute)
     {
-        $metadata = json_decode($this->metadata);
+        $metadata = $this->metadata;
+        if (\is_string($metadata)) {
+            $metadata = json_decode($this->metadata);
+        }
+
         if (!isset($metadata->handle)) {
             return;
         }

@@ -58,14 +58,16 @@ export const useQueryFormNotifications = (
 
       return axios
         .get<Notification[]>(`/api/forms/${formId}/notifications`)
-        .then((res) => res.data);
+        .then((res) => res.data)
+        .then((res) => {
+          dispatch(notificationActions.set(res));
+
+          return res;
+        });
     },
     {
       staleTime: Infinity,
       cacheTime: Infinity,
-      onSuccess: (notifications) => {
-        dispatch(notificationActions.set(notifications));
-      },
     }
   );
 };

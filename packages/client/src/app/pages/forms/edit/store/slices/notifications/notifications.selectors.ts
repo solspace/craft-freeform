@@ -10,6 +10,24 @@ export const notificationSelectors = {
       state.notifications.items.find(
         (notification) => notification.uid === uid
       ),
+  isFieldInEmailNotification:
+    (field: string) =>
+    (state: RootState): boolean =>
+      state.notifications.items.some((notification) => {
+        if (notification?.rule) {
+          const rule = state.rules.notifications.items.find(
+            (rule) => rule.uid === notification.rule
+          );
+
+          return (
+            (rule?.enabled &&
+              rule.conditions.some((condition) => condition.field === field)) ||
+            false
+          );
+        }
+
+        return notification.field === field && notification.enabled;
+      }),
   count: {
     all: (state: RootState): number => state.notifications.items.length,
     ofType:

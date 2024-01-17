@@ -2,13 +2,21 @@ import { useDispatch } from 'react-redux';
 import { integrationActions } from '@editor/store/slices/integrations';
 import type { Integration } from '@ff-client/types/integrations';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
 export const QKIntegrations = {
   all: ['integrations'] as const,
   single: (id: number) => [...QKIntegrations.all, id] as const,
+};
+
+export const useFormIntegrationsQueryReset = (): (() => void) => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.removeQueries(QKIntegrations.all);
+  };
 };
 
 export const useQueryFormIntegrations = (

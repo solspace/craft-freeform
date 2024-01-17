@@ -18,6 +18,7 @@ import {
   Label,
   LabelIcon,
 } from './cell.styles';
+import { FieldAssociationsBadges } from './cell-badges';
 import { useFieldPreview } from './use-field-preview';
 
 type Props = {
@@ -34,7 +35,10 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     type: contextType,
     uid: contextUid,
   } = useSelector(contextSelectors.focus);
-
+  const isInputOnly = useMemo(
+    () => type?.implements?.includes('inputOnly') || false,
+    [type]
+  );
   const isActive = useMemo(() => {
     return active && contextType === FocusType.Field && contextUid === uid;
   }, [active, contextType, contextUid, uid]);
@@ -48,6 +52,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
   return (
     <FieldCellWrapper
       className={classes(
+        isInputOnly && 'input-only',
         hasErrors(field.errors) && 'errors',
         type.type === Type.Group && 'group',
         isActive && 'active',
@@ -58,13 +63,14 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      {!type.implements.includes('inputOnly') && (
+      {!isInputOnly && (
         <Label className="label">
           <LabelIcon dangerouslySetInnerHTML={{ __html: type.icon }} />
           <LoadingText loading={isLoadingPreview} spinner>
             {field.properties.label || type?.name}
           </LoadingText>
           {field.properties.required && <span className="required" />}
+          {!isInputOnly && <FieldAssociationsBadges uid={uid} />}
         </Label>
       )}
 
@@ -77,7 +83,10 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
       )}
 
       {type.type !== Type.Group && (
-        <div dangerouslySetInnerHTML={{ __html: preview }} />
+        <>
+          <div dangerouslySetInnerHTML={{ __html: preview }} />
+          {isInputOnly && <FieldAssociationsBadges uid={uid} />}
+        </>
       )}
     </FieldCellWrapper>
   );

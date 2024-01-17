@@ -8,7 +8,7 @@ import type {
   PageRule,
 } from '@ff-client/types/rules';
 import type { UseQueryResult } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
@@ -24,6 +24,14 @@ type FormRules = {
   pages: PageRule[];
 };
 
+export const useRulesQueryReset = (): (() => void) => {
+  const queryClient = useQueryClient();
+
+  return () => {
+    queryClient.removeQueries(QKRules.all);
+  };
+};
+
 export const useQueryFormRules = (
   formId: number
 ): UseQueryResult<FormRules, AxiosError> => {
@@ -34,14 +42,16 @@ export const useQueryFormRules = (
     () =>
       axios
         .get<FormRules>(`/api/forms/${formId}/rules`)
-        .then((res) => res.data),
+        .then((res) => res.data)
+        .then((res) => {
+          dispatch(fieldRuleActions.set(res.fields));
+          dispatch(pageRuleActions.set(res.pages));
+
+          return res;
+        }),
     {
       staleTime: Infinity,
       cacheTime: Infinity,
-      onSuccess: (rules) => {
-        dispatch(fieldRuleActions.set(rules.fields));
-        dispatch(pageRuleActions.set(rules.pages));
-      },
     }
   );
 };
@@ -58,13 +68,15 @@ export const useQueryNotificationRules = (
         .get<NotificationRule[]>(
           `/api/forms/${formId || 0}/rules/notifications`
         )
-        .then((res) => res.data),
+        .then((res) => res.data)
+        .then((res) => {
+          dispatch(notificationRuleActions.set(res));
+
+          return res;
+        }),
     {
       staleTime: Infinity,
       cacheTime: Infinity,
-      onSuccess: (rules) => {
-        dispatch(notificationRuleActions.set(rules));
-      },
     }
   );
 };

@@ -54,6 +54,11 @@ export const FieldCellWrapper = styled.div`
     border-color 0.2s ease-out,
     background-color 0.2s ease-out;
 
+  &.input-only {
+    flex-direction: row !important;
+    gap: ${spacings.sm};
+  }
+
   &.active {
     border: 1px dashed #5782ef;
   }

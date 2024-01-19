@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Records\Pro;
 
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 
 /**
@@ -33,7 +34,7 @@ class ExportNotificationRecord extends ActiveRecord
 
     public function getRecipientArray(): array
     {
-        return json_decode($this->recipients) ?? [];
+        return JsonHelper::decode($this->recipients) ?? [];
     }
 
     public function safeAttributes(): array

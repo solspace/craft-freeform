@@ -16,6 +16,7 @@ use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -622,7 +623,7 @@ class DiagnosticsService extends BaseService
                 $type = $this->integrationTypeProvider->getTypeDefinition($integration['class']);
 
                 // Check if the version exists in the type; otherwise, use metadata
-                $version = $type->version ?? json_decode($integration['metadata'], true)['version'] ?? null;
+                $version = $type->version ?? JsonHelper::decode($integration['metadata'], true)['version'] ?? null;
 
                 $integrationsByForm[$id] = [
                     'name' => $type->name,

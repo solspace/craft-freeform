@@ -25,8 +25,20 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['order'])
                 ->addField('createdByUserId', $this->integer())
                 ->addField('updatedByUserId', $this->integer())
-                ->addForeignKey('createdByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE)
-                ->addForeignKey('updatedByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE),
+                ->addForeignKey(
+                    'createdByUserId',
+                    'users',
+                    'id',
+                    ForeignKey::SET_NULL,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'updatedByUserId',
+                    'users',
+                    'id',
+                    ForeignKey::SET_NULL,
+                    ForeignKey::CASCADE
+                ),
 
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())

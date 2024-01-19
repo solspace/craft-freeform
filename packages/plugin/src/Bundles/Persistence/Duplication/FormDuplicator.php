@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Persistence\Duplication;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -81,7 +82,7 @@ class FormDuplicator
 
         $i = 0;
         do {
-            $metadata = json_decode($clone->metadata);
+            $metadata = JsonHelper::decode($clone->metadata);
             $metadata->general->name = $clone->name;
             $metadata->general->handle = $clone->handle;
             $clone->metadata = json_encode($metadata);
@@ -169,7 +170,7 @@ class FormDuplicator
             $clone->rowId = $this->rows[$field->rowId]->id;
 
             if (GroupField::class === $clone->type) {
-                $metadata = json_decode($clone->metadata);
+                $metadata = JsonHelper::decode($clone->metadata);
                 $metadata->layout = $this->layoutsUids[$metadata->layout]->uid;
                 $clone->metadata = json_encode($metadata);
             }

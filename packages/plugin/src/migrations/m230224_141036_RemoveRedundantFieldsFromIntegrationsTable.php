@@ -4,9 +4,6 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 
-/**
- * m230224_141036_RemoveRedundantFieldsFromIntegrationsTable migration.
- */
 class m230224_141036_RemoveRedundantFieldsFromIntegrationsTable extends Migration
 {
     public function safeUp(): bool

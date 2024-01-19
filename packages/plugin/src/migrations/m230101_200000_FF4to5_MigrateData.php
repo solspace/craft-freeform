@@ -50,7 +50,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100040_FF4to5_MigrateData cannot be reverted.\n";
+        echo "m230101_200000_FF4to5_MigrateData cannot be reverted.\n";
 
         return false;
     }
@@ -837,7 +837,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
         }
 
-        $metadata = $record->metadata;
+        $metadata = json_decode($record->metadata, true);
         $handle = $metadata['handle'];
         $handle = CraftStringHelper::toKebabCase($handle, '_');
         $handle = CraftStringHelper::truncate($handle, 50, '');

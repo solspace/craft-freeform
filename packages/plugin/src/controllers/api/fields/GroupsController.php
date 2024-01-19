@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers\api\fields;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 
 class GroupsController extends BaseApiController
@@ -39,15 +40,15 @@ class GroupsController extends BaseApiController
             $flattenedAssignedTypes = [];
 
             foreach ($groups as $group) {
-                $types = json_decode($group['types'], true);
+                $decodedTypes = JsonHelper::decode($group['types'], true);
 
-                foreach ($types as $type) {
+                foreach ($decodedTypes as $type) {
                     $flattenedAssignedTypes[] = $type;
                 }
 
                 $grouped[] = [
                     ...$group,
-                    'types' => $types,
+                    'types' => $decodedTypes,
                 ];
             }
 
@@ -67,8 +68,9 @@ class GroupsController extends BaseApiController
         }
 
         $filteredGroups = array_map(function ($group) use ($types) {
+            $groupTypes = JsonHelper::decode($group->types);
             $filteredTypes = array_filter(
-                $group->types,
+                $groupTypes,
                 fn ($type) => \in_array($type, $types)
             );
 

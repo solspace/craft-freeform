@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\SessionContextRecord;
 
 class DatabaseStorage implements FormContextStorageInterface
@@ -37,8 +38,8 @@ class DatabaseStorage implements FormContextStorageInterface
             );
 
             if ($record) {
-                $propertyBag = json_decode($record->propertyBag ?? '[]', true);
-                $attributeBag = json_decode($record->attributeBag ?? '[]', true);
+                $propertyBag = JsonHelper::decode($record->propertyBag ?? '[]', true);
+                $attributeBag = JsonHelper::decode($record->attributeBag ?? '[]', true);
                 $lastUpdate = new Carbon($record->dateUpdated, 'UTC');
 
                 $this->context[$key] = new SessionBag($form->getId(), $propertyBag, $attributeBag, $lastUpdate);
@@ -107,7 +108,7 @@ class DatabaseStorage implements FormContextStorageInterface
         }
     }
 
-    public function removeBag(string $key)
+    public function removeBag(string $key): void
     {
         if (isset($this->context[$key])) {
             \Craft::$app->db
@@ -120,7 +121,7 @@ class DatabaseStorage implements FormContextStorageInterface
         }
     }
 
-    public function cleanup()
+    public function cleanup(): void
     {
         $table = SessionContextRecord::TABLE;
 

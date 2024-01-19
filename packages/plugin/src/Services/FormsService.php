@@ -31,6 +31,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -606,9 +607,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private function createForm(array $data): Form
     {
-        if (!\is_array($data['metadata'])) {
-            $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
-        }
+        $data['metadata'] = JsonHelper::decode($data['metadata'] ?: '{}', true);
 
         $type = $data['type'] ?? null;
 

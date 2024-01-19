@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
@@ -39,6 +40,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public const DEFAULT_PRODUCT_NAME = 'Freeform: {{ form.name }}';
 
+    #[Required]
     #[ValueTransformer(IntegrationTransformer::class)]
     #[Input\ApplicationStateSelect(
         label: 'Integration',

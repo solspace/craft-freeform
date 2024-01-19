@@ -12,6 +12,7 @@ use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Layout\Row;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
@@ -96,7 +97,7 @@ class LayoutsService extends BaseService
             ;
 
             foreach ($this->pages[$form->getId()] as $index => $page) {
-                $page['metadata'] = json_decode($page['metadata'], true);
+                $page['metadata'] = JsonHelper::decode($page['metadata'], true);
                 $this->pages[$form->getId()][$index] = $page;
             }
         }

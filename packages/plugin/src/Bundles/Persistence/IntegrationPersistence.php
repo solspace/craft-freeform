@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
@@ -58,7 +59,7 @@ class IntegrationPersistence extends FeatureBundle
 
             $metadata = [];
             if ($record) {
-                $metadata = json_decode($record->metadata, true);
+                $metadata = JsonHelper::decode($record->metadata, true);
             } else {
                 $record = new FormIntegrationRecord();
                 $record->enabled = false;
@@ -76,7 +77,7 @@ class IntegrationPersistence extends FeatureBundle
                     continue;
                 }
             } else {
-                $originalMetadata = json_decode($integrationRecord->metadata);
+                $originalMetadata = JsonHelper::decode($integrationRecord->metadata);
                 $enabledByDefault = $originalMetadata->enabledByDefault ?? null;
 
                 if (\is_bool($enabledByDefault)) {

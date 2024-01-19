@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Fields\FieldPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\FieldCollection;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
@@ -101,7 +102,7 @@ class FieldsService extends BaseService
 
         $type = $record->type;
 
-        $metadata = json_decode($record->metadata, true);
+        $metadata = JsonHelper::decode($record->metadata, true);
         $properties = array_merge(
             [
                 'id' => $record->id,

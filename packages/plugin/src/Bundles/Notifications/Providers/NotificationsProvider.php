@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Bundles\Notifications\Providers;
 use Solspace\Freeform\Attributes\Notification\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 
@@ -84,7 +85,7 @@ class NotificationsProvider
             return null;
         }
 
-        $metadata = json_decode($record->metadata, true);
+        $metadata = JsonHelper::decode($record->metadata, true);
 
         $metadata['id'] = $record->id;
         $metadata['uid'] = $record->uid;

@@ -1,12 +1,17 @@
 # Solspace Freeform Changelog
 
-## 5.0.0-beta.17 - Unreleased
+## 5.0.0-beta.17 - 2024-01-19
 
 > [!WARNING]
 > This version is still in beta. Proceed with caution if using in production environments. If upgrading from Freeform 4, please see the special [upgrade guide](https://docs.solspace.com/craft/freeform/v5/setup/updating-freeform-4/) before proceeding.
 
+### Added
+- Added association badges to fields inside the form builder. These indicate whether the field has any email notifications, conditional rules, or integrations associated with them in the other tabs.
+
 ### Fixed
+- Fixed various issues with MariaDB compatibility.
 - Fixed a bug where field searching across other forms would display an error.
+- Fixed a bug where the Quick Form widget was not working correctly.
 
 ## 5.0.0-beta.16 - 2024-01-12
 

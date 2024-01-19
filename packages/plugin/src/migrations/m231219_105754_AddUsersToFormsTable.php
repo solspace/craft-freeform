@@ -30,8 +30,8 @@ class m231219_105754_AddUsersToFormsTable extends Migration
             'createdByUserId',
             '{{%users}}',
             'id',
+            ForeignKey::SET_NULL,
             ForeignKey::CASCADE,
-            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -40,8 +40,8 @@ class m231219_105754_AddUsersToFormsTable extends Migration
             'updatedByUserId',
             '{{%users}}',
             'id',
+            ForeignKey::SET_NULL,
             ForeignKey::CASCADE,
-            ForeignKey::CASCADE
         );
 
         return true;

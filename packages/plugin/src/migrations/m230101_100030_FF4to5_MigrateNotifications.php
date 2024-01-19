@@ -19,7 +19,7 @@ class m230101_100030_FF4to5_MigrateNotifications extends Migration
                 'formId' => $this->integer()->notNull(),
                 'class' => $this->string(255)->notNull(),
                 'enabled' => $this->boolean()->defaultValue(true),
-                'metadata' => $this->json(),
+                'metadata' => $this->longText(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),
@@ -40,7 +40,7 @@ class m230101_100030_FF4to5_MigrateNotifications extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100020_FF4to5_MigrateNotifications cannot be reverted.\n";
+        echo "m230101_100030_FF4to5_MigrateNotifications cannot be reverted.\n";
 
         return false;
     }

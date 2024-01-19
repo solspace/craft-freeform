@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Records\Pro\Payments;
 
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\IntegrationRecord;
 use yii\db\ActiveQuery;
 
@@ -29,7 +30,7 @@ use yii\db\ActiveQuery;
  * @property string $currency
  * @property string $status
  * @property string $link
- * @property array  $metadata
+ * @property string $metadata
  */
 class PaymentRecord extends ActiveRecord
 {
@@ -62,11 +63,7 @@ class PaymentRecord extends ActiveRecord
 
     public function getPaymentMethod(): ?\stdClass
     {
-        if (\is_string($this->metadata)) {
-            $metadata = json_decode($this->metadata);
-        } else {
-            $metadata = $this->metadata;
-        }
+        $metadata = JsonHelper::decode($this->metadata);
 
         if (!isset($metadata->type)) {
             return null;

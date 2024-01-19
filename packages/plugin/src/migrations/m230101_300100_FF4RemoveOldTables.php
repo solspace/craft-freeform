@@ -16,7 +16,7 @@ class m230101_300100_FF4RemoveOldTables extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100100_FF4RemoveOldTables cannot be reverted.\n";
+        echo "m230101_300100_FF4RemoveOldTables cannot be reverted.\n";
 
         return false;
     }

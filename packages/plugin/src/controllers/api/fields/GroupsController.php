@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers\api\fields;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 
 class GroupsController extends BaseApiController
@@ -33,7 +34,24 @@ class GroupsController extends BaseApiController
 
         if ($freeform->isPro()) {
             $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
-            $flattenedAssignedTypes = array_merge(...array_column($groups, 'types'));
+
+            $grouped = [];
+
+            $flattenedAssignedTypes = [];
+
+            foreach ($groups as $group) {
+                $decodedTypes = JsonHelper::decode($group['types'], true);
+
+                foreach ($decodedTypes as $type) {
+                    $flattenedAssignedTypes[] = $type;
+                }
+
+                $grouped[] = [
+                    ...$group,
+                    'types' => $decodedTypes,
+                ];
+            }
+
             $unassignedTypes = array_diff(
                 $types,
                 $flattenedAssignedTypes,
@@ -43,15 +61,16 @@ class GroupsController extends BaseApiController
             $response->types = [...$unassignedTypes];
             $response->groups = (object) [
                 'hidden' => $hiddenFieldTypes,
-                'grouped' => $groups,
+                'grouped' => $grouped,
             ];
 
             return $response;
         }
 
         $filteredGroups = array_map(function ($group) use ($types) {
+            $groupTypes = JsonHelper::decode($group->types);
             $filteredTypes = array_filter(
-                $group->types,
+                $groupTypes,
                 fn ($type) => \in_array($type, $types)
             );
 
@@ -84,7 +103,7 @@ class GroupsController extends BaseApiController
             $groupRecord->uid = $group['uid'];
             $groupRecord->label = $group['label'];
             $groupRecord->color = $group['color'];
-            $groupRecord->types = $group['types'];
+            $groupRecord->types = json_encode($group['types']);
             $groupRecord->save();
         }
 

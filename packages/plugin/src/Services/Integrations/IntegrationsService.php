@@ -23,6 +23,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -375,7 +376,7 @@ class IntegrationsService extends BaseService
                 $metadata = [];
                 $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
                 if ($formIntegration) {
-                    $metadata = $formIntegration->metadata;
+                    $metadata = JsonHelper::decode($formIntegration->metadata ?? '{}', true);
                     $enabled = $formIntegration->enabled;
                 }
 

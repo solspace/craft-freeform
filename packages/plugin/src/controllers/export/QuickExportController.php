@@ -12,6 +12,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -59,9 +60,9 @@ class QuickExportController extends BaseController
                 $settingRecord->setting = [];
             }
 
-            $settingArray = $settingRecord->setting;
+            $settingArray = JsonHelper::decode($settingRecord->setting, true);
 
-            if (isset($settingArray[$form->getId()])) {
+            if ($settingRecord && isset($settingArray[$form->getId()])) {
                 foreach ($settingArray[$form->getId()] as $fieldId => $item) {
                     $label = $item['label'];
                     $isChecked = (bool) $item['checked'];

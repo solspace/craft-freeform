@@ -7,6 +7,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager\TableInfo;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\db\Schema;
 
@@ -107,7 +108,8 @@ class ContentManager
     {
         $table = $this->table;
         foreach ($this->fields as $field) {
-            $handle = $field->metadata['handle'] ?? null;
+            $metadata = JsonHelper::decode($field->metadata);
+            $handle = $metadata->handle ?? null;
             if (!$handle) {
                 continue;
             }
@@ -175,7 +177,8 @@ class ContentManager
                 continue;
             }
 
-            $handle = $field->metadata['handle'] ?? null;
+            $metadata = JsonHelper::decode($field->metadata, true);
+            $handle = $metadata['handle'] ?? null;
             if (!$handle) {
                 continue;
             }

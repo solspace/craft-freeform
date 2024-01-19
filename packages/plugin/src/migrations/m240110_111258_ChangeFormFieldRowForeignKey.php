@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Commons\Migrations\ForeignKey;
 
 class m240110_111258_ChangeFormFieldRowForeignKey extends Migration
 {
@@ -32,7 +33,7 @@ class m240110_111258_ChangeFormFieldRowForeignKey extends Migration
                 'rowId',
                 '{{%freeform_forms_rows}}',
                 'id',
-                'SET NULL'
+                ForeignKey::SET_NULL,
             );
 
             break;

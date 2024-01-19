@@ -30,7 +30,7 @@ class m231116_104621_AlterPaymentTables extends Migration
                 'amount' => $this->float(2),
                 'currency' => $this->string(3),
                 'status' => $this->string(40),
-                'metadata' => $this->mediumText(),
+                'metadata' => $this->longText(),
                 'dateCreated' => $this->dateTime(),
                 'dateUpdated' => $this->dateTime(),
                 'uid' => $this->uid(),

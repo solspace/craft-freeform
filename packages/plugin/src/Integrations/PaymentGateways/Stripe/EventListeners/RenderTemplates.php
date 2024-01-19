@@ -96,7 +96,7 @@ class RenderTemplates extends FeatureBundle
             'submissionId' => $submission->id,
         ]);
 
-        if (!$payment) {
+        if (!$payment || !$payment->getPaymentMethod()) {
             return null;
         }
 

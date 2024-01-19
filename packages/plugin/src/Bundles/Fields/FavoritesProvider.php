@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
+use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
 
 class FavoritesProvider
@@ -17,7 +18,7 @@ class FavoritesProvider
                 'uid' => $record->uid,
                 'label' => $record->label,
                 'typeClass' => $record->type,
-                'properties' => $record->metadata,
+                'properties' => JsonHelper::decode($record->metadata),
             ];
         }
 

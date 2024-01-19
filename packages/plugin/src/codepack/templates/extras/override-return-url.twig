@@ -7,10 +7,7 @@
 
 {% block content %}
 
-    {% set form = freeform.form(demoFormHandle, {
-        returnUrl: "demo/extras/override-return-url/default-path",
-        formattingTemplate: "flexbox.twig"
-    }) %}
+    {% set form = freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
     <div class="freeform-page-heading">
         <h2>Overiding Success Return URL</h2>
@@ -19,12 +16,152 @@
 
     {% if form and form.settings.ajax is empty %}
 
-        {{ form.render }}
+        <style>button[type=submit].freeform-processing:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:.5s linear infinite freeform-processing}@keyframes freeform-processing{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}.freeform-pages{display:flex;padding:0;margin:0 0 10px;list-style:none}.freeform-pages li{margin:0 10px 0 0}.freeform-row{display:flex;justify-content:space-between;margin:0 -15px}.freeform-row .freeform-column{flex:1 0;padding:10px 0;margin:0 15px;box-sizing:border-box}.freeform-row .freeform-column>.freeform-row:first-child{margin-top:-10px}.freeform-row .freeform-column label{display:block}.freeform-row .freeform-column .input-group-one-line{display:flex;flex-wrap:wrap}.freeform-row .freeform-column .input-group-one-line label{padding-right:10px}.freeform-group .freeform-label,.freeform-row .freeform-column .freeform-label{font-weight:700}.freeform-row .freeform-column .freeform-label.freeform-required:after{content:"*";margin-left:5px;color:red}.freeform-row .freeform-column .freeform-input{width:100%;display:block;box-sizing:border-box}.freeform-row .freeform-column .freeform-input[type=checkbox],.freeform-row .freeform-column .freeform-input[type=radio]{width:auto;display:inline;margin-right:5px}.freeform-row .freeform-column .freeform-input.StripeElement{padding:4px 2px;border:1px solid #ccc;height:36px}.freeform-row .freeform-column .freeform-input-only-label{font-weight:400}.freeform-row .freeform-column .freeform-input-only-label>.freeform-input{display:inline-block;width:auto;margin-right:5px}.freeform-row .freeform-column .freeform-errors{list-style:none;padding:0;margin:5px 0 0}.freeform-row .freeform-column .freeform-errors>li{color:red}.freeform-row .freeform-column .freeform-instructions{margin:0 0 5px;font-size:13px;color:#aba7a7}.freeform-form-errors{padding:15px;border:1px solid #f5c6cb;background:#f8d7da;border-radius:5px;color:#721c24}.freeform-form-errors>p{margin:0}.freeform-group{width:100%;padding:0 15px}</style>
 
+        {# Render the opening form tag and set the
+        default success return path in CP or below #}
+        {{ form.renderTag({
+            returnUrl: "demo/extras/override-return-url/default-path",
+            attributes: {
+                row: { class: "freeform-row" },
+                success: { class: "freeform-form-success" },
+                errors: { class: "freeform-form-errors" },
+            },
+            buttons: {
+                attributes: {
+                    container: { class: "freeform-button-container" },
+                    column: { class: "freeform-button-column" },
+                    buttonWrapper: { class: "freeform-button-wrapper" },
+                    submit: { class: "freeform-button-submit" },
+                    back: { class: "freeform-button-back" },
+                    save: { class: "freeform-button-save" },
+                },
+            },
+            fields: {
+                "@global": {
+                    attributes: {
+                        container: { class: "freeform-column" },
+                        input: {
+                            novalidate: true,
+                            class: "freeform-input",
+                        },
+                        label: { class: "freeform-label" },
+                        instructions: { class: "freeform-instructions" },
+                        error: { class: "freeform-errors" },
+                    },
+                },
+                ":required": {
+                    attributes: {
+                        label: { "+class": "freeform-required" },
+                    },
+                },
+                ":errors": {
+                    attributes: {
+                        input: { "+class": "is-invalid has-validation" },
+                    },
+                },
+                "@group": {
+                    attributes: {
+                        label: { "+class": "group-label" },
+                    },
+                },
+                "@signature": {
+                    attributes: {
+                        input: { "-class": "freeform-input" },
+                    },
+                }
+            },
+        }) }}
+
+        {# Success and error message handling for non-AJAX forms #}
+        {% if not form.settings.ajax %}
+            {% if form.submittedSuccessfully %}
+                <div class="{{ form.attributes.success.get('class') }}">
+                    <p>{{ form.settings.successMessage | t('freeform') }}</p>
+                </div>
+            {% endif %}
+            {% if form.hasErrors %}
+                <div class="{{ form.attributes.errors.get('class') }}">
+                    <p>{{ form.settings.errorMessage | t('freeform') }}</p>
+
+                    {% if form.errors|length %}
+                        <ul>
+                            {% for error in form.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {# Render page tabs if multi-page #}
+        {% if form.pages|length > 1 %}
+            <ul class="freeform-pages">
+                {% for page in form.pages %}
+                    <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+                        {% if form.currentPage.index == page.index %}
+                            <b>{{ page.label }}</b>
+                        {% else %}
+                            {{ page.label }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {# Build form rows and fields #}
+        {% macro renderRows(form, rows) %}
+            {% for row in rows %}
+                {% set width = (12 / (row|length)) %}
+                <div class="{{ form.attributes.row.get('class') }}">
+                    {% for field in row %}
+                        {% do field.setParameters({
+                            attributes: {
+                                container: { class: [
+                                    "freeform-column-" ~ width,
+                                    "freeform-fieldtype-" ~ field.type,
+                                ]},
+                            },
+                        }) %}
+                        {% if field.type == "group" %}
+                            <div class="freeform-group">
+                                <label{{ field.attributes.label }}>
+                                    {{ field.label }}
+                                </label>
+                                <div>
+                                    {{ _self.renderRows(form, field.layout) }}
+                                </div>
+                            </div>
+                        {% else %}
+                            {{ field.render }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endmacro %}
+
+        {# Display form field rows and columns #}
+        {{ _self.renderRows(form, form.rows) }}
+
+        {# This is where the magic happens for overriding the Return URL #}
+        <div class="{{ form.attributes.row.get('class') }}">
+            <div class="freeform-column">
+                <label for="form-return-url-checkbox">
+                    {# Be sure to include the brackets and 'hash' filter for the Return URL #}
+                    <input type="checkbox" name="formReturnUrl" id="form-return-url-checkbox" value="{{ 'demo/extras/somewhere-special'|hash }}" />
+                    Do something special for return...
+                </label>
+            </div>
+        </div>
+
+        {# Render the closing form tag #}
+        {{ form.renderClosingTag }}
+    
     {% else %}
 
         <div class="freeform-error{{ colorMode == "dark" ? " freeform-notice-dark" }}">
-            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and disable the <b>Enable AJAX</b> checkbox in the form builder for this part of the demo to work.</p>
+            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> and disable the <b>Use AJAX</b> setting in the form builder for this part of the demo to work.</p>
         </div>
 
     {% endif %}
@@ -36,7 +173,7 @@
             In order to view this page live, you'll need to make some adjustments to this template or on your test from:
             <ol>
                 <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
-                <li>Be sure to disable the <b>Enable AJAX</b> setting inside the form builder for this form.</li>
+                <li>Be sure to disable the <b>Use AJAX</b> setting inside the form builder for this form.</li>
                 <li>Make sure your test form includes a Submit button in the form builder layout.</li>
             </ol>
         </p>

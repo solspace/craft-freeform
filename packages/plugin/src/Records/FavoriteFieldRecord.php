@@ -20,7 +20,7 @@ use craft\db\ActiveRecord;
  * @property int       $userId
  * @property string    $label
  * @property string    $type
- * @property array     $metadata
+ * @property string    $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid

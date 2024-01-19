@@ -159,7 +159,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100050_FF4to5_MigrateIntegrations cannot be reverted.\n";
+        echo "m230101_100060_FF4to5_MigrateConditionalRules cannot be reverted.\n";
 
         return false;
     }

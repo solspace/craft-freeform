@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Commons\Migrations\ForeignKey;
 
 class m231229_155623_CreateSurveysPreferencesTable extends Migration
 {
@@ -27,7 +28,7 @@ class m231229_155623_CreateSurveysPreferencesTable extends Migration
             'userId',
             '{{%users}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE,
         );
 
         $this->addForeignKey(
@@ -36,7 +37,7 @@ class m231229_155623_CreateSurveysPreferencesTable extends Migration
             'fieldId',
             '{{%freeform_forms_fields}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE,
         );
 
         $this->db->createCommand()

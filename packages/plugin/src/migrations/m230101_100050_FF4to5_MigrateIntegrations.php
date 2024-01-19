@@ -15,7 +15,7 @@ class m230101_100050_FF4to5_MigrateIntegrations extends Migration
                 'integrationId' => $this->integer()->notNull(),
                 'formId' => $this->integer()->notNull(),
                 'enabled' => $this->boolean()->defaultValue(true),
-                'metadata' => $this->json(),
+                'metadata' => $this->longText(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

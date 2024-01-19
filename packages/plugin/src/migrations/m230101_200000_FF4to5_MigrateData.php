@@ -50,7 +50,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     public function safeDown(): bool
     {
-        echo "m230101_100040_FF4to5_MigrateData cannot be reverted.\n";
+        echo "m230101_200000_FF4to5_MigrateData cannot be reverted.\n";
 
         return false;
     }
@@ -125,12 +125,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                             $props->handle = $fieldHash;
                         }
 
+                        $metadata = $this->extractMetadata($fieldClass, $props);
+
                         $field = new FormFieldRecord([
                             'formId' => $formId,
                             'rowId' => $row->id,
                             'order' => $fieldOrder++,
                             'type' => $fieldClass,
-                            'metadata' => $this->extractMetadata($fieldClass, $props),
+                            'metadata' => $metadata,
                             'uid' => StringHelper::UUID(),
                         ]);
                         $field->save();
@@ -835,7 +837,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             }
         }
 
-        $handle = $record->metadata['handle'];
+        $metadata = json_decode($record->metadata, true);
+        $handle = $metadata['handle'];
         $handle = CraftStringHelper::toKebabCase($handle, '_');
         $handle = CraftStringHelper::truncate($handle, 50, '');
         $handle = trim($handle, '-_');
@@ -855,22 +858,19 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     private function processPageButtonData(array $rows, \stdClass $composer): array
     {
         $metadata = [
-            'back' => [
-                'label' => 'Back',
-                'enabled' => true,
-            ],
-            'save' => [
-                'label' => 'Save',
-                'enabled' => false,
-                'returnUrl' => '',
-                'emailField' => null,
-                'notificationId' => null,
-            ],
             'layout' => 'save back|submit',
-            'submit' => [
-                'label' => 'Submit',
-                'enabled' => true,
-            ],
+
+            'submitLabel' => 'Submit',
+
+            'back' => true,
+            'backLabel' => 'Back',
+
+            'save' => false,
+            'saveLabel' => 'Save',
+            'saveRedirectUrl' => '',
+            'emailField' => null,
+            'notificationTemplate' => null,
+
             'attributes' => [
                 'back' => new \stdClass(),
                 'save' => new \stdClass(),
@@ -886,9 +886,10 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
                 switch ($props->type) {
                     case 'submit':
-                        $metadata['submit']['label'] = $props->labelNext;
-                        $metadata['back']['label'] = $props->labelPrev;
-                        $metadata['back']['enabled'] = !$props->disablePrev;
+                        $metadata['submit'] = $props->labelNext;
+                        $metadata['back'] = !$props->disablePrev;
+                        $metadata['backLabel'] = $props->labelPrev;
+
                         $metadata['layout'] = match ($props->position) {
                             'center' => ' save|back|submit ',
                             'left' => 'back|submit|save ',
@@ -904,15 +905,19 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         break;
 
                     case 'save':
-                        $metadata['save']['label'] = $props->label;
-                        $metadata['save']['enabled'] = true;
+                        $metadata['save'] = true;
+                        $metadata['saveLabel'] = $props->label;
 
                         if (isset($props->emailFieldHash)) {
-                            $metadata['save']['emailField'] = $this->fieldMap[$props->emailFieldHash]?->uid ?? null;
+                            $metadata['emailField'] = $this->fieldMap[$props->emailFieldHash]?->uid ?? null;
                         }
 
                         if (isset($props->notificationId)) {
-                            $metadata['save']['notificationId'] = $props->notificationId ?? null;
+                            $metadata['notificationTemplate'] = $props->notificationId;
+                        }
+
+                        if (isset($props->url)) {
+                            $metadata['saveRedirectUrl'] = $props->url;
                         }
 
                         $attributes = $props->inputAttributes ?? null;

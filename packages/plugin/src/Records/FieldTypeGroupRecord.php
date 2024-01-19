@@ -18,7 +18,7 @@ use craft\db\ActiveRecord;
  * @property int    $id
  * @property string $color
  * @property string $label
- * @property array  $types
+ * @property string $types
  */
 class FieldTypeGroupRecord extends ActiveRecord
 {

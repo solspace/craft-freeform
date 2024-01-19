@@ -10,7 +10,7 @@ use Twig\Markup;
  * @property int    $feedId
  * @property string $message
  * @property string $type
- * @property array  $conditions
+ * @property string $conditions
  * @property bool   $seen
  * @property string $issueDate
  */

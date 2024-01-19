@@ -20,13 +20,25 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string(100)->notNull())
                 ->addField('handle', $this->string(100)->notNull()->unique())
                 ->addField('spamBlockCount', $this->integer()->unsigned()->notNull()->defaultValue(0))
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addField('order', $this->integer())
                 ->addIndex(['order'])
                 ->addField('createdByUserId', $this->integer())
                 ->addField('updatedByUserId', $this->integer())
-                ->addForeignKey('createdByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE)
-                ->addForeignKey('updatedByUserId', 'users', 'id', ForeignKey::CASCADE, ForeignKey::CASCADE),
+                ->addForeignKey(
+                    'createdByUserId',
+                    'users',
+                    'id',
+                    ForeignKey::SET_NULL,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'updatedByUserId',
+                    'users',
+                    'id',
+                    ForeignKey::SET_NULL,
+                    ForeignKey::CASCADE
+                ),
 
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())
@@ -40,7 +52,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('layoutId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('order', $this->integer())
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addIndex(['formId', 'order'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),
@@ -58,7 +70,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('type', $this->string(255)->notNull())
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addField('rowId', $this->integer())
                 ->addField('order', $this->integer())
                 ->addIndex(['rowId', 'order'])
@@ -70,7 +82,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('integrationId', $this->integer()->notNull())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('enabled', $this->boolean()->notNull()->defaultValue(true))
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
@@ -79,7 +91,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('class', $this->string(255)->notNull())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('enabled', $this->boolean()->notNull()->defaultValue(true))
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_favorite_fields'))
@@ -87,7 +99,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('userId', $this->integer())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('type', $this->string(255)->notNull())
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_notification_templates'))
@@ -116,7 +128,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('type', $this->string(50)->notNull())
                 ->addField('class', $this->string(255))
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addIndex(['type']),
 
             (new Table('freeform_email_marketing_lists'))
@@ -201,8 +213,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('dateRange', $this->string(255))
                 ->addField('rangeStart', $this->string(255)->null())
                 ->addField('rangeEnd', $this->string(255)->null())
-                ->addField('fields', $this->json()->notNull())
-                ->addField('filters', $this->json())
+                ->addField('fields', $this->longText()->notNull())
+                ->addField('filters', $this->longText())
                 ->addField('statuses', $this->text()->notNull())
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
@@ -213,7 +225,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fileType', $this->string(30)->notNull())
                 ->addField('fileName', $this->string(255))
                 ->addField('frequency', $this->string(20)->notNull())
-                ->addField('recipients', $this->json()->notNull())
+                ->addField('recipients', $this->longText()->notNull())
                 ->addField('subject', $this->string(255))
                 ->addField('message', $this->text())
                 ->addForeignKey('profileId', 'freeform_export_profiles', 'id', ForeignKey::CASCADE),
@@ -221,7 +233,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_export_settings'))
                 ->addField('id', $this->primaryKey())
                 ->addField('userId', $this->integer()->notNull())
-                ->addField('setting', $this->json())
+                ->addField('setting', $this->longText())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
             // Payments
@@ -236,7 +248,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('currency', $this->string(3))
                 ->addField('status', $this->string(40))
                 ->addField('link', $this->string(255)->null())
-                ->addField('metadata', $this->json())
+                ->addField('metadata', $this->longText())
                 ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
@@ -270,7 +282,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('feedId', $this->integer()->notNull())
                 ->addField('message', $this->text()->notNull())
-                ->addField('conditions', $this->json()->notNull())
+                ->addField('conditions', $this->longText()->notNull())
                 ->addField('type', $this->string()->notNull())
                 ->addField('seen', $this->boolean()->notNull()->defaultValue(false))
                 ->addField('issueDate', $this->dateTime()->notNull())
@@ -287,8 +299,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('contextKey', $this->string(100)->notNull())
                 ->addField('sessionId', $this->string(100)->notNull())
                 ->addField('formId', $this->integer()->notNull())
-                ->addField('propertyBag', $this->json())
-                ->addField('attributeBag', $this->json())
+                ->addField('propertyBag', $this->longText())
+                ->addField('attributeBag', $this->longText())
                 ->addIndex(['contextKey', 'formId'])
                 ->addIndex(['sessionId'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
@@ -389,7 +401,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('color', $this->string(10))
                 ->addField('label', $this->string())
-                ->addField('types', $this->json()->notNull()),
+                ->addField('types', $this->longText()->notNull()),
 
             (new Table('freeform_survey_preferences'))
                 ->addField('id', $this->primaryKey())

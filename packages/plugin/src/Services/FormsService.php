@@ -26,6 +26,7 @@ use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -631,6 +632,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $data,
             $settings,
             new PropertyAccessor(),
+            new BehaviorSettings(),
         );
     }
 

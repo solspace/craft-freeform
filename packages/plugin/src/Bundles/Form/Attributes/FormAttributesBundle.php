@@ -6,13 +6,14 @@ use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
 class FormAttributesBundle extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private BehaviorSettings $behavior)
     {
         Event::on(Form::class, Form::EVENT_SET_PROPERTIES, [$this, 'separateAttributesFromProperties']);
         Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'setConditionalAttributes']);
@@ -81,18 +82,24 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->replace('data-processing-text', $behaviorSettings->processingText);
         }
 
-        if ($behaviorSettings->successMessage) {
-            $attributes->replace(
-                'data-success-message',
-                \Craft::t('app', $behaviorSettings->successMessage)
-            );
+        $successMessage = $behaviorSettings->successMessage;
+        if (empty($successMessage)) {
+            $successMessage = $this->behavior->successMessage;
         }
 
-        if ($behaviorSettings->errorMessage) {
-            $attributes->replace(
-                'data-error-message',
-                \Craft::t('app', $behaviorSettings->errorMessage)
-            );
+        $attributes->replace(
+            'data-success-message',
+            \Craft::t('app', $successMessage)
+        );
+
+        $errorMessage = $behaviorSettings->errorMessage;
+        if (empty($errorMessage)) {
+            $errorMessage = $this->behavior->errorMessage;
         }
+
+        $attributes->replace(
+            'data-error-message',
+            \Craft::t('app', $errorMessage)
+        );
     }
 }

@@ -34,6 +34,7 @@ export const BaseFields: React.FC = () => {
   const renderFieldItems = (types: string[]): React.ReactNode[] =>
     types.map((type) => {
       const fieldType = findType(type);
+
       return fieldType && <FieldItem key={type} fieldType={fieldType} />;
     });
 

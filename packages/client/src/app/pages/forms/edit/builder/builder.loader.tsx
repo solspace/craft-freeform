@@ -9,7 +9,6 @@ export const LoaderBuilder: React.FC = () => {
   return (
     <BuilderWrapper>
       <LoaderTabs />
-
       <BuilderContent>
         <Grid>
           <LoaderFormLayout />

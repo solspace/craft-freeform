@@ -5,6 +5,7 @@ import { useFreeformNavigation } from './hooks/use-freeform-navigation';
 import { AppWrapper } from './App.styles';
 
 import 'react-tippy/dist/tippy.css';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const App: React.FC = () => {
   useFreeformNavigation();

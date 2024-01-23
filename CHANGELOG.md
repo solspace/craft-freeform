@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.0.1 - 2024-01-23
+
+### Fixed
+- Fixed an `instanceof` check issue on the Freeform 5 migration.
+- Fixed a bug where default form success/error messages were not being added if empty.
+
 ## 5.0.0 - 2024-01-22
 
 > [!WARNING]

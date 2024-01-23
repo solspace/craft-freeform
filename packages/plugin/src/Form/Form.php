@@ -140,7 +140,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         array $config,
         private Settings $settings,
         private PropertyAccessor $accessor,
-        private BehaviorSettings $behavior,
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
@@ -594,7 +593,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         if (
             ($this->isSubmittedSuccessfully() || $this->isFinished())
-            && $this->behavior::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE === $successBehavior
+            && BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE === $successBehavior
         ) {
             return $this->getFormHandler()->renderSuccessTemplate($this);
         }
@@ -604,14 +603,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public function renderTag(array $renderProperties = null): Markup
     {
-        if (empty($this->getSettings()->getBehavior()->successMessage)) {
-            $this->getSettings()->getBehavior()->successMessage = $this->behavior->successMessage;
-        }
-
-        if (empty($this->getSettings()->getBehavior()->errorMessage)) {
-            $this->getSettings()->getBehavior()->errorMessage = $this->behavior->errorMessage;
-        }
-
         $this->registerContext($renderProperties);
 
         $output = '';

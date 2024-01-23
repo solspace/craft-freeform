@@ -119,7 +119,7 @@ class BehaviorSettings extends SettingsNamespace
     #[Input\TextArea(
         instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.',
         order: 4,
-        placeholder: 'e.g. Thanks for filling out the form and stuff!',
+        placeholder: 'e.g. Form has been submitted successfully!',
     )]
     public string $successMessage = self::DEFAULT_SUCCESS_MESSAGE;
 
@@ -128,7 +128,7 @@ class BehaviorSettings extends SettingsNamespace
     #[Input\TextArea(
         instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.',
         order: 5,
-        placeholder: 'e.g. There was an error! Please fix!',
+        placeholder: 'e.g. Sorry, there was an error submitting the form. Please try again.',
     )]
     public string $errorMessage = self::DEFAULT_ERROR_MESSAGE;
 

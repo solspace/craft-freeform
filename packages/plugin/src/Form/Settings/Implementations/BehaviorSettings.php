@@ -33,6 +33,9 @@ class BehaviorSettings extends SettingsNamespace
     private const SECTION_PROCESSING = 'processing';
     private const SECTION_LIMITS = 'limits';
 
+    private const DEFAULT_SUCCESS_MESSAGE = 'Form has been submitted successfully!';
+    private const DEFAULT_ERROR_MESSAGE = 'Sorry, there was an error submitting the form. Please try again.';
+
     #[Section(
         self::SECTION_PROCESSING,
         label: 'Processing',
@@ -118,7 +121,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 4,
         placeholder: 'e.g. Thanks for filling out the form and stuff!',
     )]
-    public string $successMessage = 'Form has been submitted successfully!';
+    public string $successMessage = self::DEFAULT_SUCCESS_MESSAGE;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[DefaultValue('settings.successAndErrors.errorMessage')]
@@ -127,7 +130,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 5,
         placeholder: 'e.g. There was an error! Please fix!',
     )]
-    public string $errorMessage = 'Sorry, there was an error submitting the form. Please try again.';
+    public string $errorMessage = self::DEFAULT_ERROR_MESSAGE;
 
     #[Section(
         self::SECTION_LIMITS,
@@ -155,4 +158,14 @@ class BehaviorSettings extends SettingsNamespace
         order: 2,
     )]
     public ?\DateTime $stopSubmissionsAfter = null;
+
+    public function getSuccessMessage(): string
+    {
+        return $this->successMessage ?: self::DEFAULT_SUCCESS_MESSAGE;
+    }
+
+    public function getErrorMessage(): string
+    {
+        return $this->errorMessage ?: self::DEFAULT_ERROR_MESSAGE;
+    }
 }

@@ -16,9 +16,8 @@ class AttributeHelper
     {
         $attributes = $reflection->getAttributes();
         foreach ($attributes as $attribute) {
-            $instance = $attribute->newInstance();
-            if ($instance instanceof $className) {
-                return $instance;
+            if (ReflectionHelper::isInstanceOf($attribute->getName(), $className)) {
+                return $attribute->newInstance();
             }
         }
 
@@ -36,11 +35,11 @@ class AttributeHelper
 
         $attributes = $reflection->getAttributes();
         foreach ($attributes as $attribute) {
-            /** @var T $instance */
-            $instance = $attribute->newInstance();
-            if ($instance instanceof $className) {
-                $matches[] = $instance;
+            if (!ReflectionHelper::isInstanceOf($attribute->getName(), $className)) {
+                continue;
             }
+
+            $matches[] = $attribute->newInstance();
         }
 
         return $matches;

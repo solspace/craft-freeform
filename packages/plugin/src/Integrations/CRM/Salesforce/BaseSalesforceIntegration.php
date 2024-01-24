@@ -42,8 +42,8 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
-        label: 'Use custom URL?',
-        instructions: 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. "mycompany.my.salesforce.com").',
+        label: 'Use Custom URL?',
+        instructions: 'Enable this if you connect to your Salesforce account with a custom company URL.',
         order: 1,
     )]
     protected bool $useCustomUrl = false;
@@ -51,14 +51,14 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Custom URL',
-        instructions: 'E.g https://mycompany.develop.my.salesforce.com',
+        instructions: 'Enter the custom URL, e.g. <code>https:&#47;&#47;mycompany.develop.my.salesforce.com</code>',
         order: 2,
     )]
     protected ?string $customUrl = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com" or "mycompany.my.salesforce.com").',
+        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to <code>test.salesforce.com</code> instead of <code>login.salesforce.com</code> or <code>mycompany.my.salesforce.com</code>).',
         order: 3,
     )]
     protected bool $sandboxMode = false;

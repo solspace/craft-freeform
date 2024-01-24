@@ -150,7 +150,7 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
-# 4.1.13 - 2023-11-23
+## 4.1.13 - 2023-11-23
 
 ### Changed
 - Updated all references to field names in the control panel and exported files to use the default field label as a fallback if the field label is blank in the form settings. To preserve legacy functionality, rendering forms on the front end will continue showing the field label blank.

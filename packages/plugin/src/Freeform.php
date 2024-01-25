@@ -13,6 +13,7 @@
 namespace Solspace\Freeform;
 
 use craft\base\Plugin;
+use craft\controllers\UpdaterController;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SiteEvent;
@@ -741,9 +742,15 @@ class Freeform extends Plugin
         Event::on(
             Application::class,
             Application::EVENT_AFTER_REQUEST,
-            function () {
+            function ($event) {
                 if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
                     return;
+                }
+
+                if ($event->sender instanceof Application) {
+                    if ($event->sender->controller instanceof UpdaterController) {
+                        return;
+                    }
                 }
 
                 self::getInstance()->feed->fetchFeed();

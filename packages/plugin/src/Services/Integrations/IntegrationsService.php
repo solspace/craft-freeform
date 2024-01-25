@@ -320,7 +320,13 @@ class IntegrationsService extends BaseService
 
             $handle = $property->handle;
             $instanceProperty = $reflection->getProperty($handle);
+
+            $accessible = $instanceProperty->isPublic();
+            $instanceProperty->setAccessible(true);
+
             $value = $instanceProperty->getValue($integration);
+
+            $instanceProperty->setAccessible($accessible);
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(

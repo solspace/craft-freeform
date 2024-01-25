@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Backup\DTO;
 
+use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Form\Settings\Settings;
 
@@ -16,5 +17,6 @@ class Form
 
     public Settings $settings;
 
+    public NotificationCollection $notifications;
     public PageCollection $pages;
 }

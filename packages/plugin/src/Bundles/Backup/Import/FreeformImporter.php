@@ -2,14 +2,16 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
+use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
@@ -26,7 +28,7 @@ class FreeformImporter
 
     public function import(FreeformDataset $dataset): void
     {
-        $this->importNotifications($dataset->getNotifications());
+        $this->importNotifications($dataset->getNotificationTemplates());
         $this->importForms($dataset->getForms());
     }
 
@@ -50,6 +52,22 @@ class FreeformImporter
             $formRecord->metadata = $serialized;
 
             $formRecord->save();
+
+            foreach ($form->notifications as $notification) {
+                $notificationRecord = new FormNotificationRecord();
+                $notificationRecord->uid = StringHelper::UUID();
+                $notificationRecord->formId = $formRecord->id;
+                $notificationRecord->class = $notification->type;
+                $notificationRecord->enabled = true;
+
+                $metadata = $notification->metadata;
+                $metadata['name'] = $notification->name;
+                $metadata['enabled'] = true;
+                $metadata[$notification->idAttribute] = $this->notificationIdMap[$notification->id] ?? null;
+
+                $notificationRecord->metadata = json_encode($metadata);
+                $notificationRecord->save();
+            }
 
             foreach ($form->pages as $pageIndex => $page) {
                 $layoutRecord = FormLayoutRecord::findOne(['uid' => $page->layout->uid]) ?? new FormLayoutRecord();
@@ -98,12 +116,16 @@ class FreeformImporter
                         $fieldRecord->rowId = $rowRecord->id;
                         $fieldRecord->type = $field->type;
                         $fieldRecord->order = $fieldIndex;
-                        $fieldRecord->metadata = json_encode([
-                            'label' => $field->name,
-                            'handle' => $field->handle,
-                            'required' => $field->required,
-                            ...$field->metadata,
-                        ]);
+                        $fieldRecord->metadata = json_encode(
+                            array_merge(
+                                [
+                                    'label' => $field->name,
+                                    'handle' => $field->handle,
+                                    'required' => $field->required,
+                                ],
+                                $field->metadata,
+                            )
+                        );
 
                         $fieldRecord->save();
                     }
@@ -112,7 +134,7 @@ class FreeformImporter
         }
     }
 
-    private function importNotifications(?NotificationCollection $collection): void
+    private function importNotifications(?NotificationTemplateCollection $collection): void
     {
         $this->notificationIdMap = [];
 
@@ -124,6 +146,11 @@ class FreeformImporter
             try {
                 $record = $this->notificationsService->create($notification->name);
             } catch (NotificationException) {
+                $record = $this->notificationsService->getNotificationById($notification->originalId);
+                if ($record) {
+                    $this->notificationIdMap[$notification->originalId] = $record->id;
+                }
+
                 continue;
             }
 

@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Backup\DTO;
 
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\SubmissionCollection;
 use Solspace\Freeform\Models\Settings;
 
@@ -12,7 +12,7 @@ class FreeformDataset
 {
     private ?FormCollection $forms = null;
     private ?IntegrationCollection $integrations = null;
-    private ?NotificationCollection $notifications = null;
+    private ?NotificationTemplateCollection $notificationTemplates = null;
     private ?SubmissionCollection $submissions = null;
     private ?Settings $settings = null;
 
@@ -40,14 +40,14 @@ class FreeformDataset
         return $this;
     }
 
-    public function getNotifications(): ?NotificationCollection
+    public function getNotificationTemplates(): ?NotificationTemplateCollection
     {
-        return $this->notifications;
+        return $this->notificationTemplates;
     }
 
-    public function setNotifications(?NotificationCollection $notifications): self
+    public function setNotificationTemplates(?NotificationTemplateCollection $notificationTemplates): self
     {
-        $this->notifications = $notifications;
+        $this->notificationTemplates = $notificationTemplates;
 
         return $this;
     }

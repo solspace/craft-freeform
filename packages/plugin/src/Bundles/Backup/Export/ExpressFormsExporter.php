@@ -11,6 +11,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\SubmissionCollection;
@@ -20,6 +21,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
+use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
@@ -33,6 +35,8 @@ use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorG
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField as EmailFieldNotification;
 
 class ExpressFormsExporter implements ExporterInterface
 {
@@ -50,7 +54,7 @@ class ExpressFormsExporter implements ExporterInterface
         $dataset = new FreeformDataset();
 
         if ($notifications) {
-            $dataset->setNotifications($this->collectNotifications());
+            $dataset->setNotificationTemplates($this->collectNotifications());
         }
 
         if ($forms) {
@@ -111,6 +115,40 @@ class ExpressFormsExporter implements ExporterInterface
             $behavior->ajax = true;
             $behavior->showProcessingSpinner = true;
             $behavior->showProcessingText = true;
+
+            $exported->notifications = new NotificationCollection();
+
+            if (isset($form['adminNotification']) && $form['adminNotification']) {
+                $notification = new Notification();
+                $notification->name = 'Admin Notification';
+                $notification->type = Admin::class;
+                $notification->id = $form['adminNotification'];
+                $notification->idAttribute = 'template';
+
+                $recipients = FreeformStringHelper::extractSeparatedValues($form['adminEmails'] ?? '');
+
+                $notification->metadata = [
+                    'recipients' => array_map(
+                        fn (string $recipient) => ['email' => $recipient, 'name' => ''],
+                        $recipients,
+                    ),
+                ];
+
+                $exported->notifications->add($notification);
+            }
+
+            if (isset($form['submitterNotification']) && $form['submitterNotification']) {
+                $notification = new Notification();
+                $notification->name = 'Submitter Notification';
+                $notification->type = EmailFieldNotification::class;
+                $notification->id = $form['submitterNotification'];
+                $notification->idAttribute = 'template';
+                $notification->metadata = [
+                    'field' => $form['submitterEmailField'],
+                ];
+
+                $exported->notifications->add($notification);
+            }
 
             $exported->pages = new PageCollection();
 
@@ -188,14 +226,14 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectNotifications(): NotificationCollection
+    private function collectNotifications(): NotificationTemplateCollection
     {
-        $collection = new NotificationCollection();
+        $collection = new NotificationTemplateCollection();
 
         $notifications = ExpressForms::getInstance()->emailNotifications->getNotifications();
 
         foreach ($notifications as $notification) {
-            $exported = new Notification();
+            $exported = new NotificationTemplate();
             $exported->originalId = $notification->fileName;
             $exported->name = $notification->name;
             $exported->handle = StringHelper::toCamelCase($notification->name);
@@ -233,6 +271,7 @@ class ExpressFormsExporter implements ExporterInterface
         $exported = new Settings();
         $exported->pluginName = $settings->name;
         $exported->emailTemplateDirectory = $settings->emailNotificationsDirectoryPath;
+        $exported->defaults = null;
 
         return $exported;
     }

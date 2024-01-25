@@ -741,13 +741,13 @@ class Freeform extends Plugin
         Event::on(
             Application::class,
             Application::EVENT_AFTER_REQUEST,
-            function () {
+            function ($event) {
                 if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
                     return;
                 }
 
-                self::getInstance()->feed->fetchFeed();
-                self::getInstance()->digest->triggerDigest();
+                // self::getInstance()->feed->fetchFeed();
+                // self::getInstance()->digest->triggerDigest();
             }
         );
     }

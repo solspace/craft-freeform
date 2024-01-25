@@ -71,6 +71,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ->all()
         ;
 
+        $this->renameOldFieldColumns();
+
         foreach ($layouts as $formId => $layoutJson) {
             $composer = json_decode($layoutJson)->composer;
 
@@ -802,6 +804,29 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         }
     }
 
+    private function renameOldFieldColumns(): void
+    {
+        $schema = $this->db->getSchema();
+        $tables = $schema->getTableSchemas();
+
+        foreach ($tables as $table) {
+            if (!preg_match('/^freeform_submissions_.*_\d+$/', $table->name)) {
+                continue;
+            }
+
+            $columns = $table->getColumnNames();
+            foreach ($columns as $column) {
+                if (!preg_match('/_\d+$/', $column)) {
+                    continue;
+                }
+
+                $this->renameColumn($table->name, $column, $column.'_old');
+            }
+        }
+
+        $schema->getTableSchemas('', true);
+    }
+
     private function renameDatabaseColumn(int $formId, FormFieldRecord $record, \stdClass $props): void
     {
         $reflection = new \ReflectionClass($record->type);
@@ -829,7 +854,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $oldColumnName = null;
         if (isset($props->id)) {
             foreach ($columns as $column) {
-                if (preg_match('/.*_'.$props->id.'$/', $column)) {
+                if (preg_match('/.*_'.$props->id.'_old$/', $column)) {
                     $oldColumnName = $column;
 
                     break;

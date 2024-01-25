@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.0.2 - 2024-01-25
+
+### Added
+- Verified compatibility with Craft 4.7.
+
+### Fixed
+- Fixed a few compatibility issues with PHP 8.0.
+- Fixed a bug where the migration could potentially convert a couple of the default fields incorrectly in the first form.
+
 ## 5.0.1 - 2024-01-23
 
 ### Fixed

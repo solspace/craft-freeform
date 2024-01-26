@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { StringProperty } from '@ff-client/types/properties';
@@ -12,14 +12,21 @@ const String: React.FC<ControlType<StringProperty>> = ({
   autoFocus,
 }) => {
   const { handle } = property;
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      ref.current?.focus({ preventScroll: true });
+    }
+  }, [autoFocus]);
 
   return (
     <Control property={property} errors={errors}>
       <input
         id={handle}
+        ref={ref}
         type="text"
         autoComplete="off"
-        autoFocus={autoFocus}
         data-1p-ignore
         className={classes(
           'text',

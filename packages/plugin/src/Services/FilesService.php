@@ -345,7 +345,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
             $this->markAssetUnfinalized($assetId, $field, $formToken);
         } elseif ($asset) {
-            $errors = array_merge($errors, $asset->getErrors());
+            $errors = array_merge($errors, $asset->getErrorSummary());
             $asset = null;
         }
 

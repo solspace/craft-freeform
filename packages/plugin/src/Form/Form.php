@@ -761,7 +761,12 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     // ==========================
     public function getIterator(): \ArrayIterator
     {
-        return $this->layout->getIterator();
+        if (isset($this->layout)) {
+            return $this->layout->getIterator();
+        }
+
+        // This prevents Twig from failing a `is not empty` check
+        return new \ArrayIterator([true]);
     }
 
     public function jsonSerialize(): array
@@ -795,6 +800,42 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function normalize(): array
     {
         return $this->jsonSerialize();
+    }
+
+    /**
+     * Legacy alias for older FF versions.
+     *
+     * @deprecated {@see getAttributes()} instead. Will be removed in FF v6.0
+     */
+    public function customAttributes(): array
+    {
+        \Craft::$app->deprecator->log(
+            'freeform.form.customAttributes',
+            'Freeform\'s `form.customAttributes` have been deprecated. Please use `form.attributes` and `form.properties` instead. Will be removed in Freeform 6.0',
+        );
+
+        $attributes = $this->getAttributes();
+
+        return [
+            'id' => $this->getId(),
+            'class' => $attributes->getForm()->get('class'),
+            'method' => $this->getProperties()->get('method', 'post'),
+            'action' => $attributes->getForm()->get('action'),
+            'status' => '',
+            'returnUrl' => '',
+            'rowClass' => $attributes->getRow()->get('class'),
+            'columnClass' => '',
+            'submitClass' => '',
+            'inputClass' => '',
+            'labelClass' => '',
+            'errorClass' => '',
+            'instructionsClass' => '',
+            'instructionsBelowField' => true,
+            'overrideValues' => [],
+            'formAttributes' => $attributes->getForm(),
+            'inputAttributes' => '',
+            'useRequiredAttribute' => true,
+        ];
     }
 
     private function createSubmission(): void

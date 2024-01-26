@@ -10,6 +10,16 @@ class ConditionValidator
     {
         $expectedValue = $condition->getValue();
 
+        if (\is_array($value)) {
+            return match ($condition->getOperator()) {
+                Condition::TYPE_EQUALS => $expectedValue === implode(',', $value),
+                Condition::TYPE_NOT_EQUALS => $expectedValue !== implode(',', $value),
+                Condition::TYPE_CONTAINS => \in_array($expectedValue, $value, true),
+                Condition::TYPE_NOT_CONTAINS => !\in_array($expectedValue, $value, true),
+                default => false,
+            };
+        }
+
         return match ($condition->getOperator()) {
             Condition::TYPE_EQUALS => strtolower($value) === strtolower($expectedValue),
             Condition::TYPE_NOT_EQUALS => strtolower($value) !== strtolower($expectedValue),

@@ -17,7 +17,7 @@
     {% if form %}
 
         {# Replace "demo/extras/manual-form" where to return after the form will be submitted, or remove it to have it respect the value set inside the form builder #}
-        {{ form.renderTag({returnUrl: "demo/extras/manual-form"}) }}
+        {{ form.renderTag({returnUrl: "/demo/extras/manual-form"}) }}
 
             {# Display any general errors upon submit #}
             <div class="form-heading-errors">
@@ -43,7 +43,6 @@
             {% set email = form.get("email") %}
             {% set phone = form.get("phone") %}
             {% set state = form.get("state") %}
-            {% set recipients = form.get("recipients") %}
 
             <div class="form-field">
                 {# Very manual #}
@@ -86,23 +85,12 @@
                 <select name="state">
                     {# You may also manually hardcode each option as well, as long as these options exist inside the form builder #}
                     {% for option in state.options %}
-                        <option value="{{ option.value }}" {{ option.value in field.value ? "selected" }}>{{ option.label }}</option>
+                        <option value="{{ option.value }}" {{ option.value in state.value ? "selected" }}>{{ option.label }}</option>
                     {% endfor %}
                 </select>
             </div>
 
-            <div class="form-field">
-                {# Manual Dynamic Recipients field as Select #}
-                <label>Recipient</label>
-                <select name="recipients">
-                    {% for recipient in recipients.options %}
-                        {# value is required to be 0, 1, 2, etc instead of actual email value #}
-                        <option value="{{ loop.index0 }}">{{ recipient.label }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-
-            <button type="submit">Submit</button>
+            {# The submit button will automatically be inserted by Freeform #}
 
         {{ form.renderClosingTag }}
 
@@ -130,7 +118,6 @@
                         <li>Email field (email field type) with handle of <code>email</code>.</li>
                         <li>Phone text field with handle of <code>phone</code>.</li>
                         <li>State select field with handle of <code>state</code>, and some option values set.</li>
-                        <li>Dynamic Recipients field type with handle of <code>recipients</code>, and some option values set (e.g. <code>Bob</code>/<code>bob@acmewidgets.net</code>, <code>Harry</code>/<code>harry@acmewidgets.net</code>).</li>
                     </ul>
                 </li>
                 <li>If your test form has other fields, that's alright, as long as they are not marked as required, thus triggering an error upon submit since they'll be empty.</li>

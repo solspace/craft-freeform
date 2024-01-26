@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -25,6 +26,10 @@ class RequiredFieldValidation extends FeatureBundle
         $value = $field->getValue();
 
         if (!$field->isRequired()) {
+            return;
+        }
+
+        if ($field instanceof FileDragAndDropField) {
             return;
         }
 

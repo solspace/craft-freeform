@@ -35,7 +35,6 @@ class FileDragAndDropUploadValidation extends FeatureBundle
 
     public function validate(ValidateEvent $event): void
     {
-        $form = $event->getForm();
         $field = $event->getField();
         if (!$field instanceof FileDragAndDropField) {
             return;

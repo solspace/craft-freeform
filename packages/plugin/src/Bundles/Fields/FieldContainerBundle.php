@@ -20,11 +20,23 @@ class FieldContainerBundle extends FeatureBundle
 
     public function updateContainerAttributes(FieldPropertiesEvent $event): void
     {
+        $request = \Craft::$app->request;
+        if ($request && $request->isCpRequest) {
+            $isFreeform = 'freeform' === $request->getSegment(1);
+            $isApi = 'api' === $request->getSegment(2);
+            $isForms = 'forms' === $request->getSegment(3);
+
+            if ($isFreeform && $isApi && $isForms) {
+                return;
+            }
+        }
+
         $field = $event->getField();
         $field
             ->getAttributes()
             ->getContainer()
-            ->setIfEmpty('data-field-container', $field->getHandle())
+            ->replace('data-field-container', $field->getHandle())
+            ->replace('data-field-type', $field->getType())
         ;
     }
 }

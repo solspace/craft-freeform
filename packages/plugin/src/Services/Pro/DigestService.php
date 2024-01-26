@@ -30,10 +30,6 @@ class DigestService extends Component
 
     public function triggerDigest(): void
     {
-        if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
-            // return;
-        }
-
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }

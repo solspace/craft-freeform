@@ -20,7 +20,6 @@ use craft\helpers\App;
 use craft\services\Fields;
 use craft\services\Sites;
 use craft\services\UserPermissions;
-use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -65,7 +64,6 @@ use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
-use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
@@ -233,7 +231,6 @@ class Freeform extends Plugin
         $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initCleanupJobs();
-        $this->initTasks();
         $this->initContainerItems();
         $this->initBundles();
 
@@ -729,27 +726,6 @@ class Freeform extends Plugin
         if ($spamAge > 0) {
             \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
         }
-    }
-
-    // TODO: move into a feature bundle
-    private function initTasks(): void
-    {
-        if (!$this->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
-            return;
-        }
-
-        Event::on(
-            Application::class,
-            Application::EVENT_AFTER_REQUEST,
-            function ($event) {
-                if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
-                    return;
-                }
-
-                // self::getInstance()->feed->fetchFeed();
-                // self::getInstance()->digest->triggerDigest();
-            }
-        );
     }
 
     private function initContainerItems(): void

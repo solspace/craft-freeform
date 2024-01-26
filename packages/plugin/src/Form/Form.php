@@ -761,7 +761,12 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     // ==========================
     public function getIterator(): \ArrayIterator
     {
-        return $this->layout->getIterator();
+        if (isset($this->layout)) {
+            return $this->layout->getIterator();
+        }
+
+        // This prevents Twig from failing a `is not empty` check
+        return new \ArrayIterator([true]);
     }
 
     public function jsonSerialize(): array

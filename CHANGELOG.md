@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.0.3 - 2024-01-26
+
+### Changed
+- Updated the weekly/daily email Digest to use Craft's queue jobs.
+- Updated form rendering to not hard error if `form.customAttributes` is used in an older formatting template. It now logs a notice to the Craft deprecation warning log.
+
+### Fixed
+- Fixed a bug where manually coded forms were not having the form method being set automatically.
+- Fixed a bug where rendering a form through the Freeform Form field on another element could trigger an error.
+- Fixed a bug where multi-option fields were not working correctly with Conditional Rule values.
+- Fixed a bug where File Upload Drag & Drop fields were not working correctly if the field was set to be required.
+- Fixed a bug where mandatory attributes were showing up in the form builder attribute editor.
+- Fixed the `extras/manual-form` demo template to work correctly with Freeform 5.
+
 ## 5.0.2 - 2024-01-25
 
 ### Added

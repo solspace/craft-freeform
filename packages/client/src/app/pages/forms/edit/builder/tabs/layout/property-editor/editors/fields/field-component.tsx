@@ -11,9 +11,14 @@ import type { Property } from '@ff-client/types/properties';
 type Props = {
   property: Property;
   field: Field;
+  autoFocus?: boolean;
 };
 
-export const FieldComponent: React.FC<Props> = ({ property, field }) => {
+export const FieldComponent: React.FC<Props> = ({
+  property,
+  field,
+  autoFocus,
+}) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
 
@@ -41,6 +46,7 @@ export const FieldComponent: React.FC<Props> = ({ property, field }) => {
 
   return (
     <FormComponent
+      autoFocus={autoFocus}
       value={value}
       property={property}
       updateValue={generateUpdateHandler(property)}

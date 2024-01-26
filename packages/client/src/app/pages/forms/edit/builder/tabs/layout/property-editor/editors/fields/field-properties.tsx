@@ -51,7 +51,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const sectionBlocks: React.ReactElement[] = [];
   sections
     .sort((a, b) => a.order - b.order)
-    .forEach(({ handle, label, icon }) => {
+    .forEach(({ handle, label, icon }, sectionIndex) => {
       const properties = type.properties.filter(sectionFilter(handle));
       if (!properties.length) {
         return;
@@ -59,8 +59,9 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
       sectionBlocks.push(
         <SectionBlock label={label} icon={icon} key={handle}>
-          {properties.map((property) => (
+          {properties.map((property, propertyIndex) => (
             <FieldComponent
+              autoFocus={sectionIndex === 0 && propertyIndex === 0}
               key={property.handle}
               field={field}
               property={property}

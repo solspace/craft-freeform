@@ -323,58 +323,16 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_rules_fields'))
                 ->addField('id', $this->integer()->notNull())
                 ->addField('fieldId', $this->integer()->notNull())
-                ->addField('display', $this->string(10)->notNull())
-                ->addForeignKey(
-                    'id',
-                    'freeform_rules',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                )
-                ->addForeignKey(
-                    'fieldId',
-                    'freeform_forms_fields',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                ),
+                ->addField('display', $this->string(10)->notNull()),
 
             (new Table('freeform_rules_pages'))
                 ->addField('id', $this->integer()->notNull())
-                ->addField('pageId', $this->integer()->notNull())
-                ->addForeignKey(
-                    'id',
-                    'freeform_rules',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                )
-                ->addForeignKey(
-                    'pageId',
-                    'freeform_forms_pages',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                ),
+                ->addField('pageId', $this->integer()->notNull()),
 
             (new Table('freeform_rules_notifications'))
                 ->addField('id', $this->integer()->notNull())
                 ->addField('notificationId', $this->integer()->notNull())
-                ->addField('send', $this->boolean()->notNull())
-                ->addForeignKey(
-                    'id',
-                    'freeform_rules',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                )
-                ->addForeignKey(
-                    'notificationId',
-                    'freeform_forms_notifications',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                ),
+                ->addField('send', $this->boolean()->notNull()),
 
             (new Table('freeform_rules_conditions'))
                 ->addField('id', $this->primaryKey())
@@ -385,13 +343,6 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey(
                     'ruleId',
                     'freeform_rules',
-                    'id',
-                    ForeignKey::CASCADE,
-                    ForeignKey::CASCADE
-                )
-                ->addForeignKey(
-                    'fieldId',
-                    'freeform_forms_fields',
                     'id',
                     ForeignKey::CASCADE,
                     ForeignKey::CASCADE
@@ -408,16 +359,26 @@ class Install extends StreamlinedInstallMigration
                 ->addField('userId', $this->integer()->notNull())
                 ->addField('fieldId', $this->integer()->notNull())
                 ->addField('chartType', $this->string(200)->notNull())
-                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
         ];
     }
 
     protected function afterInstall(): bool
     {
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
+        }
+
+        $this->addForeignKey(null, 'freeform_rules_fields', ['id'], 'freeform_rules', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_fields', ['fieldId'], 'freeform_forms_fields', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_pages', ['id'], 'freeform_rules', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_pages', ['pageId'], 'freeform_forms_pages', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_notifications', ['id'], 'freeform_rules', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_notifications', ['notificationId'], 'freeform_forms_notifications', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_rules_conditions', ['fieldId'], 'freeform_forms_fields', ['id'], 'CASCADE', 'CASCADE');
+        $this->addForeignKey(null, 'freeform_survey_preferences', ['fieldId'], 'freeform_forms_fields', ['id'], 'CASCADE', null);
 
         return parent::afterInstall();
     }

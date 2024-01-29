@@ -490,14 +490,16 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     {
         $target = $data->target;
 
+        $configuration = $data->configuration ?? new \stdClass();
+
         switch ($target) {
             case 'numbers':
                 return [
                     'typeClass' => 'Solspace\\Freeform\\Fields\\Properties\\Options\\Predefined\\Types\\Numbers\\Numbers',
                     'properties' => [
                         'step' => 1,
-                        'first' => $data->start ?? 0,
-                        'second' => $data->end ?? 20,
+                        'first' => $configuration->start ?? 0,
+                        'second' => $configuration->end ?? 20,
                     ],
                 ];
 
@@ -505,22 +507,22 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years',
                     'properties' => [
-                        'first' => $data->start ?? 100,
-                        'last' => $data->end ?? 0,
+                        'first' => $configuration->start ?? 100,
+                        'last' => $configuration->end ?? 0,
                     ],
                 ];
 
             case 'months':
-                $value = match ($data->valueType) {
+                $value = match ($configuration->valueType) {
                     'int' => 'single',
                     'int_w_zero' => 'double',
-                    default => $data->valueType,
+                    default => $configuration->valueType,
                 };
 
-                $label = match ($data->listType) {
+                $label = match ($configuration->listType) {
                     'int' => 'single',
                     'int_w_zero' => 'double',
-                    default => $data->listType,
+                    default => $configuration->listType,
                 };
 
                 return [
@@ -532,14 +534,16 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 ];
 
             case 'days':
-                $value = match ($data->valueType) {
+                $value = match ($configuration->valueType) {
                     'int' => 'single',
                     'int_w_zero' => 'double',
+                    default => $configuration->valueType,
                 };
 
-                $label = match ($data->listType) {
+                $label = match ($configuration->listType) {
                     'int' => 'single',
                     'int_w_zero' => 'double',
+                    default => $configuration->listType,
                 };
 
                 return [
@@ -551,21 +555,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 ];
 
             case 'days_of_week':
-                $value = match ($data->valueType) {
-                    'int' => 'single',
-                    default => $data->valueType,
-                };
-
-                $label = match ($data->listType) {
-                    'int' => 'single',
-                    default => $data->listType,
-                };
-
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\DaysOfWeek\DaysOfWeek',
                     'properties' => [
-                        'value' => $value,
-                        'label' => $label,
+                        'value' => $configuration->valueType ?? 'full',
+                        'label' => $configuration->listType ?? 'full',
                     ],
                 ];
 
@@ -581,8 +575,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Provinces\Provinces',
                     'properties' => [
-                        'value' => $data->valueType ?? 'abbreviated',
-                        'label' => $data->listType ?? 'full',
+                        'value' => $configuration->valueType ?? 'abbreviated',
+                        'label' => $configuration->listType ?? 'full',
                         'language' => $language,
                     ],
                 ];
@@ -591,8 +585,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Countries\Countries',
                     'properties' => [
-                        'value' => $data->valueType ?? 'abbreviated',
-                        'label' => $data->listType ?? 'full',
+                        'value' => $configuration->valueType ?? 'abbreviated',
+                        'label' => $configuration->listType ?? 'full',
                     ],
                 ];
 
@@ -600,8 +594,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Languages\Languages',
                     'properties' => [
-                        'value' => $data->valueType ?? 'abbreviated',
-                        'label' => $data->listType ?? 'full',
+                        'value' => $configuration->valueType ?? 'abbreviated',
+                        'label' => $configuration->listType ?? 'full',
                         'useNativeName' => false,
                     ],
                 ];
@@ -610,8 +604,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Currencies\Currencies',
                     'properties' => [
-                        'value' => $data->valueType ?? 'abbreviated',
-                        'label' => $data->listType ?? 'full',
+                        'value' => $configuration->valueType ?? 'abbreviated',
+                        'label' => $configuration->listType ?? 'full',
                     ],
                 ];
 
@@ -621,8 +615,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 return [
                     'typeClass' => 'Solspace\\Freeform\\Fields\\Properties\\Options\\Predefined\\Types\\States\\States',
                     'properties' => [
-                        'value' => $data->valueType ?? 'abbreviated',
-                        'label' => $data->listType ?? 'full',
+                        'value' => $configuration->valueType ?? 'abbreviated',
+                        'label' => $configuration->listType ?? 'full',
                         'includeTerritories' => 'states_territories' === $target,
                     ],
                 ];

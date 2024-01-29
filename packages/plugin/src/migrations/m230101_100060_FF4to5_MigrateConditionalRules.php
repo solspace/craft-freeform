@@ -33,7 +33,9 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             ]
         );
 
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
+        }
 
         $this->addForeignKey(
             null,
@@ -66,7 +68,9 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             ]
         );
 
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
+        }
 
         $this->addForeignKey(
             null,
@@ -100,7 +104,9 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             ]
         );
 
-        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
+        }
 
         $this->addForeignKey(
             null,

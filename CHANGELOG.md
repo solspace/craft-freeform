@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.0.4 - 2024-01-29
+
+### Added
+- Added a _Page Header_ option for the **Freeform Javascript Insertion Location** setting.
+
+### Fixed
+- Fixed a bug where sites using Postgres would fail during migration.
+- Fixed a bug where an error about `includeAttachments` on notification templates could occur for some sites.
+- Fixed a bug where Captchas would display on all pages instead of just the last page.
+- Fixed a bug where misconfigured options fields could crash the Freeform 4 migration.
+- Fixed a visual bug where the breadcrumbs in the form builder could formulate incorrectly when saving the form.
+
+
 ## 5.0.3 - 2024-01-26
 
 ### Changed

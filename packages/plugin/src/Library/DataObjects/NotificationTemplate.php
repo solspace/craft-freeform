@@ -122,8 +122,6 @@ class NotificationTemplate implements IdentificatorInterface
             }
         }
 
-        $template->includeAttachments = $includeAttachments;
-
         return $template;
     }
 

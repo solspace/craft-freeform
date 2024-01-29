@@ -97,7 +97,7 @@ class NotificationTemplateRecord extends ActiveRecord
         $record->replyToEmail = $template->getReplyToEmail();
         $record->bodyHtml = $template->getBody();
         $record->bodyText = $template->getTextBody();
-        $record->includeAttachments = $includeAttachments;
+        $record->includeAttachments = (bool) $includeAttachments;
         $record->presetAssets = $template->getPresetAssets();
         $record->autoText = $template->isAutoText();
 

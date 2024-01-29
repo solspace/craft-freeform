@@ -19,6 +19,12 @@ class hCaptchaBundle extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
+            [$this, 'attachHtmlElement'],
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachScripts'],
         );
 
@@ -32,6 +38,19 @@ class hCaptchaBundle extends FeatureBundle
             Form::class,
             Form::EVENT_OUTPUT_AS_JSON,
             [$this, 'attachToJson'],
+        );
+    }
+
+    public function attachHtmlElement(RenderTagEvent $event): void
+    {
+        $form = $event->getForm();
+        if (!$form->isLastPage()) {
+            return;
+        }
+
+        $event->addChunk(
+            '<div data-freeform-hcaptcha-container></div>',
+            position: RenderTagEvent::POSITION_BEGINNING
         );
     }
 
@@ -77,6 +96,10 @@ class hCaptchaBundle extends FeatureBundle
         }
 
         $form = $event->getForm();
+        if (!$form->isLastPage()) {
+            return;
+        }
+
         $integration = $this->getHCaptchaForForm($form);
         $integration?->validate($form);
     }

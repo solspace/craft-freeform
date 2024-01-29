@@ -137,6 +137,11 @@ class SettingsService extends BaseService
         return Settings::SCRIPT_INSERT_LOCATION_FOOTER === $this->getSettingsModel()->scriptInsertLocation;
     }
 
+    public function isHeaderScripts(): bool
+    {
+        return Settings::SCRIPT_INSERT_LOCATION_HEADER === $this->getSettingsModel()->scriptInsertLocation;
+    }
+
     public function isFormScripts(): bool
     {
         return Settings::SCRIPT_INSERT_LOCATION_FORM === $this->getSettingsModel()->scriptInsertLocation;

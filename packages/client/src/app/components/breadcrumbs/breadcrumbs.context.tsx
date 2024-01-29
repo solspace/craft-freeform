@@ -17,17 +17,7 @@ const BreadcrumbContext = createContext<ContextType>({
   popCrumb: () => void {},
 });
 
-export const useBreadcrumbs = (crumb: Breadcrumb): void => {
-  const { pushCrumb, popCrumb } = useContext(BreadcrumbContext);
-
-  useEffect(() => {
-    pushCrumb(crumb);
-
-    return () => {
-      popCrumb();
-    };
-  }, [crumb]);
-};
+export const useBreadcrumbs = (): ContextType => useContext(BreadcrumbContext);
 
 export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   children,

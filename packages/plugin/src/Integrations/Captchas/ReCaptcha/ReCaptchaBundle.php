@@ -19,6 +19,12 @@ class ReCaptchaBundle extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
+            [$this, 'attachHtmlElement'],
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachScripts'],
         );
 
@@ -32,6 +38,19 @@ class ReCaptchaBundle extends FeatureBundle
             Form::class,
             Form::EVENT_OUTPUT_AS_JSON,
             [$this, 'attachToJson'],
+        );
+    }
+
+    public function attachHtmlElement(RenderTagEvent $event): void
+    {
+        $form = $event->getForm();
+        if (!$form->isLastPage()) {
+            return;
+        }
+
+        $event->addChunk(
+            '<div data-freeform-recaptcha-container></div>',
+            position: RenderTagEvent::POSITION_BEGINNING
         );
     }
 
@@ -78,6 +97,10 @@ class ReCaptchaBundle extends FeatureBundle
         }
 
         $form = $event->getForm();
+        if (!$form->isLastPage()) {
+            return;
+        }
+
         $integration = $this->getReCaptchaForForm($form);
         $integration?->validate($form);
     }

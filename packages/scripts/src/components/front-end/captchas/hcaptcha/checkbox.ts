@@ -16,7 +16,7 @@ const config: hCaptchaConfig = {
 
 let captchaId: string;
 
-const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
+const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const existingElement = form.querySelector<HTMLDivElement>('.h-captcha');
   if (existingElement) {
     return existingElement;
@@ -27,13 +27,12 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
   const captchaElement = document.createElement('div');
   captchaElement.classList.add('h-captcha');
 
-  const targetElement = event.form.querySelector('[data-freeform-controls]');
-  if (targetElement) {
-    const parentNode = targetElement.parentNode;
-    parentNode.insertBefore(captchaElement, targetElement);
-  } else {
-    event.form.appendChild(captchaElement);
+  const targetElement = event.form.querySelector('[data-freeform-hcaptcha-container]');
+  if (!targetElement) {
+    return null;
   }
+
+  targetElement.appendChild(captchaElement);
 
   captchaId = hcaptcha.render(captchaElement, {
     sitekey,

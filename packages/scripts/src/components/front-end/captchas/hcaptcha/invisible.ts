@@ -13,8 +13,12 @@ const config: hCaptchaConfig = {
   version: '{{ version }}' as Version,
 } as const;
 
-const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
+const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-hcaptcha-invisible`;
+  const captchaContainer = event.form.querySelector('[data-freeform-hcaptcha-container]');
+  if (!captchaContainer) {
+    return null;
+  }
 
   let recaptchaElement = document.getElementById(id) as HTMLDivElement;
   if (!recaptchaElement) {
@@ -34,6 +38,9 @@ const initHCaptchaInvisible = (event: FreeformEvent): void => {
 
   loadHCaptcha(event.form, config).then(() => {
     const hcaptchaElement = createCaptcha(event);
+    if (!hcaptchaElement) {
+      return;
+    }
 
     captchaId = hcaptcha.render(hcaptchaElement, {
       sitekey,
@@ -51,6 +58,10 @@ form.addEventListener(events.form.ready, initHCaptchaInvisible);
 
 form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   if (isTokenSet) {
+    return;
+  }
+
+  if (!createCaptcha(event) || event.isBackButtonPressed) {
     return;
   }
 

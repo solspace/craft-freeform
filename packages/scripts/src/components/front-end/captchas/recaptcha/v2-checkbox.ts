@@ -14,7 +14,7 @@ const config: reCaptchaConfig = {
   locale: '{{ locale }}',
 } as const;
 
-const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
+const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const existingElement = form.querySelector<HTMLDivElement>('.g-recaptcha');
   if (existingElement) {
     return existingElement;
@@ -25,13 +25,12 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
   const captchaElement = document.createElement('div');
   captchaElement.classList.add('g-recaptcha');
 
-  const targetElement = event.form.querySelector('[data-freeform-controls]');
-  if (targetElement) {
-    const parentNode = targetElement.parentNode;
-    parentNode.insertBefore(captchaElement, targetElement);
-  } else {
-    event.form.appendChild(captchaElement);
+  const targetElement = event.form.querySelector('[data-freeform-recaptcha-container]');
+  if (!targetElement) {
+    return null;
   }
+
+  targetElement.appendChild(captchaElement);
 
   grecaptcha.ready(() => {
     grecaptcha.render(captchaElement, {

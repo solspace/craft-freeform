@@ -13,8 +13,12 @@ const config: reCaptchaConfig = {
   version: '{{ version }}' as Version,
 } as const;
 
-const createCaptcha = (event: FreeformEvent): HTMLDivElement => {
+const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-recaptcha-v2-invisible`;
+  const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
+  if (!captchaContainer) {
+    return null;
+  }
 
   let recaptchaElement = document.getElementById(id) as HTMLDivElement;
   if (!recaptchaElement) {
@@ -32,6 +36,9 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
 
   loadReCaptcha(event.form, config).then(() => {
     const recaptchaElement = createCaptcha(event);
+    if (!recaptchaElement) {
+      return;
+    }
 
     if (!recaptchaElement.innerHTML) {
       grecaptcha.ready(() => {
@@ -54,6 +61,10 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
 form.addEventListener(events.form.ready, initRecaptchaInvisible);
 form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   if (isTokenSet) {
+    return;
+  }
+
+  if (!createCaptcha(event) || event.isBackButtonPressed) {
     return;
   }
 

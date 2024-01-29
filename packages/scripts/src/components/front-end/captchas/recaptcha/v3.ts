@@ -14,8 +14,12 @@ const config: reCaptchaConfig = {
   action: '{{ action }}',
 } as const;
 
-const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement => {
+const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
   const id = `${event.freeform.id}-recaptcha-v3`;
+  const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
+  if (!captchaContainer) {
+    return null;
+  }
 
   let recaptchaElement = document.getElementById(id) as HTMLTextAreaElement;
   if (!recaptchaElement) {
@@ -49,9 +53,16 @@ form.addEventListener(events.form.submit, (event: FreeformEvent) => {
     return;
   }
 
+  if (!createCaptcha(event) || event.isBackButtonPressed) {
+    return;
+  }
+
   event.preventDefault();
   loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
     const recaptchaElement = createCaptcha(event);
+    if (!recaptchaElement) {
+      return;
+    }
 
     const { sitekey } = config;
     let { action } = config;

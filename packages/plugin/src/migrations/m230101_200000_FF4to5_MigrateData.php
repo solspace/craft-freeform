@@ -369,8 +369,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     private function processOptions(\stdClass $data): array
     {
         $configuration = $data->configuration ?? new \stdClass();
+        $source = $data->source ?? null;
 
-        return match ($data->source) {
+        return match ($source) {
             'entries' => [
                 'optionConfiguration' => [
                     'source' => 'elements',

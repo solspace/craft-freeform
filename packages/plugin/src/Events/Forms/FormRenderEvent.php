@@ -15,6 +15,9 @@ use Solspace\Freeform\Library\DataObjects\FormRenderObject\JavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\StringObject;
 use yii\web\View;
 
+/**
+ * @deprecated This event is no longer used. Please use RenderTagEvent instead.
+ */
 class FormRenderEvent extends ArrayableEvent implements FormEventInterface
 {
     /** @var Form */

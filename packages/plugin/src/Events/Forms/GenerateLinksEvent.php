@@ -30,9 +30,9 @@ class GenerateLinksEvent extends Event
         return $this->links;
     }
 
-    public function add(string $label, string $url, bool $isInternal = false, ?int $atIndex = null): self
+    public function add(string $label, string $url, string $type, bool $isInternal = false, ?int $atIndex = null): self
     {
-        $link = new Link($label, $url, $isInternal);
+        $link = new Link($label, $url, $type, $isInternal);
 
         if (null !== $atIndex) {
             array_splice($this->links, $atIndex, 0, [$link]);

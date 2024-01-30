@@ -838,6 +838,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         ];
     }
 
+    public function getErrorMessage(): string
+    {
+        return $this->getSettings()->getBehavior()->getErrorMessage();
+    }
+
+    public function getSuccessMessage(): string
+    {
+        return $this->getSettings()->getBehavior()->getSuccessMessage();
+    }
+
     private function createSubmission(): void
     {
         Event::trigger(self::class, self::EVENT_CREATE_SUBMISSION, new CreateSubmissionEvent($this));

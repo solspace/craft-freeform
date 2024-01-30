@@ -23,7 +23,7 @@ export const Welcome: React.FC = () => {
 
   return (
     <WelcomeWrapper>
-      <Breadcrumb label="Welcome" url="/forms" />
+      <Breadcrumb id="welcome" label="Welcome" url="/forms" />
       <LogoWrapper>
         <Logo />
       </LogoWrapper>

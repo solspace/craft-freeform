@@ -35,7 +35,11 @@ export const FormSettings: React.FC = () => {
 
   return (
     <FormSettingsWrapper>
-      <Breadcrumb label={translate('Settings')} url={currentPath.pathname} />
+      <Breadcrumb
+        id="settings"
+        label={translate('Settings')}
+        url={currentPath.pathname}
+      />
       <SettingsSidebar />
       <Outlet />
     </FormSettingsWrapper>

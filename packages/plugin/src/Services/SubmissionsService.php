@@ -112,10 +112,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
-            ->select(["{$submissions}.[[formId]]", "COUNT({$submissions}.[[id]]) as [[submissionCount]]"])
+            ->select(["COUNT({$submissions}.[[id]]) as [[submissionCount]]"])
             ->from($submissions)
             ->filterWhere(['isSpam' => $isSpam])
             ->groupBy("{$submissions}.[[formId]]")
+            ->indexBy('formId')
         ;
 
         if ($rangeStart) {
@@ -134,14 +135,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             );
         }
 
-        $countList = $query->all();
-
-        $submissionCountByForm = [];
-        foreach ($countList as $data) {
-            $submissionCountByForm[$data['formId']] = (int) $data['submissionCount'];
-        }
-
-        return $submissionCountByForm;
+        return $query->column();
     }
 
     public function handleSubmission(Form $form): void

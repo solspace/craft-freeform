@@ -762,7 +762,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getIterator(): \ArrayIterator
     {
         if (isset($this->layout)) {
-            return $this->layout->getIterator();
+            return $this->layout->getPages()->current()->getIterator();
         }
 
         // This prevents Twig from failing a `is not empty` check
@@ -836,6 +836,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             'inputAttributes' => '',
             'useRequiredAttribute' => true,
         ];
+    }
+
+    public function getErrorMessage(): string
+    {
+        return $this->getSettings()->getBehavior()->getErrorMessage();
+    }
+
+    public function getSuccessMessage(): string
+    {
+        return $this->getSettings()->getBehavior()->getSuccessMessage();
     }
 
     private function createSubmission(): void

@@ -10,7 +10,7 @@ import { store } from './store';
 export const EditProvider: React.FC = () => {
   return (
     <Provider store={store}>
-      <Breadcrumb label="Forms" url="/forms" />
+      <Breadcrumb id="form-editor" label="Forms" url="/forms" />
       <EditorGlobalStyles />
 
       <ModalProvider>

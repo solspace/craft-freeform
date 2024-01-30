@@ -4,7 +4,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -97,7 +97,7 @@ class NotificationTemplateRecord extends ActiveRecord
         $record->replyToEmail = $template->getReplyToEmail();
         $record->bodyHtml = $template->getBody();
         $record->bodyText = $template->getTextBody();
-        $record->includeAttachments = $includeAttachments;
+        $record->includeAttachments = (bool) $includeAttachments;
         $record->presetAssets = $template->getPresetAssets();
         $record->autoText = $template->isAutoText();
 

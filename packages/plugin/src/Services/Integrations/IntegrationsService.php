@@ -3,7 +3,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -320,7 +320,13 @@ class IntegrationsService extends BaseService
 
             $handle = $property->handle;
             $instanceProperty = $reflection->getProperty($handle);
+
+            $accessible = $instanceProperty->isPublic();
+            $instanceProperty->setAccessible(true);
+
             $value = $instanceProperty->getValue($integration);
+
+            $instanceProperty->setAccessible($accessible);
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(

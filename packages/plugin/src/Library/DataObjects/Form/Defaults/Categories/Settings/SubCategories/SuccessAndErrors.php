@@ -29,7 +29,7 @@ class SuccessAndErrors extends BaseCategory
     #[SetDefaultValue('Form has been submitted successfully!')]
     public TextItem $successMessage;
 
-    #[SetDefaultValue('Sorry, there was an error submitting your form. Please try again later.')]
+    #[SetDefaultValue('Sorry, there was an error submitting the form. Please try again.')]
     public TextItem $errorMessage;
 
     public function getLabel(): string

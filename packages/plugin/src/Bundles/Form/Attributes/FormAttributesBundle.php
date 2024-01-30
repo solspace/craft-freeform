@@ -63,6 +63,10 @@ class FormAttributesBundle extends FeatureBundle
         $attributes->replace('data-disable-submit', $formService->isFormSubmitDisable());
         $attributes->replace('data-show-processing-spinner', $behaviorSettings->showProcessingSpinner);
 
+        if (null === $attributes->get('method')) {
+            $attributes->set('method', 'post');
+        }
+
         if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
             $attributes->replace('enctype', 'multipart/form-data');
         }
@@ -81,18 +85,14 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->replace('data-processing-text', $behaviorSettings->processingText);
         }
 
-        if ($behaviorSettings->successMessage) {
-            $attributes->replace(
-                'data-success-message',
-                \Craft::t('app', $behaviorSettings->successMessage)
-            );
-        }
+        $attributes->replace(
+            'data-success-message',
+            \Craft::t('app', $behaviorSettings->getSuccessMessage())
+        );
 
-        if ($behaviorSettings->errorMessage) {
-            $attributes->replace(
-                'data-error-message',
-                \Craft::t('app', $behaviorSettings->errorMessage)
-            );
-        }
+        $attributes->replace(
+            'data-error-message',
+            \Craft::t('app', $behaviorSettings->getErrorMessage())
+        );
     }
 }

@@ -2,31 +2,38 @@ import type { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
+import cloneDeep from 'lodash.clonedeep';
 
 import type { Breadcrumb } from './breadcrumbs.types';
 
 type ContextType = {
   stack: Breadcrumb[];
-  pushCrumb: (crumb: Breadcrumb) => void;
-  popCrumb: () => void;
+  push: (crumb: Breadcrumb) => void;
+  pop: () => void;
+  update: (crumb: Breadcrumb) => void;
 };
 
 const BreadcrumbContext = createContext<ContextType>({
   stack: [],
-  pushCrumb: () => void {},
-  popCrumb: () => void {},
+  push: () => void {},
+  pop: () => void {},
+  update: () => void {},
 });
 
 export const useBreadcrumbs = (crumb: Breadcrumb): void => {
-  const { pushCrumb, popCrumb } = useContext(BreadcrumbContext);
+  const { push, pop, update } = useContext(BreadcrumbContext);
 
   useEffect(() => {
-    pushCrumb(crumb);
+    update(crumb);
+  }, [crumb]);
+
+  useEffect(() => {
+    push(crumb);
 
     return () => {
-      popCrumb();
+      pop();
     };
-  }, [crumb]);
+  }, []);
 };
 
 export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
@@ -34,12 +41,34 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [stack, setStack] = useState<Breadcrumb[]>([]);
 
-  const pushCrumb = (crumb: Breadcrumb): void => {
+  const push = (crumb: Breadcrumb): void => {
     setStack((stack) => [...stack, crumb]);
   };
 
-  const popCrumb = (): void => {
-    setStack((stack) => stack.slice(0, stack.length - 1));
+  const pop = (): void => {
+    setStack((stack) => stack.slice(0, -1));
+  };
+
+  const update = (crumb: Breadcrumb): void => {
+    setStack((stack) => {
+      const index = stack?.findIndex((c) => c.id === crumb.id);
+      if (index === undefined || index === -1 || !crumb) {
+        return stack;
+      }
+
+      if (
+        stack[index].label === crumb.label ||
+        stack[index].url === crumb.url
+      ) {
+        return stack;
+      }
+
+      const clone = cloneDeep(stack);
+      clone[index].url = crumb.url;
+      clone[index].label = crumb.label;
+
+      return clone;
+    });
   };
 
   useEffect(() => {
@@ -47,7 +76,7 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   }, []);
 
   return (
-    <BreadcrumbContext.Provider value={{ stack, pushCrumb, popCrumb }}>
+    <BreadcrumbContext.Provider value={{ stack, push, pop, update }}>
       {children}
       {createPortal(
         <nav aria-label="Breadcrumbs">

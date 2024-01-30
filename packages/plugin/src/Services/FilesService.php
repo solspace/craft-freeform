@@ -3,7 +3,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -345,7 +345,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
             $this->markAssetUnfinalized($assetId, $field, $formToken);
         } elseif ($asset) {
-            $errors = array_merge($errors, $asset->getErrors());
+            $errors = array_merge($errors, $asset->getErrorSummary());
             $asset = null;
         }
 

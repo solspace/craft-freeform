@@ -42,14 +42,15 @@ class GroupsController extends BaseApiController
             foreach ($groups as $group) {
                 $decodedTypes = JsonHelper::decode($group['types'], true);
 
-                foreach ($decodedTypes as $type) {
-                    $flattenedAssignedTypes[] = $type;
-                }
+                $flattenedAssignedTypes = array_merge(
+                    $flattenedAssignedTypes,
+                    array_values($decodedTypes),
+                );
 
-                $grouped[] = [
-                    ...$group,
-                    'types' => $decodedTypes,
-                ];
+                $array = $group->toArray();
+                $array['types'] = $decodedTypes;
+
+                $grouped[] = $array;
             }
 
             $unassignedTypes = array_diff(

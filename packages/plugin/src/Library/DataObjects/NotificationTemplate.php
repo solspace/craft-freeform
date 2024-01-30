@@ -3,7 +3,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -121,8 +121,6 @@ class NotificationTemplate implements IdentificatorInterface
                 $template->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
             }
         }
-
-        $template->includeAttachments = $includeAttachments;
 
         return $template;
     }

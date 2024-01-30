@@ -1,6 +1,7 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
+import { isEqual } from 'lodash';
 import type { FreeformHandler } from 'types/form';
 
 export const enum Operator {
@@ -56,7 +57,12 @@ class RuleHandler implements FreeformHandler {
     Array.from(this.form.elements).forEach((element) => {
       // Find matching rules that are relying on this field
       const matchedRules: Rule[] = rules.filter((rule) =>
-        rule.conditions.some((condition) => condition.field === (element as HTMLInputElement).name)
+        rule.conditions.some((condition) => {
+          const elementName = (element as HTMLInputElement).name;
+          const conditionName = condition.field;
+
+          return conditionName === elementName || `${conditionName}[]` === elementName;
+        })
       );
 
       if (matchedRules.length === 0) {
@@ -103,9 +109,7 @@ class RuleHandler implements FreeformHandler {
 
           // Trigger any related rules which are affected by this field
           // this allows for nested rules to work
-          rules
-            .filter((r) => r.conditions.some((condition) => condition.field === rule.field))
-            .forEach((r) => this.applyRule(r));
+          rules.filter((r) => r !== rule).forEach((r) => this.applyRule(r));
         };
 
       // Attach event listeners
@@ -159,48 +163,81 @@ class RuleHandler implements FreeformHandler {
       return;
     }
 
-    const field = this.form[condition.field];
-    const isCheckbox =
-      field instanceof RadioNodeList && field.length === 2 && (field[1] as HTMLInputElement)?.type === 'checkbox';
+    const field = this.form[condition.field] || this.form[`${condition.field}[]`];
+
+    const isCheckbox = fieldContainer.classList.contains('freeform-fieldtype-checkbox');
 
     // Default the value to `null` if the field is hidden, which will help
     // with triggering nested rules
     const isHidden = fieldContainer.dataset.hidden !== undefined;
-    let conditionValue = isHidden ? null : field.value;
-    if (isCheckbox && !isHidden) {
-      conditionValue = (field[1] as HTMLInputElement).checked ? '1' : '';
+
+    let currentValue: string | string[] | null = null;
+    if (isHidden) {
+      currentValue = null;
+    } else {
+      if (isCheckbox) {
+        const checkboxField = field[1] as HTMLInputElement;
+        currentValue = checkboxField.checked ? '1' : '';
+      } else if (field instanceof HTMLSelectElement && field.multiple) {
+        currentValue = Array.from(field.options)
+          .filter((option) => option.selected)
+          .map((option) => option.value);
+      } else if (field instanceof RadioNodeList) {
+        currentValue = Array.from(field)
+          .filter((checkbox) => (checkbox as HTMLInputElement).checked)
+          .map((checkbox) => (checkbox as HTMLInputElement).value);
+      }
+    }
+
+    if (typeof currentValue === 'object') {
+      switch (condition.operator) {
+        case Operator.Equals:
+          return isEqual(currentValue, [condition.value]);
+
+        case Operator.NotEquals:
+          return !isEqual(currentValue, [condition.value]);
+
+        case Operator.Contains:
+          return currentValue?.includes(condition.value);
+
+        case Operator.NotContains:
+          return !currentValue?.includes(condition.value);
+
+        default:
+          return false;
+      }
     }
 
     switch (condition.operator) {
       case Operator.Equals:
-        return `${conditionValue}`.toLowerCase() === `${condition.value}`.toLowerCase();
+        return `${currentValue}`.toLowerCase() === `${condition.value}`.toLowerCase();
 
       case Operator.NotEquals:
-        return `${conditionValue}`.toLowerCase() !== `${condition.value}`.toLowerCase();
+        return `${currentValue}`.toLowerCase() !== `${condition.value}`.toLowerCase();
 
       case Operator.GreaterThan:
-        return parseFloat(conditionValue) > parseFloat(condition.value);
+        return parseFloat(currentValue) > parseFloat(condition.value);
 
       case Operator.GreaterThanOrEquals:
-        return parseFloat(conditionValue) >= parseFloat(condition.value);
+        return parseFloat(currentValue) >= parseFloat(condition.value);
 
       case Operator.LessThan:
-        return parseFloat(conditionValue) < parseFloat(condition.value);
+        return parseFloat(currentValue) < parseFloat(condition.value);
 
       case Operator.LessThanOrEquals:
-        return parseFloat(conditionValue) <= parseFloat(condition.value);
+        return parseFloat(currentValue) <= parseFloat(condition.value);
 
       case Operator.Contains:
-        return `${conditionValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
+        return `${currentValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
 
       case Operator.NotContains:
-        return !`${conditionValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
+        return !`${currentValue}`.toLowerCase().includes(`${condition.value}`.toLowerCase());
 
       case Operator.StartsWith:
-        return `${conditionValue}`.toLowerCase().startsWith(`${condition.value}`.toLowerCase());
+        return `${currentValue}`.toLowerCase().startsWith(`${condition.value}`.toLowerCase());
 
       case Operator.EndsWith:
-        return `${conditionValue}`.toLowerCase().endsWith(`${condition.value}`.toLowerCase());
+        return `${currentValue}`.toLowerCase().endsWith(`${condition.value}`.toLowerCase());
 
       default:
         return false;

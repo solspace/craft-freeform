@@ -28,12 +28,8 @@ class DigestService extends Component
 
     public const TEMPLATE_PATH = '_templates/email/digest.twig';
 
-    public function triggerDigest(): void
+    public function triggerDigest(Carbon $refDate): void
     {
-        if (Freeform::isLocked(self::CACHE_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
-            // return;
-        }
-
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
@@ -48,11 +44,21 @@ class DigestService extends Component
 
         $devRecipients = $settingsService->getDigestRecipients();
         $devFrequency = $settingsService->getDigestFrequency();
-        $this->parseDigest(NotificationLogRecord::TYPE_DIGEST_DEV, $devRecipients, $devFrequency);
+        $this->parseDigest(
+            NotificationLogRecord::TYPE_DIGEST_DEV,
+            $devRecipients,
+            $devFrequency,
+            $refDate
+        );
 
         $clientRecipients = $settingsService->getClientDigestRecipients();
         $clientFrequency = $settingsService->getClientDigestFrequency();
-        $this->parseDigest(NotificationLogRecord::TYPE_DIGEST_CLIENT, $clientRecipients, $clientFrequency);
+        $this->parseDigest(
+            NotificationLogRecord::TYPE_DIGEST_CLIENT,
+            $clientRecipients,
+            $clientFrequency,
+            $refDate
+        );
     }
 
     public function sendDigest(RecipientCollection $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd): void
@@ -86,16 +92,14 @@ class DigestService extends Component
         \Craft::$app->view->setTemplateMode($templateMode);
     }
 
-    private function parseDigest(string $type, RecipientCollection $recipients, int $frequency): void
+    private function parseDigest(string $type, RecipientCollection $recipients, int $frequency, Carbon $refDate): void
     {
         if (empty($recipients->emailsToArray())) {
             return;
         }
 
-        $lookupStart = new Carbon('now');
-        $lookupStart->setTime(0, 0, 0);
-
-        $lookupEnd = $lookupStart->copy()->setTime(23, 59, 59);
+        $lookupStart = $refDate->clone()->startOfDay();
+        $lookupEnd = $refDate->copy()->endOfDay();
 
         if (-1 !== $frequency && $lookupStart->dayOfWeek !== $frequency) {
             return;
@@ -118,7 +122,7 @@ class DigestService extends Component
             $rangeStart = $lookupStart->copy()->subWeek();
         }
 
-        $rangeEnd = $lookupStart->copy()->subDay()->setTime(23, 59, 59);
+        $rangeEnd = $lookupStart->copy()->subDay()->endOfDay();
 
         $this->sendDigest($recipients, $type, $rangeStart, $rangeEnd);
 
@@ -139,7 +143,11 @@ class DigestService extends Component
 
         $data = [];
         foreach ($forms as $form) {
-            $data[] = ['form' => $form, 'submissions' => $submissions[$form->id] ?? 0, 'spam' => $spam[$form->id] ?? 0];
+            $data[] = [
+                'form' => $form,
+                'submissions' => $submissions[$form->getId()] ?? 0,
+                'spam' => $spam[$form->getId()] ?? 0,
+            ];
         }
 
         return $data;

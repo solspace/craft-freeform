@@ -3,7 +3,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -38,6 +38,7 @@ class Settings extends Model
     public const THROTTLING_TIME_FRAME_MINUTES = 'm';
     public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
+    public const SCRIPT_INSERT_LOCATION_HEADER = 'header';
     public const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
     public const SCRIPT_INSERT_LOCATION_FORM = 'form';
     public const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';

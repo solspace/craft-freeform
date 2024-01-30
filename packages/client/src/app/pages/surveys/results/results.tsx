@@ -26,7 +26,11 @@ export const SurveyResults: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb label={translate('Surveys')} url={'/forms'} />
+      <Breadcrumb
+        id="survey-results"
+        label={translate('Surveys')}
+        url={'/forms'}
+      />
       {isLoading && <ResultsLoadingSkeleton />}
       {!isLoading && (
         <div id="content-container">

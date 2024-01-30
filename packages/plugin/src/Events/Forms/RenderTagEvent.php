@@ -49,17 +49,19 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             $chunk = $isolatedTwig->render($chunk, $variables);
         }
 
-        if (self::POSITION_END === $position || !is_numeric($position)) {
-            $this->chunks[] = $chunk;
-        }
-
         if (self::POSITION_BEGINNING === $position) {
             array_unshift($this->chunks, $chunk);
+
+            return $this;
         }
 
         if (is_numeric($position)) {
             array_splice($this->chunks, $position, 0, $chunk);
+
+            return $this;
         }
+
+        $this->chunks[] = $chunk;
 
         return $this;
     }
@@ -73,9 +75,6 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     {
         $settings = Freeform::getInstance()->settings;
 
-        $isFooter = $settings->isFooterScripts();
-        $isForm = $settings->isFormScripts();
-
-        return !$isFooter && !$isForm;
+        return $settings->isManualScripts();
     }
 }

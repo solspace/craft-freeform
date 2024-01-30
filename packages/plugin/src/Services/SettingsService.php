@@ -3,7 +3,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -135,6 +135,11 @@ class SettingsService extends BaseService
     public function isFooterScripts(): bool
     {
         return Settings::SCRIPT_INSERT_LOCATION_FOOTER === $this->getSettingsModel()->scriptInsertLocation;
+    }
+
+    public function isHeaderScripts(): bool
+    {
+        return Settings::SCRIPT_INSERT_LOCATION_HEADER === $this->getSettingsModel()->scriptInsertLocation;
     }
 
     public function isFormScripts(): bool

@@ -12,6 +12,7 @@ export const Integrations: React.FC = () => {
   return (
     <IntegrationsWrapper>
       <Breadcrumb
+        id="integrations"
         label={translate('Integrations')}
         url={currentPath.pathname}
       />

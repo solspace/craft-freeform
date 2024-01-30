@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.0.5 - 2024-01-30
+
+### Changes
+- Updated form rendering to work when iterating over rows directly in the `form` object for better backward compatibility with the Freeform 4.x approach.
+- Updated `form.successMessage`, `form.errorMessage` and `field.rulesHtmlData` to have fallbacks (that are empty) to prevent hard errors in old formatting templates that use them.
+
+### Fixed
+- Fixed a bug where user permissions were not correctly being considered on form cards on the Forms dashboard page.
+- Fixed a bug where the weekly/daily email Digest feature was not always working correctly.
+- Fixed a visual bug where the breadcrumbs in the form builder would formulate incorrectly when refreshing the browser.
+
 ## 5.0.4 - 2024-01-29
 
 ### Added
@@ -11,7 +22,6 @@
 - Fixed a bug where Captchas would display on all pages instead of just the last page.
 - Fixed a bug where misconfigured options fields could crash the Freeform 4 migration.
 - Fixed a visual bug where the breadcrumbs in the form builder could formulate incorrectly when saving the form.
-
 
 ## 5.0.3 - 2024-01-26
 

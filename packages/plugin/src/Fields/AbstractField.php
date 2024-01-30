@@ -571,6 +571,14 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return false;
     }
 
+    /**
+     * @deprecated No longer used. Rules are automatically added to the form html as a separate dataset.
+     */
+    public function getRulesHtmlData(): string
+    {
+        return '';
+    }
+
     protected function getContainerOpeningTagHtml(): string
     {
         return '<div'.$this->getAttributes()->getContainer().'>';

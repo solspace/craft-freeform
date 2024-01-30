@@ -44,7 +44,7 @@ root.render(
         <EscapeStackProvider>
           <BreadcrumbProvider>
             <PortalProvider>
-              <Breadcrumb label="Freeform" url="/forms" />
+              <Breadcrumb id="root" label="Freeform" url="/forms" />
               <ManualStyles />
               <ReactQueryDevtools />
               <CpNavigation />

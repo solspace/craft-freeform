@@ -11,7 +11,11 @@ export const Rules: React.FC = () => {
 
   return (
     <RulesWrapper>
-      <Breadcrumb label={translate('Rules')} url={currentPath.pathname} />
+      <Breadcrumb
+        id="rules"
+        label={translate('Rules')}
+        url={currentPath.pathname}
+      />
       <MiniMap />
       <Outlet />
     </RulesWrapper>

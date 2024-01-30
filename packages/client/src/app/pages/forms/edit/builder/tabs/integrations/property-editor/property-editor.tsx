@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useResolvedPath } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import Bool from '@components/form-controls/control-types/bool/bool';
 import { useAppDispatch } from '@editor/store';
 import { integrationActions } from '@editor/store/slices/integrations';
@@ -23,6 +24,7 @@ type UrlParams = {
 
 export const PropertyEditor: React.FC = () => {
   const { id: integrationId } = useParams<UrlParams>();
+  const currentPath = useResolvedPath('');
   const dispatch = useAppDispatch();
 
   const { formId } = useParams();
@@ -46,6 +48,12 @@ export const PropertyEditor: React.FC = () => {
 
   return (
     <PropertyEditorWrapper>
+      <Breadcrumb
+        id="integration-editor"
+        label={name}
+        url={currentPath.pathname}
+      />
+
       <h1 title={handle}>{name}</h1>
       {!!description && <p>{description}</p>}
 

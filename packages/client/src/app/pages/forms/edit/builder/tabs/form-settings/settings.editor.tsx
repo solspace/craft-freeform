@@ -1,5 +1,6 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useResolvedPath } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import type { FormSettingNamespace } from '@ff-client/types/forms';
 import type { Section } from '@ff-client/types/properties';
@@ -13,6 +14,7 @@ import {
 
 export const SettingsEditor: React.FC = () => {
   const { sectionHandle } = useParams();
+  const currentPath = useResolvedPath('');
 
   const { data } = useQueryFormSettings();
   if (!data) {
@@ -38,6 +40,11 @@ export const SettingsEditor: React.FC = () => {
 
   return (
     <FormSettingsContainer>
+      <Breadcrumb
+        id="sub-settings"
+        label={selectedSection.label}
+        url={currentPath.pathname}
+      />
       <SectionHeader>{selectedSection?.label}</SectionHeader>
 
       <SectionContainer>

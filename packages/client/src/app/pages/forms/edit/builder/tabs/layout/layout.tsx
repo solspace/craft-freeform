@@ -15,7 +15,11 @@ export const LayoutEditor: React.FC = () => {
 
   return (
     <DragContextProvider>
-      <Breadcrumb label={translate('Layout')} url={currentPath.pathname} />
+      <Breadcrumb
+        id="layout"
+        label={translate('Layout')}
+        url={currentPath.pathname}
+      />
       <Grid>
         <Sidebar $noPadding>
           <PropertyEditor />

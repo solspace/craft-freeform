@@ -12,6 +12,7 @@ export const Notifications: React.FC = () => {
   return (
     <NotificationsWrapper>
       <Breadcrumb
+        id="notifications"
         label={translate('Notifications')}
         url={currentPath.pathname}
       />

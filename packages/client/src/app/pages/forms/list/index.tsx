@@ -21,7 +21,7 @@ export const ListProvider: React.FC = () => {
 
   return (
     <ModalProvider>
-      <Breadcrumb label="Forms" url="/forms" />
+      <Breadcrumb id="form-list" label="Forms" url="/forms" />
       <List />
     </ModalProvider>
   );

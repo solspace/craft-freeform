@@ -1,132 +1,98 @@
 import type Freeform from '@components/front-end/plugin/freeform';
-// @ts-ignore
-import ExpressionLanguage from 'expression-language';
 import type { FreeformHandler } from 'types/form';
 
-class Calculation implements FreeformHandler {
+/* eslint-disable no-undef */
+class DatePicker implements FreeformHandler {
+  loadedLocales: Record<string, HTMLScriptElement> = {};
   freeform: Freeform;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  expressionLanguage: any;
+
+  scriptAdded = false;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
-    this.expressionLanguage = new ExpressionLanguage();
 
-    this.reload();
+    if (!this.freeform.has('data-scripts-datepicker')) {
+      return;
+    }
+
+    if (!this.scriptAdded) {
+      const script = document.createElement('script');
+      script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js';
+      script.async = false;
+      script.defer = false;
+      script.addEventListener('load', () => {
+        this.reload();
+      });
+      document.body.appendChild(script);
+
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css';
+      document.body.appendChild(style);
+
+      this.scriptAdded = true;
+    }
   }
 
   reload = () => {
-    const pickers = this.freeform.form.querySelectorAll('input[type="calculation"]');
+    if (!this.freeform.has('data-scripts-datepicker')) {
+      return;
+    }
 
+    const pickers = this.freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
     pickers.forEach((picker) => {
-      const calculations = picker.getAttribute('data-calculations');
-
-      const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
-
-      // Get calculation logic
-      const calculationsLogic = calculations
-        .replace(getVariablesPattern, (_, variable) => variable)
-        .replace(/&ZeroWidthSpace;|\s|\u200B/g, ' ');
-
-      // Get variables
-      const variables: Record<string, string | number> = {};
-      let match;
-      while ((match = getVariablesPattern.exec(calculations)) !== null) {
-        variables[match[1]] = '';
-      }
-
-      const doCalculations = () => {
-        const allVariablesHaveValues = Object.values(variables).every((value) => value !== '');
-
-        if (allVariablesHaveValues) {
-          const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
-
-          if (picker instanceof HTMLInputElement) {
-            picker.value = result;
-          }
-        }
+      const locale = picker.getAttribute('data-datepicker-locale');
+      const options = {
+        disableMobile: true,
+        allowInput: true,
+        dateFormat: picker.getAttribute('data-datepicker-format'),
+        enableTime: picker.getAttribute('data-datepicker-enabletime') !== null,
+        noCalendar: picker.getAttribute('data-datepicker-enabledate') === null,
+        time_24hr: picker.getAttribute('data-datepicker-clock_24h') !== null,
+        minDate: picker.getAttribute('data-datepicker-min-date'),
+        maxDate: picker.getAttribute('data-datepicker-max-date'),
+        minuteIncrement: 1,
+        hourIncrement: 1,
+        static: picker.getAttribute('data-datepicker-static') !== null,
       };
 
-      Object.keys(variables).forEach((variable) => {
-        const elements = this.freeform.form.querySelectorAll(`input[name="${variable}"] , select[name="${variable}"]`);
+      const optionsEvent = this.freeform._dispatchEvent('flatpickr-before-init', { detail: options, options });
+      const assembledOptions = {
+        ...optionsEvent.detail,
+        ...optionsEvent.options,
+      };
 
-        if (elements.length === 1) {
-          const element = elements[0];
+      // @ts-expect-error: Flatpickr types are not included
+      const instance = flatpickr(picker, assembledOptions);
+      picker.setAttribute('autocomplete', 'off');
 
-          // Check if the element has a value
-          if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
-            if (element.value) {
-              if (element instanceof HTMLInputElement) {
-                if (element.type == 'number') {
-                  variables[variable] = Number(element.value);
-                } else {
-                  variables[variable] = element.value;
-                }
-              }
+      this.freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
 
-              if (element instanceof HTMLSelectElement) {
-                const valueAsNumber = Number(element.value);
+      if (!this.loadedLocales[locale]) {
+        const script = document.createElement('script');
+        script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`;
+        script.async = false;
+        script.defer = false;
+        script.dataset.loaded = '';
+        script.addEventListener('load', () => {
+          instance.set('locale', locale);
+          script.dataset.loaded = 'true';
+        });
+        document.body.appendChild(script);
 
-                if (!isNaN(valueAsNumber)) {
-                  variables[variable] = valueAsNumber;
-                } else {
-                  variables[variable] = element.value;
-                }
-              }
-            }
-          }
+        this.loadedLocales[locale] = script;
+      } else {
+        this.loadedLocales[locale].addEventListener('load', () => {
+          instance.set('locale', locale);
+          this.loadedLocales[locale].dataset.loaded = 'true';
+        });
 
-          // Handle calculation if it's input element
-          if (element instanceof HTMLInputElement) {
-            element.addEventListener('input', () => {
-              if (element.type == 'number') {
-                variables[variable] = Number(element.value);
-              } else {
-                variables[variable] = element.value;
-              }
-
-              // Get result when varables updated
-              doCalculations();
-            });
-          }
-
-          // Handle calculation if it's select element
-          if (element instanceof HTMLSelectElement) {
-            element.addEventListener('change', () => {
-              const valueAsNumber = Number(element.value);
-
-              if (!isNaN(valueAsNumber)) {
-                variables[variable] = valueAsNumber;
-              } else {
-                variables[variable] = element.value;
-              }
-
-              // Get result when varables updated
-              doCalculations();
-            });
-          }
-        } else {
-          elements.forEach((element) => {
-            // Handle Calculation for radius elements:
-            if (element instanceof HTMLInputElement) {
-              element.addEventListener('click', () => {
-                const valueAsNumber = Number(element.value);
-
-                if (!isNaN(valueAsNumber)) {
-                  variables[variable] = valueAsNumber;
-                } else {
-                  variables[variable] = element.value;
-                }
-
-                // Get result when varables updated
-                doCalculations();
-              });
-            }
-          });
+        if (this.loadedLocales[locale].dataset.loaded === 'true') {
+          instance.set('locale', locale);
         }
-      });
+      }
     });
   };
 }
 
-export default Calculation;
+export default DatePicker;

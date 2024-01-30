@@ -3,11 +3,8 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\Implementations\TextField;
-use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Calculation',
@@ -17,31 +14,24 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 )]
 class CalculationField extends TextField
 {
-    public const PLAIN_TEXT = 'plainText';
-    public const REGULAR_TEXT_INPUT = 'regularTextInput';
-    public const READ_ONLY_TEXT_INPUT = 'readOnlyTextInput';
-    public const HIDDEN = 'hidden';
-
+    public const DEFAULT_CALCULATIONS = '';
     protected string $instructions = '';
     protected string $placeholder = '';
 
-    #[Input\Select(
-        label: 'Appearance',
-        instructions: 'Use plain text or regular text or read only text or hide the field.',
-        order: 0,
-        options: [
-            self::PLAIN_TEXT => 'Plain text',
-            self::REGULAR_TEXT_INPUT => 'Regular text input',
-            self::READ_ONLY_TEXT_INPUT => 'Read only text input',
-            self::HIDDEN => 'Hidden',
-        ],
+    #[Input\CalculationBox(
+        label: 'Calculation Logic',
+        instructions: 'Type "@" or "{" to get the field for calculation.',
     )]
-    #[ValueTransformer(FieldAttributesTransformer::class)]
-    protected FieldAttributesCollection $attributes;
+    protected string $calculations = self::DEFAULT_CALCULATIONS;
 
     public function getType(): string
     {
         return self::TYPE_CALCULATION;
+    }
+
+    public function getCalculations(): string
+    {
+        return $this->calculations;
     }
 
     public function getInputHtml(): string
@@ -53,8 +43,9 @@ class CalculationField extends TextField
             ->setIfEmpty('type', $this->getType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('value', $this->getValue())
+            ->setIfEmpty('data-calculations', $this->getCalculations())
         ;
 
-        return '<input'.$attributes.' />';
+        return '<input'.$attributes.' readonly />';
     }
 }

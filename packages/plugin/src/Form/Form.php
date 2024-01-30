@@ -762,7 +762,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getIterator(): \ArrayIterator
     {
         if (isset($this->layout)) {
-            return $this->layout->getIterator();
+            return $this->layout->getPages()->current()->getIterator();
         }
 
         // This prevents Twig from failing a `is not empty` check

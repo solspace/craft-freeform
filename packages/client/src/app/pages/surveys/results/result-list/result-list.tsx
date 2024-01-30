@@ -16,7 +16,11 @@ export const ResultList: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb label={data.form.name} url={`/surveys/${data.form.handle}`} />
+      <Breadcrumb
+        id="survey-list"
+        label={data.form.name}
+        url={`/surveys/${data.form.handle}`}
+      />
       <Wrapper>
         <Heading>
           {translate('{count} Responses', { count: data.form.submissions })}

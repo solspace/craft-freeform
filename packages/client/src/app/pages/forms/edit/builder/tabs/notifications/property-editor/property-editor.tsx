@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useResolvedPath } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import {
   useQueryFormNotifications,
@@ -23,6 +24,7 @@ type UrlParams = {
 
 export const PropertyEditor: React.FC = () => {
   const { formId, uid } = useParams<UrlParams>();
+  const currentPath = useResolvedPath('');
   const { data: notificationTypes } = useQueryNotificationTypes();
 
   const { data, isFetching } = useQueryFormNotifications(
@@ -45,6 +47,11 @@ export const PropertyEditor: React.FC = () => {
 
   return (
     <PropertyEditorWrapper>
+      <Breadcrumb
+        id="notification"
+        label={notification.name}
+        url={currentPath.pathname}
+      />
       <Remove notification={notification} />
       <SettingsWrapper>
         {properties.map((property) => (

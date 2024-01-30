@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Digest;
 
+use Carbon\Carbon;
 use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\SendDigestJob;
@@ -35,7 +36,7 @@ class DigestBundle extends FeatureBundle
             return;
         }
 
-        $job = new SendDigestJob();
+        $job = new SendDigestJob(new Carbon('now'));
 
         \Craft::$app->getQueue()->push($job);
     }

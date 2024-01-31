@@ -84,9 +84,9 @@ class SubmitButtons extends FeatureBundle
                 $event->addChunk('<div'.$attributes->getButtonWrapper().'>');
 
                 match ($button) {
-                    'submit' => $event->addChunk($buttons->renderSubmitButton()),
-                    'back' => $event->addChunk($buttons->renderBackButton()),
-                    'save' => $event->addChunk($buttons->renderSaveButton()),
+                    'submit' => $event->addChunk($buttons->renderSubmit()),
+                    'back' => $event->addChunk($buttons->renderBack()),
+                    'save' => $event->addChunk($buttons->renderSave()),
                 };
 
                 $event->addChunk('</div>');

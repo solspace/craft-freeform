@@ -6,7 +6,6 @@
 
 {# Render the opening form tag #}
 {{ form.renderTag({
-    disable: ['submitButtons'],
     attributes: {
         row: { class: "row" },
         success: { class: "alert alert-success" },
@@ -117,19 +116,6 @@
 {# Display form field rows and columns #}
 {{ rowMacro.render(form.rows, form) }}
 
-<pre>
-    {{ form.pages.current.buttons.submitRenderProps({'data-crazy': 'props'}) }}
-</pre>
-{{ form.pages.current.buttons.renderSubmit({ style: 'color: red;' }) }}
-
-<pre>
-    {{ form.pages.current.buttons.backRenderProps }}
-</pre>
-{{ form.pages.current.buttons.renderBack }}
-
-<pre>
-    {{ form.pages.current.buttons.saveRenderProps }}
-</pre>
 {{ form.pages.current.buttons.renderSave }}
 
 {# Render the closing form tag #}

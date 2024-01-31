@@ -609,7 +609,16 @@ class FieldGenerator extends AbstractGenerator
         return [
             'name' => 'value'.($isMultiple ? 's' : ''),
             'type' => ($isMultiple ? Type::listOf(Type::string()) : Type::string()),
-            'description' => "Field's default value",
+            'description' => "Field's value",
+            'resolve' => function ($source) {
+                $value = $source->getValue();
+
+                if (empty($value)) {
+                    $value = $source->getDefaultValue();
+                }
+
+                return $value;
+            },
         ];
     }
 }

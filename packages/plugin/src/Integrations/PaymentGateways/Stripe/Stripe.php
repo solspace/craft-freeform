@@ -205,7 +205,7 @@ class Stripe extends PaymentGatewayIntegration
         if (!isset($clients[$this->getId()])) {
             $clients[$this->getId()] = new StripeClient($this->getSecretKey());
 
-            \Stripe\Stripe::setAppInfo(
+            StripeAPI\Stripe::setAppInfo(
                 'solspace/craft-freeform',
                 Freeform::getInstance()->getVersion(),
                 'https://docs.solspace.com/craft/freeform'

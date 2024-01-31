@@ -50,6 +50,10 @@ class SubmitButtons extends FeatureBundle
     public function renderButtons(RenderTagEvent $event): void
     {
         $form = $event->getForm();
+        if ($form->isDisabled()->submitButtons) {
+            return;
+        }
+
         $page = $form->getCurrentPage();
 
         $buttons = $page->getButtons();
@@ -82,9 +86,9 @@ class SubmitButtons extends FeatureBundle
                 $event->addChunk('<div'.$attributes->getButtonWrapper().'>');
 
                 match ($button) {
-                    'submit' => $this->renderSubmitButton($event, $buttons, $attributes),
-                    'back' => $this->renderBackButton($event, $buttons, $attributes),
-                    'save' => $this->renderSaveButton($event, $buttons, $attributes),
+                    'submit' => $event->addChunk($buttons->renderSubmitButton()),
+                    'back' => $event->addChunk($buttons->renderBackButton()),
+                    'save' => $event->addChunk($buttons->renderSaveButton()),
                 };
 
                 $event->addChunk('</div>');

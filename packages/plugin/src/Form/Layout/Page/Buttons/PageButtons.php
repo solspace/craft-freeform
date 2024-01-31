@@ -11,6 +11,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class PageButtons
@@ -234,5 +235,61 @@ class PageButtons
     public function getNotificationTemplate(): ?NotificationTemplate
     {
         return $this->notificationTemplate;
+    }
+
+    public function getSubmitRenderProps(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getSubmit()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'submit')
+            ->replace('name', self::INPUT_NAME_SUBMIT)
+            ->replace('type', 'submit')
+        ;
+    }
+
+    public function renderSubmit(array $customAttributes = []): string
+    {
+        $attributes = $this->getSubmitRenderProps($customAttributes);
+
+        return '<button'.$attributes.'>'.htmlspecialchars($this->getSubmitLabel()).'</button>';
+    }
+
+    public function getBackRenderProps(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getBack()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'back')
+            ->replace('name', self::INPUT_NAME_PREVIOUS_PAGE)
+            ->replace('type', 'submit')
+        ;
+    }
+
+    public function renderBack(array $customAttributes = []): string
+    {
+        $attributes = $this->getBackRenderProps($customAttributes);
+
+        return '<button'.$attributes.'>'.htmlspecialchars($this->getBackLabel()).'</button>';
+    }
+
+    public function getSaveRenderProps(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getSave()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'save')
+            ->replace('type', 'submit')
+        ;
+    }
+
+    public function renderSave(array $customAttributes = []): string
+    {
+        $attributes = $this->getSaveRenderProps($customAttributes);
+
+        return '<button'.$attributes.'>'.htmlspecialchars($this->getSaveLabel()).'</button>';
     }
 }

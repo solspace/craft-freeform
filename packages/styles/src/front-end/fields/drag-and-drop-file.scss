@@ -40,7 +40,7 @@ $color-fill: #077bff;
   cursor: pointer;
 
   input[type='file'] {
-    display: none;
+    display: none !important;
   }
 
   [data-placeholder] {

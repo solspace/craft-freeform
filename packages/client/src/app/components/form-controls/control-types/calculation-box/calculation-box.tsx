@@ -76,20 +76,21 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
             templates: {
               tag: function (tagData) {
                 return `
-                  <tag
-                    title="${tagData.value}"
-                    contenteditable="false"
-                    spellcheck="false"
-                    class="tagify__tag"
-                    ${this.getAttributes(tagData)}
-                  >
-                  <x title="remove tag" class="tagify__tag__removeBtn"></x>
-                    <div class="tagify__tag-text">
-                      <span class="sr-only-value">field:</span>
-                      ${tagData.value}${' '}
-                    </div>
-                  </tag>
-               `;
+                <tag
+                  title="${tagData.value}"
+                  ontenteditable="false"
+                  spellcheck="false"
+                  class="tagify__tag"
+                  ${this.getAttributes(tagData)}
+                >
+                <x title="remove tag" class="tagify__tag__removeBtn"></x>
+                  <div>
+                    <p class="tagify__tag-text">
+                      <span class="sr-only-value">${' '}field:</span>${
+                        tagData.value
+                      }${' '}</p>
+                  </div>
+                </tag>`;
               },
             },
             whitelist: handles,

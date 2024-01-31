@@ -6,8 +6,6 @@ use craft\helpers\ArrayHelper;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Layout\Page\Buttons\ButtonAttributesCollection;
-use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Processors\PageButtonRenderOptionProcessor;
 use yii\base\Event;
@@ -97,65 +95,5 @@ class SubmitButtons extends FeatureBundle
             $event->addChunk('</div>');
         }
         $event->addChunk('</div>');
-    }
-
-    private function renderSubmitButton(
-        RenderTagEvent $event,
-        PageButtons $buttons,
-        ButtonAttributesCollection $attributes
-    ): void {
-        $attrs = $attributes
-            ->getSubmit()
-            ->clone()
-            ->replace('data-freeform-action', 'submit')
-            ->replace('name', PageButtons::INPUT_NAME_SUBMIT)
-            ->replace('type', 'submit')
-        ;
-
-        $event->addChunk(
-            '<button '.$attrs.'>'.htmlspecialchars($buttons->getSubmitLabel()).'</button>'
-        );
-    }
-
-    private function renderBackButton(
-        RenderTagEvent $event,
-        PageButtons $buttons,
-        ButtonAttributesCollection $attributes
-    ): void {
-        if (!$buttons->isBack()) {
-            return;
-        }
-
-        $attrs = $attributes
-            ->getBack()
-            ->replace('data-freeform-action', 'back')
-            ->replace('name', PageButtons::INPUT_NAME_PREVIOUS_PAGE)
-            ->replace('type', 'submit')
-        ;
-
-        $event->addChunk(
-            '<button '.$attrs.'>'.htmlspecialchars($buttons->getBackLabel()).'</button>'
-        );
-    }
-
-    private function renderSaveButton(
-        RenderTagEvent $event,
-        PageButtons $buttons,
-        ButtonAttributesCollection $attributes
-    ): void {
-        if (!$buttons->isSave()) {
-            return;
-        }
-
-        $attrs = $attributes
-            ->getSave()
-            ->clone()
-            ->replace('data-freeform-action', 'save')
-            ->replace('type', 'submit')
-        ;
-
-        $event->addChunk(
-            '<button '.$attrs.'>'.htmlspecialchars($buttons->getSaveLabel()).'</button>'
-        );
     }
 }

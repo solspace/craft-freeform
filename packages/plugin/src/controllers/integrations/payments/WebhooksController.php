@@ -5,7 +5,9 @@ namespace Solspace\Freeform\controllers\integrations\payments;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
+use Stripe\Error\SignatureVerification;
 use Stripe\Event;
+use Stripe\Webhook;
 use yii\web\HttpException;
 
 // TODO: create abstract controller
@@ -39,10 +41,10 @@ class WebhooksController extends BaseController
         $sigHeader = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? '';
 
         try {
-            $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
+            $event = Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
         } catch (\UnexpectedValueException $e) {
             throw new HttpException(400, Freeform::t('Invalid payload'));
-        } catch (\Stripe\Error\SignatureVerification $e) {
+        } catch (SignatureVerification $e) {
             throw new HttpException(400, Freeform::t('Invalid signature'));
         }
 

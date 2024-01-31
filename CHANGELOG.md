@@ -1,8 +1,23 @@
 # Solspace Freeform Changelog
 
+## 5.0.6 - 2024-01-31
+
+### Added
+- Added the ability to manually render Submit buttons in forms.
+
+### Changed
+- Adjusted the _Manual Form_ extra template in the demo templates to use the new manual Submit button approach.
+
+### Fixed
+- Fixed a bug where the **replace** syntax for template overrides (e.g. `=class`) was not working correctly.
+- Fixed a bug where `0` was not considered a valid value for a Number field with the `required` validator.
+- Fixed a bug where regular File Upload fields were not working correctly if the field was set to be required.
+- Fixed a bug where field values/default values were not returning correctly in GraphQL queries.
+- Fixed a bug where some sample formatting templates did not correctly style the File Upload Drag & Drop fields.
+
 ## 5.0.5 - 2024-01-30
 
-### Changes
+### Changed
 - Updated form rendering to work when iterating over rows directly in the `form` object for better backward compatibility with the Freeform 4.x approach.
 - Updated `form.successMessage`, `form.errorMessage` and `field.rulesHtmlData` to have fallbacks (that are empty) to prevent hard errors in old formatting templates that use them.
 

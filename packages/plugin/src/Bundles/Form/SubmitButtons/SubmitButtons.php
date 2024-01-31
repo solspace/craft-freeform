@@ -81,6 +81,14 @@ class SubmitButtons extends FeatureBundle
                     continue;
                 }
 
+                if ('back' === $button && !$buttons->isBack()) {
+                    continue;
+                }
+
+                if ('save' === $button && !$buttons->isSave()) {
+                    continue;
+                }
+
                 $event->addChunk('<div'.$attributes->getButtonWrapper().'>');
 
                 match ($button) {

@@ -80,7 +80,7 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements OAuth2Co
         return $this->getProcessedValue($this->appId);
     }
 
-    protected function getIpField(): string
+    protected function getIpField(): ?string
     {
         return $this->getProcessedValue($this->ipField);
     }

@@ -68,7 +68,7 @@ class DynamicTemplateRecipients extends FeatureBundle
             ->getMailer()
             ->sendEmail(
                 $form,
-                $recipients,
+                $recipientCollection,
                 $fields,
                 $notificationTemplate,
                 $submission

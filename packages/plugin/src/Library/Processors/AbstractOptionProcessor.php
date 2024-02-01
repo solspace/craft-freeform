@@ -18,8 +18,9 @@ abstract class AbstractOptionProcessor
 
         $property->setAccessible(true);
 
-        $transformer = AttributeHelper::findAttribute($property, ValueTransformer::class);
+        $originalValue = $value;
 
+        $transformer = AttributeHelper::findAttribute($property, ValueTransformer::class);
         if ($transformer instanceof ValueTransformer) {
             $instance = $this->getContainer()->get($transformer->className);
             if ($instance) {
@@ -28,7 +29,7 @@ abstract class AbstractOptionProcessor
         }
 
         if ($value instanceof Attributes) {
-            $property->getValue($object)->merge($value);
+            $property->getValue($object)->merge($originalValue);
 
             return;
         }

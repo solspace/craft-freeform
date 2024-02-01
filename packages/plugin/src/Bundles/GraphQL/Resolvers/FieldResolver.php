@@ -28,7 +28,7 @@ class FieldResolver extends Resolver
             if ($ids && !\in_array($field->getId(), $ids)) {
                 unset($fields[$index]);
             }
-            if ($handles && !\in_array($field->getHandle(), $handles)) {
+            if ($handles && !\in_array($field->getContentGqlHandle(), $handles)) {
                 unset($fields[$index]);
             }
         }

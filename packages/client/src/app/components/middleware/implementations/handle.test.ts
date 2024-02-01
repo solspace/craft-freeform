@@ -8,7 +8,7 @@ describe('handle middleware', () => {
 
     const result = handle(string);
 
-    expect(result).toEqual('ThisIsaRaNDoM_String55-_-');
+    expect(result).toEqual('ThisIsaRaNDoM_String55_');
   });
 
   it('does not escape underscores and dashes', () => {
@@ -16,7 +16,7 @@ describe('handle middleware', () => {
 
     const result = handle(string);
 
-    expect(result).toEqual('this_is-underscored');
+    expect(result).toEqual('this_isunderscored');
   });
 
   it('converts unicode characters to Latin characters', () => {

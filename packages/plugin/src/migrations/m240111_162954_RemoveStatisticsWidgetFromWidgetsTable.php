@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use craft\records\Widget;
 
 /**
  * m240111_162954_RemoveStatisticsWidgetFromWidgetsTable migration.
@@ -11,7 +12,7 @@ class m240111_162954_RemoveStatisticsWidgetFromWidgetsTable extends Migration
 {
     public function safeUp(): bool
     {
-        \craft\records\Widget::deleteAll(['type' => 'Solspace\\Freeform\\Widgets\\StatisticsWidget']);
+        Widget::deleteAll(['type' => 'Solspace\\Freeform\\Widgets\\StatisticsWidget']);
 
         return true;
     }

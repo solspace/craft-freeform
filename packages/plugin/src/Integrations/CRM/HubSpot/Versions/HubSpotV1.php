@@ -311,55 +311,55 @@ class HubSpotV1 extends BaseHubSpotIntegration
         if ($this->companyProps) {
             try {
                 $companyDomain = $this->getDomainFieldValue($this->companyProps);
-    
+
                 if (!$companyDomain && $contactEmail) {
                     $companyDomain = $this->extractDomainFromEmail($contactEmail);
-    
+
                     if ($companyDomain) {
                         $this->companyProps = $this->addCompanyDomainToCompanyProps($companyDomain, $this->companyProps);
                     }
                 }
-    
+
                 if ($companyDomain) {
                     $queryProperties = ['domain'];
-    
+
                     if ($this->appendCompanyFields) {
                         $queryProperties = array_merge($queryProperties, $this->appendCompanyFields);
                     }
-    
+
                     $response = $this->getCompanyByDomain($companyDomain, $client, $queryProperties);
-    
+
                     $json = json_decode((string) $response->getBody());
-    
+
                     if (\count($json->results) > 0) {
                         $company = $json->results[0];
-    
+
                         if (isset($company->companyId)) {
                             $this->companyId = $company->companyId;
                         }
-    
+
                         if ($this->appendCompanyFields && isset($company->properties)) {
                             $this->companyProps = $this->appendValuesToCompanyProperties($this->companyProps, $this->appendCompanyFields, $company);
                         }
                     }
                 }
-    
+
                 if ($this->companyId) {
                     $response = $this->updateCompanyById($this->companyId, $client, $this->companyProps);
                 } else {
                     $response = $this->createCompany($client, $this->companyProps);
                 }
-    
+
                 $json = json_decode((string) $response->getBody());
-    
+
                 if (isset($json->companyId)) {
                     $this->companyId = $json->companyId;
                 }
-    
+
                 if (isset($json->properties->name->value)) {
                     $this->companyName = $json->properties->name->value;
                 }
-                
+
                 $this->triggerAfterResponseEvent(self::CATEGORY_COMPANY, $response);
             } catch (\Exception $exception) {
                 $this->processException($exception, self::LOG_CATEGORY);
@@ -414,7 +414,11 @@ class HubSpotV1 extends BaseHubSpotIntegration
 
                     if (isset($json->status, $json->message)) {
                         if ('error' === $json->status && 'contact does not exist' === $json->message) {
-                            $response = $this->createContact($client, $this->contactProps);
+                            try {
+                                $response = $this->createContact($client, $this->contactProps);
+                            } catch (\Exception $exception) {
+                                $this->processException($exception, self::LOG_CATEGORY);
+                            }
 
                             $json = json_decode((string) $response->getBody());
 
@@ -429,6 +433,8 @@ class HubSpotV1 extends BaseHubSpotIntegration
                     } else {
                         $this->processException($exception, self::LOG_CATEGORY);
                     }
+                } else {
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             } catch (\Exception $exception) {
                 $this->processException($exception, self::LOG_CATEGORY);
@@ -440,28 +446,28 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 $deal = [
                     'properties' => $this->dealProps,
                 ];
-        
+
                 if ($this->companyId || $this->contactId) {
                     $deal['associations'] = [];
-        
+
                     if ($this->companyId) {
                         $deal['associations']['associatedCompanyIds'] = [
                             $this->companyId,
                         ];
                     }
-        
+
                     if ($this->contactId) {
                         $deal['associations']['associatedVids'] = [
                             $this->contactId,
                         ];
                     }
                 }
-        
+
                 $response = $client->post(
                     $this->getEndpoint('/deals/v1/deal'),
                     ['json' => $deal],
                 );
-        
+
                 $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
             } catch (\Exception $exception) {
                 $this->processException($exception, self::LOG_CATEGORY);

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.0.6.1 - 2024-02-01
+
+### Fixed
+- Fixed a bug where integration settings pages were not being displayed in the navigation when `allowAdminChanges` was set to `false`.
+- Fixed a bug where the Dynamic Template Notifications feature was not working correctly.
+
 ## 5.0.6 - 2024-01-31
 
 ### Added

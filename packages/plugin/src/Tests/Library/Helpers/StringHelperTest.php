@@ -46,9 +46,9 @@ class StringHelperTest extends TestCase
 
     public function testDashesToCamelCase()
     {
-        $this->assertSame(
-            '-my--test-worked-',
-            StringHelper::dashesToCamelCase('myTestWorked', true)
+        $this->assertEquals(
+            'myTestWorked',
+            StringHelper::dashesToCamelCase('-my--test-worked-')
         );
     }
 }

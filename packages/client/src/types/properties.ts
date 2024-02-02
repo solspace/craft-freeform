@@ -162,7 +162,9 @@ export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type CalculationProperty = BaseProperty<
   string,
   PropertyType.Calculation
->;
+> & {
+  availableFieldTypes: string[];
+};
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   dateFormat?: string;
   minDate?: string;

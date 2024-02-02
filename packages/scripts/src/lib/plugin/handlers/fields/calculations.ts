@@ -28,7 +28,7 @@ class Calculation implements FreeformHandler {
   };
 
   reload = () => {
-    const pickers = this.freeform.form.querySelectorAll('input[type="calculation"]');
+    const pickers = this.freeform.form.querySelectorAll('input[data-calculations]');
 
     pickers.forEach((picker) => {
       const calculations = picker.getAttribute('data-calculations');

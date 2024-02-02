@@ -21,20 +21,7 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   const [calculationBoxValue, setCalculationBoxValue] = useState('');
   const allFields = useSelector(fieldSelectors.all);
   const handles = allFields
-    .filter((item) =>
-      [
-        'Solspace\\Freeform\\Fields\\Implementations\\NumberField',
-        'Solspace\\Freeform\\Fields\\Implementations\\TextField',
-        'Solspace\\Freeform\\Fields\\Implementations\\TextareaField',
-        'Solspace\\Freeform\\Fields\\Implementations\\DropdownField',
-        'Solspace\\Freeform\\Fields\\Implementations\\RadiosField',
-        'Solspace\\Freeform\\Fields\\Implementations\\HiddenField',
-        'Solspace\\Freeform\\Fields\\Implementations\\Pro\\InvisibleField',
-        'Solspace\\Freeform\\Fields\\Implementations\\Pro\\OpinionScaleField',
-        'Solspace\\Freeform\\Fields\\Implementations\\Pro\\RatingField',
-        'Solspace\\Freeform\\Fields\\Implementations\\Pro\\RegexField',
-      ].includes(item.typeClass)
-    )
+    .filter((item) => property.availableFieldTypes.includes(item.typeClass))
     .map((item) => item.properties.handle);
 
   const generateValue = (value: string): string => {

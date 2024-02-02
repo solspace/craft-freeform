@@ -255,16 +255,13 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
-        $notificationTypes = [FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS, FreeformFieldInterface::TYPE_EMAIL];
-        if (\in_array($typeName, $notificationTypes, true)) {
+        if (FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS === $typeName) {
             $fieldDefinitions['notificationId'] = [
                 'name' => 'notificationId',
                 'type' => Type::string(),
                 'description' => 'The ID of the DB notification or the string filename of the file based notification.',
             ];
-        }
 
-        if (FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS === $typeName) {
             $fieldDefinitions['showAsRadio'] = [
                 'name' => 'showAsRadio',
                 'type' => Type::boolean(),

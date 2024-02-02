@@ -9,9 +9,12 @@ use craft\events\RegisterGqlTypesEvent;
 use craft\services\Gql;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsAttributesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\NotificationTemplateInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
@@ -59,6 +62,9 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = AttributeInterface::class;
                 $event->types[] = AttributesInterface::class;
                 $event->types[] = SubmissionInterface::class;
+                $event->types[] = ButtonsInterface::class;
+                $event->types[] = ButtonsAttributesInterface::class;
+                $event->types[] = NotificationTemplateInterface::class;
             }
         );
 

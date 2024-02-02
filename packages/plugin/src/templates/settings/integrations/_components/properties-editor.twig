@@ -16,7 +16,7 @@
         label: "Service Provider"|t('freeform'),
         id: 'class',
         name: 'class',
-        options: serviceProviderTypes|map(p => p.name),
+        options: serviceProviderTypes|map(p => p.name ~ (p.version ? ' ('~p.version~')')),
         value: integration.class,
         errors: integration.getErrors('class'),
         required: true,

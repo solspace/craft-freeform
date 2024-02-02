@@ -20,6 +20,11 @@ class IntegrationClientProvider
             $event,
         );
 
-        return new Client($event->getConfig());
+        $config = $event->getConfig();
+        if ($event->getStack()) {
+            $config['handler'] = $event->getStack();
+        }
+
+        return new Client($config);
     }
 }

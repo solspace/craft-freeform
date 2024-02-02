@@ -12,4 +12,13 @@
 
 namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
-interface HubSpotIntegrationInterface {}
+interface HubSpotIntegrationInterface
+{
+    public function getAccessToken(): ?string;
+
+    public function getIpField(): ?string;
+
+    public function getAppendContactData(): bool;
+
+    public function getAppendCompanyData(): bool;
+}

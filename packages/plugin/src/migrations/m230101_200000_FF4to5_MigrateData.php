@@ -5,7 +5,6 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
-use craft\helpers\StringHelper as CraftStringHelper;
 use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -859,8 +858,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $metadata = json_decode($record->metadata, true);
         $handle = $metadata['handle'];
-        $handle = CraftStringHelper::toKebabCase($handle, '_');
-        $handle = CraftStringHelper::truncate($handle, 50, '');
+        $handle = StringHelper::toKebabCase($handle, '_');
+        $handle = StringHelper::truncate($handle, 50, '');
         $handle = trim($handle, '-_');
 
         $newColumnName = $handle.'_'.$record->id;

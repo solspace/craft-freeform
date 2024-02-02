@@ -594,14 +594,15 @@ class FieldGenerator extends AbstractGenerator
         return $fieldDefinitions;
     }
 
-    private static function getFieldValueDefinitions(string $typeName): array
+    private static function getFieldValueDefinitions(string $typeName): null|array|string
     {
         $multipleValues = [
             FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS,
-            FreeformFieldInterface::TYPE_EMAIL,
             FreeformFieldInterface::TYPE_CHECKBOX_GROUP,
             FreeformFieldInterface::TYPE_MULTIPLE_SELECT,
             FreeformFieldInterface::TYPE_TABLE,
+            FreeformFieldInterface::TYPE_FILE,
+            FreeformFieldInterface::TYPE_FILE_DRAG_AND_DROP,
         ];
 
         $isMultiple = \in_array($typeName, $multipleValues, true);

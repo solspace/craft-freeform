@@ -12,30 +12,37 @@
 
 namespace Solspace\Freeform\Integrations\CRM\HubSpot\EventListeners;
 
-use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Integrations\CRM\HubSpot\HubSpotIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
-class HubSpotTokenListener extends FeatureBundle
+class HubSpotClientConfiguration extends FeatureBundle
 {
     public function __construct()
     {
         Event::on(
-            OAuth2ConnectorInterface::class,
-            OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
-            [$this, 'onInitAuthentication']
+            IntegrationClientProvider::class,
+            IntegrationClientProvider::EVENT_GET_CLIENT,
+            [$this, 'configureClient']
         );
     }
 
-    public function onInitAuthentication(InitiateAuthenticationFlowEvent $event): void
+    public function configureClient(GetAuthorizedClientEvent $event): void
     {
         $integration = $event->getIntegration();
         if (!$integration instanceof HubSpotIntegrationInterface) {
             return;
         }
 
-        $event->add('scope', 'crm.objects.contacts.read crm.objects.contacts.write crm.objects.companies.read crm.objects.companies.write crm.objects.deals.read crm.objects.deals.write');
+        $event->addConfig(
+            [
+                'headers' => [
+                    'Authorization' => 'Bearer '.$integration->getAccessToken(),
+                    'Content-Type' => 'application/json',
+                ],
+            ],
+        );
     }
 }

@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.0.7 - 2024-02-02
+
+### Added
+- Added support for querying page Submit buttons in GraphQL.
+
+### Changed
+- Updated the HubSpot integration to use v3 of the API and the private app token approach instead of OAuth flow.
+
+### Fixed
+- Fixed a bug where hyphens were allowed in form and field handles.
+- Fixed a bug where the GraphQL cache was not resetting after making form updates.
+- Fixed a bug where `maxLength` was included in Text and Textarea field types in GraphQL when not applicable.
+
 ## 5.0.6.1 - 2024-02-01
 
 ### Fixed

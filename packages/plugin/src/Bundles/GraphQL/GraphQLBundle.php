@@ -23,6 +23,8 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\SubmissionCaptcha
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
+use Solspace\Freeform\controllers\api\FormsController;
+use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -130,5 +132,30 @@ class GraphQLBundle extends FeatureBundle
                 $event->mutations[$group] = $mutations;
             }
         );
+
+        Event::on(
+            FormsController::class,
+            FormsController::EVENT_CREATE_FORM,
+            function (PersistFormEvent $event) {
+                if (!$event->hasErrors()) {
+                    $this->flushCaches();
+                }
+            }
+        );
+
+        Event::on(
+            FormsController::class,
+            FormsController::EVENT_UPSERT_FORM,
+            function (PersistFormEvent $event) {
+                if (!$event->hasErrors()) {
+                    $this->flushCaches();
+                }
+            }
+        );
+    }
+
+    private function flushCaches(): void
+    {
+        \Craft::$app->gql->flushCaches();
     }
 }

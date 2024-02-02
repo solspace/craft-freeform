@@ -90,21 +90,7 @@ class FieldGenerator extends AbstractGenerator
             'value' => self::getFieldValueDefinitions($typeName),
         ];
 
-        if (FreeformFieldInterface::TYPE_TEXT === $typeName) {
-            $fieldDefinitions['maxLength'] = [
-                'name' => 'maxLength',
-                'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
-            ];
-        }
-
         if (FreeformFieldInterface::TYPE_TEXTAREA === $typeName) {
-            $fieldDefinitions['maxLength'] = [
-                'name' => 'maxLength',
-                'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
-            ];
-
             $fieldDefinitions['rows'] = [
                 'name' => 'rows',
                 'type' => Type::int(),

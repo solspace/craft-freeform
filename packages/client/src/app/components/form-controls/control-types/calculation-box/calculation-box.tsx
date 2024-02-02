@@ -78,7 +78,7 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
                 return `
                 <tag
                   title="${tagData.value}"
-                  ontenteditable="false"
+                  contenteditable="false"
                   spellcheck="false"
                   class="tagify__tag"
                   ${this.getAttributes(tagData)}

@@ -2,12 +2,14 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use GuzzleHttp\HandlerStack;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class GetAuthorizedClientEvent extends ArrayableEvent
 {
     private array $config = [];
+    private ?HandlerStack $stack = null;
 
     public function __construct(private IntegrationInterface $integration)
     {
@@ -34,6 +36,22 @@ class GetAuthorizedClientEvent extends ArrayableEvent
     public function addConfig(array $config): self
     {
         $this->config = array_merge($this->config, $config);
+
+        return $this;
+    }
+
+    public function getStack(): ?HandlerStack
+    {
+        return $this->stack;
+    }
+
+    public function pushToStack(callable $middleware, string $name = ''): self
+    {
+        if (null === $this->stack) {
+            $this->stack = HandlerStack::create();
+        }
+
+        $this->stack->push($middleware, $name);
 
         return $this;
     }

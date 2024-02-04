@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
 export const CalculationBoxWrapper = styled.div`
+  .tagify__input {
+    min-height: 50px;
+    background-color: #fff;
+  }
+
   .sr-only-value {
     position: absolute;
     width: 1px;

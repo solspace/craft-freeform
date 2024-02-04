@@ -4,12 +4,19 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
+use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
+use Solspace\Freeform\Fields\Traits\EncryptionTrait;
+use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 
 #[Type(
     name: 'Calculation',
@@ -17,8 +24,12 @@ use Solspace\Freeform\Fields\Implementations\TextField;
     iconPath: __DIR__.'/../Icons/calculator.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/calculation.ejs',
 )]
-class CalculationField extends TextField
+class CalculationField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, EncryptionInterface
 {
+    use DefaultTextValueTrait;
+    use EncryptionTrait;
+    use PlaceholderTrait;
+
     private const DEFAULT_CALCULATIONS = '';
 
     protected string $instructions = '';
@@ -50,6 +61,17 @@ class CalculationField extends TextField
     public function getCalculations(): string
     {
         return $this->calculations;
+    }
+
+    public function getValue(): mixed
+    {
+        $value = parent::getValue();
+        $value = str_replace(',', '.', $value);
+        if (is_numeric($value)) {
+            $value += 0;
+        }
+
+        return $value;
     }
 
     public function getInputHtml(): string

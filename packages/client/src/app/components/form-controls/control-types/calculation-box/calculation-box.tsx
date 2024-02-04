@@ -82,7 +82,6 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
             },
             whitelist: handles,
           }}
-          className="myTags"
           onChange={onChange}
           value={calculationBoxValue}
         />

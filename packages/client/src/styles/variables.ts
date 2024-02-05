@@ -63,6 +63,7 @@ export const colors = {
   gray050: 'var(--gray-050)', //#f3f7fc
   gray100: 'var(--gray-100)', //#e4edf6
   gray200: 'var(--gray-200)', //#cdd8e4
+  gray250: '#b4c3d3', //#b4c3d3
   gray300: 'var(--gray-300)', //#9aa5b1
   gray350: 'var(--gray-350)', //#8b96a2
   gray400: 'var(--gray-400)', //#7b8793

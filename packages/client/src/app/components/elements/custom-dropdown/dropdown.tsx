@@ -151,7 +151,9 @@ export const Dropdown: React.FC<DropdownProps> = ({
       className={classes(open && 'open')}
       onClick={toggleOpen}
     >
-      <CurrentValue className={classes(loading && 'disabled')}>
+      <CurrentValue
+        className={classes(loading && 'disabled', value === '' && 'empty')}
+      >
         <span>{selectedValue}</span>
 
         {loading && (

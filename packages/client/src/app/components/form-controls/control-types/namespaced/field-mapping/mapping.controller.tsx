@@ -14,6 +14,7 @@ import {
   MappingContainer,
   MappingWrapper,
   SourceField,
+  TwigInput,
   TypeButton,
   TypeButtonGroup,
 } from './mapping.styles';
@@ -105,7 +106,7 @@ export const FieldMappingController: React.FC<Props> = ({
               )}
 
               {map.type === TargetFieldType.Custom && (
-                <input
+                <TwigInput
                   type="text"
                   className="text fullwidth code"
                   placeholder="e.g. {{ yourField }} {{ otherField }}"

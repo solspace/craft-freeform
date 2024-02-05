@@ -43,6 +43,11 @@ export const CurrentValue = styled.div`
 
   padding: 7px 22px 7px 10px;
 
+  &.empty > span {
+    color: ${colors.gray300};
+    font-style: italic;
+  }
+
   > span {
     min-height: 20px;
   }

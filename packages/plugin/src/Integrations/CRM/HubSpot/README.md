@@ -83,8 +83,8 @@ Click the **Save** button.
 ### 4. Verify Authorization
 
 - After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
+- Click on the newly created integration.
+- Confirm that there is a green circle with **Authorized** in the middle of the page.
 
 ### 5. Configure the Form
 

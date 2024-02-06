@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.0.8 - 2024-02-06
+
+### Changed
+- Implemented better cache busting for loading script pointers.
+- Implemented a unified entry point for loading scripts based on current settings.
+- Implemented a single Stripe script loader and mutation observer.
+- Updated dropdown settings to have a clearer distinction between mapped/unmapped items.
+
+### Fixed
+- Fixed a bug where the Stripe Payment field would sometimes not load on the front end.
+- Fixed a bug where all old integrations were not being cleared during the migration from Freeform 4.
+
 ## 5.0.7 - 2024-02-02
 
 ### Added

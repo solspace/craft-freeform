@@ -26,7 +26,7 @@ class FormFieldType extends Field
         return Freeform::t('Add a form');
     }
 
-    public function getContentColumnType(): string
+    public static function dbType(): array|string|null
     {
         return Schema::TYPE_INTEGER;
     }

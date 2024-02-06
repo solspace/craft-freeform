@@ -27,7 +27,7 @@ class RegisterField extends FeatureBundle
 
         Event::on(
             Form::class,
-            Form::EVENT_RENDER_AFTER_CLOSING_TAG,
+            Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachStripeScripts']
         );
     }
@@ -46,6 +46,8 @@ class RegisterField extends FeatureBundle
 
     public function attachStripeScripts(RenderTagEvent $event): void
     {
+        static $stripeScriptLoaded;
+
         $form = $event->getForm();
         if (!$form->getFields()->hasFieldOfClass(StripeField::class)) {
             return;
@@ -59,11 +61,6 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $event->addChunk('<script src="https://js.stripe.com/v3/"></script>');
-
-        $scriptPath = \Craft::getAlias('@freeform-scripts/front-end/payments/stripe/elements.js');
-        $script = file_get_contents($scriptPath);
-
         $config = json_encode([
             'formId' => $form->getAnchor(),
             'apiKey' => $integration->getPublicKey(),
@@ -74,11 +71,15 @@ class RegisterField extends FeatureBundle
             ],
         ]);
 
-        $chunk = <<<SCRIPT
-                <script id="ff-conf-{$form->getAnchor()}" class="freeform-stripe-config" type="application/json">{$config}</script>
-                <script class="freeform-stripe-script" type="text/javascript">{$script}</script>
-            SCRIPT;
+        $event->addChunk(
+            '<script data-stripe-config type="application/json">'.$config.'</script>'
+        );
 
-        $event->addChunk($chunk, ['formId' => $form->getAnchor()]);
+        if (null === $stripeScriptLoaded) {
+            $stripeScriptLoaded = true;
+
+            $scriptPath = \Craft::getAlias('@freeform-scripts/front-end/payments/stripe/elements.js');
+            $event->addScript($scriptPath, 'freeform/scripts/stripe.js', ['class' => 'freeform-stripe-script']);
+        }
     }
 }

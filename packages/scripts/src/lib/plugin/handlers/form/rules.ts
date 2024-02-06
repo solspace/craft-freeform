@@ -15,6 +15,10 @@ export const enum Operator {
   NotContains = 'notContains',
   StartsWith = 'startsWith',
   EndsWith = 'endsWith',
+  IsEmpty = 'isEmpty',
+  IsNotEmpty = 'isNotEmpty',
+  IsOneOf = 'isOneOf',
+  IsNotOneOf = 'isNotOneOf',
 }
 
 type Rule = {
@@ -172,6 +176,7 @@ class RuleHandler implements FreeformHandler {
     const isHidden = fieldContainer.dataset.hidden !== undefined;
 
     let currentValue: string | string[] | null = null;
+
     if (isHidden) {
       currentValue = null;
     } else {
@@ -186,6 +191,8 @@ class RuleHandler implements FreeformHandler {
         currentValue = Array.from(field)
           .filter((checkbox) => (checkbox as HTMLInputElement).checked)
           .map((checkbox) => (checkbox as HTMLInputElement).value);
+      } else {
+        currentValue = field.value;
       }
     }
 
@@ -202,6 +209,18 @@ class RuleHandler implements FreeformHandler {
 
         case Operator.NotContains:
           return !currentValue?.includes(condition.value);
+
+        case Operator.IsEmpty:
+          return currentValue.length === 0;
+
+        case Operator.IsNotEmpty:
+          return currentValue.length > 0;
+
+        case Operator.IsOneOf:
+          return currentValue.some((value) => value === condition.value);
+
+        case Operator.IsNotOneOf:
+          return !currentValue.some((value) => value === condition.value);
 
         default:
           return false;
@@ -238,6 +257,18 @@ class RuleHandler implements FreeformHandler {
 
       case Operator.EndsWith:
         return `${currentValue}`.toLowerCase().endsWith(`${condition.value}`.toLowerCase());
+
+      case Operator.IsEmpty:
+        return currentValue.length === 0;
+
+      case Operator.IsNotEmpty:
+        return currentValue.length > 0;
+
+      case Operator.IsOneOf:
+        return currentValue === condition.value;
+
+      case Operator.IsNotOneOf:
+        return currentValue !== condition.value;
 
       default:
         return false;

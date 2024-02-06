@@ -1,5 +1,6 @@
 import type { Page } from '@editor/builder/types/layout';
 import type { GenericValue } from '@ff-client/types/properties';
+import { inRange } from '@ff-client/utils/numbers';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -58,7 +59,7 @@ export const pagesSlice = createSlice({
 
       state
         .filter((page) => page.uid !== uid)
-        .filter((page) => page.order.inRange(order, originalOrder))
+        .filter((page) => inRange(page.order, order, originalOrder))
         .forEach((page) => {
           if (order > originalOrder) {
             page.order -= 1;

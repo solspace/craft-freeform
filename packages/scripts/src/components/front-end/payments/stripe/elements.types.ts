@@ -1,13 +1,8 @@
 import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
 export type Config = {
-  formId: string;
   apiKey: string;
   fieldMapping: Array<{ source: string; target: string }>;
-  csrf: {
-    name: string;
-    value: string;
-  };
 };
 
 export type StripeElement = {

@@ -1,7 +1,12 @@
 import type { Config } from './elements.types';
 
-const formId = '{{ formId }}';
+const extractConfig = (form: HTMLFormElement): Config | undefined => {
+  const configElement = form.querySelector<HTMLScriptElement>('[data-stripe-config]');
+  if (!configElement) {
+    return undefined;
+  }
 
-const config: Config = JSON.parse(document.getElementById(`ff-conf-${formId}`).innerText);
+  return JSON.parse(configElement.innerText);
+};
 
-export default config;
+export default extractConfig;

@@ -18,6 +18,10 @@ class Condition
     public const TYPE_NOT_CONTAINS = 'notContains';
     public const TYPE_STARTS_WITH = 'startsWith';
     public const TYPE_ENDS_WITH = 'endsWith';
+    public const TYPE_IS_EMPTY = 'isEmpty';
+    public const TYPE_IS_NOT_EMPTY = 'isNotEmpty';
+    public const TYPE_IS_ONE_OF = 'isOneOf';
+    public const TYPE_IS_NOT_ONE_OF = 'isNotOneOf';
 
     public function __construct(
         private string $uid,

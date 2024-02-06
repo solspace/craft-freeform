@@ -62,13 +62,8 @@ class RegisterField extends FeatureBundle
         }
 
         $config = json_encode([
-            'formId' => $form->getAnchor(),
             'apiKey' => $integration->getPublicKey(),
             'fieldMapping' => $integration->getMappedFieldHandles($form),
-            'csrf' => [
-                'name' => \Craft::$app->getConfig()->general->csrfTokenName,
-                'value' => \Craft::$app->request->csrfToken,
-            ],
         ]);
 
         $event->addChunk(

@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-import config from './elements.config';
-
 type ClientSecretResponse = {
   id: string;
   secret: string;
@@ -14,11 +12,8 @@ type UpdateAmountResponse = {
 };
 
 const getFormData = (form: HTMLFormElement): FormData => {
-  const { csrf } = config(form);
-
   const formData = new FormData(form);
   formData.set('method', 'post');
-  formData.set(csrf.name, csrf.value);
   formData.delete('action');
 
   return formData;

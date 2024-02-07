@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.0.9 - Unreleased
+## 5.0.9 - 2024-02-07
 
 ### Fixed
 - Fixed a bug where the Mailchimp integration was only showing one audience/mailing list.

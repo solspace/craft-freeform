@@ -460,7 +460,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             $attribute = $this->parameters->id;
         }
 
-        return $this->parameters->fieldIdPrefix.$attribute;
+        $fieldIdPrefix = $this->getForm()->getProperties()->get('fieldIdPrefix', '');
+
+        return $fieldIdPrefix.$attribute;
     }
 
     public function getContentGqlHandle(): ?string

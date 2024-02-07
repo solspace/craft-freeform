@@ -25,6 +25,11 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
     return null;
   }
 
+  const isNoValueCheck = operatorTypes.noValue.includes(operator);
+  if (isNoValueCheck) {
+    return null;
+  }
+
   const isBoolean =
     fieldType.implements.includes('boolean') &&
     operatorTypes.boolean.includes(operator);
@@ -46,11 +51,13 @@ export const ValueInput: React.FC<Props> = ({ condition, onChange }) => {
     );
   }
 
-  if (Type.Rating === (fieldType.type as Type)) {
+  const typeShorthand = fieldType.type as Type;
+
+  if (typeShorthand === Type.Rating) {
     return <RatingRuleValue field={field} value={value} onChange={onChange} />;
   }
 
-  if (Type.OpinionScale === (fieldType.type as Type)) {
+  if (typeShorthand === Type.OpinionScale) {
     return (
       <OpinionScaleRuleValue field={field} value={value} onChange={onChange} />
     );

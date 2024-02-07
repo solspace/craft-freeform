@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.0.9 - Unreleased
+
+### Fixed
+- Fixed a bug where the Mailchimp integration was only showing one audience/mailing list.
+- Fixed a bug where the `fieldIdPrefix` parameter was not working.
+- Fixed a bug where the Conditional Rules value input was not being hidden for empty condition rule types.
+
 ## 5.0.8 - 2024-02-06
 
 ### Changed

@@ -72,7 +72,11 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
         <RefreshButton
           className="btn"
           disabled={isFetching}
-          onClick={() => refetch()}
+          onClick={() => {
+            params['refresh'] = 'true';
+            refetch();
+            delete params['refresh'];
+          }}
         >
           <RefreshIcon />
         </RefreshButton>

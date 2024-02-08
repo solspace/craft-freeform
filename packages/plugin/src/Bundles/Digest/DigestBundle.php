@@ -36,8 +36,16 @@ class DigestBundle extends FeatureBundle
             return;
         }
 
-        $job = new SendDigestJob(new Carbon('now'));
+        $settings = $this->plugin()->settings;
 
+        $devRecipients = $settings->getDigestRecipients();
+        $clientRecipients = $settings->getClientDigestRecipients();
+
+        if (!$devRecipients->count() && !$clientRecipients->count()) {
+            return;
+        }
+
+        $job = new SendDigestJob(new Carbon('now'));
         \Craft::$app->getQueue()->push($job);
     }
 }

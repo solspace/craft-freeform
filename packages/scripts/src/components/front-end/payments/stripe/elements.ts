@@ -38,32 +38,34 @@ const attachStripeToForm = async (form: HTMLFormElement) => {
   form.addEventListener(events.form.submit, submitStripe(props));
 };
 
-// Attach to all forms
-const forms = document.querySelectorAll<HTMLFormElement>('form[data-freeform]');
-forms.forEach((form) => {
-  attachStripeToForm(form);
-});
+window.onload = () => {
+  // Attach to all forms
+  const forms = document.querySelectorAll<HTMLFormElement>('form[data-freeform]');
+  forms.forEach((form) => {
+    attachStripeToForm(form);
+  });
 
-const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-  if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
-    attachStripeToForm(node);
-  }
-
-  node?.childNodes.forEach(recursiveFreeformAttachment);
-};
-
-// Add an observer which listens for new forms
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.type !== 'childList') {
-      return;
+  const recursiveFreeformAttachment = (node: HTMLFormElement) => {
+    if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
+      attachStripeToForm(node);
     }
 
-    mutation.addedNodes.forEach((node) => {
-      recursiveFreeformAttachment(node as HTMLFormElement);
+    node?.childNodes.forEach(recursiveFreeformAttachment);
+  };
+
+  // Add an observer which listens for new forms
+  const observer = new MutationObserver((mutations) => {
+    mutations.forEach((mutation) => {
+      if (mutation.type !== 'childList') {
+        return;
+      }
+
+      mutation.addedNodes.forEach((node) => {
+        recursiveFreeformAttachment(node as HTMLFormElement);
+      });
     });
   });
-});
 
-// Start the observer
-observer.observe(document.body, { childList: true, subtree: true });
+  // Start the observer
+  observer.observe(document.body, { childList: true, subtree: true });
+};

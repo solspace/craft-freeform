@@ -47,7 +47,6 @@ class OAuth2PKCEBundle extends FeatureBundle
             '='
         );
 
-        $cache = \Craft::$app->cache;
         \Craft::$app->cache->set(self::CACHE_KEY_PREFIX.$integration->getId(), $verifier, 300);
 
         $payload = $event->getPayload();

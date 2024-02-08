@@ -24,7 +24,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     /** @var string[] */
     private array $chunks = [];
 
-    public function __construct(private Form $form)
+    public function __construct(private Form $form, private bool $generateTag = true)
     {
         parent::__construct();
     }
@@ -37,6 +37,11 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     public function getForm(): Form
     {
         return $this->form;
+    }
+
+    public function isGenerateTag(): bool
+    {
+        return $this->generateTag;
     }
 
     public function getChunks(): array

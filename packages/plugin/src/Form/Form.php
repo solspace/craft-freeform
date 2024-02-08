@@ -628,17 +628,17 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return Template::raw($output);
     }
 
-    public function renderClosingTag(): Markup
+    public function renderClosingTag(bool $generateTag = true): Markup
     {
         $output = '';
 
-        $beforeTag = new RenderTagEvent($this);
+        $beforeTag = new RenderTagEvent($this, $generateTag);
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_CLOSING_TAG, $beforeTag);
         $output .= $beforeTag->getChunksAsString();
 
-        $output .= '</form>';
+        $output .= $generateTag ? '</form>' : '';
 
-        $afterTag = new RenderTagEvent($this);
+        $afterTag = new RenderTagEvent($this, $generateTag);
         Event::trigger(self::class, self::EVENT_RENDER_AFTER_CLOSING_TAG, $afterTag);
         $output .= $afterTag->getChunksAsString();
 

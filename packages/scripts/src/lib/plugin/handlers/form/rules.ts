@@ -211,10 +211,10 @@ class RuleHandler implements FreeformHandler {
           return !currentValue?.includes(condition.value);
 
         case Operator.IsEmpty:
-          return currentValue.length === 0;
+          return currentValue === null || currentValue.length === 0;
 
         case Operator.IsNotEmpty:
-          return currentValue.length > 0;
+          return currentValue?.length > 0;
 
         case Operator.IsOneOf:
           return currentValue.some((value) => value === condition.value);
@@ -259,10 +259,10 @@ class RuleHandler implements FreeformHandler {
         return `${currentValue}`.toLowerCase().endsWith(`${condition.value}`.toLowerCase());
 
       case Operator.IsEmpty:
-        return currentValue.length === 0;
+        return currentValue === null || currentValue.length === 0;
 
       case Operator.IsNotEmpty:
-        return currentValue.length > 0;
+        return currentValue?.length > 0;
 
       case Operator.IsOneOf:
         return currentValue === condition.value;

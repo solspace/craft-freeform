@@ -128,3 +128,9 @@ export const TypeButton = styled.button`
     height: 16px;
   }
 `;
+
+export const TwigInput = styled.input`
+  &::placeholder {
+    color: ${colors.gray250};
+  }
+`;

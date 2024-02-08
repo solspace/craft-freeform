@@ -6,7 +6,7 @@ This guide assumes you have a [HubSpot](https://www.hubspot.com) account already
 
 ## Compatibility
 
-Uses OAuth flow on `v1` of the REST API.
+Uses private app on `v3` of the REST API.
 
 ### Endpoints
 Maps data to the following endpoints:
@@ -41,41 +41,35 @@ A duplicate check on records is done in the following way:
 
 ### 1. Prepare Freeform's end for Integration
 
-- Select *HubSpot (v1)* from the **Service Provider** select dropdown.
+- Select *HubSpot (v3)* from the **Service Provider** select dropdown.
 - Enter a name and handle for the integration. e.g. `My HubSpot Integration`
-- Copy the URL value generated in the **OAuth 2.0 Return URI** field, e.g. `https://mysite.net/admin/freeform/oauth/authorize`.
-- Leave this page open and open a new tab to go to the HubSpot Developer site...
+- Leave this page open and open a new tab to go to the HubSpot site...
 
 ### 2. Prepare HubSpot's end for Integration
 
-- Open another browser tab to create an app on the [HubSpot Developer website](https://app.hubspot.com/signup/developers/).
-    - HubSpot allows you to create the developer account with your existing HubSpot account, so you can follow the steps to do that.
-- On the next page, click the **Create an app** button, and then choose **Private** app.
+- Open another browser tab and log into your [HubSpot account](https://app.hubspot.com/).
+- Click on the account name at the top right.
+- Select _Profile & Preferences_ from the menu.
+- On the left navigation, click on _Integrations_, and then select _Private Apps_.
+- On the next page, click the **Create a Private App** button, and then choose **Private** app.
 - You will be taken to a page where you will need to fill out some details:
-    - Enter a name for the app in the **Public app name** field.
-    - Switch to the **Auth** tab and scroll down a bit:
-        - For the **Redirect URLs** setting, paste the value from the **OAuth 2.0 Return URI** field in Freeform's settings for the integration.
-        - For the **Scopes** area, select the following under the **CRM** section:
-            CRM | Read | Write
-            --- | --- | ---
-            `crm.objects.companies` | ✓ | ✓
-            `crm.objects.contacts` | ✓ | ✓
-            `crm.objects.deals` | ✓ | ✓
-- Click the **Create app** button at the bottom left.
-- After the app saves and reloads the page, click on the **Auth** tab.
-    - Copy the following credentials:
-        - **App ID**
-        - **Client ID**
-        - **Client Secret**
+    - Enter a name for the app in the **Name** field.
+    - Switch to the **Scopes** tab and add the following:
+        CRM | Read | Write
+        --- | --- | ---
+        `crm.objects.companies` | ✓ | ✓
+        `crm.objects.contacts` | ✓ | ✓
+        `crm.objects.deals` | ✓ | ✓
+- Click the **Create app** button at the top right.
+- After the app saves and reloads the page, copy the token it just created.
+- Click the _Close_ button.
 
-### 3. Continue the Integration on your site
+### 3. Finish the Integration on your site
 
 - Flip back to the Freeform CP browser tab.
-- Paste the HubSpot **App ID** value into the **App ID** field in Freeform.
-- Paste the HubSpot **Client ID** value into the **Client ID** field in Freeform.
-- Paste the HubSpot **Client Secret** value into the **Client Secret** field in Freeform.
+- Paste the HubSpot **Token** value into the **Access Token** field in Freeform.
 
-### 4. Additional Configuration
+#### Additional Configuration
 
 - **IP Address Field** (optional)
     - If you want to have the user's IP address sent over to the Contact in HubSpot, you can specify the custom HubSpot Contact field handle to receive it.
@@ -84,21 +78,15 @@ A duplicate check on records is done in the following way:
 - **Append checkboxes field values on Company update?**
     - If a Company already exists in HubSpot, enabling this will append additional checkboxes field values to the Company inside HubSpot, instead of overwriting the options.
 
-### 5. Finish the Integration
+Click the **Save** button.
 
-- Click the **Save** button.
-- You will be redirected to a HubSpot OAuth page to allow permissions.
-    - If not currently logged in, fill in your credentials.
-    - Choose the account that should be connected and click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
-
-### 6. Verify Authorization
+### 4. Verify Authorization
 
 - After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
+- Click on the newly created integration.
+- Confirm that there is a green circle with **Authorized** in the middle of the page.
 
-### 7. Configure the Form
+### 5. Configure the Form
 
 To use this integration on your form(s), you'll need to configure each form individually.
 

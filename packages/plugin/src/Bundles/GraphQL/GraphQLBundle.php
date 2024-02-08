@@ -9,9 +9,12 @@ use craft\events\RegisterGqlTypesEvent;
 use craft\services\Gql;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsAttributesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\NotificationTemplateInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
@@ -23,6 +26,8 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\SubmissionCaptcha
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
+use Solspace\Freeform\controllers\api\FormsController;
+use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -57,6 +62,9 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = AttributeInterface::class;
                 $event->types[] = AttributesInterface::class;
                 $event->types[] = SubmissionInterface::class;
+                $event->types[] = ButtonsInterface::class;
+                $event->types[] = ButtonsAttributesInterface::class;
+                $event->types[] = NotificationTemplateInterface::class;
             }
         );
 
@@ -130,5 +138,30 @@ class GraphQLBundle extends FeatureBundle
                 $event->mutations[$group] = $mutations;
             }
         );
+
+        Event::on(
+            FormsController::class,
+            FormsController::EVENT_CREATE_FORM,
+            function (PersistFormEvent $event) {
+                if (!$event->hasErrors()) {
+                    $this->flushCaches();
+                }
+            }
+        );
+
+        Event::on(
+            FormsController::class,
+            FormsController::EVENT_UPSERT_FORM,
+            function (PersistFormEvent $event) {
+                if (!$event->hasErrors()) {
+                    $this->flushCaches();
+                }
+            }
+        );
+    }
+
+    private function flushCaches(): void
+    {
+        \Craft::$app->gql->flushCaches();
     }
 }

@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Carbon\Carbon;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
@@ -26,6 +28,13 @@ class FormTransformer
 
     public function transformList(array $forms): array
     {
+        $forms = array_values(
+            array_filter(
+                $forms,
+                [$this, 'checkPermissions']
+            )
+        );
+
         $transformed = array_map(
             [$this, 'transformBasic'],
             $forms
@@ -34,6 +43,45 @@ class FormTransformer
         $transformed = $this->decorateWithSubmissionStatistics($transformed);
 
         return $this->attachLinks($forms, $transformed);
+    }
+
+    public function checkPermissions(Form $form): ?Form
+    {
+        $canManageForm = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE);
+        if (!$canManageForm) {
+            $canManageForm = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_FORMS_MANAGE,
+                    $form->getId()
+                )
+            );
+        }
+
+        $canReadSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ);
+        if (!$canReadSubmissions) {
+            $canReadSubmissions = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_READ,
+                    $form->getId()
+                )
+            );
+        }
+
+        $canManageSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        if (!$canManageSubmissions) {
+            $canManageSubmissions = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $form->getId()
+                )
+            );
+        }
+
+        if ($canManageForm || $canReadSubmissions || $canManageSubmissions) {
+            return $form;
+        }
+
+        return null;
     }
 
     public function transform(Form $form): object

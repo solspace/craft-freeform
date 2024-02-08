@@ -7,7 +7,6 @@ import events from './elements.events';
 import queries from './elements.queries';
 import type { StripeFunctionConstructorProps, StripeLayout, StripeTheme } from './elements.types';
 
-const { fieldMapping } = config;
 const workers: string[] = [];
 
 export const initStripe = (props: StripeFunctionConstructorProps) => async (container: HTMLDivElement) => {
@@ -16,6 +15,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   }
 
   const { elementMap, form, stripe } = props;
+  const { fieldMapping } = config(form);
 
   const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
   if (elementMap.has(field)) {

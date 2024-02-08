@@ -24,12 +24,14 @@ class EmailMarketingController extends BaseApiController
     public function actionLists(): Response
     {
         $id = $this->request->get('id');
+        $refresh = $this->request->get('refresh', false);
+
         $integration = Freeform::getInstance()->integrations->getIntegrationObjectById($id);
         if (!$integration instanceof EmailMarketingIntegrationInterface) {
             throw new NotFoundHttpException('Integration not found');
         }
 
-        $lists = $this->emailMarketingService->getLists($integration);
+        $lists = $this->emailMarketingService->getLists($integration, $refresh);
 
         $options = new OptionCollection();
         foreach ($lists as $list) {

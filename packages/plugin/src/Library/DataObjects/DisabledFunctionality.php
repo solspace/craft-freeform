@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Library\DataObjects;
  * @property bool $captchas
  * @property bool $honeypot
  * @property bool $javascriptTest
+ * @property bool $submitButtons
  */
 class DisabledFunctionality
 {
@@ -33,6 +34,8 @@ class DisabledFunctionality
     private bool $captchas = false;
     private bool $honeypot = false;
     private bool $javascriptTest = false;
+
+    private bool $submitButtons = false;
 
     /**
      * Suppressors constructor.
@@ -154,5 +157,10 @@ class DisabledFunctionality
     public function isJavascriptTest(): bool
     {
         return $this->javascriptTest;
+    }
+
+    public function isSubmitButtons(): bool
+    {
+        return $this->submitButtons;
     }
 }

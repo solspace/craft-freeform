@@ -24,6 +24,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
 
         $this->assertFalse($disabledFunctionality->api);
         $this->assertFalse($disabledFunctionality->elements);
@@ -33,6 +34,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->conditionalNotifications);
         $this->assertFalse($disabledFunctionality->payments);
         $this->assertFalse($disabledFunctionality->webhooks);
+        $this->assertFalse($disabledFunctionality->submitButtons);
     }
 
     public function testConstructingFromTrueBool()
@@ -47,6 +49,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isConditionalNotifications());
         $this->assertTrue($disabledFunctionality->isPayments());
         $this->assertTrue($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
 
         $this->assertTrue($disabledFunctionality->api);
         $this->assertTrue($disabledFunctionality->elements);
@@ -56,6 +59,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->conditionalNotifications);
         $this->assertTrue($disabledFunctionality->payments);
         $this->assertTrue($disabledFunctionality->webhooks);
+        $this->assertFalse($disabledFunctionality->submitButtons);
     }
 
     public function testConstructingTrueForApi()
@@ -70,6 +74,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForConnections()
@@ -84,6 +89,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForAdminNotifications()
@@ -98,6 +104,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForDynamicRecipients()
@@ -112,6 +119,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForSubmitterNotifications()
@@ -126,6 +134,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForConditionalNotifications()
@@ -140,6 +149,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForPayments()
@@ -153,6 +163,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isEmailFieldNotifications());
         $this->assertTrue($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingTrueForWebhooks()
@@ -166,6 +177,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isEmailFieldNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertTrue($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingAllTrue()
@@ -179,6 +191,7 @@ class DisabledFunctionalityTest extends TestCase
             'conditionalNotifications' => true,
             'payments' => true,
             'webhooks' => true,
+            'submitButtons' => true,
         ]);
 
         $this->assertTrue($disabledFunctionality->isApi());
@@ -189,6 +202,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isConditionalNotifications());
         $this->assertTrue($disabledFunctionality->isPayments());
         $this->assertTrue($disabledFunctionality->isWebhooks());
+        $this->assertTrue($disabledFunctionality->isSubmitButtons());
     }
 
     public function testConstructingRandomValues()
@@ -207,6 +221,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testNotificationsKeyword()
@@ -221,6 +236,7 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertTrue($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 
     public function testShorthandKeyword()
@@ -235,5 +251,6 @@ class DisabledFunctionalityTest extends TestCase
         $this->assertFalse($disabledFunctionality->isConditionalNotifications());
         $this->assertFalse($disabledFunctionality->isPayments());
         $this->assertFalse($disabledFunctionality->isWebhooks());
+        $this->assertFalse($disabledFunctionality->isSubmitButtons());
     }
 }

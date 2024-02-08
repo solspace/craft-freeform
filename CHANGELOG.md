@@ -1,5 +1,82 @@
 # Solspace Freeform Changelog
 
+## 5.0.10 - 2024-02-08
+
+### Added
+- Added PKCE (Proof Key for Code Exchange) implementation for integrations using the OAuth2.0 flow.
+- Added support for PKCE (Proof Key for Code Exchange) in the Salesforce integration.
+
+### Fixed
+- Fixed a bug where the CP Submission detail pages were not handling conditional rule logic correctly.
+- Fixed a bug where the **Send Digest Email** job was added to the Craft queue even when turned off.
+- Fixed a bug where the Stripe Payments field would not load in the form when the **Freeform Script Insertion Location** setting was set to _Page Header_.
+- Fixed a bug where the **Use Option Labels when Exporting** setting was causing exports to fail.
+- Fixed a bug where the Freeform was causing _Element query executed before Craft is fully initialized_ errors to be logged in the Craft logs.
+
+## 5.0.9 - 2024-02-07
+
+### Fixed
+- Fixed a bug where the Mailchimp integration was only showing one audience/mailing list.
+- Fixed a bug where the `fieldIdPrefix` parameter was not working.
+- Fixed a bug where the Conditional Rules value input was not being hidden for empty condition rule types.
+
+## 5.0.8 - 2024-02-06
+
+### Changed
+- Implemented better cache busting for loading script pointers.
+- Implemented a unified entry point for loading scripts based on current settings.
+- Implemented a single Stripe script loader and mutation observer.
+- Updated dropdown settings to have a clearer distinction between mapped/unmapped items.
+
+### Fixed
+- Fixed a bug where the Stripe Payment field would sometimes not load on the front end.
+- Fixed a bug where all old integrations were not being cleared during the migration from Freeform 4.
+
+## 5.0.7 - 2024-02-02
+
+### Added
+- Added support for querying page Submit buttons in GraphQL.
+
+### Changed
+- Updated the HubSpot integration to use v3 of the API and the private app token approach instead of OAuth flow.
+
+### Fixed
+- Fixed a bug where hyphens were allowed in form and field handles.
+- Fixed a bug where the GraphQL cache was not resetting after making form updates.
+- Fixed a bug where `maxLength` was included in Text and Textarea field types in GraphQL when not applicable.
+
+## 5.0.6.1 - 2024-02-01
+
+### Fixed
+- Fixed a bug where integration settings pages were not being displayed in the navigation when `allowAdminChanges` was set to `false`.
+- Fixed a bug where the Dynamic Template Notifications feature was not working correctly.
+
+## 5.0.6 - 2024-01-31
+
+### Added
+- Added the ability to manually render Submit buttons in forms.
+
+### Changed
+- Adjusted the _Manual Form_ extra template in the demo templates to use the new manual Submit button approach.
+
+### Fixed
+- Fixed a bug where the **replace** syntax for template overrides (e.g. `=class`) was not working correctly.
+- Fixed a bug where `0` was not considered a valid value for a Number field with the `required` validator.
+- Fixed a bug where regular File Upload fields were not working correctly if the field was set to be required.
+- Fixed a bug where field values/default values were not returning correctly in GraphQL queries.
+- Fixed a bug where some sample formatting templates did not correctly style the File Upload Drag & Drop fields.
+
+## 5.0.5 - 2024-01-30
+
+### Changed
+- Updated form rendering to work when iterating over rows directly in the `form` object for better backward compatibility with the Freeform 4.x approach.
+- Updated `form.successMessage`, `form.errorMessage` and `field.rulesHtmlData` to have fallbacks (that are empty) to prevent hard errors in old formatting templates that use them.
+
+### Fixed
+- Fixed a bug where user permissions were not correctly being considered on form cards on the Forms dashboard page.
+- Fixed a bug where the weekly/daily email Digest feature was not always working correctly.
+- Fixed a visual bug where the breadcrumbs in the form builder would formulate incorrectly when refreshing the browser.
+
 ## 5.0.4 - 2024-01-29
 
 ### Added
@@ -11,7 +88,6 @@
 - Fixed a bug where Captchas would display on all pages instead of just the last page.
 - Fixed a bug where misconfigured options fields could crash the Freeform 4 migration.
 - Fixed a visual bug where the breadcrumbs in the form builder could formulate incorrectly when saving the form.
-
 
 ## 5.0.3 - 2024-01-26
 

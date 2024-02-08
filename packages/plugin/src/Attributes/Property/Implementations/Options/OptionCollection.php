@@ -7,7 +7,7 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 /**
  * @implements \IteratorAggregate<Option|OptionCollection>
  */
-class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
+class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate, \ArrayAccess
 {
     private array $options = [];
 
@@ -18,6 +18,15 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
     public function getLabel(): ?string
     {
         return $this->label;
+    }
+
+    public function getOption(?string $value): ?Option
+    {
+        if (null === $value) {
+            return null;
+        }
+
+        return $this->getOptionRecursively($this, $value);
     }
 
     public function addCollection(self $collection): self
@@ -111,5 +120,43 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->options);
+    }
+
+    public function offsetExists(mixed $offset): bool
+    {
+        return (bool) $this->getOption($offset);
+    }
+
+    public function offsetGet(mixed $offset): ?Option
+    {
+        return $this->getOption($offset);
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new \BadMethodCallException('OptionCollection is read-only');
+    }
+
+    public function offsetUnset(mixed $offset)
+    {
+        throw new \BadMethodCallException('OptionCollection is read-only');
+    }
+
+    private function getOptionRecursively(self $collection, string $value): ?Option
+    {
+        foreach ($collection->getOptions() as $option) {
+            if ($option instanceof Option && $option->getValue() === $value) {
+                return $option;
+            }
+
+            if ($option instanceof self) {
+                $opt = $this->getOptionRecursively($option, $value);
+                if ($opt instanceof Option) {
+                    return $opt;
+                }
+            }
+        }
+
+        return null;
     }
 }

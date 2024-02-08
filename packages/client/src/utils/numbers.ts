@@ -46,3 +46,19 @@ export const parseNumericValue: NumericValueParser = (input, config = {}) => {
 
   return input;
 };
+
+export const inRange = (
+  current: number,
+  min: number,
+  max: number,
+  inclusive: boolean = true
+): boolean => {
+  const minimum = Math.min(min, max);
+  const maximum = Math.max(min, max);
+
+  if (inclusive) {
+    return current >= minimum && current <= maximum;
+  }
+
+  return current > minimum && current < maximum;
+};

@@ -15,13 +15,19 @@ export const enum Operator {
   IsNotOneOf = 'isNotOneOf',
 }
 
-type OperatorTypeKeys = 'boolean' | 'numeric' | 'string' | 'negative';
+type OperatorTypeKeys =
+  | 'boolean'
+  | 'numeric'
+  | 'string'
+  | 'negative'
+  | 'noValue';
 type OperatorTypes = {
   [key in OperatorTypeKeys]: Operator[];
 };
 
 export const operatorTypes: OperatorTypes = {
   boolean: [Operator.Equals, Operator.NotEquals],
+  noValue: [Operator.IsEmpty, Operator.IsNotEmpty],
   numeric: [
     Operator.Equals,
     Operator.NotEquals,

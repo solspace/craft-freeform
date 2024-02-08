@@ -460,7 +460,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             $attribute = $this->parameters->id;
         }
 
-        return $this->parameters->fieldIdPrefix.$attribute;
+        $fieldIdPrefix = $this->getForm()->getProperties()->get('fieldIdPrefix', '');
+
+        return $fieldIdPrefix.$attribute;
     }
 
     public function getContentGqlHandle(): ?string
@@ -569,6 +571,14 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
 
         return false;
+    }
+
+    /**
+     * @deprecated No longer used. Rules are automatically added to the form html as a separate dataset.
+     */
+    public function getRulesHtmlData(): string
+    {
+        return '';
     }
 
     protected function getContainerOpeningTagHtml(): string

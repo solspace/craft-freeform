@@ -327,7 +327,7 @@ input[type="checkbox"]:checked + label span {
 }
 
 /* FILE UPLOAD DRAG & DROP FIELDS */
-.freeform-file-dnd {
+.freeform-file-dnd__input {
     background-color: #1d1f23 !important;
     border: 1px dashed #767676 !important;
 }
@@ -335,13 +335,13 @@ input[type="checkbox"]:checked + label span {
     font: italic 200 18px sans-serif;
     color: #6c757d;
 }
-.freeform-file-dnd [data-messages]>li[data-error],
-.freeform-file-dnd [data-field-errors]>li[data-error] {
+.freeform-file-dnd__input [data-messages]>li[data-error],
+.freeform-file-dnd__input [data-field-errors]>li[data-error] {
     font: 200 16px sans-serif;
     color: #dc3545;
     margin-top: 15px;
 }
-.freeform-file-dnd [data-field-errors]>li {
+.freeform-file-dnd__input [data-field-errors]>li {
     color: #dc3545;
 }
 

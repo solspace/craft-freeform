@@ -323,24 +323,24 @@ button[type=submit].freeform-processing:before {
     margin-right: 5px;
 }
 /* FILE UPLOAD DRAG & DROP FIELDS */
-.freeform-file-dnd {
+.freeform-file-dnd__input {
     background-color: #1d1f23 !important;
     border: 1px dashed #6c757d !important;
 }
-.freeform-file-dnd input {
+.freeform-file-dnd__input input {
     display: none !important;
 }
 .freeform-file-dnd__placeholder {
     font: italic 200 16px sans-serif !important;
     color: #6c757d;
 }
-.freeform-file-dnd [data-messages] > li[data-error],
-.freeform-file-dnd [data-field-errors] > li[data-error] {
+.freeform-file-dnd__input [data-messages] > li[data-error],
+.freeform-file-dnd__input [data-field-errors] > li[data-error] {
     font: 200 16px sans-serif;
     color: #dc3545;
     margin-top: 15px;
 }
-.freeform-file-dnd [data-field-errors] > li {
+.freeform-file-dnd__input [data-field-errors] > li {
     color: #dc3545;
 }
 

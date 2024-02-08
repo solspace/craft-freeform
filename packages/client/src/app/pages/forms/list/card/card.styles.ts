@@ -11,7 +11,7 @@ export const CardBody = styled.div`
 `;
 
 export const Title = styled.h2`
-  cursor: pointer;
+  cursor: default;
 
   margin: 0;
 
@@ -20,12 +20,17 @@ export const Title = styled.h2`
   font-size: 20px;
   font-weight: 700;
   text-align: left;
+  width: fit-content;
 
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 
   transition: all 0.2s ease-out;
+`;
+
+export const TitleLink = styled(Title)`
+  cursor: pointer;
 `;
 
 export const Subtitle = styled.span`
@@ -100,7 +105,7 @@ export const CardWrapper = styled.li`
     background-color: #f3f7fd;
     border-color: #9eb0c5;
 
-    ${Title} {
+    ${TitleLink} {
       color: #0161f3;
     }
 

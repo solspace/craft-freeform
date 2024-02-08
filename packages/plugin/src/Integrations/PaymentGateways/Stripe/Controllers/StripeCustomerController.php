@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCustomerService;
+use Stripe\Exception\InvalidRequestException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -32,11 +33,20 @@ class StripeCustomerController extends BaseStripeController
 
         $paymentIntent = $stripe->paymentIntents->retrieve($paymentIntentId);
 
-        $this->customerService->getOrCreateCustomer(
-            $integration,
-            $paymentIntent->customer,
-            $mappedValues,
-        );
+        try {
+            $this->customerService->getOrCreateCustomer(
+                $integration,
+                $paymentIntent->customer,
+                $mappedValues,
+            );
+        } catch (InvalidRequestException $exception) {
+            $message = $exception->getMessage();
+            if (str_starts_with($message, 'Invalid email')) {
+                return $this->asEmptyResponse(200);
+            }
+
+            throw $exception;
+        }
 
         return $this->asEmptyResponse(204);
     }

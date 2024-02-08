@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.0.10 - 2024-02-08
+
+### Added
+- Added PKCE (Proof Key for Code Exchange) implementation for integrations using the OAuth2.0 flow.
+- Added support for PKCE (Proof Key for Code Exchange) in the Salesforce integration.
+
+### Fixed
+- Fixed a bug where the CP Submission detail pages were not handling conditional rule logic correctly.
+- Fixed a bug where the **Send Digest Email** job was added to the Craft queue even when turned off.
+- Fixed a bug where the Stripe Payments field would not load in the form when the **Freeform Script Insertion Location** setting was set to _Page Header_.
+- Fixed a bug where the **Use Option Labels when Exporting** setting was causing exports to fail.
+- Fixed a bug where the Freeform was causing _Element query executed before Craft is fully initialized_ errors to be logged in the Craft logs.
+
 ## 5.0.9 - 2024-02-07
 
 ### Fixed

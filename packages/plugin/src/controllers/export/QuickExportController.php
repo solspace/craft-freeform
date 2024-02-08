@@ -7,7 +7,6 @@ use craft\db\Table;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -68,10 +67,12 @@ class QuickExportController extends BaseController
                     $isChecked = (bool) $item['checked'];
 
                     if (is_numeric($fieldId)) {
-                        $field = $form->getLayout()->getField($fieldId);
-                        $label = $field->getLabel();
+                        $field = $form->get($fieldId);
+                        if ($field) {
+                            $label = $field->getLabel();
+                        }
 
-                        $storedFieldIds[] = $field->getId();
+                        $storedFieldIds[] = $fieldId;
                     }
 
                     $fieldSetting[$fieldId] = [
@@ -107,10 +108,9 @@ class QuickExportController extends BaseController
                 ];
             }
 
-            foreach ($form->getLayout()->getFields() as $field) {
+            foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
                 if (
-                    $field instanceof NoStorageInterface
-                    || !$field->getId()
+                    !$field->getId()
                     || \in_array($field->getId(), $storedFieldIds, true)
                 ) {
                     continue;

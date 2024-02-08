@@ -1,7 +1,7 @@
 import type { Config } from './elements.types';
 
 const extractConfig = (form: HTMLFormElement): Config | undefined => {
-  const configElement = form.querySelector<HTMLScriptElement>('[data-stripe-config]');
+  const configElement = form.querySelector<HTMLScriptElement>('script[data-stripe-config]');
   if (!configElement) {
     return undefined;
   }

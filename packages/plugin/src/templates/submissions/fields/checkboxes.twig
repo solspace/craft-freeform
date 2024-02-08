@@ -1,12 +1,24 @@
 {% import "_includes/forms" as forms %}
 
-{{ forms.checkboxSelectField({
-    label: field.label,
-    name: field.handle,
-    id: field.handle,
-    required: field.required,
-    errors: submission.errors(field.handle),
-    showAllOption: false,
-    options: field.options.toTwigArray,
-    values: submission[field.handle].value,
-}) }}
+{% set inputs = '' %}
+{% for opt in field.options %}
+    {% set inputs = inputs ~ '<div>' %}
+    {% set inputs = inputs ~ forms.checkbox({
+        name: field.handle~'[]',
+        value: opt.value,
+        label: opt.label,
+        checked: opt.value in submission[field.handle].value,
+    }) %}
+    {% set inputs = inputs ~ '</div>' %}
+{% endfor %}
+
+{{ forms.field(
+    {
+        label: field.label,
+        instructions: field.instructions,
+        id: field.handle,
+        required: field.required,
+        errors: submission.errors(field.handle),
+    },
+    inputs | raw
+) }}

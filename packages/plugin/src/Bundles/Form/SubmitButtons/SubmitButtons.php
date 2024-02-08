@@ -47,6 +47,10 @@ class SubmitButtons extends FeatureBundle
 
     public function renderButtons(RenderTagEvent $event): void
     {
+        if (!$event->isGenerateTag()) {
+            return;
+        }
+
         $form = $event->getForm();
         if ($form->isDisabled()->submitButtons) {
             return;

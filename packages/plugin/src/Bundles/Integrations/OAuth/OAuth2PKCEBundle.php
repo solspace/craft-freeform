@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Integrations\OAuth;
 use Solspace\Freeform\Events\Integrations\OAuth2\FetchTokenEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2PKCEInterface;
 use yii\base\Event;
@@ -47,7 +48,8 @@ class OAuth2PKCEBundle extends FeatureBundle
             '='
         );
 
-        \Craft::$app->cache->set(self::CACHE_KEY_PREFIX.$integration->getId(), $verifier, 300);
+        $cacheKey = $this->generateCacheKey($integration);
+        \Craft::$app->cache->set($cacheKey, $verifier, 300);
 
         $payload = $event->getPayload();
         $payload['code_challenge'] = $codeChallenge;
@@ -63,7 +65,8 @@ class OAuth2PKCEBundle extends FeatureBundle
             return;
         }
 
-        $verifier = \Craft::$app->cache->get(self::CACHE_KEY_PREFIX.$integration->getId());
+        $cacheKey = $this->generateCacheKey($integration);
+        $verifier = \Craft::$app->cache->get($cacheKey);
         if (!$verifier) {
             throw new \Exception('Code verifier not found');
         }
@@ -72,5 +75,10 @@ class OAuth2PKCEBundle extends FeatureBundle
         $payload['code_verifier'] = $verifier;
 
         $event->setPayload($payload);
+    }
+
+    private function generateCacheKey(IntegrationInterface $integration): string
+    {
+        return self::CACHE_KEY_PREFIX.$integration->getId();
     }
 }

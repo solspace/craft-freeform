@@ -262,6 +262,12 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.14 - 2024-02-09
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields were not correctly selecting the option chosen when viewing submissions in the CP detail page.
+- Fixed a bug where the Field Manager would force `camelCase` without exceptions for field handles.
+
 ## 4.1.13 - 2023-11-23
 
 ### Changed

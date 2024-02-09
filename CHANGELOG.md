@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.34 - 2024-02-09
+
+### Fixed
+- Fixed a bug where the File Upload Drag & Drop field type could use an incorrect URL if search params are used.
+
 ## 3.13.33 - 2023-12-19
 
 ### Added

@@ -640,7 +640,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         $attributes = $this->getAttributes()
             ->getError()
             ->clone()
-            ->append('class', 'errors')
+            ->setIfEmpty('class', 'errors')
         ;
 
         $output = '<ul'.$attributes.'>';

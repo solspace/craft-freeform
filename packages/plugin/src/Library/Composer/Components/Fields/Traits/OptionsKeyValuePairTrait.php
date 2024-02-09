@@ -7,14 +7,18 @@ use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
 trait OptionsKeyValuePairTrait
 {
-    public function getOptionsAsKeyValuePairs(): array
+    public function getOptionsAsKeyValuePairs(bool $forceLabels = false): array
     {
         $pairs = [];
 
         if ($this instanceof DynamicRecipientField) {
             /** @var Option $option */
             foreach ($this->getOptions() as $index => $option) {
-                $pairs[$option->getValue()] = $option->getLabel();
+                if ($forceLabels) {
+                    $pairs[$option->getValue()] = $option->getLabel();
+                } else {
+                    $pairs[$index] = $option->getLabel();
+                }
             }
         } else {
             /** @var Option $option */

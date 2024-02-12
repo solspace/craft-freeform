@@ -262,6 +262,12 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.14 - 2024-02-09
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields were not correctly selecting the option chosen when viewing submissions in the CP detail page.
+- Fixed a bug where the Field Manager would force `camelCase` without exceptions for field handles.
+
 ## 4.1.13 - 2023-11-23
 
 ### Changed
@@ -700,6 +706,16 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.34 - 2024-02-09
+
+### Fixed
+- Fixed a bug where the File Upload Drag & Drop field type could use an incorrect URL if search params are used.
+
+## 3.13.33 - 2023-12-19
+
+### Added
+- Added support for additional mimetype file upload validation on `.dwg`, `.dxf`, `.msg`, `.sia`, `.stl`, `.stp`, and `.step`.
 
 ## 3.13.32 - 2023-07-24
 

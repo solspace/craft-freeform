@@ -2,8 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Events\Forms\ContextRetrievalEvent;
+use Solspace\Freeform\Events\Fields\CompileAttributesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Processors\FieldRenderOptionProcessor;
@@ -14,6 +15,8 @@ class FieldRenderOptionsBundle extends FeatureBundle
     private const KEY_FIELD_PROPERTIES = 'fields';
     private const KEY_FIELD_PROPERTY_STACK = 'fieldPropertiesStack';
 
+    private array $attributeCache = [];
+
     public function __construct()
     {
         Event::on(
@@ -23,30 +26,37 @@ class FieldRenderOptionsBundle extends FeatureBundle
         );
 
         Event::on(
-            Form::class,
-            Form::EVENT_CONTEXT_RETRIEVAL,
-            [$this, 'processContextProperties']
+            FieldInterface::class,
+            FieldInterface::EVENT_COMPILE_ATTRIBUTES,
+            [$this, 'compileAttributes']
         );
     }
 
-    public function processContextProperties(ContextRetrievalEvent $event): void
+    public function compileAttributes(CompileAttributesEvent $event): void
     {
-        $form = $event->getForm();
-        $bag = $event->getBag();
+        $field = $event->getField();
+        $form = $field->getForm();
 
-        $properties = $bag->getProperties();
-        if (!isset($properties[self::KEY_FIELD_PROPERTY_STACK])) {
+        $bag = $form->getProperties();
+        $stack = $bag->get(self::KEY_FIELD_PROPERTY_STACK);
+        if (!$stack) {
             return;
         }
 
-        $processor = new FieldRenderOptionProcessor();
+        $cacheKey = md5(json_encode($stack)).'-'.$field->getId();
+        if (!isset($this->attributeCache[$cacheKey])) {
+            $attributes = $event->getAttributes()->clone();
+            $processor = new FieldRenderOptionProcessor();
 
-        $stack = $properties[self::KEY_FIELD_PROPERTY_STACK];
-        foreach ($form->getFields() as $field) {
+            $stack = array_reverse($stack);
             foreach ($stack as $item) {
-                $processor->process($item, $field);
+                $processor->processAttributes($item, $field, $attributes);
             }
+
+            $this->attributeCache[$cacheKey] = $attributes;
         }
+
+        $event->setAttributes($this->attributeCache[$cacheKey]);
     }
 
     public function processOptions(SetPropertiesEvent $event): void
@@ -69,7 +79,7 @@ class FieldRenderOptionsBundle extends FeatureBundle
 
         $processor = new FieldRenderOptionProcessor();
         foreach ($form->getFields() as $field) {
-            $processor->process($props, $field);
+            $processor->processProperties($props, $field);
         }
 
         $stack[] = $props;

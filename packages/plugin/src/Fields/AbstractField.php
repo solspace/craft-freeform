@@ -23,6 +23,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Events\Fields\CompileAttributesEvent;
 use Solspace\Freeform\Events\Fields\FieldRenderEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -412,7 +413,10 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getAttributes(): FieldAttributesCollection
     {
-        return $this->attributes;
+        $event = new CompileAttributesEvent($this, $this->attributes);
+        Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
+
+        return $event->getAttributes();
     }
 
     public function getParameters(): Parameters

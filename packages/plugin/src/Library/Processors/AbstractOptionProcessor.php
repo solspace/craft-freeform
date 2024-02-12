@@ -3,22 +3,65 @@
 namespace Solspace\Freeform\Library\Processors;
 
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
+use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use yii\di\Container;
 
 abstract class AbstractOptionProcessor
 {
-    protected function processPropertyValue(\ReflectionClass $reflection, object $object, string $key, mixed $value): void
-    {
-        $property = $reflection->getProperty($key);
+    protected function processAttributeValue(
+        FieldAttributesCollection $attributes,
+        \ReflectionClass $reflection,
+        string $key,
+        mixed $value
+    ): void {
+        $property = null;
+
+        try {
+            $property = $reflection->getProperty($key);
+        } catch (\ReflectionException $e) {
+            return;
+        }
+
         if (!$property) {
             return;
         }
 
-        $property->setAccessible(true);
+        $isAttribute = ReflectionHelper::isInstanceOf(
+            $property->getType()?->getName(),
+            FieldAttributesCollection::class,
+        );
 
-        $originalValue = $value;
+        if (!$isAttribute) {
+            return;
+        }
+
+        $attributes->merge($value);
+    }
+
+    protected function processPropertyValue(\ReflectionClass $reflection, object $object, string $key, mixed $value): void
+    {
+        $property = null;
+
+        try {
+            $property = $reflection->getProperty($key);
+        } catch (\ReflectionException $e) {
+            return;
+        }
+
+        if (!$property) {
+            return;
+        }
+
+        $isAttribute = ReflectionHelper::isInstanceOf(
+            $property->getType()?->getName(),
+            FieldAttributesCollection::class,
+        );
+
+        if ($isAttribute) {
+            return;
+        }
 
         $transformer = AttributeHelper::findAttribute($property, ValueTransformer::class);
         if ($transformer instanceof ValueTransformer) {
@@ -26,12 +69,6 @@ abstract class AbstractOptionProcessor
             if ($instance) {
                 $value = $instance->transform($value);
             }
-        }
-
-        if ($value instanceof Attributes) {
-            $property->getValue($object)->merge($originalValue);
-
-            return;
         }
 
         if ('value' === $key) {
@@ -43,6 +80,7 @@ abstract class AbstractOptionProcessor
             }
         }
 
+        $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
     }

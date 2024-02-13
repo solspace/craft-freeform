@@ -73,7 +73,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[Flag('code')]
     #[Validators\Required]
     #[Validators\Handle]
-    #[Validators\Length(255)]
+    #[Validators\Length(100)]
     protected string $handle = '';
 
     #[Section('general')]

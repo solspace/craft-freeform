@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Processors;
 
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 class FieldRenderOptionProcessor extends AbstractOptionProcessor
 {
@@ -25,7 +25,7 @@ class FieldRenderOptionProcessor extends AbstractOptionProcessor
     public function processAttributes(
         array $renderOptions,
         FieldInterface $field,
-        FieldAttributesCollection $attributes
+        Attributes $attributes
     ): void {
         $matchedOptions = $this->getMatchedOptions($renderOptions, $field);
         $fieldReflection = new \ReflectionClass($field);

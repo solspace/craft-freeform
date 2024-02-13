@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Library\Processors;
 
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use yii\di\Container;
@@ -11,7 +11,7 @@ use yii\di\Container;
 abstract class AbstractOptionProcessor
 {
     protected function processAttributeValue(
-        FieldAttributesCollection $attributes,
+        Attributes $attributes,
         \ReflectionClass $reflection,
         string $key,
         mixed $value
@@ -28,7 +28,7 @@ abstract class AbstractOptionProcessor
 
         $isAttribute = ReflectionHelper::isInstanceOf(
             $property->getType()?->getName(),
-            FieldAttributesCollection::class,
+            Attributes::class,
         );
 
         if (!$isAttribute) {
@@ -52,7 +52,7 @@ abstract class AbstractOptionProcessor
 
         $isAttribute = ReflectionHelper::isInstanceOf(
             $property->getType()?->getName(),
-            FieldAttributesCollection::class,
+            Attributes::class,
         );
 
         if ($isAttribute) {

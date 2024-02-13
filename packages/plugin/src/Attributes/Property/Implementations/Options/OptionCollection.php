@@ -137,7 +137,7 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
         throw new \BadMethodCallException('OptionCollection is read-only');
     }
 
-    public function offsetUnset(mixed $offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new \BadMethodCallException('OptionCollection is read-only');
     }

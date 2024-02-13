@@ -16,8 +16,6 @@ abstract class AbstractOptionProcessor
         string $key,
         mixed $value
     ): void {
-        $property = null;
-
         try {
             $property = $reflection->getProperty($key);
         } catch (\ReflectionException $e) {
@@ -42,11 +40,9 @@ abstract class AbstractOptionProcessor
 
     protected function processPropertyValue(\ReflectionClass $reflection, object $object, string $key, mixed $value): void
     {
-        $property = null;
-
         try {
             $property = $reflection->getProperty($key);
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             return;
         }
 
@@ -72,11 +68,14 @@ abstract class AbstractOptionProcessor
         }
 
         if ('value' === $key) {
-            $defaultValueProperty = $reflection->getProperty('defaultValue');
-            if ($defaultValueProperty) {
-                $defaultValueProperty->setAccessible(true);
-                $defaultValueProperty->setValue($object, $value);
-                $defaultValueProperty->setAccessible(false);
+            try {
+                $defaultValueProperty = $reflection->getProperty('defaultValue');
+                if ($defaultValueProperty) {
+                    $defaultValueProperty->setAccessible(true);
+                    $defaultValueProperty->setValue($object, $value);
+                    $defaultValueProperty->setAccessible(false);
+                }
+            } catch (\ReflectionException) {
             }
         }
 

@@ -76,13 +76,18 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ['maxFileSize' => $this->getMaxFileSizeKB()]
         );
 
+        $fileCount = 0;
+        if (is_countable($this->getValue())) {
+            $fileCount = \count($this->getValue());
+        }
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->append('class', 'freeform-file-dnd__input')
             ->replace('data-freeform-file-upload', $this->getHandle())
             ->setIfEmpty('data-error-append-target', $this->getHandle())
-            ->replace('data-file-count', \count($this->getValue() ?? []))
+            ->replace('data-file-count', $fileCount)
             ->replace('data-max-files', $this->getFileCount())
             ->replace('data-max-size', $this->getMaxFileSizeBytes())
             ->setIfEmpty('data-theme', $this->getTheme())

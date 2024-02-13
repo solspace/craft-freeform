@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Attributes;
 
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -66,6 +67,18 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         }
 
         return ' '.implode(' ', $stringArray);
+    }
+
+    public function __clone(): void
+    {
+        $reflection = new \ReflectionClass($this);
+        foreach ($reflection->getProperties() as $property) {
+            $type = $property->getType();
+            $typeName = $type?->getName();
+            if (ReflectionHelper::isInstanceOf(self::class, $typeName)) {
+                $this->{$property->getName()} = $this->{$property->getName()}->clone();
+            }
+        }
     }
 
     public function get(string $name, mixed $default = null): mixed

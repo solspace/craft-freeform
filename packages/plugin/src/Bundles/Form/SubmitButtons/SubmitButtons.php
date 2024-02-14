@@ -59,11 +59,11 @@ class SubmitButtons extends FeatureBundle
         $page = $form->getCurrentPage();
 
         $buttons = $page->getButtons();
+        $attributes = $buttons->getAttributes()->clone();
 
         $renderOptions = $form->getProperties()->get('buttons', []);
-        $this->processor->process($renderOptions, $buttons);
+        $this->processor->process($renderOptions, $buttons, $attributes);
 
-        $attributes = $buttons->getAttributes()->clone();
         $layout = $buttons->getParsedLayout();
 
         $containerAttributes = $attributes

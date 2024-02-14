@@ -304,6 +304,10 @@ class IntegrationsService extends BaseService
 
                 $model->metadata[$property->handle] = $value;
             }
+
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
+                unset($model->metadata[$property->handle]);
+            }
         }
     }
 

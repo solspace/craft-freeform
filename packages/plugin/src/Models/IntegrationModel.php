@@ -96,6 +96,10 @@ class IntegrationModel extends Model
             return \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
         }
 
+        if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
+            return null;
+        }
+
         return $value;
     }
 }

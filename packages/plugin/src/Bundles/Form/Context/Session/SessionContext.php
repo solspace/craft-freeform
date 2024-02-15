@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\SessionStorage;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\ContextRetrievalEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
@@ -169,8 +170,15 @@ class SessionContext
 
         $form->getProperties()->merge($bag->getProperties());
         $form->getAttributes()->merge($bag->getAttributes());
+
         $form->setFormPosted(self::isFormPosted($form));
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPageIndex()));
+
+        Event::trigger(
+            Form::class,
+            Form::EVENT_CONTEXT_RETRIEVAL,
+            new ContextRetrievalEvent($form, $bag)
+        );
     }
 
     public function storeContext(FormEventInterface $event): void

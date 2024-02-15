@@ -2,22 +2,32 @@
 
 namespace Solspace\Freeform\Bundles\Form\SubmitButtons;
 
-use craft\helpers\ArrayHelper;
+use Solspace\Freeform\Events\Fields\CompileButtonAttributesEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Processors\PageButtonRenderOptionProcessor;
 use yii\base\Event;
 
 class SubmitButtons extends FeatureBundle
 {
+    public const KEY_FORM_BUTTON_PROPERTIES = 'buttons';
+    public const KEY_FORM_BUTTON_PROPERTY_STACK = 'buttonPropertyStack';
+
     public function __construct(private PageButtonRenderOptionProcessor $processor)
     {
         Event::on(
             Form::class,
             Form::EVENT_SET_PROPERTIES,
             [$this, 'processOptions']
+        );
+
+        Event::on(
+            PageButtons::class,
+            PageButtons::EVENT_COMPILE_ATTRIBUTES,
+            [$this, 'compileAttributes']
         );
 
         Event::on(
@@ -29,20 +39,54 @@ class SubmitButtons extends FeatureBundle
 
     public function processOptions(SetPropertiesEvent $event): void
     {
-        $form = $event->getForm();
         $properties = $event->getProperties();
-
-        $buttonProperties = $form->getProperties()->get('buttons', []);
-
-        if (!isset($properties['buttons'])) {
+        if (!isset($properties[self::KEY_FORM_BUTTON_PROPERTIES])) {
             return;
         }
 
-        $buttonProperties = ArrayHelper::merge($buttonProperties, $properties['buttons']);
-        $form->getProperties()->merge(['buttons' => $buttonProperties]);
+        $props = $properties[self::KEY_FORM_BUTTON_PROPERTIES];
 
-        unset($properties['buttons']);
+        // Get the current property stack and add to the stack
+        $form = $event->getForm();
+        $stack = $form->getProperties()->get(self::KEY_FORM_BUTTON_PROPERTY_STACK, []);
+        foreach ($stack as $stackItem) {
+            if ($stackItem === $props) {
+                return;
+            }
+        }
+
+        $stack[] = $props;
+        $form->getProperties()->set(self::KEY_FORM_BUTTON_PROPERTY_STACK, $stack);
+
+        // Remove from current properties
+        unset($properties[self::KEY_FORM_BUTTON_PROPERTIES]);
         $event->setProperties($properties);
+    }
+
+    public function compileAttributes(CompileButtonAttributesEvent $event): void
+    {
+        $buttons = $event->sender;
+        if (!$buttons instanceof PageButtons) {
+            return;
+        }
+
+        $form = $buttons->getPage()->getForm();
+
+        $bag = $form->getProperties();
+        $stack = $bag->get(self::KEY_FORM_BUTTON_PROPERTY_STACK) ?? [];
+        if (!$stack) {
+            return;
+        }
+
+        $attributes = $event->getAttributes();
+        $processor = new PageButtonRenderOptionProcessor();
+
+        $stack = array_reverse($stack);
+        foreach ($stack as $item) {
+            $processor->process($item, $buttons, $attributes);
+        }
+
+        $event->setAttributes($attributes);
     }
 
     public function renderButtons(RenderTagEvent $event): void
@@ -59,11 +103,11 @@ class SubmitButtons extends FeatureBundle
         $page = $form->getCurrentPage();
 
         $buttons = $page->getButtons();
+        $attributes = $buttons->getAttributes()->clone();
 
         $renderOptions = $form->getProperties()->get('buttons', []);
-        $this->processor->process($renderOptions, $buttons);
+        $this->processor->process($renderOptions, $buttons, $attributes);
 
-        $attributes = $buttons->getAttributes()->clone();
         $layout = $buttons->getParsedLayout();
 
         $containerAttributes = $attributes

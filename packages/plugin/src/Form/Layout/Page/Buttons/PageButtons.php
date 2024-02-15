@@ -10,10 +10,13 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Events\Fields\CompileButtonAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Twig\Markup;
+use yii\base\Event;
 
 class PageButtons
 {
@@ -23,6 +26,8 @@ class PageButtons
 
     public const INPUT_NAME_PREVIOUS_PAGE = 'form_previous_page_button';
     public const INPUT_NAME_SUBMIT = 'form_page_submit';
+
+    public const EVENT_COMPILE_ATTRIBUTES = 'compile-attributes';
 
     #[Section(
         handle: 'general',
@@ -165,10 +170,15 @@ class PageButtons
     )]
     private ButtonAttributesCollection $attributes;
 
-    public function __construct(array $config)
+    public function __construct(private Page $page, array $config)
     {
         $this->layout = $config['layout'] ?? 'save back|submit';
         $this->attributes = new ButtonAttributesCollection($config['attributes'] ?? []);
+    }
+
+    public function getPage(): Page
+    {
+        return $this->page;
     }
 
     public function getLayout(): string
@@ -195,7 +205,10 @@ class PageButtons
 
     public function getAttributes(): ButtonAttributesCollection
     {
-        return $this->attributes;
+        $event = new CompileButtonAttributesEvent($this, $this->attributes->clone());
+        Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
+
+        return $event->getAttributes();
     }
 
     public function getSubmitLabel(): string

@@ -23,7 +23,9 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Events\Fields\FieldRenderEvent;
+use Solspace\Freeform\Events\Fields\SetParametersEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -412,7 +414,10 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getAttributes(): FieldAttributesCollection
     {
-        return $this->attributes;
+        $event = new CompileFieldAttributesEvent($this, $this->attributes->clone());
+        Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
+
+        return $event->getAttributes();
     }
 
     public function getParameters(): Parameters
@@ -510,23 +515,10 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return;
         }
 
-        foreach ($parameters as $key => $value) {
-            try {
-                $property = new \ReflectionProperty($this, $key);
-                $type = $property->getType();
-                if ($type) {
-                    $instance = new \ReflectionClass($type->getName());
-                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
-                        $this->{$key}->merge($value);
-                        unset($parameters[$key]);
+        $event = new SetParametersEvent($this, $parameters);
+        Event::trigger($this, self::EVENT_SET_PARAMETERS, $event);
 
-                        continue;
-                    }
-                }
-            } catch (\ReflectionException $e) {
-                // do nothing
-            }
-
+        foreach ($event->getParameters() as $key => $value) {
             $this->parameters->add($key, $value);
         }
     }
@@ -640,7 +632,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         $attributes = $this->getAttributes()
             ->getError()
             ->clone()
-            ->append('class', 'errors')
+            ->setIfEmpty('class', 'errors')
         ;
 
         $output = '<ul'.$attributes.'>';

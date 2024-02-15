@@ -7,6 +7,8 @@ use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
+use Solspace\Freeform\Library\Attributes\TableAttributesCollection;
 use Solspace\Freeform\Library\Processors\FieldRenderOptionProcessor;
 use yii\di\Container;
 
@@ -71,8 +73,10 @@ class FieldRenderOptionProcessorTest extends TestCase
         $formMock = $this->createMock(Form::class);
         $field = new TextField($formMock);
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getInput();
+        $attributes = new FieldAttributesCollection();
+
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $output = (string) $attributes->getInput();
 
         $this->assertSame(
             ' class="one text-class dropdown-n-text table-n-text" placeholder="text-placeholder dropdown-placeholder"',
@@ -107,8 +111,11 @@ class FieldRenderOptionProcessorTest extends TestCase
 
         $field->method('getHandle')->willReturn('myTextField');
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getInput();
+        $attributes = new FieldAttributesCollection();
+
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $this->processor->processProperties($properties, $field);
+        $output = (string) $attributes->getInput();
 
         $this->assertSame(' class="one" id="my-text-field"', $output);
         $this->assertSame('test', $field->getValue());
@@ -133,9 +140,10 @@ class FieldRenderOptionProcessorTest extends TestCase
 
         $formMock = $this->createMock(Form::class);
         $field = new DropdownField($formMock);
+        $attributes = new FieldAttributesCollection();
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getInput();
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $output = (string) $attributes->getInput();
 
         $this->assertSame(' class="one options-field"', $output);
     }
@@ -171,8 +179,10 @@ class FieldRenderOptionProcessorTest extends TestCase
         $field->method('isRequired')->willReturn(true);
         $field->method('hasErrors')->willReturn(true);
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getLabel();
+        $attributes = new FieldAttributesCollection();
+
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $output = (string) $attributes->getLabel();
 
         $this->assertSame(' class="one required has-errors"', $output);
     }
@@ -208,8 +218,10 @@ class FieldRenderOptionProcessorTest extends TestCase
 
         $field->method('getHandle')->willReturn('myTextField');
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getLabel();
+        $attributes = new FieldAttributesCollection();
+
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $output = (string) $attributes->getLabel();
 
         $this->assertSame(' class="one"', $output);
     }
@@ -239,8 +251,10 @@ class FieldRenderOptionProcessorTest extends TestCase
         $field->method('getHandle')->willReturn('myTextField');
         $field->method('hasErrors')->willReturn(true);
 
-        $this->processor->process($properties, $field);
-        $output = (string) $field->getAttributes()->getLabel();
+        $attributes = new FieldAttributesCollection();
+
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $output = (string) $attributes->getLabel();
 
         $this->assertSame(' class="one combined"', $output);
     }
@@ -267,11 +281,14 @@ class FieldRenderOptionProcessorTest extends TestCase
 
         $formMock = $this->createMock(Form::class);
         $field = new TableField($formMock);
+        $attributes = new FieldAttributesCollection();
+        $tableAttributes = new TableAttributesCollection();
 
-        $this->processor->process($properties, $field);
+        $this->processor->processAttributes($properties, $field, $attributes);
+        $this->processor->processAttributes($properties, $field, $tableAttributes);
 
-        $output = (string) $field->getAttributes()->getLabel();
-        $tableOutput = (string) $field->getTableAttributes()->getRow();
+        $output = (string) $attributes->getLabel();
+        $tableOutput = (string) $tableAttributes->getRow();
 
         $this->assertSame(' class="one two"', $output);
         $this->assertSame(' test="value"', $tableOutput);

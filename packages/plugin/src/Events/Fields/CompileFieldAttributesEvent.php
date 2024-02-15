@@ -6,7 +6,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use yii\base\Event;
 
-class CompileAttributesEvent extends Event
+class CompileFieldAttributesEvent extends Event
 {
     public function __construct(
         private FieldInterface $field,

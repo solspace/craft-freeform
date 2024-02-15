@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Events\Fields\CompileAttributesEvent;
+use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Events\Fields\SetParametersEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -40,7 +40,7 @@ class FieldRenderOptionsBundle extends FeatureBundle
         );
     }
 
-    public function compileAttributes(CompileAttributesEvent $event): void
+    public function compileAttributes(CompileFieldAttributesEvent $event): void
     {
         $field = $event->getField();
         $form = $field->getForm();

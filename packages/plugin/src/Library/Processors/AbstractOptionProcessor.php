@@ -38,8 +38,12 @@ abstract class AbstractOptionProcessor
         $attributes->merge($value);
     }
 
-    protected function processPropertyValue(\ReflectionClass $reflection, object $object, string $key, mixed $value): void
-    {
+    protected function processPropertyValue(
+        \ReflectionClass $reflection,
+        object $object,
+        string $key,
+        mixed $value
+    ): void {
         try {
             $property = $reflection->getProperty($key);
         } catch (\ReflectionException) {

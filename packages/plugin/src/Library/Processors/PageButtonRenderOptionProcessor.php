@@ -7,8 +7,11 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 
 class PageButtonRenderOptionProcessor extends AbstractOptionProcessor
 {
-    public function process(array $renderOptions, PageButtons $buttons, Attributes $attributes): void
-    {
+    public function process(
+        array $renderOptions,
+        PageButtons $buttons,
+        Attributes $attributes
+    ): void {
         $reflection = new \ReflectionClass($buttons);
 
         foreach ($renderOptions as $key => $value) {

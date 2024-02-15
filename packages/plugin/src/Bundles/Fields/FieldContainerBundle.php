@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Events\Fields\CompileAttributesEvent;
+use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -18,7 +18,7 @@ class FieldContainerBundle extends FeatureBundle
         );
     }
 
-    public function updateContainerAttributes(CompileAttributesEvent $event): void
+    public function updateContainerAttributes(CompileFieldAttributesEvent $event): void
     {
         $request = \Craft::$app->request;
         if ($request && $request->isCpRequest) {

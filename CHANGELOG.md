@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.0.11 - 2024-02-16
+
+### Added
+- Added a setting to allow users to enable dashes in field handle names.
+
+### Fixed
+- Fixed several issues related to the migration from Freeform 4, including table prefixes and field handles that are too long getting corrupted.
+- Fixed an issue where table prefixes were not being respected on fresh installs.
+- Fixed the precedence order for overriding attributes in formatting templates. Overrides in the template loading the form now take precedence over the formatting template overrides within it.
+- Fixed a bug where editing/saving a submission inside the control panel could sometimes error about a user ID being `0`.
+- Fixed a bug where the Stripe Webhook URL was incorrectly including a CP admin path. Any existing Stripe integrations will need to be manually adjusted.
+- Adjusted the JS in a few of the sample templates.
+
 ## 5.0.10 - 2024-02-08
 
 ### Added

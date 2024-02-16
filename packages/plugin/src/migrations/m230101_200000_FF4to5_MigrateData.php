@@ -814,7 +814,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                     continue;
                 }
 
-                $this->renameColumn($table->name, $column, $column.'_old');
+                $this->renameColumn('{{%'.$table->name.'}}', $column, $column.'_old');
             }
         }
 

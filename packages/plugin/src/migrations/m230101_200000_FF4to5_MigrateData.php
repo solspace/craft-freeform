@@ -810,11 +810,13 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
             $columns = $table->getColumnNames();
             foreach ($columns as $column) {
-                if (!preg_match('/_\d+$/', $column)) {
+                if (!preg_match('/_(\d+)$/', $column, $matches)) {
                     continue;
                 }
 
-                $this->renameColumn($table->name, $column, $column.'_old');
+                $fieldId = $matches[1];
+
+                $this->renameColumn('{{%'.$table->name.'}}', $column, 'old_'.$fieldId);
             }
         }
 
@@ -848,7 +850,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $oldColumnName = null;
         if (isset($props->id)) {
             foreach ($columns as $column) {
-                if (preg_match('/.*_'.$props->id.'_old$/', $column)) {
+                if (preg_match('/^old_'.$props->id.'$/', $column)) {
                     $oldColumnName = $column;
 
                     break;

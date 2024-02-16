@@ -44,6 +44,11 @@ class GraphQLBundle extends FeatureBundle
             return;
         }
 
+        $freeform = Freeform::getInstance();
+        if ($freeform->settings->getSettingsModel()->allowDashesInFieldHandles) {
+            return;
+        }
+
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_TYPES,
@@ -93,9 +98,7 @@ class GraphQLBundle extends FeatureBundle
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_SCHEMA_COMPONENTS,
-            function (RegisterGqlSchemaComponentsEvent $event) {
-                $freeform = Freeform::getInstance();
-
+            function (RegisterGqlSchemaComponentsEvent $event) use ($freeform) {
                 $group = $freeform->name;
                 $forms = $freeform->forms->getAllForms();
 

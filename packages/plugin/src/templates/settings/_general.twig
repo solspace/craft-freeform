@@ -97,7 +97,7 @@
 
     <hr>
 
-    <h2>{{ "Submission Data"|t('freeform') }}</h2>
+    <h2>{{ "Fields"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Fill Form Values from the GET Query String"|t('freeform'),
@@ -106,6 +106,19 @@
         on: settings.fillWithGet,
         errors: settings.errors("fillWithGet"),
     }) }}
+
+    {{ forms.lightswitchField({
+        label: "Allow Dashes in Field Handles"|t('freeform'),
+        instructions: "Enable this to be able to allow users to include dashes in field handle names in the form builder."|t('freeform'),
+        warning: "Dashes in field handle names are not allowed by default. Enabling this could negatively affect other parts of Craft, especially GraphQL functionality. Use with caution and only if necessary."|t('freeform'),
+        name: "settings[allowDashesInFieldHandles]",
+        on: settings.allowDashesInFieldHandles,
+        errors: settings.errors("allowDashesInFieldHandles"),
+    }) }}
+
+    <hr>
+
+    <h2>{{ "Submission Data"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         label: "Enable Search Index Updating on New Submissions"|t('freeform'),

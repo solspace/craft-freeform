@@ -20,7 +20,6 @@ export const Title = styled.h2`
   font-size: 20px;
   font-weight: 700;
   text-align: left;
-  width: fit-content;
 
   overflow: hidden;
   white-space: nowrap;

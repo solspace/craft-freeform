@@ -41,7 +41,7 @@
     enctype="multipart/form-data"
     data-id="{{ form.anchor }}"
     data-freeform
-    {#    {{ form.ruleProperties ? 'data-has-rules' : '' }}#}
+    data-has-rules
 {% endblock %}
 
 {% block body %}
@@ -121,6 +121,8 @@
         }
       }
     </script>
+
+    {{ form.renderClosingTag(false) }}
 
 {% endblock %}
 

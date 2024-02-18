@@ -23,6 +23,7 @@ import {
   PaddedChartFooter,
   Subtitle,
   Title,
+  TitleLink,
 } from './card.styles';
 
 const randomSubmissions = (min: number, max: number): number =>
@@ -66,6 +67,9 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
     navigate(`${id}`);
   };
 
+  const hasTitleLink = form.links.filter(({ type }) => type === 'title').length;
+  const linkList = form.links.filter(({ type }) => type === 'linkList');
+
   return (
     <CardWrapper
       data-id={form.id}
@@ -107,14 +111,20 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
       <CardBody>
         {isTitleOverflowing ? (
           <Tooltip title={name} {...tooltipProps}>
-            <Title ref={titleRef} onClick={onNavigate}>
-              {name}
-            </Title>
+            {hasTitleLink ? (
+              <TitleLink ref={titleRef} onClick={onNavigate}>
+                {name}
+              </TitleLink>
+            ) : (
+              <Title ref={titleRef}>{name}</Title>
+            )}
           </Tooltip>
-        ) : (
-          <Title ref={titleRef} onClick={onNavigate}>
+        ) : hasTitleLink ? (
+          <TitleLink ref={titleRef} onClick={onNavigate}>
             {name}
-          </Title>
+          </TitleLink>
+        ) : (
+          <Title ref={titleRef}>{name}</Title>
         )}
         {!!description &&
           (isDescriptionOverflowing ? (
@@ -127,19 +137,21 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             </Subtitle>
           ))}
 
-        <LinkList>
-          {form.links.map((link, idx) =>
-            link.internal ? (
-              <NavLink key={idx} to={link.url}>
-                {link.label}
-              </NavLink>
-            ) : (
-              <li key={idx}>
-                <a href={link.url}>{link.label}</a>
-              </li>
-            )
-          )}
-        </LinkList>
+        {linkList.length > 0 && (
+          <LinkList>
+            {linkList.map((link, idx) =>
+              link.internal ? (
+                <NavLink key={idx} to={link.url}>
+                  {link.label}
+                </NavLink>
+              ) : (
+                <li key={idx}>
+                  <a href={link.url}>{link.label}</a>
+                </li>
+              )
+            )}
+          </LinkList>
+        )}
       </CardBody>
 
       <ResponsiveContainer width="100%" height={40}>

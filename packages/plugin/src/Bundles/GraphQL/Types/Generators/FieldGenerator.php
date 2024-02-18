@@ -90,21 +90,7 @@ class FieldGenerator extends AbstractGenerator
             'value' => self::getFieldValueDefinitions($typeName),
         ];
 
-        if (FreeformFieldInterface::TYPE_TEXT === $typeName) {
-            $fieldDefinitions['maxLength'] = [
-                'name' => 'maxLength',
-                'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
-            ];
-        }
-
         if (FreeformFieldInterface::TYPE_TEXTAREA === $typeName) {
-            $fieldDefinitions['maxLength'] = [
-                'name' => 'maxLength',
-                'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
-            ];
-
             $fieldDefinitions['rows'] = [
                 'name' => 'rows',
                 'type' => Type::int(),
@@ -269,16 +255,13 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
-        $notificationTypes = [FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS, FreeformFieldInterface::TYPE_EMAIL];
-        if (\in_array($typeName, $notificationTypes, true)) {
+        if (FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS === $typeName) {
             $fieldDefinitions['notificationId'] = [
                 'name' => 'notificationId',
                 'type' => Type::string(),
                 'description' => 'The ID of the DB notification or the string filename of the file based notification.',
             ];
-        }
 
-        if (FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS === $typeName) {
             $fieldDefinitions['showAsRadio'] = [
                 'name' => 'showAsRadio',
                 'type' => Type::boolean(),
@@ -594,14 +577,15 @@ class FieldGenerator extends AbstractGenerator
         return $fieldDefinitions;
     }
 
-    private static function getFieldValueDefinitions(string $typeName): array
+    private static function getFieldValueDefinitions(string $typeName): null|array|string
     {
         $multipleValues = [
             FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS,
-            FreeformFieldInterface::TYPE_EMAIL,
             FreeformFieldInterface::TYPE_CHECKBOX_GROUP,
             FreeformFieldInterface::TYPE_MULTIPLE_SELECT,
             FreeformFieldInterface::TYPE_TABLE,
+            FreeformFieldInterface::TYPE_FILE,
+            FreeformFieldInterface::TYPE_FILE_DRAG_AND_DROP,
         ];
 
         $isMultiple = \in_array($typeName, $multipleValues, true);
@@ -609,7 +593,16 @@ class FieldGenerator extends AbstractGenerator
         return [
             'name' => 'value'.($isMultiple ? 's' : ''),
             'type' => ($isMultiple ? Type::listOf(Type::string()) : Type::string()),
-            'description' => "Field's default value",
+            'description' => "Field's value",
+            'resolve' => function ($source) {
+                $value = $source->getValue();
+
+                if (empty($value)) {
+                    $value = $source->getDefaultValue();
+                }
+
+                return $value;
+            },
         ];
     }
 }

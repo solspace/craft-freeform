@@ -7,6 +7,7 @@ class Link
     public function __construct(
         private string $label,
         private string $url,
+        private string $type,
         private bool $internal = false,
     ) {}
 
@@ -18,6 +19,11 @@ class Link
     public function getUrl(): string
     {
         return $this->url;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 
     public function isInternal(): bool

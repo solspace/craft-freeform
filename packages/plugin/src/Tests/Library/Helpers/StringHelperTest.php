@@ -43,4 +43,12 @@ class StringHelperTest extends TestCase
             StringHelper::incrementStringWithNumber('test string 153', true)
         );
     }
+
+    public function testDashesToCamelCase()
+    {
+        $this->assertEquals(
+            'myTestWorked',
+            StringHelper::dashesToCamelCase('-my--test-worked-')
+        );
+    }
 }

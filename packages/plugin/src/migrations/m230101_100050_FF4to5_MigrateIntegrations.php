@@ -40,6 +40,8 @@ class m230101_100050_FF4to5_MigrateIntegrations extends Migration
             'CASCADE',
         );
 
+        $this->delete('{{%freeform_integrations}}');
+
         return true;
     }
 

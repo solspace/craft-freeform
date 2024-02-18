@@ -17,7 +17,10 @@
     {% if form %}
 
         {# Replace "demo/extras/manual-form" where to return after the form will be submitted, or remove it to have it respect the value set inside the form builder #}
-        {{ form.renderTag({returnUrl: "/demo/extras/manual-form"}) }}
+        {{ form.renderTag({
+            returnUrl: "/demo/extras/manual-form",
+            disable: ["submitButtons"]
+        }) }}
 
             {# Display any general errors upon submit #}
             <div class="form-heading-errors">
@@ -90,7 +93,25 @@
                 </select>
             </div>
 
-            {# The submit button will automatically be inserted by Freeform #}
+            {# The submit buttons will no longer be automatically inserted by Freeform with `disable: ["submitButtons"]` #}
+
+            {# We need to set the `page` variable from the `form.pages.current` in order for this to work #}
+            {% set page = form.pages.current %}
+
+            {# Complete buttons can be rendered with `page.buttons.renderSubmit`, etc, but for maximum control, you can just get the properties attributes only #}
+            <button {{ page.buttons.submitRenderProps({ 'data-optional': 'attributes here' }) }}>
+                Submit
+            </button>
+            {% if form.pages.current.buttons.back %}
+                <button {{ page.buttons.backRenderProps }}>
+                    Back
+                </button>
+            {% endif %}
+            {% if form.pages.current.buttons.save %}
+                <button {{ page.buttons.saveRenderProps }}>
+                    Save
+                </button>
+            {% endif %}
 
         {{ form.renderClosingTag }}
 

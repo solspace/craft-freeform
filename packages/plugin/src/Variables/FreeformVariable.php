@@ -25,6 +25,7 @@ use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
+use yii\db\Exception;
 
 class FreeformVariable
 {
@@ -80,7 +81,7 @@ class FreeformVariable
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function deleteSubmissionByToken(string $token): bool
     {

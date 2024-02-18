@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
+use JetBrains\PhpStorm\ArrayShape;
+use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
@@ -21,6 +23,15 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
     }
 
     abstract protected function getProcessableFields(string $category): array;
+
+    #[ArrayShape([
+        0 => ResponseInterface::class,
+        1 => 'object|array',
+    ])]
+    protected function getJsonResponse(ResponseInterface $response): array
+    {
+        return [$response, json_decode($response->getBody()->getContents())];
+    }
 
     protected function processMapping(Form $form, ?FieldMapping $mapping, string $category): array
     {
@@ -62,6 +73,6 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
             $keyValueMap[$key] = $event->getValue();
         }
 
-        return array_filter($keyValueMap);
+        return $keyValueMap;
     }
 }

@@ -14,8 +14,10 @@ class ConditionValidator
             return match ($condition->getOperator()) {
                 Condition::TYPE_EQUALS => $expectedValue === implode(',', $value),
                 Condition::TYPE_NOT_EQUALS => $expectedValue !== implode(',', $value),
-                Condition::TYPE_CONTAINS => \in_array($expectedValue, $value, true),
-                Condition::TYPE_NOT_CONTAINS => !\in_array($expectedValue, $value, true),
+                Condition::TYPE_CONTAINS, Condition::TYPE_IS_ONE_OF => \in_array($expectedValue, $value, true),
+                Condition::TYPE_NOT_CONTAINS, Condition::TYPE_IS_NOT_ONE_OF => !\in_array($expectedValue, $value, true),
+                Condition::TYPE_IS_EMPTY => empty($value),
+                Condition::TYPE_IS_NOT_EMPTY => !empty($value),
                 default => false,
             };
         }
@@ -31,6 +33,10 @@ class ConditionValidator
             Condition::TYPE_LESS_THAN_OR_EQUALS => $value <= $expectedValue,
             Condition::TYPE_STARTS_WITH => str_starts_with(strtolower($value), strtolower($expectedValue)),
             Condition::TYPE_ENDS_WITH => str_ends_with(strtolower($value), strtolower($expectedValue)),
+            Condition::TYPE_IS_EMPTY => empty($value),
+            Condition::TYPE_IS_NOT_EMPTY => !empty($value),
+            Condition::TYPE_IS_ONE_OF => $expectedValue === $value,
+            Condition::TYPE_IS_NOT_ONE_OF => $expectedValue !== $value,
         };
     }
 }

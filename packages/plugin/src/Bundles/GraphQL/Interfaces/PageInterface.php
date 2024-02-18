@@ -41,6 +41,11 @@ class PageInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The page label',
             ],
+            'buttons' => [
+                'name' => 'buttons',
+                'type' => ButtonsInterface::getType(),
+                'description' => 'The page buttons',
+            ],
             // Layout
             'rows' => [
                 'name' => 'rows',

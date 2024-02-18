@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
+use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\NotificationTemplates\NotificationTemplateTransformer;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Twig\Markup;
 
 class PageButtons
 {
@@ -234,5 +236,64 @@ class PageButtons
     public function getNotificationTemplate(): ?NotificationTemplate
     {
         return $this->notificationTemplate;
+    }
+
+    public function getSubmitRenderProps(array $customAttributes = []): Markup
+    {
+        return Template::raw(
+            $this->getAttributes()
+                ->getSubmit()
+                ->clone()
+                ->merge($customAttributes)
+                ->replace('data-freeform-action', 'submit')
+                ->replace('name', self::INPUT_NAME_SUBMIT)
+                ->replace('type', 'submit')
+        );
+    }
+
+    public function renderSubmit(array $customAttributes = []): Markup
+    {
+        $attributes = $this->getSubmitRenderProps($customAttributes);
+
+        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getSubmitLabel()).'</button>');
+    }
+
+    public function getBackRenderProps(array $customAttributes = []): Markup
+    {
+        return Template::raw(
+            $this->getAttributes()
+                ->getBack()
+                ->clone()
+                ->merge($customAttributes)
+                ->replace('data-freeform-action', 'back')
+                ->replace('name', self::INPUT_NAME_PREVIOUS_PAGE)
+                ->replace('type', 'submit')
+        );
+    }
+
+    public function renderBack(array $customAttributes = []): Markup
+    {
+        $attributes = $this->getBackRenderProps($customAttributes);
+
+        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getBackLabel()).'</button>');
+    }
+
+    public function getSaveRenderProps(array $customAttributes = []): Markup
+    {
+        return Template::raw(
+            $this->getAttributes()
+                ->getSave()
+                ->clone()
+                ->merge($customAttributes)
+                ->replace('data-freeform-action', 'save')
+                ->replace('type', 'submit')
+        );
+    }
+
+    public function renderSave(array $customAttributes = []): Markup
+    {
+        $attributes = $this->getSaveRenderProps($customAttributes);
+
+        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getSaveLabel()).'</button>');
     }
 }

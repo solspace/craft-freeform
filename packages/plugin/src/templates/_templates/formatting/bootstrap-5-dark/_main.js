@@ -2,7 +2,7 @@ var form = document.querySelector('[data-id="{{ form.anchor }}"]');
 if (form) {
     // Styling for AJAX responses
     form.addEventListener("freeform-ready", function (event) {
-        var freeform = event.target.freeform;
+        var freeform = event.freeform;
 
         freeform.setOption("errorClassBanner", ["alert", "alert-danger"]);
         freeform.setOption("errorClassList", ["list-unstyled", "m-0", "fst-italic", "text-danger"]);

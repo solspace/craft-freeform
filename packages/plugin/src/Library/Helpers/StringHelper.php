@@ -18,4 +18,17 @@ class StringHelper
 
         return $string.++$number;
     }
+
+    public static function dashesToCamelCase(?string $string, bool $capitalizeFirstCharacter = false): ?string
+    {
+        if ($string && str_contains($string, '-')) {
+            $string = str_replace('-', '', ucwords($string, '-'));
+
+            if (!$capitalizeFirstCharacter) {
+                $string = lcfirst($string);
+            }
+        }
+
+        return $string;
+    }
 }

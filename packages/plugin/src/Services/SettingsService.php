@@ -283,12 +283,13 @@ class SettingsService extends BaseService
             'statuses',
             'error-log',
             'diagnostics',
-            'email-marketing',
-            'crm',
-            'payment-gateways',
-            'captchas',
-            'elements',
-            'webhooks',
+            'integrations/email-marketing',
+            'integrations/crm',
+            'integrations/payment-gateways',
+            'integrations/captchas',
+            'integrations/elements',
+            'integrations/webhooks',
+            'integrations/single',
         ];
 
         return !\in_array($sectionName, $nonSettingSections, true);

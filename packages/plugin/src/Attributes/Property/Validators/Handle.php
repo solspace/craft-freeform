@@ -15,7 +15,7 @@ class Handle implements PropertyValidatorInterface
     public function validate(mixed $value): array
     {
         $errors = [];
-        if (!preg_match('/^[a-zA-Z\-_0-9]+$/', $value)) {
+        if (!preg_match('/^[a-zA-Z_0-9]+$/', $value)) {
             $errors[] = Freeform::t($this->message);
         }
 

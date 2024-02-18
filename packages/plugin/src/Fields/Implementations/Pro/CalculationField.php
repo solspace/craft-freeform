@@ -12,11 +12,7 @@ use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
-use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
-use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
-use Solspace\Freeform\Fields\Traits\EncryptionTrait;
-use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 
 #[Type(
     name: 'Calculation',
@@ -24,16 +20,17 @@ use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
     iconPath: __DIR__.'/../Icons/calculator.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/calculation.ejs',
 )]
-class CalculationField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, EncryptionInterface
+class CalculationField extends AbstractField implements DefaultValueInterface
 {
     use DefaultTextValueTrait;
-    use EncryptionTrait;
-    use PlaceholderTrait;
 
     private const DEFAULT_CALCULATIONS = '';
 
+    private const INPUT_TYPE_REGULAR = 'regularTextInput';
+    private const INPUT_TYPE_PLAIN = 'plainText';
+    private const INPUT_TYPE_HIDDEN = 'hidden';
+
     protected string $instructions = '';
-    protected string $placeholder = '';
 
     #[Input\CalculationBox(
         label: 'Calculation Logic',
@@ -53,9 +50,18 @@ class CalculationField extends AbstractField implements PlaceholderInterface, De
     )]
     protected string $calculations = self::DEFAULT_CALCULATIONS;
 
+    #[Input\Select(
+        options: [
+            ['value' => self::INPUT_TYPE_REGULAR, 'label' => 'Regular Text Input'],
+            ['value' => self::INPUT_TYPE_PLAIN, 'label' => 'Plain Text'],
+            ['value' => self::INPUT_TYPE_HIDDEN, 'label' => 'Hidden'],
+        ],
+    )]
+    private string $inputType = self::INPUT_TYPE_REGULAR;
+
     public function getType(): string
     {
-        return self::TYPE_TEXT;
+        return self::TYPE_CALCULATIONS;
     }
 
     public function getCalculations(): string
@@ -74,17 +80,36 @@ class CalculationField extends AbstractField implements PlaceholderInterface, De
         return $value;
     }
 
+    public function canRender(): bool
+    {
+        return 'hidden' !== $this->inputType;
+    }
+
+    public function getHtmlInputType(): string
+    {
+        return self::INPUT_TYPE_REGULAR === $this->inputType ? self::TYPE_TEXT : self::TYPE_HIDDEN;
+    }
+
     public function getInputHtml(): string
     {
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
-            ->setIfEmpty('type', $this->getType())
             ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('type', $this->getHtmlInputType())
             ->setIfEmpty('value', $this->getValue())
             ->replace('data-calculations', $this->getCalculations())
         ;
+
+        if ('plainText' === $this->inputType) {
+            $output = '<div class="freeform-calculation-wrapper">';
+            $output .= '<input'.$attributes.' />';
+            $output .= '<p id="freeform-calculation-plain-field">'.$this->getValue().'</p>';
+            $output .= '</div>';
+
+            return $output;
+        }
 
         return '<input'.$attributes.' readonly />';
     }

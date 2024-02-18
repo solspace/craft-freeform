@@ -50,60 +50,68 @@ class Calculation implements FreeformHandler {
       const doCalculations = () => {
         const allVariablesHaveValues = Object.values(variables).every((value) => value !== '');
 
-        if (allVariablesHaveValues) {
-          const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
-
-          if (picker instanceof HTMLInputElement) {
-            picker.value = result;
-          }
+        if (!allVariablesHaveValues) {
+          return;
         }
+
+        const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
+
+        if (!(picker instanceof HTMLInputElement)) {
+          return;
+        }
+
+        if (picker.type !== 'hidden') {
+          picker.value = result;
+          return;
+        }
+
+        const wrapper = picker.parentElement;
+        const pTag = wrapper.querySelector('#freeform-calculation-plain-field');
+
+        if (!pTag) {
+          return;
+        }
+
+        picker.value = result;
+        pTag.textContent = result;
       };
 
       Object.keys(variables).forEach((variable) => {
-        const elements = this.freeform.form.querySelectorAll(`input[name="${variable}"] , select[name="${variable}"]`);
+        const elements = this.freeform.form.querySelectorAll(`input[name="${variable}"], select[name="${variable}"]`);
 
-        if (elements.length === 1) {
-          const element = elements[0] as HTMLInputElement | HTMLSelectElement;
+        if (elements.length === 0) return;
 
-          if (element instanceof HTMLInputElement || element instanceof HTMLSelectElement) {
-            if (element.value) {
-              if (element instanceof HTMLInputElement) {
-                variables[variable] =
-                  element.type === 'number' ? Number(element.value) : this.valueOrdination(element.value);
-              }
+        const element = elements[0] as HTMLInputElement | HTMLSelectElement;
 
-              if (element instanceof HTMLSelectElement) {
-                variables[variable] = this.valueOrdination(element.value);
-              }
+        const updateVariablesAndCalculate = () => {
+          variables[variable] =
+            element instanceof HTMLInputElement
+              ? element.type === 'number'
+                ? Number(element.value)
+                : this.valueOrdination(element.value)
+              : this.valueOrdination(element.value);
 
-              doCalculations();
-            }
-          }
+          doCalculations();
+        };
 
+        updateVariablesAndCalculate();
+
+        if (element instanceof HTMLInputElement) {
+          element.addEventListener('input', updateVariablesAndCalculate);
+        } else if (element instanceof HTMLSelectElement) {
+          element.addEventListener('change', updateVariablesAndCalculate);
+        }
+
+        if (elements.length === 1) return;
+
+        elements.forEach((element) => {
           if (element instanceof HTMLInputElement) {
-            element.addEventListener('input', () => {
-              variables[variable] =
-                element.type === 'number' ? Number(element.value) : this.valueOrdination(element.value);
-              doCalculations();
-            });
-          }
-
-          if (element instanceof HTMLSelectElement) {
-            element.addEventListener('change', () => {
+            element.addEventListener('click', () => {
               variables[variable] = this.valueOrdination(element.value);
               doCalculations();
             });
           }
-        } else {
-          elements.forEach((element) => {
-            if (element instanceof HTMLInputElement) {
-              element.addEventListener('click', () => {
-                variables[variable] = this.valueOrdination(element.value);
-                doCalculations();
-              });
-            }
-          });
-        }
+        });
       });
     });
   };

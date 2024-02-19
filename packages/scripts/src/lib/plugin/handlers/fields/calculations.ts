@@ -77,24 +77,29 @@ class Calculation implements FreeformHandler {
       };
 
       Object.keys(variables).forEach((variable) => {
-        const elements = this.freeform.form.querySelectorAll(`input[name="${variable}"], select[name="${variable}"]`);
+        const inputElements = this.freeform.form.querySelectorAll(
+          `input[name="${variable}"], select[name="${variable}"]`
+        );
 
-        if (elements.length === 0) return;
+        if (inputElements.length === 0) return;
 
-        const element = elements[0] as HTMLInputElement | HTMLSelectElement;
+        const element = inputElements[0] as HTMLInputElement | HTMLSelectElement;
 
-        const updateVariablesAndCalculate = () => {
+        const updateVariables = () => {
           variables[variable] =
             element instanceof HTMLInputElement
               ? element.type === 'number'
                 ? Number(element.value)
                 : this.valueOrdination(element.value)
               : this.valueOrdination(element.value);
+        };
 
+        const updateVariablesAndCalculate = () => {
+          updateVariables();
           doCalculations();
         };
 
-        updateVariablesAndCalculate();
+        updateVariables(); // Initial update
 
         if (element instanceof HTMLInputElement) {
           element.addEventListener('input', updateVariablesAndCalculate);
@@ -102,16 +107,17 @@ class Calculation implements FreeformHandler {
           element.addEventListener('change', updateVariablesAndCalculate);
         }
 
-        if (elements.length === 1) return;
-
-        elements.forEach((element) => {
-          if (element instanceof HTMLInputElement) {
-            element.addEventListener('click', () => {
-              variables[variable] = this.valueOrdination(element.value);
-              doCalculations();
-            });
-          }
-        });
+        // Handling other input elements (if any)
+        if (inputElements.length > 1) {
+          inputElements.forEach((inputElement) => {
+            if (inputElement !== element && inputElement instanceof HTMLInputElement) {
+              inputElement.addEventListener('click', () => {
+                variables[variable] = this.valueOrdination(inputElement.value);
+                doCalculations();
+              });
+            }
+          });
+        }
       });
     });
   };

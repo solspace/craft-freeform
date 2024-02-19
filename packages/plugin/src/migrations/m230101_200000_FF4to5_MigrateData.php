@@ -684,6 +684,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'enabled' => true,
             'field' => $record->uid,
             'template' => $notificationId,
+            'recipients' => [],
             'recipientMapping' => array_map(
                 fn ($option) => [
                     'value' => $option->label,

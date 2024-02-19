@@ -29,7 +29,7 @@ class RegexValidation extends FeatureBundle
 
         $value = $field->getValue();
         $pattern = $field->getPattern();
-        if (empty($pattern)) {
+        if (empty($pattern) || empty($value)) {
             return;
         }
 

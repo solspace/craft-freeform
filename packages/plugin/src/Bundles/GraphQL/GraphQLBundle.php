@@ -12,13 +12,17 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsAttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldRuleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\NotificationTemplateInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageRuleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RowInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\RuleConditionInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\RulesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
@@ -70,6 +74,10 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = ButtonsInterface::class;
                 $event->types[] = ButtonsAttributesInterface::class;
                 $event->types[] = NotificationTemplateInterface::class;
+                $event->types[] = RuleConditionInterface::class;
+                $event->types[] = PageRuleInterface::class;
+                $event->types[] = FieldRuleInterface::class;
+                $event->types[] = RulesInterface::class;
             }
         );
 

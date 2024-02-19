@@ -74,15 +74,6 @@ class FieldInterface extends AbstractInterface
                     return $source->getAttributes();
                 },
             ],
-            'rules' => [
-                'name' => 'rules',
-                'type' => Type::string(),
-                'description' => "Field's rules",
-                'resolve' => function ($source) {
-                    // FIXME
-                    return null; // $source->getRules();
-                },
-            ],
         ], static::getName());
     }
 }

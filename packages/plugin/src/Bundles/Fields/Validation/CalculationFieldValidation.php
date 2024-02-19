@@ -54,8 +54,6 @@ class CalculationFieldValidation extends FeatureBundle
             }
         }
 
-        $calculationLogic = str_replace(['&#8203;', ' ', '\\u200B', "\xE2\x80\x8B", "\xC2\xA0"], ' ', $calculationLogic);
-
         $expressionLanguage = new ExpressionLanguage();
 
         try {

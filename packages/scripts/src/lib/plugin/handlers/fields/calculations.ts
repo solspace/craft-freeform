@@ -36,9 +36,7 @@ class Calculation implements FreeformHandler {
       const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
 
       // Get calculation logic
-      const calculationsLogic = calculations
-        .replace(getVariablesPattern, (_, variable) => variable)
-        .replace(/&ZeroWidthSpace;|\s|\u200B/g, ' ');
+      const calculationsLogic = calculations.replace(getVariablesPattern, (_, variable) => variable);
 
       // Get variables
       const variables: Record<string, string | number | boolean> = {};

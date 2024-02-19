@@ -26,7 +26,11 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   const handles = useCalculationFieldHandles(property);
 
   const onChange = useCallback((event: TagifyChangeEvent): void => {
-    updateValue(event.detail.tagify.DOM.input.textContent);
+    updateValue(
+      event.detail.tagify.DOM.input.textContent
+        .replace(/\u200B|\s+/g, ' ')
+        .trim()
+    );
   }, []);
 
   useEffect(() => {

@@ -1,16 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import type { ControlType } from '@components/form-controls/types';
-import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import type { CalculationProperty } from '@ff-client/types/properties';
 import type Tagify from '@yaireo/tagify';
 import { MixedTags } from '@yaireo/tagify/dist/react.tagify';
 
 import { Control } from '../../control';
 
+import {
+  generateValue,
+  useCalculationFieldHandles,
+} from './calculation-box.hooks';
 import { CalculationBoxWrapper } from './calculation-box.styles';
 
 import '@yaireo/tagify/dist/tagify.css';
+
+type TagifyChangeEvent = CustomEvent<Tagify.ChangeEventData<Tagify.TagData>>;
 
 const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   value,
@@ -19,26 +23,11 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   updateValue,
 }) => {
   const [calculationBoxValue, setCalculationBoxValue] = useState('');
-  const allFields = useSelector(fieldSelectors.all);
-  const handles = allFields
-    .filter((item) => property.availableFieldTypes.includes(item.typeClass))
-    .map((item) => item.properties.handle);
+  const handles = useCalculationFieldHandles(property);
 
-  const generateValue = (value: string): string => {
-    return value.replace(
-      /field:([a-zA-Z0-9_]+)/g,
-      (_, variable) => `[[${variable}]]`
-    );
-  };
-
-  const onChange = useCallback(
-    (e: CustomEvent<Tagify.ChangeEventData<Tagify.TagData>>) => {
-      const getValue = e.detail.tagify.DOM.input.textContent;
-
-      updateValue(getValue);
-    },
-    []
-  );
+  const onChange = useCallback((event: TagifyChangeEvent): void => {
+    updateValue(event.detail.tagify.DOM.input.textContent);
+  }, []);
 
   useEffect(() => {
     setCalculationBoxValue(generateValue(value));

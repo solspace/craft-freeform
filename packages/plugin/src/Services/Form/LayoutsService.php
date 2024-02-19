@@ -172,7 +172,7 @@ class LayoutsService extends BaseService
                 $mainLayout->getFields()->add($field);
                 $page->getFields()->add($field);
 
-                if (!$field->canRender() || $field instanceof NoRenderInterface) {
+                if ($field instanceof NoRenderInterface || !$field->canRender()) {
                     continue;
                 }
 

@@ -52,9 +52,9 @@ class CalculationField extends AbstractField implements DefaultValueInterface
 
     #[Input\Select(
         options: [
-            ['value' => self::INPUT_TYPE_REGULAR, 'label' => 'Regular Text Input'],
-            ['value' => self::INPUT_TYPE_PLAIN, 'label' => 'Plain Text'],
-            ['value' => self::INPUT_TYPE_HIDDEN, 'label' => 'Hidden'],
+            self::INPUT_TYPE_REGULAR => 'Regular Text Input',
+            self::INPUT_TYPE_PLAIN => 'Plain Text',
+            self::INPUT_TYPE_HIDDEN => 'Hidden',
         ],
     )]
     private string $inputType = self::INPUT_TYPE_REGULAR;
@@ -82,7 +82,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface
 
     public function canRender(): bool
     {
-        return 'hidden' !== $this->inputType;
+        return self::INPUT_TYPE_HIDDEN !== $this->inputType;
     }
 
     public function getHtmlInputType(): string
@@ -100,9 +100,10 @@ class CalculationField extends AbstractField implements DefaultValueInterface
             ->setIfEmpty('type', $this->getHtmlInputType())
             ->setIfEmpty('value', $this->getValue())
             ->replace('data-calculations', $this->getCalculations())
+            ->replace('readonly', true)
         ;
 
-        if ('plainText' === $this->inputType) {
+        if (self::INPUT_TYPE_PLAIN === $this->inputType) {
             $output = '<div class="freeform-calculation-wrapper">';
             $output .= '<input'.$attributes.' />';
             $output .= '<p id="freeform-calculation-plain-field">'.$this->getValue().'</p>';
@@ -111,6 +112,6 @@ class CalculationField extends AbstractField implements DefaultValueInterface
             return $output;
         }
 
-        return '<input'.$attributes.' readonly />';
+        return '<input'.$attributes.' />';
     }
 }

@@ -87,25 +87,6 @@
                 {% endfor %}
 
                 {% for row in page %}
-                    {% for field in row.getFields(["calculations"]) %}
-                        {% set fieldHandle = field.handle %}
-
-                        <div class="fields-row">
-                            <div class="fields-column">
-                                {% set options = {
-                                    label: field.label,
-                                    name: fieldHandle,
-                                    id: fieldHandle,
-                                    value: submission[fieldHandle],
-                                    required: field.required,
-                                    errors: submission.errors(fieldHandle)
-                                } %}
-
-                                {{ forms.textField(options) }}
-                            </div>
-                        </div>
-                    {% endfor %}
-
                     {{ rowMacro.render(row, submission, fieldRenderer) }}
                 {% endfor %}
             </div>

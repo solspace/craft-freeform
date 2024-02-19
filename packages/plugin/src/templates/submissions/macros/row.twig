@@ -2,7 +2,7 @@
     {% import "_includes/forms" as forms %}
 
     <div class="fields-row">
-        {%- for field in row.getFields(["password", "hidden", "invisible", "calculations"], "excludes") -%}
+        {%- for field in row.getFields(["password", "hidden", "invisible"], "excludes") -%}
             {{ field.renderContainerOpeningTag({
                 attributes: {
                     container: {

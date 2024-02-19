@@ -61,7 +61,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface
 
     public function getType(): string
     {
-        return self::TYPE_CALCULATIONS;
+        return self::TYPE_CALCULATION;
     }
 
     public function getCalculations(): string

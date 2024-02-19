@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.0.12 - 2024-02-19
+
+### Added
+- Added support for querying conditional rules for fields and pages in GraphQL.
+
+### Fixed
+- Fixed a bug where migrated forms with a Dynamic Recipients field (not User Select) would trigger an error loading/submitting the form.
+- Fixed a bug where Regex fields were triggering an error if left empty when submitting the form.
+
 ## 5.0.11 - 2024-02-16
 
 ### Added

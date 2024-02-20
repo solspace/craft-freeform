@@ -6,6 +6,7 @@ use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Rules\Rule;
+use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use yii\base\Event;
 
@@ -25,6 +26,27 @@ class RuleValidator
             return false;
         }
 
+        $shouldShow = FieldRule::DISPLAY_SHOW === $rule->getDisplay();
+        $triggersRule = $this->triggersRule($form, $rule);
+
+        return $shouldShow ? !$triggersRule : $triggersRule;
+    }
+
+    public function getPageJumpIndex(Form $form): ?int
+    {
+        $rules = $this->ruleProvider->getPageRules($form);
+
+        foreach ($rules as $rule) {
+            if ($this->triggersRule($form, $rule)) {
+                return $rule->getPage()->getIndex();
+            }
+        }
+
+        return null;
+    }
+
+    private function triggersRule(Form $form, RuleInterface $rule): bool
+    {
         $conditions = $rule->getConditions();
 
         $matchesSome = false;
@@ -48,11 +70,9 @@ class RuleValidator
             }
         }
 
-        $shouldShow = FieldRule::DISPLAY_SHOW === $rule->getDisplay();
-
         return match ($rule->getCombinator()) {
-            Rule::COMBINATOR_AND => $shouldShow ? !$matchesAll : $matchesAll,
-            Rule::COMBINATOR_OR => $shouldShow ? !$matchesSome : $matchesSome,
+            Rule::COMBINATOR_AND => $matchesAll,
+            Rule::COMBINATOR_OR => $matchesSome,
         };
     }
 }

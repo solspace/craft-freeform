@@ -28,7 +28,8 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
   const onChange = useCallback((event: TagifyChangeEvent): void => {
     updateValue(
       event.detail.tagify.DOM.input.textContent
-        .replace(/\u200B|\s+/g, ' ')
+        .replace(/\u200B/g, '')
+        .replace(/\s+/g, ' ')
         .trim()
     );
   }, []);
@@ -66,9 +67,9 @@ const CalculationBox: React.FC<ControlType<CalculationProperty>> = ({
                 <x title="remove tag" class="tagify__tag__removeBtn"></x>
                   <div>
                     <p class="tagify__tag-text">
-                      <span class="sr-only-value">${' '}field:</span>${
+                      <span class="sr-only-value">field:</span>${
                         tagData.value
-                      }${' '}</p>
+                      }</p>
                   </div>
                 </tag>`;
               },

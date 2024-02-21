@@ -21,6 +21,7 @@ export default class Users extends ConnectionBase {
       { handle: 'username', name: translate('Username', {}, 'app') },
       { handle: 'firstName', name: translate('First Name', {}, 'app') },
       { handle: 'lastName', name: translate('Last Name', {}, 'app') },
+      { handle: 'fullName', name: translate('Full Name', {}, 'app') },
       { handle: 'photoId', name: translate('User Photo', {}, 'app') },
       { handle: 'email', name: translate('Email', {}, 'app') },
       { handle: 'newPassword', name: translate('Password', {}, 'app') },

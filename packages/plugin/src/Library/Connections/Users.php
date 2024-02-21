@@ -23,9 +23,6 @@ class Users extends AbstractConnection
 
     private static $existingUserCache = [];
 
-    /**
-     * {@inheritDoc}
-     */
     public function isConnectable(): bool
     {
         return true;
@@ -55,10 +52,16 @@ class Users extends AbstractConnection
             $fieldLayout = new FieldLayout();
         }
 
+        $changedNameChunk = false;
+
         foreach ($transformers as $transformer) {
             $handle = $transformer->getCraftFieldHandle();
             $field = $fieldLayout->getFieldByHandle($handle);
             $value = $transformer->transformValueFor($field);
+
+            if (\in_array($handle, ['firstName', 'lastName'], true)) {
+                $changedNameChunk = true;
+            }
 
             if ($user->id && empty($value) && \in_array($handle, ['newPassword', 'photoId'], true)) {
                 continue;
@@ -73,6 +76,10 @@ class Users extends AbstractConnection
                 $user->setFieldValue($handle, $value);
             } catch (UnknownPropertyException $e) {
             }
+        }
+
+        if ($changedNameChunk) {
+            $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
         }
 
         if (!$this->active && $this->sendActivation) {

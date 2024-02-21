@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -14,8 +15,12 @@ class GetContext
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleRequest']);
     }
 
-    public function handleRequest(FormEventInterface $event)
+    public function handleRequest(FormEventInterface $event): void
     {
+        if (!Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
+            return;
+        }
+
         $form = $event->getForm();
         foreach ($form->getLayout()->getFields() as $field) {
             if (isset($_GET[$field->getHandle()])) {

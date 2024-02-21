@@ -41,7 +41,7 @@
                 input: { "+class": "is-invalid" },
             },
         },
-        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @dropdown, @multiple-select, @number, @password, @file-dnd, @signature, @credit-card": {
+        "@text, @textarea, @email, @website, @confirm, @regex, @phone, @datetime, @dropdown, @multiple-select, @number, @password, @file-dnd, @signature": {
             attributes: {
                 container: { "+class": "form-floating" },
             },
@@ -64,7 +64,7 @@
         },
         "@file" : {
             attributes: {
-             input: { "+class": "form-control-file" },
+                input: { "+class": "form-control-file" },
             },
         },
         "@signature": {
@@ -72,6 +72,13 @@
                 input: {
                     "-class": "form-control",
                     "+class": "btn btn-light"
+                },
+            },
+        },
+        "@stripe": {
+            attributes: {
+                input: {
+                    "-class": "form-control",
                 },
             },
         },

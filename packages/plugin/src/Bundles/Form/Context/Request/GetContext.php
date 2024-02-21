@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -17,6 +18,10 @@ class GetContext
 
     public function handleRequest(FormEventInterface $event)
     {
+        if (!Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
+            return;
+        }
+
         $form = $event->getForm();
         foreach ($form->getLayout()->getFields() as $field) {
             if (isset($_GET[$field->getHandle()])) {

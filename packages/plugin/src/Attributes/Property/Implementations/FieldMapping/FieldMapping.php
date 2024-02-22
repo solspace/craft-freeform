@@ -20,6 +20,17 @@ class FieldMapping implements CustomNormalizerInterface, \IteratorAggregate
         return $this;
     }
 
+    public function isSourceMapped(string $source): bool
+    {
+        foreach ($this->mapping as $item) {
+            if ($source === $item->getSource() && $item->getValue()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getMapping(): array
     {
         return $this->mapping;

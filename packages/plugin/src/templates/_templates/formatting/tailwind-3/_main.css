@@ -10,9 +10,6 @@ html, body {
     color: #d00;
     margin-left: 5px;
 }
-.StripeElement {
-    height: 36px;
-}
 button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;

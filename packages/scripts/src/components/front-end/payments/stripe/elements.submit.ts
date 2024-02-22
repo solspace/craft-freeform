@@ -11,7 +11,7 @@ export const loadStripeContainers = (props: StripeFunctionConstructorProps) => a
 
   paymentsProcessed = false;
 
-  let containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
+  let containers = form.querySelectorAll<HTMLDivElement>('[data-field-type="stripe"]:not([data-hidden])');
   containers.forEach(initStripe(props));
 
   containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe[data-hidden]');

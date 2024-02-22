@@ -72,6 +72,9 @@ class ElementEditBundle extends FeatureBundle
 
             $value = $element->{$item->getSource()};
             $field = $form->get($item->getValue());
+            if (!$field) {
+                continue;
+            }
 
             $field->setValue($value);
         }
@@ -97,6 +100,9 @@ class ElementEditBundle extends FeatureBundle
 
             $value = $element->getFieldValue($craftField->handle);
             $field = $form->get($item->getValue());
+            if (!$field) {
+                continue;
+            }
 
             if ($value instanceof MultiOptionsFieldData) {
                 $options = $value->getOptions();

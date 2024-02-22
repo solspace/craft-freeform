@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 5.0.12 - 2024-02-19
+
+### Added
+- Added support for querying conditional rules for fields and pages in GraphQL.
+
+### Fixed
+- Fixed a bug where migrated forms with a Dynamic Recipients field (not User Select) would trigger an error loading/submitting the form.
+- Fixed a bug where Regex fields were triggering an error if left empty when submitting the form.
+
+## 5.0.11 - 2024-02-16
+
+### Added
+- Added a setting to allow users to enable dashes in field handle names.
+
+### Fixed
+- Fixed several issues related to the migration from Freeform 4, including table prefixes and field handles that are too long getting corrupted.
+- Fixed an issue where table prefixes were not being respected on fresh installs.
+- Fixed the precedence order for overriding attributes in formatting templates. Overrides in the template loading the form now take precedence over the formatting template overrides within it.
+- Fixed a bug where editing/saving a submission inside the control panel could sometimes error about a user ID being `0`.
+- Fixed a bug where the Stripe Webhook URL was incorrectly including a CP admin path. Any existing Stripe integrations will need to be manually adjusted.
+- Adjusted the JS in a few of the sample templates.
+
 ## 5.0.10 - 2024-02-08
 
 ### Added
@@ -261,6 +283,12 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.14 - 2024-02-09
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields were not correctly selecting the option chosen when viewing submissions in the CP detail page.
+- Fixed a bug where the Field Manager would force `camelCase` without exceptions for field handles.
 
 ## 4.1.13 - 2023-11-23
 
@@ -700,6 +728,16 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.34 - 2024-02-09
+
+### Fixed
+- Fixed a bug where the File Upload Drag & Drop field type could use an incorrect URL if search params are used.
+
+## 3.13.33 - 2023-12-19
+
+### Added
+- Added support for additional mimetype file upload validation on `.dwg`, `.dxf`, `.msg`, `.sia`, `.stl`, `.stp`, and `.step`.
 
 ## 3.13.32 - 2023-07-24
 

@@ -28,7 +28,7 @@ class PayloadStorage implements FormContextStorageInterface
         $this->secret = $secret;
 
         Event::on(Form::class, Form::EVENT_GET_CUSTOM_PROPERTY, [$this, 'attachProperty']);
-        Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
+        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_CLOSING_TAG, [$this, 'attachInput']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachJson']);
         Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'attachToAjaxResponse']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'requirePayload']);

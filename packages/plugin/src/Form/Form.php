@@ -93,6 +93,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_SEND_NOTIFICATIONS = 'send-notifications';
     public const EVENT_GET_CUSTOM_PROPERTY = 'get-custom-property';
     public const EVENT_QUICK_LOAD = 'quick-load';
+    public const EVENT_CONTEXT_RETRIEVAL = 'context-retrieval';
 
     public const PROPERTY_STORED_VALUES = 'storedValues';
     public const PROPERTY_PAGE_INDEX = 'pageIndex';

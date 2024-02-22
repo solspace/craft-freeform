@@ -66,6 +66,10 @@ class PropertyProvider
                 $value = $valueUpdateCallback($value, $editableProperty);
             }
 
+            if (null === $value && !$reflectionProperty->getType()?->allowsNull()) {
+                continue;
+            }
+
             $accessible = $reflectionProperty->isPublic();
 
             $reflectionProperty->setAccessible(true);

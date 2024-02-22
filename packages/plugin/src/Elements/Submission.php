@@ -399,7 +399,7 @@ class Submission extends Element
     public function afterSave(bool $isNew): void
     {
         $insertData = [
-            'userId' => $this->userId,
+            'userId' => $this->userId ?: null,
             'formId' => $this->formId,
             'statusId' => $this->statusId,
             'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),

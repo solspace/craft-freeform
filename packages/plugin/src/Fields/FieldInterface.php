@@ -31,6 +31,8 @@ interface FieldInterface
     public const EVENT_RENDER_LABEL = 'render-label';
     public const EVENT_RENDER_ERRORS = 'render-errors';
     public const EVENT_RENDER_INSTRUCTIONS = 'render-instructions';
+    public const EVENT_COMPILE_ATTRIBUTES = 'compile-attributes';
+    public const EVENT_SET_PARAMETERS = 'set-parameters';
 
     public const EVENT_VALIDATE = 'validate';
     public const EVENT_AFTER_SET_PROPERTIES = 'after-set-properties';

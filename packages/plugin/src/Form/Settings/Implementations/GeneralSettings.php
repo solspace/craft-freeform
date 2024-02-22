@@ -61,7 +61,7 @@ class GeneralSettings extends SettingsNamespace
     #[Middleware('handle')]
     #[Validators\Required]
     #[Validators\Handle]
-    #[Validators\Length(255)]
+    #[Validators\Length(100)]
     public string $handle = '';
 
     #[Section(self::SECTION_GENERAL)]

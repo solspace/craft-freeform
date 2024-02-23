@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.0.14.1 - 2024-02-23
+
+### Fixed
+- Fixed some remaining issues related to the migration from Freeform 4.
+
 ## 5.0.14 - 2024-02-23
 
 ### Changed

@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\Elements\ValueTransformers;
 
-use craft\fields\BaseOptionsField;
-use craft\fields\BaseRelationField;
 use craft\fields\Date;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;

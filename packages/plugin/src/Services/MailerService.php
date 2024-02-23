@@ -16,6 +16,7 @@ use craft\helpers\App;
 use craft\mail\Message;
 use craft\web\View;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
@@ -24,7 +25,7 @@ use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
@@ -48,6 +49,13 @@ class MailerService extends BaseService implements MailHandlerInterface
     public const ERROR_CODE_LINES_PROXIMITY = 5;
 
     public const LOG_CATEGORY = 'freeform_notifications';
+
+    public function __construct(
+        array $config = [],
+        private RuleValidator $ruleValidator,
+    ) {
+        parent::__construct($config);
+    }
 
     /**
      * Send out an email to recipients using the given mail template.
@@ -289,9 +297,6 @@ class MailerService extends BaseService implements MailHandlerInterface
         $usableFields = [];
         $fieldsAndBlocks = [];
 
-        // TODO: RULES implement rule check
-        // $rules = $form->getRuleProperties();
-
         foreach ($fields as $field) {
             if ($field instanceof HtmlField || $field instanceof RichTextField) {
                 $fieldsAndBlocks[] = $field;
@@ -299,17 +304,13 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            if ($field instanceof NoStorageInterface
-                || $field instanceof FileUploadInterface
-                || $field instanceof PaymentFieldInterface
-                || $field instanceof SignatureField
-            ) {
+            if ($field instanceof NoEmailPresenceInterface) {
                 continue;
             }
 
-            // if ($rules && $rules->isHidden($field, $form)) {
-            //     continue;
-            // }
+            if ($this->ruleValidator->isFieldHidden($form, $field)) {
+                continue;
+            }
 
             $fieldsAndBlocks[] = $field;
             $usableFields[] = $field;

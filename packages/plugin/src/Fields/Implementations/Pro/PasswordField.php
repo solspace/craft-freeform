@@ -16,6 +16,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
 
@@ -25,7 +26,7 @@ use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
     iconPath: __DIR__.'/../Icons/password.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
-class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
+class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface, NoEmailPresenceInterface
 {
     #[Input\Hidden]
     protected bool $encrypted = false;

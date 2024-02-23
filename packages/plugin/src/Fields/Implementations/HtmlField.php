@@ -16,6 +16,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
+use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
@@ -26,7 +27,7 @@ use Solspace\Freeform\Library\Helpers\IsolatedTwig;
     iconPath: __DIR__.'/Icons/html.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/html.ejs',
 )]
-class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageInterface
+class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageInterface, NoEmailPresenceInterface
 {
     protected string $instructions = '';
     protected bool $required = false;

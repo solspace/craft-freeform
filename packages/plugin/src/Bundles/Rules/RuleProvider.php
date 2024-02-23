@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Rules;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
@@ -64,6 +65,9 @@ class RuleProvider
         return null;
     }
 
+    /**
+     * @return PageRule[]
+     */
     public function getPageRules(Form $form): array
     {
         $rules = PageRuleRecord::getExistingRules($form->getId());
@@ -85,6 +89,18 @@ class RuleProvider
         }
 
         return $array;
+    }
+
+    public function getPageRule(Form $form, Page $page): ?PageRule
+    {
+        $rules = $this->getPageRules($form);
+        foreach ($rules as $rule) {
+            if ($rule->getPage() === $page) {
+                return $rule;
+            }
+        }
+
+        return null;
     }
 
     public function getFormNotificationRules(?Form $form): array

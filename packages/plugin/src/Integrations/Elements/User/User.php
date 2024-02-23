@@ -106,6 +106,10 @@ class User extends ElementIntegration
         $this->processMapping($user, $form, $this->attributeMapping);
         $this->processMapping($user, $form, $this->fieldMapping);
 
+        if ($this->attributeMapping->isSourceMapped('firstName') || $this->attributeMapping->isSourceMapped('lastName')) {
+            $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
+        }
+
         if (!$this->isActive() && $this->isSendActivation()) {
             $user->unverifiedEmail = $user->email;
         }

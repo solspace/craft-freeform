@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.0.13 - 2024-02-23
+
+### Added
+- Added a reserved word validator using Craft's reserved words to check against field handles.
+- Added the ability to map directly to the **Full Name** in the Craft User element integration.
+
+### Changed
+- Updated Confirm fields to no longer store data when targeting a Password field.
+
+### Fixed
+- Fixed a bug where creating new forms with special or foreign characters would cause the form not to be created due to an invalid form handle.
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+- Fixed a bug where editing existing users via the Craft User element integration in a Freeform form did not affect **First Name** and **Last Name** fields.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working at all.
+- Fixed a bug where the Stripe Payments field was not working with the Tailwind sample formatting template (and potentially some custom templates).
+- Fixed a bug where some sample formatting templates showed unnecessary styling wrappers around Stripe Payments fields.
+
 ## 5.0.12 - 2024-02-19
 
 ### Added

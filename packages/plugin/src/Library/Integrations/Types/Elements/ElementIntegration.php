@@ -45,6 +45,10 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
 
         $customFields = $fieldLayout->getCustomFields();
         foreach ($mapping as $item) {
+            if (FieldMapItem::TYPE_RELATION === $item->getType() && empty($item->getValue())) {
+                continue;
+            }
+
             $craftField = null;
             foreach ($customFields as $field) {
                 if ((int) $field->id === (int) $item->getSource()) {

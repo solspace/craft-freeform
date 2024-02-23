@@ -35,8 +35,15 @@ class RuleValidator
     public function getPageJumpIndex(Form $form): ?int
     {
         $rules = $this->ruleProvider->getPageRules($form);
+        $currentPage = $form->getCurrentPage();
 
         foreach ($rules as $rule) {
+            foreach ($rule->getConditions() as $condition) {
+                if (!$currentPage->getFields()->get($condition->getField())) {
+                    return null;
+                }
+            }
+
             if ($this->triggersRule($form, $rule)) {
                 return $rule->getPage()->getIndex();
             }

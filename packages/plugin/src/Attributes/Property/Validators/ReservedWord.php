@@ -50,14 +50,14 @@ class ReservedWord implements PropertyValidatorInterface
         'localized',
         'localized',
         'mergingCanonicalChanges',
-        'name', // global set-specific
+    //  'name', // legacy support
         'newSiteIds',
         'next',
         'nextSibling',
         'owner',
         'parent',
         'parents',
-        'postDate', // entry-specific
+        'postDate',
         'prev',
         'prevSibling',
         'previewing',
@@ -90,7 +90,7 @@ class ReservedWord implements PropertyValidatorInterface
         'updatingFromDerivative',
         'uri',
         'url',
-        'username', // user-specific
+    //  'username', // legacy support
     ];
 
     public function __construct(

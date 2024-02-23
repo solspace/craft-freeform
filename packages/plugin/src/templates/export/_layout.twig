@@ -1,7 +1,7 @@
 {% extends "freeform/_layouts/main" %}
 
 {% set selectedSubnavItem = 'export' %}
-{% set selectedItem = craft.app.request.getSegment(3)|default %}
+{% set currentUrl = craft.app.request.absoluteUrl %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
@@ -16,7 +16,7 @@
                     <li class="heading"><span>{{ item.heading }}</span></li>
                 {% else %}
                     <li>
-                        <a href="{{ url('freeform/export/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>
+                        <a href="{{ item.url }}" class="{{ item.url in currentUrl ? "sel" }}">
                             {{ item.title | raw }}
                         </a>
                     </li>

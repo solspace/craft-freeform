@@ -20,13 +20,30 @@ class ExportService extends BaseService
     public function getNavigation(): array
     {
         return [
-            'profiles' => [
+            // ======= EXPORT =========
+            ['heading' => 'Export'],
+            [
                 'title' => Freeform::t('Profiles'),
                 'url' => UrlHelper::cpUrl('freeform/export/profiles'),
             ],
-            'notifications' => [
+            [
                 'title' => Freeform::t('Notifications'),
                 'url' => UrlHelper::cpUrl('freeform/export/notifications'),
+            ],
+            [
+                'title' => Freeform::t('Forms & Data'),
+                'url' => UrlHelper::cpUrl('freeform/export/forms'),
+            ],
+
+            // ======= IMPORT =========
+            ['heading' => 'Import'],
+            [
+                'title' => Freeform::t('Import Freeform Data'),
+                'url' => UrlHelper::cpUrl('freeform/import/data'),
+            ],
+            [
+                'title' => Freeform::t('Import Express Forms'),
+                'url' => UrlHelper::cpUrl('freeform/import/express-forms'),
             ],
         ];
     }

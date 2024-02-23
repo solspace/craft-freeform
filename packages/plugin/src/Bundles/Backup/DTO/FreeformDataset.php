@@ -75,4 +75,35 @@ class FreeformDataset
 
         return $this;
     }
+
+    public function getCounters(): object
+    {
+        $forms = 0;
+        $pages = 0;
+        $rows = 0;
+        $fields = 0;
+
+        foreach ($this->forms as $form) {
+            ++$forms;
+
+            foreach ($form->pages as $page) {
+                ++$pages;
+
+                foreach ($page->layout->rows as $row) {
+                    ++$rows;
+
+                    foreach ($row->fields as $field) {
+                        ++$fields;
+                    }
+                }
+            }
+        }
+
+        return (object) [
+            'forms' => $forms,
+            'fields' => $fields,
+            'pages' => $pages,
+            'rows' => $rows,
+        ];
+    }
 }

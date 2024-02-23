@@ -33,6 +33,7 @@ use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
@@ -271,7 +272,7 @@ class ExpressFormsExporter implements ExporterInterface
         $exported = new Settings();
         $exported->pluginName = $settings->name;
         $exported->emailTemplateDirectory = $settings->emailNotificationsDirectoryPath;
-        $exported->defaults = null;
+        $exported->defaults = new Defaults();
 
         return $exported;
     }

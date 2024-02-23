@@ -242,15 +242,10 @@ class Freeform extends Plugin
     {
         $navItem = parent::getCpNavItem();
 
-        $subNavigation = include __DIR__.'/subnav.php';
-
-        $event = new RegisterCpSubnavItemsEvent($subNavigation);
+        $event = new RegisterCpSubnavItemsEvent($navItem, []);
         $this->trigger(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
-        $badgeCount = $this->settings->getBadgeCount();
-        if ($badgeCount) {
-            $navItem['badgeCount'] = $badgeCount;
-        }
+        $navItem = $event->getNav();
         $navItem['subnav'] = $event->getSubnavItems();
 
         return $navItem;

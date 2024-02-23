@@ -3,7 +3,7 @@
 ## 5.0.14 - 2024-02-23
 
 ### Changed
-- Updated the reserved words list to make exceptions for `name`, `type`, and `username` as they are more likely to be used and don't appear .
+- Updated the reserved words list to make exceptions for `name`, `type`, and `username` as they are more likely to be used and don't appear to cause any issues.
 
 ### Fixed
 - Fixed a bug where Confirm fields were present in email notifications.

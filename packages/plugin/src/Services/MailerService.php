@@ -51,7 +51,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     public const LOG_CATEGORY = 'freeform_notifications';
 
     public function __construct(
-        array $config = [],
+        $config = [],
         private RuleValidator $ruleValidator,
     ) {
         parent::__construct($config);

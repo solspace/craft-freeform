@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.0.14 - 2024-02-23
+
+### Changed
+- Updated the reserved words list to make exceptions for `name`, `type`, and `username` as they are more likely to be used and don't appear .
+
+### Fixed
+- Fixed a bug where Confirm fields were present in email notifications.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working correctly.
+- Fixed a bug where forms would error when Freeform Date fields were mapping to Craft date fields (e.g. Post Date, Expiry Date, etc) in Element integrations.
+- Fixed a bug where setting a template override for the submission status was not working.
+
 ## 5.0.13 - 2024-02-23
 
 ### Added

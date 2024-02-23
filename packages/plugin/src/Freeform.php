@@ -23,7 +23,6 @@ use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Bundles\Form\Context\Pages\PageContext;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
@@ -90,7 +89,6 @@ use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
-use Solspace\Freeform\Services\Pro\RulesService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
 use Solspace\Freeform\Services\RelationsService;
 use Solspace\Freeform\Services\SettingsService;
@@ -131,7 +129,6 @@ use yii\db\Query;
  * @property ExportService              $export
  * @property ExportProfilesService      $exportProfiles
  * @property ExportNotificationsService $exportNotifications
- * @property RulesService               $rules
  * @property RelationsService           $relations
  * @property DigestService              $digest
  * @property SummaryService             $summary
@@ -433,7 +430,6 @@ class Freeform extends Plugin
                 'export' => ExportService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'exportNotifications' => ExportNotificationsService::class,
-                'rules' => RulesService::class,
                 'relations' => RelationsService::class,
                 'notes' => NotesService::class,
                 'digest' => DigestService::class,
@@ -636,20 +632,6 @@ class Freeform extends Plugin
             SubmissionsService::EVENT_AFTER_SUBMIT,
             [$this->relations, 'relate']
         );
-
-        if ($this->isPro()) {
-            Event::on(
-                PageContext::class,
-                PageContext::EVENT_PAGE_JUMP,
-                [$this->rules, 'handleFormPageJump']
-            );
-
-            Event::on(
-                SubmissionsController::class,
-                SubmissionsController::EVENT_REGISTER_EDIT_ASSETS,
-                [$this->rules, 'registerRulesJsAsAssets']
-            );
-        }
     }
 
     // TODO: move into a feature bundle

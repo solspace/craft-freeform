@@ -76,6 +76,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(100)]
+    #[Validators\ReservedWord]
     protected string $handle = '';
 
     #[Section('general')]

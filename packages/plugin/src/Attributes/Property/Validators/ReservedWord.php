@@ -102,7 +102,7 @@ class ReservedWord implements PropertyValidatorInterface
             $handleValidator = new HandleValidator();
 
             $reservedWords = array_merge($this->reservedWords, $handleValidator::$baseReservedWords);
-            $reservedWords = array_filter($reservedWords, array($this, 'filterAdditionalReservedWords'));
+            $reservedWords = array_filter($reservedWords, [$this, 'filterAdditionalReservedWords']);
             $reservedWords = array_map('strtolower', $reservedWords);
             $lcValue = strtolower($value);
 
@@ -115,7 +115,8 @@ class ReservedWord implements PropertyValidatorInterface
     }
 
     // Exceptions for common field handles that appear to be safe for Freeform to use.
-    private function filterAdditionalReservedWords($value) {
-        return !in_array($value, ['name', 'type', 'username']);
+    private function filterAdditionalReservedWords($value)
+    {
+        return !\in_array($value, ['name', 'type', 'username']);
     }
 }

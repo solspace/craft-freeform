@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.0.15 - 2024-02-27
+
+### Changed
+- Updated all sample formatting templates to include complete Stripe appearance API customization.
+
+### Fixed
+- Fixed a bug where connecting to new integrations using OAuth 2.0 were not working due to the redirect URI being empty.
+
 ## 5.0.14.1 - 2024-02-23
 
 ### Fixed

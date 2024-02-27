@@ -584,6 +584,3 @@ button[type=submit].freeform-processing:before {
         transform: rotate(1turn);
     }
 }
-.StripeElement {
-    height: 36px;
-}

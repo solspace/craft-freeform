@@ -172,7 +172,6 @@ button[type=submit].freeform-processing:before {
 
 /* BASIC FIELD STYLES */
 .freeform-row [class*="freeform-col-"] input,
-.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement,
 .freeform-row [class*="freeform-col-"] textarea,
 .freeform-row [class*="freeform-col-"] select {
     box-sizing: border-box;
@@ -206,7 +205,6 @@ button[type=submit].freeform-processing:before {
     -moz-appearance: none;
 }
 .freeform-row [class*="freeform-col-"] input:focus,
-.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--focus,
 .freeform-row [class*="freeform-col-"] textarea:focus,
 .freeform-row [class*="freeform-col-"] select:focus {
     border: 1px solid #0b5ed7;
@@ -219,7 +217,6 @@ button[type=submit].freeform-processing:before {
     color: #6c757d;
 }
 .freeform-row [class*="freeform-col-"] input.freeform-has-errors,
-.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--invalid,
 .freeform-row [class*="freeform-col-"] textarea.freeform-has-errors,
 .freeform-row [class*="freeform-col-"] select.freeform-has-errors,
 .freeform-row [class*="freeform-col-"] input:has(+ ul.freeform-errors),

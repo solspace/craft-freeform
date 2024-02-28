@@ -2,9 +2,14 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
+use Solspace\Commons\Helpers\CryptoHelper;
+use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Library\Exceptions\Api\ApiException;
+use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Library\ServerSentEvents\SSE;
 use yii\web\Response;
 
 class ImportController extends BaseApiController
@@ -13,12 +18,6 @@ class ImportController extends BaseApiController
     {
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
         $data = $exporter->collect();
-
-        if ($this->request->isPost) {
-            $this->getImporter()->import($data);
-
-            return $this->asEmptyResponse(201);
-        }
 
         return $this->asSerializedJson($data);
     }
@@ -35,51 +34,68 @@ class ImportController extends BaseApiController
         );
     }
 
-    public function actionTemp(): Response
+    public function actionPrepareImport(): Response
     {
-        $response = \Craft::$app->response;
+        $request = $this->request;
 
-        $response->format = Response::FORMAT_RAW;
-        $response->stream = true;
+        $this->requirePostRequest();
+        $this->requireAcceptsJson();
 
-        if (ob_get_level()) {
-            @ob_end_clean();
+        $exporter = $request->post('exporter');
+        $options = $request->post('options', []);
+        $package = $request->post('package');
+
+        $errors = new ErrorCollection();
+        if (!$exporter) {
+            $errors->add('exporter', 'class', ['Exporter is required']);
+
+            throw new ApiException(400, $errors);
         }
 
-        ini_set('output_buffering', 0);
+        $token = CryptoHelper::getUniqueToken(14);
 
-        header('Content-Type: text/event-stream');
-        header('Cache-Control: no-cache');
-        header('Connection: keep-alive');
+        \Craft::$app->cache->set(
+            "freeform-import-{$token}",
+            [
+                'exporter' => $exporter,
+                'options' => $options,
+                'package' => $package,
+            ],
+            30
+        );
 
-        $i = 0;
-        do {
-            echo "event: info\n";
-            echo "data: #{$i} This is a message at time ".time()."\n\n";
+        return $this->asSerializedJson([
+            'token' => $token,
+        ], 201);
+    }
 
-            if (0 === $i % 2) {
-                echo "event: progress\n";
-                echo 'data: '.json_encode(['progress' => $i])."\n\n";
-            }
+    public function actionImport(): void
+    {
+        $token = $this->request->get('token');
 
-            @ob_flush();
-            @flush();
+        $sse = new SSE();
+        $config = \Craft::$app->cache->get("freeform-import-{$token}");
 
-            sleep(1);
-            ++$i;
+        if (!$config) {
+            $sse->message('exit', 'Invalid token');
 
-            if (connection_aborted()) {
-                break;
-            }
-        } while ($i < 10);
+            return;
+        }
 
-        echo "event: exit\n";
-        echo "data: done\n\n";
+        ['exporter' => $exporterClass, 'options' => $options, 'package' => $package] = $config;
 
-        @ob_flush();
-        @flush();
+        /** @var ExporterInterface $exporter */
+        $exporter = \Craft::$container->get($exporterClass);
+        $exporter->collect();
 
-        return $response;
+        $sse->message('info', 'Starting import');
+
+        $importer = \Craft::$container->get(FreeformImporter::class);
+        $importer->import($exporter->collect(), $options, $sse);
+
+        $sse->message('info', 'done...');
+
+        $sse->message('exit', 'done');
     }
 
     private function getImporter(): FreeformImporter

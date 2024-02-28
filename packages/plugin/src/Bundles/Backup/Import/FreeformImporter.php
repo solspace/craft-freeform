@@ -4,11 +4,17 @@ namespace Solspace\Freeform\Bundles\Backup\Import;
 
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
+use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Types\Regular;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
+use Solspace\Freeform\Library\ServerSentEvents\SSE;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
@@ -20,22 +26,44 @@ use Solspace\Freeform\Services\NotificationsService;
 class FreeformImporter
 {
     private array $notificationIdMap = [];
+    private array $formIdMap = [];
+    private SSE $sse;
 
     public function __construct(
         private NotificationsService $notificationsService,
         private FreeformSerializer $serializer,
     ) {}
 
-    public function import(FreeformDataset $dataset): void
+    public function import(FreeformDataset $dataset, array $options, SSE $sse): void
     {
-        $this->importNotifications($dataset->getNotificationTemplates());
-        $this->importForms($dataset->getForms());
+        $this->sse = $sse;
+        $this->notificationIdMap = [];
+        $this->formIdMap = [];
+
+        $notificationTemplates = $dataset->getNotificationTemplates($options['notificationTemplates'] ?? []);
+        $forms = $dataset->getForms($options['forms'] ?? []);
+        $submissions = $dataset->getFormSubmissions($options['submissions'] ?? []);
+
+        $this->sse->message(
+            'total',
+            $notificationTemplates->count() + $forms->count() + $submissions->count()
+        );
+
+        $this->importNotifications($notificationTemplates);
+        $this->importForms($forms);
+        $this->importSubmissions($submissions);
     }
 
     private function importForms(FormCollection $forms): void
     {
+        $this->sse->message('reset', $forms->count());
+
         foreach ($forms as $form) {
+            $this->sse->message('info', 'Importing form: '.$form->name);
+
             if (FormRecord::findOne(['uid' => $form->uid])) {
+                $this->sse->message('progress', 1);
+
                 continue;
             }
 
@@ -52,6 +80,11 @@ class FreeformImporter
             $formRecord->metadata = $serialized;
 
             $formRecord->save();
+            $this->formIdMap[$form->uid] = $formRecord->id;
+
+            $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
+
+            $fieldRecords = [];
 
             foreach ($form->notifications as $notification) {
                 $notificationRecord = new FormNotificationRecord();
@@ -128,9 +161,16 @@ class FreeformImporter
                         );
 
                         $fieldRecord->save();
+
+                        $fieldRecords[] = $fieldRecord;
                     }
                 }
             }
+
+            $manager = new ContentManager($formInstance, $fieldRecords);
+            $manager->performDatabaseColumnAlterations();
+
+            $this->sse->message('progress', 1);
         }
     }
 
@@ -142,7 +182,11 @@ class FreeformImporter
             return;
         }
 
+        $this->sse->message('reset', $collection->count());
+
         foreach ($collection as $notification) {
+            $this->sse->message('info', 'Importing notification: '.$notification->name);
+
             try {
                 $record = $this->notificationsService->create($notification->name);
             } catch (NotificationException) {
@@ -150,6 +194,8 @@ class FreeformImporter
                 if ($record) {
                     $this->notificationIdMap[$notification->originalId] = $record->id;
                 }
+
+                $this->sse->message('progress', 1);
 
                 continue;
             }
@@ -175,6 +221,28 @@ class FreeformImporter
 
             $this->notificationsService->save($record);
             $this->notificationIdMap[$notification->originalId] = $record->id;
+
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importSubmissions(FormSubmissionCollection $collection): void
+    {
+        /** @var FormSubmissions $formSubmissions */
+        foreach ($collection as $formSubmissions) {
+            $this->sse->message('reset', $formSubmissions->submissions->count());
+
+            $formId = $this->formIdMap[$formSubmissions->formUid];
+            if (!$formId) {
+                continue;
+            }
+
+            foreach ($formSubmissions->submissions as $submission) {
+                $submission = new Submission();
+                $submission->formId = $formId;
+
+                $this->sse->message('progress', 1);
+            }
         }
     }
 }

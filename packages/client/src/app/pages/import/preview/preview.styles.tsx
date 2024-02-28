@@ -1,3 +1,4 @@
+import React from 'react';
 import styled from 'styled-components';
 
 const chunkWidth = 22;
@@ -19,14 +20,15 @@ type LabelProps = {
 };
 
 export const Label = styled.label<LabelProps>`
+  cursor: pointer;
+  user-select: none;
+
   flex: 1;
   padding: 0 4px;
 
   text-align: left;
   font-weight: ${({ $light }) => ($light ? 'normal' : 'bold')};
 `;
-
-export const ListItem = styled.li``;
 
 export const Blocks = styled.div`
   display: flex;
@@ -67,22 +69,32 @@ export const BlockItem = styled.div`
   height: 24px;
 `;
 
-export const Directory = styled.i.attrs((props) => ({
-  className: props.className || 'fa-solid fa-folder',
-}))`
+const Icon = styled.i`
   flex: 0 0 ${chunkWidth}px;
   font-size: 18px;
 
   text-align: center;
 `;
 
-export const File = styled.i.attrs((props) => ({
-  className: props.className || 'fa-light fa-file-code',
-}))`
-  flex: 0 0 ${chunkWidth}px;
-  font-size: 18px;
+export const Directory: React.FC = () => {
+  return <Icon className="fa-solid fa-folder" />;
+};
 
-  text-align: center;
+export const File: React.FC = () => {
+  return <Icon className="fa-light fa-file-code" />;
+};
+
+type ListItemProps = {
+  $selected?: boolean;
+};
+
+export const ListItem = styled.li<ListItemProps>`
+  &.selectable:not(.selected) {
+    ${Label}, ${Icon}, ${Spacer} {
+      opacity: 0.4;
+      transition: opacity 0.2s ease-out;
+    }
+  }
 `;
 
 // .file-list {

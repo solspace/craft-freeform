@@ -71,4 +71,22 @@ class CollectionTest extends TestCase
 
         $collection->add($object);
     }
+
+    public function testFiltersOutItemsReturnsNewCollection()
+    {
+        $collection = new class() extends Collection {};
+
+        for ($i = 1; $i <= 10; ++$i) {
+            $collection->add($i);
+        }
+
+        $this->assertCount(10, $collection);
+
+        $filtered = $collection->filter(function ($item) {
+            return 0 === $item % 2;
+        });
+
+        $this->assertCount(5, $filtered);
+        $this->assertNotSame($collection, $filtered);
+    }
 }

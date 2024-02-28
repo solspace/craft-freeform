@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Bundles\Backup\DTO;
 
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\SubmissionCollection;
 use Solspace\Freeform\Models\Settings;
 
 class FreeformDataset
@@ -13,12 +13,18 @@ class FreeformDataset
     private ?FormCollection $forms = null;
     private ?IntegrationCollection $integrations = null;
     private ?NotificationTemplateCollection $notificationTemplates = null;
-    private ?SubmissionCollection $submissions = null;
+    private ?FormSubmissionCollection $formSubmissions = null;
     private ?Settings $settings = null;
 
-    public function getForms(): ?FormCollection
+    public function getForms(?array $uids = null): ?FormCollection
     {
-        return $this->forms;
+        if (null === $uids) {
+            return $this->forms;
+        }
+
+        return $this->forms->filter(
+            fn (Form $form) => \in_array($form->uid, $uids, true)
+        );
     }
 
     public function setForms(?FormCollection $forms): self
@@ -40,9 +46,15 @@ class FreeformDataset
         return $this;
     }
 
-    public function getNotificationTemplates(): ?NotificationTemplateCollection
+    public function getNotificationTemplates(?array $ids = null): ?NotificationTemplateCollection
     {
-        return $this->notificationTemplates;
+        if (null === $ids) {
+            return $this->notificationTemplates;
+        }
+
+        return $this->notificationTemplates->filter(
+            fn (NotificationTemplate $template) => \in_array($template->originalId, $ids, true)
+        );
     }
 
     public function setNotificationTemplates(?NotificationTemplateCollection $notificationTemplates): self
@@ -52,14 +64,20 @@ class FreeformDataset
         return $this;
     }
 
-    public function getSubmissions(): ?SubmissionCollection
+    public function getFormSubmissions(?array $uids = null): ?FormSubmissionCollection
     {
-        return $this->submissions;
+        if (null === $uids) {
+            return $this->formSubmissions;
+        }
+
+        return $this->formSubmissions->filter(
+            fn (FormSubmissions $submissions) => \in_array($submissions->formUid, $uids, true)
+        );
     }
 
-    public function setSubmissions(?SubmissionCollection $submissions): self
+    public function setFormSubmissions(?FormSubmissionCollection $formSubmissions): self
     {
-        $this->submissions = $submissions;
+        $this->formSubmissions = $formSubmissions;
 
         return $this;
     }

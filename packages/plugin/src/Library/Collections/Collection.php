@@ -34,6 +34,11 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
         return $this;
     }
 
+    public function filter(callable $callback): self
+    {
+        return new static(array_filter($this->items, $callback));
+    }
+
     /**
      * @return T
      */

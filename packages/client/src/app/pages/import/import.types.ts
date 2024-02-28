@@ -25,22 +25,28 @@ type Page = {
   };
 };
 
-type Form = {
+export type Form = {
   uid: string;
   name: string;
   handle: string;
   pages: Page[];
 };
 
+export type NotificationTemplate = {
+  originalId: number | string;
+  name: string;
+  description: string;
+};
+
 export type FormImportData = {
   forms: Form[];
-  notifications: string[];
+  notificationTemplates: NotificationTemplate[];
   integrations: string[];
   settings: string[];
 };
 
 export type ImportOptions = {
   forms: string[];
-  notifications: string[];
+  notificationTemplates: Array<string | number>;
   integrations: string[];
 };

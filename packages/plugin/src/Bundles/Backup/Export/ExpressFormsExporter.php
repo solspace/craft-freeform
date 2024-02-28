@@ -9,6 +9,7 @@ use Solspace\ExpressForms\ExpressForms;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
@@ -17,6 +18,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\SubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
+use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
@@ -24,6 +26,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
+use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
@@ -63,7 +66,7 @@ class ExpressFormsExporter implements ExporterInterface
         }
 
         if ($submissions) {
-            $dataset->setSubmissions($this->collectSubmissions());
+            $dataset->setFormSubmissions($this->collectSubmissions());
         }
 
         if ($settings) {
@@ -260,9 +263,34 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSubmissions(): SubmissionCollection
+    private function collectSubmissions(): FormSubmissionCollection
     {
-        return new SubmissionCollection();
+        $collection = new FormSubmissionCollection();
+
+        $forms = ExpressForms::getInstance()->forms->getAllForms();
+
+        foreach ($forms as $form) {
+            $submissionCollection = new SubmissionCollection();
+
+            $submissions = ExpressForms::getInstance()->submissions->getSubmissions($form->getId());
+            foreach ($submissions as $submission) {
+                $exported = new Submission();
+
+                foreach ($form->getFields() as $field) {
+                    $exported->{$field->getUid()} = $submission->getFieldValue($field->getHandle());
+                }
+
+                $submissionCollection->add($exported);
+            }
+
+            $formSubmissions = new FormSubmissions();
+            $formSubmissions->formUid = $form->getUuid();
+            $formSubmissions->submissions = $submissionCollection;
+
+            $collection->add($formSubmissions, $form->getUuid());
+        }
+
+        return $collection;
     }
 
     private function collectSettings(): Settings

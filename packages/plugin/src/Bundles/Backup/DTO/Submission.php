@@ -2,7 +2,26 @@
 
 namespace Solspace\Freeform\Bundles\Backup\DTO;
 
-class Submission
+use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
+use Symfony\Component\Serializer\Annotation\Ignore;
+
+class Submission implements CustomNormalizerInterface
 {
-    public string $formUid;
+    private array $values = [];
+
+    public function __set(string $name, $value): void
+    {
+        $this->values[$name] = $value;
+    }
+
+    public function __get(string $name)
+    {
+        return $this->values[$name] ?? null;
+    }
+
+    #[Ignore]
+    public function normalize(): array
+    {
+        return $this->values;
+    }
 }

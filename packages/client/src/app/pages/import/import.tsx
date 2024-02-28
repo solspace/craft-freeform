@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
+import classes from '@ff-client/utils/classes';
 
 import { ImportWrapper } from './import.styles';
 
@@ -37,7 +38,7 @@ export const Import: React.FC = () => {
                 <li>
                   <NavLink
                     to="data"
-                    className={({ isActive }) => isActive && 'sel'}
+                    className={({ isActive }) => classes(isActive && 'sel')}
                   >
                     Freeform Data
                   </NavLink>
@@ -45,7 +46,7 @@ export const Import: React.FC = () => {
                 <li>
                   <NavLink
                     to="express-forms"
-                    className={({ isActive }) => isActive && 'sel'}
+                    className={({ isActive }) => classes(isActive && 'sel')}
                   >
                     Express Forms
                   </NavLink>

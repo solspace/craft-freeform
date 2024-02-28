@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.0.16 - 2024-02-28
+
+### Fixed
+- Fixed a bug where the Stripe payments field would not loading correctly when logged out.
+
 ## 5.0.15 - 2024-02-27
 
 ### Changed

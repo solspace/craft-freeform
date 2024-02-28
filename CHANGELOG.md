@@ -1,5 +1,100 @@
 # Solspace Freeform Changelog
 
+## 5.0.15 - 2024-02-27
+
+### Changed
+- Updated all sample formatting templates to include complete Stripe appearance API customization.
+
+### Fixed
+- Fixed a bug where connecting to new integrations using OAuth 2.0 were not working due to the redirect URI being empty.
+
+## 5.0.14.1 - 2024-02-23
+
+### Fixed
+- Fixed some remaining issues related to the migration from Freeform 4.
+
+## 5.0.14 - 2024-02-23
+
+### Changed
+- Updated the reserved words list to make exceptions for `name`, `type`, and `username` as they are more likely to be used and don't appear to cause any issues.
+
+### Fixed
+- Fixed a bug where Confirm fields were present in email notifications.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working correctly.
+- Fixed a bug where forms would error when Freeform Date fields were mapping to Craft date fields (e.g. Post Date, Expiry Date, etc) in Element integrations.
+- Fixed a bug where setting a template override for the submission status was not working.
+
+## 5.0.13 - 2024-02-23
+
+### Added
+- Added a reserved word validator using Craft's reserved words to check against field handles.
+- Added the ability to map directly to the **Full Name** in the Craft User element integration.
+
+### Changed
+- Updated Confirm fields to no longer store data when targeting a Password field.
+
+### Fixed
+- Fixed a bug where creating new forms with special or foreign characters would cause the form not to be created due to an invalid form handle.
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+- Fixed a bug where editing existing users via the Craft User element integration in a Freeform form did not affect **First Name** and **Last Name** fields.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working at all.
+- Fixed a bug where the Stripe Payments field was not working with the Tailwind sample formatting template (and potentially some custom templates).
+- Fixed a bug where some sample formatting templates showed unnecessary styling wrappers around Stripe Payments fields.
+
+## 5.0.12 - 2024-02-19
+
+### Added
+- Added support for querying conditional rules for fields and pages in GraphQL.
+
+### Fixed
+- Fixed a bug where migrated forms with a Dynamic Recipients field (not User Select) would trigger an error loading/submitting the form.
+- Fixed a bug where Regex fields were triggering an error if left empty when submitting the form.
+
+## 5.0.11 - 2024-02-16
+
+### Added
+- Added a setting to allow users to enable dashes in field handle names.
+
+### Fixed
+- Fixed several issues related to the migration from Freeform 4, including table prefixes and field handles that are too long getting corrupted.
+- Fixed an issue where table prefixes were not being respected on fresh installs.
+- Fixed the precedence order for overriding attributes in formatting templates. Overrides in the template loading the form now take precedence over the formatting template overrides within it.
+- Fixed a bug where editing/saving a submission inside the control panel could sometimes error about a user ID being `0`.
+- Fixed a bug where the Stripe Webhook URL was incorrectly including a CP admin path. Any existing Stripe integrations will need to be manually adjusted.
+- Adjusted the JS in a few of the sample templates.
+
+## 5.0.10 - 2024-02-08
+
+### Added
+- Added PKCE (Proof Key for Code Exchange) implementation for integrations using the OAuth2.0 flow.
+- Added support for PKCE (Proof Key for Code Exchange) in the Salesforce integration.
+
+### Fixed
+- Fixed a bug where the CP Submission detail pages were not handling conditional rule logic correctly.
+- Fixed a bug where the **Send Digest Email** job was added to the Craft queue even when turned off.
+- Fixed a bug where the Stripe Payments field would not load in the form when the **Freeform Script Insertion Location** setting was set to _Page Header_.
+- Fixed a bug where the **Use Option Labels when Exporting** setting was causing exports to fail.
+- Fixed a bug where the Freeform was causing _Element query executed before Craft is fully initialized_ errors to be logged in the Craft logs.
+
+## 5.0.9 - 2024-02-07
+
+### Fixed
+- Fixed a bug where the Mailchimp integration was only showing one audience/mailing list.
+- Fixed a bug where the `fieldIdPrefix` parameter was not working.
+- Fixed a bug where the Conditional Rules value input was not being hidden for empty condition rule types.
+
+## 5.0.8 - 2024-02-06
+
+### Changed
+- Implemented better cache busting for loading script pointers.
+- Implemented a unified entry point for loading scripts based on current settings.
+- Implemented a single Stripe script loader and mutation observer.
+- Updated dropdown settings to have a clearer distinction between mapped/unmapped items.
+
+### Fixed
+- Fixed a bug where the Stripe Payment field would sometimes not load on the front end.
+- Fixed a bug where all old integrations were not being cleared during the migration from Freeform 4.
+
 ## 5.0.7 - 2024-02-02
 
 ### Added
@@ -229,6 +324,12 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.14 - 2024-02-09
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields were not correctly selecting the option chosen when viewing submissions in the CP detail page.
+- Fixed a bug where the Field Manager would force `camelCase` without exceptions for field handles.
 
 ## 4.1.13 - 2023-11-23
 
@@ -668,6 +769,16 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.34 - 2024-02-09
+
+### Fixed
+- Fixed a bug where the File Upload Drag & Drop field type could use an incorrect URL if search params are used.
+
+## 3.13.33 - 2023-12-19
+
+### Added
+- Added support for additional mimetype file upload validation on `.dwg`, `.dxf`, `.msg`, `.sia`, `.stl`, `.stp`, and `.step`.
 
 ## 3.13.32 - 2023-07-24
 

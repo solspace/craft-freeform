@@ -5,20 +5,63 @@ namespace Solspace\Freeform\Library\Processors;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
+use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use yii\di\Container;
 
 abstract class AbstractOptionProcessor
 {
-    protected function processPropertyValue(\ReflectionClass $reflection, object $object, string $key, mixed $value): void
-    {
-        $property = $reflection->getProperty($key);
+    protected function processAttributeValue(
+        Attributes $attributes,
+        \ReflectionClass $reflection,
+        string $key,
+        mixed $value
+    ): void {
+        try {
+            $property = $reflection->getProperty($key);
+        } catch (\ReflectionException $e) {
+            return;
+        }
+
         if (!$property) {
             return;
         }
 
-        $property->setAccessible(true);
+        $isAttribute = ReflectionHelper::isInstanceOf(
+            $property->getType()?->getName(),
+            Attributes::class,
+        );
 
-        $originalValue = $value;
+        if (!$isAttribute) {
+            return;
+        }
+
+        $attributes->merge($value);
+    }
+
+    protected function processPropertyValue(
+        \ReflectionClass $reflection,
+        object $object,
+        string $key,
+        mixed $value
+    ): void {
+        try {
+            $property = $reflection->getProperty($key);
+        } catch (\ReflectionException) {
+            return;
+        }
+
+        if (!$property) {
+            return;
+        }
+
+        $isAttribute = ReflectionHelper::isInstanceOf(
+            $property->getType()?->getName(),
+            Attributes::class,
+        );
+
+        if ($isAttribute) {
+            return;
+        }
 
         $transformer = AttributeHelper::findAttribute($property, ValueTransformer::class);
         if ($transformer instanceof ValueTransformer) {
@@ -28,21 +71,19 @@ abstract class AbstractOptionProcessor
             }
         }
 
-        if ($value instanceof Attributes) {
-            $property->getValue($object)->merge($originalValue);
-
-            return;
-        }
-
         if ('value' === $key) {
-            $defaultValueProperty = $reflection->getProperty('defaultValue');
-            if ($defaultValueProperty) {
-                $defaultValueProperty->setAccessible(true);
-                $defaultValueProperty->setValue($object, $value);
-                $defaultValueProperty->setAccessible(false);
+            try {
+                $defaultValueProperty = $reflection->getProperty('defaultValue');
+                if ($defaultValueProperty) {
+                    $defaultValueProperty->setAccessible(true);
+                    $defaultValueProperty->setValue($object, $value);
+                    $defaultValueProperty->setAccessible(false);
+                }
+            } catch (\ReflectionException) {
             }
         }
 
+        $property->setAccessible(true);
         $property->setValue($object, $value);
         $property->setAccessible(false);
     }

@@ -44,7 +44,7 @@ class EmailMarketingService extends IntegrationsService
     ): array {
         $existingRecords = EmailMarketingListRecord::find()
             ->where(['integrationId' => $integration->getId()])
-            ->indexBy('handle')
+            ->indexBy('resourceId')
             ->all()
         ;
 
@@ -52,6 +52,8 @@ class EmailMarketingService extends IntegrationsService
 
         if ($refresh || empty($existingRecords)) {
             $lists = $integration->fetchLists($client);
+
+            $newRecords = [];
 
             $usedIds = [];
             $newLists = [];
@@ -70,15 +72,19 @@ class EmailMarketingService extends IntegrationsService
                 $record->name = $list->getName();
                 $record->memberCount = $list->getMemberCount();
                 $record->save();
+
+                $newRecords[$list->getResourceId()] = $record;
             }
 
             foreach ($existingRecords as $handle => $record) {
                 if (!\in_array($handle, $usedIds)) {
                     $record->delete();
+                } else {
+                    $newRecords[$handle] = $record;
                 }
             }
 
-            return $lists;
+            $existingRecords = $newRecords;
         }
 
         return array_map(

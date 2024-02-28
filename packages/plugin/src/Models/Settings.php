@@ -234,6 +234,8 @@ class Settings extends Model
 
     public array $surveys = [];
 
+    public bool $allowDashesInFieldHandles = false;
+
     public Defaults $defaults;
 
     /**
@@ -305,6 +307,8 @@ class Settings extends Model
         $this->bypassSpamCheckOnLoggedInUsers = false;
 
         $this->hiddenFieldTypes = [];
+
+        $this->allowDashesInFieldHandles = false;
 
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);

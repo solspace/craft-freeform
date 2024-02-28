@@ -79,11 +79,6 @@
         display: inline;
         margin-right: 5px;
     }
-    .freeform-row .freeform-column .freeform-input.StripeElement {
-        padding: 4px 2px;
-        border: 1px solid #ccc;
-        height: 36px;
-    }
     .freeform-row .freeform-column .freeform-input-only-label {
         font-weight: normal;
     }
@@ -178,13 +173,16 @@
 <script>
 var form = document.querySelector('[data-id="{{ form.anchor }}"]');
 if (form) {
-    form.addEventListener("freeform-stripe-styling", function (event) {
-        event.detail.base = {
-            fontSize: "16px",
-            color: "#464747",
-            fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-        }
-    })
+    form.addEventListener("freeform-stripe-appearance", function (event) {
+        event.elementOptions.appearance = Object.assign(
+            event.elementOptions.appearance,
+            {
+                variables: {
+                    colorPrimary: "#0d6efd",
+                },
+            }
+        );
+    });
 }
 </script>
 

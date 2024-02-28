@@ -14,8 +14,14 @@ class Handle implements PropertyValidatorInterface
 
     public function validate(mixed $value): array
     {
+        $regex = '/^[a-zA-Z_0-9]+$/';
+
+        if (Freeform::getInstance()->settings->getSettingsModel()->allowDashesInFieldHandles) {
+            $regex = '/^[a-zA-Z\-_0-9]+$/';
+        }
+
         $errors = [];
-        if (!preg_match('/^[a-zA-Z_0-9]+$/', $value)) {
+        if (!preg_match($regex, $value)) {
             $errors[] = Freeform::t($this->message);
         }
 

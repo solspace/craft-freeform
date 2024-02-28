@@ -10,6 +10,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\DataObjects\FormModal\CreateFormModal;
+use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
 class ModalController extends BaseApiController
@@ -20,6 +21,7 @@ class ModalController extends BaseApiController
         $config = [],
         private PropertyProvider $propertyProvider,
         private FormTransformer $formTransformer,
+        private SettingsService $settingsService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -37,10 +39,22 @@ class ModalController extends BaseApiController
             $data->type = Regular::class;
         }
 
+        if (!isset($data->formattingTemplate)) {
+            $data->formattingTemplate = '';
+        }
+
+        $regex = '/[^a-zA-Z_0-9]+/i';
+        if ($this->settingsService->getSettingsModel()->allowDashesInFieldHandles) {
+            $regex = '/[^a-zA-Z\-_0-9]+/i';
+        }
+
+        $handle = preg_replace($regex, ' ', $data->name);
+        $handle = StringHelper::toHandle($handle);
+
         $data->settings = (object) ['general' => (object) []];
         $data->settings->general->name = $data->name;
         $data->settings->general->type = $data->type;
-        $data->settings->general->handle = StringHelper::camelCase($data->name);
+        $data->settings->general->handle = $handle;
         $data->settings->general->formattingTemplate = $data->formattingTemplate;
         $data->settings->general->storeData = $data->storeData;
 

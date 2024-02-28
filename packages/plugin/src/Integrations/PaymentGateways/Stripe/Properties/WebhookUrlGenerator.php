@@ -9,6 +9,6 @@ class WebhookUrlGenerator implements ValueGeneratorInterface
 {
     public function generateValue(?object $referenceObject): string
     {
-        return UrlHelper::cpUrl('freeform/payments/stripe/webhook');
+        return UrlHelper::siteUrl('freeform/payments/stripe/webhook');
     }
 }

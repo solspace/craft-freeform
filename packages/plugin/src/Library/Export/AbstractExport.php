@@ -136,10 +136,10 @@ abstract class AbstractExport implements ExportInterface
 
                         if (\is_array($value)) {
                             foreach ($value as $index => $val) {
-                                $value[$index] = $options[$val] ?? $val;
+                                $value[$index] = $options->getOption($val)?->getLabel() ?? $val;
                             }
                         } else {
-                            $value = $options[$value] ?? $value;
+                            $value = $options->getOption($value)?->getLabel() ?? $value;
                         }
                     }
                 } else {

@@ -47,7 +47,7 @@ class LayoutsService extends BaseService
                 $pageData['index'] = $index;
                 $layout = new Layout($pageData['layoutUid']);
 
-                $page = new Page($this->propertyProvider, $layout, $pageData);
+                $page = new Page($form, $this->propertyProvider, $layout, $pageData);
                 $formLayout->getPages()->add($page);
 
                 $this->attachRows(
@@ -63,6 +63,7 @@ class LayoutsService extends BaseService
             if (empty($pages)) {
                 $formLayout->getPages()->add(
                     new Page(
+                        $form,
                         $this->propertyProvider,
                         new Layout(''),
                         ['label' => 'Page 1']

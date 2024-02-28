@@ -47,7 +47,6 @@ class PropertyProvider
         array $properties,
         ?callable $valueUpdateCallback = null
     ): void {
-        $reflection = new \ReflectionClass($object);
         $editableProperties = $this->getEditableProperties($object);
 
         foreach ($properties as $key => $value) {
@@ -56,29 +55,38 @@ class PropertyProvider
                 $value = $editableProperty->transformer->transform($value);
             }
 
-            try {
-                $reflectionProperty = $reflection->getProperty($key);
-            } catch (\ReflectionException $e) {
-                continue;
-            }
-
             if ($valueUpdateCallback) {
                 $value = $valueUpdateCallback($value, $editableProperty);
             }
 
-            $accessible = $reflectionProperty->isPublic();
+            $this->setObjectValue($object, $key, $value);
+        }
+    }
 
-            $reflectionProperty->setAccessible(true);
+    public function setObjectValue(object $object, string $key, mixed $value): void
+    {
+        try {
+            $reflectionProperty = new \ReflectionProperty($object, $key);
+        } catch (\ReflectionException) {
+            return;
+        }
 
-            if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
-                $value = null;
-            }
+        if (null === $value && !$reflectionProperty->getType()?->allowsNull()) {
+            return;
+        }
 
-            $reflectionProperty->setValue($object, $value);
+        $accessible = $reflectionProperty->isPublic();
 
-            if (!$accessible) {
-                $reflectionProperty->setAccessible(false);
-            }
+        $reflectionProperty->setAccessible(true);
+
+        if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
+            $value = null;
+        }
+
+        $reflectionProperty->setValue($object, $value);
+
+        if (!$accessible) {
+            $reflectionProperty->setAccessible(false);
         }
     }
 

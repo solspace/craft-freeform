@@ -2,4 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\Common;
 
-interface PaymentFieldInterface {}
+use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
+
+interface PaymentFieldInterface extends NoEmailPresenceInterface {}

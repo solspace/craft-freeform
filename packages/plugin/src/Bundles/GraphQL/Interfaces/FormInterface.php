@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\RulesResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
@@ -261,6 +262,12 @@ class FormInterface extends AbstractInterface
 
                     return $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
                 },
+            ],
+            'rules' => [
+                'name' => 'rules',
+                'type' => RulesInterface::getType(),
+                'resolve' => RulesResolver::class.'::resolve',
+                'description' => 'The rules for this form',
             ],
         ], static::getName());
     }

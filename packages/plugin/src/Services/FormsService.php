@@ -32,7 +32,6 @@ use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
-use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Error\LoaderError;
@@ -419,72 +418,22 @@ class FormsService extends BaseService implements FormHandlerInterface
         static $pluginJsLoaded;
         static $pluginCssLoaded;
 
-        $view = \Craft::$app->getView();
-        $insertType = $this->getSettingsService()->scriptInsertType();
-        $insertLocation = $this->getSettingsService()->getSettingsModel()->scriptInsertLocation;
-
         if (null === $pluginJsLoaded) {
-            $jsPath = $this->getSettingsService()->getPluginJsPath();
-            $chunk = match ($insertType) {
-                Settings::SCRIPT_INSERT_TYPE_INLINE => file_get_contents($jsPath),
-                Settings::SCRIPT_INSERT_TYPE_FILES => \Craft::$app->assetManager->getPublishedUrl($jsPath, true),
-                Settings::SCRIPT_INSERT_TYPE_POINTERS => UrlHelper::siteUrl('freeform/plugin.js'),
-                default => null,
-            };
-
-            if (Settings::SCRIPT_INSERT_TYPE_INLINE === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<script type="application/javascript">'.$chunk.'</script>'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerJs($chunk, ['position' => View::POS_BEGIN]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerJs($chunk, ['position' => View::POS_END]),
-                };
-            } elseif (Settings::SCRIPT_INSERT_TYPE_FILES === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<script type="application/javascript" src="'.$chunk.'"></script>'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerJsFile($chunk, ['position' => View::POS_BEGIN]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerJsFile($chunk, ['position' => View::POS_END]),
-                };
-            } elseif (Settings::SCRIPT_INSERT_TYPE_POINTERS === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<script type="application/javascript" src="'.$chunk.'"></script>'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerJsFile($chunk, ['position' => View::POS_BEGIN]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerJsFile($chunk, ['position' => View::POS_END]),
-                };
-            }
-
             $pluginJsLoaded = true;
+
+            $jsPath = $this->getSettingsService()->getPluginJsPath();
+            $url = 'freeform/plugin.js';
+
+            $event->addScript($jsPath, $url);
         }
 
         if (null === $pluginCssLoaded) {
-            $cssPath = $this->getSettingsService()->getPluginCssPath();
-            $chunk = match ($insertType) {
-                Settings::SCRIPT_INSERT_TYPE_INLINE => file_get_contents($cssPath),
-                Settings::SCRIPT_INSERT_TYPE_FILES => \Craft::$app->assetManager->getPublishedUrl($cssPath, true),
-                Settings::SCRIPT_INSERT_TYPE_POINTERS => UrlHelper::siteUrl('freeform/plugin.css'),
-                default => null,
-            };
-
-            if (Settings::SCRIPT_INSERT_TYPE_INLINE === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<style>'.$chunk.'</style>'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerCss($chunk, ['position' => View::POS_HEAD]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerCss($chunk, ['position' => View::POS_END]),
-                };
-            } elseif (Settings::SCRIPT_INSERT_TYPE_FILES === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<link rel="stylesheet" href="'.$chunk.'">'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerCssFile($chunk, ['position' => View::POS_HEAD]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerCssFile($chunk, ['position' => View::POS_END]),
-                };
-            } elseif (Settings::SCRIPT_INSERT_TYPE_POINTERS === $insertType) {
-                match ($insertLocation) {
-                    Settings::SCRIPT_INSERT_LOCATION_FORM => $event->addChunk('<link rel="stylesheet" href="'.$chunk.'">'),
-                    Settings::SCRIPT_INSERT_LOCATION_HEADER => $view->registerCssFile($chunk, ['position' => View::POS_HEAD]),
-                    Settings::SCRIPT_INSERT_LOCATION_FOOTER => $view->registerCssFile($chunk, ['position' => View::POS_END]),
-                };
-            }
-
             $pluginCssLoaded = true;
+
+            $cssPath = $this->getSettingsService()->getPluginCssPath();
+            $url = 'freeform/plugin.css';
+
+            $event->addStylesheet($cssPath, $url);
         }
     }
 

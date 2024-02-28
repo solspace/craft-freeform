@@ -35,9 +35,6 @@ label.required:after {
 .mt-n1 {
     margin-top: -0.5rem !important;
 }
-.StripeElement {
-    height: 36px;
-}
 
 /* FLOATING LABELS SPECIFIC STYLES */
 .form-floating > label {

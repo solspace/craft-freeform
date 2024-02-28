@@ -80,6 +80,14 @@ class IntegrationModel extends Model
         );
 
         $propertyProvider = \Craft::$container->get(PropertyProvider::class);
+        $properties = $propertyProvider->getEditableProperties($object);
+        foreach ($properties as $property) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY) && $property->valueGenerator) {
+                $value = $property->valueGenerator->generateValue(null);
+                $propertyProvider->setObjectValue($object, $property->handle, $value);
+            }
+        }
+
         $propertyProvider->setObjectProperties($object, $this->metadata, [$this, 'propertyUpdateCallback']);
 
         return $object;
@@ -94,6 +102,10 @@ class IntegrationModel extends Model
 
         if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
             return \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+        }
+
+        if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
+            return null;
         }
 
         return $value;

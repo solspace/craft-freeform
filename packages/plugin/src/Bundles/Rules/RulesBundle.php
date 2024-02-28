@@ -2,8 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
+use Solspace\Freeform\Bundles\Form\Context\Pages\PageContext;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
+use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
@@ -35,6 +37,12 @@ class RulesBundle extends FeatureBundle
             FieldInterface::EVENT_VALIDATE,
             [$this, 'validateField']
         );
+
+        Event::on(
+            PageContext::class,
+            PageContext::EVENT_PAGE_JUMP,
+            [$this, 'handleFormPageJump']
+        );
     }
 
     public static function getPriority(): int
@@ -57,14 +65,14 @@ class RulesBundle extends FeatureBundle
     public function attachRulesJSON(RenderTagEvent $event): void
     {
         $rules = $this->ruleProvider->getFieldRules($event->getForm());
-        $serialized = $this->serializer->serialize($rules, 'json', [
-            'groups' => 'front-end',
-        ]);
+        $serialized = $this->serializer->serialize(
+            $rules,
+            'json',
+            ['groups' => 'front-end']
+        );
 
         $event->addChunk(
-            '<script type="application/json" data-rules-json>'
-            .$serialized
-            .'</script>'
+            '<script type="application/json" data-rules-json>'.$serialized.'</script>'
         );
     }
 
@@ -77,5 +85,16 @@ class RulesBundle extends FeatureBundle
         if (true === $isHidden) {
             $event->isValid = false;
         }
+    }
+
+    public function handleFormPageJump(PageJumpEvent $event): void
+    {
+        $form = $event->getForm();
+        $index = $this->ruleValidator->getPageJumpIndex($form);
+        if (null === $index) {
+            return;
+        }
+
+        $event->setJumpToIndex($index);
     }
 }

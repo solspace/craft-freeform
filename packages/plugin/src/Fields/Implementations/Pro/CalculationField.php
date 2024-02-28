@@ -17,7 +17,7 @@ use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 #[Type(
     name: 'Calculation',
     typeShorthand: 'calculation',
-    iconPath: __DIR__.'/../Icons/calculator.svg',
+    iconPath: __DIR__.'/../Icons/calculation.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/calculation.ejs',
 )]
 class CalculationField extends AbstractField implements DefaultValueInterface

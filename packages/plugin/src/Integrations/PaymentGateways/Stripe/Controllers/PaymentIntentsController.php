@@ -12,7 +12,7 @@ use yii\web\Response;
 
 class PaymentIntentsController extends BaseStripeController
 {
-    protected array|bool|int $allowAnonymous = ['create', 'update-amount'];
+    protected array|bool|int $allowAnonymous = true;
 
     public function __construct(
         $id,

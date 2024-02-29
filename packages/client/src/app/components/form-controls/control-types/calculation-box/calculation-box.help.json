@@ -1,5 +1,5 @@
 {
-  "title": "Supported Operators",
+  "title": "Supported Operators Reference Guide",
   "operators": [
     {
       "title": "Arithmetic",
@@ -39,7 +39,7 @@
       "title": "Bitwise",
       "items": [
         {
-          "name": "And",
+          "name": "AND",
           "operator": "&"
         },
         {
@@ -56,7 +56,8 @@
       "title": "Ternary",
       "items": [
         {
-          "operator": "(a ? b : c)"
+          "name": "(a ? b : c)",
+          "operator": "?"
         }
       ]
     },
@@ -73,13 +74,16 @@
       "title": "Logical",
       "items": [
         {
-          "operator": "! or not"
+          "name": "Not",
+          "operator": "!, not"
         },
         {
-          "operator": "&& or and"
+          "name": "And",
+          "operator": "&&, and"
         },
         {
-          "operator": "|| or or"
+          "name": "Or",
+          "operator": "||, or"
         }
       ]
     },
@@ -104,11 +108,11 @@
           "operator": "==="
         },
         {
-          "name": "Not Equal",
+          "name": "Not equal",
           "operator": "!="
         },
         {
-          "name": "Not Identical",
+          "name": "Not identical",
           "operator": "!=="
         },
         {

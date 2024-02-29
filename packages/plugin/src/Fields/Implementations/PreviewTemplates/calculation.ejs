@@ -1,1 +1,9 @@
-<%= defaultValue %>
+<% if (!calculations) { %>
+    This Calculation field has not been configured yet.
+<% } else if (inputType === 'regularTextInput') { %>
+    <input type="text" value="<% if (defaultValue) { %><%= defaultValue %><% } else { %><%= calculations %><% } %>" />
+<% } else if (inputType === 'plainText') { %>
+    <code><% if (defaultValue) { %><%= defaultValue %><% } else { %><%= calculations %><% } %></code> (Visible)
+<% } else { %>
+    <code><% if (defaultValue) { %><%= defaultValue %><% } else { %><%= calculations %><% } %></code> (Hidden)
+<% } %>

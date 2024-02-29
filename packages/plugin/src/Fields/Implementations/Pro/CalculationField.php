@@ -34,7 +34,6 @@ class CalculationField extends AbstractField implements DefaultValueInterface
 
     #[Input\CalculationBox(
         label: 'Calculation Logic',
-        instructions: 'Type "@" or "{" to get the field for calculation.',
         availableFieldTypes: [
             TextField::class,
             NumberField::class,
@@ -46,7 +45,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface
             OpinionScaleField::class,
             RatingField::class,
             RegexField::class,
-        ]
+        ],
     )]
     protected string $calculations = self::DEFAULT_CALCULATIONS;
 

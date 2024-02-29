@@ -1,0 +1,133 @@
+{
+  "title": "Supported Operators",
+  "operators": [
+    {
+      "title": "Arithmetic",
+      "items": [
+        {
+          "name": "Addition",
+          "operator": "+"
+        },
+        {
+          "name": "Subtraction",
+          "operator": "-"
+        },
+        {
+          "name": "Multiplication",
+          "operator": "*"
+        },
+        {
+          "name": "Division",
+          "operator": "/"
+        }
+      ]
+    },
+    {
+      "title": "Array",
+      "items": [
+        {
+          "name": "Contains",
+          "operator": ".."
+        },
+        {
+          "name": "Does not contain",
+          "operator": "not in"
+        }
+      ]
+    },
+    {
+      "title": "Bitwise",
+      "items": [
+        {
+          "name": "And",
+          "operator": "&"
+        },
+        {
+          "name": "OR",
+          "operator": "|"
+        },
+        {
+          "name": "XOR",
+          "operator": "^"
+        }
+      ]
+    },
+    {
+      "title": "Ternary",
+      "items": [
+        {
+          "operator": "(a ? b : c)"
+        }
+      ]
+    },
+    {
+      "title": "String",
+      "items": [
+        {
+          "name": "Concatenation",
+          "operator": "~"
+        }
+      ]
+    },
+    {
+      "title": "Logical",
+      "items": [
+        {
+          "operator": "! or not"
+        },
+        {
+          "operator": "&& or and"
+        },
+        {
+          "operator": "|| or or"
+        }
+      ]
+    },
+    {
+      "title": "Numeric",
+      "items": [
+        {
+          "name": "Range",
+          "operator": ".."
+        }
+      ]
+    },
+    {
+      "title": "Comparison",
+      "items": [
+        {
+          "name": "Equal",
+          "operator": "=="
+        },
+        {
+          "name": "Identical",
+          "operator": "==="
+        },
+        {
+          "name": "Not Equal",
+          "operator": "!="
+        },
+        {
+          "name": "Not Identical",
+          "operator": "!=="
+        },
+        {
+          "name": "Less than",
+          "operator": "<"
+        },
+        {
+          "name": "Greater than",
+          "operator": ">"
+        },
+        {
+          "name": "Less than or equal to",
+          "operator": "<="
+        },
+        {
+          "name": "Greater than or equal to",
+          "operator": ">="
+        }
+      ]
+    }
+  ]
+}

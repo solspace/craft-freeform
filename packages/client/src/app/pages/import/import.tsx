@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import classes from '@ff-client/utils/classes';
 import { generateUrl } from '@ff-client/utils/urls';
@@ -6,6 +6,36 @@ import { generateUrl } from '@ff-client/utils/urls';
 import { ImportWrapper } from './import.styles';
 
 export const Import: React.FC = () => {
+  useEffect(() => {
+    const navItems = document.querySelectorAll(
+      '#nav-freeform .subnav > li > a'
+    );
+
+    navItems.forEach((item) => {
+      const href = item.attributes.getNamedItem('href').value;
+      if (/\/freeform\/forms/.test(href)) {
+        item.classList.remove('sel');
+      }
+
+      if (/\/freeform\/export/.test(href)) {
+        item.classList.add('sel');
+      }
+    });
+
+    return () => {
+      navItems.forEach((item) => {
+        const href = item.attributes.getNamedItem('href').value;
+        if (/\/freeform\/forms/.test(href)) {
+          item.classList.add('sel');
+        }
+
+        if (/\/freeform\/export/.test(href)) {
+          item.classList.remove('sel');
+        }
+      });
+    };
+  }, []);
+
   return (
     <div>
       <div id="header-container">

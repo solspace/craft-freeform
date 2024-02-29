@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 
 class ExportService extends BaseService
@@ -24,26 +23,18 @@ class ExportService extends BaseService
             ['heading' => 'Export'],
             [
                 'title' => Freeform::t('Profiles'),
-                'url' => UrlHelper::cpUrl('freeform/export/profiles'),
+                'url' => 'freeform/export/profiles',
             ],
             [
                 'title' => Freeform::t('Notifications'),
-                'url' => UrlHelper::cpUrl('freeform/export/notifications'),
-            ],
-            [
-                'title' => Freeform::t('Forms & Data'),
-                'url' => UrlHelper::cpUrl('freeform/export/forms'),
+                'url' => 'freeform/export/notifications',
             ],
 
             // ======= IMPORT =========
             ['heading' => 'Import'],
             [
-                'title' => Freeform::t('Import Freeform Data'),
-                'url' => UrlHelper::cpUrl('freeform/import/data'),
-            ],
-            [
                 'title' => Freeform::t('Import Express Forms'),
-                'url' => UrlHelper::cpUrl('freeform/import/express-forms'),
+                'url' => 'freeform/import/express-forms',
             ],
         ];
     }

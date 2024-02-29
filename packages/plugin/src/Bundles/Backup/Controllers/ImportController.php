@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
+use craft\helpers\App;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
@@ -17,7 +18,7 @@ class ImportController extends BaseApiController
     public function actionExpressForms(): Response
     {
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
-        $data = $exporter->collect();
+        $data = $exporter->collectDataPreview();
 
         return $this->asSerializedJson($data);
     }
@@ -71,6 +72,7 @@ class ImportController extends BaseApiController
 
     public function actionImport(): void
     {
+        App::maxPowerCaptain();
         $token = $this->request->get('token');
 
         $sse = new SSE();
@@ -86,12 +88,17 @@ class ImportController extends BaseApiController
 
         /** @var ExporterInterface $exporter */
         $exporter = \Craft::$container->get($exporterClass);
-        $exporter->collect();
+        $dataset = $exporter->collect(
+            $options['forms'] ?? [],
+            $options['notificationTemplates'] ?? [],
+            $options['formSubmissions'] ?? [],
+            $options['strategy'] ?? [],
+        );
 
         $sse->message('info', 'Starting import');
 
         $importer = \Craft::$container->get(FreeformImporter::class);
-        $importer->import($exporter->collect(), $options, $sse);
+        $importer->import($dataset, $sse);
 
         $sse->message('info', 'done...');
 

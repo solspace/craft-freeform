@@ -22,9 +22,9 @@ export const ProgressBar = styled.div<ProgressBarProps>`
   position: relative;
 
   width: 100%;
-  height: 15px;
+  height: 12px;
 
-  padding-top: 16px;
+  padding-top: 12px;
   margin: ${spacings.lg} 0;
 
   border: none;
@@ -32,6 +32,7 @@ export const ProgressBar = styled.div<ProgressBarProps>`
   background: #e5ecf6;
 
   font-size: 12px;
+  line-height: 12px;
 
   &:before {
     content: '';
@@ -45,7 +46,7 @@ export const ProgressBar = styled.div<ProgressBarProps>`
 
     border-radius: 5px;
     background-color: #e12d39;
-    background-size: 40px 40px;
+    background-size: 30px 30px;
     background-image: linear-gradient(
       45deg,
       ${color} 25%,

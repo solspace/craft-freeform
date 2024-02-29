@@ -32,6 +32,11 @@ export type Form = {
   pages: Page[];
 };
 
+export type Submissions = {
+  formUid: string;
+  count: number;
+};
+
 export type NotificationTemplate = {
   originalId: number | string;
   name: string;
@@ -40,13 +45,21 @@ export type NotificationTemplate = {
 
 export type FormImportData = {
   forms: Form[];
+  formSubmissions: Submissions[];
   notificationTemplates: NotificationTemplate[];
   integrations: string[];
   settings: string[];
 };
 
+export type ImportStrategy = 'replace' | 'skip';
+
 export type ImportOptions = {
   forms: string[];
+  formSubmissions: string[];
   notificationTemplates: Array<string | number>;
   integrations: string[];
+  strategy: {
+    forms: ImportStrategy;
+    notifications: ImportStrategy;
+  };
 };

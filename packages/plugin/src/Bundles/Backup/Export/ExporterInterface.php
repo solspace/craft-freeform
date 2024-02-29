@@ -3,14 +3,16 @@
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
+use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 
 interface ExporterInterface
 {
+    public function collectDataPreview(): ImportPreview;
+
     public function collect(
-        bool $forms = true,
-        bool $integrations = true,
-        bool $notifications = true,
-        bool $submissions = true,
-        bool $settings = true,
+        array $formIds,
+        array $notificationIds,
+        array $formSubmissions,
+        array $strategy,
     ): FreeformDataset;
 }

@@ -5,8 +5,11 @@ namespace Solspace\Freeform\Bundles\Backup\Export;
 use craft\db\Query;
 use craft\helpers\StringHelper;
 use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\ExpressForms\elements\Submission as XFSubmission;
 use Solspace\ExpressForms\ExpressForms;
+use Solspace\ExpressForms\records\FormRecord;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Backup\BatchProcessing\ElementQueryProcessor;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
@@ -15,11 +18,12 @@ use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\SubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
+use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
+use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
@@ -48,41 +52,58 @@ class ExpressFormsExporter implements ExporterInterface
 
     public function __construct(private PropertyProvider $propertyProvider) {}
 
+    public function collectDataPreview(): ImportPreview
+    {
+        $preview = new ImportPreview();
+
+        $preview->forms = $this->collectForms();
+        $preview->notificationTemplates = $this->collectNotifications();
+
+        $submissions = (new Query())
+            ->select(['COUNT(s.id)'])
+            ->from(XFSubmission::TABLE.' s')
+            ->innerJoin(FormRecord::TABLE.' f', 'f.id = s.formId')
+            ->groupBy('s.formId')
+            ->indexBy('f.uuid')
+            ->column()
+        ;
+
+        $submissions = array_map(
+            fn (int $count, string $formUid) => ['formUid' => $formUid, 'count' => (int) $count],
+            $submissions,
+            array_keys($submissions),
+        );
+
+        $preview->formSubmissions = $submissions;
+
+        return $preview;
+    }
+
     public function collect(
-        bool $forms = true,
-        bool $integrations = true,
-        bool $notifications = true,
-        bool $submissions = true,
-        bool $settings = true,
+        array $formIds,
+        array $notificationIds,
+        array $formSubmissions,
+        array $strategy,
     ): FreeformDataset {
         $dataset = new FreeformDataset();
 
-        if ($notifications) {
-            $dataset->setNotificationTemplates($this->collectNotifications());
-        }
-
-        if ($forms) {
-            $dataset->setForms($this->collectForms());
-        }
-
-        if ($submissions) {
-            $dataset->setFormSubmissions($this->collectSubmissions());
-        }
-
-        if ($settings) {
-            $dataset->setSettings($this->collectSettings());
-        }
+        $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
+        $dataset->setForms($this->collectForms($formIds));
+        $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
+        $dataset->setSettings($this->collectSettings());
+        $dataset->setStrategy(new ImportStrategy($strategy));
 
         return $dataset;
     }
 
-    private function collectForms(): FormCollection
+    private function collectForms(?array $ids = null): FormCollection
     {
         $collection = new FormCollection();
 
         $forms = (new Query())
             ->select('*')
             ->from('{{%expressforms_forms}}')
+            ->where(null !== $ids ? ['uuid' => $ids] : null)
             ->all()
         ;
 
@@ -98,7 +119,7 @@ class ExpressFormsExporter implements ExporterInterface
 
         foreach ($forms as $index => $form) {
             $exported = new Form();
-            $exported->uid = $form['uid'];
+            $exported->uid = $form['uuid'];
             $exported->name = $form['name'] ?? 'Untitled '.$form['id'];
             $exported->handle = $form['handle'] ?? 'untitled-'.$form['id'];
             $exported->order = $form['sortOrder'] ?? $index;
@@ -189,6 +210,13 @@ class ExpressFormsExporter implements ExporterInterface
                         'fileCount' => $formField->fileCount ?? 1,
                         'assetSourceId' => $formField->volumeId ?? null,
                     ],
+                    'options' => [
+                        'optionConfiguration' => [
+                            'source' => 'custom',
+                            'useCustomValues' => true,
+                            'options' => [],
+                        ],
+                    ],
                     default => [],
                 };
 
@@ -230,13 +258,16 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectNotifications(): NotificationTemplateCollection
+    private function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
-
         $notifications = ExpressForms::getInstance()->emailNotifications->getNotifications();
 
         foreach ($notifications as $notification) {
+            if (null !== $ids && !\in_array($notification->fileName, $ids, true)) {
+                continue;
+            }
+
             $exported = new NotificationTemplate();
             $exported->originalId = $notification->fileName;
             $exported->name = $notification->name;
@@ -263,29 +294,35 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSubmissions(): FormSubmissionCollection
+    private function collectSubmissions(?array $ids = null): FormSubmissionCollection
     {
         $collection = new FormSubmissionCollection();
 
         $forms = ExpressForms::getInstance()->forms->getAllForms();
 
         foreach ($forms as $form) {
-            $submissionCollection = new SubmissionCollection();
-
-            $submissions = ExpressForms::getInstance()->submissions->getSubmissions($form->getId());
-            foreach ($submissions as $submission) {
-                $exported = new Submission();
-
-                foreach ($form->getFields() as $field) {
-                    $exported->{$field->getUid()} = $submission->getFieldValue($field->getHandle());
-                }
-
-                $submissionCollection->add($exported);
+            if (null !== $ids && !\in_array($form->getUuid(), $ids, true)) {
+                continue;
             }
+
+            $submissions = XFSubmission::find()->formId($form->getId());
 
             $formSubmissions = new FormSubmissions();
             $formSubmissions->formUid = $form->getUuid();
-            $formSubmissions->submissions = $submissionCollection;
+            $formSubmissions->submissionBatchProcessor = new ElementQueryProcessor($submissions);
+            $formSubmissions->setProcessor(
+                function (XFSubmission $row) use ($form) {
+                    $exported = new Submission();
+                    $exported->title = $row->title;
+                    $exported->status = $row->status;
+
+                    foreach ($form->getFields() as $field) {
+                        $exported->{$field->getHandle()} = $row->getFieldValue($field->getHandle());
+                    }
+
+                    return $exported;
+                }
+            );
 
             $collection->add($formSubmissions, $form->getUuid());
         }

@@ -7,6 +7,8 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 
 class Submission implements CustomNormalizerInterface
 {
+    public string $title;
+    public string $status;
     private array $values = [];
 
     public function __set(string $name, $value): void
@@ -17,6 +19,11 @@ class Submission implements CustomNormalizerInterface
     public function __get(string $name)
     {
         return $this->values[$name] ?? null;
+    }
+
+    public function getValues(): array
+    {
+        return $this->values;
     }
 
     #[Ignore]

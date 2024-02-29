@@ -16,15 +16,11 @@ class FreeformDataset
     private ?FormSubmissionCollection $formSubmissions = null;
     private ?Settings $settings = null;
 
-    public function getForms(?array $uids = null): ?FormCollection
-    {
-        if (null === $uids) {
-            return $this->forms;
-        }
+    private ?ImportStrategy $strategy = null;
 
-        return $this->forms->filter(
-            fn (Form $form) => \in_array($form->uid, $uids, true)
-        );
+    public function getForms(): ?FormCollection
+    {
+        return $this->forms;
     }
 
     public function setForms(?FormCollection $forms): self
@@ -46,15 +42,9 @@ class FreeformDataset
         return $this;
     }
 
-    public function getNotificationTemplates(?array $ids = null): ?NotificationTemplateCollection
+    public function getNotificationTemplates(): ?NotificationTemplateCollection
     {
-        if (null === $ids) {
-            return $this->notificationTemplates;
-        }
-
-        return $this->notificationTemplates->filter(
-            fn (NotificationTemplate $template) => \in_array($template->originalId, $ids, true)
-        );
+        return $this->notificationTemplates;
     }
 
     public function setNotificationTemplates(?NotificationTemplateCollection $notificationTemplates): self
@@ -64,15 +54,9 @@ class FreeformDataset
         return $this;
     }
 
-    public function getFormSubmissions(?array $uids = null): ?FormSubmissionCollection
+    public function getFormSubmissions(): ?FormSubmissionCollection
     {
-        if (null === $uids) {
-            return $this->formSubmissions;
-        }
-
-        return $this->formSubmissions->filter(
-            fn (FormSubmissions $submissions) => \in_array($submissions->formUid, $uids, true)
-        );
+        return $this->formSubmissions;
     }
 
     public function setFormSubmissions(?FormSubmissionCollection $formSubmissions): self
@@ -94,34 +78,15 @@ class FreeformDataset
         return $this;
     }
 
-    public function getCounters(): object
+    public function getStrategy(): ?ImportStrategy
     {
-        $forms = 0;
-        $pages = 0;
-        $rows = 0;
-        $fields = 0;
+        return $this->strategy;
+    }
 
-        foreach ($this->forms as $form) {
-            ++$forms;
+    public function setStrategy(?ImportStrategy $strategy): self
+    {
+        $this->strategy = $strategy;
 
-            foreach ($form->pages as $page) {
-                ++$pages;
-
-                foreach ($page->layout->rows as $row) {
-                    ++$rows;
-
-                    foreach ($row->fields as $field) {
-                        ++$fields;
-                    }
-                }
-            }
-        }
-
-        return (object) [
-            'forms' => $forms,
-            'fields' => $fields,
-            'pages' => $pages,
-            'rows' => $rows,
-        ];
+        return $this;
     }
 }

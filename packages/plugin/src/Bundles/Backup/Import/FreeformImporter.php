@@ -3,12 +3,11 @@
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
 use craft\helpers\StringHelper;
-use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
+use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -25,8 +24,10 @@ use Solspace\Freeform\Services\NotificationsService;
 
 class FreeformImporter
 {
+    private const BATCH_SIZE = 100;
+
     private array $notificationIdMap = [];
-    private array $formIdMap = [];
+    private FreeformDataset $dataset;
     private SSE $sse;
 
     public function __construct(
@@ -34,41 +35,59 @@ class FreeformImporter
         private FreeformSerializer $serializer,
     ) {}
 
-    public function import(FreeformDataset $dataset, array $options, SSE $sse): void
+    public function import(FreeformDataset $dataset, SSE $sse): void
     {
         $this->sse = $sse;
         $this->notificationIdMap = [];
-        $this->formIdMap = [];
+        $this->dataset = $dataset;
 
-        $notificationTemplates = $dataset->getNotificationTemplates($options['notificationTemplates'] ?? []);
-        $forms = $dataset->getForms($options['forms'] ?? []);
-        $submissions = $dataset->getFormSubmissions($options['submissions'] ?? []);
+        $this->announceTotals();
+
+        $this->importNotifications();
+        $this->importForms();
+        $this->importSubmissions();
+    }
+
+    private function announceTotals(): void
+    {
+        $dataset = $this->dataset;
+
+        $notificationTemplates = $dataset->getNotificationTemplates();
+        $forms = $dataset->getForms();
+        $submissions = $dataset->getFormSubmissions();
 
         $this->sse->message(
             'total',
-            $notificationTemplates->count() + $forms->count() + $submissions->count()
+            array_sum([
+                $notificationTemplates->count(),
+                $forms->count(),
+                $submissions->getTotals(),
+            ])
         );
-
-        $this->importNotifications($notificationTemplates);
-        $this->importForms($forms);
-        $this->importSubmissions($submissions);
     }
 
-    private function importForms(FormCollection $forms): void
+    private function importForms(): void
     {
+        $forms = $this->dataset->getForms();
+        $isStrategySkip = ImportStrategy::TYPE_SKIP === $this->dataset->getStrategy()->forms;
+
         $this->sse->message('reset', $forms->count());
 
         foreach ($forms as $form) {
             $this->sse->message('info', 'Importing form: '.$form->name);
 
-            if (FormRecord::findOne(['uid' => $form->uid])) {
-                $this->sse->message('progress', 1);
+            $formRecord = FormRecord::findOne(['uid' => $form->uid]);
+            if ($formRecord) {
+                if ($isStrategySkip) {
+                    $this->sse->message('progress', 1);
 
-                continue;
+                    continue;
+                }
+            } else {
+                $formRecord = FormRecord::create();
+                $formRecord->uid = $form->uid;
             }
 
-            $formRecord = FormRecord::create();
-            $formRecord->uid = $form->uid;
             $formRecord->name = $form->name;
             $formRecord->handle = $form->handle;
             $formRecord->type = Regular::class;
@@ -80,10 +99,8 @@ class FreeformImporter
             $formRecord->metadata = $serialized;
 
             $formRecord->save();
-            $this->formIdMap[$form->uid] = $formRecord->id;
 
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
-
             $fieldRecords = [];
 
             foreach ($form->notifications as $notification) {
@@ -135,7 +152,7 @@ class FreeformImporter
                 $pageRecord->save();
 
                 foreach ($page->layout->rows as $rowIndex => $row) {
-                    $rowRecord = new FormRowRecord();
+                    $rowRecord = FormRowRecord::findOne(['uid' => $row->uid]) ?? new FormRowRecord();
                     $rowRecord->uid = $row->uid;
                     $rowRecord->formId = $formRecord->id;
                     $rowRecord->layoutId = $layoutRecord->id;
@@ -143,7 +160,7 @@ class FreeformImporter
                     $rowRecord->save();
 
                     foreach ($row->fields as $fieldIndex => $field) {
-                        $fieldRecord = new FormFieldRecord();
+                        $fieldRecord = FormFieldRecord::findOne(['uid' => $field->uid]) ?? new FormFieldRecord();
                         $fieldRecord->uid = $field->uid;
                         $fieldRecord->formId = $formRecord->id;
                         $fieldRecord->rowId = $rowRecord->id;
@@ -174,13 +191,16 @@ class FreeformImporter
         }
     }
 
-    private function importNotifications(?NotificationTemplateCollection $collection): void
+    private function importNotifications(): void
     {
         $this->notificationIdMap = [];
 
+        $collection = $this->dataset->getNotificationTemplates();
         if (!$collection) {
             return;
         }
+
+        $strategy = $this->dataset->getStrategy()->notifications;
 
         $this->sse->message('reset', $collection->count());
 
@@ -195,9 +215,11 @@ class FreeformImporter
                     $this->notificationIdMap[$notification->originalId] = $record->id;
                 }
 
-                $this->sse->message('progress', 1);
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->sse->message('progress', 1);
 
-                continue;
+                    continue;
+                }
             }
 
             $record->name = $notification->name;
@@ -226,22 +248,65 @@ class FreeformImporter
         }
     }
 
-    private function importSubmissions(FormSubmissionCollection $collection): void
+    private function getFormByUid(string $uid): ?Form
     {
+        static $formsByUid;
+
+        if (null === $formsByUid) {
+            $forms = Freeform::getInstance()->forms->getAllForms();
+
+            $formsByUid = [];
+            foreach ($forms as $form) {
+                $formsByUid[$form->getUid()] = $form;
+            }
+        }
+
+        return $formsByUid[$uid] ?? null;
+    }
+
+    private function importSubmissions(): void
+    {
+        $collection = $this->dataset->getFormSubmissions();
+        $defaultStatus = Freeform::getInstance()->statuses->getDefaultStatusId();
+
         /** @var FormSubmissions $formSubmissions */
         foreach ($collection as $formSubmissions) {
-            $this->sse->message('reset', $formSubmissions->submissions->count());
+            $batchProcessor = $formSubmissions->submissionBatchProcessor;
 
-            $formId = $this->formIdMap[$formSubmissions->formUid];
-            if (!$formId) {
+            $form = $this->getFormByUid($formSubmissions->formUid);
+            if (!$form) {
                 continue;
             }
 
-            foreach ($formSubmissions->submissions as $submission) {
-                $submission = new Submission();
-                $submission->formId = $formId;
+            $name = $form->getName();
+            $total = $batchProcessor->total();
 
-                $this->sse->message('progress', 1);
+            $this->sse->message('reset', $total);
+            $this->sse->message(
+                'info',
+                "Importing submissions for '{$name}' (0/{$total})"
+            );
+
+            $current = 0;
+            foreach ($batchProcessor->batch(self::BATCH_SIZE) as $rows) {
+                $current += \count($rows);
+                $this->sse->message(
+                    'info',
+                    "Importing submissions for '{$name}' ({$current}/{$total})"
+                );
+
+                foreach ($rows as $row) {
+                    $submissionDTO = $formSubmissions->getProcessor()($row);
+
+                    $imported = Submission::create($form);
+                    $imported->title = $submissionDTO->title;
+                    $imported->statusId = $defaultStatus;
+                    $imported->setFormFieldValues($submissionDTO->getValues());
+
+                    \Craft::$app->getElements()->saveElement($imported, false);
+
+                    $this->sse->message('progress', 1);
+                }
             }
         }
     }

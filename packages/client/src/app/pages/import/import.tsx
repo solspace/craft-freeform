@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import classes from '@ff-client/utils/classes';
+import { generateUrl } from '@ff-client/utils/urls';
 
 import { ImportWrapper } from './import.styles';
 
@@ -23,25 +24,16 @@ export const Import: React.FC = () => {
                   <span>Export</span>
                 </li>
                 <li>
-                  <a href="">Profiles</a>
+                  <a href={generateUrl('/export/profiles')}>Profiles</a>
                 </li>
                 <li>
-                  <a href="">Notifications</a>
-                </li>
-                <li>
-                  <a href="">Forms & Data</a>
+                  <a href={generateUrl('/export/notifications')}>
+                    Notifications
+                  </a>
                 </li>
 
                 <li className="heading">
                   <span>Import</span>
-                </li>
-                <li>
-                  <NavLink
-                    to="data"
-                    className={({ isActive }) => classes(isActive && 'sel')}
-                  >
-                    Freeform Data
-                  </NavLink>
                 </li>
                 <li>
                   <NavLink

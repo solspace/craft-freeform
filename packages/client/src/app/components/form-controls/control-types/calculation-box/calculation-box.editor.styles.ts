@@ -17,6 +17,7 @@ export const CalculationBoxWrapper = styled.div`
   .tagify__input {
     min-height: 50px;
     background-color: #fff;
+    line-height: 2.2;
   }
 
   .sr-only-value {

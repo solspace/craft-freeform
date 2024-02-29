@@ -16,6 +16,7 @@ export const CalculationBoxPreview: React.FC<Props> = ({ value }) => {
       <PreviewContainer>
         {!value && <NoContent>{translate('Not configured yet')}</NoContent>}
         <div
+          style={{ lineHeight: '2.0' }}
           dangerouslySetInnerHTML={{
             __html: generateValue(value, '<mark>...</mark>'),
           }}

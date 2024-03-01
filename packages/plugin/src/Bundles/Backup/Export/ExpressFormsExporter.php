@@ -177,16 +177,28 @@ class ExpressFormsExporter implements ExporterInterface
 
             $exported->pages = new PageCollection();
 
+            $pageUid = preg_replace(
+                '/^(\w{8})-(\w{4})-(\w{4})-(\w{4})-(\w{12})$/',
+                '$1-$2-$3-1000-'.str_repeat('0', 12),
+                $form['uuid']
+            );
+
             $page = new Page();
-            $page->uid = StringHelper::UUID();
+            $page->uid = $pageUid;
             $page->label = 'Page 1';
 
+            $layoutUid = preg_replace(
+                '/^(\w{8})-(\w{4})-(\w{4})-(\w{4})-(\w{12})$/',
+                '$1-$2-$3-1001-'.str_repeat('0', 12),
+                $form['uuid']
+            );
+
             $layout = new Layout();
-            $layout->uid = StringHelper::UUID();
+            $layout->uid = $layoutUid;
             $layout->rows = new RowCollection();
 
             $formFields = JsonHelper::decode($form['fields'] ?? []);
-            foreach ($formFields as $formField) {
+            foreach ($formFields as $index => $formField) {
                 $type = match ($formField->type) {
                     'textarea' => TextareaField::class,
                     'options' => DropdownField::class,
@@ -220,8 +232,14 @@ class ExpressFormsExporter implements ExporterInterface
                     default => [],
                 };
 
+                $rowUid = preg_replace(
+                    '/^(\w{8})-(\w{4})-(\w{4})-(\w{4})-(\w{12})$/',
+                    '$1-$2-$3-1001-'.str_pad($index + 1, 12, '0', \STR_PAD_LEFT),
+                    $form['uuid']
+                );
+
                 $row = new Row();
-                $row->uid = StringHelper::UUID();
+                $row->uid = $rowUid;
                 $row->fields = new FieldCollection();
                 $row->fields->add($field);
 

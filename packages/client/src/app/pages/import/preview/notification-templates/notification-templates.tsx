@@ -25,6 +25,10 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
   options,
   onUpdate,
 }) => {
+  if (!templates.length) {
+    return null;
+  }
+
   return (
     <ListItem>
       <Blocks>

@@ -27,6 +27,10 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
   options,
   onUpdate,
 }) => {
+  if (!submissions.length) {
+    return null;
+  }
+
   return (
     <ListItem>
       <Blocks>

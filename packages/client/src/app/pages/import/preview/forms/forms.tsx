@@ -21,6 +21,10 @@ type Props = {
 };
 
 export const PreviewForms: React.FC<Props> = ({ forms, options, onUpdate }) => {
+  if (!forms.length) {
+    return null;
+  }
+
   return (
     <ListItem>
       <Blocks>

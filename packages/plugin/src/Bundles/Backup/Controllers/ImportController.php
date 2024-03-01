@@ -100,7 +100,7 @@ class ImportController extends BaseApiController
         $importer = \Craft::$container->get(FreeformImporter::class);
         $importer->import($dataset, $sse);
 
-        $sse->message('info', 'done...');
+        $sse->message('info', 'Done');
 
         $sse->message('exit', 'done');
     }

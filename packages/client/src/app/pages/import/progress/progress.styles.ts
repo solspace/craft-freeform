@@ -2,10 +2,20 @@ import { spacings } from '@ff-client/styles/variables';
 import styled, { keyframes } from 'styled-components';
 
 export const ProgressWrapper = styled.div`
-  //
+  margin-top: ${spacings.lg};
+  label {
+    font-size: 14px;
+  }
+
+  &.primary {
+    label {
+      font-weight: bold;
+    }
+  }
 `;
 
 type ProgressBarProps = {
+  $color: string;
   $value: number;
   $max: number;
   $showPercent?: boolean;
@@ -14,7 +24,7 @@ type ProgressBarProps = {
 const color = 'rgba(255,255,255,.15)';
 
 const animation = keyframes`
-  from { background-position: 40px 0; }
+  from { background-position: 30px 0; }
   to { background-position: 0 0; }
 `;
 
@@ -24,11 +34,10 @@ export const ProgressBar = styled.div<ProgressBarProps>`
   width: 100%;
   height: 12px;
 
-  padding-top: 12px;
-  margin: ${spacings.lg} 0;
+  padding-bottom: 0px;
 
   border: none;
-  border-radius: 5px;
+  border-radius: 3px;
   background: #e5ecf6;
 
   font-size: 12px;
@@ -44,8 +53,8 @@ export const ProgressBar = styled.div<ProgressBarProps>`
     display: block;
     width: ${({ $max, $value }) => `${($value / $max) * 100}%`};
 
-    border-radius: 5px;
-    background-color: #e12d39;
+    border-radius: 3px;
+    background-color: ${({ $color }) => $color};
     background-size: 30px 30px;
     background-image: linear-gradient(
       45deg,
@@ -65,18 +74,5 @@ export const ProgressBar = styled.div<ProgressBarProps>`
     &:before {
       animation: ${animation} 2s linear infinite;
     }
-  }
-
-  &:after {
-    content: '${({ $max, $value }) => `${Math.round(($value / $max) * 100)}%`}';
-    display: ${({ $showPercent }) => ($showPercent ? 'block' : 'none')};
-
-    position: absolute;
-    left: calc(${({ $max, $value }) => `${($value / $max) * 100}%`} - 30px);
-    top: 0;
-
-    line-height: 10px;
-    font-size: 10px;
-    color: #fff;
   }
 `;

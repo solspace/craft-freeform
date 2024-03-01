@@ -4,7 +4,13 @@ import styled from 'styled-components';
 const chunkWidth = 22;
 
 export const PreviewWrapper = styled.div`
-  //
+  &.disabled {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.3;
+
+    transition: opacity 0.2s ease-out;
+  }
 `;
 
 export const FileList = styled.div`

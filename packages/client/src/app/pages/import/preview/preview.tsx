@@ -1,4 +1,5 @@
 import React from 'react';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import type { FormImportData, ImportOptions } from '../import.types';
@@ -11,12 +12,18 @@ import { FileList, PreviewWrapper } from './preview.styles';
 type Props = {
   data?: FormImportData;
   options: ImportOptions;
+  disabled?: boolean;
   onUpdate: (options: ImportOptions) => void;
 };
 
-export const Preview: React.FC<Props> = ({ data, options, onUpdate }) => {
+export const Preview: React.FC<Props> = ({
+  data,
+  options,
+  disabled,
+  onUpdate,
+}) => {
   return (
-    <PreviewWrapper>
+    <PreviewWrapper className={classes(disabled && 'disabled')}>
       <FileList>
         <a
           onClick={() => {

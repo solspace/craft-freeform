@@ -18,7 +18,7 @@ class ExportService extends BaseService
 {
     public function getNavigation(): array
     {
-        return [
+        $navigation = [
             // ======= EXPORT =========
             ['heading' => 'Export'],
             [
@@ -29,13 +29,19 @@ class ExportService extends BaseService
                 'title' => Freeform::t('Notifications'),
                 'url' => 'freeform/export/notifications',
             ],
-
-            // ======= IMPORT =========
-            ['heading' => 'Import'],
-            [
-                'title' => Freeform::t('Import Express Forms'),
-                'url' => 'freeform/import/express-forms',
-            ],
         ];
+
+        // ======= IMPORT =========
+        $isInstalled = \Craft::$app->plugins->isPluginInstalled('express-forms');
+        $isEnabled = \Craft::$app->plugins->isPluginEnabled('express-forms');
+        if ($isInstalled && $isEnabled) {
+            $navigation[] = ['heading' => 'Import'];
+            $navigation[] = [
+                'title' => Freeform::t('Express Forms'),
+                'url' => 'freeform/import/express-forms',
+            ];
+        }
+
+        return $navigation;
     }
 }

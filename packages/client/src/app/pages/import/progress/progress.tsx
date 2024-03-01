@@ -4,9 +4,15 @@ import classes from '@ff-client/utils/classes';
 
 import { ProgressBar, ProgressWrapper } from './progress.styles';
 
+const color = {
+  primary: '#e12d39',
+  secondary: '#B0BEC5',
+};
+
 type Props = {
   show?: boolean;
   active?: boolean;
+  variant?: 'primary' | 'secondary';
   value: number;
   max: number;
   width?: number | string;
@@ -15,6 +21,7 @@ type Props = {
 export const Progress: React.FC<PropsWithChildren<Props>> = ({
   show,
   active,
+  variant = 'primary',
   value,
   max,
   width,
@@ -25,15 +32,15 @@ export const Progress: React.FC<PropsWithChildren<Props>> = ({
   }
 
   return (
-    <ProgressWrapper>
+    <ProgressWrapper className={classes(variant)}>
+      {children && <label>{children}</label>}
       <ProgressBar
         style={{ width }}
+        $color={color[variant]}
         $value={value}
         $max={max}
         className={classes(active && 'active')}
-      >
-        {children}
-      </ProgressBar>
+      />
     </ProgressWrapper>
   );
 };

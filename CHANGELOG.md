@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.1.0 - 2024-03-01
+
+### Added
+- Added a Calculation field type, which allows you to perform dynamic calculations based on user-input values within forms.
+- Added a migration from the Express Forms plugin. It will import forms and fields, submissions, and notification templates.
+- Added ability to set dynamic notifications using GraphQL.
+
+### Fixed
+- Fixed a bug where page buttons were not translatable.
+
 ## 5.0.16 - 2024-02-28
 
 ### Fixed

@@ -59,7 +59,7 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('notifications', Freeform::t('Notifications'), 'freeform/notifications');
         }
 
-        if ($isPro && $canAccessExportProfiles) {
+        if ($canAccessExportProfiles) {
             $event->addSubnavItem(
                 'export',
                 Freeform::t('Import / Export'),

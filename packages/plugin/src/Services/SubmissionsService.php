@@ -498,7 +498,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function purgeSubmissions(int $age = null): array
     {
-        if (null === $age || $age <= 0 || !Freeform::getInstance()->isPro()) {
+        if (!$this instanceof SpamSubmissionsService) {
+            if (!Freeform::getInstance()->isPro()) {
+                return [0, 0];
+            }
+        }
+
+        if (null === $age || $age <= 0) {
             return [0, 0];
         }
 

@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
@@ -24,7 +25,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
     iconPath: __DIR__.'/../Icons/confirm.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/confirmation.ejs',
 )]
-class ConfirmationField extends AbstractField implements ExtraFieldInterface, PlaceholderInterface, EncryptionInterface
+class ConfirmationField extends AbstractField implements ExtraFieldInterface, PlaceholderInterface, EncryptionInterface, NoEmailPresenceInterface
 {
     use EncryptionTrait;
     use PlaceholderTrait;

@@ -1,5 +1,51 @@
 # Solspace Freeform Changelog
 
+## 5.0.16 - 2024-02-28
+
+### Fixed
+- Fixed a bug where the Stripe payments field would not load correctly when logged out.
+
+## 5.0.15 - 2024-02-27
+
+### Changed
+- Updated all sample formatting templates to include complete Stripe appearance API customization.
+
+### Fixed
+- Fixed a bug where connecting to new integrations using OAuth 2.0 were not working due to the redirect URI being empty.
+
+## 5.0.14.1 - 2024-02-23
+
+### Fixed
+- Fixed some remaining issues related to the migration from Freeform 4.
+
+## 5.0.14 - 2024-02-23
+
+### Changed
+- Updated the reserved words list to make exceptions for `name`, `type`, and `username` as they are more likely to be used and don't appear to cause any issues.
+
+### Fixed
+- Fixed a bug where Confirm fields were present in email notifications.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working correctly.
+- Fixed a bug where forms would error when Freeform Date fields were mapping to Craft date fields (e.g. Post Date, Expiry Date, etc) in Element integrations.
+- Fixed a bug where setting a template override for the submission status was not working.
+
+## 5.0.13 - 2024-02-23
+
+### Added
+- Added a reserved word validator using Craft's reserved words to check against field handles.
+- Added the ability to map directly to the **Full Name** in the Craft User element integration.
+
+### Changed
+- Updated Confirm fields to no longer store data when targeting a Password field.
+
+### Fixed
+- Fixed a bug where creating new forms with special or foreign characters would cause the form not to be created due to an invalid form handle.
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+- Fixed a bug where editing existing users via the Craft User element integration in a Freeform form did not affect **First Name** and **Last Name** fields.
+- Fixed a bug where the Page Skipping feature for Conditional Rules was not working at all.
+- Fixed a bug where the Stripe Payments field was not working with the Tailwind sample formatting template (and potentially some custom templates).
+- Fixed a bug where some sample formatting templates showed unnecessary styling wrappers around Stripe Payments fields.
+
 ## 5.0.12 - 2024-02-19
 
 ### Added
@@ -283,6 +329,22 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.15.1 - 2024-03-01
+
+### Fixed
+- Fixed a bug where Automatic Spam Purge Craft queue jobs would fail when using a database prefix.
+
+## 4.1.15 - 2024-03-01
+
+### Added
+- Added support for Automatic Spam Purging in the **Lite** edition of Freeform.
+
+### Changed
+- Refactored the Submission Purge functionality to use the Craft queue.
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
 
 ## 4.1.14 - 2024-02-09
 
@@ -728,6 +790,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.35 - 2024-03-01
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
 
 ## 3.13.34 - 2024-02-09
 

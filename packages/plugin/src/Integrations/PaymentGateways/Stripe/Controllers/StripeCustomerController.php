@@ -9,7 +9,7 @@ use yii\web\Response;
 
 class StripeCustomerController extends BaseStripeController
 {
-    protected array|bool|int $allowAnonymous = ['callback'];
+    protected array|bool|int $allowAnonymous = true;
 
     public function __construct(
         $id,

@@ -2,37 +2,34 @@
 
 namespace Solspace\Freeform\Events\Freeform;
 
-use Solspace\Freeform\Events\ArrayableEvent;
+use yii\base\Event;
 
-class RegisterCpSubnavItemsEvent extends ArrayableEvent
+class RegisterCpSubnavItemsEvent extends Event
 {
-    /** @var array */
-    private $subnavItems;
-
-    /**
-     * CpNavEvent constructor.
-     */
-    public function __construct(array $subnavItems)
-    {
-        $this->subnavItems = $subnavItems;
-
+    public function __construct(
+        private array $nav,
+        private array $subNavItems,
+    ) {
         parent::__construct();
     }
 
-    public function fields(): array
+    public function addToNav(string $handle, $value): self
     {
-        return ['subnavItems'];
+        $this->nav[$handle] = $value;
+
+        return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function addSubnavItem(string $handle, string $label, string $url, string $afterHandle = null)
+    public function addSubnavItem(string $handle, string $label, string $url, string $afterHandle = null, ?array $extraOptions = null): self
     {
         $item = [
             'label' => $label,
             'url' => $url,
         ];
+
+        if (null !== $extraOptions) {
+            $item = array_merge($item, $extraOptions);
+        }
 
         if (null !== $afterHandle && isset($this->subnavItems[$afterHandle])) {
             $modifiedArray = [];
@@ -43,16 +40,21 @@ class RegisterCpSubnavItemsEvent extends ArrayableEvent
                 }
             }
 
-            $this->subnavItems = $modifiedArray;
+            $this->subNavItems = $modifiedArray;
         } else {
-            $this->subnavItems[$handle] = $item;
+            $this->subNavItems[$handle] = $item;
         }
 
         return $this;
     }
 
+    public function getNav(): array
+    {
+        return $this->nav;
+    }
+
     public function getSubnavItems(): array
     {
-        return $this->subnavItems;
+        return $this->subNavItems;
     }
 }

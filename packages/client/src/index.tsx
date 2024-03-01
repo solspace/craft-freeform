@@ -14,6 +14,9 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 
 import { Form, Forms } from './app/pages/forms';
+import { Import } from './app/pages/import/import';
+import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
+import { ImportFreeformData } from './app/pages/import/views/freeform-data/freeform-data';
 import { SurveyResults } from './app/pages/surveys/results/results';
 import { Welcome } from './app/pages/welcome/welcome';
 import { EscapeStackProvider } from './contexts/escape/escape.context';
@@ -55,6 +58,13 @@ root.render(
                   </Route>
                   <Route path="/surveys/:handle" element={<SurveyResults />} />
                   <Route path="welcome" element={<Welcome />} />
+                  <Route path="import" element={<Import />}>
+                    <Route path="data" element={<ImportFreeformData />} />
+                    <Route
+                      path="express-forms"
+                      element={<ImportExpressForms />}
+                    />
+                  </Route>
                 </Route>
               </Routes>
             </PortalProvider>

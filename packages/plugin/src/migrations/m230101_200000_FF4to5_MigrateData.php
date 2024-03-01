@@ -803,9 +803,10 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     {
         $schema = $this->db->getSchema();
         $tables = $schema->getTableSchemas();
+        $prefix = $this->db->tablePrefix;
 
         foreach ($tables as $table) {
-            if (!preg_match('/^freeform_submissions_.*_\d+$/', $table->name)) {
+            if (!preg_match("/{$prefix}(freeform_submissions_.*_(\\d+))$/", $table->name)) {
                 continue;
             }
 
@@ -817,7 +818,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
                 $fieldId = $matches[1];
 
-                $this->renameColumn('{{%'.$table->name.'}}', $column, 'old_'.$fieldId);
+                $this->renameColumn($table->name, $column, 'old_'.$fieldId);
             }
         }
 
@@ -833,10 +834,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $schema = $this->db->getSchema();
         $tables = $schema->getTableSchemas();
+        $prefix = \Craft::$app->db->tablePrefix;
 
         $table = null;
         foreach ($tables as $databaseTable) {
-            if (preg_match('/^freeform_submissions_.*_'.$formId.'$/', $databaseTable->name)) {
+            if (preg_match("/{$prefix}(freeform_submissions_.*_{$formId}+)$/", $databaseTable->name)) {
                 $table = $databaseTable;
 
                 break;
@@ -851,7 +853,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $oldColumnName = null;
         if (isset($props->id)) {
             foreach ($columns as $column) {
-                if (preg_match('/^old_'.$props->id.'$/', $column)) {
+                if (preg_match('/old_'.$props->id.'$/', $column)) {
                     $oldColumnName = $column;
 
                     break;
@@ -867,13 +869,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $newColumnName = $handle.'_'.$record->id;
 
-        $tableName = '{{%'.$table->name.'}}';
-
         if ($oldColumnName) {
-            $this->renameColumn($tableName, $oldColumnName, $newColumnName);
-            $this->alterColumn($tableName, $newColumnName, 'text');
+            $this->alterColumn($table->name, $oldColumnName, 'text');
+            $this->renameColumn($table->name, $oldColumnName, $newColumnName);
         } else {
-            $this->addColumn($tableName, $newColumnName, $this->text());
+            $this->addColumn($table->name, $newColumnName, $this->text());
         }
     }
 

@@ -91,7 +91,7 @@ class BehaviorSettings extends SettingsNamespace
         order: 1,
         options: SuccessBehaviorOptionsGenerator::class,
     )]
-    public string $successBehavior;
+    public string $successBehavior = self::SUCCESS_BEHAVIOR_RELOAD;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]

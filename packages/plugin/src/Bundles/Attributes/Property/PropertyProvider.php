@@ -47,7 +47,6 @@ class PropertyProvider
         array $properties,
         ?callable $valueUpdateCallback = null
     ): void {
-        $reflection = new \ReflectionClass($object);
         $editableProperties = $this->getEditableProperties($object);
 
         foreach ($properties as $key => $value) {
@@ -56,33 +55,38 @@ class PropertyProvider
                 $value = $editableProperty->transformer->transform($value);
             }
 
-            try {
-                $reflectionProperty = $reflection->getProperty($key);
-            } catch (\ReflectionException $e) {
-                continue;
-            }
-
             if ($valueUpdateCallback) {
                 $value = $valueUpdateCallback($value, $editableProperty);
             }
 
-            if (null === $value && !$reflectionProperty->getType()?->allowsNull()) {
-                continue;
-            }
+            $this->setObjectValue($object, $key, $value);
+        }
+    }
 
-            $accessible = $reflectionProperty->isPublic();
+    public function setObjectValue(object $object, string $key, mixed $value): void
+    {
+        try {
+            $reflectionProperty = new \ReflectionProperty($object, $key);
+        } catch (\ReflectionException) {
+            return;
+        }
 
-            $reflectionProperty->setAccessible(true);
+        if (null === $value && !$reflectionProperty->getType()?->allowsNull()) {
+            return;
+        }
 
-            if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
-                $value = null;
-            }
+        $accessible = $reflectionProperty->isPublic();
 
-            $reflectionProperty->setValue($object, $value);
+        $reflectionProperty->setAccessible(true);
 
-            if (!$accessible) {
-                $reflectionProperty->setAccessible(false);
-            }
+        if ('' === $value && $reflectionProperty->getType()?->allowsNull()) {
+            $value = null;
+        }
+
+        $reflectionProperty->setValue($object, $value);
+
+        if (!$accessible) {
+            $reflectionProperty->setAccessible(false);
         }
     }
 

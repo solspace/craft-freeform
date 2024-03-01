@@ -80,6 +80,14 @@ class IntegrationModel extends Model
         );
 
         $propertyProvider = \Craft::$container->get(PropertyProvider::class);
+        $properties = $propertyProvider->getEditableProperties($object);
+        foreach ($properties as $property) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY) && $property->valueGenerator) {
+                $value = $property->valueGenerator->generateValue(null);
+                $propertyProvider->setObjectValue($object, $property->handle, $value);
+            }
+        }
+
         $propertyProvider->setObjectProperties($object, $this->metadata, [$this, 'propertyUpdateCallback']);
 
         return $object;

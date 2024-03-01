@@ -7,6 +7,8 @@ use yii\web\Response;
 
 class StripeScriptsController extends BaseFilesProxyController
 {
+    protected array|bool|int $allowAnonymous = true;
+
     public function actionIndex(): Response
     {
         $scriptPath = \Craft::getAlias('@freeform-scripts/front-end/payments/stripe/elements.js');

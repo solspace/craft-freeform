@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -28,15 +29,16 @@ use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Models\FieldModel;
 use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -496,7 +498,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function purgeSubmissions(int $age = null): array
     {
-        if (null === $age || $age <= 0 || !Freeform::getInstance()->isPro()) {
+        if (!$this instanceof SpamSubmissionsService) {
+            if (!Freeform::getInstance()->isPro()) {
+                return [0, 0];
+            }
+        }
+
+        if (null === $age || $age <= 0) {
             return [0, 0];
         }
 
@@ -504,60 +512,34 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $date->setTimezone(new \DateTimeZone('UTC'));
 
         $deletedSubmissions = 0;
-        $ids = $this->findSubmissions()
-            ->select([Submission::TABLE.'.[[id]]'])
-            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
-            ->column()
-        ;
+        $deletedAssets = 0;
 
-        $query = $this->getFindQuery()
-            ->id($ids)
-            ->skipContent(true)
+        $query = $this
+            ->getFindQuery()
+            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
         ;
 
         $count = $query->count();
-        if (!$ids || !$count) {
+        if (!$count) {
             return [0, 0];
         }
 
-        $assetIds = [];
         foreach ($query->batch() as $results) {
-            $deletableIds = [];
+            $assetIds = [];
 
             /** @var Submission $submission */
             foreach ($results as $submission) {
-                $submission = $this->getSubmission($submission->getId());
-                $uploadFields = $submission->getForm()->getLayout()->getFields(FileUploadInterface::class);
-                foreach ($uploadFields as $uploadField) {
-                    $value = $submission->{$uploadField->getHandle()}->getValue();
-                    if ($value) {
-                        $assetIds = [...$assetIds, ...$value];
-                    }
-                }
+                $this->extractAssetsIds($submission, $assetIds);
 
-                $deletableIds[] = $submission->id;
+                \Craft::$app->elements->deleteElement($submission);
+                ++$deletedSubmissions;
             }
 
-            \Craft::$app->db
-                ->createCommand()
-                ->delete(Table::ELEMENTS, ['id' => $deletableIds])
-                ->execute();
-
-            $deletedSubmissions += \count($deletableIds);
-        }
-
-        $assetIds = array_unique($assetIds);
-
-        $deletedAssets = 0;
-        foreach ($assetIds as $assetId) {
-            if (is_numeric($assetId)) {
-                try {
-                    $asset = \Craft::$app->assets->getAssetById($assetId);
-                    if ($asset && \Craft::$app->elements->deleteElement($asset)) {
-                        ++$deletedAssets;
-                    }
-                } catch (\Exception $e) {
-                }
+            $assetIds = array_unique($assetIds);
+            $assets = Asset::find()->id($assetIds)->all();
+            foreach ($assets as $asset) {
+                \Craft::$app->elements->deleteElement($asset);
+                ++$deletedAssets;
             }
         }
 
@@ -584,17 +566,44 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         ;
     }
 
-    /**
-     * Checks if the default set status is valid
-     * If it isn't - gets the first one and sets that.
-     */
-    private function validateAndUpdateStatus(Submission $submission)
+    private function getUploadFieldIds(): array
     {
-        $statusService = Freeform::getInstance()->statuses;
-        $statusIds = $statusService->getAllStatusIds();
+        $fields = Freeform::getInstance()->fields->getAllFields();
 
-        if (!\in_array($submission->statusId, $statusIds, false)) {
-            $submission->statusId = reset($statusIds);
+        $uploadTypes = [
+            FileUploadField::getFieldType(),
+            FileDragAndDropField::getFieldType(),
+        ];
+
+        return array_values(
+            array_map(
+                fn (FieldModel $field) => $field->id,
+                array_filter(
+                    $fields,
+                    fn (FieldModel $field) => \in_array($field->type, $uploadTypes, true),
+                )
+            )
+        );
+    }
+
+    private function extractAssetsIds(Submission $submission, array &$assetIds): void
+    {
+        static $uploadFieldIds = null;
+
+        if (null === $uploadFieldIds) {
+            $uploadFieldIds = $this->getUploadFieldIds();
+        }
+
+        foreach ($uploadFieldIds as $fieldId) {
+            $field = $submission->{'field:'.$fieldId};
+            if (!$field) {
+                continue;
+            }
+
+            $value = $field->getValue();
+            if ($value && !\in_array($value, $assetIds)) {
+                $assetIds = array_merge($assetIds, $value);
+            }
         }
     }
 }

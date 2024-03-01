@@ -37,6 +37,13 @@ class SubmissionMutationResolver extends ElementMutationResolver
             ]);
         }
 
+        $properties = [];
+        if (!empty($arguments['formProperties'])) {
+            $properties = $arguments['formProperties'];
+        }
+
+        $form->registerContext($properties);
+
         $form->setGraphQLPosted(true);
         $form->setGraphQLArguments($arguments);
 
@@ -86,7 +93,6 @@ class SubmissionMutationResolver extends ElementMutationResolver
             throw new Error(json_encode($userErrors));
         }
 
-        $form->registerContext();
         $form->setFinished(true);
 
         $success = !$form->hasErrors() && empty($fieldErrors) && !$form->getActions();

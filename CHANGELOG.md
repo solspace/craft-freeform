@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.15.1 - 2024-03-01
+
+### Fixed
+- Fixed a bug where Automatic Spam Purge Craft queue jobs would fail when using a database prefix.
+
 ## 4.1.15 - 2024-03-01
 
 ### Added

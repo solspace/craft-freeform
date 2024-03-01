@@ -94,7 +94,7 @@ class GeneralSettings extends SettingsNamespace
         order: 5,
         options: FormattingTemplateOptions::class,
     )]
-    public ?string $formattingTemplate;
+    public ?string $formattingTemplate = null;
 
     #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(

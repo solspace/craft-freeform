@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\base\Event;
 use craft\db\Query;
+use craft\helpers\App;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\web\View;
@@ -245,6 +246,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function deleteById(int $formId): bool
     {
+        App::maxPowerCaptain();
         $record = $this->getFormById($formId);
         if (!$record) {
             return false;

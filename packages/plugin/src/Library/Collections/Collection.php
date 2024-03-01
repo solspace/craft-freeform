@@ -23,6 +23,8 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
      */
     public function add($item, mixed $key = null): self
     {
+        $this->validate($item);
+
         if (null !== $key) {
             $this->items[$key] = $item;
         } else {
@@ -30,6 +32,11 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
         }
 
         return $this;
+    }
+
+    public function filter(callable $callback): self
+    {
+        return new static(array_filter($this->items, $callback));
     }
 
     /**
@@ -74,6 +81,8 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
      */
     public function offsetSet(mixed $offset, $value): void
     {
+        $this->validate($value);
+
         $this->items[$offset] = $value;
     }
 
@@ -85,5 +94,32 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     public function count(): int
     {
         return \count($this->items);
+    }
+
+    protected static function supports(): array
+    {
+        return [];
+    }
+
+    private function validate(mixed $object): void
+    {
+        $implementations = $this->supports();
+        if (empty($implementations)) {
+            return;
+        }
+
+        foreach ($implementations as $implementation) {
+            if ($object instanceof $implementation) {
+                return;
+            }
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Invalid item type "%s". Valid implementations are: %s',
+                $object::class,
+                implode(', ', static::supports())
+            )
+        );
     }
 }

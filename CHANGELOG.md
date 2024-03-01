@@ -330,6 +330,22 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.15.1 - 2024-03-01
+
+### Fixed
+- Fixed a bug where Automatic Spam Purge Craft queue jobs would fail when using a database prefix.
+
+## 4.1.15 - 2024-03-01
+
+### Added
+- Added support for Automatic Spam Purging in the **Lite** edition of Freeform.
+
+### Changed
+- Refactored the Submission Purge functionality to use the Craft queue.
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+
 ## 4.1.14 - 2024-02-09
 
 ### Fixed
@@ -774,6 +790,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.35 - 2024-03-01
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
 
 ## 3.13.34 - 2024-02-09
 

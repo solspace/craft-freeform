@@ -7,6 +7,7 @@ use craft\gql\base\ElementMutationResolver;
 use craft\gql\base\Mutation;
 use craft\gql\base\MutationResolver;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\FormPropertiesInputsArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\HoneypotInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\SubmissionCaptchaInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
@@ -42,11 +43,13 @@ class SubmissionMutation extends Mutation
                 HoneypotInputArguments::setForm($form);
                 SubmissionCaptchaInputArguments::setForm($form);
 
+                $formPropertiesInputArguments = FormPropertiesInputsArguments::getArguments();
                 $csrfInputArguments = CsrfTokenInputArguments::getArguments();
                 $honeypotInputArguments = HoneypotInputArguments::getArguments();
                 $captchaInputArguments = SubmissionCaptchaInputArguments::getArguments();
 
                 $mutationArguments = array_merge(
+                    $formPropertiesInputArguments,
                     $csrfInputArguments,
                     $honeypotInputArguments,
                     $captchaInputArguments,

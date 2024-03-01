@@ -23,6 +23,7 @@ class FreeformClientBundle extends AbstractFreeformAssetBundle
     {
         return [
             'css/shared/fonts.css',
+            'https://kit.fontawesome.com/0e31cd79e9.css',
         ];
     }
 }

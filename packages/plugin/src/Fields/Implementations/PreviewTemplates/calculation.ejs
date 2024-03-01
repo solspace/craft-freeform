@@ -1,0 +1,15 @@
+<% if (!calculations) { %>
+    This Calculation field has not been configured yet.
+<% } else { %>
+    <%
+        const cleanedCalculations = calculations.replace(/field:/g, '');
+        const displayValue = defaultValue || cleanedCalculations;
+        const displayText = inputType === 'plainText' ? '(Visible)' : '(Hidden)';
+    %>
+
+    <% if (inputType === 'regularTextInput') { %>
+        <input type="text" value="<%= displayValue %>" />
+    <% } else { %>
+        <code><%= displayValue %></code> <%= displayText %>
+    <% } %>
+<% } %>

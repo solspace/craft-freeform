@@ -14,6 +14,7 @@ use Solspace\Freeform\Events\Fields\CompileButtonAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Form\Layout\Page;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Twig\Markup;
 use yii\base\Event;
@@ -268,7 +269,13 @@ class PageButtons
     {
         $attributes = $this->getSubmitRenderProps($customAttributes);
 
-        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getSubmitLabel()).'</button>');
+        return Template::raw(
+            '<button'.$attributes.'>'
+            .htmlspecialchars(
+                Freeform::t($this->getSubmitLabel())
+            )
+            .'</button>'
+        );
     }
 
     public function getBackRenderProps(array $customAttributes = []): Markup
@@ -288,7 +295,13 @@ class PageButtons
     {
         $attributes = $this->getBackRenderProps($customAttributes);
 
-        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getBackLabel()).'</button>');
+        return Template::raw(
+            '<button'.$attributes.'>'
+            .htmlspecialchars(
+                Freeform::t($this->getBackLabel())
+            )
+            .'</button>'
+        );
     }
 
     public function getSaveRenderProps(array $customAttributes = []): Markup
@@ -307,6 +320,12 @@ class PageButtons
     {
         $attributes = $this->getSaveRenderProps($customAttributes);
 
-        return Template::raw('<button'.$attributes.'>'.htmlspecialchars($this->getSaveLabel()).'</button>');
+        return Template::raw(
+            '<button'.$attributes.'>'
+            .htmlspecialchars(
+                Freeform::t($this->getSaveLabel())
+            )
+            .'</button>'
+        );
     }
 }

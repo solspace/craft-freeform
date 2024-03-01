@@ -8,6 +8,7 @@ import 'core-js/features/dom-collections/for-each';
 import events from '@lib/plugin/constants/event-types';
 import { SuccessBehavior } from '@lib/plugin/constants/form';
 import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
+import CalculationHandler from '@lib/plugin/handlers/fields/calculations';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
@@ -64,6 +65,7 @@ export default class Freeform {
     BackButtonHandler,
     RuleHandler,
     DatePickerHandler,
+    CalculationHandler,
     InputMaskHandler,
     SignatureHandler,
     TableHandler,

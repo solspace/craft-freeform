@@ -17,6 +17,7 @@ export enum PropertyType {
   Boolean = 'bool',
   Checkboxes = 'checkboxes',
   Color = 'color',
+  Calculation = 'calculation',
   ConditionalRules = 'conditionalRules',
   DateTime = 'dateTime',
   Field = 'field',
@@ -158,6 +159,12 @@ export type OptionPickerProperty = BaseProperty<
   PropertyType.OptionPicker
 >;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
+export type CalculationProperty = BaseProperty<
+  string,
+  PropertyType.Calculation
+> & {
+  availableFieldTypes: string[];
+};
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   dateFormat?: string;
   minDate?: string;
@@ -251,6 +258,7 @@ export type Property =
   | BooleanProperty
   | CheckboxesProperty
   | ColorProperty
+  | CalculationProperty
   | ConditionalRulesProperty
   | DateTimeProperty
   | DynamicSelectProperty

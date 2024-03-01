@@ -9,9 +9,6 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-/**
- * @mixin GeneralSettings
- */
 class Settings
 {
     private BehaviorSettings $behavior;
@@ -94,6 +91,7 @@ class Settings
         return $this->general;
     }
 
+    #[Ignore]
     private function getProperties(): array
     {
         $reflection = new \ReflectionClass($this);
@@ -108,11 +106,13 @@ class Settings
         return $properties;
     }
 
+    #[Ignore]
     private function getValue(\ReflectionProperty $property): mixed
     {
         return $this->accessor->getValue($this, $property->getName());
     }
 
+    #[Ignore]
     private function hasProperty(\ReflectionProperty $property, string $name): bool
     {
         $setting = $this->accessor->getValue($this, $property->getName());

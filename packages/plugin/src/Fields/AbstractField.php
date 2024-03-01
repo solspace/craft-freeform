@@ -291,7 +291,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->renderRaw($this->getErrorHtml());
     }
 
-    final public function canRender(): bool
+    public function canRender(): bool
     {
         return !$this instanceof NoRenderInterface;
     }

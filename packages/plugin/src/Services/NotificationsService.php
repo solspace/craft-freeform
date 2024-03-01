@@ -133,6 +133,15 @@ class NotificationsService extends BaseService
         return $notification;
     }
 
+    public function save(NotificationTemplateRecord $record): bool
+    {
+        if ($record->isFileBasedTemplate()) {
+            return $this->getFilesService()->save($record);
+        }
+
+        return $this->getDatabaseService()->save($record);
+    }
+
     public function create(string $name): NotificationTemplateRecord
     {
         $defaultStorage = $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault();

@@ -574,6 +574,14 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
+        if (FreeformFieldInterface::TYPE_CALCULATION === $typeName) {
+            $fieldDefinitions['calculations'] = [
+                'name' => 'calculations',
+                'type' => Type::string(),
+                'description' => 'Calculations logic',
+            ];
+        }
+
         return $fieldDefinitions;
     }
 

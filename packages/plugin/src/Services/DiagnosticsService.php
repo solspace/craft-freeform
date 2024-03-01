@@ -61,7 +61,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum Craft version Freeform supports is 4.0.0 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.8.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.9.0', '<'),
                         'Potential Craft Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),

@@ -11,9 +11,11 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsAttributesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\ButtonsInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\DynamicNotificationInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldRuleInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormPropertiesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\NotificationTemplateInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
@@ -78,6 +80,8 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = PageRuleInterface::class;
                 $event->types[] = FieldRuleInterface::class;
                 $event->types[] = RulesInterface::class;
+                $event->types[] = FormPropertiesInterface::class;
+                $event->types[] = DynamicNotificationInterface::class;
             }
         );
 

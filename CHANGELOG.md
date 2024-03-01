@@ -454,6 +454,11 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.35 - 2024-03-01
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+
 ## 3.13.34 - 2024-02-09
 
 ### Fixed

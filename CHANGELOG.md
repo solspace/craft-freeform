@@ -330,6 +330,11 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.15.1 - 2024-03-01
+
+### Fixed
+- Fixed a bug where Automatic Spam Purge Craft queue jobs would fail when using a database prefix.
+
 ## 4.1.15 - 2024-03-01
 
 ### Added

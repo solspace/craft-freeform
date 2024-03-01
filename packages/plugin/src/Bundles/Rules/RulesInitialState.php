@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
-use Solspace\Freeform\Events\Fields\FieldRenderEvent;
+use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
@@ -14,7 +14,7 @@ class RulesInitialState extends FeatureBundle
     ) {
         Event::on(
             FieldInterface::class,
-            FieldInterface::EVENT_RENDER_CONTAINER,
+            FieldInterface::EVENT_COMPILE_ATTRIBUTES,
             [$this, 'setInitialState']
         );
     }
@@ -24,7 +24,7 @@ class RulesInitialState extends FeatureBundle
         return 1050;
     }
 
-    public function setInitialState(FieldRenderEvent $event): void
+    public function setInitialState(CompileFieldAttributesEvent $event): void
     {
         $field = $event->getField();
         $form = $field->getForm();
@@ -34,10 +34,10 @@ class RulesInitialState extends FeatureBundle
             return;
         }
 
-        $field
+        $event
             ->getAttributes()
             ->getContainer()
-            ->set('data-hidden', '')
+            ->set('data-hidden', true)
             ->append('style', 'display: none;')
         ;
     }

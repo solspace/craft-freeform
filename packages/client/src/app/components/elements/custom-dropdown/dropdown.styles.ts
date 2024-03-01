@@ -99,6 +99,7 @@ export const DropdownRollout = styled(animated.div)`
   box-shadow: ${shadows.container};
 
   overflow: hidden;
+  z-index: 1000;
 `;
 
 export const CloseButton = styled.button`

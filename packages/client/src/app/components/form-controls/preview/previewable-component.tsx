@@ -44,6 +44,7 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
     },
     isEnabled: isEditing,
     refObject: editorRef,
+    excludeClassNames: ['tagify__dropdown', 'dropdown-rollout'],
   });
 
   useEscapeStack(() => setIsEditing(false), !!isEditing);

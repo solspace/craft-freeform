@@ -34,6 +34,7 @@ export const PropertyEditor: React.FC = () => {
       'main-tabs',
       'editable-content',
       'dropdown-rollout',
+      'tagify__dropdown',
     ],
   });
 

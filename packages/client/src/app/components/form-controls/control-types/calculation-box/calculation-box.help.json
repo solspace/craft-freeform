@@ -1,0 +1,137 @@
+{
+  "title": "Supported Operators Reference Guide",
+  "operators": [
+    {
+      "title": "Arithmetic",
+      "items": [
+        {
+          "name": "Addition",
+          "operator": "+"
+        },
+        {
+          "name": "Subtraction",
+          "operator": "-"
+        },
+        {
+          "name": "Multiplication",
+          "operator": "*"
+        },
+        {
+          "name": "Division",
+          "operator": "/"
+        }
+      ]
+    },
+    {
+      "title": "Array",
+      "items": [
+        {
+          "name": "Contains",
+          "operator": ".."
+        },
+        {
+          "name": "Does not contain",
+          "operator": "not in"
+        }
+      ]
+    },
+    {
+      "title": "Bitwise",
+      "items": [
+        {
+          "name": "AND",
+          "operator": "&"
+        },
+        {
+          "name": "OR",
+          "operator": "|"
+        },
+        {
+          "name": "XOR",
+          "operator": "^"
+        }
+      ]
+    },
+    {
+      "title": "Ternary",
+      "items": [
+        {
+          "name": "(a ? b : c)",
+          "operator": "?"
+        }
+      ]
+    },
+    {
+      "title": "String",
+      "items": [
+        {
+          "name": "Concatenation",
+          "operator": "~"
+        }
+      ]
+    },
+    {
+      "title": "Logical",
+      "items": [
+        {
+          "name": "Not",
+          "operator": "!, not"
+        },
+        {
+          "name": "And",
+          "operator": "&&, and"
+        },
+        {
+          "name": "Or",
+          "operator": "||, or"
+        }
+      ]
+    },
+    {
+      "title": "Numeric",
+      "items": [
+        {
+          "name": "Range",
+          "operator": ".."
+        }
+      ]
+    },
+    {
+      "title": "Comparison",
+      "items": [
+        {
+          "name": "Equal",
+          "operator": "=="
+        },
+        {
+          "name": "Identical",
+          "operator": "==="
+        },
+        {
+          "name": "Not equal",
+          "operator": "!="
+        },
+        {
+          "name": "Not identical",
+          "operator": "!=="
+        },
+        {
+          "name": "Less than",
+          "operator": "<"
+        },
+        {
+          "name": "Greater than",
+          "operator": ">"
+        },
+        {
+          "name": "Less than or equal to",
+          "operator": "<="
+        },
+        {
+          "name": "Greater than or equal to",
+          "operator": ">="
+        }
+      ]
+    }
+  ]
+}

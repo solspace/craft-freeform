@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.35 - 2024-03-01
+
+### Fixed
+- Fixed a bug where the _Fill Form Values from the GET Query String_ setting was not being respected.
+
 ## 3.13.34 - 2024-02-09
 
 ### Fixed

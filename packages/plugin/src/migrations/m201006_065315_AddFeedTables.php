@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m201006_065315_AddFeedTables migration.
  */
 class m201006_065315_AddFeedTables extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if (!$this->db->tableExists('{{%freeform_feeds}}')) {
             $this->createTable(
@@ -88,7 +88,7 @@ class m201006_065315_AddFeedTables extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $keys = $this->db->schema->getTableForeignKeys('{{%freeform_feed_messages}}');
         foreach ($keys as $key) {

@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Form\Types\Surveys\Controllers;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Records\SurveyPreferencesRecord;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Survey;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\SurveysBundle;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\NotFoundHttpException;
 
 class SurveyPreferencesController extends BaseApiController

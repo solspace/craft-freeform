@@ -3,8 +3,7 @@
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
 use craft\db\Query;
-use craft\helpers\StringHelper;
-use Solspace\Commons\Helpers\StringHelper as FreeformStringHelper;
+use craft\helpers\StringHelper as CraftStringHelper;
 use Solspace\ExpressForms\elements\Submission as XFSubmission;
 use Solspace\ExpressForms\ExpressForms;
 use Solspace\ExpressForms\records\FormRecord;
@@ -42,6 +41,7 @@ use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorG
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField as EmailFieldNotification;
@@ -289,7 +289,7 @@ class ExpressFormsExporter implements ExporterInterface
             $exported = new NotificationTemplate();
             $exported->originalId = $notification->fileName;
             $exported->name = $notification->name;
-            $exported->handle = StringHelper::toCamelCase($notification->name);
+            $exported->handle = CraftStringHelper::toCamelCase($notification->name);
             $exported->description = $notification->getDescription() ?? null;
 
             $exported->fromName = $notification->fromName ?? '{{ craft.app.projectConfig.get("email.fromName") }}';

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 use craft\db\Query;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m230824_111101_ChangeMailingListsToEmailMarketing migration.
@@ -23,8 +24,8 @@ class m230824_111101_ChangeMailingListsToEmailMarketing extends Migration
             ['mailingListId'],
             '{{%freeform_email_marketing_lists}}',
             ['id'],
-            'CASCADE',
-            'CASCADE'
+            ForeignKey::CASCADE,
+            ForeignKey::CASCADE
         );
 
         $mailingListIntegrations = (new Query())
@@ -67,8 +68,8 @@ class m230824_111101_ChangeMailingListsToEmailMarketing extends Migration
             ['mailingListId'],
             '{{%freeform_mailing_lists}}',
             ['id'],
-            'CASCADE',
-            'CASCADE'
+            ForeignKey::CASCADE,
+            ForeignKey::CASCADE
         );
 
         $mailingListIntegrations = (new Query())

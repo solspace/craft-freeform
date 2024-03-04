@@ -37,7 +37,7 @@ class FieldGenerator extends AbstractGenerator
         return 'The Freeform Form Field entity';
     }
 
-    public static function generateTypes($context = null): array
+    public static function generateTypes(mixed $context = null): array
     {
         $types = parent::generateTypes($context);
 

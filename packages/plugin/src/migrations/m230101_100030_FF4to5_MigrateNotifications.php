@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m230101_100030_FF4to5_MigrateNotifications extends Migration
 {
@@ -32,7 +33,7 @@ class m230101_100030_FF4to5_MigrateNotifications extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE',
+            ForeignKey::CASCADE,
         );
 
         return true;

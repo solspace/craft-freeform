@@ -14,7 +14,7 @@ class SendNotificationAction extends ElementAction
         return Freeform::t('Send Additional Notification');
     }
 
-    public function getTriggerHtml(): null|string
+    public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
 

@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Solspace\Freeform\Records\NotificationTemplateRecord;

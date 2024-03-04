@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use yii\db\Query;
 
 /**
@@ -13,7 +13,7 @@ class m180214_094247_AddUniqueTokenToSubmissionsAndForms extends Migration
 {
     public const TOKEN_LENGTH = 100;
 
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->addColumn('{{%freeform_forms}}', 'optInDataStorageTargetHash', $this->string(20)->null());
         $this->addColumn('{{%freeform_submissions}}', 'token', $this->string(self::TOKEN_LENGTH)->notNull());
@@ -35,7 +35,7 @@ class m180214_094247_AddUniqueTokenToSubmissionsAndForms extends Migration
         $this->createIndex('token_unq_idx', '{{%freeform_submissions}}', ['token'], true);
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropIndex('token_unq_idx', '{{%freeform_submissions}}');
 

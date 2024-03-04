@@ -17,7 +17,7 @@ class ExportCSVAction extends ElementAction
         return Freeform::t('Export to CSV');
     }
 
-    public function getTriggerHtml(): null|string
+    public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
 

@@ -6,7 +6,7 @@ use craft\db\Migration;
 
 class m210629_172132_AddDateIndexToLockTable extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if ($this->db->tableExists('{{%freeform_lock}}')) {
@@ -18,7 +18,7 @@ class m210629_172132_AddDateIndexToLockTable extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if ($this->db->tableExists('{{%freeform_lock}}')) {

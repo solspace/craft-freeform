@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Form\Security;
 
-use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use yii\base\Event;
 
 class FormSecret extends FeatureBundle

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m230101_100050_FF4to5_MigrateIntegrations extends Migration
 {
@@ -28,7 +29,7 @@ class m230101_100050_FF4to5_MigrateIntegrations extends Migration
             ['integrationId'],
             '{{%freeform_integrations}}',
             ['id'],
-            'CASCADE',
+            ForeignKey::CASCADE,
         );
 
         $this->addForeignKey(
@@ -37,7 +38,7 @@ class m230101_100050_FF4to5_MigrateIntegrations extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE',
+            ForeignKey::CASCADE,
         );
 
         $this->delete('{{%freeform_integrations}}');

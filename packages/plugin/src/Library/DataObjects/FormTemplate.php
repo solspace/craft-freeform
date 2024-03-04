@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 
 class FormTemplate implements \JsonSerializable
 {
@@ -49,7 +49,7 @@ class FormTemplate implements \JsonSerializable
         return $this->name;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
             'name' => $this->getName(),

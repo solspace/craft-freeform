@@ -2,15 +2,15 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
-use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Helpers\ComparisonHelper;
 
 class BlacklistedEmails extends AbstractCheck
 {
-    public function handleCheck(ValidationEvent $event)
+    public function handleCheck(ValidationEvent $event): void
     {
         $showErrorBelowFields = (bool) $this->getSettings()->showErrorsForBlockedEmails;
         $emails = $this->getSettings()->getBlockedEmails();

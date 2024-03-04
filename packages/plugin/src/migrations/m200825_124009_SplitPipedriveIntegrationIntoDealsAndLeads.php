@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m200825_124009_SplitPipedriveIntegrationIntoDealsAndLeads extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->update(
             '{{%freeform_integrations}}',
@@ -20,7 +20,7 @@ class m200825_124009_SplitPipedriveIntegrationIntoDealsAndLeads extends Migratio
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->update(
             '{{%freeform_integrations}}',

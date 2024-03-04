@@ -12,12 +12,12 @@
 
 namespace Solspace\Freeform\controllers;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Codepack\CodePack;
 use Solspace\Freeform\Library\Codepack\Exceptions\CodepackException;
 use Solspace\Freeform\Library\Codepack\Exceptions\FileObject\FileObjectException;
 use Solspace\Freeform\Library\Codepack\Exceptions\Manifest\ManifestNotPresentException;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use yii\base\InvalidParamException;
 use yii\web\ForbiddenHttpException;

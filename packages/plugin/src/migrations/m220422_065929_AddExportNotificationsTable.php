@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m220422_065929_AddExportNotificationsTable extends Migration
 {
@@ -34,7 +35,7 @@ class m220422_065929_AddExportNotificationsTable extends Migration
                 'profileId',
                 '{{%freeform_export_profiles}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
         }
 

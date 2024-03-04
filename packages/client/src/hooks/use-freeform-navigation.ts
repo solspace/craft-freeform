@@ -11,9 +11,15 @@ export const useFreeformNavigation = (): void => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    const link = document.querySelector(
-      `ul.subnav li a[href*="/freeform/forms"]`
+    // Craft 5
+    let link = document.querySelector(
+      `ul.nav-item__subnav li a[href*="/freeform/forms"]`
     );
+
+    if (!link) {
+      // Craft 4
+      link = document.querySelector(`ul.subnav li a[href*="/freeform/forms"]`);
+    }
 
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
@@ -29,10 +35,14 @@ export const useFreeformNavigation = (): void => {
       return false;
     };
 
-    link.addEventListener('click', onClick);
+    if (link) {
+      link.addEventListener('click', onClick);
+    }
 
     return () => {
-      link.removeEventListener('click', onClick);
+      if (link) {
+        link.removeEventListener('click', onClick);
+      }
     };
   });
 };

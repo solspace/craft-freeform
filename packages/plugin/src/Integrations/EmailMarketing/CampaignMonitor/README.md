@@ -43,6 +43,9 @@ Maps data to the following field types:
 2. Get the OAuth Client ID and Client Secret
     - Open up a new browser tab and go to the [Campaign Monitor website](https://campaignmonitor.com/) and log into your account.
     - At the top right corner, click on the profile icon and select **Integrations**.
+        - If you have multiple client accounts managed together, follow these steps instead:
+            - At the top right corner, click on the profile icon and select **Manage Clients**.
+            - Select the client account you wish to use, then click on the **Integrations** tab in the navigation.
     - On the next page, scroll to the very bottom and click on the **OAuth Registration** text link.
     - Fill out all of the fields for the app (all are mandatory).
     - Paste the value you copied from Freeform's **OAuth 2.0 Return URI** field into the Campaign Monitor **Redirect URL** field.

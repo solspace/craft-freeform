@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -26,8 +27,9 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\RenderSubmissionFieldEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Twig\Markup;
@@ -367,7 +369,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function purgeSubmissions(int $age = null): array
     {
-        if (null === $age || $age <= 0 || !Freeform::getInstance()->isPro()) {
+        if (!$this instanceof SpamSubmissionsService) {
+            if (!Freeform::getInstance()->isPro()) {
+                return [0, 0];
+            }
+        }
+
+        if (null === $age || $age <= 0) {
             return [0, 0];
         }
 
@@ -375,61 +383,34 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $date->setTimezone(new \DateTimeZone('UTC'));
 
         $deletedSubmissions = 0;
-        $ids = $this->findSubmissions()
-            ->select([Submission::TABLE.'.[[id]]'])
-            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
-            ->column()
-        ;
+        $deletedAssets = 0;
 
-        $query = $this->getFindQuery()
-            ->id($ids)
-            ->skipContent(true)
+        $query = $this
+            ->getFindQuery()
+            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
         ;
 
         $count = $query->count();
-        if (!$ids || !$count) {
+        if (!$count) {
             return [0, 0];
         }
 
-        $assetIds = [];
         foreach ($query->batch() as $results) {
-            $deletableIds = [];
+            $assetIds = [];
 
             /** @var Submission $submission */
             foreach ($results as $submission) {
-                $submission = $this->getSubmission($submission->getId());
-                $uploadFields = $submission->getForm()->getLayout()->getFields(FileUploadInterface::class);
-                foreach ($uploadFields as $uploadField) {
-                    $value = $submission->{$uploadField->getHandle()}->getValue();
-                    if ($value) {
-                        $assetIds = array_merge($assetIds, $value);
-                    }
-                }
+                $this->extractAssetsIds($submission, $assetIds);
 
-                $deletableIds[] = $submission->id;
+                \Craft::$app->elements->deleteElement($submission);
+                ++$deletedSubmissions;
             }
 
-            \Craft::$app->db
-                ->createCommand()
-                ->delete(Table::ELEMENTS, ['id' => $deletableIds])
-                ->execute()
-            ;
-
-            $deletedSubmissions += \count($deletableIds);
-        }
-
-        $assetIds = array_unique($assetIds);
-
-        $deletedAssets = 0;
-        foreach ($assetIds as $assetId) {
-            if (is_numeric($assetId)) {
-                try {
-                    $asset = \Craft::$app->assets->getAssetById($assetId);
-                    if ($asset && \Craft::$app->elements->deleteElement($asset)) {
-                        ++$deletedAssets;
-                    }
-                } catch (\Exception $e) {
-                }
+            $assetIds = array_unique($assetIds);
+            $assets = Asset::find()->id($assetIds)->all();
+            foreach ($assets as $asset) {
+                \Craft::$app->elements->deleteElement($asset);
+                ++$deletedAssets;
             }
         }
 
@@ -460,5 +441,39 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     private function markFormAsSubmitted(Form $form): void
     {
         \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY, $form->getId());
+    }
+
+    private function getUploadFieldIds(FormLayout $layout): array
+    {
+        $fieldIds = [];
+
+        $fields = $layout->getFields(FileUploadField::class)->getIterator();
+
+        foreach ($fields as $field) {
+            $fieldIds[] = $field->getId();
+        }
+
+        return $fieldIds;
+    }
+
+    private function extractAssetsIds(Submission $submission, array &$assetIds): void
+    {
+        static $uploadFieldIds = null;
+
+        if (null === $uploadFieldIds) {
+            $uploadFieldIds = $this->getUploadFieldIds($submission->getForm()->getLayout());
+        }
+
+        foreach ($uploadFieldIds as $fieldId) {
+            $field = $submission->{'field:'.$fieldId};
+            if (!$field) {
+                continue;
+            }
+
+            $value = $field->getValue();
+            if ($value && !\in_array($value, $assetIds)) {
+                $assetIds = array_merge($assetIds, $value);
+            }
+        }
     }
 }

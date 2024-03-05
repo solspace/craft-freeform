@@ -17,6 +17,7 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
+use craft\helpers\Db;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -387,13 +388,14 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $query = $this
             ->getFindQuery()
-            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
+            ->andWhere(
+                Db::parseDateParam(
+                    Db::rawTableShortName(Submission::TABLE.'.[[dateCreated]]'),
+                    $date,
+                    '<',
+                )
+            )
         ;
-
-        $count = $query->count();
-        if (!$count) {
-            return [0, 0];
-        }
 
         foreach ($query->batch() as $results) {
             $assetIds = [];

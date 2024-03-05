@@ -35,6 +35,22 @@ export const ConfigurableOptions: React.FC<Props> = ({
 
   return (
     <FlexColumn>
+      <FormComponent
+        property={{
+          type: PropertyType.String,
+          label: 'Empty Option',
+          handle: 'emptyOption',
+        }}
+        context={value}
+        value={value.emptyOption}
+        updateValue={(currentValue) => {
+          updateValue({
+            ...value,
+            emptyOption: currentValue as string,
+          });
+        }}
+      />
+
       <Control
         property={{
           type: PropertyType.Select,

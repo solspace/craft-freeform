@@ -9,12 +9,13 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
 {
     private ?OptionTypeProviderInterface $configuration = null;
 
+    private ?string $emptyOption;
     private string $typeClass;
-
     private array $properties;
 
     public function __construct(array $config = [], PropertyProvider $propertyProvider)
     {
+        $this->emptyOption = $config['emptyOption'] ?? null;
         $this->typeClass = $config['typeClass'] ?? '';
         $this->properties = $config['properties'] ?? [];
 
@@ -22,6 +23,11 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
             $this->configuration = new $this->typeClass();
             $propertyProvider->setObjectProperties($this->configuration, $this->properties);
         }
+    }
+
+    public function getEmptyOption(): ?string
+    {
+        return $this->emptyOption;
     }
 
     public function getTypeClass(): string
@@ -35,13 +41,19 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
             return new OptionCollection();
         }
 
-        return $this->configuration->generateOptions();
+        $collection = $this->configuration->generateOptions();
+        if ($this->emptyOption) {
+            $collection->add('', $this->emptyOption, 0);
+        }
+
+        return $collection;
     }
 
     public function toArray(): array
     {
         return [
             'source' => $this->getSource(),
+            'emptyOption' => $this->emptyOption,
             'typeClass' => $this->typeClass,
             'properties' => (object) $this->properties,
         ];

@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m220304_101448_ChangeAccessTokenColumnType extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if ($this->db->getIsPgsql()) {
             // Manually construct the SQL for Postgres
@@ -22,7 +22,7 @@ class m220304_101448_ChangeAccessTokenColumnType extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         if ($this->db->getIsPgsql()) {
             // Manually construct the SQL for Postgres

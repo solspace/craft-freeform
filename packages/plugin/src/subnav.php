@@ -1,7 +1,7 @@
 <?php
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 
 $navItems = [];
 

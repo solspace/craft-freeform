@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m210609_183655_AddContextToUnfinalizedFiles extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_unfinalized_files}}', 'formToken')) {
@@ -35,7 +35,7 @@ class m210609_183655_AddContextToUnfinalizedFiles extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if ($this->db->columnExists('{{%freeform_unfinalized_files}}', 'contextId')) {

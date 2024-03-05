@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Single\JavascriptTest\EventListeners;
 
-use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
@@ -14,6 +13,7 @@ use Solspace\Freeform\Integrations\Single\JavascriptTest\JavascriptTest;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;

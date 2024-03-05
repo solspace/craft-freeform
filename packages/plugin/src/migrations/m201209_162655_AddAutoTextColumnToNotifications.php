@@ -6,7 +6,7 @@ use craft\db\Migration;
 
 class m201209_162655_AddAutoTextColumnToNotifications extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_notifications}}', 'autoText')) {
@@ -24,7 +24,7 @@ class m201209_162655_AddAutoTextColumnToNotifications extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if ($this->db->columnExists('{{%freeform_notifications}}', 'autoText')) {

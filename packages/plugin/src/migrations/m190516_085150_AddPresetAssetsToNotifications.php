@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m190516_085150_AddPresetAssetsToNotifications extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->addColumn(
             '{{%freeform_notifications}}',
@@ -20,7 +20,7 @@ class m190516_085150_AddPresetAssetsToNotifications extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropColumn('{{%freeform_notifications}}', 'presetAssets');
 

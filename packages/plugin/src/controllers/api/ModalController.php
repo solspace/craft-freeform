@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\web\Response;
 
 class ModalController extends BaseController

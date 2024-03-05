@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m210527_071651_AddDbSessionStorage migration.
  */
 class m210527_071651_AddDbSessionStorage extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if (!$this->db->tableExists('{{%freeform_session_context}}')) {
             $this->createTable(
@@ -44,7 +44,7 @@ class m210527_071651_AddDbSessionStorage extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $keys = $this->db->schema->getTableForeignKeys('{{%freeform_session_context}}');
         foreach ($keys as $key) {

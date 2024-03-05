@@ -237,7 +237,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return new FileUploadResponse(null, $errors);
     }
 
-    public function extractBase64String(array $fileUpload): null|array
+    public function extractBase64String(array $fileUpload): ?array
     {
         $fileDataString = ArrayHelper::remove($fileUpload, 'fileData');
 

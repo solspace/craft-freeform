@@ -13,11 +13,10 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;

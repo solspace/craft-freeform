@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m200203_180318_AddSpamReasonTable migration.
@@ -12,7 +12,7 @@ class m200203_180318_AddSpamReasonTable extends Migration
 {
     public const TARGET_TABLE = '{{%freeform_spam_reason}}';
 
-    public function safeUp()
+    public function safeUp(): bool
     {
         if (!$this->db->tableExists(self::TARGET_TABLE)) {
             $this->createTable(
@@ -42,7 +42,7 @@ class m200203_180318_AddSpamReasonTable extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $keys = $this->db->schema->getTableForeignKeys(self::TARGET_TABLE);
         foreach ($keys as $key) {

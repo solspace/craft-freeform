@@ -2,116 +2,74 @@
 
 namespace Solspace\Freeform\Library\Configuration;
 
-use Solspace\Commons\Configurations\BaseConfiguration;
-
 class ExternalOptionsConfiguration extends BaseConfiguration
 {
-    /** @var int */
-    protected $siteId;
+    protected int $siteId;
 
-    /** @var string */
-    protected $labelField;
+    protected string $labelField;
 
-    /** @var string */
-    protected $valueField;
+    protected string $valueField;
 
-    /** @var int */
-    protected $start;
+    protected int $start;
 
-    /** @var int */
-    protected $end;
+    protected int $end;
 
-    /** @var string */
-    protected $listType;
+    protected string $listType;
 
-    /** @var string */
-    protected $valueType;
+    protected string $valueType;
 
-    /** @var string */
-    protected $sort;
+    protected string $sort;
 
-    /** @var string */
-    protected $orderBy;
+    protected string $orderBy;
 
-    /** @var string */
-    protected $emptyOption;
+    protected string $emptyOption;
 
-    /**
-     * @return null|int
-     */
-    public function getSiteId()
+    public function getSiteId(): ?int
     {
         return $this->castToInt($this->siteId);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getLabelField()
+    public function getLabelField(): ?string
     {
         return $this->castToString($this->labelField);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getValueField()
+    public function getValueField(): ?string
     {
         return $this->castToString($this->valueField);
     }
 
-    /**
-     * @return null|int
-     */
-    public function getStart()
+    public function getStart(): ?int
     {
         return $this->castToInt($this->start);
     }
 
-    /**
-     * @return null|int
-     */
-    public function getEnd()
+    public function getEnd(): ?int
     {
         return $this->castToInt($this->end);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getListType()
+    public function getListType(): ?string
     {
         return $this->castToString($this->listType);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getValueType()
+    public function getValueType(): ?string
     {
         return $this->castToString($this->valueType);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getSort()
+    public function getSort(): ?string
     {
         return $this->sort;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getOrderBy()
+    public function getOrderBy(): ?string
     {
         return $this->orderBy;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getEmptyOption()
+    public function getEmptyOption(): ?string
     {
         return $this->castToString($this->emptyOption);
     }

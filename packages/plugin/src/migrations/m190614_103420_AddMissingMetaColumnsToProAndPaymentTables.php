@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m190614_103420_AddMissingMetaColumnsToProAndPaymentTables extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $tables = [
             'freeform_export_profiles',
@@ -39,7 +39,7 @@ class m190614_103420_AddMissingMetaColumnsToProAndPaymentTables extends Migratio
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190614_103420_AddMissingMetaColumnsToPaymentTables cannot be reverted.\n";
 

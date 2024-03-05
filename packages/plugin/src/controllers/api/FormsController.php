@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Persistence\Duplication\FormDuplicator;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FormRecord;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -110,7 +110,7 @@ class FormsController extends BaseApiController
 
         $this->response->statusCode = $event->getStatus() ?? 201;
 
-        return $event->getResponseData();
+        return null;
     }
 
     protected function put(int|string $id = null): null|array|object
@@ -125,10 +125,10 @@ class FormsController extends BaseApiController
 
         $this->response->statusCode = $event->getStatus() ?? 204;
 
-        return $event->getResponseData();
+        return null;
     }
 
-    protected function delete(int $id): null|bool
+    protected function delete(int $id): ?bool
     {
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
 

@@ -13,11 +13,11 @@
 namespace Solspace\Freeform\controllers;
 
 use craft\db\Table;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\FreeformConfig;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
 use yii\db\Query;

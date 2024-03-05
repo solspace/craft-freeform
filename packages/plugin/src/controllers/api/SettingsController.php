@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\controllers\api;
 
 use craft\web\Request;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Settings;
 use yii\web\Response;
 

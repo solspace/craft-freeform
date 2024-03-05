@@ -124,7 +124,7 @@ class FavoritesController extends BaseApiController
         return null;
     }
 
-    protected function delete(int $id): null|bool
+    protected function delete(int $id): ?bool
     {
         $record = FavoriteFieldRecord::findOne(['id' => $id]);
         if (!$record) {

@@ -12,13 +12,13 @@
 
 namespace Solspace\Freeform\Services;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;

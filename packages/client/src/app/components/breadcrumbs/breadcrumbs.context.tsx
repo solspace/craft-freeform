@@ -80,9 +80,9 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
       {children}
       {createPortal(
         <nav aria-label="Breadcrumbs">
-          <ul className="breadcrumb-list">
+          <ul id="crumb-list" className="breadcrumb-list">
             {stack.map(({ label, url }, i) => (
-              <li key={i}>
+              <li key={i} className="crumb">
                 <Link to={url}>{label}</Link>
               </li>
             ))}

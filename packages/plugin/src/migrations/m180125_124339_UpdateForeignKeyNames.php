@@ -3,13 +3,11 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m180125_124339_UpdateForeignKeyNames extends Migration
 {
-    /**
-     * @return bool|void
-     */
-    public function safeUp()
+    public function safeUp(): void
     {
         try {
             $this->dropForeignKey('crm_fields_integrationId', '{{%freeform_crm_fields}}');
@@ -25,7 +23,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'freeform_mailing_list_fields_mailingListId_fk',
@@ -33,7 +31,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'mailingListId',
                 '{{%freeform_mailing_lists}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'freeform_mailing_lists_integrationId_fk',
@@ -41,7 +39,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'freeform_submissions_id_fk',
@@ -49,7 +47,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'id',
                 '{{%elements}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'freeform_submissions_formId_fk',
@@ -57,7 +55,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'formId',
                 '{{%freeform_forms}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'freeform_submissions_statusId_fk',
@@ -65,16 +63,13 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'statusId',
                 '{{%freeform_statuses}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
         } catch (\Exception $e) {
         }
     }
 
-    /**
-     * @return bool|void
-     */
-    public function safeDown()
+    public function safeDown(): void
     {
         try {
             $this->dropForeignKey('freeform_crm_fields_integrationId_fk', '{{%freeform_crm_fields}}');
@@ -90,7 +85,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'mailing_list_fields_mailingListId',
@@ -98,7 +93,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'mailingListId',
                 '{{%freeform_mailing_lists}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'mailing_lists_integrationId',
@@ -106,7 +101,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'submissions_id_fk',
@@ -114,7 +109,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'id',
                 '{{%elements}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'submissions_formId_fk',
@@ -122,7 +117,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'formId',
                 '{{%freeform_forms}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
             $this->addForeignKey(
                 'submissions_statusId_fk',
@@ -130,7 +125,7 @@ class m180125_124339_UpdateForeignKeyNames extends Migration
                 'statusId',
                 '{{%freeform_statuses}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
         } catch (\Exception $e) {
         }

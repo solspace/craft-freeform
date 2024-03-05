@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m190618_142759_AddFixedForeignKeys migration.
  */
 class m190812_125059_AddNotesTable extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->createTable(
             '{{%freeform_submission_notes}}',
@@ -36,7 +36,7 @@ class m190812_125059_AddNotesTable extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropTableIfExists('{{%freeform_submission_notes}}');
 

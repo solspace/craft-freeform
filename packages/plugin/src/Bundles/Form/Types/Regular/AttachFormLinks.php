@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Bundles\Form\Types\Regular;
 
 use craft\helpers\UrlHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\base\Event;
 
 class AttachFormLinks extends FeatureBundle

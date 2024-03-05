@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\controllers\notifications;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use yii\web\Response;

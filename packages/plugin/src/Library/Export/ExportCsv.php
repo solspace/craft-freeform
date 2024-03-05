@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Library\Export;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 
 class ExportCsv extends AbstractExport
 {

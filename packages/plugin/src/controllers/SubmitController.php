@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\controllers;
 
-use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
@@ -20,6 +19,7 @@ use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\SubmitResponseEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 use yii\filters\Cors;

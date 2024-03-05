@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
 use craft\helpers\App;
-use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
 use yii\web\Response;
 

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Fields;
 
 use craft\helpers\Template;
 use GraphQL\Type\Definition\Type;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -36,6 +35,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;

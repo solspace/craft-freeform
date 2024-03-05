@@ -9,14 +9,14 @@ use craft\db\Migration;
  */
 class m190604_125112_AddFormLimitSubmissionProperty extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->addColumn('{{%freeform_forms}}', 'limitFormSubmissions', $this->string(20)->null());
 
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropColumn('{{%freeform_forms}}', 'limitFormSubmissions');
 

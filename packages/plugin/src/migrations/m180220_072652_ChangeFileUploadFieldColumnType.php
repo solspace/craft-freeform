@@ -11,7 +11,7 @@ use Solspace\Freeform\Elements\Submission;
  */
 class m180220_072652_ChangeFileUploadFieldColumnType extends Migration
 {
-    public function safeUp()
+    public function safeUp(): void
     {
         $ids = (new Query())
             ->select(['id'])
@@ -26,7 +26,7 @@ class m180220_072652_ChangeFileUploadFieldColumnType extends Migration
         }
     }
 
-    public function safeDown()
+    public function safeDown(): void
     {
         $ids = (new Query())
             ->select(['id'])

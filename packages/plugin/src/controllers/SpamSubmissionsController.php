@@ -12,10 +12,10 @@
 
 namespace Solspace\Freeform\controllers;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\web\Response;
 

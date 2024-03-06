@@ -38,7 +38,7 @@ export const ConfigurableOptions: React.FC<Props> = ({
       <FormComponent
         property={{
           type: PropertyType.String,
-          label: 'Empty Option',
+          label: 'Empty Option Label (optional)',
           handle: 'emptyOption',
         }}
         context={value}

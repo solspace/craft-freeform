@@ -20,6 +20,7 @@ type FieldOptions = (
 
 export const useFieldOptions: FieldOptions = (field, type) => {
   let optionsConfiguration: OptionsConfiguration | undefined;
+  let emptyOption: string | undefined;
 
   if (type?.type === Type.OpinionScale) {
     optionsConfiguration = {
@@ -37,7 +38,12 @@ export const useFieldOptions: FieldOptions = (field, type) => {
       );
 
       if (optionsProperty) {
-        optionsConfiguration = field?.properties[optionsProperty.handle];
+        emptyOption = field?.properties[optionsProperty.handle]?.emptyOption;
+
+        optionsConfiguration = {
+          ...field?.properties[optionsProperty.handle],
+          emptyOption: undefined,
+        };
       }
     }
   }
@@ -77,9 +83,13 @@ export const useFieldOptions: FieldOptions = (field, type) => {
   const isFetchingAsync =
     !!optionsConfiguration && !isCustomOptions && isFetching;
 
-  const options = isCustomOptions
+  let options = isCustomOptions
     ? (optionsConfiguration as CustomOptionsConfiguration).options
     : data || [];
+
+  if (emptyOption) {
+    options = [{ label: emptyOption, value: '' }, ...options];
+  }
 
   return [options, isFetchingAsync];
 };

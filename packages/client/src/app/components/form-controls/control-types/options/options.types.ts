@@ -42,6 +42,7 @@ type BaseOptions = {
 
 export type ConfigurableOptionsConfiguration = BaseOptions & {
   source: Source.Elements | Source.Predefined;
+  emptyOption?: string;
   typeClass: string;
   properties: GenericValue;
 };

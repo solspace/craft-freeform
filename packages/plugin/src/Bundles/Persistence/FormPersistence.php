@@ -76,8 +76,9 @@ class FormPersistence extends FeatureBundle
         $record->name = $payload->settings?->general?->name ?? null;
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
-        $record->metadata = $this->getValidatedMetadata($payload, $event);
-        $record->type = $record->metadata['general']->type ?? Regular::class;
+        $metadata = $this->getValidatedMetadata($payload, $event);
+        $record->metadata = $metadata;
+        $record->type = $metadata['general']->type ?? Regular::class;
 
         $user = \Craft::$app->getUser()->getIdentity();
         $record->updatedByUserId = $user->id;

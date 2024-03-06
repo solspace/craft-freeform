@@ -1,5 +1,23 @@
 # Solspace Freeform Changelog
 
+## 5.1.1 - 2024-03-06
+
+### Added
+- Added compatibility with Craft 5 beta (in addition to Craft 4.x).
+- Added back support for an optional Empty Option Label for Dropdown fields that are populated by Elements or Predefined options.
+- Added support for Automatic Spam Purging in the **Lite** edition of Freeform.
+
+### Changed
+- Refactored the Submission Purge functionality to use the Craft queue.
+- Updated the Stripe dynamic amount field setting to accept Calculation fields.
+
+### Fixed
+- Fixed a bug where the default Status set inside the builder was not being respected.
+- Fixed a bug where only the first File Upload field would work if using multiple File Upload fields in the form.
+- Fixed a bug where the Freeform 4 to 5 migration was setting the Success Behavior setting to _Reload_ for all forms instead of matching what was set in Freeform 4.
+- Fixed a bug where converting a field with Array data to a different field type without (e.g. _Checkboxes_ to _Dropdown_) would trigger an error.
+- Fixed a bug where the Calculation field was not being added to the Special field group on migration.
+
 ## 5.1.0 - 2024-03-01
 
 ### Added

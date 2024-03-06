@@ -100,6 +100,7 @@ class BehaviorSettings extends SettingsNamespace
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
         order: 2,
+        emptyOption: 'Choose a template',
         options: SuccessTemplateOptions::class,
     )]
     public ?string $successTemplate;

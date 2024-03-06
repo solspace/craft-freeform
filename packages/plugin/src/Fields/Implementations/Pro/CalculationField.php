@@ -106,7 +106,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         if (self::INPUT_TYPE_PLAIN === $this->inputType) {
             $output = '<div class="freeform-calculation-wrapper">';
             $output .= '<input'.$attributes.' />';
-            $output .= '<p id="freeform-calculation-plain-field">'.$this->getValue().'</p>';
+            $output .= '<p class="freeform-calculation-plain-field">'.$this->getValue().'</p>';
             $output .= '</div>';
 
             return $output;

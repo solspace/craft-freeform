@@ -64,7 +64,7 @@ class Calculation implements FreeformHandler {
         }
 
         const wrapper = picker.parentElement;
-        const pTag = wrapper.querySelector('#freeform-calculation-plain-field');
+        const pTag = wrapper.querySelector('.freeform-calculation-plain-field');
 
         if (!pTag) {
           return;

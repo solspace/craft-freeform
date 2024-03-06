@@ -10,7 +10,7 @@ use craft\db\Query;
  */
 class m201014_161213_AddFormSortOrder extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_forms}}', 'order')) {
@@ -37,7 +37,7 @@ class m201014_161213_AddFormSortOrder extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_forms}}', 'order')) {

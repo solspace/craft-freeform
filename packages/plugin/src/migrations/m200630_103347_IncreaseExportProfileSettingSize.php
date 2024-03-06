@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m200630_103347_IncreaseExportProfileSettingSize extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             $this->alterColumn(
@@ -23,7 +23,7 @@ class m200630_103347_IncreaseExportProfileSettingSize extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             $this->alterColumn(

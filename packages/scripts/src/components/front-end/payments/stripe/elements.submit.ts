@@ -2,6 +2,7 @@ import events from '@lib/plugin/constants/event-types';
 import type { FreeformEvent } from 'types/events';
 
 import { initStripe } from './elements.init';
+import { selectHiddenContainers, selectVisibleContainers } from './elements.selectors';
 import type { StripeFunctionConstructorProps } from './elements.types';
 
 let paymentsProcessed = false;
@@ -11,11 +12,8 @@ export const loadStripeContainers = (props: StripeFunctionConstructorProps) => a
 
   paymentsProcessed = false;
 
-  let containers = form.querySelectorAll<HTMLDivElement>('[data-field-type="stripe"]:not([data-hidden])');
-  containers.forEach(initStripe(props));
-
-  containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe[data-hidden]');
-  containers.forEach((container) => {
+  selectVisibleContainers(form).forEach(initStripe(props));
+  selectHiddenContainers(form).forEach((container) => {
     container.addEventListener(events.rules.applied, () => {
       initStripe(props)(container);
     });
@@ -29,7 +27,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
   const { elementMap, stripe, form } = props;
 
-  const containers = form.querySelectorAll<HTMLDivElement>('.freeform-fieldtype-stripe:not([data-hidden])');
+  const containers = selectVisibleContainers(form);
   containers.forEach(async (container) => {
     const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
     const {

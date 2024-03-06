@@ -5,6 +5,7 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m220330_111857_SplitSubmissionsTable extends Migration
 {
@@ -121,7 +122,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             $this->addPrimaryKey('PK', $tableName, ['id']);
         }
 
-        $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', 'CASCADE');
+        $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', ForeignKey::CASCADE);
 
         return $tableName;
     }

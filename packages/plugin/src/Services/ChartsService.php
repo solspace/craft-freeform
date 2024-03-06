@@ -6,13 +6,13 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Db;
-use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Charts\LinearChartData;
 use Solspace\Freeform\Library\Charts\LinearItem;
 use Solspace\Freeform\Library\Charts\RadialChartData;
+use Solspace\Freeform\Library\Helpers\ColorHelper;
 
 class ChartsService extends BaseService
 {

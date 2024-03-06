@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m180410_131206_CreateIntegrationsQueue migration.
  */
 class m180410_131206_CreateIntegrationsQueue extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->dropTableIfExists('freeform_integrations_queue');
         $this->createTable('{{%freeform_integrations_queue}}', [
@@ -36,7 +36,7 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->dropTable('{{%freeform_integrations_queue}}');
 

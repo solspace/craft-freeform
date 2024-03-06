@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m180508_095131_CreatePaymentGatewayFieldsTable migration.
  */
 class m180508_095131_CreatePaymentGatewayFieldsTable extends Migration
 {
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->createTable('{{%freeform_payment_gateway_fields}}', [
             'id' => $this->primaryKey(),
@@ -33,7 +33,7 @@ class m180508_095131_CreatePaymentGatewayFieldsTable extends Migration
         );
     }
 
-    public function safeDown()
+    public function safeDown(): void
     {
         $this->dropTable('{{%freeform_payment_gateway_fields}}');
     }

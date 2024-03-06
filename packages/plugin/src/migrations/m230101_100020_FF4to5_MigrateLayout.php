@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m230101_100020_FF4to5_MigrateLayout extends Migration
 {
@@ -26,7 +27,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // --------------------------------------------------------------
@@ -53,7 +54,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
         $this->addForeignKey(
             null,
@@ -61,7 +62,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['layoutId'],
             '{{%freeform_forms_layouts}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // --------------------------------------------------------------
@@ -86,7 +87,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
         $this->addForeignKey(
             null,
@@ -94,7 +95,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['layoutId'],
             '{{%freeform_forms_layouts}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // --------------------------------------------------------------
@@ -121,7 +122,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['formId'],
             '{{%freeform_forms}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
         $this->addForeignKey(
             null,
@@ -129,7 +130,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['rowId'],
             '{{%freeform_forms_rows}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // --------------------------------------------------------------
@@ -154,7 +155,7 @@ class m230101_100020_FF4to5_MigrateLayout extends Migration
             ['userId'],
             '{{%users}}',
             ['id'],
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         return true;

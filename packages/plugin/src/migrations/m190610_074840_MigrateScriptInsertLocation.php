@@ -10,7 +10,7 @@ use Solspace\Freeform\Models\Settings;
  */
 class m190610_074840_MigrateScriptInsertLocation extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             return true;
@@ -42,7 +42,7 @@ class m190610_074840_MigrateScriptInsertLocation extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190610_074840_MigrateScriptInsertLocation cannot be reverted.\n";
 

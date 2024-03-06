@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\ReflectionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 

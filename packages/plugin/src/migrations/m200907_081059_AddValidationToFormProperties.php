@@ -10,7 +10,7 @@ use craft\db\Query;
  */
 class m200907_081059_AddValidationToFormProperties extends Migration
 {
-    public function safeUp()
+    public function safeUp(): void
     {
         $forms = (new Query())
             ->select(['id', 'layoutJson'])
@@ -40,7 +40,7 @@ class m200907_081059_AddValidationToFormProperties extends Migration
         }
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m200907_081059_AddValidationsToFormProperties cannot be reverted.\n";
 

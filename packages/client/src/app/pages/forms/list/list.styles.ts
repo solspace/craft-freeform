@@ -21,3 +21,8 @@ export const Title = styled.h1`
   font-weight: 700;
   line-height: 34px;
 `;
+
+export const ContentContainer = styled.div`
+  width: 100%;
+  max-width: 100%;
+`;

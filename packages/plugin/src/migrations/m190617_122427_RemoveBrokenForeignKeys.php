@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m190617_122427_RemoveBrokenForeignKeys extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $schema = $this->db->schema;
 
@@ -64,7 +64,7 @@ class m190617_122427_RemoveBrokenForeignKeys extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190617_122427_FixIncorrectForeignKeyNameOnExportSettings cannot be reverted.\n";
 

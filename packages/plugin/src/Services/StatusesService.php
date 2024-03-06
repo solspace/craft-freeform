@@ -13,11 +13,11 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Statuses\DeleteEvent;
 use Solspace\Freeform\Events\Statuses\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\StatusHandlerInterface;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\StatusRecord;
 

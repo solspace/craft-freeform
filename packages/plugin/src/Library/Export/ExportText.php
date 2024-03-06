@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Export;
 
-use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 
 class ExportText extends AbstractExport
 {

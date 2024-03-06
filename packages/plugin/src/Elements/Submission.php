@@ -13,9 +13,6 @@ use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
 use LitEmoji\LitEmoji;
-use Solspace\Commons\Helpers\CryptoHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
@@ -35,7 +32,10 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -667,6 +667,7 @@ class Submission extends Element
         return $actions;
     }
 
+    // Craft 4
     protected function tableAttributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
@@ -718,6 +719,60 @@ class Submission extends Element
         }
 
         return parent::tableAttributeHtml($attribute);
+    }
+
+    // Craft 5
+    protected function attributeHtml(string $attribute): string
+    {
+        if ('status' === $attribute) {
+            return $this->getStatusModel()->name;
+        }
+
+        if ('userId' === $attribute) {
+            $user = $this->getAuthor();
+
+            return $user ? \Craft::$app->view->renderTemplate('_elements/element', ['element' => $user]) : '';
+        }
+
+        if ('spamReasons' === $attribute) {
+            $spamReasons = $this->getSpamReasons();
+            if (empty($spamReasons)) {
+                return '';
+            }
+
+            $reasons = [];
+            foreach ($spamReasons as $reason) {
+                $reasons[] = $reason->getType();
+            }
+
+            $translatedReasons = [];
+            $reasons = array_unique($reasons);
+            $reasons = array_filter($reasons);
+            foreach ($reasons as $reason) {
+                $translatedReasons[] = Freeform::t($reason);
+            }
+
+            return StringHelper::implodeRecursively(', ', $translatedReasons);
+        }
+
+        $value = $this->{$attribute};
+
+        if (\is_array($value)) {
+            return Html::decode(StringHelper::implodeRecursively(', ', $value));
+        }
+
+        if ($value instanceof FieldInterface) {
+            $event = new RenderTableValueEvent($value, $this);
+            $this->trigger(self::EVENT_RENDER_TABLE_VALUE, $event);
+
+            if ($event->getOutput()) {
+                return $event->getOutput();
+            }
+
+            return Html::encode($value);
+        }
+
+        return parent::attributeHtml($attribute);
     }
 
     protected function getNotesService(): NotesService

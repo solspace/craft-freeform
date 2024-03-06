@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m181129_083939_ChangeIntegrationFieldTypeColumnTypeToString extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if ($this->db->getIsPgsql()) {
             // Manually construct the SQL for Postgres
@@ -43,7 +43,7 @@ class m181129_083939_ChangeIntegrationFieldTypeColumnTypeToString extends Migrat
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m181129_083939_ChangeCrmFieldTypeColumnTypeToString cannot be reverted.\n";
 

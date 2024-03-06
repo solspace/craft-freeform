@@ -4,12 +4,12 @@ namespace Solspace\Freeform\Events\Forms;
 
 use craft\helpers\UrlHelper;
 use craft\web\View;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\SettingsService;
 

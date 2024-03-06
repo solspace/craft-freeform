@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m211109_144235_RemoveContextFromUnfinalizedAssets extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if ($this->db->columnExists('{{%freeform_unfinalized_files}}', 'contextId')) {
@@ -23,7 +23,7 @@ class m211109_144235_RemoveContextFromUnfinalizedAssets extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_unfinalized_files}}', 'contextId')) {

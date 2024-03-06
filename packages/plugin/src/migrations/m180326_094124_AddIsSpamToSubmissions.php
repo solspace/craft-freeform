@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m180326_094124_AddIsSpamToSubmissions extends Migration
 {
-    public function safeUp()
+    public function safeUp(): void
     {
         $this->addColumn(
             '{{%freeform_submissions}}',
@@ -18,7 +18,7 @@ class m180326_094124_AddIsSpamToSubmissions extends Migration
         );
     }
 
-    public function safeDown()
+    public function safeDown(): void
     {
         $this->dropColumn(
             '{{%freeform_submissions}}',

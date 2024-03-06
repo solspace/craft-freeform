@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m180430_151626_PaymentGateways extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         if ($this->db->getIsPgsql()) {
             // Manually construct the SQL for Postgres
@@ -27,7 +27,7 @@ class m180430_151626_PaymentGateways extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         return true;
     }

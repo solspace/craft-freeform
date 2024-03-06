@@ -5,12 +5,13 @@ import config from './elements.config';
 import type { StripeAppearanceEvent } from './elements.events';
 import events from './elements.events';
 import queries from './elements.queries';
+import { isHidden } from './elements.selectors';
 import type { StripeFunctionConstructorProps, StripeLayout, StripeTheme } from './elements.types';
 
 const workers: string[] = [];
 
 export const initStripe = (props: StripeFunctionConstructorProps) => async (container: HTMLDivElement) => {
-  if (container.dataset.hidden === '') {
+  if (isHidden(container)) {
     return;
   }
 

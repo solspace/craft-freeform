@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 use yii\db\Query;
 
 /**
@@ -10,7 +11,7 @@ use yii\db\Query;
  */
 class m190501_124050_MergingEditionsMigration extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->installProTables();
         $this->installPaymentsTables();
@@ -21,14 +22,14 @@ class m190501_124050_MergingEditionsMigration extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190501_124050_MergingEditionsMigration cannot be reverted.\n";
 
         return false;
     }
 
-    private function installProTables()
+    private function installProTables(): void
     {
         if (!$this->db->tableExists('{{%freeform_export_profiles}}')) {
             $this->createTable(
@@ -60,7 +61,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'formId',
                 '{{%freeform_forms}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             $this->addForeignKey(
@@ -69,12 +70,12 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'userId',
                 '{{%users}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
         }
     }
 
-    private function installPaymentsTables()
+    private function installPaymentsTables(): void
     {
         if (!$this->db->tableExists('{{%freeform_payments_subscription_plans}}')) {
             $this->createTable(
@@ -149,7 +150,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             // ==================
@@ -161,7 +162,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'submissionId',
                 '{{%freeform_submissions}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             $this->addForeignKey(
@@ -170,7 +171,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             $this->addForeignKey(
@@ -179,7 +180,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'subscriptionId',
                 '{{%freeform_payments_subscriptions}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             // ==================
@@ -191,7 +192,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'integrationId',
                 '{{%freeform_integrations}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             $this->addForeignKey(
@@ -200,7 +201,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'submissionId',
                 '{{%freeform_submissions}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
 
             $this->addForeignKey(
@@ -209,7 +210,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'planId',
                 '{{%freeform_payments_subscription_plans}}',
                 'id',
-                'CASCADE'
+                ForeignKey::CASCADE
             );
         }
     }
@@ -219,7 +220,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
         // outdated
     }
 
-    private function convertIntegrations()
+    private function convertIntegrations(): void
     {
         $rows = (new Query())
             ->select(['id', 'class'])
@@ -245,7 +246,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
         }
     }
 
-    private function removeStalePlugins()
+    private function removeStalePlugins(): void
     {
         $this->delete('{{%plugins}}', ['handle' => ['freeform-payments', 'freeform-pro']]);
     }

@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m191214_093453_AddExtraPostUrlColumnToForm extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_forms}}', 'extraPostUrl')) {
@@ -25,7 +25,7 @@ class m191214_093453_AddExtraPostUrlColumnToForm extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m191214_093453_AddExtraPostUrlColumnToForm cannot be reverted.\n";
 

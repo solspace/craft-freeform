@@ -13,11 +13,12 @@
 namespace Solspace\Freeform\controllers;
 
 use craft\helpers\FileHelper;
-use craft\helpers\StringHelper;
+use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -112,7 +113,7 @@ class SettingsController extends BaseController
             $errors[] = Freeform::t('No custom template directory specified in settings');
         } else {
             if ($templateName) {
-                $templateName = StringHelper::toSnakeCase($templateName);
+                $templateName = CraftStringHelper::toSnakeCase($templateName);
 
                 $templatePath = $templateDirectory.'/'.$templateName.$extension;
                 if (file_exists($templatePath)) {
@@ -154,7 +155,7 @@ class SettingsController extends BaseController
             $errors[] = Freeform::t('No custom template directory specified in settings');
         } else {
             if ($templateName) {
-                $templateName = StringHelper::toSnakeCase($templateName);
+                $templateName = CraftStringHelper::toSnakeCase($templateName);
 
                 $templatePath = $templateDirectory.'/'.$templateName.$extension;
                 if (file_exists($templatePath)) {
@@ -194,7 +195,7 @@ class SettingsController extends BaseController
             $errors[] = Freeform::t('No success template directory specified in settings');
         } else {
             if ($templateName) {
-                $templateName = StringHelper::toSnakeCase($templateName);
+                $templateName = CraftStringHelper::toSnakeCase($templateName);
 
                 $templatePath = $templateDirectory.'/'.$templateName.$extension;
                 if (file_exists($templatePath)) {
@@ -219,11 +220,12 @@ class SettingsController extends BaseController
         );
     }
 
-    public function actionSaveSettings()
+    public function actionSaveSettings(): bool|Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
+
         $postData = \Craft::$app->request->post('settings', []);
 
         if ($this->getSettingsService()->saveSettings($postData)) {
@@ -239,8 +241,10 @@ class SettingsController extends BaseController
         $plugin = Freeform::getInstance();
         $errors = $plugin->getSettings()->getErrors();
         \Craft::$app->session->setError(
-            implode("\n", \Solspace\Commons\Helpers\StringHelper::flattenArrayValues($errors))
+            implode("\n", FreeformStringHelper::flattenArrayValues($errors))
         );
+
+        return true;
     }
 
     public function actionProvideSetting(): Response

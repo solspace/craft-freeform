@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\Form\Types\Surveys\EventListeners;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\SurveysBundle;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 

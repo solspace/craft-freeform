@@ -19,7 +19,6 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Db;
 use craft\records\Element;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
@@ -33,6 +32,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Twig\Markup;
 use yii\base\Event;
 

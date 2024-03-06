@@ -6,7 +6,7 @@ use craft\db\Migration;
 
 class m210105_145259_AddGoogleTagManagerColumnsToForms extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_forms}}', 'gtmEnabled')) {
@@ -26,7 +26,7 @@ class m210105_145259_AddGoogleTagManagerColumnsToForms extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if ($this->db->columnExists('{{%freeform_forms}}', 'gtmEnabled')) {

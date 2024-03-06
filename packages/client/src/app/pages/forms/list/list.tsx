@@ -11,7 +11,7 @@ import { CardLoading } from './card/card.loading';
 import { useCreateFormModal } from './modal/use-create-form-modal';
 import { Notices } from './notices/notices';
 import { EmptyList } from './list.empty';
-import { Header, Title, Wrapper } from './list.styles';
+import { ContentContainer, Header, Title, Wrapper } from './list.styles';
 
 export const List: React.FC = () => {
   const { data, isFetching } = useQueryFormsWithStats();
@@ -59,7 +59,7 @@ export const List: React.FC = () => {
           </button>
         )}
       </Header>
-      <div id="content-container">
+      <ContentContainer>
         <div id="content" className="content-pane">
           <Notices />
 
@@ -87,7 +87,7 @@ export const List: React.FC = () => {
             </Wrapper>
           )}
         </div>
-      </div>
+      </ContentContainer>
     </>
   );
 };

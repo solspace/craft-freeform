@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Attributes\Property\Validators;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Length implements PropertyValidatorInterface

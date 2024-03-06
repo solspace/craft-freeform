@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
 {
@@ -43,7 +44,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'id',
             '{{%freeform_rules}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -52,7 +53,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'fieldId',
             '{{%freeform_forms_fields}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // ------------------------------------------------------------------
@@ -78,7 +79,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'id',
             '{{%freeform_rules}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -87,7 +88,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'pageId',
             '{{%freeform_forms_pages}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // ------------------------------------------------------------------
@@ -114,7 +115,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'id',
             '{{%freeform_rules}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -123,7 +124,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'notificationId',
             '{{%freeform_forms_notifications}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // ------------------------------------------------------------------
@@ -148,7 +149,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'ruleId',
             '{{%freeform_rules}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -157,7 +158,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             'fieldId',
             '{{%freeform_forms_fields}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         return true;

@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m201027_103933_AddExportProfileDateRanges extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_export_profiles}}', 'rangeStart')) {
@@ -22,7 +22,7 @@ class m201027_103933_AddExportProfileDateRanges extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_export_profiles}}', 'rangeStart')) {

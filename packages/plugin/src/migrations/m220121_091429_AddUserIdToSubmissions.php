@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m220121_091429_AddUserIdToSubmissions extends Migration
 {

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
-use Solspace\Commons\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m240110_111258_ChangeFormFieldRowForeignKey extends Migration
 {

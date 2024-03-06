@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
-use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Helpers\ComparisonHelper;
 
 class BlacklistedKeywords extends AbstractCheck implements BundleInterface
 {
@@ -21,7 +21,7 @@ class BlacklistedKeywords extends AbstractCheck implements BundleInterface
         FieldInterface::TYPE_WEBSITE,
     ];
 
-    public function handleCheck(ValidationEvent $event)
+    public function handleCheck(ValidationEvent $event): void
     {
         $showErrorBelowFields = (bool) $this->getSettings()->showErrorsForBlockedKeywords;
         $keywords = $this->getSettings()->getBlockedKeywords();

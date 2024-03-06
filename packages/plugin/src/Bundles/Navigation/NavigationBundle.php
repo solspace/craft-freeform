@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Navigation;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use yii\base\Event;
 
 class NavigationBundle extends FeatureBundle

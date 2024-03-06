@@ -59,7 +59,7 @@ class NoticesController extends BaseApiController
         ];
     }
 
-    protected function delete(int $id): null|bool
+    protected function delete(int $id): ?bool
     {
         return $this->feedService->markFeedMessageAsRead($id);
     }

@@ -3,13 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m190618_142759_AddFixedForeignKeys migration.
  */
 class m190618_142759_AddFixedForeignKeys extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         // =========================
         // Export settings table
@@ -20,7 +21,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'userId',
             '{{%users}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // =========================
@@ -33,7 +34,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'submissionId',
             '{{%freeform_submissions}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -42,7 +43,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'subscriptionId',
             '{{%freeform_payments_subscriptions}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -51,7 +52,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'integrationId',
             '{{%freeform_integrations}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         // =========================
@@ -64,7 +65,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'submissionId',
             '{{%freeform_submissions}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -73,7 +74,7 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'integrationId',
             '{{%freeform_integrations}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         $this->addForeignKey(
@@ -82,13 +83,13 @@ class m190618_142759_AddFixedForeignKeys extends Migration
             'planId',
             '{{%freeform_payments_subscription_plans}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m190618_142759_AddFixedForeignKeys cannot be reverted.\n";
 

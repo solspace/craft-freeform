@@ -5,6 +5,7 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use Solspace\Freeform\FieldTypes\FormFieldType;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m180120_140521_CraftUpgrade migration.
@@ -74,7 +75,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'integrationId',
                     '{{%freeform_integrations}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }
@@ -86,7 +87,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'mailingListId',
                     '{{%freeform_mailing_lists}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }
@@ -98,7 +99,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'integrationId',
                     '{{%freeform_integrations}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }
@@ -110,7 +111,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'id',
                     '{{%elements}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }
@@ -122,7 +123,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'formId',
                     '{{%freeform_forms}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }
@@ -134,7 +135,7 @@ class m180120_140521_CraftUpgrade extends Migration
                     'statusId',
                     '{{%freeform_statuses}}',
                     'id',
-                    'CASCADE'
+                    ForeignKey::CASCADE
                 );
             } catch (\Exception $e) {
             }

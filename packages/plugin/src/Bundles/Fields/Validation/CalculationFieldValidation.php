@@ -59,7 +59,7 @@ class CalculationFieldValidation extends FeatureBundle
         try {
             $result = $expressionLanguage->evaluate($calculationLogic, $variablesWithValue);
 
-            if ($canRender && $valueOrdination !== $result) {
+            if ($canRender && $valueOrdination != $result) {
                 $field->addError(Freeform::t('Incorrectly calculated value'));
             }
 

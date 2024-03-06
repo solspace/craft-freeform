@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\controllers\export;
 
 use craft\helpers\UrlHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;

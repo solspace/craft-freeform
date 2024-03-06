@@ -10,7 +10,7 @@ use craft\db\Query;
  */
 class m180606_141402_AddConnectionsToFormProperties extends Migration
 {
-    public function safeUp()
+    public function safeUp(): void
     {
         $forms = (new Query())
             ->select(['id', 'layoutJson'])
@@ -38,7 +38,7 @@ class m180606_141402_AddConnectionsToFormProperties extends Migration
         }
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         echo "m180606_141402_AddConnectionsToFormProperties cannot be reverted.\n";
 

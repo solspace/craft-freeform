@@ -3,13 +3,14 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
  * m190529_135307_AddSlackWebhooksTable migration.
  */
 class m190529_135307_AddWebhookTables extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->createTable(
             '{{%freeform_webhooks}}',
@@ -46,7 +47,7 @@ class m190529_135307_AddWebhookTables extends Migration
             'webhookId',
             '{{%freeform_webhooks}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
         $this->addForeignKey(
             null,
@@ -54,13 +55,13 @@ class m190529_135307_AddWebhookTables extends Migration
             'formId',
             '{{%freeform_forms}}',
             'id',
-            'CASCADE'
+            ForeignKey::CASCADE
         );
 
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             $prefix = $this->db->tablePrefix.'freeform_webhooks_form_relations_';

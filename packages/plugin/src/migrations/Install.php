@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Solspace\Commons\Migrations\ForeignKey;
-use Solspace\Commons\Migrations\StreamlinedInstallMigration;
-use Solspace\Commons\Migrations\Table;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
+use Solspace\Freeform\Library\Migrations\StreamlinedInstallMigration;
+use Solspace\Freeform\Library\Migrations\Table;
 
 /**
  * Install migration.
@@ -371,14 +371,14 @@ class Install extends StreamlinedInstallMigration
             $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
         }
 
-        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['id'], '{{%freeform_rules}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['id'], '{{%freeform_rules}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_notifications}}', ['id'], '{{%freeform_rules}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_notifications}}', ['notificationId'], '{{%freeform_forms_notifications}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], 'CASCADE', 'CASCADE');
-        $this->addForeignKey(null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], 'CASCADE', null);
+        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_pages}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_notifications}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_notifications}}', ['notificationId'], '{{%freeform_forms_notifications}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE);
 
         return parent::afterInstall();
     }

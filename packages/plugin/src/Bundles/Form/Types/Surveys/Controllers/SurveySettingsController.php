@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Bundles\Form\Types\Surveys\Controllers;
 
 use craft\web\Controller;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use yii\web\Response;
 
 class SurveySettingsController extends Controller

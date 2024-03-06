@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Models\Settings;
 
 class m230101_100010_FF4to5_MigrateForms extends Migration
@@ -77,7 +78,7 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                     'showProcessingSpinner' => $defaults->settings->processing->showIndicator->getValue(),
                     'showProcessingText' => $defaults->settings->processing->showText->getValue(),
                     'processingText' => $defaults->settings->processing->processingText->getValue(),
-                    'successBehavior' => $defaults->settings->successAndErrors->successBehavior->getValue(),
+                    'successBehavior' => $this->extractSuccessBehavior($data, $defaults),
                     'successTemplate' => $defaults->settings->successAndErrors->successTemplate->getValue(),
                     'returnUrl' => $form->returnUrl,
                     'successMessage' => $validation->successMessage,
@@ -106,6 +107,18 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
         echo "m230101_100010_FF4to5_MigrateForms cannot be reverted.\n";
 
         return false;
+    }
+
+    private function extractSuccessBehavior(array $form, Defaults $defaults): string
+    {
+        if (isset($form['metadata'])) {
+            $metadata = json_decode($form['metadata'] ?: '[]', true);
+            if (isset($metadata['successBehaviour'])) {
+                return $metadata['successBehaviour'];
+            }
+        }
+
+        return $defaults->settings->successAndErrors->successBehavior->getValue();
     }
 
     private function transformTemplate(string $template): string

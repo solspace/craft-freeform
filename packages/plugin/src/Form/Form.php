@@ -851,7 +851,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private function createSubmission(): void
     {
-        Event::trigger(self::class, self::EVENT_CREATE_SUBMISSION, new CreateSubmissionEvent($this));
+        $submission = Submission::create($this);
+        $event = new CreateSubmissionEvent($this, $submission);
+
+        Event::trigger(
+            self::class,
+            self::EVENT_CREATE_SUBMISSION,
+            $event,
+        );
+
+        $this->setSubmission($event->getSubmission());
     }
 
     private function validate(): void

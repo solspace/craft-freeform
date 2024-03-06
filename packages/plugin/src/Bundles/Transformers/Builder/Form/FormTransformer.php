@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Carbon\Carbon;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;

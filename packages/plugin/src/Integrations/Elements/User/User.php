@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Integrations\Elements\User;
 
 use craft\base\Element;
 use craft\elements\User as CraftUser;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
@@ -13,6 +12,7 @@ use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingT
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 
 #[Type(

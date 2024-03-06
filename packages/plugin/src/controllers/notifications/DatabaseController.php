@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\controllers\notifications;
 
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;

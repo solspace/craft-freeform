@@ -9,9 +9,9 @@ use Solspace\Freeform\Freeform;
 
 class DeleteSubmissionAction extends ElementAction implements DeleteActionInterface
 {
-    public null|string $confirmationMessage = null;
+    public ?string $confirmationMessage = null;
 
-    public null|string $successMessage = null;
+    public ?string $successMessage = null;
 
     public bool $hard = false;
 

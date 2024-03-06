@@ -71,6 +71,7 @@ class m231230_074448_CreateFieldsTypeGroupsTable extends Migration
                         'Solspace\Freeform\Fields\Implementations\Pro\TableField',
                         'Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField',
                         'Solspace\Freeform\Fields\Implementations\Pro\PasswordField',
+                        'Solspace\Freeform\Fields\Implementations\Pro\CalculationField',
                         'Solspace\Freeform\Fields\Implementations\Pro\SignatureField',
                     ]),
                 ],

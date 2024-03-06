@@ -65,7 +65,7 @@ abstract class BaseApiController extends BaseController
         throw new NotFoundHttpException('PUT request not supported');
     }
 
-    protected function delete(int $id): null|bool
+    protected function delete(int $id): ?bool
     {
         throw new NotFoundHttpException('DELETE request not supported');
     }

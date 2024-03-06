@@ -4,7 +4,6 @@ namespace Solspace\Freeform\controllers\export;
 
 use craft\db\Query;
 use craft\db\Table;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
@@ -12,6 +11,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;

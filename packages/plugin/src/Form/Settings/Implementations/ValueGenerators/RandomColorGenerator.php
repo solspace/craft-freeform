@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Form\Settings\Implementations\ValueGenerators;
 
-use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
+use Solspace\Freeform\Library\Helpers\ColorHelper;
 
 class RandomColorGenerator implements ValueGeneratorInterface
 {

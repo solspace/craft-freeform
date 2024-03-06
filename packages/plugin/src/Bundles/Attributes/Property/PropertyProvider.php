@@ -83,7 +83,10 @@ class PropertyProvider
             $value = null;
         }
 
-        $reflectionProperty->setValue($object, $value);
+        try {
+            $reflectionProperty->setValue($object, $value);
+        } catch (\TypeError) {
+        }
 
         if (!$accessible) {
             $reflectionProperty->setAccessible(false);

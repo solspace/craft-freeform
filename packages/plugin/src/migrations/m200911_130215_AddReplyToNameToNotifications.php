@@ -9,7 +9,7 @@ use craft\db\Migration;
  */
 class m200911_130215_AddReplyToNameToNotifications extends Migration
 {
-    public function safeUp()
+    public function safeUp(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_notifications}}', 'replyToName')) {
@@ -21,7 +21,7 @@ class m200911_130215_AddReplyToNameToNotifications extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         try {
             if (!$this->db->columnExists('{{%freeform_notifications}}', 'replyToName')) {

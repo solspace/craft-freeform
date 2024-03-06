@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Resources\Bundles;
 
-use Solspace\Commons\Resources\CpAssetBundle;
+use Solspace\Freeform\Library\Resources\CpAssetBundle;
 
 abstract class AbstractFreeformAssetBundle extends CpAssetBundle
 {

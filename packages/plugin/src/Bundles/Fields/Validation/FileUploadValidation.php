@@ -73,7 +73,7 @@ class FileUploadValidation extends FeatureBundle
                         $field->setValue($response->getAssetIds());
                         self::$filesUploaded[$handle] = $response->getAssetIds();
 
-                        return;
+                        continue;
                     }
 
                     $field->addErrors($response->getErrors());
@@ -81,8 +81,6 @@ class FileUploadValidation extends FeatureBundle
 
                     throw new FileUploadException(implode('. ', $response->getErrors()));
                 }
-
-                return;
             }
 
             if (!empty(self::$filesUploadedErrors[$handle])) {

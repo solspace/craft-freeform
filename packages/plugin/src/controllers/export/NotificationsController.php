@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\controllers\export;
 
 use craft\helpers\UrlHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;

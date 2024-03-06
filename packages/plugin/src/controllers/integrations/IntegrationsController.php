@@ -4,11 +4,11 @@ namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Models\IntegrationModel;

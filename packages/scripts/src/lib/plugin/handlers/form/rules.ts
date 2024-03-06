@@ -129,7 +129,7 @@ class RuleHandler implements FreeformHandler {
   applyRule = (rule: Rule): boolean => {
     const { field, display, combinator, conditions } = rule;
 
-    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container=${field}]`);
+    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${field}"]`);
     if (!fieldContainer) {
       return false;
     }
@@ -162,7 +162,7 @@ class RuleHandler implements FreeformHandler {
   };
 
   private verifyCondition = (condition: RuleCondition): boolean => {
-    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container=${condition.field}]`);
+    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${condition.field}"]`);
     if (!fieldContainer) {
       return;
     }

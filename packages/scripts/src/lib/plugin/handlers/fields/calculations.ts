@@ -60,6 +60,7 @@ class Calculation implements FreeformHandler {
 
         if (picker.type !== 'hidden') {
           picker.value = result;
+          picker.dispatchEvent(new Event('change'));
           return;
         }
 

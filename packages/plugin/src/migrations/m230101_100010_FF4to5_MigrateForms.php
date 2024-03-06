@@ -67,7 +67,7 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                     ],
                     'storeData' => $form->storeData,
                     'defaultStatus' => $form->defaultStatus,
-                    'collectIpAddresses' => $defaults->settings->dataStorage->collectIp->getValue(),
+                    'collectIpAddresses' => $form->ipCollectingEnabled ?? $defaults->settings->dataStorage->collectIp->getValue(),
                 ]
             );
 
@@ -75,11 +75,11 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 $behavior,
                 [
                     'ajax' => $form->ajaxEnabled ?? true,
-                    'showProcessingSpinner' => $defaults->settings->processing->showIndicator->getValue(),
-                    'showProcessingText' => $defaults->settings->processing->showText->getValue(),
-                    'processingText' => $defaults->settings->processing->processingText->getValue(),
+                    'showProcessingSpinner' => $validation->showSpinner ?? $defaults->settings->processing->showIndicator->getValue(),
+                    'showProcessingText' => $validation->showLoadingText ?? $defaults->settings->processing->showText->getValue(),
+                    'processingText' => $validation->loadingText ?? $defaults->settings->processing->processingText->getValue(),
                     'successBehavior' => $this->extractSuccessBehavior($data, $defaults),
-                    'successTemplate' => $defaults->settings->successAndErrors->successTemplate->getValue(),
+                    'successTemplate' => $this->extractSuccessTemplate($data, $defaults),
                     'returnUrl' => $form->returnUrl,
                     'successMessage' => $validation->successMessage,
                     'errorMessage' => $validation->errorMessage,
@@ -119,6 +119,18 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
         }
 
         return $defaults->settings->successAndErrors->successBehavior->getValue();
+    }
+
+    private function extractSuccessTemplate(array $form, Defaults $defaults): string
+    {
+        if (isset($form['metadata'])) {
+            $metadata = json_decode($form['metadata'] ?: '[]', true);
+            if (isset($metadata['successTemplate'])) {
+                return $metadata['successTemplate'];
+            }
+        }
+
+        return $defaults->settings->successAndErrors->successTemplate->getValue();
     }
 
     private function transformTemplate(string $template): string

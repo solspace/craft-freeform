@@ -15,6 +15,7 @@ import { CustomPreview } from './custom.preview';
 const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
   value,
   updateValue,
+  property,
   defaultValue,
   updateDefaultValue,
   isMultiple,
@@ -40,6 +41,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
         <CustomEditor
           value={value}
           updateValue={updateValue}
+          property={property}
           defaultValue={defaultValue}
           updateDefaultValue={updateDefaultValue}
           isMultiple={isMultiple}

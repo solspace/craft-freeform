@@ -1,6 +1,7 @@
 import type {
   GenericValue,
   OptionCollection,
+  OptionsProperty,
   Property,
 } from '@ff-client/types/properties';
 
@@ -62,6 +63,7 @@ export type ConfigurationProps<
 > = {
   value: T;
   updateValue: (value: T) => void;
+  property: OptionsProperty;
   defaultValue: string | string[];
   updateDefaultValue: (value: string | string[]) => void;
   convertToCustomValues?: () => void;

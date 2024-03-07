@@ -14,6 +14,7 @@ const components: {
 export const SourceComponent: React.FC<ConfigurationProps> = ({
   value,
   updateValue,
+  property,
   defaultValue,
   updateDefaultValue,
   convertToCustomValues,
@@ -34,6 +35,7 @@ export const SourceComponent: React.FC<ConfigurationProps> = ({
         <Component
           value={value}
           updateValue={updateValue}
+          property={property}
           defaultValue={defaultValue}
           updateDefaultValue={updateDefaultValue}
           convertToCustomValues={convertToCustomValues}

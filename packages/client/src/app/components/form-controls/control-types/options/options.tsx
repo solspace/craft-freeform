@@ -70,6 +70,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
       <SourceComponent
         value={value}
         updateValue={updateValue}
+        property={property}
         defaultValue={defaultValue}
         updateDefaultValue={updateDefaultValue}
         convertToCustomValues={convertToCustomValues}

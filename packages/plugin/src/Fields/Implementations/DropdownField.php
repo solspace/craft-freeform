@@ -14,9 +14,12 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Input\Hidden;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 
 #[Type(
     name: 'Dropdown',
@@ -26,8 +29,16 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 )]
 class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInterface
 {
-    #[Hidden]
+    #[Input\Hidden]
     protected string $defaultValue = '';
+
+    #[ValueTransformer(OptionsTransformer::class)]
+    #[Input\Options(
+        label: 'Options Editor',
+        instructions: 'Define your options',
+        showEmptyOption: true,
+    )]
+    protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
     public function getType(): string
     {

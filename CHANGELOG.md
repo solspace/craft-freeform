@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.1.2 - 2024-03-07
+
+### Fixed
+- Fixed a bug where Success Templates were not being mapped in the Freeform 4 to 5 migration.
+- Fixed a bug where the Calculations field type was not triggering the Stripe element refresh when set as the dynamic amount field.
+- Fixed a bug where changing a form's Form Type had no effect.
+- Fixed a bug in conditional rules logic that prevented fields with handles beginning with a number from working correctly.
+
 ## 5.1.1 - 2024-03-06
 
 ### Added

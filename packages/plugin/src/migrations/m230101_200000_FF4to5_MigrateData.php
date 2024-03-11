@@ -164,11 +164,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         $type = $data->type;
 
         if ('dynamic_recipients' === $type) {
-            if ($data->showAsRadio) {
+            if (isset($data->showAsRadio) && $data->showAsRadio) {
                 return 'Solspace\Freeform\Fields\Implementations\RadiosField';
             }
 
-            if ($data->showAsCheckboxes) {
+            if (isset($data->showAsCheckboxes) && $data->showAsCheckboxes) {
                 return 'Solspace\Freeform\Fields\Implementations\CheckboxesField';
             }
 
@@ -176,7 +176,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         }
 
         if ('mailing_list' === $type) {
-            if ($data->hidden ?? false) {
+            if ((isset($data->hidden) && $data->hidden) ?? false) {
                 return 'Solspace\Freeform\Fields\Implementations\HiddenField';
             }
 
@@ -447,7 +447,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     private function processDynamicRecipients(\stdClass $data): array
     {
         $selectedEmail = $data->value ?? '';
-        if ($data->showAsCheckboxes) {
+        if (isset($data->showAsCheckboxes) && $data->showAsCheckboxes) {
             $selectedEmail = $data->values ?? [];
         }
 
@@ -465,15 +465,15 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             ++$iterator;
         }
 
-        if (\is_string($selectedEmail)) {
-            $selectedEmail = $emailIndexes[$selectedEmail] ?? '';
-        } else {
+        if (\is_array($selectedEmail)) {
             $selectedEmail = array_filter(
                 array_map(
                     fn ($email) => $emailIndexes[$email] ?? null,
                     $selectedEmail,
                 )
             );
+        } else {
+            $selectedEmail = $emailIndexes[$selectedEmail] ?? '';
         }
 
         return [

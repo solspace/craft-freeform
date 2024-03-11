@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.1.3 - 2024-03-11
+
+### Fixed
+- Fixed a bug where Dynamic Recipient fields could sometimes fail in the Freeform 4 to 5 migration.
+- Fixed a bug where saving submissions via console commands would fail on the saved notes feature.
+- Fixed a bug where the Calculations field type was not triggering the Stripe element refresh when set as the dynamic amount field while set as _Plain Text_.
+- Fixed a bug where the Empty Option Label feature was showing on fields other than Dropdowns.
+
 ## 5.1.2 - 2024-03-07
 
 ### Fixed

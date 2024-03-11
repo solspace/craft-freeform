@@ -10,11 +10,12 @@ import { useOptionTypesPredefined } from './predefined.queries';
 
 const Predefined: React.FC<
   ConfigurationProps<ConfigurableOptionsConfiguration>
-> = ({ value, updateValue, convertToCustomValues }) => {
+> = ({ value, updateValue, property, convertToCustomValues }) => {
   return (
     <ConfigurableOptions
       value={value}
       updateValue={updateValue}
+      property={property}
       defaultValue={''}
       updateDefaultValue={() => {}}
       typeProviderQuery={useOptionTypesPredefined}

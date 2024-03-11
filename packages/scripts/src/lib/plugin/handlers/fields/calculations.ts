@@ -73,6 +73,8 @@ class Calculation implements FreeformHandler {
 
         picker.value = result;
         pTag.textContent = result;
+
+        picker.dispatchEvent(new Event('change'));
       };
 
       Object.keys(variables).forEach((variable) => {

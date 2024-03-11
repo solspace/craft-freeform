@@ -153,7 +153,9 @@ export type TableProperty = BaseProperty<
 export type OptionsProperty = BaseProperty<
   OptionsConfiguration,
   PropertyType.Options
->;
+> & {
+  showEmptyOption?: boolean;
+};
 export type OptionPickerProperty = BaseProperty<
   string[],
   PropertyType.OptionPicker

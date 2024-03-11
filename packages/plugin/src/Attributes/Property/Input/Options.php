@@ -19,7 +19,7 @@ class Options extends Property implements OptionsInterface
         ?int $order = null,
         mixed $value = null,
         ?int $width = null,
-        public ?string $emptyOption = null,
+        public ?bool $showEmptyOption = false,
         public null|array|OptionCollection|string $options = null,
     ) {
         parent::__construct(

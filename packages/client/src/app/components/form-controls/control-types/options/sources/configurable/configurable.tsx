@@ -23,6 +23,7 @@ type Props = ConfigurationProps<ConfigurableOptionsConfiguration> & {
 export const ConfigurableOptions: React.FC<Props> = ({
   value,
   updateValue,
+  property,
   typeProviderQuery,
   convertToCustomValues,
 }) => {
@@ -35,21 +36,23 @@ export const ConfigurableOptions: React.FC<Props> = ({
 
   return (
     <FlexColumn>
-      <FormComponent
-        property={{
-          type: PropertyType.String,
-          label: 'Empty Option Label (optional)',
-          handle: 'emptyOption',
-        }}
-        context={value}
-        value={value.emptyOption}
-        updateValue={(currentValue) => {
-          updateValue({
-            ...value,
-            emptyOption: currentValue as string,
-          });
-        }}
-      />
+      {property.showEmptyOption && (
+        <FormComponent
+          property={{
+            type: PropertyType.String,
+            label: 'Empty Option Label (optional)',
+            handle: 'emptyOption',
+          }}
+          context={value}
+          value={value.emptyOption}
+          updateValue={(currentValue) => {
+            updateValue({
+              ...value,
+              emptyOption: currentValue as string,
+            });
+          }}
+        />
+      )}
 
       <Control
         property={{

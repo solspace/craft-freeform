@@ -6,6 +6,7 @@ use craft\helpers\App;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
+use Solspace\Freeform\Bundles\Backup\Export\FormieExporter;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
@@ -18,20 +19,20 @@ class ImportController extends BaseApiController
     public function actionExpressForms(): Response
     {
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
-        $data = $exporter->collectDataPreview();
 
-        return $this->asSerializedJson($data);
+        return $this->asSerializedJson(
+            $exporter->collectDataPreview(),
+            serializerOptions: ['preserve_empty_objects' => false]
+        );
     }
 
-    public function actionFreeform(): Response
+    public function actionFormie(): Response
     {
-        if ($this->request->isPost) {
-            return $this->asEmptyResponse(201);
-        }
+        $exporter = \Craft::$container->get(FormieExporter::class);
 
-        return $this->renderTemplate(
-            'freeform-backup/import-freeform',
-            [],
+        return $this->asSerializedJson(
+            $exporter->collectDataPreview(),
+            serializerOptions: ['preserve_empty_objects' => false]
         );
     }
 

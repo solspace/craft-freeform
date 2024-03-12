@@ -16,6 +16,7 @@ import '../config';
 import { Form, Forms } from './app/pages/forms';
 import { Import } from './app/pages/import/import';
 import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
+import { ImportFormie } from './app/pages/import/views/formie/formie';
 import { ImportFreeformData } from './app/pages/import/views/freeform-data/freeform-data';
 import { SurveyResults } from './app/pages/surveys/results/results';
 import { Welcome } from './app/pages/welcome/welcome';
@@ -64,6 +65,7 @@ root.render(
                       path="express-forms"
                       element={<ImportExpressForms />}
                     />
+                    <Route path="formie" element={<ImportFormie />} />
                   </Route>
                 </Route>
               </Routes>

@@ -85,6 +85,14 @@ export const Import: React.FC = () => {
                     {translate('Express Forms')}
                   </NavLink>
                 </li>
+                <li>
+                  <NavLink
+                    to="formie"
+                    className={({ isActive }) => classes(isActive && 'sel')}
+                  >
+                    {translate('Formie')}
+                  </NavLink>
+                </li>
               </ul>
             </nav>
           </div>

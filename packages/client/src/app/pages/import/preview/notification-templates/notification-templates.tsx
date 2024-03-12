@@ -78,9 +78,7 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
                 $light
                 htmlFor={`notification-template-${template.originalId}`}
               >
-                {typeof template.originalId === 'string'
-                  ? template.originalId
-                  : template.name}
+                {template.name}
               </Label>
             </Blocks>
           </ListItem>

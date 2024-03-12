@@ -838,7 +838,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
         $table = null;
         foreach ($tables as $databaseTable) {
-            if (preg_match("/{$prefix}(freeform_submissions_.*_{$formId}+)$/", $databaseTable->name)) {
+            if (preg_match("/{$prefix}(freeform_submissions_.*_{$formId})$/", $databaseTable->name)) {
                 $table = $databaseTable;
 
                 break;

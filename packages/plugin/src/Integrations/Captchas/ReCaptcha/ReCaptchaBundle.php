@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -48,8 +49,11 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        $attributes = CaptchasBundle::getCaptchaAttributes($form);
+        $attributes->replace('data-freeform-recaptcha-container', true);
+
         $event->addChunk(
-            '<div data-freeform-recaptcha-container></div>',
+            '<div'.$attributes.'></div>',
             position: RenderTagEvent::POSITION_BEGINNING
         );
     }

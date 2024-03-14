@@ -93,9 +93,14 @@ class IntegrationModel extends Model
         return $object;
     }
 
-    public function propertyUpdateCallback(mixed $value, Property $property): mixed
+    public function propertyUpdateCallback(mixed $value, ?Property $property): mixed
     {
         static $securityKey;
+
+        if (null === $property) {
+            return $value;
+        }
+
         if (null === $securityKey) {
             $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
         }

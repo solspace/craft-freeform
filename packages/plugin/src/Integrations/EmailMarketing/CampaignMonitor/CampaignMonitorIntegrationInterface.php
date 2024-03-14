@@ -12,4 +12,7 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\CampaignMonitor;
 
-interface CampaignMonitorIntegrationInterface {}
+interface CampaignMonitorIntegrationInterface
+{
+    public function getApiKey(): string;
+}

@@ -18,17 +18,11 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegration;
 
-abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration implements OAuth2ConnectorInterface, CampaignMonitorIntegrationInterface
+abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration implements CampaignMonitorIntegrationInterface
 {
-    use OAuth2RefreshTokenTrait;
-    use OAuth2Trait;
-
     public const LOG_CATEGORY = 'Campaign Monitor';
 
     protected const CATEGORY_CUSTOM = 'Custom';
@@ -37,11 +31,26 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Validators\Required]
     #[Input\Text(
-        label: 'Campaign Monitor Client ID',
-        instructions: 'Enter your Campaign Monitor Client ID here.',
+        label: 'API Key',
+        instructions: 'Enter your Campaign Monitor API Key here.',
         order: 4,
     )]
+    protected string $apiKey = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
+    #[Input\Text(
+        label: 'Client ID',
+        instructions: 'Enter your Campaign Monitor Client ID here.',
+        order: 5,
+    )]
     protected string $campaignMonitorClientId = '';
+
+    public function getApiKey(): string
+    {
+        return $this->getProcessedValue($this->apiKey);
+    }
 
     public function checkConnection(Client $client): bool
     {
@@ -64,15 +73,20 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
             $this->processException($exception, $category);
         }
 
+        $fieldList = [
+            new FieldObject(
+                'Name',
+                'Name',
+                FieldObject::TYPE_STRING,
+                $category,
+                false
+            ),
+        ];
+
         $json = json_decode((string) $response->getBody());
-
         if (empty($json)) {
-            throw new IntegrationException('Could not fetch fields for '.$category);
+            return $fieldList;
         }
-
-        $fieldList = [];
-
-        $fieldList[] = new FieldObject('Name', 'Name', FieldObject::TYPE_STRING, $category, false);
 
         foreach ($json as $field) {
             $type = match ($field->DataType) {

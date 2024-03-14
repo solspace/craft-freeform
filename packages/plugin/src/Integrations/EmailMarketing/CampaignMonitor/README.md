@@ -4,7 +4,7 @@ This guide assumes you have a [Campaign Monitor](https://www.campaignmonitor.com
 
 ## Compatibility
 
-Uses OAuth flow on `v3.3` of the REST API.
+Uses API tokens on `v3.3` of the REST API.
 
 ### Endpoints
 Maps data to the following endpoints:
@@ -24,53 +24,28 @@ Maps data to the following field types:
 
 ## Setup Instructions
 
-<span class="note warning"><b>Important:</b> In order for this to work, the site (and its callback URL) you are connecting the integration to will need to be publicly accessible.</span>
+### 1. Create & get API Key from Campaign Monitor
 
-### 1. Prepare your site's end for Integration
+- Go to the [Campaign Monitor website](https://campaignmonitor.com) and log into your account.
+- At the top right corner, click on the profile icon and select **Account Settings**.
+- On the next page, click the **API keys** link near the bottom of the page.
+- After the page reloads, click the **Show API Key** link to reveal your API key.
+- Leave this page open and open a new tab to go to the Craft control panel...
 
-- Select *Campaign Monitor (v3.3)* from the **Service Provider** select dropdown.
+### 2. Set up Integration on your site
+
 - Enter a name and handle for the integration.
-- Copy the URL in the **OAuth 2.0 Return URI** field to your clipboard.
-- Leave this page open.
+- Copy the value in the **API Key** field from Campaign Monitor and paste it into the **API Key** field in Freeform.
+- Copy the value in the **Client ID** field from Campaign Monitor and paste it into the **Client ID** field in Freeform.
+- At the top right corner of the Freeform page, click the **Save** button.
 
-### 2. Prepare Campaign Monitor's end for Integration
+### 3. Verify Authorization
 
-1. Get the Campaign Monitor Client ID
-    - Open up a new browser tab and go to the [Campaign Monitor website](https://campaignmonitor.com/) and log into your account.
-    - At the top right corner, click on the profile icon and select **Account Settings**.
-    - On the next page, click the **API keys** link from the list.
-    - Then copy the **Client ID** value.
-2. Get the OAuth Client ID and Client Secret
-    - Open up a new browser tab and go to the [Campaign Monitor website](https://campaignmonitor.com/) and log into your account.
-    - At the top right corner, click on the profile icon and select **Integrations**.
-        - If you have multiple client accounts managed together, follow these steps instead:
-            - At the top right corner, click on the profile icon and select **Manage Clients**.
-            - Select the client account you wish to use, then click on the **Integrations** tab in the navigation.
-    - On the next page, scroll to the very bottom and click on the **OAuth Registration** text link.
-    - Fill out all of the fields for the app (all are mandatory).
-    - Paste the value you copied from Freeform's **OAuth 2.0 Return URI** field into the Campaign Monitor **Redirect URL** field.
-    - Click the **Register** button at the bottom to save the app.
-    - After the page reloads, click on the **View** link for the newly created app and copy the following credentials:
-        - **Client ID**
-        - **Client Secret**
-
-### 3. Prepare the Connection
-
-- Flip back to the Freeform CP browser tab.
-- Paste the Campaign Monitor account **Client ID** value into the **Campaign Monitor Client ID** field in Freeform.
-- Paste the Campaign Monitor OAuth app **Client ID** value into the **Client ID** field in Freeform.
-- Paste the Campaign Monitor OAuth app **Client Secret** value into the **Client Secret** field in Freeform.
-
-### 4. Finish the Connection
-
-- Click the **Save** button.
-- You will be redirected to a Campaign Monitor OAuth page to allow permissions.
-    - If not currently logged in, fill in your credentials.
-    - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform Email Marketing Integration** page.
+- After the integration is saved, it'll return you to the list of Email Marketing integrations.
+- Click on the newly created integration.
 - Confirm that there is a green circle with **Authorized** in the middle of the page.
 
-### 5. Configure the Form
+### 4. Configure the Form
 
 To use this integration on your form(s), you'll need to configure each form individually.
 
@@ -83,8 +58,6 @@ To use this integration on your form(s), you'll need to configure each form indi
     - Select a mailing list that new users should be subscribed to.
     - Map Freeform fields to the Campaign Monitor fields as you wish.
     - Configure as needed.
-
-<span class="note warning"><b>Important:</b> Please note that if you set this up initially on a development environment, you will need to update your callback URL and reauthorize the connection on your production environment. However, your settings and field mappings will remain intact.</span>
 
 ---
 

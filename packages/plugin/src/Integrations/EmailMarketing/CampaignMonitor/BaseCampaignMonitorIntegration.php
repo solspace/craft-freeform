@@ -31,8 +31,8 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Validators\Required]
     #[Input\Text(
-        label: 'Campaign Monitor Api Key',
-        instructions: 'Enter your Campaign Monitor Api Key here.',
+        label: 'API Key',
+        instructions: 'Enter your Campaign Monitor API Key here.',
         order: 4,
     )]
     protected string $apiKey = '';
@@ -41,7 +41,7 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Validators\Required]
     #[Input\Text(
-        label: 'Campaign Monitor Client ID',
+        label: 'Client ID',
         instructions: 'Enter your Campaign Monitor Client ID here.',
         order: 5,
     )]

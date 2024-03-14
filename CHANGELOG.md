@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.1.4 - 2024-03-14
+
+### Added
+- Added the ability to add attributes to Captcha containers at the template level.
+
+### Changed
+- Reverted the Campaign Monitor to API tokens (instead of OAuth) to address several complications.
+
+### Fixed
+- Fixed a bug where the Freeform 4 to 5 migration could fail when creating submission database tables in some circumstances.
+- Added clarity to the **Activate Users** setting for the User element integration.
+
 ## 5.1.3 - 2024-03-11
 
 ### Fixed

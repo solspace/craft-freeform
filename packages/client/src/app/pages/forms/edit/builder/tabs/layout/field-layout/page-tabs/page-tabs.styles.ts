@@ -1,3 +1,4 @@
+import { scrollBar } from '@ff-client/styles/mixins';
 import styled from 'styled-components';
 
 export const PageTabsWrapper = styled.div`
@@ -9,4 +10,6 @@ export const PageTabsContainer = styled.div`
   justify-content: flex-start;
   align-items: stretch;
   gap: 4px;
+  overflow-x: scroll;
+  ${scrollBar};
 `;

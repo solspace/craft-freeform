@@ -51,7 +51,14 @@ class ElementEditBundle extends FeatureBundle
 
         /** @var ElementIntegration[] $integrations */
         $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_ELEMENTS);
-        $integration = reset($integrations);
+        $integration = null;
+        foreach ($integrations as $instance) {
+            if ($instance->isEnabled() && $instance->getFieldMapping()) {
+                $integration = $instance;
+
+                break;
+            }
+        }
 
         if (!$elementId || !$integration) {
             return;

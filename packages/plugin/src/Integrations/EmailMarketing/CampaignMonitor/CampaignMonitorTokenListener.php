@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\CampaignMonitor;
 
-use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
 class CampaignMonitorTokenListener extends FeatureBundle
@@ -12,19 +12,29 @@ class CampaignMonitorTokenListener extends FeatureBundle
     public function __construct()
     {
         Event::on(
-            OAuth2ConnectorInterface::class,
-            OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
-            [$this, 'onInitAuthentication']
+            IntegrationClientProvider::class,
+            IntegrationClientProvider::EVENT_GET_CLIENT,
+            [$this, 'configureClient']
         );
     }
 
-    public function onInitAuthentication(InitiateAuthenticationFlowEvent $event): void
+    public function configureClient(GetAuthorizedClientEvent $event): void
     {
         $integration = $event->getIntegration();
         if (!$integration instanceof CampaignMonitorIntegrationInterface) {
             return;
         }
 
-        $event->add('scope', 'ManageLists ImportSubscribers AdministerPersons AdministerAccount');
+        $event->addConfig(
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'auth' => [
+                    $integration->getApiKey(),
+                    '',
+                ],
+            ],
+        );
     }
 }

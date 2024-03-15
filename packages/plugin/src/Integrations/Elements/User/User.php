@@ -30,15 +30,15 @@ class User extends ElementIntegration
     protected string $userGroupId = '';
 
     #[Input\Boolean(
-        label: 'Active',
-        instructions: 'Whether the user is active or not',
+        label: 'Activate Users',
+        instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
     protected bool $active = true;
 
     #[VisibilityFilter('!values.active')]
     #[Input\Boolean(
         label: 'Send Activation Email',
-        instructions: 'Whether to send an activation email to the user',
+        instructions: 'Users will receive a Craft email with activation details if this is enabled.',
     )]
     protected bool $sendActivation = false;
 

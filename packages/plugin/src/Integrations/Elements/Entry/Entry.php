@@ -103,8 +103,6 @@ class Entry extends ElementIntegration
             $entry->siteId = $siteId;
         }
 
-        $entry->enabled = true;
-
         return $entry;
     }
 

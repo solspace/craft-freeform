@@ -18,6 +18,7 @@ use craft\db\Table;
 use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Db;
+use craft\helpers\Session;
 use craft\records\Element;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
@@ -308,6 +309,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function wasFormFlashSubmitted(Form $form): bool
     {
+        if (!Session::exists()) {
+            return false;
+        }
+
         $submittedForm = \Craft::$app->session->getFlash(Form::SUBMISSION_FLASH_KEY);
 
         return $form->getId() === (int) $submittedForm;

@@ -21,13 +21,13 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
-use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
 #[Type(
     name: 'File Upload',
@@ -39,7 +39,6 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
 {
     use EncryptionTrait;
     use FileUploadTrait;
-    use MultipleValueTrait;
 
     public const DEFAULT_MAX_FILESIZE_KB = 2048;
     public const DEFAULT_FILE_COUNT = 1;
@@ -82,9 +81,36 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         return self::TYPE_FILE;
     }
 
+    public function setValue(mixed $value): FieldInterface
+    {
+        if ($value instanceof Asset) {
+            $value = $value->id;
+        }
+
+        if (!\is_array($value)) {
+            if (null === $value) {
+                $value = [];
+            } else {
+                $value = [$value];
+            }
+        }
+
+        $this->value = $value;
+
+        return $this;
+    }
+
     public function getAssets(): AssetQuery
     {
-        return Asset::find()->id($this->getValue());
+        $query = Asset::find();
+
+        if ($this->getValue()) {
+            $query->id($this->getValue());
+        } else {
+            $query->id(-99999)->limit(0);
+        }
+
+        return $query;
     }
 
     public function getFileKinds(): array

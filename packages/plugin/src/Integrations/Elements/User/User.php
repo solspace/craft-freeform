@@ -108,7 +108,9 @@ class User extends ElementIntegration
         $this->processMapping($user, $form, $this->attributeMapping);
         $this->processMapping($user, $form, $this->fieldMapping);
 
-        if ($this->attributeMapping->isSourceMapped('firstName') || $this->attributeMapping->isSourceMapped('lastName')) {
+        $isFirstnameMapped = $this->attributeMapping->isSourceMapped('firstName');
+        $isLastnameMapped = $this->attributeMapping->isSourceMapped('lastName');
+        if ($isFirstnameMapped || $isLastnameMapped) {
             $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
         }
 

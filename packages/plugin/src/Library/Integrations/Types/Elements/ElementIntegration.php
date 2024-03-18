@@ -75,11 +75,10 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
                 $value
             );
 
-            Event::trigger(
-                ElementIntegrationInterface::class,
-                ElementIntegrationInterface::EVENT_PROCESS_VALUE,
-                $event
-            );
+            Event::trigger($this, self::EVENT_PROCESS_VALUE, $event);
+            if (!$event->isValid) {
+                continue;
+            }
 
             if ($craftField) {
                 $element->setFieldValue($craftField->handle, $event->getValue());

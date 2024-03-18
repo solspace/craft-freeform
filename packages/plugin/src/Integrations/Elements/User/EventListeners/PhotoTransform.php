@@ -6,7 +6,6 @@ use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Integrations\Elements\User\User;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use yii\base\Event;
 
 class PhotoTransform extends FeatureBundle
@@ -14,8 +13,8 @@ class PhotoTransform extends FeatureBundle
     public function __construct()
     {
         Event::on(
-            ElementIntegrationInterface::class,
-            ElementIntegrationInterface::EVENT_PROCESS_VALUE,
+            User::class,
+            User::EVENT_PROCESS_VALUE,
             [$this, 'processPhoto']
         );
     }
@@ -34,7 +33,7 @@ class PhotoTransform extends FeatureBundle
         $field = $event->getFreeformField();
 
         if (empty($value)) {
-            $event->setValue(null);
+            $event->isValid = false;
 
             return;
         }
@@ -48,7 +47,11 @@ class PhotoTransform extends FeatureBundle
             return;
         }
 
-        $assetId = reset($value);
+        $assetId = $value;
+        if (\is_array($assetId)) {
+            $assetId = reset($value);
+        }
+
         if ($assetId && is_numeric($assetId)) {
             $asset = \Craft::$app->getAssets()->getAssetById((int) $assetId);
             if ($asset) {

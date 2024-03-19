@@ -41,7 +41,7 @@ class IntegrationsService extends BaseService
     public const EVENT_AFTER_DELETE = 'after-delete';
 
     public function __construct(
-        $config = [],
+        $config,
         protected IntegrationClientProvider $clientProvider,
         private PropertyProvider $propertyProvider,
     ) {

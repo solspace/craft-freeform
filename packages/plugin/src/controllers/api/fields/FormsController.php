@@ -13,7 +13,7 @@ class FormsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private FieldTransformer $fieldTransformer,
     ) {
         parent::__construct($id, $module, $config);

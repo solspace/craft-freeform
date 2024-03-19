@@ -14,7 +14,7 @@ class Table extends Property implements OptionsInterface
         ?string $label = null,
         ?string $instructions = null,
         ?int $order = null,
-        array $value = null,
+        ?array $value = null,
         ?int $width = null,
         public null|array|OptionCollection|string $options = null,
     ) {

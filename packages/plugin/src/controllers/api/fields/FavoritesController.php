@@ -17,7 +17,7 @@ class FavoritesController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private FavoritesProvider $favoritesProvider,
         private PropertyProvider $propertyProvider,
     ) {
@@ -29,7 +29,7 @@ class FavoritesController extends BaseApiController
         return $this->favoritesProvider->getFavoriteFields();
     }
 
-    protected function post(int|string $id = null): null|array|object
+    protected function post(null|int|string $id = null): null|array|object
     {
         $request = $this->request;
 
@@ -80,7 +80,7 @@ class FavoritesController extends BaseApiController
         return null;
     }
 
-    protected function put(int|string $id = null): null|array|object
+    protected function put(null|int|string $id = null): null|array|object
     {
         $post = $this->request->post();
 

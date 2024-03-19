@@ -12,7 +12,7 @@ class RulesController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private RuleProvider $ruleProvider,
         private Serializer $serializer,
     ) {

@@ -10,12 +10,12 @@ class CarbonNormalizer implements NormalizerInterface
     /**
      * @param Carbon $object
      */
-    public function normalize($object, string $format = null, array $context = []): string
+    public function normalize($object, ?string $format = null, array $context = []): string
     {
         return $object->toIso8601String();
     }
 
-    public function supportsNormalization($data, string $format = null): bool
+    public function supportsNormalization($data, ?string $format = null): bool
     {
         return $data instanceof Carbon;
     }

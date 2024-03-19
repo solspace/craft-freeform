@@ -51,7 +51,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     public const LOG_CATEGORY = 'freeform_notifications';
 
     public function __construct(
-        $config = [],
+        $config,
         private RuleValidator $ruleValidator,
     ) {
         parent::__construct($config);
@@ -64,7 +64,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         Form $form,
         RecipientCollection $recipients,
         FieldCollection $fields,
-        NotificationTemplate $notificationTemplate = null,
+        ?NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null
     ): int {
         $sentMailCount = 0;
@@ -291,7 +291,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     /**
      * @param FieldInterface[] $fields
      */
-    private function getFieldValues(FieldCollection $fields, Form $form, Submission $submission = null): array
+    private function getFieldValues(FieldCollection $fields, Form $form, ?Submission $submission = null): array
     {
         $postedValues = [];
         $usableFields = [];

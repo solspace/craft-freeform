@@ -202,7 +202,7 @@ class Freeform extends Plugin
         ];
     }
 
-    public static function t(string $message, array $params = [], string $language = null): string
+    public static function t(string $message, array $params = [], ?string $language = null): string
     {
         return \Craft::t(self::TRANSLATION_CATEGORY, $message, $params, $language);
     }

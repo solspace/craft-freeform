@@ -58,7 +58,7 @@ class Folder extends FileObject implements \Iterator
      *
      * @throws FileObjectException
      */
-    public function copy(string $target, string $prefix = null, callable $callable = null, string $filePrefix = null)
+    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null)
     {
         $target = rtrim($target, '/');
         $targetFolderPath = $target.'/'.$filePrefix.$this->name;

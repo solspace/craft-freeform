@@ -34,7 +34,7 @@ class FreeformVariable
     /**
      * @param int|string $handleOrId
      */
-    public function form($handleOrId, array $properties = null): ?Form
+    public function form($handleOrId, ?array $properties = null): ?Form
     {
         $form = $this->getFormService()->getFormByHandleOrId($handleOrId);
         if (!$form) {
@@ -61,7 +61,7 @@ class FreeformVariable
         return Freeform::getInstance()->submissions->getSubmissionCount([$form->getId()]);
     }
 
-    public function submissions(array $attributes = null): SubmissionQuery
+    public function submissions(?array $attributes = null): SubmissionQuery
     {
         $query = Submission::find();
 
@@ -117,7 +117,7 @@ class FreeformVariable
         return $this->loadFreeformPlugin();
     }
 
-    public function loadFreeformPlugin(string $attributes = null, string $styleAttributes = null): Markup
+    public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup
     {
         $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
         $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
@@ -146,7 +146,7 @@ class FreeformVariable
         return Freeform::getInstance()->edition();
     }
 
-    public function getVersion(int $marks = null): string
+    public function getVersion(?int $marks = null): string
     {
         $version = Freeform::getInstance()->version;
 

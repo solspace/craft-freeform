@@ -52,7 +52,7 @@ abstract class FileObject
      *
      * @param null|array|callable $callable
      */
-    abstract public function copy(string $target, string $prefix = null, callable $callable = null, string $filePrefix = null);
+    abstract public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null);
 
     public function getName(): string
     {

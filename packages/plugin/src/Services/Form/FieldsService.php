@@ -19,7 +19,7 @@ class FieldsService extends BaseService
     private array $fieldCache = [];
 
     public function __construct(
-        $config = [],
+        $config,
         private PropertyProvider $propertyProvider,
         private FormsService $formsService,
     ) {

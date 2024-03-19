@@ -25,7 +25,7 @@ abstract class AbstractExport implements ExportInterface
     public function __construct(
         private Form $form,
         array $submissionData,
-        ExportSettings $settings = null
+        ?ExportSettings $settings = null
     ) {
         if (null === $settings) {
             $settings = new ExportSettings();

@@ -12,7 +12,7 @@ abstract class BaseConfiguration
      *
      * @throws ConfigurationException
      */
-    public function __construct(array $config = null)
+    public function __construct(?array $config = null)
     {
         if (null === $config) {
             return;

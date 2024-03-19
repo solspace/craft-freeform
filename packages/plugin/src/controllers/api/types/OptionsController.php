@@ -25,7 +25,7 @@ class OptionsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private OptionTypeTransformer $optionTypeTransformer,
     ) {
         parent::__construct($id, $module, $config);

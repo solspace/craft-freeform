@@ -17,7 +17,7 @@ class Settings
     #[Ignore]
     private PropertyAccessor $accessor;
 
-    public function __construct(array $settings = [], PropertyProvider $propertyProvider)
+    public function __construct(array $settings, PropertyProvider $propertyProvider)
     {
         $this->behavior = new BehaviorSettings();
         $this->general = new GeneralSettings();

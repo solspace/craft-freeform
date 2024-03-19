@@ -63,7 +63,7 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
         return $this->toArray();
     }
 
-    public function toArray(self $optionCollection = null): array
+    public function toArray(?self $optionCollection = null): array
     {
         $options = [];
 
@@ -90,7 +90,7 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
         return $options;
     }
 
-    public function toTwigArray(self $optionCollection = null): array
+    public function toTwigArray(?self $optionCollection = null): array
     {
         $options = [];
 

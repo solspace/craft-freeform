@@ -575,14 +575,14 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
-    public function registerContext(array $renderProperties = null): void
+    public function registerContext(?array $renderProperties = null): void
     {
         $this->setProperties($renderProperties);
 
         Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
     }
 
-    public function render(array $renderProperties = null): ?Markup
+    public function render(?array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
         $formTemplate = $this->getProperties()->get(
@@ -602,7 +602,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function renderTag(array $renderProperties = null): Markup
+    public function renderTag(?array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
 
@@ -680,7 +680,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return new Relations($this->getProperties()->get(self::DATA_RELATIONS));
     }
 
-    public function setProperties(array $properties = null): self
+    public function setProperties(?array $properties = null): self
     {
         $event = new SetPropertiesEvent($this, $properties ?? []);
         Event::trigger(

@@ -15,7 +15,7 @@ class EmailMarketingController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private EmailMarketingService $emailMarketingService,
     ) {
         parent::__construct($id, $module, $config);

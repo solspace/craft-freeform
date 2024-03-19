@@ -23,7 +23,7 @@ class PayloadStorage implements FormContextStorageInterface
 
     private ?string $secret;
 
-    public function __construct(string $secret = null)
+    public function __construct(?string $secret = null)
     {
         $this->secret = $secret;
 
@@ -128,7 +128,7 @@ class PayloadStorage implements FormContextStorageInterface
         return $payload ? htmlspecialchars($payload) : null;
     }
 
-    private function getDecryptedBag(Form $form, string $payload = null)
+    private function getDecryptedBag(Form $form, ?string $payload = null)
     {
         if (null === $payload) {
             return null;

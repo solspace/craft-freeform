@@ -54,7 +54,7 @@ class SurveyPreferencesController extends BaseApiController
         ];
     }
 
-    protected function put(int|string $id = null): null|array|object
+    protected function put(null|int|string $id = null): null|array|object
     {
         PermissionHelper::requirePermission(SurveysBundle::PERMISSION_REPORTS_MANAGE);
         $request = $this->request;

@@ -19,7 +19,7 @@ class StripeWebhookController extends BaseStripeController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private StripeCallbackService $callbackService,
     ) {
         parent::__construct($id, $module, $config);

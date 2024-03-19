@@ -540,7 +540,7 @@ class Submission extends Element
         return $this->fieldCollection;
     }
 
-    protected static function defineSources(string $context = null): array
+    protected static function defineSources(?string $context = null): array
     {
         static $sources;
 
@@ -620,7 +620,7 @@ class Submission extends Element
         ];
     }
 
-    protected static function defineActions(string $source = null): array
+    protected static function defineActions(?string $source = null): array
     {
         if ('*' === $source) {
             $message = Freeform::t('Are you sure you want to delete all submissions?');

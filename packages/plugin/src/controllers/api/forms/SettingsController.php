@@ -10,7 +10,7 @@ class SettingsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private SettingsProvider $settingsProvider,
     ) {
         parent::__construct($id, $module, $config);

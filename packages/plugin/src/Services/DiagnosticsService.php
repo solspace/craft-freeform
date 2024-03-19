@@ -25,7 +25,7 @@ use Solspace\Freeform\Records\IntegrationRecord;
 class DiagnosticsService extends BaseService
 {
     public function __construct(
-        $config = [],
+        $config,
         private IntegrationTypeProvider $integrationTypeProvider,
     ) {
         parent::__construct($config);

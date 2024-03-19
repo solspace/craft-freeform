@@ -22,12 +22,12 @@ class HashHelper
     /** @var Hashids[] */
     private static array $hashids = [];
 
-    public static function hash(array|int $id = null, string $salt = null): string
+    public static function hash(null|array|int $id = null, ?string $salt = null): string
     {
         return self::getHashids($salt)->encode($id);
     }
 
-    public static function decode(string $hash, string $salt = null): ?int
+    public static function decode(string $hash, ?string $salt = null): ?int
     {
         $idList = self::getHashids($salt)->decode($hash);
         if (!$idList) {
@@ -37,12 +37,12 @@ class HashHelper
         return array_pop($idList);
     }
 
-    public static function decodeMultiple(string $hash, string $salt = null): array
+    public static function decodeMultiple(string $hash, ?string $salt = null): array
     {
         return self::getHashids($salt)->decode($hash);
     }
 
-    public static function sha1(mixed $value, int $length = null, int $offset = 0): string
+    public static function sha1(mixed $value, ?int $length = null, int $offset = 0): string
     {
         $hash = sha1($value);
 
@@ -53,7 +53,7 @@ class HashHelper
         return $hash;
     }
 
-    private static function getHashids(string $salt = null): Hashids
+    private static function getHashids(?string $salt = null): Hashids
     {
         $key = sha1($salt);
         if (!isset(self::$hashids[$key])) {

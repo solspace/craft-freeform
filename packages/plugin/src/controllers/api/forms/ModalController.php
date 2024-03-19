@@ -18,7 +18,7 @@ class ModalController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private PropertyProvider $propertyProvider,
         private FormTransformer $formTransformer,
         private SettingsService $settingsService,
@@ -31,7 +31,7 @@ class ModalController extends BaseApiController
         return $this->propertyProvider->getEditableProperties(CreateFormModal::class);
     }
 
-    protected function post(int|string $id = null): null|array|object
+    protected function post(null|int|string $id = null): null|array|object
     {
         $data = json_decode($this->request->getRawBody(), false);
         $data->uid = StringHelper::UUID();

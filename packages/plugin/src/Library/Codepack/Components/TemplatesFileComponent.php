@@ -28,7 +28,7 @@ class TemplatesFileComponent extends AbstractFileComponent
      *
      * @throws FileNotFoundException
      */
-    public function postFileCopyAction(string $newFilePath, string $prefix = null)
+    public function postFileCopyAction(string $newFilePath, ?string $prefix = null)
     {
         if (!file_exists($newFilePath)) {
             throw new FileNotFoundException(

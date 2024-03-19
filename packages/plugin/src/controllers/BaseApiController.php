@@ -55,12 +55,12 @@ abstract class BaseApiController extends BaseController
         throw new NotFoundHttpException('GET request not supported');
     }
 
-    protected function post(int|string $id = null): null|array|object
+    protected function post(null|int|string $id = null): null|array|object
     {
         throw new NotFoundHttpException('POST request not supported');
     }
 
-    protected function put(int|string $id = null): null|array|object
+    protected function put(null|int|string $id = null): null|array|object
     {
         throw new NotFoundHttpException('PUT request not supported');
     }

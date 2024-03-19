@@ -14,7 +14,7 @@ class StripeCustomerController extends BaseStripeController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private StripeCustomerService $customerService,
     ) {
         parent::__construct($id, $module, $config);

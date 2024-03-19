@@ -23,7 +23,7 @@ class FormsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private FormTransformer $formTransformer,
         private FormDuplicator $formDuplicator,
     ) {
@@ -98,7 +98,7 @@ class FormsController extends BaseApiController
         return $this->formTransformer->transform($form);
     }
 
-    protected function post(int|string $id = null): null|array|object
+    protected function post(null|int|string $id = null): null|array|object
     {
         $this->requireFormPermission($id);
 
@@ -113,7 +113,7 @@ class FormsController extends BaseApiController
         return null;
     }
 
-    protected function put(int|string $id = null): null|array|object
+    protected function put(null|int|string $id = null): null|array|object
     {
         $this->requireFormPermission($id);
 

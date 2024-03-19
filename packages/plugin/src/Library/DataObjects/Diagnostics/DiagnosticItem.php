@@ -31,7 +31,7 @@ class DiagnosticItem
 
     private array $notices = [];
 
-    public function __construct(?string $markup, mixed $value, array $validators = [], callable $colorOverride = null)
+    public function __construct(?string $markup, mixed $value, array $validators = [], ?callable $colorOverride = null)
     {
         $this->label = $markup;
         $this->value = $value;

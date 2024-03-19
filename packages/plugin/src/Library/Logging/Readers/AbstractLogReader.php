@@ -19,7 +19,7 @@ class AbstractLogReader
 {
     protected ?string $defaultParserPattern;
 
-    public function __construct(string $defaultParserPattern = null)
+    public function __construct(?string $defaultParserPattern = null)
     {
         $this->defaultParserPattern = $defaultParserPattern;
     }

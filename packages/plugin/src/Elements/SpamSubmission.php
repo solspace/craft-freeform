@@ -44,7 +44,7 @@ class SpamSubmission extends Submission
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/spam/'.$this->id) : false;
     }
 
-    protected static function defineActions(string $source = null): array
+    protected static function defineActions(?string $source = null): array
     {
         if ('*' === $source) {
             $message = Freeform::t('Are you sure you want to delete all submissions?');

@@ -21,7 +21,7 @@ class RoutesComponent extends AbstractJsonComponent
     /**
      * Calls the installation of this component.
      */
-    public function install(string $prefix = null)
+    public function install(?string $prefix = null)
     {
         $routeService = \Craft::$app->routes;
 
@@ -108,7 +108,7 @@ class RoutesComponent extends AbstractJsonComponent
     /**
      * @return null|int|string
      */
-    private function findExistingRoute(array $uriParts, array $existingRoutes = null)
+    private function findExistingRoute(array $uriParts, ?array $existingRoutes = null)
     {
         if (!$existingRoutes) {
             return null;

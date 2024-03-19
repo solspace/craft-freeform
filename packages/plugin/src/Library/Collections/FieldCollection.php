@@ -83,7 +83,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return $this->getList($implements, self::STRATEGY_EXCLUDES);
     }
 
-    public function getListByHandle(string $implements = null, string $strategy = self::STRATEGY_INCLUDES): array
+    public function getListByHandle(?string $implements = null, string $strategy = self::STRATEGY_INCLUDES): array
     {
         $list = $this->getList($implements, $strategy);
         $indexed = [];

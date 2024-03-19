@@ -43,7 +43,7 @@ class SubmissionsController extends BaseController
     public const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
     public const EVENT_REGISTER_EDIT_ASSETS = 'registerEditAssets';
 
-    public function actionIndex(string $formHandle = null): Response
+    public function actionIndex(?string $formHandle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 

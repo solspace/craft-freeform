@@ -28,7 +28,7 @@ class NotificationsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private NotificationTypesProvider $notificationTypesProvider,
         private NotificationTemplateProvider $notificationTemplateProvider,
         private SettingsService $settingsService,

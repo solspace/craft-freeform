@@ -23,7 +23,7 @@ class IntegrationsController extends BaseController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private IntegrationsService $integrationsService,
         private OAuth2Bundle $OAuth2Bundle,
         private IntegrationClientProvider $clientProvider,

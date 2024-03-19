@@ -36,7 +36,7 @@ class ArrayType extends ScalarType
         return $value;
     }
 
-    public function parseLiteral(mixed $valueNode, array $variables = null): mixed
+    public function parseLiteral(mixed $valueNode, ?array $variables = null): mixed
     {
         return $valueNode;
     }

@@ -40,7 +40,7 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->pluginName;
     }
 
-    public function isFreeformHoneypotEnabled(Form $form = null): bool
+    public function isFreeformHoneypotEnabled(?Form $form = null): bool
     {
         $settingsModel = $this->getSettingsModel();
 

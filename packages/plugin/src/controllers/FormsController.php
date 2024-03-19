@@ -27,7 +27,7 @@ use yii\web\Response;
 
 class FormsController extends BaseController
 {
-    public function __construct($id, $module, $config = [], private FieldTypesProvider $fieldTypesProvider)
+    public function __construct($id, $module, $config, private FieldTypesProvider $fieldTypesProvider)
     {
         parent::__construct($id, $module, $config);
     }

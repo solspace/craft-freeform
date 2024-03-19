@@ -12,7 +12,7 @@ use yii\web\Response;
 
 class SurveySettingsController extends Controller
 {
-    public function __construct($id, $module, $config = [], private FieldTypesProvider $fieldTypesProvider)
+    public function __construct($id, $module, $config, private FieldTypesProvider $fieldTypesProvider)
     {
         parent::__construct($id, $module, $config);
     }

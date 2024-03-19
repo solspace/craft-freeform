@@ -83,7 +83,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $this->getSubmissionByToken($identificator);
     }
 
-    public function getSubmissionCount(array $formIds = null, array $statusIds = null, bool $isSpam = false): int
+    public function getSubmissionCount(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false): int
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -112,7 +112,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     /**
      * Returns submission count by form ID.
      */
-    public function getSubmissionCountByForm(bool $isSpam = false, Carbon $rangeStart = null, Carbon $rangeEnd = null): array
+    public function getSubmissionCountByForm(bool $isSpam = false, ?Carbon $rangeStart = null, ?Carbon $rangeEnd = null): array
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -373,7 +373,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      *
      * @return array [submissions purged, assets purged]
      */
-    public function purgeSubmissions(int $age = null): array
+    public function purgeSubmissions(?int $age = null): array
     {
         if (!$this instanceof SpamSubmissionsService) {
             if (!Freeform::getInstance()->isPro()) {

@@ -23,4 +23,5 @@ return (new PhpCsFixer\Config())
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder)
+    ->setCacheFile(__DIR__.'/.php-cs-fixer.cache')
 ;

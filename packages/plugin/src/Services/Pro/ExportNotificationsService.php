@@ -41,7 +41,7 @@ class ExportNotificationsService extends Component
         ;
     }
 
-    public function getById(int $id = null): ?ExportNotificationRecord
+    public function getById(?int $id = null): ?ExportNotificationRecord
     {
         return ExportNotificationRecord::findOne(['id' => $id]);
     }

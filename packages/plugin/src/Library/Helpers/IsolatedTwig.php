@@ -9,7 +9,7 @@ class IsolatedTwig
 {
     private Environment $environment;
 
-    public function __construct(string $templatePath = null)
+    public function __construct(?string $templatePath = null)
     {
         if (null === $templatePath) {
             $templatePath = __DIR__.'/../../templates/';

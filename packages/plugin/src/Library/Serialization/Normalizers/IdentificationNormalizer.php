@@ -8,13 +8,13 @@ class IdentificationNormalizer implements ContextAwareNormalizerInterface
 {
     public const NORMALIZE_TO_IDENTIFICATORS = 'normalize-to-identificators';
 
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, ?string $format = null, array $context = [])
     {
         // @var $object IdentificatorInterface
         return $object->getNormalizeIdentificator();
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         $canNormalize = $context[self::NORMALIZE_TO_IDENTIFICATORS] ?? false;
 

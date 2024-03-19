@@ -7,7 +7,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 
 class IntegrationsController extends BaseApiController
 {
-    public function __construct($id, $module, $config = [], private IntegrationDTOProvider $integrationDTOProvider)
+    public function __construct($id, $module, $config, private IntegrationDTOProvider $integrationDTOProvider)
     {
         parent::__construct($id, $module, $config);
     }

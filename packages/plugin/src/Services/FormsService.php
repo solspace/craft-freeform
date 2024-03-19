@@ -53,7 +53,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private static array $spamCountIncrementedForms = [];
 
-    public function __construct(?array $config = [], private PropertyProvider $propertyProvider)
+    public function __construct(?array $config, private PropertyProvider $propertyProvider)
     {
         parent::__construct($config);
     }

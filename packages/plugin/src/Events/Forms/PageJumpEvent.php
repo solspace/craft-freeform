@@ -31,7 +31,7 @@ class PageJumpEvent extends ArrayableEvent
         return $this->jumpToIndex;
     }
 
-    public function setJumpToIndex(int $jumpToIndex = null): void
+    public function setJumpToIndex(?int $jumpToIndex = null): void
     {
         $totalPages = \count($this->getForm()->getLayout()->getPages());
 

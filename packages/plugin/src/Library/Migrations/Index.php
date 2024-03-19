@@ -10,7 +10,7 @@ class Index
 
     private ?string $prefix;
 
-    public function __construct(array $columns, bool $unique = false, string $prefix = null)
+    public function __construct(array $columns, bool $unique = false, ?string $prefix = null)
     {
         $this->columns = $columns;
         $this->unique = $unique;

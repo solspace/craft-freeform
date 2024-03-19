@@ -199,7 +199,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      * Render the complete set of HTML for this field
      * That includes the Label, Input and Error messages.
      */
-    final public function render(array $parameters = null): Markup
+    final public function render(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
 
@@ -237,7 +237,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->renderRaw($output);
     }
 
-    final public function renderContainerOpeningTag(array $parameters = null): Markup
+    final public function renderContainerOpeningTag(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
         Event::trigger($this, self::EVENT_RENDER_CONTAINER, new FieldRenderEvent($this));
@@ -253,7 +253,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * Render the Label HTML.
      */
-    final public function renderLabel(array $parameters = null): Markup
+    final public function renderLabel(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
         Event::trigger($this, self::EVENT_RENDER_LABEL, new FieldRenderEvent($this));
@@ -261,7 +261,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->renderRaw($this->getLabelHtml());
     }
 
-    public function renderInstructions(array $parameters = null): Markup
+    public function renderInstructions(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
         Event::trigger($this, self::EVENT_RENDER_INSTRUCTIONS, new FieldRenderEvent($this));
@@ -272,7 +272,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * Render the Input HTML.
      */
-    final public function renderInput(array $parameters = null): Markup
+    final public function renderInput(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
         Event::trigger($this, self::EVENT_RENDER_INPUT, new FieldRenderEvent($this));
@@ -283,7 +283,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * Outputs the HTML of errors.
      */
-    final public function renderErrors(array $parameters = null): Markup
+    final public function renderErrors(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
         Event::trigger($this, self::EVENT_RENDER_ERRORS, new FieldRenderEvent($this));
@@ -332,7 +332,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * @return $this
      */
-    public function addErrors(array $errors = null): self
+    public function addErrors(?array $errors = null): self
     {
         if (empty($errors)) {
             return $this;
@@ -510,7 +510,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return true;
     }
 
-    public function setParameters(array $parameters = null): void
+    public function setParameters(?array $parameters = null): void
     {
         if (!\is_array($parameters)) {
             return;
@@ -690,7 +690,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * An alias method for translator.
      */
-    protected function translate(string $string = null, array $variables = []): string
+    protected function translate(?string $string = null, array $variables = []): string
     {
         return null === $string ? '' : Freeform::t($string, $variables);
     }

@@ -22,5 +22,5 @@ interface ComponentInterface
     /**
      * Calls the installation of this component.
      */
-    public function install(string $prefix = null);
+    public function install(?string $prefix = null);
 }

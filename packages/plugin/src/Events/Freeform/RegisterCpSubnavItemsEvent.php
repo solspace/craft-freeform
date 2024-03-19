@@ -20,7 +20,7 @@ class RegisterCpSubnavItemsEvent extends Event
         return $this;
     }
 
-    public function addSubnavItem(string $handle, string $label, string $url, string $afterHandle = null, ?array $extraOptions = null): self
+    public function addSubnavItem(string $handle, string $label, string $url, ?string $afterHandle = null, ?array $extraOptions = null): self
     {
         $item = [
             'label' => $label,

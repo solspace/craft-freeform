@@ -12,7 +12,7 @@ class GroupsController extends BaseApiController
 {
     private FieldTypesProvider $fieldTypesProvider;
 
-    public function __construct($id, $module, $config = [], FieldTypesProvider $fieldTypesProvider)
+    public function __construct($id, $module, $config, FieldTypesProvider $fieldTypesProvider)
     {
         parent::__construct($id, $module, $config);
         $this->fieldTypesProvider = $fieldTypesProvider;

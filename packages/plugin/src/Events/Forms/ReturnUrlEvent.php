@@ -36,7 +36,7 @@ class ReturnUrlEvent extends ArrayableEvent
         return $this->returnUrl;
     }
 
-    public function setReturnUrl(string $returnUrl = null): self
+    public function setReturnUrl(?string $returnUrl = null): self
     {
         $this->returnUrl = $returnUrl;
 

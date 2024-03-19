@@ -16,7 +16,7 @@ class LineParser implements LogParserInterface
 {
     private string $pattern = '/\[(?P<date>.*?)\] (?P<logger>.*?)\.*(?P<level>\w+): (?P<message>.+)/';
 
-    public function __construct(string $pattern = null)
+    public function __construct(?string $pattern = null)
     {
         $this->pattern = $pattern ?: $this->pattern;
     }

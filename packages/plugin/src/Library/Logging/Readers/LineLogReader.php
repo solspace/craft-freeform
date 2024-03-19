@@ -24,7 +24,7 @@ class LineLogReader extends AbstractLogReader implements \Iterator, \Countable
 
     protected LogParserInterface $parser;
 
-    public function __construct(string $filePath, string $defaultPatternPattern = null)
+    public function __construct(string $filePath, ?string $defaultPatternPattern = null)
     {
         parent::__construct($defaultPatternPattern);
 

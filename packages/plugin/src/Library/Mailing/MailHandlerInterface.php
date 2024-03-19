@@ -30,6 +30,6 @@ interface MailHandlerInterface
         RecipientCollection $recipients,
         FieldCollection $fields,
         NotificationTemplate $notificationTemplate,
-        Submission $submission = null
+        ?Submission $submission = null
     ): int;
 }

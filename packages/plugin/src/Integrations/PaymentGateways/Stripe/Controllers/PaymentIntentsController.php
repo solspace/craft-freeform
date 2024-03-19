@@ -17,7 +17,7 @@ class PaymentIntentsController extends BaseStripeController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private IsolatedTwig $isolatedTwig,
         private StripeCustomerService $customerService,
         private StripePriceService $amountService,

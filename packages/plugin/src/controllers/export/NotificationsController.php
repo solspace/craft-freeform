@@ -122,7 +122,7 @@ class NotificationsController extends BaseController
         );
     }
 
-    private function getNewOrExistingNotification(int $id = null): ExportNotificationRecord
+    private function getNewOrExistingNotification(?int $id = null): ExportNotificationRecord
     {
         $record = $this->getExportNotificationsService()->getById($id);
         if (!$record) {

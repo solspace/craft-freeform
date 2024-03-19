@@ -18,7 +18,7 @@ class Table
 
     public function __construct(
         string $name,
-        string $options = null
+        ?string $options = null
     ) {
         $this->name = $name;
         $this->options = $options;
@@ -54,7 +54,7 @@ class Table
         return $this;
     }
 
-    public function addIndex(array $columns, bool $unique = false, string $prefix = null): self
+    public function addIndex(array $columns, bool $unique = false, ?string $prefix = null): self
     {
         $this->indexes[] = new Index($columns, $unique, $prefix);
 
@@ -65,8 +65,8 @@ class Table
         string $column,
         string $refTable,
         string $refColumn,
-        string $onDelete = null,
-        string $onUpdate = null
+        ?string $onDelete = null,
+        ?string $onUpdate = null
     ): self {
         $this->foreignKeys[] = new ForeignKey(
             $this,

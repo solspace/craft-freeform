@@ -13,7 +13,7 @@ class PageButtonsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private PropertyProvider $propertyProvider,
         private SectionProvider $sectionProvider,
     ) {

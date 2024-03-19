@@ -378,7 +378,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      *
      * @param mixed $assetId
      */
-    public function markAssetUnfinalized($assetId, FileUploadField $field = null, string $formToken = null)
+    public function markAssetUnfinalized($assetId, ?FileUploadField $field = null, ?string $formToken = null)
     {
         $record = new UnfinalizedFileRecord();
         $record->assetId = $assetId;

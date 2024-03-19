@@ -12,7 +12,7 @@ class OptionsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private PropertyProvider $propertyProvider
     ) {
         parent::__construct($id, $module, $config);

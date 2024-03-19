@@ -13,7 +13,7 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
     private string $typeClass;
     private array $properties;
 
-    public function __construct(array $config = [], PropertyProvider $propertyProvider)
+    public function __construct(array $config, PropertyProvider $propertyProvider)
     {
         $this->emptyOption = $config['emptyOption'] ?? null;
         $this->typeClass = $config['typeClass'] ?? '';

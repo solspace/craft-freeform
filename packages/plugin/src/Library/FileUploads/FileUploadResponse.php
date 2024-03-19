@@ -23,7 +23,7 @@ class FileUploadResponse
     /**
      * FileUploadResponse constructor.
      */
-    public function __construct(array $assetIds = null, array $errors = [])
+    public function __construct(?array $assetIds = null, array $errors = [])
     {
         $this->assetIds = $assetIds ?? [];
         $this->errors = $errors;

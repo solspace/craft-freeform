@@ -37,8 +37,8 @@ class ForeignKey
         string $column,
         string $referenceTable,
         string $referenceColumn,
-        string $onDelete = null,
-        string $onUpdate = null
+        ?string $onDelete = null,
+        ?string $onUpdate = null
     ) {
         $this->table = $table;
         $this->column = $column;
@@ -88,7 +88,7 @@ class ForeignKey
         return $this->onUpdate;
     }
 
-    private static function getHandler(string $handler = null)
+    private static function getHandler(?string $handler = null)
     {
         if (null === $handler) {
             return null;

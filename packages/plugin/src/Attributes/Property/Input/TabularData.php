@@ -14,7 +14,7 @@ class TabularData extends Property
         ?string $label = null,
         ?string $instructions = null,
         ?int $order = null,
-        array $value = null,
+        ?array $value = null,
         ?int $width = null,
         public null|array|string|TabularDataConfiguration $configuration = null,
     ) {

@@ -16,7 +16,7 @@ class CallbackController extends BaseStripeController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private IsolatedTwig $isolatedTwig,
         private StripeCallbackService $callbackService,
     ) {

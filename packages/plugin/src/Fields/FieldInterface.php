@@ -132,7 +132,7 @@ interface FieldInterface
 
     public function includeInGqlSchema(): bool;
 
-    public function setParameters(array $parameters = null): void;
+    public function setParameters(?array $parameters = null): void;
 
     public function getAttributes(): FieldAttributesCollection;
 

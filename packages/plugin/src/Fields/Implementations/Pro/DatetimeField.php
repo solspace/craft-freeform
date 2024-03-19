@@ -266,7 +266,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
         return $this->locale;
     }
 
-    public function getGeneratedMinDate(string $format = null): ?string
+    public function getGeneratedMinDate(?string $format = null): ?string
     {
         if (!$this->minDate) {
             return null;
@@ -275,7 +275,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
         return date($format ?? 'Y-m-d', strtotime($this->minDate));
     }
 
-    public function getGeneratedMaxDate(string $format = null): ?string
+    public function getGeneratedMaxDate(?string $format = null): ?string
     {
         if (!$this->maxDate) {
             return null;

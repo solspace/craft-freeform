@@ -51,9 +51,11 @@ class ElementEditBundle extends FeatureBundle
 
         /** @var ElementIntegration[] $integrations */
         $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_ELEMENTS);
-        $integration = null;
+        $integration = $fieldMapping = $attributeMapping = null;
         foreach ($integrations as $instance) {
-            if ($instance->isEnabled() && $instance->getFieldMapping()) {
+            $fieldMapping = $instance->getFieldMapping();
+            $attributeMapping = $instance->getAttributeMapping();
+            if ($instance->isEnabled() && ($fieldMapping || $attributeMapping)) {
                 $integration = $instance;
 
                 break;
@@ -63,9 +65,6 @@ class ElementEditBundle extends FeatureBundle
         if (!$elementId || !$integration) {
             return;
         }
-
-        $attributeMapping = $integration->getAttributeMapping();
-        $fieldMapping = $integration->getFieldMapping();
 
         $element = \Craft::$app->elements->getElementById($elementId);
         if (!$element) {

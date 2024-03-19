@@ -216,12 +216,12 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     #[Input\Select(
         instructions: 'Choose the base theme to be used for styling the appearance of the Stripe field. Styles can be further fine-tuned at template-level using JS overrides.',
         options: [
-            'default' => 'Default',
+            'stripe' => 'Default',
             'night' => 'Dark',
             'flat' => 'Minimal',
         ],
     )]
-    protected string $theme = 'default';
+    protected string $theme = 'stripe';
 
     #[Section('appearance')]
     #[Input\Select(

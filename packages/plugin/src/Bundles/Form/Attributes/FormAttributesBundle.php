@@ -67,7 +67,7 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->set('method', 'post');
         }
 
-        if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
+        if ($form->getLayout()->getFields(FileUploadInterface::class)->count()) {
             $attributes->replace('enctype', 'multipart/form-data');
         }
 

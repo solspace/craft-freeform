@@ -16,7 +16,7 @@ class UserController extends BaseApiController
             ['id' => 'lastName', 'label' => 'Last Name', 'required' => false],
             ['id' => 'fullName', 'label' => 'Full Name', 'required' => false],
             ['id' => 'email', 'label' => 'Email', 'required' => true],
-            ['id' => 'password', 'label' => 'Password', 'required' => false],
+            ['id' => 'newPassword', 'label' => 'Password', 'required' => false],
             ['id' => 'photo', 'label' => 'Photo', 'required' => false],
         ]);
     }

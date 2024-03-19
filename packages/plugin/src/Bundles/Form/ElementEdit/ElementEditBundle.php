@@ -51,83 +51,93 @@ class ElementEditBundle extends FeatureBundle
 
         /** @var ElementIntegration[] $integrations */
         $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_ELEMENTS);
-        $integration = reset($integrations);
+        $integration = $fieldMapping = $attributeMapping = null;
+        foreach ($integrations as $instance) {
+            $fieldMapping = $instance->getFieldMapping();
+            $attributeMapping = $instance->getAttributeMapping();
+            if ($instance->isEnabled() && ($fieldMapping || $attributeMapping)) {
+                $integration = $instance;
+
+                break;
+            }
+        }
 
         if (!$elementId || !$integration) {
             return;
         }
-
-        $attributeMapping = $integration->getAttributeMapping();
-        $fieldMapping = $integration->getFieldMapping();
 
         $element = \Craft::$app->elements->getElementById($elementId);
         if (!$element) {
             return;
         }
 
-        foreach ($attributeMapping as $item) {
-            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
-                continue;
-            }
+        if (null !== $attributeMapping) {
+            foreach ($attributeMapping as $item) {
+                if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
+                    continue;
+                }
 
-            $value = $element->{$item->getSource()};
-            $field = $form->get($item->getValue());
-            if (!$field) {
-                continue;
-            }
+                $value = $element->{$item->getSource()};
+                $field = $form->get($item->getValue());
+                if (!$field) {
+                    continue;
+                }
 
-            $field->setValue($value);
+                $field->setValue($value);
+            }
         }
 
-        $customFields = $element->getFieldLayout()->getCustomFields();
-        foreach ($fieldMapping as $item) {
-            if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
-                continue;
-            }
-
-            $craftField = null;
-            foreach ($customFields as $field) {
-                if ((int) $field->id === (int) $item->getSource()) {
-                    $craftField = $field;
-
-                    break;
+        if (null !== $fieldMapping) {
+            $customFields = $element->getFieldLayout()->getCustomFields();
+            foreach ($fieldMapping as $item) {
+                if (FieldMapItem::TYPE_RELATION !== $item->getType()) {
+                    continue;
                 }
-            }
 
-            if (!$craftField) {
-                continue;
-            }
+                $craftField = null;
+                foreach ($customFields as $field) {
+                    if ((int) $field->id === (int) $item->getSource()) {
+                        $craftField = $field;
 
-            $value = $element->getFieldValue($craftField->handle);
-            $field = $form->get($item->getValue());
-            if (!$field) {
-                continue;
-            }
-
-            if ($value instanceof MultiOptionsFieldData) {
-                $options = $value->getOptions();
-
-                $values = [];
-                foreach ($options as $option) {
-                    if ($option->selected) {
-                        $values[] = $option->value;
+                        break;
                     }
                 }
 
-                if (!$field instanceof MultiValueInterface) {
-                    $value = implode(', ', $values);
+                if (!$craftField) {
+                    continue;
                 }
-            }
 
-            if ($value instanceof ElementQuery) {
-                $value = $value->ids();
-            }
+                $value = $element->getFieldValue($craftField->handle);
+                $field = $form->get($item->getValue());
+                if (!$field) {
+                    continue;
+                }
 
-            if (!$field instanceof MultiValueInterface && \is_array($value)) {
-                $value = implode(', ', $value);
-            }
+                if ($value instanceof MultiOptionsFieldData) {
+                    $options = $value->getOptions();
 
-            $field->setValue($value);
+                    $values = [];
+                    foreach ($options as $option) {
+                        if ($option->selected) {
+                            $values[] = $option->value;
+                        }
+                    }
+
+                    if (!$field instanceof MultiValueInterface) {
+                        $value = implode(', ', $values);
+                    }
+                }
+
+                if ($value instanceof ElementQuery) {
+                    $value = $value->ids();
+                }
+
+                if (!$field instanceof MultiValueInterface && \is_array($value)) {
+                    $value = implode(', ', $value);
+                }
+
+                $field->setValue($value);
+            }
         }
     }
 }

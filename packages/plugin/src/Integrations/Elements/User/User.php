@@ -23,12 +23,6 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 )]
 class User extends ElementIntegration
 {
-    #[Input\Select(
-        label: 'User Group',
-        options: UserGroupsOptionsGenerator::class,
-    )]
-    protected string $userGroupId = '';
-
     #[Input\Boolean(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
@@ -41,6 +35,14 @@ class User extends ElementIntegration
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',
     )]
     protected bool $sendActivation = false;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Input\Checkboxes(
+        label: 'User Group',
+        instructions: 'Select the user group to assign the user to.',
+        options: UserGroupsOptionsGenerator::class,
+    )]
+    protected array $userGroupIds = [];
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
@@ -58,9 +60,9 @@ class User extends ElementIntegration
         return true;
     }
 
-    public function getUserGroupId(): int
+    public function getUserGroupIds(): array
     {
-        return $this->userGroupId;
+        return $this->userGroupIds;
     }
 
     public function getAttributeMapping(): ?FieldMapping
@@ -106,7 +108,9 @@ class User extends ElementIntegration
         $this->processMapping($user, $form, $this->attributeMapping);
         $this->processMapping($user, $form, $this->fieldMapping);
 
-        if ($this->attributeMapping->isSourceMapped('firstName') || $this->attributeMapping->isSourceMapped('lastName')) {
+        $isFirstnameMapped = $this->attributeMapping->isSourceMapped('firstName');
+        $isLastnameMapped = $this->attributeMapping->isSourceMapped('lastName');
+        if ($isFirstnameMapped || $isLastnameMapped) {
             $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
         }
 
@@ -127,21 +131,14 @@ class User extends ElementIntegration
 
     public function onAfterConnect(Form $form, Element $element): void
     {
-        $groupIds = $this->getUserGroupId();
-
         if (!isset(self::$existingUserCache[$element->id])) {
             $validGroupIds = [];
 
-            if (!\is_array($groupIds) && !empty($groupIds)) {
-                $groupIds = [$groupIds];
-            }
-
-            if ($groupIds) {
-                foreach ($groupIds as $groupId) {
-                    $group = \Craft::$app->userGroups->getGroupById((int) $groupId);
-                    if ($group) {
-                        $validGroupIds[] = $group->id;
-                    }
+            $groupIds = $this->getUserGroupIds();
+            foreach ($groupIds as $groupId) {
+                $group = \Craft::$app->userGroups->getGroupById((int) $groupId);
+                if ($group) {
+                    $validGroupIds[] = $group->id;
                 }
             }
 

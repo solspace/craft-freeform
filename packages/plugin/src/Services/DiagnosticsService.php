@@ -77,7 +77,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum PHP version Freeform supports is 8.0.2 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value, '8.2.0', '<='),
+                        fn ($value) => version_compare($value, '8.4.0', '<='),
                         'Potential PHP Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of PHP and may encounter issues. Please check if there are any updates available.'
                     ),
@@ -170,13 +170,6 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 'Craft Email configuration: <b>{{ value.transport }}</b>',
                 ['transport' => $emailTransport, 'issues' => $emailIssues],
-                [
-                    new SuggestionValidator(
-                        fn ($value) => 'misaligned_from' !== $value['issues'],
-                        'Potential Email Configuration issue',
-                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings. This could potentially cause issues."
-                    ),
-                ]
             ),
             new DiagnosticItem(
                 'PHP Sessions: <b>{{ value ? "Enabled" : "Disabled" }}</b>',

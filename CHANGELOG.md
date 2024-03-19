@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 5.1.5 - 2024-03-19
+
+### Changed
+- Updated the CSRF input to send `nocache` headers when rendering. 
+- Adjusted the Diagnostics page to include PHP 8.2 and 8.3 compatibility.
+
+### Fixed
+- Fixed a bug where Freeform was opening unnecessary sessions.
+- Fixed a bug where page tabs would become inaccessible when the number of tabs exceeds the width of the browser window.
+- Fixed a bug where mapping to the _Enabled_ setting on Craft Entry element integrations was not working.
+- Fixed a bug where user group selection in the User element integration did not allow multiple choice.
+- Fixed a bug where files were not being uploaded for regular File Upload fields when not using AJAX.
+- Fixed a bug where the User element integration was not always working when used in _edit_ mode.
+- Fixed a bug where changes to email notifications in the form builder were not sticking if you switched to another tab.
+- Fixed a bug where the default theme option for Stripe was incorrectly named `default` instead of `stripe`, causing console errors in the browser.
+
 ## 5.1.4 - 2024-03-14
 
 ### Added

@@ -25,6 +25,13 @@ export const useClickOutside = <T extends HTMLElement>({
       }
 
       if (
+        document.activeElement instanceof HTMLInputElement ||
+        document.activeElement instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      if (
         isEnabled &&
         usableRef.current &&
         !usableRef.current.contains(event.target as Node) &&

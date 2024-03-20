@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.1.6 - 2024-03-20
+
+### Added
+- Added a **Not Like** option for filtering on field values in Export Profiles.
+
+### Changed
+- Improved the form builder so it doesn't prematurely close the property editor when a click and drag happens beyond it (e.g. selecting a value in a text input field to clear and replace it).
+
+### Fixed
+- Fixed a bug where fields could have conditional rules for each other and cause an infinite loop.
+- Fixed a bug where removing conditional rules did not always remove the correct rule set.
+- Fixed a bug where using multiple Stripe fields from multiple Stripe accounts in the same form would not work correctly.
+
 ## 5.1.5.1 - 2024-03-20
 
 ### Fixed

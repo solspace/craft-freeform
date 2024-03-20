@@ -1230,7 +1230,7 @@ return [
     'Profiles' => 'Profielen',
     'Filter Type' => 'Filtertype',
     'Filters' => 'Filters',
-    'Add filters to narrow down your results. For searching into arrays, use LIKE and wrap values with "%", e.g. %"option a"% for a checkbox group field.' => 'Voeg filters toe om uw resultaten te verfijnen. Gebruik voor het zoeken in arrays LIKE en verpak waarden met "%", b.v. %"option a"% voor een checkbox-groepsveld.',
+    'Add filters to narrow down your results. For wildcards, use LIKE and the `%` symbol, e.g. `cat%`. For searching into arrays (Checkboxes fields), use LIKE, quotes, and wrap values with `%`, e.g. `%\"option a\"%`.' => 'Voeg filters toe om uw resultaten te verfijnen. Gebruik voor het zoeken in arrays LIKE en verpak waarden met "%", b.v. %"option a"% voor een checkbox-groepsveld.',
     'Field Name' => 'Veldnaam',
     'Fields to export' => 'Velden om te exporteren',
     'What this export profile will be called in the CP.' => 'Hoe dit exportprofiel in de CP zal heten.',

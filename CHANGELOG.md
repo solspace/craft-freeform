@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.1.5.1 - 2024-03-20
+
+### Fixed
+- Fixed a bug where a change for setting `nocache` headers in Freeform 5.1.5 broke the Craft CLI.
+
 ## 5.1.5 - 2024-03-19
 
 ### Changed

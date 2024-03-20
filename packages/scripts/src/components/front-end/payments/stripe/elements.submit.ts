@@ -1,6 +1,7 @@
 import events from '@lib/plugin/constants/event-types';
 import type { FreeformEvent } from 'types/events';
 
+import config from './elements.config';
 import { initStripe } from './elements.init';
 import { selectHiddenContainers, selectVisibleContainers } from './elements.selectors';
 import type { StripeFunctionConstructorProps } from './elements.types';
@@ -25,19 +26,19 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     return;
   }
 
-  const { elementMap, stripe, form } = props;
+  const { elementMap, form } = props;
 
   const containers = selectVisibleContainers(form);
-  containers.forEach(async (container) => {
-    const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
+  for (const container of containers) {
+    const { getStripe, required, integration } = config(container);
+    const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
     const {
       empty,
       elements,
       paymentIntent: { id, secret },
     } = elementMap.get(field);
 
-    const isRequired = field.dataset.required !== undefined;
-    if (empty && !isRequired) {
+    if (empty && !required) {
       return;
     }
 
@@ -51,9 +52,10 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     }
 
     const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
-    returnUrl.searchParams.append('integration', field.dataset.integration);
+    returnUrl.searchParams.append('integration', integration);
     returnUrl.searchParams.append('token', token);
 
+    const stripe = await getStripe();
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -65,5 +67,5 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
       event.freeform._renderFormErrors([error.message]);
       event.freeform.unlockSubmit();
     }
-  });
+  }
 };

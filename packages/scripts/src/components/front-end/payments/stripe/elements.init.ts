@@ -6,7 +6,7 @@ import type { StripeAppearanceEvent } from './elements.events';
 import events from './elements.events';
 import queries from './elements.queries';
 import { isHidden } from './elements.selectors';
-import type { StripeFunctionConstructorProps, StripeLayout, StripeTheme } from './elements.types';
+import type { StripeFunctionConstructorProps } from './elements.types';
 
 const workers: string[] = [];
 
@@ -15,10 +15,11 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     return;
   }
 
-  const { elementMap, form, stripe } = props;
-  const { fieldMapping } = config(form);
+  const { fieldMapping, theme, layout, floatingLabels, integration, amountFields, getStripe } = config(container);
+  const { elementMap, form } = props;
+  const stripe = await getStripe();
 
-  const field = container.querySelector<HTMLDivElement>('.freeform-stripe-card');
+  const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
   if (elementMap.has(field)) {
     return;
   }
@@ -32,18 +33,16 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
   field.innerHTML = 'Loading...';
 
-  const amountFieldHandles = field.dataset.amountFields?.split(';') ?? [];
-
   queries.paymentIntents
-    .create(field.dataset.integration, form)
+    .create(integration, form)
     .then(({ data: { id, secret } }) => {
       // Set the PaymentIntent ID as the field value
-      (field.previousSibling as HTMLInputElement).value = id;
+      field.parentElement.querySelector<HTMLInputElement>('[data-freeform-stripe-intent]').value = id;
 
       const { elementOptions, paymentOptions } = generateElementOptions({
-        theme: field.dataset?.theme as StripeTheme,
-        layout: field.dataset?.layout as StripeLayout,
-        floatingLabels: field.dataset.floatingLabels !== undefined,
+        theme,
+        layout,
+        floatingLabels,
       });
 
       // Dispatch an event which lets other scripts modify the appearance of the Stripe element
@@ -72,14 +71,14 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       });
 
       // Listen for changes to the amount, interval and interval count fields
-      amountFieldHandles.forEach((amountFieldHandle) => {
-        (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', () => {
-          workers.push(amountFieldHandle);
+      amountFields.forEach((handle) => {
+        (form[handle] as HTMLInputElement)?.addEventListener('change', () => {
+          workers.push(handle);
           form.freeform.disableForm();
           const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
           queries.paymentIntents
-            .updateAmount(field.dataset.integration, form, paymentIntentId)
+            .updateAmount(integration, form, paymentIntentId)
             .then(({ id, client_secret }) => {
               // If a client_secret is returned - we need to recreate the Stripe element
               if (client_secret) {
@@ -106,7 +105,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
             })
             .catch((error) => {
               form.freeform._renderFieldErrors({
-                [amountFieldHandle]: [error.response.data.message],
+                [handle]: [error.response.data.message],
               });
             })
             .finally(() => {
@@ -124,7 +123,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
         const value = (event.target as HTMLInputElement).value;
 
         queries.customers.update({
-          integration: field.dataset.integration,
+          integration,
           form,
           paymentIntentId: id,
           key: source,
@@ -159,8 +158,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       field.innerHTML = 'Could not load payment element.';
 
       const errors: Record<string, string[]> = {};
-      amountFieldHandles.forEach((amountFieldHandle) => {
-        errors[amountFieldHandle] = [error.response.data.message];
+      amountFields.forEach((handle) => {
+        errors[handle] = [error.response.data.message];
       });
 
       form.freeform._renderFieldErrors(errors);
@@ -168,13 +167,13 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       const executeOnce = () => {
         initStripe(props)(container);
 
-        amountFieldHandles.forEach((amountFieldHandle) => {
-          (form[amountFieldHandle] as HTMLInputElement)?.removeEventListener('change', executeOnce);
+        amountFields.forEach((handle) => {
+          (form[handle] as HTMLInputElement)?.removeEventListener('change', executeOnce);
         });
       };
 
-      amountFieldHandles.forEach((amountFieldHandle) => {
-        (form[amountFieldHandle] as HTMLInputElement)?.addEventListener('change', executeOnce);
+      amountFields.forEach((handle) => {
+        (form[handle] as HTMLInputElement)?.addEventListener('change', executeOnce);
       });
     });
 };

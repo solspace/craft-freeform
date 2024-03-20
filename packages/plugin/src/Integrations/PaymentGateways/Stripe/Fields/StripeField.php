@@ -17,9 +17,9 @@ use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\Currency\CurrencyOptionsGenerator;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 #[Type(
     name: 'Stripe Payment',
@@ -55,7 +55,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
             'shortName === "Stripe"',
         ],
     )]
-    protected ?IntegrationInterface $integration = null;
+    protected ?Stripe $integration = null;
 
     #[Input\TextArea(
         instructions: 'Enter a description for this payment. You can use the `form` object in twig.',
@@ -243,7 +243,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         return 'stripe';
     }
 
-    public function getIntegration(): ?IntegrationInterface
+    public function getIntegration(): ?Stripe
     {
         return $this->integration;
     }
@@ -349,6 +349,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         $output = '<div'.$this->getAttributes()->getInput().'>';
 
         $inputAttributes = (new Attributes())
+            ->set('data-freeform-stripe-intent')
             ->set('name', $this->getHandle())
             ->set('type', 'hidden')
             ->set('value', $this->getValue())
@@ -361,15 +362,20 @@ class StripeField extends AbstractField implements PaymentFieldInterface
             $this->intervalCountField?->getHandle() ?? false,
         ]);
 
-        $stripeAttributes = (new Attributes())
-            ->set('class', 'freeform-stripe-card')
-            ->set('data-required', $this->isRequired())
-            ->set('data-integration', $id)
-            ->set('data-amount-fields', !empty($amountFields) ? implode(';', $amountFields) : false)
-            ->set('data-layout', $this->getLayout())
-            ->set('data-theme', $this->getTheme())
-            ->set('data-floating-labels', $this->isFloatingLabels())
-        ;
+        $config = json_encode([
+            'apiKey' => $this->integration?->getPublicKey(),
+            'required' => $this->isRequired(),
+            'integration' => $id,
+            'amountFields' => $amountFields,
+            'layout' => $this->getLayout(),
+            'theme' => $this->getTheme(),
+            'floatingLabels' => $this->isFloatingLabels(),
+            'fieldMapping' => $this->integration?->getMappedFieldHandles($this->getForm()),
+        ]);
+
+        $output .= '<script data-stripe-config type="application/json">'.$config.'</script>';
+
+        $stripeAttributes = (new Attributes())->set('data-freeform-stripe-card', true);
         $output .= '<div'.$stripeAttributes.'></div>';
 
         if (!$this->integration) {

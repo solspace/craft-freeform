@@ -169,7 +169,7 @@ class RuleHandler implements FreeformHandler {
 
     const field = this.form[condition.field] || this.form[`${condition.field}[]`];
 
-    const isCheckbox = fieldContainer.classList.contains('freeform-fieldtype-checkbox');
+    const isCheckbox = fieldContainer.getAttribute('data-field-type') === 'checkbox';
 
     // Default the value to `null` if the field is hidden, which will help
     // with triggering nested rules

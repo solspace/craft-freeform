@@ -48,6 +48,10 @@ class RegisterField extends FeatureBundle
     {
         static $stripeScriptLoaded;
 
+        if (!$event->isGenerateTag()) {
+            return;
+        }
+
         $form = $event->getForm();
         if (!$form->getFields()->hasFieldOfClass(StripeField::class)) {
             return;
@@ -55,20 +59,18 @@ class RegisterField extends FeatureBundle
 
         $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_PAYMENT_GATEWAYS);
 
-        /** @var Stripe $integration */
-        $integration = reset($integrations);
-        if (!$integration || !$integration->isEnabled()) {
-            return;
+        $hasIntegration = false;
+        foreach ($integrations as $integration) {
+            if ($integration instanceof Stripe && $integration->isEnabled()) {
+                $hasIntegration = true;
+
+                break;
+            }
         }
 
-        $config = json_encode([
-            'apiKey' => $integration->getPublicKey(),
-            'fieldMapping' => $integration->getMappedFieldHandles($form),
-        ]);
-
-        $event->addChunk(
-            '<script data-stripe-config type="application/json">'.$config.'</script>'
-        );
+        if (!$hasIntegration) {
+            return;
+        }
 
         if (null === $stripeScriptLoaded) {
             $stripeScriptLoaded = true;

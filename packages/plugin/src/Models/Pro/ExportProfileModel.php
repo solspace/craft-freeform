@@ -338,6 +338,11 @@ class ExportProfileModel extends Model
 
                         break;
 
+                    case 'not-like':
+                        $conditions[] = "{$fieldId} NOT LIKE :field_{$id}";
+
+                        break;
+
                     default:
                         continue 2;
                 }

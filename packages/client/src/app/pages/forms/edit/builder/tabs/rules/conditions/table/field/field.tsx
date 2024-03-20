@@ -8,11 +8,15 @@ type Props = {
   onChange: (fieldUid: string) => void;
 };
 
+import { useSelector } from 'react-redux';
 import { useFieldOptionCollection } from '@editor/store/slices/layout/fields/fields.hooks';
+import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 
 export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
   const { uid } = useParams();
-  const options = useFieldOptionCollection([uid]);
+
+  const usedBy = useSelector(fieldRuleSelectors.usedByFields(uid));
+  const options = useFieldOptionCollection([...usedBy, uid]);
 
   return (
     <Dropdown

@@ -60,7 +60,7 @@ export const FieldRulesEditor: React.FC = () => {
     <RulesEditorWrapper>
       <Remove
         onClick={() => {
-          dispatch(fieldRuleActions.remove(uid));
+          dispatch(fieldRuleActions.remove(rule.uid));
           navigate('..');
         }}
       />

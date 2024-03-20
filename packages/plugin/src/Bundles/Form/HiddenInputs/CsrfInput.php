@@ -17,8 +17,10 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
-        // Prevent response from being cached with token
-        \Craft::$app->getResponse()->setNoCacheHeaders();
+        if (!\Craft::$app->request->isConsoleRequest) {
+            // Prevent response from being cached with token
+            \Craft::$app->getResponse()->setNoCacheHeaders();
+        }
 
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);

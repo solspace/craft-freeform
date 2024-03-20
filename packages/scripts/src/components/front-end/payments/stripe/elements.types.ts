@@ -2,7 +2,14 @@ import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
 export type Config = {
   apiKey: string;
+  required: boolean;
+  integration: string;
+  amountFields: string[];
+  layout: StripeLayout;
+  theme: StripeTheme;
+  floatingLabels: boolean;
   fieldMapping: Array<{ source: string; target: string }>;
+  getStripe: () => Promise<Stripe>;
 };
 
 export type StripeElement = {
@@ -16,7 +23,6 @@ export type StripeElement = {
 
 export type StripeFunctionConstructorProps = {
   elementMap: WeakMap<HTMLDivElement, StripeElement>;
-  stripe: Stripe;
   form: HTMLFormElement;
 };
 

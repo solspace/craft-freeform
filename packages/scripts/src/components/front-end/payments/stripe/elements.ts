@@ -1,22 +1,11 @@
 import events from '@lib/plugin/constants/event-types';
-import { loadStripe } from '@stripe/stripe-js';
 
-import extractConfig from './elements.config';
 import { loadStripeContainers, submitStripe } from './elements.submit';
 import type { StripeElement, StripeFunctionConstructorProps } from './elements.types';
 
 const initializedForms = new WeakMap<HTMLFormElement, boolean>();
 
 const attachStripeToForm = async (form: HTMLFormElement) => {
-  const config = extractConfig(form);
-  if (!config) {
-    return;
-  }
-
-  const { apiKey } = config;
-
-  const stripe = await loadStripe(apiKey);
-
   if (initializedForms.has(form)) {
     return;
   }
@@ -27,7 +16,6 @@ const attachStripeToForm = async (form: HTMLFormElement) => {
   const props: StripeFunctionConstructorProps = {
     elementMap,
     form,
-    stripe,
   };
 
   const loadContainers = loadStripeContainers(props);

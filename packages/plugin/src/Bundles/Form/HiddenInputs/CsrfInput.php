@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
-use Craft;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -18,8 +17,10 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
-        // Prevent response from being cached with token
-        Craft::$app->getResponse()->setNoCacheHeaders();
+        if (!\Craft::$app->getRequest()->isConsoleRequest) {
+            // Prevent response from being cached with token
+            \Craft::$app->getResponse()->setNoCacheHeaders();
+        }
 
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);

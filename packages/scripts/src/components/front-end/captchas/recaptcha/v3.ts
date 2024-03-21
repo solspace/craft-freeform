@@ -57,8 +57,6 @@ form.addEventListener(events.form.submit, (event: FreeformEvent) => {
     return;
   }
 
-  console.log('submitting reCAPTCHA v3');
-
   event.preventDefault();
   loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
     const recaptchaElement = createCaptcha(event);

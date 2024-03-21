@@ -5,6 +5,7 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m220330_111857_SplitSubmissionsTable extends Migration
 {
@@ -81,7 +82,6 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             }
 
             $tableName = $this->createFormTable($formId, $formHandle, $fieldMap);
-
             if ($tableName) {
                 $this->swapData($formId, $tableName, $fieldMap);
             }
@@ -115,6 +115,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $formHandle = trim($formHandle, '-_');
 
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
+
         $tableExists = \Craft::$app->db->schema->getTableSchema($tableName);
 
         if (is_null($tableExists)) {
@@ -124,7 +125,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                 $this->addPrimaryKey('PK', $tableName, ['id']);
             }
 
-            $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', 'CASCADE');
+            $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', ForeignKey::CASCADE);
 
             return $tableName;
         }

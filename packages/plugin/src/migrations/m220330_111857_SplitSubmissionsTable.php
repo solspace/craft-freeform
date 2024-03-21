@@ -5,7 +5,6 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
-use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 class m220330_111857_SplitSubmissionsTable extends Migration
 {
@@ -40,14 +39,12 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $forms = (new Query())
             ->select(['id', 'handle', 'layoutJson'])
             ->from('{{%freeform_forms}}')
-            ->all()
-        ;
+            ->all();
 
         $fields = (new Query())
             ->select(['id', 'handle'])
             ->from('{{%freeform_fields}}')
-            ->pairs()
-        ;
+            ->pairs();
 
         $prefix = \Craft::$app->db->tablePrefix;
         $prefixLength = \strlen($prefix);
@@ -80,11 +77,14 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                 $handle = StringHelper::truncate($handle, 50, '');
                 $handle = trim($handle, '-_');
 
-                $fieldMap["field_{$id}"] = $handle.'_'.$id;
+                $fieldMap["field_{$id}"] = $handle . '_' . $id;
             }
 
             $tableName = $this->createFormTable($formId, $formHandle, $fieldMap);
-            $this->swapData($formId, $tableName, $fieldMap);
+
+            if ($tableName) {
+                $this->swapData($formId, $tableName, $fieldMap);
+            }
         }
 
         $this->cleanUpSubmissionsTable($fields);
@@ -115,16 +115,21 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $formHandle = trim($formHandle, '-_');
 
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
+        $tableExists = \Craft::$app->db->schema->getTableSchema($tableName);
 
-        $this->createTable($tableName, $tableColumns);
+        if (is_null($tableExists)) {
+            $this->createTable($tableName, $tableColumns);
 
-        if (!$this->db->getIsPgsql()) {
-            $this->addPrimaryKey('PK', $tableName, ['id']);
+            if (!$this->db->getIsPgsql()) {
+                $this->addPrimaryKey('PK', $tableName, ['id']);
+            }
+
+            $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', 'CASCADE');
+
+            return $tableName;
         }
 
-        $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', ForeignKey::CASCADE);
-
-        return $tableName;
+        return '';
     }
 
     private function swapData(int $formId, string $tableName, array $fieldMap): void
@@ -133,8 +138,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             ->select(['id', ...array_keys($fieldMap)])
             ->from('{{%freeform_submissions}}')
             ->where(['formId' => $formId])
-            ->indexBy('id')
-        ;
+            ->indexBy('id');
 
         foreach ($submissionQuery->batch() as $batch) {
             $insertRows = [];

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Integration\Type as IntegrationType;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -10,6 +11,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
@@ -362,6 +364,22 @@ class StripeField extends AbstractField implements PaymentFieldInterface
             $this->intervalCountField?->getHandle() ?? false,
         ]);
 
+        $provider = \Craft::$container->get(FormIntegrationsProvider::class);
+        $integrations = $provider->getForForm($this->getForm(), IntegrationType::TYPE_PAYMENT_GATEWAYS);
+
+        $fieldMapping = [];
+        foreach ($integrations as $integration) {
+            if (
+                $integration instanceof Stripe
+                && $integration->isEnabled()
+                && $integration->getId() === $this->integration->getId()
+            ) {
+                $fieldMapping = $integration->getMappedFieldHandles($this->getForm());
+
+                break;
+            }
+        }
+
         $config = json_encode([
             'apiKey' => $this->integration?->getPublicKey(),
             'required' => $this->isRequired(),
@@ -370,7 +388,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
             'layout' => $this->getLayout(),
             'theme' => $this->getTheme(),
             'floatingLabels' => $this->isFloatingLabels(),
-            'fieldMapping' => $this->integration?->getMappedFieldHandles($this->getForm()),
+            'fieldMapping' => $fieldMapping,
         ]);
 
         $output .= '<script data-stripe-config type="application/json">'.$config.'</script>';

@@ -9,7 +9,8 @@ export type Config = {
   theme: StripeTheme;
   floatingLabels: boolean;
   fieldMapping: Array<{ source: string; target: string }>;
-  getStripe: () => Promise<Stripe>;
+  getStripeInstance: () => Stripe;
+  loadStripe: () => Promise<Stripe>;
 };
 
 export type StripeElement = {

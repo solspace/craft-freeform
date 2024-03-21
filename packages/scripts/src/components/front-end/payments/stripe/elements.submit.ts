@@ -42,6 +42,10 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
       return;
     }
 
+    window.freeform = {
+      disableCaptcha: true,
+    };
+
     event.preventDefault();
     event.freeform.lockSubmit();
 

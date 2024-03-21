@@ -48,6 +48,11 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
           callback: (token) => {
             isTokenSet = true;
             recaptchaElement.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
+
+            if (window?.freeform?.disableCaptcha) {
+              return;
+            }
+
             event.freeform.triggerResubmit();
           },
         });

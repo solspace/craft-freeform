@@ -48,6 +48,11 @@ const initHCaptchaInvisible = (event: FreeformEvent): void => {
       callback: (token: string) => {
         isTokenSet = true;
         hcaptchaElement.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
+
+        if (window?.freeform?.disableCaptcha) {
+          return;
+        }
+
         event.freeform.triggerResubmit();
       },
     });

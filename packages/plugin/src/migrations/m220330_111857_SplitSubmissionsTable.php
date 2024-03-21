@@ -40,12 +40,14 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $forms = (new Query())
             ->select(['id', 'handle', 'layoutJson'])
             ->from('{{%freeform_forms}}')
-            ->all();
+            ->all()
+        ;
 
         $fields = (new Query())
             ->select(['id', 'handle'])
             ->from('{{%freeform_fields}}')
-            ->pairs();
+            ->pairs()
+        ;
 
         $prefix = \Craft::$app->db->tablePrefix;
         $prefixLength = \strlen($prefix);
@@ -78,7 +80,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                 $handle = StringHelper::truncate($handle, 50, '');
                 $handle = trim($handle, '-_');
 
-                $fieldMap["field_{$id}"] = $handle . '_' . $id;
+                $fieldMap["field_{$id}"] = $handle.'_'.$id;
             }
 
             $tableName = $this->createFormTable($formId, $formHandle, $fieldMap);
@@ -118,7 +120,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
 
         $tableExists = \Craft::$app->db->schema->getTableSchema($tableName);
 
-        if (is_null($tableExists)) {
+        if (null === $tableExists) {
             $this->createTable($tableName, $tableColumns);
 
             if (!$this->db->getIsPgsql()) {
@@ -139,7 +141,8 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             ->select(['id', ...array_keys($fieldMap)])
             ->from('{{%freeform_submissions}}')
             ->where(['formId' => $formId])
-            ->indexBy('id');
+            ->indexBy('id')
+        ;
 
         foreach ($submissionQuery->batch() as $batch) {
             $insertRows = [];

@@ -101,7 +101,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         return false;
     }
 
-    private function createFormTable(int $id, string $formHandle, array $fieldMap): string
+    private function createFormTable(int $id, string $formHandle, array $fieldMap): ?string
     {
         $tableColumns = ['id' => $this->integer()->notNull()];
         foreach ($fieldMap as $handle) {
@@ -119,7 +119,6 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 
         $tableExists = \Craft::$app->db->schema->getTableSchema($tableName);
-
         if (null === $tableExists) {
             $this->createTable($tableName, $tableColumns);
 
@@ -132,7 +131,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             return $tableName;
         }
 
-        return '';
+        return null;
     }
 
     private function swapData(int $formId, string $tableName, array $fieldMap): void

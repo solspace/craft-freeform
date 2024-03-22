@@ -84,7 +84,9 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             }
 
             $tableName = $this->createFormTable($formId, $formHandle, $fieldMap);
-            $this->swapData($formId, $tableName, $fieldMap);
+            if ($tableName) {
+                $this->swapData($formId, $tableName, $fieldMap);
+            }
         }
 
         $this->cleanUpSubmissionsTable($fields);
@@ -116,15 +118,21 @@ class m220330_111857_SplitSubmissionsTable extends Migration
 
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 
-        $this->createTable($tableName, $tableColumns);
+        $tableExists = \Craft::$app->db->schema->getTableSchema($tableName);
 
-        if (!$this->db->getIsPgsql()) {
-            $this->addPrimaryKey('PK', $tableName, ['id']);
+        if (null === $tableExists) {
+            $this->createTable($tableName, $tableColumns);
+
+            if (!$this->db->getIsPgsql()) {
+                $this->addPrimaryKey('PK', $tableName, ['id']);
+            }
+
+            $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', ForeignKey::CASCADE);
+
+            return $tableName;
         }
 
-        $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', ForeignKey::CASCADE);
-
-        return $tableName;
+        return '';
     }
 
     private function swapData(int $formId, string $tableName, array $fieldMap): void

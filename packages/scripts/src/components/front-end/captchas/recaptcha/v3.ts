@@ -75,6 +75,10 @@ form.addEventListener(events.form.submit, (event: FreeformEvent) => {
         isTokenSet = true;
         recaptchaElement.value = token;
 
+        if (window?.freeform?.disableCaptcha) {
+          return;
+        }
+
         event.freeform.triggerResubmit();
       });
     });

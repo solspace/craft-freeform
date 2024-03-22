@@ -15,7 +15,15 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     return;
   }
 
-  const { fieldMapping, theme, layout, floatingLabels, integration, amountFields, getStripe } = config(container);
+  const {
+    fieldMapping,
+    theme,
+    layout,
+    floatingLabels,
+    integration,
+    amountFields,
+    loadStripe: getStripe,
+  } = config(container);
   const { elementMap, form } = props;
   const stripe = await getStripe();
 

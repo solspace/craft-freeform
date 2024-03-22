@@ -39,3 +39,11 @@ export type FreeformEventParameters<T> = {
   bubbles?: boolean;
   cancelable?: boolean;
 } & T;
+
+declare global {
+  interface Window {
+    freeform: {
+      disableCaptcha: boolean;
+    };
+  }
+}

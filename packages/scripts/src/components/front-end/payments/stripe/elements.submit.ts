@@ -30,7 +30,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
   const containers = selectVisibleContainers(form);
   for (const container of containers) {
-    const { getStripe, required, integration } = config(container);
+    const { getStripeInstance, required, integration } = config(container);
     const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
     const {
       empty,
@@ -41,6 +41,10 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     if (empty && !required) {
       return;
     }
+
+    window.freeform = {
+      disableCaptcha: true,
+    };
 
     event.preventDefault();
     event.freeform.lockSubmit();
@@ -55,7 +59,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     returnUrl.searchParams.append('integration', integration);
     returnUrl.searchParams.append('token', token);
 
-    const stripe = await getStripe();
+    const stripe = getStripeInstance();
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {

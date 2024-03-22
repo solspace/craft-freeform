@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.1.7 - 2024-03-22
+
+### Fixed
+- Fixed a bug where reCAPTCHA would conflict with forms using Stripe Payments.
+- Fixed a bug where mapping a field with a handle of `name` would break the Stripe integration.
+- Fixed a bug where running the migration from Freeform 3.x could trigger a `Base table or view already exists` error.
+- Fixed some Safari browser stying issues with the horizontal scrollbar for page tabs.
+
 ## 5.1.6 - 2024-03-20
 
 ### Added

@@ -11,12 +11,12 @@ export const scrollBar = css`
   -webkit-overflow-scrolling: touch;
 
   &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 4px;
+    height: 4px;
   }
 
   &::-webkit-scrollbar-track {
-    background-color: ${scrollBG};
+    background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {

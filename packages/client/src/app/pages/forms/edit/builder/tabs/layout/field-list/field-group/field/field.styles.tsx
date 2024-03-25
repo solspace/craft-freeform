@@ -33,6 +33,7 @@ export const Name = styled.span`
   line-height: 14px;
 
   overflow-x: hidden;
+  overflow-y: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 `;

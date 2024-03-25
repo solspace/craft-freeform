@@ -9,6 +9,10 @@ export const NewTabWrapper = styled.button`
 
   transition: all 0.2s ease-in-out;
 
+  &:focus {
+    outline: none;
+  }
+
   &:hover {
     transform: scale(1.2);
     color: ${colors.black};

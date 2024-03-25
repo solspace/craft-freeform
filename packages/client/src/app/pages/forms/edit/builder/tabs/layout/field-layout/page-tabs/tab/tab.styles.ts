@@ -36,7 +36,7 @@ export const PageTab = styled(animated.div)`
 
   max-width: 160px;
   height: 100%;
-  padding: 10px 5px;
+  padding: 7px 5px;
   margin: 0 5px;
 
   color: ${colors.gray400};
@@ -71,10 +71,6 @@ export const PageTab = styled(animated.div)`
     z-index: 1;
   }
 
-  &.is-editing {
-    padding: 4px 6px;
-  }
-
   &:hover {
     cursor: pointer;
 
@@ -96,6 +92,11 @@ export const TabDrop = styled.div`
 `;
 
 export const Input = styled.input`
+  appearance: none;
+
+  display: block;
+  width: 100%;
+
   border: 0;
   padding: 0 !important;
   line-height: 1rem;
@@ -105,5 +106,13 @@ export const Input = styled.input`
   &:hover,
   &:active {
     box-shadow: none !important;
+  }
+
+  &::-webkit-contacts-auto-fill-button {
+    visibility: hidden;
+    display: none !important;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
   }
 `;

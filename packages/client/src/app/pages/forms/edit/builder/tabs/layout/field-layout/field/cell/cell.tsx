@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import SpinnerIcon from '@components/loaders/loading-text/spinner.svg';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
@@ -12,11 +12,14 @@ import { hasErrors } from '@ff-client/utils/errors';
 
 import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-layout';
 
+import { useLoaderAnimation } from './cell.animations';
 import {
   FieldCellWrapper,
+  Icon,
   Instructions,
   Label,
   LabelIcon,
+  LabelText,
 } from './cell.styles';
 import { FieldAssociationsBadges } from './cell-badges';
 import { useFieldPreview } from './use-field-preview';
@@ -44,6 +47,8 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
   }, [active, contextType, contextUid, uid]);
 
   const [preview, isLoadingPreview] = useFieldPreview(field, type);
+  const [spinnerAnimation, iconAnimation] =
+    useLoaderAnimation(isLoadingPreview);
 
   if (field?.properties === undefined || !type) {
     return null;
@@ -65,12 +70,21 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     >
       {!isInputOnly && (
         <Label className="label">
-          <LabelIcon dangerouslySetInnerHTML={{ __html: type.icon }} />
-          <LoadingText loading={isLoadingPreview} spinner>
-            {field.properties.label || type?.name}
-          </LoadingText>
+          <LabelIcon>
+            <Icon style={spinnerAnimation}>
+              <SpinnerIcon />
+            </Icon>
+            <Icon
+              style={iconAnimation}
+              dangerouslySetInnerHTML={{ __html: type.icon }}
+            />
+          </LabelIcon>
+
+          <LabelText>{field.properties.label || type?.name}</LabelText>
+
           {field.properties.required && <span className="required" />}
-          {!isInputOnly && <FieldAssociationsBadges uid={uid} />}
+
+          <FieldAssociationsBadges uid={uid} />
         </Label>
       )}
 

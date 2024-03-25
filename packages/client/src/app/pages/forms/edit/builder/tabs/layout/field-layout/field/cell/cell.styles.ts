@@ -1,15 +1,18 @@
+import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Label = styled.label`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: ${spacings.xs};
 
-  height: 18px;
+  min-height: 18px;
   margin-bottom: 4px;
   font-weight: bold;
   color: ${colors.gray550};
+
+  overflow: hidden;
 
   .required {
     position: relative;
@@ -18,10 +21,24 @@ export const Label = styled.label`
   }
 `;
 
+export const LabelText = styled.div``;
+
 const iconSize = 16;
 export const LabelIcon = styled.div`
+  flex: 0 0 ${iconSize}px;
   position: relative;
-  top: -1px;
+  top: 2px;
+
+  width: ${iconSize}px;
+  height: ${iconSize}px;
+  font-size: ${iconSize}px;
+`;
+
+export const Icon = styled(animated.div)`
+  position: absolute;
+  left: 0;
+  top: 0;
+
   &,
   svg {
     width: ${iconSize}px;

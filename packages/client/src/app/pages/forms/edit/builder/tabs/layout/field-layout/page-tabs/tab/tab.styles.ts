@@ -36,7 +36,7 @@ export const PageTab = styled(animated.div)`
 
   max-width: 160px;
   height: 100%;
-  padding: 7px 5px;
+  padding: 7px 10px;
   margin: 0 5px;
 
   color: ${colors.gray400};
@@ -115,4 +115,12 @@ export const Input = styled.input`
     position: absolute;
     right: 0;
   }
+`;
+
+export const RemoveButtonWrapper = styled.div`
+  position: absolute;
+  top: 0px;
+  right: -7px;
+
+  transform: scale(0.8);
 `;

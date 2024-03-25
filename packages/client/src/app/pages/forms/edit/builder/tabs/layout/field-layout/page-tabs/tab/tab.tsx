@@ -1,6 +1,7 @@
 import type { KeyboardEvent, MutableRefObject } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import { RemoveButton } from '@components/elements/remove-button/remove';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
@@ -9,6 +10,7 @@ import { pageActions } from '@editor/store/slices/layout/pages';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
 import { deletePage } from '@editor/store/thunks/pages';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import { useHover } from '@ff-client/hooks/use-hover';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -20,11 +22,10 @@ import { useTabDrop, useTabPageDrop } from './tab.drop';
 import {
   Input,
   PageTab,
-  RemoveTabButton,
+  RemoveButtonWrapper,
   TabDrop,
   TabWrapper,
 } from './tab.styles';
-import TrashIcon from './trash.svg';
 
 type Props = {
   page: Page;
@@ -44,6 +45,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
+  const isHovering = useHover(wrapperRef);
 
   const { canDrop, ref: dropRef } = useTabDrop(currentPage?.uid, page);
   const { isDragging, ref: dragRef } = useTabDrag(index, page);
@@ -135,18 +137,18 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         )}
 
         {totalPages > 1 && (
-          <RemoveTabButton
-            onClick={(event) => {
-              event.stopPropagation();
-              if (!confirm(translate('Are you sure?'))) {
-                return;
-              }
+          <RemoveButtonWrapper>
+            <RemoveButton
+              active={isHovering && !isEditing}
+              onClick={() => {
+                if (!confirm(translate('Are you sure?'))) {
+                  return;
+                }
 
-              dispatch(deletePage(page));
-            }}
-          >
-            <TrashIcon />
-          </RemoveTabButton>
+                dispatch(deletePage(page));
+              }}
+            />
+          </RemoveButtonWrapper>
         )}
       </PageTab>
     </TabWrapper>

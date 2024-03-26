@@ -16,6 +16,7 @@ use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
+#[Edition(Edition::PRO)]
 #[Edition(Edition::LITE)]
 #[Type(
     name: 'hCaptcha',

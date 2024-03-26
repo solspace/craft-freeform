@@ -47,11 +47,11 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
     };
 
     event.preventDefault();
-    event.freeform.lockSubmit();
+    event.freeform.lockSubmit('stripe');
 
     const token = await event.freeform.quickSave(secret, id);
     if (!token) {
-      event.freeform.unlockSubmit();
+      event.freeform.unlockSubmit('stripe');
       return;
     }
 
@@ -69,7 +69,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
     if (error) {
       event.freeform._renderFormErrors([error.message]);
-      event.freeform.unlockSubmit();
+      event.freeform.unlockSubmit('stripe');
     }
   }
 };

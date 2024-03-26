@@ -157,9 +157,9 @@ class DragAndDropFile implements FreeformHandler {
 
   handleUploadLockdown = (): void => {
     if (this.currentFileUploads > 0) {
-      this.freeform.lockSubmit();
+      this.freeform.lockSubmit('file-upload');
     } else {
-      this.freeform.unlockSubmit();
+      this.freeform.unlockSubmit('file-upload');
     }
   };
 }

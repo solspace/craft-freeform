@@ -75,6 +75,7 @@ export default class Freeform {
   ];
 
   _lastButtonPressed?: HTMLButtonElement;
+  _lockList: string[] = [];
 
   static getInstance = (form: HTMLFormElement): Freeform => Freeform.instances.get(form);
 
@@ -171,14 +172,21 @@ export default class Freeform {
     delete this.form.dataset.freeformDisabled;
   };
 
-  lockSubmit = (force = false) => {
+  lockSubmit = (id: string = 'freeform') => {
+    this._lockList.push(id);
+
+    // Perform the actual lock only initially
+    if (this._lockList.length > 1) {
+      return;
+    }
+
     const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
 
-      if (disableSubmit || force) {
+      if (disableSubmit) {
         submit.disabled = true;
       }
     }
@@ -195,25 +203,26 @@ export default class Freeform {
     }
   };
 
-  unlockSubmit = (force?: boolean): void => {
-    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
-
-    const submitButtons = this._getSubmitButtons();
-    for (let i = 0; i < submitButtons.length; i++) {
-      const submit = submitButtons[i];
-
-      if (disableSubmit || force) {
-        submit.disabled = false;
+  unlockSubmit = (id: string = 'freeform'): void => {
+    this._lockList.reverse().find((lockId, index) => {
+      if (lockId === id) {
+        this._lockList.splice(index, 1);
+        return true;
       }
 
-      if (showProcessingSpinner) {
-        submit.classList.remove('freeform-processing');
-      }
+      return false;
+    });
 
-      if (showProcessingText) {
-        submit.innerText = submit.dataset.originalText;
-      }
+    if (this._lockList.length > 0) {
+      return;
     }
+
+    this._unlockSubmitButtons();
+  };
+
+  forceUnlockSubmit = (): void => {
+    this._lockList = [];
+    this._unlockSubmitButtons();
   };
 
   triggerResubmit = (): void => {
@@ -232,6 +241,27 @@ export default class Freeform {
     const submitButtons = this._getSubmitButtons();
     if (submitButtons.length) {
       submitButtons[0].click();
+    }
+  };
+
+  _unlockSubmitButtons = (): void => {
+    const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
+
+    const submitButtons = this._getSubmitButtons();
+    for (let i = 0; i < submitButtons.length; i++) {
+      const submit = submitButtons[i];
+
+      if (disableSubmit) {
+        submit.disabled = false;
+      }
+
+      if (showProcessingSpinner) {
+        submit.classList.remove('freeform-processing');
+      }
+
+      if (showProcessingText) {
+        submit.innerText = submit.dataset.originalText;
+      }
     }
   };
 
@@ -295,6 +325,8 @@ export default class Freeform {
     if (onSubmitEvent.defaultPrevented) {
       event.preventDefault();
       event.stopPropagation();
+
+      this.forceUnlockSubmit();
 
       return false;
     }
@@ -543,7 +575,7 @@ export default class Freeform {
       const { success, errors, formErrors, storageToken } = response;
 
       if (success) {
-        this.unlockSubmit(true);
+        this.unlockSubmit();
 
         return storageToken;
       }
@@ -561,7 +593,7 @@ export default class Freeform {
       this._dispatchEvent(events.form.ajaxError, { request, response });
     }
 
-    this.unlockSubmit(true);
+    this.unlockSubmit();
 
     return;
   };
@@ -665,7 +697,7 @@ export default class Freeform {
         this._dispatchEvent(events.form.ajaxError, { request, response });
       }
 
-      this.unlockSubmit(true);
+      this.unlockSubmit();
     };
 
     const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
+use Solspace\Freeform\Events\Fields\RemoveFieldRecordEvent;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -16,6 +17,8 @@ use yii\base\Event;
 
 class LayoutPersistence extends FeatureBundle
 {
+    public const EVENT_REMOVE_FIELD = 'remove-field';
+
     private array $cache = [];
     private array $rowContents = [];
 
@@ -175,7 +178,16 @@ class LayoutPersistence extends FeatureBundle
         }
 
         foreach ($staleUids as $uid) {
-            $existingRecords[$uid]->delete();
+            $record = $existingRecords[$uid];
+
+            $removeEvent = new RemoveFieldRecordEvent($record);
+            Event::trigger($this, self::EVENT_REMOVE_FIELD, $removeEvent);
+
+            if (!$removeEvent->isValid) {
+                continue;
+            }
+
+            $record->delete();
         }
     }
 

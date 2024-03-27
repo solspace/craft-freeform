@@ -1,0 +1,32 @@
+export enum Fields {
+  // Base
+  Checkboxes = 'Solspace\\Freeform\\Fields\\Implementations\\CheckboxesField',
+  Checkbox = 'Solspace\\Freeform\\Fields\\Implementations\\CheckboxField',
+  Dropdown = 'Solspace\\Freeform\\Fields\\Implementations\\DropdownField',
+  Email = 'Solspace\\Freeform\\Fields\\Implementations\\EmailField',
+  FileUpload = 'Solspace\\Freeform\\Fields\\Implementations\\FileUploadField',
+  Hidden = 'Solspace\\Freeform\\Fields\\Implementations\\HiddenField',
+  Html = 'Solspace\\Freeform\\Fields\\Implementations\\HtmlField',
+  MultipleSelect = 'Solspace\\Freeform\\Fields\\Implementations\\MultipleSelectField',
+  Number = 'Solspace\\Freeform\\Fields\\Implementations\\NumberField',
+  Radios = 'Solspace\\Freeform\\Fields\\Implementations\\RadiosField',
+  Textarea = 'Solspace\\Freeform\\Fields\\Implementations\\TextareaField',
+  Text = 'Solspace\\Freeform\\Fields\\Implementations\\TextField',
+
+  // Pro
+  Calculation = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\CalculationField',
+  Confirmation = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\ConfirmationField',
+  Datetime = 'Solspace\\Freeform\\Fields\\Implementations\\DatetimeField',
+  FileDragAndDrop = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\FileDragAndDropField',
+  Group = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\GroupField',
+  Invisible = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\InvisibleField',
+  OpinionScale = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\OpinionScaleField',
+  Password = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\PasswordField',
+  Phone = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\PhoneField',
+  Rating = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\RatingField',
+  Regex = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\RegexField',
+  RichText = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\RichTextField',
+  Signature = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\SignatureField',
+  Table = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\TableField',
+  Website = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\WebsiteField',
+}

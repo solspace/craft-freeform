@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.1.8 - Unreleased
+## 5.1.8 - 2024-03-27
 
 ### Added
 - All _reCAPTCHA_ and _hCaptcha_ versions are now available for the **Lite** edition (as well as **Pro**).

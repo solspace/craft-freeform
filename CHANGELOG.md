@@ -401,6 +401,8 @@
     - All references to `freeform-file-drag-and-drop` for CSS overrides have been updated to `freeform-file-dnd`.
 - **Javascript**
     - The defaults for `errorClassBanner`, `errorClassList`, `errorClassField` and `successClassBanner` plugin options for JS overrides have been adjusted to `freeform-form-errors`, `freeform-errors`, `freeform-has-errors` and `freeform-form-success`, respectively (`ff-` changed to `freeform-`).
+- **GraphQL**
+    - The `FreeformFormInterface` fields `showSpinner`, `showLoadingText` and `loadingText` have been renamed to `showProcessingSpinner`, `showProcessingText` and `processingText` respectively.
 
 ### Deprecated
 - The _PHP Sessions_ and _Database Table_ options for the Freeform Session Context setting are deprecated and are planned to be removed in Freeform 6. Encrypted Payload continues to be the assumed and recommended approach, but can still be overrided to PHP Sessions or Database Table in project config.

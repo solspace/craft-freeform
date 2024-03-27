@@ -5,6 +5,8 @@ namespace Solspace\Freeform\Bundles\Rules;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
@@ -168,13 +170,26 @@ class RuleProvider
     private function compileConditions(Form $form, RuleRecord $ruleRecord): ConditionCollection
     {
         $conditionCollection = new ConditionCollection();
+        $conditionRuleLogger = Freeform::getInstance()->logger->getLogger(FreeformLogger::CONDITIONAL_RULE);
 
         /** @var RuleConditionRecord $condition */
         foreach ($ruleRecord->getConditions()->all() as $condition) {
+            $field = $condition->getField()->one();
+            if (!$field) {
+                $conditionRuleLogger->error('Conditional field was not found', ['condition' => $condition]);
+
+                continue;
+            }
+            $field = $form->get($field->uid);
+            if (!$field instanceof FieldInterface) {
+                $conditionRuleLogger->error('Form field was not an instance of FieldInterface', ['field' => $field]);
+
+                continue;
+            }
             $conditionCollection->add(
                 new Condition(
                     $condition->uid,
-                    $form->get($condition->getField()->one()->uid),
+                    $field,
                     $condition->operator,
                     $condition->value
                 )

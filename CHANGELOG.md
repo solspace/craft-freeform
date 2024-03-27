@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 5.1.8 - Unreleased
+
+### Added
+- All _reCAPTCHA_ and _hCaptcha_ versions are now available for the **Lite** edition (as well as **Pro**).
+
+### Changed
+- Updated the delete icon display and behavior for managing page tabs in the builder.
+
+### Fixed
+- Fixed a bug where the form submit button was not always locking correctly with forms using Stripe or File Upload fields.
+- Fixed a bug where deleting Group fields in the builder was not also removing the fields inside.
+- Fixed a visual issue when editing page tab names in the builder when using the Safari and Firefox browsers.
+- Fixed a visual issue for field blocks in the builder when using the Microsoft Edge browser.
+- Fixed a bug where long field labels overlapped other field labels in the builder.
+- Fixed a bug where conditional rules for forms might not always migrate correctly from Freeform 4.
+
 ## 5.1.7 - 2024-03-22
 
 ### Fixed

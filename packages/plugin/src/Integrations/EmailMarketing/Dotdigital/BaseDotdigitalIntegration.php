@@ -59,7 +59,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     #[Input\Select(
         label: 'Email Opt In Type',
-        instructions: "Setting this to _Verified Double_ will result in a double opt-in confirmation email sent to the contact. The result will state that the contact's Opt-In Type is _Double_ and the Status is _Pending Opt-In_. These will only update to _Verified Double_ and _Subscribed_, respectively, once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
+        instructions: "Setting this to 'Verified Double' will result in a double opt-in confirmation email sent to the contact. The result will state that the contact's Opt-In Type is 'Double' and the Status is 'Pending Opt-In'. These will only update to 'Verified Double' and 'Subscribed', respectively, once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
         order: 4,
         options: [
             'Single' => 'Single',

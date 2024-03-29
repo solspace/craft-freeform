@@ -17,10 +17,12 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
+use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
+use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
@@ -32,10 +34,11 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
     iconPath: __DIR__.'/Icons/email.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface, DefaultValueInterface, EncryptionInterface
+class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
     use DefaultTextValueTrait;
     use EncryptionTrait;
+    use MaxLengthTrait;
     use PlaceholderTrait;
 
     /**

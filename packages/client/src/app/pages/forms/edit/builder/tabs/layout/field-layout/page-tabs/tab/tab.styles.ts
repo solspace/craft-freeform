@@ -96,6 +96,7 @@ export const Input = styled.input`
 
   display: block;
   width: 100%;
+  min-width: 100px;
 
   border: 0;
   padding: 0 !important;

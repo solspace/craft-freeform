@@ -1,10 +1,14 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 
+export type SubmitCallback = () => Promise<void | boolean>;
+
 export type FreeformEvent = CustomEvent & {
   freeform: Freeform;
   form: HTMLFormElement;
   isBackButtonPressed?: boolean;
+  addCallback: (callback: SubmitCallback, priority?: number) => void;
 };
+
 type AllTypes = string | number | boolean | null | undefined;
 type GenericValue = AllTypes | AllTypes[] | Record<string, AllTypes | AllTypes[]>;
 

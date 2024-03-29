@@ -13,6 +13,8 @@ const config: reCaptchaConfig = {
   version: '{{ version }}' as Version,
 } as const;
 
+let executor: (value: void) => void;
+
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-recaptcha-v2-invisible`;
   const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
@@ -30,7 +32,6 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   return recaptchaElement;
 };
 
-let isTokenSet = false;
 const initRecaptchaInvisible = (event: FreeformEvent): void => {
   const { sitekey } = config;
 
@@ -46,14 +47,9 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
           sitekey,
           size: 'invisible',
           callback: (token) => {
-            isTokenSet = true;
             recaptchaElement.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
 
-            if (window?.freeform?.disableCaptcha) {
-              return;
-            }
-
-            event.freeform.triggerResubmit();
+            executor();
           },
         });
       });
@@ -63,24 +59,26 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
   });
 };
 
-form.addEventListener(events.form.ready, initRecaptchaInvisible);
 form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
-  if (isTokenSet) {
-    return;
-  }
+  event.addCallback(async () => {
+    const promise = new Promise<void>((resolve) => {
+      executor = resolve;
+    });
 
-  if (!createCaptcha(event) || event.isBackButtonPressed) {
-    return;
-  }
+    if (!createCaptcha(event) || event.isBackButtonPressed) {
+      return;
+    }
 
-  event.preventDefault();
-  loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
-    grecaptcha.ready(grecaptcha.execute);
+    await loadReCaptcha(event.form, { ...config, lazyLoad: false });
+
+    grecaptcha.ready(() => {
+      grecaptcha.execute();
+    });
+
+    return promise;
   });
 });
 
-form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
-  isTokenSet = false;
-
-  initRecaptchaInvisible(event);
-});
+form.addEventListener(events.form.ready, initRecaptchaInvisible);
+form.addEventListener(events.form.afterFailedSubmit, initRecaptchaInvisible);
+form.addEventListener(events.form.ajaxAfterSubmit, initRecaptchaInvisible);

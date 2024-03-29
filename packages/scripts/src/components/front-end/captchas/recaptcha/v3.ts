@@ -42,23 +42,18 @@ const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
   return recaptchaElement;
 };
 
-let isTokenSet = false;
-
 form.addEventListener(events.form.ready, (event: FreeformEvent) => {
   loadReCaptcha(event.form, config);
 });
 
 form.addEventListener(events.form.submit, (event: FreeformEvent) => {
-  if (isTokenSet) {
-    return;
-  }
+  event.addCallback(async () => {
+    if (!createCaptcha(event) || event.isBackButtonPressed) {
+      return;
+    }
 
-  if (!createCaptcha(event) || event.isBackButtonPressed) {
-    return;
-  }
+    await loadReCaptcha(event.form, { ...config, lazyLoad: false });
 
-  event.preventDefault();
-  loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
     const recaptchaElement = createCaptcha(event);
     if (!recaptchaElement) {
       return;
@@ -70,21 +65,7 @@ form.addEventListener(events.form.submit, (event: FreeformEvent) => {
       action = 'submit';
     }
 
-    grecaptcha.ready(() => {
-      grecaptcha.execute(sitekey, { action }).then((token) => {
-        isTokenSet = true;
-        recaptchaElement.value = token;
-
-        if (window?.freeform?.disableCaptcha) {
-          return;
-        }
-
-        event.freeform.triggerResubmit();
-      });
-    });
+    const token = await grecaptcha.execute(sitekey, { action });
+    recaptchaElement.value = token;
   });
-});
-
-form.addEventListener(events.form.ajaxAfterSubmit, () => {
-  isTokenSet = false;
 });

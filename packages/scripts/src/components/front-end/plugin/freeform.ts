@@ -1,9 +1,9 @@
-import 'core-js/features/array/includes';
 import 'core-js/features/array/for-each';
-import 'core-js/features/iterator/for-each';
-import 'core-js/features/get-iterator';
-import 'core-js/features/object/assign';
+import 'core-js/features/array/includes';
 import 'core-js/features/dom-collections/for-each';
+import 'core-js/features/get-iterator';
+import 'core-js/features/iterator/for-each';
+import 'core-js/features/object/assign';
 
 import events from '@lib/plugin/constants/event-types';
 import { SuccessBehavior } from '@lib/plugin/constants/form';
@@ -22,6 +22,7 @@ import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
+import type { SubmitCallback } from 'types/events';
 import { type FreeformResponse } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
 
@@ -191,7 +192,11 @@ export default class Freeform {
       }
     }
 
-    const lastButton = this._lastButtonPressed;
+    let lastButton: HTMLButtonElement | undefined = this._lastButtonPressed;
+    if (!lastButton) {
+      lastButton = (this._getSubmitButtons()[0] as HTMLButtonElement) || undefined;
+    }
+
     if (lastButton) {
       if (showProcessingSpinner) {
         lastButton.classList.add('freeform-processing');
@@ -308,8 +313,11 @@ export default class Freeform {
   /**
    * Perform form submit
    */
-  _onSubmit = (event: SubmitEvent) => {
+  _onSubmit = async (event: SubmitEvent) => {
     this.lockSubmit();
+
+    event.preventDefault();
+    event.stopPropagation();
 
     const {
       options: { ajax },
@@ -321,26 +329,47 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
-    const onSubmitEvent = this._dispatchEvent(events.form.submit, { isBackButtonPressed, cancelable: true });
-    if (onSubmitEvent.defaultPrevented) {
-      event.preventDefault();
-      event.stopPropagation();
+    const submitCallbacks: Record<number, SubmitCallback[]> = {};
 
+    const onSubmitEvent = this._dispatchEvent(events.form.submit, {
+      isBackButtonPressed,
+      cancelable: true,
+      addCallback: (callback: SubmitCallback, priority: number = 0): void => {
+        if (submitCallbacks[priority] === undefined) {
+          submitCallbacks[priority] = [];
+        }
+
+        submitCallbacks[priority].push(callback);
+      },
+    });
+
+    if (onSubmitEvent.defaultPrevented) {
       this.forceUnlockSubmit();
+      this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
 
       return false;
     }
 
-    if (ajax) {
-      event.preventDefault();
-      event.stopPropagation();
+    const sortedCallbacks = Object.entries(submitCallbacks)
+      .sort(([priorityA], [priorityB]) => Number(priorityA) - Number(priorityB))
+      .flatMap(([, callbackList]) => callbackList);
 
+    for (const callback of sortedCallbacks) {
+      const callbackResult = await callback();
+      if (callbackResult === false) {
+        this.forceUnlockSubmit();
+        this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
+        return false;
+      }
+    }
+
+    if (ajax) {
       this._onSubmitAjax(event);
 
       return false;
     }
 
-    return true;
+    this.form.submit();
   };
 
   /**
@@ -582,6 +611,7 @@ export default class Freeform {
 
       if (errors || formErrors) {
         this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
+        this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
         this._renderFieldErrors(errors);
         this._renderFormErrors(formErrors);
       }
@@ -591,6 +621,7 @@ export default class Freeform {
       }
     } else {
       this._dispatchEvent(events.form.ajaxError, { request, response });
+      this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
     }
 
     this.unlockSubmit();
@@ -666,6 +697,7 @@ export default class Freeform {
             this._dispatchEvent(events.form.ajaxSuccess, { request, response });
           } else if (errors || formErrors) {
             this._dispatchEvent(events.form.ajaxError, { request, response, errors, formErrors });
+            this._dispatchEvent(events.form.afterFailedSubmit, { cancelable: false });
             this._renderFieldErrors(errors);
             this._renderFormErrors(formErrors);
           }

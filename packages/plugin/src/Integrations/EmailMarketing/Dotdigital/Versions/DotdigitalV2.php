@@ -78,11 +78,12 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
 
         $email = strtolower($email);
 
-        $contactData = [];
-        $contactData['email'] = $email;
-        $contactData['optInType'] = $this->getOptInType();
-        $contactData['emailType'] = $this->getEmailType();
-        $contactData['dataFields'] = [];
+        $contactData = [
+            'email' => $email,
+            'optInType' => $this->getOptInType(),
+            'emailType' => $this->getEmailType(),
+            'dataFields' => [],
+        ];
 
         $contactDataMapping = $this->processMapping($form, $this->contactDataMapping, self::CATEGORY_CONTACT_DATA);
         foreach ($contactDataMapping as $key => $value) {

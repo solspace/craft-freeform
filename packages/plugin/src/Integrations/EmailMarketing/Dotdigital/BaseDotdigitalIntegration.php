@@ -32,7 +32,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     #[Validators\Required]
     #[Input\Text(
         label: 'API URL',
-        instructions: 'Enter your API specific URL (e.g. "https://{region}-api.dotdigital.com").',
+        instructions: 'Enter your region-specific API URL (e.g. `https://region-api.dotdigital.com`).',
         order: 1,
     )]
     protected string $apiUrl = '';
@@ -57,29 +57,24 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     )]
     protected string $apiUserPassword = '';
 
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Select(
         label: 'Email Opt In Type',
-        instructions: "Setting the Opt In Type to 'VerifiedDouble' will result in a double opt-in confirmation email being sent to the contact. The result will state that the contact's OptInType is 'Double' and Status is 'PendingOptIn'. These will only update to 'VerifiedDouble' and 'Subscribed' respectively once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
+        instructions: "Setting this to _Verified Double_ will result in a double opt-in confirmation email sent to the contact. The result will state that the contact's Opt-In Type is _Double_ and the Status is _Pending Opt-In_. These will only update to _Verified Double_ and _Subscribed_, respectively, once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
         order: 4,
         options: [
-            '' => '',
-            'Unknown' => 'Unknown',
             'Single' => 'Single',
             'Double' => 'Double',
-            'VerifiedDouble' => 'VerifiedDouble',
+            'VerifiedDouble' => 'Verified Double',
         ],
     )]
     protected string $optInType = '';
 
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Select(
         label: 'Email Type',
         order: 5,
         options: [
-            '' => '',
-            'PlainText' => 'PlainText',
-            'Html' => 'Html',
+            'PlainText' => 'Plain Text',
+            'Html' => 'HTML',
         ],
     )]
     protected string $emailType = '';

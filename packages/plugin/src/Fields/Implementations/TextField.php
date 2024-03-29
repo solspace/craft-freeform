@@ -17,10 +17,12 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
+use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
+use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
@@ -33,10 +35,11 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class TextField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, TextInterface, EncryptionInterface
+class TextField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, TextInterface, EncryptionInterface, MaxLengthInterface
 {
     use DefaultTextValueTrait;
     use EncryptionTrait;
+    use MaxLengthTrait;
     use PlaceholderTrait;
 
     #[Ignore]

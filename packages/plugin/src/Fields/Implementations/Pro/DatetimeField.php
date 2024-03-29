@@ -14,8 +14,10 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
+use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 
 #[Type(
     name: 'Date & Time',
@@ -23,9 +25,10 @@ use Solspace\Freeform\Fields\Traits\EncryptionTrait;
     iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
-class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface, EncryptionInterface
+class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface, EncryptionInterface, MaxLengthInterface
 {
     use EncryptionTrait;
+    use MaxLengthTrait;
 
     public const DATETIME_TYPE_BOTH = 'both';
     public const DATETIME_TYPE_DATE = 'date';

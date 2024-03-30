@@ -582,6 +582,28 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
+        $maxLengthTypes = [
+            FreeformFieldInterface::TYPE_TEXT,
+            FreeformFieldInterface::TYPE_TEXTAREA,
+            FreeformFieldInterface::TYPE_EMAIL,
+            FreeformFieldInterface::TYPE_CONFIRMATION,
+            FreeformFieldInterface::TYPE_DATETIME,
+            FreeformFieldInterface::TYPE_PHONE,
+            FreeformFieldInterface::TYPE_PASSWORD,
+            FreeformFieldInterface::TYPE_REGEX,
+            FreeformFieldInterface::TYPE_WEBSITE,
+            FreeformFieldInterface::TYPE_HIDDEN,
+            FreeformFieldInterface::TYPE_INVISIBLE,
+            FreeformFieldInterface::TYPE_NUMBER,
+        ];
+        if (\in_array($typeName, $maxLengthTypes, true)) {
+            $fieldDefinitions['maxLength'] = [
+                'name' => 'maxLength',
+                'type' => Type::int(),
+                'description' => 'The maximum length of characters for this field',
+            ];
+        }
+
         return $fieldDefinitions;
     }
 

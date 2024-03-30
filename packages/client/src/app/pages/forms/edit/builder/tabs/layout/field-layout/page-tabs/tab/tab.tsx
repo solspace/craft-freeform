@@ -118,7 +118,6 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         )}
         style={style}
         onClick={(): void => {
-          setIsEditing(false);
           dispatch(contextActions.setPage(page.uid));
         }}
         onDoubleClick={(): void => setIsEditing(true)}

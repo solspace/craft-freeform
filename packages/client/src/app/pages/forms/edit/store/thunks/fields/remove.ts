@@ -10,7 +10,6 @@ import { removeEmptyRows } from '../rows';
 export default (field: Field): AppThunk =>
   (dispatch, getState) => {
     removeField(getState(), dispatch as AppDispatch, field);
-    dispatch(fieldActions.remove(field.uid));
     removeEmptyRows(getState(), dispatch as AppDispatch);
   };
 

@@ -576,6 +576,12 @@ button[type=submit].freeform-processing:before {
     border-radius: 50%;
     animation: freeform-processing .5s linear infinite;
 }
+button:disabled {
+    color: #ffffff;
+    background-color: #5082cc;
+    border-color: #497bc5;
+    cursor: not-allowed;
+}
 @keyframes freeform-processing {
     0% {
         transform: rotate(0);

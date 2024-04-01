@@ -1,4 +1,5 @@
 import events from '@lib/plugin/constants/event-types';
+import { addListeners } from '@lib/plugin/helpers/event-handling';
 
 import { loadStripeContainers, submitStripe } from './elements.submit';
 import type { StripeElement, StripeFunctionConstructorProps } from './elements.types';
@@ -20,10 +21,8 @@ const attachStripeToForm = async (form: HTMLFormElement) => {
 
   const loadContainers = loadStripeContainers(props);
 
-  form.addEventListener(events.form.ready, loadContainers);
-  form.addEventListener(events.form.reset, loadContainers);
-  form.addEventListener(events.form.ajaxAfterSubmit, loadContainers);
-  form.addEventListener(events.form.submit, submitStripe(props));
+  addListeners(form, [events.form.ready, events.form.reset, events.form.ajaxAfterSubmit], loadContainers);
+  addListeners(form, [events.form.submit], submitStripe(props));
 };
 
 window.onload = () => {

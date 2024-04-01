@@ -22,7 +22,7 @@ import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
-import type { SubmitCallback } from 'types/events';
+import type { Callback } from 'types/events';
 import { type FreeformResponse } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
 
@@ -77,6 +77,7 @@ export default class Freeform {
 
   _lastButtonPressed?: HTMLButtonElement;
   _lockList: string[] = [];
+  _disableList: string[] = [];
 
   static getInstance = (form: HTMLFormElement): Freeform => Freeform.instances.get(form);
 
@@ -109,7 +110,9 @@ export default class Freeform {
       ...options,
     };
 
-    const stateCheck = setInterval(() => {
+    this.disableSubmit('init');
+
+    const stateCheck = setInterval(async () => {
       if (document.readyState === 'complete') {
         clearInterval(stateCheck);
 
@@ -122,6 +125,8 @@ export default class Freeform {
 
         this._setUp();
         this._initHandlers();
+
+        this.enableSubmit('init');
 
         const { scrollToAnchor } = this.options;
         if (scrollToAnchor) {
@@ -140,7 +145,7 @@ export default class Freeform {
   _setUp = (): void => {
     this._attachListeners();
 
-    const submitButtons = this.form.querySelectorAll<HTMLButtonElement>('button[type="submit"]');
+    const submitButtons = this._getSubmitButtons();
     submitButtons.forEach((button) => {
       button.dataset.originalText = button.innerText;
       button.dataset.processingText = this.options.processingText;
@@ -171,6 +176,35 @@ export default class Freeform {
 
   enableForm = (): void => {
     delete this.form.dataset.freeformDisabled;
+  };
+
+  disableSubmit = (id: string = 'freeform') => {
+    this._disableList.push(id);
+
+    const submitButtons = Array.from(this._getSubmitButtons());
+    for (const submit of submitButtons) {
+      submit.disabled = true;
+    }
+  };
+
+  enableSubmit = (id: string = 'freeform') => {
+    this._disableList.reverse().find((disableId, index) => {
+      if (disableId === id) {
+        this._disableList.splice(index, 1);
+        return true;
+      }
+
+      return false;
+    });
+
+    if (this._disableList.length > 0) {
+      return;
+    }
+
+    const submitButtons = Array.from(this._getSubmitButtons());
+    for (const submit of submitButtons) {
+      submit.disabled = false;
+    }
   };
 
   lockSubmit = (id: string = 'freeform') => {
@@ -329,12 +363,12 @@ export default class Freeform {
       isBackButtonPressed = true;
     }
 
-    const submitCallbacks: Record<number, SubmitCallback[]> = {};
+    const submitCallbacks: Record<number, Callback[]> = {};
 
     const onSubmitEvent = this._dispatchEvent(events.form.submit, {
       isBackButtonPressed,
       cancelable: true,
-      addCallback: (callback: SubmitCallback, priority: number = 0): void => {
+      addCallback: (callback: Callback, priority: number = 0): void => {
         if (submitCallbacks[priority] === undefined) {
           submitCallbacks[priority] = [];
         }
@@ -604,8 +638,6 @@ export default class Freeform {
       const { success, errors, formErrors, storageToken } = response;
 
       if (success) {
-        this.unlockSubmit();
-
         return storageToken;
       }
 
@@ -744,6 +776,7 @@ export default class Freeform {
     const buttons = this.form.querySelectorAll<HTMLButtonElement | HTMLInputElement>(
       `*[type=submit][data-freeform-action]`
     );
+
     if (buttons.length) {
       return buttons;
     }

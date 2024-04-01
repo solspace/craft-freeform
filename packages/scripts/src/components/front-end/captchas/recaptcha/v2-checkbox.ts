@@ -1,4 +1,5 @@
 import events from '@lib/plugin/constants/event-types';
+import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
 import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
@@ -49,11 +50,11 @@ form.addEventListener(events.form.ready, (event: FreeformEvent) => {
   });
 });
 
-form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
-  loadReCaptcha(event.form, { ...config, lazyLoad: false }).then(() => {
-    const captchaElement = createCaptcha(event);
-    if (captchaElement) {
-      grecaptcha.ready(() => grecaptcha.reset());
-    }
-  });
+addListeners(form, [events.form.ajaxAfterSubmit, events.form.afterFailedSubmit], async (event: FreeformEvent) => {
+  await loadReCaptcha(event.form, { ...config, lazyLoad: false });
+
+  const captchaElement = createCaptcha(event);
+  if (captchaElement) {
+    grecaptcha.ready(() => grecaptcha.reset());
+  }
 });

@@ -24,3 +24,20 @@ export const dispatchCustomEvent = <T extends object = Record<string, never>>(
 export const createNewEvent = (eventName: string, bubbles = true, cancelable = true): Event => {
   return new Event(eventName, { bubbles, cancelable });
 };
+
+type BatchListeners = (
+  elements: HTMLElement | Array<HTMLElement>,
+  type: string | string[],
+  callback: (this: HTMLElement, ev: Event) => void
+) => void;
+
+export const addListeners: BatchListeners = (elements, type, callback) => {
+  const typeArray = Array.isArray(type) ? type : [type];
+  const elementArray = Array.isArray(elements) ? elements : [elements];
+
+  Array.from(elementArray).forEach((element) => {
+    typeArray.forEach((type) => {
+      element.addEventListener(type, callback);
+    });
+  });
+};

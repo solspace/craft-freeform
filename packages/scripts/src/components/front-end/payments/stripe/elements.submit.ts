@@ -19,8 +19,6 @@ export const loadStripeContainers = (props: StripeFunctionConstructorProps) => a
 
 export const submitStripe = (props: StripeFunctionConstructorProps) => async (event: FreeformEvent) => {
   event.addCallback(async () => {
-    console.log('stripe callback');
-
     const { elementMap, form } = props;
 
     const containers = selectVisibleContainers(form);

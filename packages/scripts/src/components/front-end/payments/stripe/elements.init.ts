@@ -25,6 +25,9 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     loadStripe: getStripe,
   } = config(container);
   const { elementMap, form } = props;
+
+  form.freeform.disableSubmit('stripe.init');
+
   const stripe = await getStripe();
 
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
@@ -183,5 +186,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       amountFields.forEach((handle) => {
         (form[handle] as HTMLInputElement)?.addEventListener('change', executeOnce);
       });
+    })
+    .finally(() => {
+      form.freeform.enableSubmit('stripe.init');
     });
 };

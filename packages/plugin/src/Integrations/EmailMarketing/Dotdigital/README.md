@@ -26,14 +26,13 @@ Maps data to the following field types:
 - At the bottom left corner, click on the profile with cog icon, then click **Access** menu option.
 - Click on the **API Users** tab, and then click **New User** button.
 - Enter and confirm a password and take note of it for yourself.
-- After the page reloads, copy your region-specific API URL and the auto generated API connector email address under the **Email** column.
+- After the page reloads, copy the auto generated API connector email address under the **Email** column.
 
 ### 2. Set up Integration on your site
 
 - Switch back to your Freeform/Craft tab.
 - Select *Dotdigital (v2)* from the **Service Provider** select dropdown.
 - Enter a name and handle for the integration.
-- Paste your region-specific API URL (e.g. https://region-api.dotdigital.com) into the **API URL** field in Freeform.
 - Paste the Dotdigital API connector email address into the **API User Email** field in Freeform.
 - Enter the chosen password for that API user in the **API User Password** field in Freeform.
 - Configure additional settings:

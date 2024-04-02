@@ -12,4 +12,9 @@
 
 namespace Solspace\Freeform\Integrations\EmailMarketing\Dotdigital;
 
-interface DotdigitalIntegrationInterface {}
+interface DotdigitalIntegrationInterface
+{
+    public function getApiUrl(): string;
+
+    public function setApiUrl(string $apiUrl): self;
+}

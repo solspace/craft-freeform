@@ -262,7 +262,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public function getProductName(): string
     {
-        return $this->productName ?: self::DEFAULT_PRODUCT_NAME;
+        return trim($this->productName) ?: self::DEFAULT_PRODUCT_NAME;
     }
 
     public function getIntervalType(): string

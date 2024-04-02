@@ -119,7 +119,7 @@ class PaymentIntentsController extends BaseStripeController
         Event::trigger(Stripe::class, Stripe::EVENT_UPDATE_PAYMENT_METADATA, $event);
 
         $metadata = $event->getCompiledMetadata();
-        if ($metadata['description']) {
+        if (isset($metadata['description'])) {
             $description = $metadata['description'];
             unset($metadata['description']);
         }

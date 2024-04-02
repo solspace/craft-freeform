@@ -3,10 +3,13 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Controllers;
 
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Integrations\PaymentGateways\Events\UpdateMetadataEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripeCustomerService;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePriceService;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use yii\base\Event;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -101,7 +104,7 @@ class PaymentIntentsController extends BaseStripeController
             )
         ;
 
-        $metadata = [
+        $metadataPayload = [
             'hash' => $hash,
             'form' => $form->getName(),
             'formLink' => UrlHelper::cpUrl('freeform/forms/'.$form->getId()),
@@ -111,6 +114,15 @@ class PaymentIntentsController extends BaseStripeController
                 'freeform/settings/integrations/payment-gateways/'.$integration->getId()
             ),
         ];
+
+        $event = new UpdateMetadataEvent($form, $integration, $metadataPayload);
+        Event::trigger(Stripe::class, Stripe::EVENT_UPDATE_PAYMENT_METADATA, $event);
+
+        $metadata = $event->getCompiledMetadata();
+        if (isset($metadata['description'])) {
+            $description = $metadata['description'];
+            unset($metadata['description']);
+        }
 
         $data = $integration->getMappedFieldValues($form);
         $customer = $this->customerService->getOrCreateCustomer(

@@ -90,8 +90,13 @@ class StripePriceService
 
         $stripe = $integration->getStripeClient();
 
+        $productName = $field->getProductName();
+        if (!$productName) {
+            $productName = StripeField::DEFAULT_PRODUCT_NAME;
+        }
+
         $productName = $this->isolatedTwig->render(
-            $field->getProductName(),
+            $productName,
             [
                 'form' => $form,
                 'integration' => $integration,

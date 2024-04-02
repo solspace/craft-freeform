@@ -12,7 +12,7 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
 {
     public function safeUp(): bool
     {
-        $this->dropTableIfExists('freeform_integrations_queue');
+        $this->dropTableIfExists('{{%freeform_integrations_queue}}');
         $this->createTable('{{%freeform_integrations_queue}}', [
             'id' => $this->primaryKey(),
             'submissionId' => $this->integer()->notNull(),

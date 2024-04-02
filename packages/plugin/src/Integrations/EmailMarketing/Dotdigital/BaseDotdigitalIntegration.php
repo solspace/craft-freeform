@@ -27,14 +27,8 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     protected const LOG_CATEGORY = 'Dotdigital';
 
-    #[Flag(self::FLAG_ENCRYPTED)]
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Validators\Required]
-    #[Input\Text(
-        label: 'API URL',
-        instructions: 'Enter your region-specific API URL (e.g. `https://region-api.dotdigital.com`).',
-        order: 1,
-    )]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
     protected string $apiUrl = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
@@ -93,6 +87,13 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     public function getApiUrl(): string
     {
         return $this->getProcessedValue($this->apiUrl);
+    }
+
+    public function setApiUrl(string $apiUrl): self
+    {
+        $this->apiUrl = $apiUrl;
+
+        return $this;
     }
 
     public function getApiUserEmail(): string

@@ -14,6 +14,17 @@
 /*! decimal.js-light v2.5.1 https://github.com/MikeMcl/decimal.js-light/LICENCE */
 
 /**
+   * match-sorter-utils
+   *
+   * Copyright (c) TanStack
+   *
+   * This source code is licensed under the MIT license found in the
+   * LICENSE.md file in the root directory of this source tree.
+   *
+   * @license MIT
+   */
+
+/**
  * @license React
  * react-dom-server-legacy.browser.production.min.js
  *
@@ -111,7 +122,7 @@
  */
 
 /**
- * @remix-run/router v1.14.1
+ * @remix-run/router v1.15.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -122,7 +133,7 @@
  */
 
 /**
- * React Router DOM v6.21.1
+ * React Router DOM v6.22.3
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -133,20 +144,9 @@
  */
 
 /**
- * React Router v6.21.1
+ * React Router v6.22.3
  *
  * Copyright (c) Remix Software Inc.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE.md file in the root directory of this source tree.
- *
- * @license MIT
- */
-
-/**
- * match-sorter-utils
- *
- * Copyright (c) TanStack
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE.md file in the root directory of this source tree.
@@ -189,7 +189,7 @@
  */
 
 /**!
- * Sortable 1.15.1
+ * Sortable 1.15.2
  * @author	RubaXa   <trash@rubaxa.org>
  * @author	owenm    <owen23355@gmail.com>
  * @license MIT

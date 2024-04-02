@@ -48,6 +48,12 @@ class SalesforceCheckboxProcessor extends FeatureBundle
             return;
         }
 
+        if (\is_array($value)) {
+            $event->setValue(!empty($value));
+
+            return;
+        }
+
         if (\is_string($value)) {
             $value = strtolower($value);
         }

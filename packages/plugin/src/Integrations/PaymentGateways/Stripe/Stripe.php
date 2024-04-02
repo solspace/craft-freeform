@@ -32,6 +32,8 @@ class Stripe extends PaymentGatewayIntegration
 {
     public const LOG_CATEGORY = 'Stripe';
 
+    public const EVENT_UPDATE_PAYMENT_METADATA = 'update-payment-metadata';
+
     public const CATEGORY_CUSTOMER = 'customer';
     public const CATEGORY_ADDRESS = 'address';
 

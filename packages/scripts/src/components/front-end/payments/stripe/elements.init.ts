@@ -32,6 +32,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
   if (elementMap.has(field)) {
+    form.freeform.enableSubmit('stripe.init');
     return;
   }
 
@@ -85,6 +86,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       amountFields.forEach((handle) => {
         (form[handle] as HTMLInputElement)?.addEventListener('change', () => {
           workers.push(handle);
+
+          form.freeform.disableSubmit('stripe.working');
           form.freeform.disableForm();
           const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
@@ -122,6 +125,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
             .finally(() => {
               workers.pop();
               if (!workers.length) {
+                form.freeform.enableSubmit('stripe.working');
                 form.freeform.enableForm();
               }
             });

@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.1.9 - Unreleased
+
+### Added
+- Added an updated **Dotdigital** email marketing integration.
+- Added an `EVENT_UPDATE_PAYMENT_METADATA` developer event for modifying Stripe metadata.
+
+### Changed
+- Refactored the form submit and submit button lock process to work reliably when more complex features and flows are active (e.g. Stripe, Captchas, File Drag & Drop, etc).
+- Updated the domain extension length maximum from `6` to `15` for **Website** fields.
+- Exposed the **Maximum Length** field setting for GraphQL.
+
+### Fixed
+- Fixed a bug where Freeform fields could not map to Salesforce Checkbox fields.
+- Fixed an issue with Stripe subscriptions and empty product names. Also added a failsafe for the product name.
+- Fixed a bug where the Page tab label editor in the builder was broken when a scrollbar was present (lots of pages).
+- Fixed a bug where the **Max Length** setting was not present for applicable fields.
+- Fixed a bug where deleting **Group** fields could delete other fields that share its row in the builder.
+- Fixed a bug where the **reCAPTCHA v2 Checkbox** was not being validated if left empty on a form with Stripe.
+- Fixed a bug where the Submit button was prematurely becoming active again before the Stripe payment form was fully processed.
+
 ## 5.1.8 - 2024-03-27
 
 ### Added

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.1.9 - Unreleased
+## 5.1.9 - 2024-04-03
 
 ### Added
 - Added an updated **Dotdigital** email marketing integration.

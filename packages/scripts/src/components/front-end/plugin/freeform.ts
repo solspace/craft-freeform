@@ -76,8 +76,8 @@ export default class Freeform {
   ];
 
   _lastButtonPressed?: HTMLButtonElement;
-  _lockList: string[] = [];
-  _disableList: string[] = [];
+  _lockList: Set<string> = new Set<string>();
+  _disableList: Set<string> = new Set<string>();
 
   static getInstance = (form: HTMLFormElement): Freeform => Freeform.instances.get(form);
 
@@ -179,7 +179,7 @@ export default class Freeform {
   };
 
   disableSubmit = (id: string = 'freeform') => {
-    this._disableList.push(id);
+    this._disableList.add(id);
 
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
@@ -188,16 +188,9 @@ export default class Freeform {
   };
 
   enableSubmit = (id: string = 'freeform') => {
-    this._disableList.reverse().find((disableId, index) => {
-      if (disableId === id) {
-        this._disableList.splice(index, 1);
-        return true;
-      }
+    this._disableList.delete(id);
 
-      return false;
-    });
-
-    if (this._disableList.length > 0) {
+    if (this._disableList.size > 0) {
       return;
     }
 
@@ -208,10 +201,10 @@ export default class Freeform {
   };
 
   lockSubmit = (id: string = 'freeform') => {
-    this._lockList.push(id);
+    this._lockList.add(id);
 
     // Perform the actual lock only initially
-    if (this._lockList.length > 1) {
+    if (this._lockList.size > 1) {
       return;
     }
 
@@ -243,16 +236,9 @@ export default class Freeform {
   };
 
   unlockSubmit = (id: string = 'freeform'): void => {
-    this._lockList.reverse().find((lockId, index) => {
-      if (lockId === id) {
-        this._lockList.splice(index, 1);
-        return true;
-      }
+    this._lockList.delete(id);
 
-      return false;
-    });
-
-    if (this._lockList.length > 0) {
+    if (this._lockList.size > 0) {
       return;
     }
 
@@ -260,7 +246,7 @@ export default class Freeform {
   };
 
   forceUnlockSubmit = (): void => {
-    this._lockList = [];
+    this._lockList.clear();
     this._unlockSubmitButtons();
   };
 

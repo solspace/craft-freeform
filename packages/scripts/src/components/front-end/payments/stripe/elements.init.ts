@@ -26,15 +26,14 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   } = config(container);
   const { elementMap, form } = props;
 
-  form.freeform.disableSubmit('stripe.init');
-
   const stripe = await getStripe();
 
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
   if (elementMap.has(field)) {
-    form.freeform.enableSubmit('stripe.init');
     return;
   }
+
+  form.freeform.disableSubmit('stripe.init');
 
   // Store an empty entry in the elementMap to prevent duplicate initialization
   elementMap.set(field, {

@@ -13,6 +13,7 @@ class DragAndDropFile implements FreeformHandler {
   freeform;
 
   private currentFileUploads = 0;
+  private isFormLocked = false;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -157,9 +158,13 @@ class DragAndDropFile implements FreeformHandler {
 
   handleUploadLockdown = (): void => {
     if (this.currentFileUploads > 0) {
-      this.freeform.lockSubmit('file-upload');
+      if (!this.isFormLocked) {
+        this.isFormLocked = true;
+        this.freeform.lockSubmit('file-upload');
+      }
     } else {
       this.freeform.unlockSubmit('file-upload');
+      this.isFormLocked = false;
     }
   };
 }

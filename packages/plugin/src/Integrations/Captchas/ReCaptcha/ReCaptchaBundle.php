@@ -60,6 +60,10 @@ class ReCaptchaBundle extends FeatureBundle
 
     public function attachScripts(RenderTagEvent $event): void
     {
+        if (!$event->isGenerateTag()) {
+            return;
+        }
+
         $form = $event->getForm();
 
         $integration = $this->getReCaptchaForForm($form);

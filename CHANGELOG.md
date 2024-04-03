@@ -19,6 +19,7 @@
 - Fixed a bug where deleting **Group** fields could delete other fields that share its row in the builder.
 - Fixed a bug where the **reCAPTCHA v2 Checkbox** was not being validated if left empty on a form with Stripe.
 - Fixed a bug where the Submit button was prematurely becoming active again before the Stripe payment form was fully processed.
+- Fixed a bug where Captchas were loaded inside the CP submission detail page when enabled.
 
 ## 5.1.8 - 2024-03-27
 

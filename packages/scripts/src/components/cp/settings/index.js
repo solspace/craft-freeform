@@ -63,7 +63,6 @@ $(() => {
         warning.classList.add('warning', 'with-icon');
         warning.innerText = warningText;
 
-        console.log(parent, warning);
         parent.append(warning);
       } else {
         parent.find('.warning.with-icon').remove();
@@ -123,7 +122,7 @@ $(() => {
                   <p>
                     <span class="checkmark-icon"></span>
                     Migrated successfully
-                  </p> 
+                  </p>
                 </div>
                 `)
               );

@@ -13,6 +13,7 @@ const events = {
     ajaxError: 'freeform-ajax-error',
     ajaxBeforeSubmit: 'freeform-ajax-before-submit',
     ajaxAfterSubmit: 'freeform-ajax-after-submit',
+    afterFailedSubmit: 'freeform-after-failed-submit',
     handleActions: 'freeform-handle-actions',
   } as const,
   rules: {

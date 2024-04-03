@@ -25,12 +25,15 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
     loadStripe: getStripe,
   } = config(container);
   const { elementMap, form } = props;
+
   const stripe = await getStripe();
 
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
   if (elementMap.has(field)) {
     return;
   }
+
+  form.freeform.disableSubmit('stripe.init');
 
   // Store an empty entry in the elementMap to prevent duplicate initialization
   elementMap.set(field, {
@@ -82,6 +85,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       amountFields.forEach((handle) => {
         (form[handle] as HTMLInputElement)?.addEventListener('change', () => {
           workers.push(handle);
+
+          form.freeform.disableSubmit('stripe.working');
           form.freeform.disableForm();
           const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
@@ -119,6 +124,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
             .finally(() => {
               workers.pop();
               if (!workers.length) {
+                form.freeform.enableSubmit('stripe.working');
                 form.freeform.enableForm();
               }
             });
@@ -183,5 +189,8 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       amountFields.forEach((handle) => {
         (form[handle] as HTMLInputElement)?.addEventListener('change', executeOnce);
       });
+    })
+    .finally(() => {
+      form.freeform.enableSubmit('stripe.init');
     });
 };

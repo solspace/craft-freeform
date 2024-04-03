@@ -84,9 +84,12 @@ class SubmitController extends BaseController
         $serialized = json_encode($bag);
         $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $secret));
 
-        $record = new SavedFormRecord();
-        $record->formId = $form->getId();
-        $record->token = $token;
+        $record = SavedFormRecord::findOne(['token' => $token, 'formId' => $form->getId()]);
+        if (!$record) {
+            $record = new SavedFormRecord();
+            $record->formId = $form->getId();
+            $record->token = $token;
+        }
 
         $record->sessionId = \Craft::$app->getSession()->getId();
         $record->payload = $payload;

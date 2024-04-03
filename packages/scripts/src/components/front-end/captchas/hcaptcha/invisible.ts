@@ -13,6 +13,8 @@ const config: hCaptchaConfig = {
   version: '{{ version }}' as Version,
 } as const;
 
+let executor: (value: void | boolean) => void;
+
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-hcaptcha-invisible`;
   const captchaContainer = event.form.querySelector('[data-freeform-hcaptcha-container]');
@@ -30,7 +32,6 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   return recaptchaElement;
 };
 
-let isTokenSet = false;
 let captchaId: string;
 
 const initHCaptchaInvisible = (event: FreeformEvent): void => {
@@ -46,35 +47,30 @@ const initHCaptchaInvisible = (event: FreeformEvent): void => {
       sitekey,
       size: 'invisible',
       callback: (token: string) => {
-        isTokenSet = true;
         hcaptchaElement.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
 
-        if (window?.freeform?.disableCaptcha) {
-          return;
-        }
-
-        event.freeform.triggerResubmit();
+        executor();
       },
     });
   });
 };
 
-form.addEventListener(events.form.ready, initHCaptchaInvisible);
-
 form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
-  if (isTokenSet) {
-    return;
-  }
+  event.addCallback(async () => {
+    const promise = new Promise<void | boolean>((resolve) => {
+      executor = resolve;
+    });
 
-  if (!createCaptcha(event) || event.isBackButtonPressed) {
-    return;
-  }
+    if (!createCaptcha(event) || event.isBackButtonPressed) {
+      return;
+    }
 
-  event.preventDefault();
-  hcaptcha.execute(captchaId);
+    hcaptcha.execute(captchaId);
+
+    return promise;
+  });
 });
 
-form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
-  isTokenSet = false;
-  initHCaptchaInvisible(event);
-});
+form.addEventListener(events.form.ready, initHCaptchaInvisible);
+form.addEventListener(events.form.ajaxAfterSubmit, initHCaptchaInvisible);
+form.addEventListener(events.form.afterFailedSubmit, initHCaptchaInvisible);

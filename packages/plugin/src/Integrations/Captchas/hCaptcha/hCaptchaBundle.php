@@ -60,6 +60,10 @@ class hCaptchaBundle extends FeatureBundle
 
     public function attachScripts(RenderTagEvent $event): void
     {
+        if (!$event->isGenerateTag()) {
+            return;
+        }
+
         $form = $event->getForm();
 
         $integration = $this->getHCaptchaForForm($form);

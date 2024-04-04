@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.1.10 - Unreleased
+## 5.1.10 - 2024-04-04
 
 ### Changed
 - Updated the `symfony/property-access`, `symfony/finder`, `symfony/filesystem` and `symfony/expression-language` dependencies to include `^7.0`.

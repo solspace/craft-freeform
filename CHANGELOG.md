@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.1.16 - 2024-04-04
+
+### Changed
+- Updated the CSRF input to send `nocache` headers when rendering.
+
+### Fixed
+- Fixed a bug where Freeform was opening unnecessary sessions.
+
 ## 4.1.15.1 - 2024-03-01
 
 ### Fixed

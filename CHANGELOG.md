@@ -473,6 +473,14 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.16 - 2024-04-04
+
+### Changed
+- Updated the CSRF input to send `nocache` headers when rendering.
+
+### Fixed
+- Fixed a bug where Freeform was opening unnecessary sessions.
+
 ## 4.1.15.1 - 2024-03-01
 
 ### Fixed

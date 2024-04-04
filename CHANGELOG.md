@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.1.10 - Unreleased
+
+### Changed
+- Updated the `symfony/property-access`, `symfony/finder`, `symfony/filesystem` and `symfony/expression-language` dependencies to include `^7.0`.
+- Updated the `nesbot/carbon` dependency to include `^3.0.0"`.
+
 ## 5.1.9 - 2024-04-03
 
 ### Added

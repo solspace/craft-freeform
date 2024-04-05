@@ -4,6 +4,7 @@ namespace Solspace\Freeform\controllers\api\elements;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Library\Helpers\SectionHelper;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -31,7 +32,7 @@ class EntryController extends BaseApiController
             return $this->asJson([]);
         }
 
-        $entryType = \Craft::$app->sections->getEntryTypeById($entryTypeId);
+        $entryType = SectionHelper::getEntryTypeById($entryTypeId);
         if (!$entryType) {
             throw new NotFoundHttpException('Entry type not found');
         }
@@ -57,7 +58,7 @@ class EntryController extends BaseApiController
 
         $sectionId = $request->get('sectionId');
         if ($sectionId) {
-            $section = \Craft::$app->getSections()->getSectionById((int) $sectionId);
+            $section = SectionHelper::getSectionById((int) $sectionId);
             if ($section) {
                 foreach ($section->getEntryTypes() as $entryType) {
                     $collection->add($entryType->id, $entryType->name);
@@ -87,7 +88,7 @@ class EntryController extends BaseApiController
 
         $entryTypeId = $request->get('entryTypeId');
         if ($entryTypeId) {
-            $entryType = \Craft::$app->sections->getEntryTypeById($entryTypeId);
+            $entryType = SectionHelper::getEntryTypeById($entryTypeId);
             if ($entryType) {
                 foreach ($entryType->getFieldLayout()->getCustomFields() as $field) {
                     $collection->add($field->handle, $field->name);

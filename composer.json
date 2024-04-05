@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "^8.0.2|^8.2.0",
+    "php": "^8.2.0",
     "ext-zip": "*",
     "craftcms/cms": "^4.0.0|^5.0.0",
     "composer/composer": "^1.0|^2.0.13",
@@ -23,7 +23,7 @@
     "nesbot/carbon": "^1.22.1|^2.19|^3.0.0",
     "stripe/stripe-php": "^7.0|^8.0|^9.0|^10.0",
     "ext-json": "*",
-    "symfony/serializer": "^6.0",
+    "symfony/serializer": "^6.0|^7.0",
     "doctrine/annotations": "^2.0",
     "phpoffice/phpspreadsheet": "^1.29",
     "composer/class-map-generator": "^1.1",
@@ -31,8 +31,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",
-    "friendsofphp/php-cs-fixer": "^v3.52.0",
-    "brainmaestro/composer-git-hooks": "^2.8"
+    "friendsofphp/php-cs-fixer": "^v3.52.0"
   },
   "autoload": {
     "psr-4": {
@@ -47,10 +46,7 @@
   "scripts": {
     "test:unit": "vendor/bin/phpunit --configuration ./phpunit.xml",
     "fix": "vendor/bin/php-cs-fixer fix --diff --config=./.php-cs-fixer.dist.php",
-    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php",
-    "cghooks": "vendor/bin/cghooks",
-    "post-install-cmd": "cghooks add --ignore-lock",
-    "post-update-cmd": "cghooks update"
+    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php"
   },
   "extra": {
     "schemaVersion": "5.0.22",
@@ -62,26 +58,12 @@
     "documentationUrl": "https://docs.solspace.com/craft/freeform/v5/",
     "changelogUrl": "https://raw.githubusercontent.com/solspace/craft-freeform/v5/CHANGELOG.md",
     "hasSettings": true,
-    "hasCpSection": true,
-    "hooks": {
-      "pre-commit": [
-        "set -e",
-        "npm -v",
-        "php -v",
-        "printf '\\n\\e[32m######### Linting Scripts #########\\e[0m\\n\\n'",
-        "npm run lint",
-        "printf '\\n\\e[32m######### Running CS Fixer dry run #########\\e[0m\\n\\n'",
-        "composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)"
-      ]
-    }
+    "hasCpSection": true
   },
   "config": {
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "craftcms/plugin-installer": true
-    },
-    "platform": {
-      "php": "8.0.2"
     }
   },
   "minimum-stability": "dev",

@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\SectionHelper;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 
 #[Type(
@@ -72,7 +73,7 @@ class Entry extends ElementIntegration
 
     public function buildElement(Form $form): Element
     {
-        $entryType = \Craft::$app->sections->getEntryTypeById($this->getEntryTypeId());
+        $entryType = SectionHelper::getEntryTypeById($this->getEntryTypeId());
 
         $element = $this->getAssignedFormElement($form);
         if ($element instanceof CraftEntry) {

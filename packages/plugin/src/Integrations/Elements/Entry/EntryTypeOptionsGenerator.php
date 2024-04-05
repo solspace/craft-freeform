@@ -19,7 +19,8 @@ class EntryTypeOptionsGenerator implements OptionsGeneratorInterface
 
             $entryTypes = $section->getEntryTypes();
             foreach ($entryTypes as $entryType) {
-                $sectionCollection->add($entryType->id, $entryType->name);
+                $key = sprintf('%s:%s', $section->id, $entryType->id);
+                $sectionCollection->add($key, $entryType->name);
             }
 
             $options->addCollection($sectionCollection);

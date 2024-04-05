@@ -35,6 +35,20 @@ export const FieldMappingController: React.FC<Props> = ({
     return null;
   }
 
+  const update = (
+    sourceId: string | number,
+    type: TargetFieldType,
+    value?: string
+  ): void => {
+    updateValue({
+      ...mapping,
+      [sourceId]: {
+        type,
+        value,
+      },
+    });
+  };
+
   return (
     <MappingContainer>
       {sources.length === 0 && (
@@ -58,15 +72,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 className={classes(
                   map.type === TargetFieldType.Custom && 'active'
                 )}
-                onClick={() =>
-                  updateValue({
-                    ...mapping,
-                    [source.id]: {
-                      type: TargetFieldType.Custom,
-                      value: '',
-                    },
-                  })
-                }
+                onClick={() => update(source.id, TargetFieldType.Custom)}
               >
                 <CustomIcon />
               </TypeButton>
@@ -75,15 +81,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 className={classes(
                   map.type === TargetFieldType.Relation && 'active'
                 )}
-                onClick={() =>
-                  updateValue({
-                    ...mapping,
-                    [source.id]: {
-                      type: TargetFieldType.Relation,
-                      value: '',
-                    },
-                  })
-                }
+                onClick={() => update(source.id, TargetFieldType.Relation)}
               >
                 <RelationIcon />
               </TypeButton>
@@ -94,13 +92,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 <FieldSelect
                   value={map?.value}
                   onChange={(fieldUid) => {
-                    updateValue({
-                      ...mapping,
-                      [source.id]: {
-                        ...map,
-                        value: fieldUid,
-                      },
-                    });
+                    update(source.id, TargetFieldType.Relation, fieldUid);
                   }}
                 />
               )}
@@ -112,13 +104,11 @@ export const FieldMappingController: React.FC<Props> = ({
                   placeholder="e.g. {{ yourField }} {{ otherField }}"
                   value={map.value}
                   onChange={(event) => {
-                    updateValue({
-                      ...mapping,
-                      [source.id]: {
-                        ...map,
-                        value: event.target.value,
-                      },
-                    });
+                    update(
+                      source.id,
+                      TargetFieldType.Custom,
+                      event.target.value
+                    );
                   }}
                 />
               )}

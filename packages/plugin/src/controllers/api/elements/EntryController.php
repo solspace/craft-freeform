@@ -27,7 +27,10 @@ class EntryController extends BaseApiController
 
     public function actionCustomFields(): Response
     {
-        $entryTypeId = $this->request->get('entryTypeId');
+        $sectionEntry = $this->request->get('sectionEntry');
+        $sectionEntry = explode(':', $sectionEntry);
+
+        $entryTypeId = $sectionEntry[1] ?? null;
         if (!$entryTypeId) {
             return $this->asJson([]);
         }

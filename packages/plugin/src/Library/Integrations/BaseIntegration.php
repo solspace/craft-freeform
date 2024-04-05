@@ -13,10 +13,12 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
@@ -106,11 +108,20 @@ abstract class BaseIntegration implements IntegrationInterface
      */
     protected function processException(\Exception $exception, ?string $category = null): void
     {
-        Freeform::getInstance()->logger->getLogger(FreeformLogger::INTEGRATION)->error(
-            $category.' '.$exception->getMessage(),
-            ['exception' => $exception->getMessage()],
-        );
+        $message = $exception->getMessage();
+        if ($exception instanceof RequestException) {
+            $message = $exception->getResponse()->getBody()->getContents();
+        }
 
-        throw $exception;
+        Freeform::getInstance()
+            ->logger
+            ->getLogger(FreeformLogger::INTEGRATION)
+            ->error(
+                $category.': '.$message,
+                ['exception' => $exception->getMessage()],
+            )
+        ;
+
+        throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception);
     }
 }

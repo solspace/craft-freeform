@@ -140,6 +140,10 @@ class JavascriptTestBundle extends FeatureBundle
 
     public function addJsTestScript(RenderTagEvent $event): void
     {
+        if (!$event->isGenerateTag()) {
+            return;
+        }
+
         $form = $event->getForm();
         $integration = $this->getIntegration($form);
         if (!$integration) {

@@ -1,23 +1,14 @@
 import events from '@lib/plugin/constants/event-types';
+import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
-import type { hCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadHCaptcha } from './utils/script-loader';
-
-const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
-const config: hCaptchaConfig = {
-  sitekey: '{{ siteKey }}',
-  theme: '{{ theme }}' as Theme,
-  size: '{{ size }}' as Size,
-  lazyLoad: Boolean('{{ lazyLoad }}'),
-  version: '{{ version }}' as Version,
-} as const;
+import { getHcaptchaContainer, loadHCaptcha, readConfig } from './utils/script-loader';
 
 let executor: (value: void | boolean) => void;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-hcaptcha-invisible`;
-  const captchaContainer = event.form.querySelector('[data-freeform-hcaptcha-container]');
+  const captchaContainer = getHcaptchaContainer(event.form);
   if (!captchaContainer) {
     return null;
   }
@@ -35,13 +26,18 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
 let captchaId: string;
 
 const initHCaptchaInvisible = (event: FreeformEvent): void => {
-  const { sitekey } = config;
-
-  loadHCaptcha(event.form, config).then(() => {
+  loadHCaptcha(event.form).then(() => {
     const hcaptchaElement = createCaptcha(event);
     if (!hcaptchaElement) {
       return;
     }
+
+    const captchaContainer = getHcaptchaContainer(event.form);
+    if (!captchaContainer) {
+      return;
+    }
+
+    const { sitekey } = readConfig(captchaContainer);
 
     captchaId = hcaptcha.render(hcaptchaElement, {
       sitekey,
@@ -55,7 +51,7 @@ const initHCaptchaInvisible = (event: FreeformEvent): void => {
   });
 };
 
-form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
+document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   event.addCallback(async () => {
     const promise = new Promise<void | boolean>((resolve) => {
       executor = resolve;
@@ -65,12 +61,16 @@ form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
       return;
     }
 
+    await loadHCaptcha(event.form, true);
+
     hcaptcha.execute(captchaId);
 
     return promise;
   });
 });
 
-form.addEventListener(events.form.ready, initHCaptchaInvisible);
-form.addEventListener(events.form.ajaxAfterSubmit, initHCaptchaInvisible);
-form.addEventListener(events.form.afterFailedSubmit, initHCaptchaInvisible);
+addListeners(
+  document,
+  [events.form.ready, events.form.ajaxAfterSubmit, events.form.afterFailedSubmit],
+  initHCaptchaInvisible
+);

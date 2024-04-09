@@ -26,7 +26,7 @@ export const createNewEvent = (eventName: string, bubbles = true, cancelable = t
 };
 
 type BatchListeners = (
-  elements: HTMLElement | Array<HTMLElement>,
+  elements: Document | HTMLElement | Array<HTMLElement>,
   type: string | string[],
   callback: (this: HTMLElement, ev: Event) => void
 ) => void;

@@ -49,8 +49,27 @@ class hCaptchaBundle extends FeatureBundle
             return;
         }
 
+        $integration = $this->getHCaptchaForForm($form);
+        if (!$integration) {
+            return;
+        }
+
+        $locale = $integration->getLocale();
+        if (empty($locale)) {
+            $locale = \Craft::$app->locale->getLanguageID();
+        }
+
         $attributes = CaptchasBundle::getCaptchaAttributes($form);
-        $attributes->replace('data-freeform-hcaptcha-container', true);
+        $attributes
+            ->replace('data-freeform-hcaptcha-container', true)
+            ->replace('data-captcha', 'hcaptcha')
+            ->setIfEmpty('data-site-key', $integration->getSiteKey())
+            ->setIfEmpty('data-theme', $integration->getTheme())
+            ->setIfEmpty('data-size', $integration->getSize())
+            ->setIfEmpty('data-lazy-load', $integration->isTriggerOnInteract())
+            ->setIfEmpty('data-version', $integration->getVersion())
+            ->setIfEmpty('data-locale', $locale)
+        ;
 
         $event->addChunk(
             '<div'.$attributes.'></div>',
@@ -77,24 +96,8 @@ class hCaptchaBundle extends FeatureBundle
             '@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js'
         );
 
-        $locale = $integration->getLocale();
-        if (empty($locale)) {
-            $locale = \Craft::$app->locale->getLanguageID();
-        }
-
         $script = file_get_contents($scriptPath);
-        $event->addChunk(
-            "<script type='text/javascript'>{$script}</script>",
-            [
-                'siteKey' => $integration->getSiteKey(),
-                'formAnchor' => $form->getAnchor(),
-                'theme' => $integration->getTheme(),
-                'size' => $integration->getSize(),
-                'lazyLoad' => $integration->isTriggerOnInteract() ? '1' : '',
-                'version' => $integration->getVersion(),
-                'locale' => $locale,
-            ]
-        );
+        $event->addChunk("<script type='text/javascript'>{$script}</script>");
     }
 
     public function triggerValidation(ValidationEvent $event): void

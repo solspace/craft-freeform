@@ -1,23 +1,14 @@
 import events from '@lib/plugin/constants/event-types';
+import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
-import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadReCaptcha } from './utils/script-loader';
-
-const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
-const config: reCaptchaConfig = {
-  sitekey: '{{ siteKey }}',
-  theme: '{{ theme }}' as Theme,
-  size: '{{ size }}' as Size,
-  lazyLoad: Boolean('{{ lazyLoad }}'),
-  version: '{{ version }}' as Version,
-} as const;
+import { getRecaptchaContainer, loadReCaptcha, readConfig } from './utils/script-loader';
 
 let executor: (value: void) => void;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const id = `${event.freeform.id}-recaptcha-v2-invisible`;
-  const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
+  const captchaContainer = getRecaptchaContainer(event.form);
   if (!captchaContainer) {
     return null;
   }
@@ -33,9 +24,14 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
 };
 
 const initRecaptchaInvisible = (event: FreeformEvent): void => {
-  const { sitekey } = config;
+  loadReCaptcha(event.form).then(() => {
+    const captchaContainer = getRecaptchaContainer(event.form);
+    if (!captchaContainer) {
+      return;
+    }
 
-  loadReCaptcha(event.form, config).then(() => {
+    const { sitekey } = readConfig(captchaContainer);
+
     const recaptchaElement = createCaptcha(event);
     if (!recaptchaElement) {
       return;
@@ -59,7 +55,7 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
   });
 };
 
-form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
+document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   event.addCallback(async () => {
     const promise = new Promise<void>((resolve) => {
       executor = resolve;
@@ -69,7 +65,7 @@ form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
       return;
     }
 
-    await loadReCaptcha(event.form, { ...config, lazyLoad: false });
+    await loadReCaptcha(event.form, true);
 
     grecaptcha.ready(() => {
       grecaptcha.execute();
@@ -79,6 +75,8 @@ form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   });
 });
 
-form.addEventListener(events.form.ready, initRecaptchaInvisible);
-form.addEventListener(events.form.afterFailedSubmit, initRecaptchaInvisible);
-form.addEventListener(events.form.ajaxAfterSubmit, initRecaptchaInvisible);
+addListeners(
+  document,
+  [events.form.ready, events.form.afterFailedSubmit, events.form.ajaxAfterSubmit],
+  initRecaptchaInvisible
+);

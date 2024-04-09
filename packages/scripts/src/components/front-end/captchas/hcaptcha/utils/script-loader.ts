@@ -26,13 +26,20 @@ export type hCaptchaConfig = {
   locale?: string;
 };
 
-export const loadHCaptcha = (form: HTMLFormElement, config: hCaptchaConfig): Promise<void> => {
-  const { locale, lazyLoad = false } = config;
+const scriptLoadChainMap = new Map<string, () => Promise<void>>();
+
+export const loadHCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
+  const container = getHcaptchaContainer(form);
+  if (!container) {
+    return Promise.resolve();
+  }
+
+  const { locale, version, lazyLoad = false } = readConfig(container);
+  const isLazy = lazyLoad && !forceLoad;
 
   const loadScript = () =>
     new Promise<void>((resolve, reject) => {
       const existingScript = document.querySelector(`#${scriptId}`);
-
       if (existingScript) {
         resolve();
         return;
@@ -50,23 +57,50 @@ export const loadHCaptcha = (form: HTMLFormElement, config: hCaptchaConfig): Pro
       script.defer = true;
       script.id = scriptId;
       script.addEventListener('load', () => resolve());
-      script.addEventListener('error', () => reject(new Error(`Error loading script ${url}`)));
+      script.addEventListener('error', () => reject(new Error(`Error loading script ${scriptUrl}`)));
 
       document.body.appendChild(script);
     });
 
-  if (lazyLoad) {
-    return new Promise<void>((resolve, reject) => {
+  if (isLazy) {
+    const loaderChainPromise = new Promise<void>((resolve, reject) => {
       const handleChange = () => {
         form.removeEventListener('input', handleChange);
-        loadScript()
-          .then(() => resolve())
+        return loadScript()
+          .then(() => {
+            resolve();
+          })
           .catch(reject);
       };
 
       form.addEventListener('input', handleChange);
+      scriptLoadChainMap.set(version, handleChange);
     });
+
+    return loaderChainPromise;
+  }
+
+  if (scriptLoadChainMap.has(version)) {
+    const chainScript = scriptLoadChainMap.get(version);
+    scriptLoadChainMap.delete(version);
+
+    return chainScript();
   }
 
   return loadScript();
+};
+
+export const getHcaptchaContainer = (form: HTMLFormElement): HTMLElement | null =>
+  form.querySelector<HTMLElement>('[data-captcha="hcaptcha"]');
+
+export const readConfig = (element: HTMLElement): hCaptchaConfig => {
+  return {
+    sitekey: element.dataset.siteKey || '',
+    theme: (element.dataset.theme as Theme) || Theme.LIGHT,
+    size: (element.dataset.size as Size) || Size.NORMAL,
+    version: (element.dataset.version as Version) || Version.CHECKBOX,
+    lazyLoad: element.dataset.lazyLoad !== undefined,
+    action: element.dataset.action || 'submit',
+    locale: element.dataset.locale,
+  };
 };

@@ -1,22 +1,11 @@
 import events from '@lib/plugin/constants/event-types';
 import type { FreeformEvent } from 'types/events';
 
-import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadReCaptcha } from './utils/script-loader';
-
-const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
-const config: reCaptchaConfig = {
-  sitekey: '{{ siteKey }}',
-  theme: '{{ theme }}' as Theme,
-  size: '{{ size }}' as Size,
-  lazyLoad: Boolean('{{ lazyLoad }}'),
-  version: '{{ version }}' as Version,
-  action: '{{ action }}',
-} as const;
+import { getRecaptchaContainer, loadReCaptcha, readConfig } from './utils/script-loader';
 
 const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
   const id = `${event.freeform.id}-recaptcha-v3`;
-  const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
+  const captchaContainer = getRecaptchaContainer(event.form);
   if (!captchaContainer) {
     return null;
   }
@@ -42,30 +31,37 @@ const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
   return recaptchaElement;
 };
 
-form.addEventListener(events.form.ready, (event: FreeformEvent) => {
-  loadReCaptcha(event.form, config);
+document.addEventListener(events.form.ready, (event: FreeformEvent) => {
+  loadReCaptcha(event.form);
 });
 
-form.addEventListener(events.form.submit, (event: FreeformEvent) => {
+document.addEventListener(events.form.submit, (event: FreeformEvent) => {
   event.addCallback(async () => {
     if (!createCaptcha(event) || event.isBackButtonPressed) {
       return;
     }
 
-    await loadReCaptcha(event.form, { ...config, lazyLoad: false });
+    await loadReCaptcha(event.form, true);
+
+    const captchaContainer = getRecaptchaContainer(event.form);
+    if (!captchaContainer) {
+      return null;
+    }
+
+    const { sitekey, action } = readConfig(captchaContainer);
 
     const recaptchaElement = createCaptcha(event);
     if (!recaptchaElement) {
       return;
     }
 
-    const { sitekey } = config;
-    let { action } = config;
-    if (!action) {
-      action = 'submit';
-    }
+    return new Promise<void>((resolve) => {
+      grecaptcha.ready(async () => {
+        const token = await grecaptcha.execute(sitekey, { action });
+        recaptchaElement.value = token;
 
-    const token = await grecaptcha.execute(sitekey, { action });
-    recaptchaElement.value = token;
+        resolve();
+      });
+    });
   });
 });

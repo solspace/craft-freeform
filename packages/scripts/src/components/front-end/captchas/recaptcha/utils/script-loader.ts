@@ -27,13 +27,20 @@ export type reCaptchaConfig = {
   locale?: string;
 };
 
-export const loadReCaptcha = (form: HTMLFormElement, config: reCaptchaConfig): Promise<void> => {
-  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX, locale } = config;
+const scriptLoadChainMap = new Map<string, () => Promise<void>>();
+
+export const loadReCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
+  const container = getRecaptchaContainer(form);
+  if (!container) {
+    return;
+  }
+
+  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX, locale } = readConfig(container);
+  const isLazy = lazyLoad && !forceLoad;
 
   const loadScript = () =>
     new Promise<void>((resolve, reject) => {
       const existingScript = document.querySelector(`#${scriptId}`);
-
       if (existingScript) {
         resolve();
         return;
@@ -65,18 +72,45 @@ export const loadReCaptcha = (form: HTMLFormElement, config: reCaptchaConfig): P
       document.body.appendChild(script);
     });
 
-  if (lazyLoad) {
-    return new Promise<void>((resolve, reject) => {
+  if (isLazy) {
+    const loaderChainPromise = new Promise<void>((resolve, reject) => {
       const handleChange = () => {
         form.removeEventListener('input', handleChange);
-        loadScript()
-          .then(() => resolve())
+        return loadScript()
+          .then(() => {
+            resolve();
+          })
           .catch(reject);
       };
 
       form.addEventListener('input', handleChange);
+      scriptLoadChainMap.set(version, handleChange);
     });
+
+    return loaderChainPromise;
+  }
+
+  if (scriptLoadChainMap.has(version)) {
+    const chainScript = scriptLoadChainMap.get(version);
+    scriptLoadChainMap.delete(version);
+
+    return chainScript();
   }
 
   return loadScript();
+};
+
+export const getRecaptchaContainer = (form: HTMLFormElement): HTMLElement | null =>
+  form.querySelector<HTMLElement>('[data-captcha="recaptcha"]');
+
+export const readConfig = (element: HTMLElement): reCaptchaConfig => {
+  return {
+    sitekey: element.dataset.siteKey || '',
+    theme: (element.dataset.theme as Theme) || Theme.LIGHT,
+    size: (element.dataset.size as Size) || Size.NORMAL,
+    version: (element.dataset.version as Version) || Version.V2_CHECKBOX,
+    lazyLoad: element.dataset.lazyLoad !== undefined,
+    action: element.dataset.action || 'submit',
+    locale: element.dataset.locale,
+  };
 };

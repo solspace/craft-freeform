@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Elements\Entry;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Library\Helpers\SectionHelper;
 
 class EntryTypeOptionsGenerator implements OptionsGeneratorInterface
 {
@@ -12,13 +13,14 @@ class EntryTypeOptionsGenerator implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        $sections = \Craft::$app->sections->getAllSections();
+        $sections = SectionHelper::getAllSections();
         foreach ($sections as $section) {
             $sectionCollection = new OptionCollection($section->name);
 
             $entryTypes = $section->getEntryTypes();
             foreach ($entryTypes as $entryType) {
-                $sectionCollection->add($entryType->id, $entryType->name);
+                $key = sprintf('%s:%s', $section->id, $entryType->id);
+                $sectionCollection->add($key, $entryType->name);
             }
 
             $options->addCollection($sectionCollection);

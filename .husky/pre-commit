@@ -1,0 +1,9 @@
+set -e
+npm -v
+php -v
+
+printf "\\n\\e[32m######### Linting Scripts #########\\e[0m\\n\\n"
+npm run lint
+
+printf "\\n\\e[32m######### Running CS Fixer dry run #########\\e[0m\\n\\n"
+composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)

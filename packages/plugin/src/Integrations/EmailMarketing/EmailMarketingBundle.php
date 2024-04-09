@@ -9,6 +9,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -73,7 +74,12 @@ class EmailMarketingBundle extends FeatureBundle
             }
 
             $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+
+            try {
+                $integration->push($form, $client);
+            } catch (IntegrationException) {
+                // Do nothing
+            }
         }
     }
 }

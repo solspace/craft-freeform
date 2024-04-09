@@ -57,7 +57,7 @@
     "documentationUrl": "https://docs.solspace.com/craft/freeform/v5/",
     "changelogUrl": "https://raw.githubusercontent.com/solspace/craft-freeform/v5/CHANGELOG.md",
     "hasSettings": true,
-    "hasCpSection": true,
+    "hasCpSection": true
   },
   "config": {
     "allow-plugins": {

@@ -29,11 +29,11 @@ class Entry extends ElementIntegration
         emptyOption: 'Select an entry type',
         options: EntryTypeOptionsGenerator::class,
     )]
-    protected string $entryTypeId = '';
+    protected string $sectionEntry = '';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[VisibilityFilter('!!values.entryTypeId')]
+    #[VisibilityFilter('!!values.sectionEntry')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Entry attributes',
         source: 'api/elements/entries/attributes',
@@ -42,22 +42,27 @@ class Entry extends ElementIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[VisibilityFilter('!!values.entryTypeId')]
+    #[VisibilityFilter('!!values.sectionEntry')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable custom Entry fields',
         source: 'api/elements/entries/custom-fields',
-        parameterFields: ['values.entryTypeId' => 'entryTypeId'],
+        parameterFields: ['values.sectionEntry' => 'sectionEntry'],
     )]
     protected ?FieldMapping $fieldMapping = null;
 
     public function isConnectable(): bool
     {
-        return null !== $this->getEntryTypeId();
+        return null !== $this->getSectionEntry();
     }
 
-    public function getEntryTypeId(): int
+    public function getSectionEntry(): array
     {
-        return $this->entryTypeId;
+        $parts = explode(':', $this->sectionEntry);
+
+        $sectionId = $parts[0] ?? null;
+        $entryTypeId = $parts[1] ?? null;
+
+        return [$sectionId, $entryTypeId];
     }
 
     public function getAttributeMapping(): ?FieldMapping
@@ -72,15 +77,15 @@ class Entry extends ElementIntegration
 
     public function buildElement(Form $form): Element
     {
-        $entryType = \Craft::$app->sections->getEntryTypeById($this->getEntryTypeId());
+        [$sectionId, $entryTypeId] = $this->getSectionEntry();
 
         $element = $this->getAssignedFormElement($form);
         if ($element instanceof CraftEntry) {
             $entry = $element;
         } else {
             $entry = new CraftEntry([
-                'sectionId' => $entryType->getSection()->id,
-                'typeId' => $entryType->id,
+                'sectionId' => $sectionId,
+                'typeId' => $entryTypeId,
             ]);
         }
 

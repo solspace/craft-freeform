@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Integrations;
 
 use JetBrains\PhpStorm\ArrayShape;
 use Psr\Http\Message\ResponseInterface;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
@@ -45,6 +46,10 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
         foreach ($mapping as $item) {
             $integrationField = $fields[$item->getSource()] ?? null;
             if (!$integrationField) {
+                continue;
+            }
+
+            if (FieldMapItem::TYPE_RELATION === $item->getType() && empty($item->getValue())) {
                 continue;
             }
 

@@ -83,7 +83,11 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
             if ($craftField) {
                 $element->setFieldValue($craftField->handle, $event->getValue());
             } else {
-                $element->{$key} = $event->getValue();
+                try {
+                    $element->{$key} = $event->getValue();
+                } catch (\TypeError) {
+                    // Do nothing
+                }
             }
         }
     }

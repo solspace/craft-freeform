@@ -27,6 +27,7 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "hosted-git-info": "7.0.0",
+    "husky": "^9.0.11",
     "ini": ">=2.0.0",
     "postcss": "^8.4.28",
     "prettier": "^3.0.2",
@@ -40,7 +41,8 @@
     "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",
     "format:verify": "prettier --list-different '**/*.{ts,tsx,md,json,js,jsx,css}'",
     "lint": "npm run lint --workspaces",
-    "test": "npm run test --workspaces"
+    "test": "npm run test --workspaces",
+    "prepare": "husky"
   },
   "author": "Solspace, Inc.",
   "license": "ISC"

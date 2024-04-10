@@ -12,22 +12,26 @@ use yii\base\Event;
 
 abstract class AbstractCheck extends FeatureBundle
 {
-    /** @var SettingsService */
-    private $settingsService;
+    private SettingsService $settingsService;
 
-    /** @var Settings */
-    private $settings;
+    private Settings $settings;
 
     public function __construct()
     {
         $this->settingsService = Freeform::getInstance()->settings;
         $this->settings = $this->settingsService->getSettingsModel();
 
-        if ($this->settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
+        Event::on(
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
+            function (ValidationEvent $event) {
+                if ($this->settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+                    return;
+                }
 
-        Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleCheck']);
+                $this->handleCheck($event);
+            }
+        );
     }
 
     abstract public function handleCheck(ValidationEvent $event);

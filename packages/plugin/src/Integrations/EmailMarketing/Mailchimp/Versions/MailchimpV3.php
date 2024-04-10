@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\Versions;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
@@ -235,7 +236,7 @@ class MailchimpV3 extends BaseMailchimpIntegration
             );
 
             $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-        } catch (\Exception $exception) {
+        } catch (RequestException $exception) {
             $json = json_decode($exception->getResponse()->getBody());
 
             $is400 = isset($json->status) && 400 === $json->status;
@@ -252,7 +253,7 @@ class MailchimpV3 extends BaseMailchimpIntegration
                     );
 
                     $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-                } catch (\Exception $exception) {
+                } catch (RequestException $exception) {
                     $this->processException($exception, self::LOG_CATEGORY);
                 }
             } else {

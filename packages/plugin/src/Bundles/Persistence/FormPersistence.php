@@ -85,6 +85,7 @@ class FormPersistence extends FeatureBundle
 
         if (!$event->hasErrors()) {
             $record->validate();
+            $record->dateUpdated = new \DateTime();
             $record->save();
         }
 

@@ -16,21 +16,19 @@
 ]) %}
 
 {% block actionButton %}
-    <div class="buttons">
-        <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+    <div class="btngroup submit">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
 
-            <div class="btn submit menubtn"></div>
-            <div class="menu">
-                <ul>
-                    <li>
-                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t('app') }}
-                            <span class="shortcut">⌘S</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul>
+                <li>
+                    <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ "Save and continue editing"|t('app') }}
+                        <span class="shortcut">⌘S</span>
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 {% endblock %}

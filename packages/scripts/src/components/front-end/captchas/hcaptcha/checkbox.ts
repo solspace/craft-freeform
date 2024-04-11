@@ -2,12 +2,17 @@ import events from '@lib/plugin/constants/event-types';
 import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
-import { getHcaptchaContainer, loadHCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadHCaptcha, readConfig } from './utils/script-loader';
 
 let captchaId: string;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
-  const existingElement = event.form.querySelector<HTMLDivElement>('.h-captcha');
+  const container = getContainer(event.form);
+  if (!container) {
+    return null;
+  }
+
+  const existingElement = container.querySelector<HTMLDivElement>('.h-captcha');
   if (existingElement) {
     return existingElement;
   }
@@ -15,15 +20,9 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   const captchaElement = document.createElement('div');
   captchaElement.classList.add('h-captcha');
 
-  const targetElement = getHcaptchaContainer(event.form);
-  if (!targetElement) {
-    return null;
-  }
+  const { sitekey, theme, size } = readConfig(container);
 
-  const { sitekey, theme, size } = readConfig(targetElement);
-
-  targetElement.appendChild(captchaElement);
-
+  container.appendChild(captchaElement);
   captchaId = hcaptcha.render(captchaElement, {
     sitekey,
     theme,

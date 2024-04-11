@@ -2,48 +2,47 @@ import events from '@lib/plugin/constants/event-types';
 import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
-import { getHcaptchaContainer, loadHCaptcha, readConfig } from './utils/script-loader';
+import { getContainer, loadHCaptcha, readConfig } from './utils/script-loader';
 
 let executor: (value: void | boolean) => void;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
-  const id = `${event.freeform.id}-hcaptcha-invisible`;
-  const captchaContainer = getHcaptchaContainer(event.form);
-  if (!captchaContainer) {
+  const container = getContainer(event.form);
+  if (!container) {
     return null;
   }
 
-  let recaptchaElement = document.getElementById(id) as HTMLDivElement;
-  if (!recaptchaElement) {
-    recaptchaElement = document.createElement('div');
-    recaptchaElement.id = id;
-    event.form.appendChild(recaptchaElement);
+  let element = container.querySelector<HTMLDivElement>('[data-hcaptcha]');
+  if (!element) {
+    element = document.createElement('div');
+    element.dataset.hcaptcha = '';
+    container.appendChild(element);
   }
 
-  return recaptchaElement;
+  return element;
 };
 
 let captchaId: string;
 
 const initHCaptchaInvisible = (event: FreeformEvent): void => {
   loadHCaptcha(event.form).then(() => {
-    const hcaptchaElement = createCaptcha(event);
-    if (!hcaptchaElement) {
+    const container = getContainer(event.form);
+    if (!container) {
       return;
     }
 
-    const captchaContainer = getHcaptchaContainer(event.form);
-    if (!captchaContainer) {
+    const element = createCaptcha(event);
+    if (!element) {
       return;
     }
 
-    const { sitekey } = readConfig(captchaContainer);
+    const { sitekey } = readConfig(container);
 
-    captchaId = hcaptcha.render(hcaptchaElement, {
+    captchaId = hcaptcha.render(element, {
       sitekey,
       size: 'invisible',
       callback: (token: string) => {
-        hcaptchaElement.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
+        element.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
 
         executor();
       },

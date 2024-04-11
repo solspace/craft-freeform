@@ -57,7 +57,6 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
   return (
     <FieldCellWrapper
       className={classes(
-        isInputOnly && 'input-only',
         hasErrors(field.errors) && 'errors',
         type.type === Type.Group && 'group',
         isActive && 'active',

@@ -37,19 +37,16 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 document.addEventListener(events.form.submit, (event: FreeformEvent) => {
   event.addCallback(async () => {
     const container = getContainer(event.form);
-    console.log('container', container);
     if (!container) {
       return null;
     }
 
     const element = createCaptcha(event);
-    console.log('element', element);
     if (!element || event.isBackButtonPressed) {
       return;
     }
 
     await loadReCaptcha(event.form, true);
-    console.log('sitekey', readConfig(container));
 
     const { sitekey, action } = readConfig(container);
 

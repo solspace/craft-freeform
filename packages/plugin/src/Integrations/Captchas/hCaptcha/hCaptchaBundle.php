@@ -90,14 +90,18 @@ class hCaptchaBundle extends FeatureBundle
             return;
         }
 
+        static $added = [];
+
         $version = $integration->getVersion();
+        if (\in_array($version, $added, true)) {
+            return;
+        }
 
-        $scriptPath = \Craft::getAlias(
-            '@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js'
-        );
+        $added[] = $version;
 
-        $script = file_get_contents($scriptPath);
-        $event->addChunk("<script type='text/javascript'>{$script}</script>");
+        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js');
+
+        $event->addScript($scriptPath);
     }
 
     public function triggerValidation(ValidationEvent $event): void

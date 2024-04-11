@@ -91,10 +91,16 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        static $added = [];
+
         $version = $integration->getVersion();
-        $scriptPath = \Craft::getAlias(
-            '@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js'
-        );
+        if (\in_array($version, $added, true)) {
+            return;
+        }
+
+        $added[] = $version;
+
+        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
 
         $event->addScript($scriptPath);
     }

@@ -29,6 +29,7 @@ type Options = {
   elements: Document | HTMLElement | Array<HTMLElement>;
   type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[];
   callback: (this: HTMLElement, ev: Event) => void;
+  options?: AddEventListenerOptions | boolean;
 };
 
 type Handler = (method: 'add' | 'remove', options: Options) => void;
@@ -36,24 +37,27 @@ type Handler = (method: 'add' | 'remove', options: Options) => void;
 type BatchListeners = (
   elements: Document | HTMLElement | Array<HTMLElement>,
   type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[],
-  callback: (this: HTMLElement, ev: Event) => void
+  callback: (this: HTMLElement, ev: Event) => void,
+  options?: AddEventListenerOptions | boolean
 ) => void;
 
-export const addListeners: BatchListeners = (elements, type, callback) => {
-  handleListeners('add', { elements, type, callback });
+export const addListeners: BatchListeners = (elements, type, callback, options) => {
+  handleListeners('add', { elements, type, callback, options });
 };
 
-export const removeListeners: BatchListeners = (elements, type, callback) => {
-  handleListeners('remove', { elements, type, callback });
+export const removeListeners: BatchListeners = (elements, type, callback, options) => {
+  handleListeners('remove', { elements, type, callback, options });
 };
 
-const handleListeners: Handler = (method, { type, elements, callback }) => {
+const handleListeners: Handler = (method, { type, elements, callback, options }) => {
   const typeArray = Array.isArray(type) ? type : [type];
   const elementArray = Array.isArray(elements) ? elements : [elements];
 
   Array.from(elementArray).forEach((element) => {
     typeArray.forEach((type) => {
-      method === 'add' ? element.addEventListener(type, callback) : element.removeEventListener(type, callback);
+      method === 'add'
+        ? element.addEventListener(type, callback, options)
+        : element.removeEventListener(type, callback, options);
     });
   });
 };

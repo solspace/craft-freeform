@@ -39,7 +39,7 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 });
 
 addListeners(document, [events.form.ajaxAfterSubmit], async (event: FreeformEvent) => {
-  loadHCaptcha(event.form, true).then(() => {
+  loadHCaptcha(event.form).then(() => {
     const captchaElement = createCaptcha(event);
     if (captchaElement) {
       hcaptcha.reset(captchaId);

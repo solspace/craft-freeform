@@ -10,9 +10,13 @@ export enum Version {
 
 export const loadHCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
   const container = getContainer(form);
-  const { locale } = readConfig(container);
+  if (!container) {
+    return Promise.resolve();
+  }
 
   const url = new URL(scriptUrl);
+
+  const { locale } = readConfig(container);
   if (locale) {
     url.searchParams.append('hl', locale);
   }

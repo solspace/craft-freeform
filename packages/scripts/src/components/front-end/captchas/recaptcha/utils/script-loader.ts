@@ -11,6 +11,10 @@ export enum Version {
 
 export const loadReCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
   const container = getContainer(form);
+  if (!container) {
+    return Promise.resolve();
+  }
+
   const { version, sitekey, locale } = readConfig(container);
 
   const url = new URL(scriptUrl);

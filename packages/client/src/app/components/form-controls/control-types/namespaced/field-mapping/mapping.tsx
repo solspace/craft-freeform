@@ -44,7 +44,7 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
       return;
     }
 
-    const availableProperties = data.map((item) => item.id);
+    const availableProperties = data.map((item) => String(item.id));
 
     const valueClone = cloneDeep(value);
     let modified = false;
@@ -58,7 +58,7 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
     if (modified) {
       updateValue(valueClone);
     }
-  }, [isFetching, data]);
+  }, [isFetching, data, value]);
 
   return (
     <Control property={property} errors={errors}>

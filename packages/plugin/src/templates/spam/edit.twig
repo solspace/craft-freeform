@@ -16,14 +16,12 @@
 ] %}
 
 {% block actionButton %}
-    <div class="buttons">
-        <div class="btngroup submit">
-            <button type="button" class="btn" id="delete-button" data-id="{{ submission.id }}">
-                {{ 'Delete'|t('freeform') }}
-            </button>
-        </div>
-        <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Allow'|t('freeform') }}">
-        </div>
+    <div class="btngroup submit">
+        <button type="button" class="btn" id="delete-button" data-id="{{ submission.id }}">
+            {{ 'Delete'|t('freeform') }}
+        </button>
+    </div>
+    <div class="btngroup submit">
+        <input type="submit" class="btn submit" value="{{ 'Allow'|t('freeform') }}">
     </div>
 {% endblock %}

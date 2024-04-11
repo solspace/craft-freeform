@@ -37,7 +37,7 @@ class DotdigitalAccountInfoListener extends FeatureBundle
             ],
         ]);
 
-        $response = $client->get('https://r1-api.dotdigital.com/account-info');
+        $response = $client->get('https://r1-api.dotdigital.com/v2/account-info');
 
         $json = json_decode((string) $response->getBody());
 

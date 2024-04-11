@@ -9,6 +9,7 @@ use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
 use craft\events\RegisterElementActionsEvent;
+use craft\helpers\Cp;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
@@ -731,7 +732,7 @@ class Submission extends Element
         if ('userId' === $attribute) {
             $user = $this->getAuthor();
 
-            return $user ? \Craft::$app->view->renderTemplate('_elements/element', ['element' => $user]) : '';
+            return $user ? Cp::elementChipHtml($user) : '';
         }
 
         if ('spamReasons' === $attribute) {

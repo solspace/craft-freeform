@@ -1,5 +1,28 @@
 # Solspace Freeform Changelog
 
+## 5.1.11 - 2024-04-11
+
+### Changed
+- Refactored Captcha loaders and added lazy load support.
+- Improved Failure Behavior settings for Captchas inside the form builder.
+- Improved display of **HTML**, **Rich Text**, **Hidden** and **Invisible** field types in the form builder.
+- Updated the `fields` and `lists` limits in the **ActiveCampaign** integration.
+- Updated the `stripe/stripe-php` dependencies to include `^13.0`.
+- Updated the `symfony/property-access`, `symfony/finder`, `symfony/filesystem` and `symfony/expression-language` dependencies to remove `2.8|^3.0|^4.0`.
+- Updated the `symfony/serializer` dependency to include `^5.0` and `^7.0`.
+- Updated the `hashids/hashids` dependency to include `^5.0` and remove `^2.0`.
+- Removed the `composer/composer` dependency requirement.
+
+### Fixed
+- Fixed an issue with the **Dotdigital** integration.
+- Fixed a deprecation error when viewing the CP Submissions index in Craft 5.
+- Fixed an alignment issue with the Submit buttons in the CP Submission and Spam detail pages.
+- Fixed a bug where Element integration field mapping was not reliably loading and saving data.
+- Fixed a bug where Email Marketing integrations could fail when field mapping is updated.
+- Fixed a bug in which the form's **Updated** date was not correctly updated.
+- Fixed a bug where the Javascript Test was loading inside the CP Submission detail page.
+- Fixed a bug where an element query could execute before Craft loaded.
+
 ## 5.1.10 - 2024-04-04
 
 ### Changed

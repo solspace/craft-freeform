@@ -96,8 +96,7 @@ class ReCaptchaBundle extends FeatureBundle
             '@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js'
         );
 
-        $script = file_get_contents($scriptPath);
-        $event->addChunk("<script type='text/javascript'>{$script}</script>");
+        $event->addScript($scriptPath);
     }
 
     public function triggerValidation(ValidationEvent $event): void

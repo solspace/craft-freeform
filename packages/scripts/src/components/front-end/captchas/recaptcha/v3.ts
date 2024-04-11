@@ -4,16 +4,15 @@ import type { FreeformEvent } from 'types/events';
 import { getRecaptchaContainer, loadReCaptcha, readConfig } from './utils/script-loader';
 
 const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
-  const id = `${event.freeform.id}-recaptcha-v3`;
   const captchaContainer = getRecaptchaContainer(event.form);
   if (!captchaContainer) {
     return null;
   }
 
-  let recaptchaElement = document.getElementById(id) as HTMLTextAreaElement;
+  let recaptchaElement = captchaContainer.querySelector<HTMLTextAreaElement>('[data-recaptcha]');
   if (!recaptchaElement) {
     recaptchaElement = document.createElement('textarea');
-    recaptchaElement.id = id;
+    recaptchaElement.dataset.recaptcha = '';
     recaptchaElement.name = 'g-recaptcha-response';
 
     recaptchaElement.style.visibility = 'hidden';
@@ -25,7 +24,7 @@ const createCaptcha = (event: FreeformEvent): HTMLTextAreaElement | null => {
     recaptchaElement.style.overflow = 'hidden';
     recaptchaElement.style.border = 'none';
 
-    event.form.appendChild(recaptchaElement);
+    captchaContainer.appendChild(recaptchaElement);
   }
 
   return recaptchaElement;
@@ -37,7 +36,8 @@ document.addEventListener(events.form.ready, (event: FreeformEvent) => {
 
 document.addEventListener(events.form.submit, (event: FreeformEvent) => {
   event.addCallback(async () => {
-    if (!createCaptcha(event) || event.isBackButtonPressed) {
+    const recaptchaElement = createCaptcha(event);
+    if (!recaptchaElement || event.isBackButtonPressed) {
       return;
     }
 
@@ -48,14 +48,13 @@ document.addEventListener(events.form.submit, (event: FreeformEvent) => {
       return null;
     }
 
-    const { sitekey, action } = readConfig(captchaContainer);
-
-    const recaptchaElement = createCaptcha(event);
     if (!recaptchaElement) {
       return;
     }
 
-    return new Promise<void>((resolve) => {
+    const { sitekey, action } = readConfig(captchaContainer);
+
+    return await new Promise<void>((resolve) => {
       grecaptcha.ready(async () => {
         const token = await grecaptcha.execute(sitekey, { action });
         recaptchaElement.value = token;

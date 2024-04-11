@@ -25,19 +25,35 @@ export const createNewEvent = (eventName: string, bubbles = true, cancelable = t
   return new Event(eventName, { bubbles, cancelable });
 };
 
+type Options = {
+  elements: Document | HTMLElement | Array<HTMLElement>;
+  type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[];
+  callback: (this: HTMLElement, ev: Event) => void;
+};
+
+type Handler = (method: 'add' | 'remove', options: Options) => void;
+
 type BatchListeners = (
   elements: Document | HTMLElement | Array<HTMLElement>,
-  type: string | string[],
+  type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[],
   callback: (this: HTMLElement, ev: Event) => void
 ) => void;
 
 export const addListeners: BatchListeners = (elements, type, callback) => {
+  handleListeners('add', { elements, type, callback });
+};
+
+export const removeListeners: BatchListeners = (elements, type, callback) => {
+  handleListeners('remove', { elements, type, callback });
+};
+
+const handleListeners: Handler = (method, { type, elements, callback }) => {
   const typeArray = Array.isArray(type) ? type : [type];
   const elementArray = Array.isArray(elements) ? elements : [elements];
 
   Array.from(elementArray).forEach((element) => {
     typeArray.forEach((type) => {
-      element.addEventListener(type, callback);
+      method === 'add' ? element.addEventListener(type, callback) : element.removeEventListener(type, callback);
     });
   });
 };

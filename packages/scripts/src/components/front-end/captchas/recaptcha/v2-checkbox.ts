@@ -23,11 +23,13 @@ const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
   targetElement.appendChild(captchaElement);
 
   grecaptcha.ready(() => {
-    grecaptcha.render(captchaElement, {
+    const captchaId = grecaptcha.render(captchaElement, {
       sitekey,
       theme,
       size,
     });
+
+    captchaElement.dataset.captchaId = String(captchaId);
   });
 
   return captchaElement;
@@ -43,7 +45,8 @@ addListeners(document, [events.form.ajaxAfterSubmit], async (event: FreeformEven
   loadReCaptcha(event.form, true).then(() => {
     const captchaElement = createCaptcha(event);
     if (captchaElement) {
-      grecaptcha.ready(() => grecaptcha.reset());
+      const id = captchaElement.dataset.captchaId;
+      grecaptcha.ready(() => grecaptcha.reset(id ? Number(id) : undefined));
     }
   });
 });

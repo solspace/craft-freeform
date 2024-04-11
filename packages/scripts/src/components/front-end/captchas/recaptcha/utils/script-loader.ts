@@ -1,3 +1,5 @@
+import { addListeners, removeListeners } from '@lib/plugin/helpers/event-handling';
+
 const scriptId = 'recaptcha-script';
 const url = 'https://www.google.com/recaptcha/api.js';
 
@@ -27,7 +29,42 @@ export type reCaptchaConfig = {
   locale?: string;
 };
 
-const scriptLoadChainMap = new Map<string, () => Promise<void>>();
+const scriptLoaders = new Map<Version, Promise<void>>();
+
+const loadScript = (
+  resolve: () => void,
+  reject: (reason: Error) => void,
+  { sitekey, version, locale }: reCaptchaConfig
+) => {
+  if (document.getElementById(scriptId)) {
+    return;
+  }
+
+  const scriptUrl = new URL(url);
+  switch (version) {
+    case Version.V3:
+      scriptUrl.searchParams.append('render', sitekey);
+      break;
+
+    default:
+      scriptUrl.searchParams.append('render', 'explicit');
+      break;
+  }
+
+  if (locale) {
+    scriptUrl.searchParams.append('hl', locale);
+  }
+
+  const script = document.createElement('script');
+  script.src = String(scriptUrl);
+  script.async = true;
+  script.defer = true;
+  script.id = scriptId;
+  script.addEventListener('load', () => resolve());
+  script.addEventListener('error', () => reject(new Error(`Error loading script ${scriptUrl}`)));
+
+  document.body.appendChild(script);
+};
 
 export const loadReCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
   const container = getRecaptchaContainer(form);
@@ -35,69 +72,30 @@ export const loadReCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promi
     return;
   }
 
-  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX, locale } = readConfig(container);
+  const config = readConfig(container);
+  const { lazyLoad = false, version = Version.V2_CHECKBOX } = config;
   const isLazy = lazyLoad && !forceLoad;
 
-  const loadScript = () =>
-    new Promise<void>((resolve, reject) => {
-      const existingScript = document.querySelector(`#${scriptId}`);
-      if (existingScript) {
-        resolve();
-        return;
-      }
+  if (scriptLoaders.has(version)) {
+    return scriptLoaders.get(version);
+  }
 
-      const scriptUrl = new URL(url);
-      switch (version) {
-        case Version.V3:
-          scriptUrl.searchParams.append('render', sitekey);
-          break;
-
-        default:
-          scriptUrl.searchParams.append('render', 'explicit');
-          break;
-      }
-
-      if (locale) {
-        scriptUrl.searchParams.append('hl', locale);
-      }
-
-      const script = document.createElement('script');
-      script.src = String(scriptUrl);
-      script.async = true;
-      script.defer = true;
-      script.id = scriptId;
-      script.addEventListener('load', () => resolve());
-      script.addEventListener('error', () => reject(new Error(`Error loading script ${scriptUrl}`)));
-
-      document.body.appendChild(script);
-    });
-
-  if (isLazy) {
-    const loaderChainPromise = new Promise<void>((resolve, reject) => {
+  const promise = new Promise<void>((resolve, reject) => {
+    if (isLazy) {
       const handleChange = () => {
-        form.removeEventListener('input', handleChange);
-        return loadScript()
-          .then(() => {
-            resolve();
-          })
-          .catch(reject);
+        removeListeners(form, 'input', handleChange);
+        loadScript(resolve, reject, config);
       };
 
-      form.addEventListener('input', handleChange);
-      scriptLoadChainMap.set(version, handleChange);
-    });
+      addListeners(form, ['input', 'submit'], handleChange);
+    } else {
+      loadScript(resolve, reject, config);
+    }
+  });
 
-    return loaderChainPromise;
-  }
+  scriptLoaders.set(version, promise);
 
-  if (scriptLoadChainMap.has(version)) {
-    const chainScript = scriptLoadChainMap.get(version);
-    scriptLoadChainMap.delete(version);
-
-    return chainScript();
-  }
-
-  return loadScript();
+  return promise;
 };
 
 export const getRecaptchaContainer = (form: HTMLFormElement): HTMLElement | null =>

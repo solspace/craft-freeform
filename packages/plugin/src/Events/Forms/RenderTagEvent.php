@@ -78,12 +78,12 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         return $this;
     }
 
-    public function addScript(?string $filePath, ?string $url, array $attributes = []): self
+    public function addScript(?string $filePath = null, ?string $url = null, array $attributes = []): self
     {
         return $this->addLoadableElement($filePath, $url, attributes: $attributes);
     }
 
-    public function addStylesheet(?string $filePath, ?string $url, array $attributes = []): self
+    public function addStylesheet(?string $filePath = null, ?string $url = null, array $attributes = []): self
     {
         return $this->addLoadableElement($filePath, $url, self::ELEMENT_STYLE, $attributes);
     }
@@ -104,8 +104,8 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     }
 
     private function addLoadableElement(
-        ?string $filePath,
-        ?string $url,
+        ?string $filePath = null,
+        ?string $url = null,
         string $type = self::ELEMENT_SCRIPT,
         array $attributes = [],
     ): self {
@@ -162,7 +162,13 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             self::ELEMENT_STYLE => [$view, 'registerCssFile'],
         };
 
-        if (Settings::SCRIPT_INSERT_TYPE_FILES === $insertType && $filePath) {
+        $isInsertFile = Settings::SCRIPT_INSERT_TYPE_FILES === $insertType;
+        $isFilePath = (bool) $filePath;
+
+        $isInsertPointers = Settings::SCRIPT_INSERT_TYPE_POINTERS === $insertType;
+        $isUrl = (bool) $url;
+
+        if ($isFilePath && ($isInsertFile || ($isInsertPointers && !$url))) {
             $chunk = \Craft::$app->assetManager->getPublishedUrl($filePath, true);
 
             if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
@@ -174,7 +180,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             return $this;
         }
 
-        if (Settings::SCRIPT_INSERT_TYPE_POINTERS === $insertType && $url) {
+        if ($isUrl && ($isInsertPointers || ($isInsertFile && !$filePath))) {
             $hash = null;
             if ($filePath) {
                 $hash = substr(sha1_file($filePath), 0, 5);

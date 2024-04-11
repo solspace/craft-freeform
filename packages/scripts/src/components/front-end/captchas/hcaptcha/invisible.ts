@@ -1,76 +1,56 @@
 import events from '@lib/plugin/constants/event-types';
 import type { FreeformEvent } from 'types/events';
 
-import type { hCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadHCaptcha } from './utils/script-loader';
-
-const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
-const config: hCaptchaConfig = {
-  sitekey: '{{ siteKey }}',
-  theme: '{{ theme }}' as Theme,
-  size: '{{ size }}' as Size,
-  lazyLoad: Boolean('{{ lazyLoad }}'),
-  version: '{{ version }}' as Version,
-} as const;
-
-let executor: (value: void | boolean) => void;
+import { getContainer, loadHCaptcha, readConfig } from './utils/script-loader';
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
-  const id = `${event.freeform.id}-hcaptcha-invisible`;
-  const captchaContainer = event.form.querySelector('[data-freeform-hcaptcha-container]');
-  if (!captchaContainer) {
+  const container = getContainer(event.form);
+  if (!container) {
     return null;
   }
 
-  let recaptchaElement = document.getElementById(id) as HTMLDivElement;
-  if (!recaptchaElement) {
-    recaptchaElement = document.createElement('div');
-    recaptchaElement.id = id;
-    event.form.appendChild(recaptchaElement);
+  let element = container.querySelector<HTMLDivElement>('[data-hcaptcha]');
+  if (!element) {
+    element = document.createElement('div');
+    element.dataset.hcaptcha = '';
+    container.appendChild(element);
   }
 
-  return recaptchaElement;
+  return element;
 };
 
-let captchaId: string;
-
-const initHCaptchaInvisible = (event: FreeformEvent): void => {
-  const { sitekey } = config;
-
-  loadHCaptcha(event.form, config).then(() => {
-    const hcaptchaElement = createCaptcha(event);
-    if (!hcaptchaElement) {
-      return;
-    }
-
-    captchaId = hcaptcha.render(hcaptchaElement, {
-      sitekey,
-      size: 'invisible',
-      callback: (token: string) => {
-        hcaptchaElement.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
-
-        executor();
-      },
-    });
-  });
-};
-
-form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
+document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   event.addCallback(async () => {
-    const promise = new Promise<void | boolean>((resolve) => {
-      executor = resolve;
-    });
-
-    if (!createCaptcha(event) || event.isBackButtonPressed) {
+    const element = createCaptcha(event);
+    if (!element || event.isBackButtonPressed) {
       return;
     }
 
-    hcaptcha.execute(captchaId);
+    await loadHCaptcha(event.form, true);
+
+    let id: number;
+
+    const promise = new Promise<void | boolean>((resolve) => {
+      const container = getContainer(event.form);
+      if (!container) {
+        return;
+      }
+
+      const { sitekey } = readConfig(container);
+
+      id = hcaptcha.render(element, {
+        sitekey,
+        size: 'invisible',
+        callback: (token: string) => {
+          element.querySelector<HTMLInputElement>('*[name="h-captcha-response"]').value = token;
+
+          resolve();
+        },
+      });
+    });
+
+    hcaptcha.execute(id);
 
     return promise;
   });
 });
-
-form.addEventListener(events.form.ready, initHCaptchaInvisible);
-form.addEventListener(events.form.ajaxAfterSubmit, initHCaptchaInvisible);
-form.addEventListener(events.form.afterFailedSubmit, initHCaptchaInvisible);

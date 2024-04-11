@@ -1,15 +1,7 @@
-const scriptId = 'recaptcha-script';
-const url = 'https://www.google.com/recaptcha/api.js';
+import { getCaptchaContainer, loadCaptchaScript, readCaptchaConfig } from '../../common.script-loader';
 
-export enum Theme {
-  DARK = 'dark',
-  LIGHT = 'light',
-}
-
-export enum Size {
-  COMPACT = 'compact',
-  NORMAL = 'normal',
-}
+const scriptUrl = 'https://www.google.com/recaptcha/api.js';
+const TYPE = 'recaptcha';
 
 export enum Version {
   V2_CHECKBOX = 'v2-checkbox',
@@ -17,66 +9,31 @@ export enum Version {
   V3 = 'v3',
 }
 
-export type reCaptchaConfig = {
-  sitekey: string;
-  theme?: Theme;
-  size?: Size;
-  version?: Version;
-  lazyLoad?: boolean;
-  action?: string;
-  locale?: string;
-};
-
-export const loadReCaptcha = (form: HTMLFormElement, config: reCaptchaConfig): Promise<void> => {
-  const { sitekey, lazyLoad = false, version = Version.V2_CHECKBOX, locale } = config;
-
-  const loadScript = () =>
-    new Promise<void>((resolve, reject) => {
-      const existingScript = document.querySelector(`#${scriptId}`);
-
-      if (existingScript) {
-        resolve();
-        return;
-      }
-
-      const scriptUrl = new URL(url);
-      switch (version) {
-        case Version.V3:
-          scriptUrl.searchParams.append('render', sitekey);
-          break;
-
-        default:
-          scriptUrl.searchParams.append('render', 'explicit');
-          break;
-      }
-
-      if (locale) {
-        scriptUrl.searchParams.append('hl', locale);
-      }
-
-      const script = document.createElement('script');
-      script.src = String(scriptUrl);
-      script.async = true;
-      script.defer = true;
-      script.id = scriptId;
-      script.addEventListener('load', () => resolve());
-      script.addEventListener('error', () => reject(new Error(`Error loading script ${scriptUrl}`)));
-
-      document.body.appendChild(script);
-    });
-
-  if (lazyLoad) {
-    return new Promise<void>((resolve, reject) => {
-      const handleChange = () => {
-        form.removeEventListener('input', handleChange);
-        loadScript()
-          .then(() => resolve())
-          .catch(reject);
-      };
-
-      form.addEventListener('input', handleChange);
-    });
+export const loadReCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
+  const container = getContainer(form);
+  if (!container) {
+    return Promise.resolve();
   }
 
-  return loadScript();
+  const { version, sitekey, locale } = readConfig(container);
+
+  const url = new URL(scriptUrl);
+  switch (version) {
+    case Version.V3:
+      url.searchParams.append('render', sitekey);
+      break;
+
+    default:
+      url.searchParams.append('render', 'explicit');
+      break;
+  }
+
+  if (locale) {
+    url.searchParams.append('hl', locale);
+  }
+
+  return loadCaptchaScript(url, TYPE, form, forceLoad);
 };
+
+export const getContainer = (form: HTMLFormElement) => getCaptchaContainer(TYPE, form);
+export const readConfig = (container: HTMLElement) => readCaptchaConfig<Version>(container);

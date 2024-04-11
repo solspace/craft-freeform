@@ -43,7 +43,11 @@ export type FreeformEventParameters<T> = {
 declare global {
   interface Window {
     freeform: {
-      disableCaptcha: boolean;
+      captchas?: {
+        loaders: Map<string, (event?: Event) => void>;
+        listeners: WeakSet<HTMLFormElement>;
+        loaderPromises: Map<string, Promise<void>>;
+      };
     };
   }
 }

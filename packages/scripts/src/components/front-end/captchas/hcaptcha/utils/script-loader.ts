@@ -1,72 +1,28 @@
-const scriptId = 'hcaptcha-script';
-const url = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+import { getCaptchaContainer, loadCaptchaScript, readCaptchaConfig } from '../../common.script-loader';
 
-export enum Theme {
-  DARK = 'dark',
-  LIGHT = 'light',
-}
-
-export enum Size {
-  COMPACT = 'compact',
-  NORMAL = 'normal',
-}
+const scriptUrl = 'https://js.hcaptcha.com/1/api.js?render=explicit';
+const TYPE = 'hcaptcha';
 
 export enum Version {
   CHECKBOX = 'checkbox',
   INVISIBLE = 'invisible',
 }
 
-export type hCaptchaConfig = {
-  sitekey: string;
-  theme?: Theme;
-  size?: Size;
-  version?: Version;
-  lazyLoad?: boolean;
-  action?: string;
-  locale?: string;
-};
-
-export const loadHCaptcha = (form: HTMLFormElement, config: hCaptchaConfig): Promise<void> => {
-  const { locale, lazyLoad = false } = config;
-
-  const loadScript = () =>
-    new Promise<void>((resolve, reject) => {
-      const existingScript = document.querySelector(`#${scriptId}`);
-
-      if (existingScript) {
-        resolve();
-        return;
-      }
-
-      const scriptUrl = new URL(url);
-
-      if (locale) {
-        scriptUrl.searchParams.append('hl', locale);
-      }
-
-      const script = document.createElement('script');
-      script.src = String(scriptUrl);
-      script.async = true;
-      script.defer = true;
-      script.id = scriptId;
-      script.addEventListener('load', () => resolve());
-      script.addEventListener('error', () => reject(new Error(`Error loading script ${url}`)));
-
-      document.body.appendChild(script);
-    });
-
-  if (lazyLoad) {
-    return new Promise<void>((resolve, reject) => {
-      const handleChange = () => {
-        form.removeEventListener('input', handleChange);
-        loadScript()
-          .then(() => resolve())
-          .catch(reject);
-      };
-
-      form.addEventListener('input', handleChange);
-    });
+export const loadHCaptcha = (form: HTMLFormElement, forceLoad?: boolean): Promise<void> => {
+  const container = getContainer(form);
+  if (!container) {
+    return Promise.resolve();
   }
 
-  return loadScript();
+  const url = new URL(scriptUrl);
+
+  const { locale } = readConfig(container);
+  if (locale) {
+    url.searchParams.append('hl', locale);
+  }
+
+  return loadCaptchaScript(url, TYPE, form, forceLoad);
 };
+
+export const getContainer = (form: HTMLFormElement) => getCaptchaContainer(TYPE, form);
+export const readConfig = (container: HTMLElement) => readCaptchaConfig<Version>(container);

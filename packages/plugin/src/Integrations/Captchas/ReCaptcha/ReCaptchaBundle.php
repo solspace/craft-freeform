@@ -49,8 +49,28 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        $integration = $this->getReCaptchaForForm($form);
+        if (!$integration) {
+            return;
+        }
+
+        $locale = $integration->getLocale();
+        if (empty($locale)) {
+            $locale = \Craft::$app->locale->getLanguageID();
+        }
+
         $attributes = CaptchasBundle::getCaptchaAttributes($form);
-        $attributes->replace('data-freeform-recaptcha-container', true);
+        $attributes
+            ->replace('data-freeform-recaptcha-container')
+            ->replace('data-captcha', 'recaptcha')
+            ->setIfEmpty('data-site-key', $integration->getSiteKey())
+            ->setIfEmpty('data-theme', $integration->getTheme())
+            ->setIfEmpty('data-size', $integration->getSize())
+            ->setIfEmpty('data-lazy-load', $integration->isTriggerOnInteract())
+            ->setIfEmpty('data-version', $integration->getVersion())
+            ->setIfEmpty('data-action', $integration->getAction())
+            ->setIfEmpty('data-locale', $locale)
+        ;
 
         $event->addChunk(
             '<div'.$attributes.'></div>',
@@ -71,31 +91,18 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        static $added = [];
+
         $version = $integration->getVersion();
-
-        $scriptPath = \Craft::getAlias(
-            '@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js'
-        );
-
-        $locale = $integration->getLocale();
-        if (empty($locale)) {
-            $locale = \Craft::$app->locale->getLanguageID();
+        if (\in_array($version, $added, true)) {
+            return;
         }
 
-        $script = file_get_contents($scriptPath);
-        $event->addChunk(
-            "<script type='text/javascript'>{$script}</script>",
-            [
-                'siteKey' => $integration->getSiteKey(),
-                'formAnchor' => $form->getAnchor(),
-                'theme' => $integration->getTheme(),
-                'size' => $integration->getSize(),
-                'lazyLoad' => $integration->isTriggerOnInteract() ? '1' : '',
-                'version' => $integration->getVersion(),
-                'action' => $integration->getAction(),
-                'locale' => $locale,
-            ]
-        );
+        $added[] = $version;
+
+        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
+
+        $event->addScript($scriptPath);
     }
 
     public function triggerValidation(ValidationEvent $event): void

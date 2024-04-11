@@ -35,10 +35,6 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
         return;
       }
 
-      window.freeform = {
-        disableCaptcha: true,
-      };
-
       const token = await event.freeform.quickSave(secret, id);
       if (!token) {
         return false;

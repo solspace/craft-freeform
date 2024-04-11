@@ -1,57 +1,54 @@
 import events from '@lib/plugin/constants/event-types';
+import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { FreeformEvent } from 'types/events';
 
-import type { reCaptchaConfig, Size, Theme, Version } from './utils/script-loader';
-import { loadReCaptcha } from './utils/script-loader';
-
-const form: HTMLFormElement = document.querySelector('form[data-id="{{ formAnchor }}"]') as HTMLFormElement;
-const config: reCaptchaConfig = {
-  sitekey: '{{ siteKey }}',
-  theme: '{{ theme }}' as Theme,
-  size: '{{ size }}' as Size,
-  lazyLoad: Boolean('{{ lazyLoad }}'),
-  version: '{{ version }}' as Version,
-} as const;
+import { getContainer, loadReCaptcha, readConfig } from './utils/script-loader';
 
 let executor: (value: void) => void;
 
 const createCaptcha = (event: FreeformEvent): HTMLDivElement | null => {
-  const id = `${event.freeform.id}-recaptcha-v2-invisible`;
-  const captchaContainer = event.form.querySelector('[data-freeform-recaptcha-container]');
-  if (!captchaContainer) {
+  const container = getContainer(event.form);
+  if (!container) {
     return null;
   }
 
-  let recaptchaElement = document.getElementById(id) as HTMLDivElement;
-  if (!recaptchaElement) {
-    recaptchaElement = document.createElement('div');
-    recaptchaElement.id = id;
-    event.form.appendChild(recaptchaElement);
+  let element = container.querySelector<HTMLDivElement>('[data-recaptcha]');
+  if (!element) {
+    element = document.createElement('div');
+    element.dataset.recaptcha = '';
+    container.appendChild(element);
   }
 
-  return recaptchaElement;
+  return element;
 };
 
 const initRecaptchaInvisible = (event: FreeformEvent): void => {
-  const { sitekey } = config;
-
-  loadReCaptcha(event.form, config).then(() => {
-    const recaptchaElement = createCaptcha(event);
-    if (!recaptchaElement) {
+  loadReCaptcha(event.form).then(() => {
+    const container = getContainer(event.form);
+    if (!container) {
       return;
     }
 
-    if (!recaptchaElement.innerHTML) {
+    const { sitekey } = readConfig(container);
+
+    const element = createCaptcha(event);
+    if (!element) {
+      return;
+    }
+
+    if (!element.innerHTML) {
       grecaptcha.ready(() => {
-        grecaptcha.render(recaptchaElement, {
+        const id = grecaptcha.render(element, {
           sitekey,
           size: 'invisible',
           callback: (token) => {
-            recaptchaElement.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
+            element.querySelector<HTMLInputElement>('*[name="g-recaptcha-response"]').value = token;
 
             executor();
           },
         });
+
+        element.dataset.captchaId = String(id);
       });
     } else {
       grecaptcha.ready(grecaptcha.reset);
@@ -59,26 +56,30 @@ const initRecaptchaInvisible = (event: FreeformEvent): void => {
   });
 };
 
-form.addEventListener(events.form.submit, async (event: FreeformEvent) => {
+document.addEventListener(events.form.submit, async (event: FreeformEvent) => {
   event.addCallback(async () => {
     const promise = new Promise<void>((resolve) => {
       executor = resolve;
     });
 
-    if (!createCaptcha(event) || event.isBackButtonPressed) {
+    const element = createCaptcha(event);
+    if (!element || event.isBackButtonPressed) {
       return;
     }
 
-    await loadReCaptcha(event.form, { ...config, lazyLoad: false });
+    await loadReCaptcha(event.form, true);
 
     grecaptcha.ready(() => {
-      grecaptcha.execute();
+      const id = element.dataset.captchaId;
+      grecaptcha.execute(id && Number(id));
     });
 
     return promise;
   });
 });
 
-form.addEventListener(events.form.ready, initRecaptchaInvisible);
-form.addEventListener(events.form.afterFailedSubmit, initRecaptchaInvisible);
-form.addEventListener(events.form.ajaxAfterSubmit, initRecaptchaInvisible);
+addListeners(
+  document,
+  [events.form.ready, events.form.afterFailedSubmit, events.form.ajaxAfterSubmit],
+  initRecaptchaInvisible
+);

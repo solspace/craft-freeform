@@ -25,19 +25,39 @@ export const createNewEvent = (eventName: string, bubbles = true, cancelable = t
   return new Event(eventName, { bubbles, cancelable });
 };
 
+type Options = {
+  elements: Document | HTMLElement | Array<HTMLElement>;
+  type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[];
+  callback: (this: HTMLElement, ev: Event) => void;
+  options?: AddEventListenerOptions | boolean;
+};
+
+type Handler = (method: 'add' | 'remove', options: Options) => void;
+
 type BatchListeners = (
-  elements: HTMLElement | Array<HTMLElement>,
-  type: string | string[],
-  callback: (this: HTMLElement, ev: Event) => void
+  elements: Document | HTMLElement | Array<HTMLElement>,
+  type: Array<keyof HTMLElementEventMap> | keyof HTMLElementEventMap | string | string[],
+  callback: (this: HTMLElement, ev: Event) => void,
+  options?: AddEventListenerOptions | boolean
 ) => void;
 
-export const addListeners: BatchListeners = (elements, type, callback) => {
+export const addListeners: BatchListeners = (elements, type, callback, options) => {
+  handleListeners('add', { elements, type, callback, options });
+};
+
+export const removeListeners: BatchListeners = (elements, type, callback, options) => {
+  handleListeners('remove', { elements, type, callback, options });
+};
+
+const handleListeners: Handler = (method, { type, elements, callback, options }) => {
   const typeArray = Array.isArray(type) ? type : [type];
   const elementArray = Array.isArray(elements) ? elements : [elements];
 
   Array.from(elementArray).forEach((element) => {
     typeArray.forEach((type) => {
-      element.addEventListener(type, callback);
+      method === 'add'
+        ? element.addEventListener(type, callback, options)
+        : element.removeEventListener(type, callback, options);
     });
   });
 };

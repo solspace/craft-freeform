@@ -55,7 +55,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
     public function checkConnection(Client $client): bool
     {
         try {
-            $response = $client->get($this->getEndpoint('/lists?limit=50'));
+            $response = $client->get($this->getEndpoint('/lists?limit=100'));
 
             $json = json_decode((string) $response->getBody(), true);
 
@@ -73,7 +73,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
     public function fetchFields(ListObject $list, string $category, Client $client): array
     {
         try {
-            $response = $client->get($this->getEndpoint('/fields'));
+            $response = $client->get($this->getEndpoint('/fields?limit=999'));
         } catch (\Exception $exception) {
             $this->processException($exception, $category);
         }

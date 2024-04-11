@@ -231,7 +231,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
     private function fetchContactFields(Client $client, string $category): array
     {
         try {
-            $response = $client->get($this->getEndpoint('/fields'));
+            $response = $client->get($this->getEndpoint('/fields?limit=999'));
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }

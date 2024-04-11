@@ -72,6 +72,23 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private bool $triggerOnInteract = false;
 
+    #[Input\Select(
+        label: 'Failure Behavior',
+        options: [
+            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
+            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
+        ],
+    )]
+    private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
+
+    #[VisibilityFilter('values.failureBehavior === "display-error"')]
+    #[Input\Text(
+        label: 'Error Message',
+        instructions: 'The error message to display when the Captcha validation fails.',
+        placeholder: 'Please verify that you are not a robot.',
+    )]
+    private string $errorMessage = 'Please verify that you are not a robot.';
+
     #[VisibilityFilter('values.version === "v2-checkbox"')]
     #[Input\Select(
         options: [
@@ -89,16 +106,6 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         ],
     )]
     private string $size = 'normal';
-
-    #[VisibilityFilter('values.version !== "v2-checkbox"')]
-    #[Input\Select(
-        label: 'Failure Behavior',
-        options: [
-            self::BEHAVIOR_DISPLAY_ERROR => 'Display Error Message',
-            self::BEHAVIOR_SEND_TO_SPAM => 'Send to Spam Folder',
-        ],
-    )]
-    private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
 
     #[VisibilityFilter('values.version === "v3"')]
     #[Input\Select(
@@ -127,14 +134,6 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         placeholder: 'submit',
     )]
     private string $action = 'submit';
-
-    #[VisibilityFilter('values.failureBehavior === "display-error"')]
-    #[Input\Text(
-        label: 'Error Message',
-        instructions: 'The error message to display when the Captcha validation fails.',
-        placeholder: 'Please verify that you are not a robot.',
-    )]
-    private string $errorMessage = 'Please verify that you are not a robot.';
 
     #[Input\Text(
         label: 'Locale',

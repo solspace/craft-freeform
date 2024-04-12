@@ -32,7 +32,7 @@ const persist: SaveSubscriber = (_, data) => {
 const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
   dispatch(formActions.clearErrors());
   dispatch(formActions.setErrors(response.errors?.form as FormErrors));
-  notifications.error(translate('Encountered errors during form saving.'));
+  notifications.error(translate('There were problems saving the form.'));
 };
 
 const handleUpsert: UpdatedSubscriber = (_, { dispatch }) => {

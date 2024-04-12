@@ -41,7 +41,7 @@ window.freeform_notify = (ids) => {
             content.remove();
             $('.modal-shade').remove();
 
-            Craft.cp.displayNotice(Craft.t('freeform', 'Sent successfully'));
+            Craft.cp.displaySuccess(Craft.t('freeform', 'Additional notifications sent successfully.'));
           },
           error: (error) => {
             Craft.cp.displayError(error.responseText);

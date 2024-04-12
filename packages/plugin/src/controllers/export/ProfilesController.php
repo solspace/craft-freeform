@@ -96,8 +96,8 @@ class ProfilesController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Profile saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Profile saved'), true);
+            \Craft::$app->session->setSuccess(Freeform::t('Export Profile saved.'));
+            \Craft::$app->session->setFlash(Freeform::t('Export Profile saved.'), true);
 
             return $this->redirectToPostedUrl($profile);
         }
@@ -107,7 +107,7 @@ class ProfilesController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Profile not saved'));
+        \Craft::$app->session->setError(Freeform::t('Export Profile not saved.'));
 
         return $this->renderEditForm($profile, $profile->name);
     }

@@ -49,7 +49,7 @@ class ResendNotificationsAction extends ElementAction
             Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
         }
 
-        $this->setMessage('Notifications sent successfully');
+        $this->setMessage('Notifications sent successfully.');
 
         \Craft::$app->view->setTemplateMode($templateMode);
 

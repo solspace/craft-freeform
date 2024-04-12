@@ -72,8 +72,8 @@ class StatusesController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Status saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Status saved'));
+            \Craft::$app->session->setSuccess(Freeform::t('Status saved.'));
+            \Craft::$app->session->setFlash(Freeform::t('Status saved.'));
 
             return $this->redirectToPostedUrl($status);
         }
@@ -83,7 +83,7 @@ class StatusesController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Status not saved'));
+        \Craft::$app->session->setError(Freeform::t('Status not saved.'));
 
         // Send the event back to the template
         \Craft::$app->urlManager->setRouteParams(['status' => $status, 'errors' => $status->getErrors()]);

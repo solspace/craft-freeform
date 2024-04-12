@@ -33,7 +33,7 @@ return [
     // CRM Controller
     'Add a CRM integration' => 'CRM-Integration hinzufügen',
     "CRM integration with handle '{ID}' not found" => "CRM-Integration mit Handle '{ID}' nicht gefunden",
-    'CRM Integration saved' => 'CRM Integration gespeichert',
+    'Integration saved.' => 'Integration gespeichert',
     'CRM Integration not saved' => 'CRM-Integration nicht gespeichert',
     "CRM integration with handle '{handle}' not found" => "CRM-Integration mit Handle '{handle}' nicht gefunden",
     'New CRM Integration' => 'Neue CRM-Integration',
@@ -57,7 +57,7 @@ return [
     'Email Marketing' => 'Email Marketing',
     'Create new Email Marketing' => 'Neue Email Marketing anlegen',
     'Email Marketing integration with ID {id} not found' => 'Email Marketing-Integration mit ID {id} nicht gefunden',
-    'Email Marketing Integration saved' => 'Email Marketing Integration gespeichert',
+    'Integration saved.' => 'Email Marketing Integration gespeichert',
     'Email Marketing Integration not saved' => 'Email Marketing Integration nicht gespeichert',
     "Email Marketing with handle '{handle}' not found" => "Email Marketing mit Handle '{handle}' nicht gefunden",
     'Add an Email Marketing integration' => 'Email Marketing-Integration hinzufügen',
@@ -103,8 +103,8 @@ return [
     // Notifications Controller
     'Email notifications' => 'Email-Benachrichtigungen',
     'Notifications' => 'Benachrichtigungen',
-    'Notification saved' => 'Benachrichtigung gespeichert',
-    'Notification not saved' => 'Benachrichtigung nicht gespeichert',
+    'Notification saved.' => 'Benachrichtigung gespeichert',
+    'Notification not saved.' => 'Benachrichtigung nicht gespeichert',
     'Notification with ID {id} not found' => 'Benachrichtigung mit ID {id} nicht gefunden',
     'Include Attachments' => 'Anhänge hinzufügen?',
     'Include uploaded files as attachments in email notification.' => 'Hochgeladene Files als Anhänge in Email-Benachrichtigung hinzufügen',
@@ -129,7 +129,7 @@ return [
 
     // Settings controller
     'Settings' => 'Einstellungen',
-    'Settings Saved' => 'Einstellungen gespeichert',
+    'Freeform settings saved.' => 'Einstellungen gespeichert',
     'Settings not saved' => 'Einstellungen nicht gespeichert',
     'No template name specified' => 'Kein Template-Name festgelegt',
     'No custom template directory specified in settings' => 'Kein eigenes Template-Verzeichnis in Einstellungen festgelegt',
@@ -183,14 +183,14 @@ return [
     'The color of the status circle when viewing inside CP.' => 'Die Farbe des Status-Kreises bei Ansicht im CP.',
     'Set this status to be selected by default when creating new forms?' => 'Soll dieser Status beim Erstellen neuer Formulare standardmäßig ausgewählt werden?',
     'Statuses' => 'Status',
-    'Status saved' => 'Status gespeichert',
+    'Status saved.' => 'Status gespeichert',
     'Status not saved' => 'Status nicht gespeichert',
     'Status with ID {id} not found' => 'Status mit ID {id} nicht gefunden',
 
     // Submissions controller
     'Submission Date' => 'Einreich-Datum',
-    'Submission updated' => 'Einreichung aktualisiert',
-    'Submission could not be updated' => 'Einreichung konnte nicht geupdated werden',
+    'Submission updated.' => 'Einreichung aktualisiert',
+    'Submission could not be updated.' => 'Einreichung konnte nicht geupdated werden',
     'Submission with ID {id} not found' => 'Einreichung mit ID {id} nicht gefunden',
     'Submissions deleted successfully.' => 'Einreichungen erfolgreich gelöscht.',
     'Notes about your changes' => 'Notizen zu Ihren Änderungen',

@@ -51,8 +51,8 @@ return [
     // CRM Controller
     'Add a CRM integration' => 'Add a CRM integration',
     "CRM integration with handle '{ID}' not found" => "CRM integration with handle '{ID}' not found",
-    'CRM Integration saved' => 'CRM Integration saved',
-    'CRM Integration not saved' => 'CRM Integration not saved',
+    'Integration saved.' => 'Integration saved.',
+    'Integration not saved.' => 'Integration not saved.',
     "CRM integration with handle '{handle}' not found" => "CRM integration with handle '{handle}' not found",
     'New CRM Integration' => 'New CRM Integration',
     'CRM' => 'CRM',
@@ -189,8 +189,8 @@ return [
     'Last Updated' => 'Last Updated',
     'Create new mailing list' => 'Create new mailing list',
     'Email Marketing integration with ID {id} not found' => 'Email Marketing integration with ID {id} not found',
-    'Email Marketing Integration saved' => 'Email Marketing Integration saved',
-    'Email Marketing Integration not saved' => 'Email Marketing Integration not saved',
+    'Integration saved.' => 'Integration saved.',
+    'Integration not saved.' => 'Integration not saved.',
     "Mailing list with handle '{handle}' not found" => "Mailing list with handle '{handle}' not found",
     'Add a Email Marketing integration' => 'Add a Email Marketing integration',
     'Shop for more Email Marketing integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Shop for more Email Marketing integrations on the {link_open}Solspace Freeform Marketplace{link_close}',
@@ -255,8 +255,8 @@ return [
 
     // Notifications Controller
     'Notifications' => 'Notifications',
-    'Notification saved' => 'Notification saved',
-    'Notification not saved' => 'Notification not saved',
+    'Notification saved.' => 'Notification saved.',
+    'Notification not saved.' => 'Notification not saved.',
     'Notification with ID {id} not found' => 'Notification with ID {id} not found',
     'Include Attachments' => 'Include Attachments',
     'Include uploaded files as attachments in email notification.' => 'Include uploaded files as attachments in email notification.',
@@ -292,7 +292,7 @@ return [
 
     // Settings controller
     'Settings' => 'Settings',
-    'Settings Saved' => 'Settings Saved',
+    'Freeform settings saved.' => 'Freeform settings saved.',
     'Settings not saved' => 'Settings not saved',
     'No template name specified' => 'No template name specified',
     'No custom template directory specified in settings' => 'No custom template directory specified in settings',
@@ -557,7 +557,7 @@ return [
     'Set this status to be selected by default when creating new forms?' => 'Set this status to be selected by default when creating new forms?',
     'Status' => 'Status',
     'Statuses' => 'Statuses',
-    'Status saved' => 'Status saved',
+    'Status saved.' => 'Status saved.',
     'Status not saved' => 'Status not saved',
     'Status with ID {id} not found' => 'Status with ID {id} not found',
     'green' => 'green',
@@ -574,8 +574,8 @@ return [
 
     // Submissions controller
     'Submission Date' => 'Submission Date',
-    'Submission updated' => 'Submission updated',
-    'Submission could not be updated' => 'Submission could not be updated',
+    'Submission updated.' => 'Submission updated.',
+    'Submission could not be updated.' => 'Submission could not be updated.',
     'Submission with ID {id} not found' => 'Submission with ID {id} not found',
     'Submissions deleted successfully.' => 'Submissions deleted successfully.',
     'Notes about your changes' => 'Notes about your changes',

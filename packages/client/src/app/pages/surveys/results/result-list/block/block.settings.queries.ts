@@ -19,7 +19,7 @@ const settingsMutation: SettingsMutation = ({ fieldId, chartType }) => {
     chartType,
   };
 
-  return axios.put('/api/surveys/preferences', payload);
+  return axios.post('/api/surveys/preferences', payload);
 };
 
 type SettingsMutationResult = UseMutationResult<

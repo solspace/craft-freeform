@@ -9,6 +9,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
+use yii\base\Response;
 
 class FavoritesController extends BaseApiController
 {
@@ -22,6 +23,50 @@ class FavoritesController extends BaseApiController
         private PropertyProvider $propertyProvider,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionUpdate(): Response
+    {
+        $post = $this->request->post();
+
+        $ids = array_keys($post);
+
+        /** @var FavoriteFieldRecord[] $records */
+        $records = FavoriteFieldRecord::find()
+            ->where(['id' => $ids])
+            ->indexBy('id')
+            ->all()
+        ;
+
+        foreach ($post as $id => $values) {
+            $record = $records[$id] ?? null;
+            if (!$record) {
+                continue;
+            }
+
+            $record->metadata = $this->getValidatedMetadata($record, $values);
+            $record->label = $values['label'] ?? '';
+        }
+
+        $errors = new ErrorCollection();
+        foreach ($records as $record) {
+            if ($record->hasErrors()) {
+                $errorList = $record->getErrors();
+                foreach ($errorList as $handle => $messages) {
+                    $errors->add($record->id, $handle, $messages);
+                }
+            }
+        }
+
+        if ($errors->hasErrors()) {
+            throw new ApiException(400, $errors);
+        }
+
+        foreach ($records as $record) {
+            $record->save();
+        }
+
+        return $this->asEmptyResponse(204);
     }
 
     protected function get(): array
@@ -76,50 +121,6 @@ class FavoritesController extends BaseApiController
         }
 
         $this->response->statusCode = 201;
-
-        return null;
-    }
-
-    protected function put(null|int|string $id = null): null|array|object
-    {
-        $post = $this->request->post();
-
-        $ids = array_keys($post);
-
-        /** @var FavoriteFieldRecord[] $records */
-        $records = FavoriteFieldRecord::find()
-            ->where(['id' => $ids])
-            ->indexBy('id')
-            ->all()
-        ;
-
-        foreach ($post as $id => $values) {
-            $record = $records[$id] ?? null;
-            if (!$record) {
-                continue;
-            }
-
-            $record->metadata = $this->getValidatedMetadata($record, $values);
-            $record->label = $values['label'] ?? '';
-        }
-
-        $errors = new ErrorCollection();
-        foreach ($records as $record) {
-            if ($record->hasErrors()) {
-                $errorList = $record->getErrors();
-                foreach ($errorList as $handle => $messages) {
-                    $errors->add($record->id, $handle, $messages);
-                }
-            }
-        }
-
-        if ($errors->hasErrors()) {
-            throw new ApiException(400, $errors);
-        }
-
-        foreach ($records as $record) {
-            $record->save();
-        }
 
         return null;
     }

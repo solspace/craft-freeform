@@ -102,7 +102,6 @@ class FormPersistence extends FeatureBundle
 
         $form = $this->formsService->getFormById($record->id);
         $event->setForm($form);
-        $event->addToResponse('form', $form);
     }
 
     private function getValidatedMetadata(\stdClass $payload, PersistFormEvent $event): array

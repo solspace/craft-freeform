@@ -104,28 +104,13 @@ class FormsController extends BaseApiController
 
         $data = json_decode($this->request->getRawBody(), false);
 
-        $event = new PersistFormEvent($data);
-        $this->trigger(self::EVENT_CREATE_FORM, $event);
-        $this->trigger(self::EVENT_UPSERT_FORM, $event);
-
-        $this->response->statusCode = $event->getStatus() ?? 201;
-
-        return null;
-    }
-
-    protected function put(null|int|string $id = null): null|array|object
-    {
-        $this->requireFormPermission($id);
-
-        $data = json_decode($this->request->getRawBody(), false);
-
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPDATE_FORM, $event);
         $this->trigger(self::EVENT_UPSERT_FORM, $event);
 
         $this->response->statusCode = $event->getStatus() ?? 204;
 
-        return null;
+        return $event->getResponseData();
     }
 
     protected function delete(int $id): ?bool

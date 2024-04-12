@@ -35,6 +35,6 @@ export const useGroupMutation = (
   };
 
   return useMutation<AxiosResponse, APIError, GroupItem>((data: GroupItem) => {
-    return axios.put<GroupItem>('/api/fields/types/groups', data);
+    return axios.post<GroupItem>('/api/fields/types/groups', data);
   }, options);
 };

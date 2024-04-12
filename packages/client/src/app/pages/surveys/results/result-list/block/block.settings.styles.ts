@@ -47,7 +47,7 @@ export const SettingsButton = styled.button`
 export const DropdownWrapper = styled.div`
   position: absolute;
   left: 0;
-  top: 28px;
+  top: 26px;
   z-index: 2;
 
   width: 150px;
@@ -65,7 +65,7 @@ export const DropdownItem = styled.a`
   padding: 3px 10px;
 
   background-color: #ffffff;
-  color: #000000;
+  color: #000000 !important;
   font-size: 12px;
 
   transition: background-color 0.2s ease-out;

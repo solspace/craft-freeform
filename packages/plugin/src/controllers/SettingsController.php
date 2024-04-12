@@ -229,7 +229,7 @@ class SettingsController extends BaseController
         $postData = \Craft::$app->request->post('settings', []);
 
         if ($this->getSettingsService()->saveSettings($postData)) {
-            \Craft::$app->session->setNotice(Freeform::t('Freeform settings saved.'));
+            \Craft::$app->session->setSuccess(Freeform::t('Freeform settings saved.'));
 
             if (isset($postData['purgableSubmissionAgeInDays']) || isset($postData['purgableSpamAgeInDays'])) {
                 \Craft::$app->cache->delete(SettingsService::CACHE_KEY_PURGE);

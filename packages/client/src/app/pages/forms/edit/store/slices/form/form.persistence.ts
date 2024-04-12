@@ -10,6 +10,8 @@ import {
   TOPIC_SAVE,
   TOPIC_UPSERTED,
 } from '@editor/store/middleware/state-persist';
+import { notifications } from '@ff-client/utils/notifications';
+import translate from '@ff-client/utils/translations';
 
 import type { FormErrors } from './form.types';
 import { formActions } from '.';
@@ -30,10 +32,12 @@ const persist: SaveSubscriber = (_, data) => {
 const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
   dispatch(formActions.clearErrors());
   dispatch(formActions.setErrors(response.errors?.form as FormErrors));
+  notifications.error(translate('Encountered errors during form saving.'));
 };
 
 const handleUpsert: UpdatedSubscriber = (_, { dispatch }) => {
   dispatch(formActions.clearErrors());
+  notifications.success(translate('Form saved successfully.'));
 };
 
 const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {

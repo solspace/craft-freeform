@@ -976,6 +976,11 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.36 - 2024-04-12
+
+### Fixed
+- Fixed a bug where not all Stripe validation errors were accounted for and could cause the form to break.
+
 ## 3.13.35 - 2024-03-01
 
 ### Fixed

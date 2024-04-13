@@ -4,9 +4,12 @@
 {% set selectedSubnavItem = "notifications" %}
 {% set saveShortcutRedirect = 'freeform/notifications/'~type~'/{id}' %}
 
+{% set segment3 = craft.app.request.getSegment(3) %}
+
 {% set crumbs = [
-    { label: craft.freeform.name, url: url('freeform') },
-    { label: "Notifications"|t('freeform'), url: url('freeform/notifications') },
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Email Notifications"|t("freeform"), url: url("freeform/notifications") },
+    { label: segment3|title|t("freeform"), url: url("freeform/notifications" ~ "/" ~ segment3) },
 ] %}
 
 {% set fullPageForm = true %}

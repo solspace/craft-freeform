@@ -1,6 +1,12 @@
 {% extends "freeform/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Integrations"|t("freeform"), url: url("freeform/settings/integrations/single") },
+] %}
+
 {% block content %}
 
     {% set selectedIntegration = craft.app.request.segment(5) %}

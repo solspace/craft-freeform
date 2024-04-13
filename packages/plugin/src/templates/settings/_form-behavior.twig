@@ -2,6 +2,11 @@
 
 {% import "_includes/forms" as forms %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+] %}
+
 {% set title = "Form Behavior"|t("freeform") %}
 
 {% block content %}

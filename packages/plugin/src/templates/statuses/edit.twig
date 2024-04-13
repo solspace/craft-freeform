@@ -7,6 +7,12 @@
 
 {% set fullPageForm = true %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Statuses"|t("freeform"), url: url("freeform/settings/statuses") },
+] %}
+
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">

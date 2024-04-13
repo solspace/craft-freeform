@@ -3,6 +3,15 @@
 {% set saveShortcutRedirect = 'freeform/settings/integrations/'~type~'/{id}' %}
 {% set fullPageForm = true %}
 
+{% set segment4 = craft.app.request.getSegment(4) %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Integrations"|t("freeform"), url: url("freeform/settings/integrations" ~ "/" ~ segment4) },
+    { label: segment4|replace({"-": " "})|title|t("freeform"), url: url("freeform/settings/integrations" ~ "/" ~ segment4) },
+] %}
+
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">

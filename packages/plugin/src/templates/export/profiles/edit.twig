@@ -2,8 +2,13 @@
 {% import "_includes/forms" as forms %}
 
 {% set saveShortcutRedirect = 'freeform/export/profiles/{id}' %}
-
 {% set fullPageForm = true %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Export"|t("freeform"), url: url("freeform/export/profiles") },
+    { label: "Profiles"|t("freeform"), url: url("freeform/export/profiles") },
+] %}
 
 {% block actionButton %}
     <div class="buttons">

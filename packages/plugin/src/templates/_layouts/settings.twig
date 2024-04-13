@@ -9,11 +9,6 @@
 {% set segment3 = craft.app.request.getSegment(3) %}
 {% set segment4 = craft.app.request.getSegment(4) %}
 
-{% set crumbs = [
-    { label: craft.freeform.name, url: url("freeform") },
-    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
-] %}
-
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">

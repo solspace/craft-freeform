@@ -15,6 +15,10 @@
 
 {% endcss %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Submissions"|t("freeform"), url: url("freeform/submissions") },
+] %}
 
 {% if formHandle is defined %}
     {% js %}

@@ -1,5 +1,11 @@
 {% extends "freeform/_layouts/settings" %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Demo Templates"|t("freeform"), url: url("freeform/settings/demo-templates") },
+] %}
+
 {% set selectedSubnavItem = "settings" %}
 {% set title = "Demo Templates"|t('freeform') %}
 

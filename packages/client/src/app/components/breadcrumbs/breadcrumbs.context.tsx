@@ -72,7 +72,9 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   };
 
   useEffect(() => {
-    document.getElementById('crumbs').style.display = 'block';
+    const crumbs = document.getElementById('crumbs');
+    crumbs.style.display = 'block';
+    crumbs.classList.remove('empty');
   }, []);
 
   return (

@@ -111,7 +111,7 @@ class IntegrationsController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
+            \Craft::$app->session->setSuccess(Freeform::t('Integration saved.'));
 
             return $this->redirectToPostedUrl($model);
         }
@@ -120,7 +120,7 @@ class IntegrationsController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Integration not saved'));
+        \Craft::$app->session->setError(Freeform::t('Integration not saved.'));
 
         return $this->renderEditForm($model);
     }

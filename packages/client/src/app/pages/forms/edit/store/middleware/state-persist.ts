@@ -93,7 +93,7 @@ export const statePersistMiddleware: Middleware =
     const formId = data.state.form.id;
     if (formId) {
       axios
-        .put(`/api/forms/${formId}`, data.persist)
+        .post(`/api/forms/${formId}`, data.persist)
         .then((response) => publishUpdated(dispatch, response))
         .catch((error: APIError) => publishErrors(dispatch, error));
     } else {

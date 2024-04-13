@@ -47,8 +47,8 @@ abstract class AbstractNotificationsController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Notification saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Notification saved'), true);
+            \Craft::$app->session->setSuccess(Freeform::t('Notification saved.'));
+            \Craft::$app->session->setFlash(Freeform::t('Notification saved.'), true);
 
             return $this->redirectToPostedUrl($notification);
         }
@@ -58,7 +58,7 @@ abstract class AbstractNotificationsController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Notification not saved'));
+        \Craft::$app->session->setError(Freeform::t('Notification not saved.'));
 
         // Send the event back to the template
         \Craft::$app->urlManager->setRouteParams(

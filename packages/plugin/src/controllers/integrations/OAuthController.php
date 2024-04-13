@@ -71,9 +71,9 @@ class OAuthController extends BaseController
         );
 
         if ($integrationsService->save($model, $integration)) {
-            \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
+            \Craft::$app->session->setSuccess(Freeform::t('Integration saved.'));
         } else {
-            \Craft::$app->session->setError(Freeform::t('Integration not saved'));
+            \Craft::$app->session->setError(Freeform::t('Integration not saved.'));
         }
 
         $type = $integration->getTypeDefinition()->type;

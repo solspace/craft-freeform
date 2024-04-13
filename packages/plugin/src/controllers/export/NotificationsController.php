@@ -73,8 +73,8 @@ class NotificationsController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Notification saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Notification saved'));
+            \Craft::$app->session->setSuccess(Freeform::t('Export Notification saved.'));
+            \Craft::$app->session->setFlash(Freeform::t('Export Notification saved.'));
 
             return $this->redirectToPostedUrl($record);
         }
@@ -84,7 +84,7 @@ class NotificationsController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Notification not saved'));
+        \Craft::$app->session->setError(Freeform::t('Export Notification not saved.'));
 
         return $this->renderEditForm($record, $record->name);
     }

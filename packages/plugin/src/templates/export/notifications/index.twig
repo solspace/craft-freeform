@@ -3,6 +3,12 @@
 
 {% set title = "Export Notifications"|t('freeform') %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Export"|t("freeform"), url: url("freeform/export/notifications") },
+    { label: "Notifications"|t("freeform"), url: url("freeform/export/notifications") },
+] %}
+
 {% block actionButton %}
 
     {% if craft.freeform.pro and currentUser.can("freeform-pro-exportProfilesManage") %}

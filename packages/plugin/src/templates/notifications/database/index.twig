@@ -14,6 +14,10 @@
 
 {% endblock %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Email Notifications"|t("freeform"), url: url("freeform/notifications") },
+] %}
 
 {% set content %}
 

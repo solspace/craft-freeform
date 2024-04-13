@@ -87,7 +87,7 @@ export const useFavoritesUpdateMutation = (
   };
 
   return useMutation((data: FavoritesPayload) => {
-    return axios.put<FavoritesPayload>('/api/fields/favorites', data);
+    return axios.post<FavoritesPayload>('/api/fields/favorites/update', data);
   }, options);
 };
 

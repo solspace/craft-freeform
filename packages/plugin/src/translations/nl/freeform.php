@@ -47,8 +47,8 @@ return [
     // CRM Controller
     'Add a CRM integration' => 'Voeg een CRM integratie toe',
     "CRM integration with handle '{ID}' not found" => "CRM-integratie met handle '{ID}' niet gevonden",
-    'CRM Integration saved' => 'CRM-integratie opgeslagen',
-    'CRM Integration not saved' => 'CRM-integratie niet opgeslagen',
+    'Integration saved.' => 'Integratie opgeslagen',
+    'Integration not saved.' => 'Integratie niet opgeslagen',
     "CRM integration with handle '{handle}' not found" => "CRM-integratie met handle '{handle}' niet gevonden",
     'New CRM Integration' => 'Nieuwe CRM-integratie',
     'CRM' => 'CRM',
@@ -185,8 +185,8 @@ return [
     'Last Updated' => 'Laatst aangepast',
     'Create new mailing list' => 'Creëer nieuwe mailinglijst',
     'Email Marketing integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
-    'Email Marketing Integration saved' => 'Mailinglijstintegratie opgeslagen',
-    'Email Marketing Integration not saved' => 'Mailinglijstintegratie niet opgeslagen',
+    'Integration saved.' => 'Integratie opgeslagen',
+    'Integration not saved.' => 'Integratie niet opgeslagen',
     "Mailing list with handle '{handle}' not found" => "Mailinglijst met handle '{handle}' niet gevonden",
     'Add a Email Marketing integration' => 'Voeg een Mailing lijst integratie toe',
     'Shop for more Email Marketing integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Vind meer mailinglijst integraties op de {link_open}Solspace Freeform Marketplace{link_close}',
@@ -251,8 +251,8 @@ return [
 
     // Meldingen Controller
     'Notifications' => 'Notificaties',
-    'Notification saved' => 'Notificatie opgeslagen',
-    'Notification not saved' => 'Notificatie niet opgeslagen',
+    'Notification saved.' => 'Notificatie opgeslagen',
+    'Notification not saved.' => 'Notificatie niet opgeslagen',
     'Notification with ID {id} not found' => 'Notificatie met ID {id} niet gevonden',
     'Include Attachments' => 'Bijlagen toevoegen?',
     'Include uploaded files as attachments in email notification.' => 'Neem geüploade bestanden op als bijlagen in email notificatie.',
@@ -288,7 +288,7 @@ return [
 
     // Instellingen controller
     'Settings' => 'Instellingen',
-    'Settings Saved' => 'Instellingen opgeslagen',
+    'Freeform settings saved.' => 'Instellingen opgeslagen',
     'Settings not saved' => 'Instellingen niet opgeslagen',
     'No template name specified' => 'Geen template naam opgegeven',
     'No custom template directory specified in settings' => 'Geen aangepaste template map opgegeven in instellingen',
@@ -553,7 +553,7 @@ return [
     'Set this status to be selected by default when creating new forms?' => 'Deze status standaard laten instellen bij het maken van nieuwe formulieren?',
     'Status' => 'Status',
     'Statuses' => 'Statussen',
-    'Status saved' => 'Status opgeslagen',
+    'Status saved.' => 'Status opgeslagen',
     'Status not saved' => 'Status niet opgeslagen',
     'Status with ID {id} not found' => 'Status met ID {id} niet gevonden',
     'green' => 'groen',
@@ -571,8 +571,8 @@ return [
     // Inzendingen controller
     'Submissions' => 'Inzendingen',
     'Submission Date' => 'Inzendingsdatum',
-    'Submission updated' => 'Inzending aangepast',
-    'Submission could not be updated' => 'Inzending kon niet worden aangepast',
+    'Submission updated.' => 'Inzending aangepast',
+    'Submission could not be updated.' => 'Inzending kon niet worden aangepast',
     'Submission with ID {id} not found' => 'Inzending met ID {id} niet gevonden',
     'Submissions deleted successfully.' => 'Inzendingen succesvol verwijderd.',
 

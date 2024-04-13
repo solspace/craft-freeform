@@ -18,6 +18,26 @@ class GroupsController extends BaseApiController
         $this->fieldTypesProvider = $fieldTypesProvider;
     }
 
+    protected function post(null|int|string $id = null): null|array|object
+    {
+        $groups = $this->request->getBodyParam('grouped', []);
+        $hiddenTypes = $this->request->getBodyParam('hidden', []);
+        FieldTypeGroupRecord::deleteAll();
+
+        foreach ($groups as $group) {
+            $groupRecord = new FieldTypeGroupRecord();
+            $groupRecord->uid = $group['uid'];
+            $groupRecord->label = $group['label'];
+            $groupRecord->color = $group['color'];
+            $groupRecord->types = json_encode($group['types']);
+            $groupRecord->save();
+        }
+
+        $this->getSettingsService()->saveSettings(['hiddenFieldTypes' => $hiddenTypes]);
+
+        return null;
+    }
+
     protected function get(): object
     {
         $freeform = Freeform::getInstance();
@@ -91,25 +111,5 @@ class GroupsController extends BaseApiController
         );
 
         return $response;
-    }
-
-    protected function put(null|int|string $id = null): null|array|object
-    {
-        $groups = $this->request->getBodyParam('grouped', []);
-        $hiddenTypes = $this->request->getBodyParam('hidden', []);
-        FieldTypeGroupRecord::deleteAll();
-
-        foreach ($groups as $group) {
-            $groupRecord = new FieldTypeGroupRecord();
-            $groupRecord->uid = $group['uid'];
-            $groupRecord->label = $group['label'];
-            $groupRecord->color = $group['color'];
-            $groupRecord->types = json_encode($group['types']);
-            $groupRecord->save();
-        }
-
-        $this->getSettingsService()->saveSettings(['hiddenFieldTypes' => $hiddenTypes]);
-
-        return null;
     }
 }

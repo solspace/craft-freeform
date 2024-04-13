@@ -33,13 +33,11 @@ export const SurveyResults: React.FC = () => {
       />
       {isLoading && <ResultsLoadingSkeleton />}
       {!isLoading && (
-        <div id="content-container">
-          <div id="content" className="content-pane" style={{ padding: 0 }}>
-            <ResultsWrapper $highlightHighest={true}>
-              <Chart />
-              <ResultList />
-            </ResultsWrapper>
-          </div>
+        <div id="content" className="content-pane" style={{ padding: 0 }}>
+          <ResultsWrapper $highlightHighest={true}>
+            <Chart />
+            <ResultList />
+          </ResultsWrapper>
         </div>
       )}
     </>

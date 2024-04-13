@@ -255,8 +255,8 @@ class SubmissionsController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Submission updated'));
-            \Craft::$app->session->setFlash(Freeform::t('Submission updated'), true);
+            \Craft::$app->session->setSuccess(Freeform::t('Submission updated.'));
+            \Craft::$app->session->setFlash(Freeform::t('Submission updated.'), true);
 
             return $this->redirectToPostedUrl($model);
         }
@@ -266,7 +266,7 @@ class SubmissionsController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Submission could not be updated'));
+        \Craft::$app->session->setError(Freeform::t('Submission could not be updated.'));
 
         // Send the event back to the template
         \Craft::$app->urlManager->setRouteParams(

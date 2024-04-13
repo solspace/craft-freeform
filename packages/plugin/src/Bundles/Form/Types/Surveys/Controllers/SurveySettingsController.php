@@ -71,7 +71,7 @@ class SurveySettingsController extends Controller
 
         $plugin = Freeform::getInstance();
         if (\Craft::$app->plugins->savePluginSettings($plugin, $data)) {
-            \Craft::$app->session->setNotice(Freeform::t('Settings Saved'));
+            \Craft::$app->session->setSuccess(Freeform::t('Freeform settings saved.'));
 
             return $this->redirectToPostedUrl();
         }

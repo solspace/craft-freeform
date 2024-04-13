@@ -39,6 +39,11 @@
     window.freeformSpamView = true;
 {% endjs %}
 
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Spam"|t("freeform"), url: url("freeform/spam") },
+] %}
+
 {% if formHandle is defined %}
     {% js %}
         window.defaultFormHandle = '{{ formHandle }}';

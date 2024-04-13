@@ -76,15 +76,12 @@ class StripeService extends Component
             $customerData = CustomerDetails::fromArray($dynamicValues)->toStripeConstructArray();
             $customerData['payment_method'] = $token;
 
-            $customer = Customer::create($customerData);
-
             $paymentIntentProperties = [
                 'payment_method' => $token,
                 'amount' => $amount,
                 'currency' => $currency,
                 'confirmation_method' => 'manual',
                 'confirm' => true,
-                'customer' => $customer->id,
             ];
 
             $mapping = $properties->getCustomerFieldMapping();
@@ -95,6 +92,10 @@ class StripeService extends Component
             }
 
             try {
+                $customer = Customer::create($customerData);
+
+                $paymentIntentProperties['customer'] = $customer->id;
+
                 $paymentIntent = PaymentIntent::create($paymentIntentProperties);
             } catch (\Stripe\Exception\CardException $e) {
                 $form->addError(Freeform::t($e->getMessage()));

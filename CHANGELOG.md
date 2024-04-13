@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.36 - 2024-04-12
+
+### Fixed
+- Fixed a bug where not all Stripe validation errors were accounted for and could cause the form to break.
+
 ## 3.13.35 - 2024-03-01
 
 ### Fixed

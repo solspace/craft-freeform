@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.1.12 - 2024-04-12
+
+### Changed
+- Changed all `PUT` requests to `POST` requests for sites with strict method allowlists.
+- Updated the form builder to include the Craft notice banner for successes and errors when saving the form.
+- Updated success/error notices throughout the plugin.
+- Updated breadcrumbs throughout the plugin.
+
+### Fixed
+- Fixed a bug where error validation was not working correctly in the form builder.
+
 ## 5.1.11 - 2024-04-11
 
 ### Changed

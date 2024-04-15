@@ -55,7 +55,7 @@ class Submission extends Element
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
-    public const FREE_FORM_CONTENT_ATTRIBUTE = 'freeFormContent';
+    public const FREEFORM_CONTENT_ATTRIBUTE = 'freeformContent';
 
     public ?int $formId = null;
     public ?int $userId = null;
@@ -212,7 +212,7 @@ class Submission extends Element
         return self::generateContentTableName($form->getId(), $form->getHandle());
     }
 
-    public function getFreeFormContent(): string
+    public function getFreeformContent(): string
     {
         $keywords = '';
 
@@ -558,7 +558,7 @@ class Submission extends Element
     protected static function defineSearchableAttributes(): array
     {
         $parent = parent::defineSearchableAttributes();
-        $parent[] = self::FREE_FORM_CONTENT_ATTRIBUTE;
+        $parent[] = self::FREEFORM_CONTENT_ATTRIBUTE;
 
         return $parent;
     }

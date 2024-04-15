@@ -340,7 +340,7 @@ class Submission extends Element
 
         /** @var FieldInterface $field */
         foreach ($this as $field) {
-            $keywords .= $field->getValueAsString(). ' ';
+            $keywords .= $field->getValueAsString().' ';
         }
 
         return $keywords;
@@ -641,11 +641,12 @@ class Submission extends Element
             'form',
         ];
     }
-    
+
     protected static function defineSearchableAttributes(): array
     {
         $parent = parent::defineSearchableAttributes();
         $parent[] = self::FREEFORM_CONTENT_ATTRIBUTE;
+
         return $parent;
     }
 

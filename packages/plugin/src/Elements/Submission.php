@@ -55,6 +55,8 @@ class Submission extends Element
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
+    public const FREEFORM_CONTENT_ATTRIBUTE = 'freeformContent';
+
     /** @var int */
     public $formId;
 
@@ -330,6 +332,18 @@ class Submission extends Element
         }
 
         return $assets;
+    }
+
+    public function getFreeformContent(): string
+    {
+        $keywords = '';
+
+        /** @var FieldInterface $field */
+        foreach ($this as $field) {
+            $keywords .= $field->getValueAsString(). ' ';
+        }
+
+        return $keywords;
     }
 
     public function setFormFieldValues(array $values, bool $override = true): self
@@ -626,6 +640,13 @@ class Submission extends Element
             'dateCreated',
             'form',
         ];
+    }
+    
+    protected static function defineSearchableAttributes(): array
+    {
+        $parent = parent::defineSearchableAttributes();
+        $parent[] = self::FREEFORM_CONTENT_ATTRIBUTE;
+        return $parent;
     }
 
     protected static function defineActions(string $source = null): array

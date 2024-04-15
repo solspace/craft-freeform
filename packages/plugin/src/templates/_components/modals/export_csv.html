@@ -5,10 +5,14 @@
         margin-right: 5px;
     }
 
-    #export-csv-modal .body{
+    #export-csv-modal .body {
         overflow-y: auto;
         height: 380px;
         width: 280px;
+    }
+
+    #export-csv-modal .footer {
+        line-height: normal !important;
     }
 
     #export-csv-modal .radio-list {
@@ -16,6 +20,25 @@
         grid-template-columns: 1fr 1fr 1fr;
         grid-column-gap: 10px;
         grid-row-gap: 10px;
+    }
+
+    #export-csv-modal .checkbox-list-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-items: flex-start;
+    }
+
+    #export-csv-modal .checkbox-list-item .icon {
+        margin: 0;
+        padding: 0;
+    }
+
+    #export-csv-modal .checkbox-list-item .icon:before {
+        margin: 0;
+        padding: 0;
+        line-height: unset !important;
+        vertical-align: middle !important;
     }
 </style>
 
@@ -69,26 +92,26 @@
                         {% set label     = fieldSetting.label %}
                         {% set isChecked = fieldSetting.checked %}
 
-                        <div>
-                            <div class="icon move"></div>
-
-                            <input type="hidden"
-                                   name="export_fields[{{ form.id }}][{{ fieldId }}][label]"
-                                   value="{{ fieldSetting.label }}"
-                            />
-
-                            <input type="hidden"
-                                   name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
-                                   value="0"
-                            />
-                            <input type="checkbox"
-                                   class="checkbox"
-                                   name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
-                                   value="1"
-                                   {{ isChecked ? 'checked' }}
-                                   id="{{ form.id ~ '-' ~ fieldId }}"
-                            />
-                            <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label }}</label>
+                        <div class="checkbox-list-item">
+                            <div class="icon move">
+                                <input
+                                    type="hidden"
+                                    name="export_fields[{{ form.id }}][{{ fieldId }}][label]"
+                                    value="{{ fieldSetting.label }}"
+                                />
+                                <input type="hidden"
+                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
+                                    value="0"
+                                />
+                                <input type="checkbox"
+                                    class="checkbox"
+                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
+                                    value="1"
+                                    {{ isChecked ? 'checked' }}
+                                    id="{{ form.id ~ '-' ~ fieldId }}"
+                                />
+                                <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label }}</label>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>

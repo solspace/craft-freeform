@@ -8,6 +8,8 @@ use Solspace\Freeform\Elements\Submission;
 
 class TitleFixMigration extends BaseContentRefactorMigration
 {
+    protected bool $preserveOldData = true;
+
     public function run(): void
     {
         // update users

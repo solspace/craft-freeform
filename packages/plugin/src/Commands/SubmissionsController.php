@@ -6,6 +6,7 @@ use craft\console\Controller;
 use craft\queue\jobs\ResaveElements;
 use craft\queue\Queue;
 use craft\services\Elements;
+use Solspace\Freeform\Commands\Fix\TitleFixMigration;
 use Solspace\Freeform\Elements\Submission;
 use yii\console\ExitCode;
 use yii\helpers\Console;
@@ -51,6 +52,10 @@ class SubmissionsController extends Controller
 
     public function options($actionID): array
     {
+        if ('fix-titles' === $actionID) {
+            return [];
+        }
+
         $options = parent::options($actionID);
         $options[] = 'updateSearchIndex';
         $options[] = 'queue';
@@ -61,6 +66,18 @@ class SubmissionsController extends Controller
         $options[] = 'limit';
 
         return $options;
+    }
+
+    public function actionFixTitles(): int
+    {
+        $this->stdout('Fixing submission titles...'.\PHP_EOL, Console::FG_YELLOW);
+
+        $migration = new TitleFixMigration();
+        $migration->run();
+
+        $this->stdout('Submission titles fixed.'.\PHP_EOL, Console::FG_YELLOW);
+
+        return ExitCode::OK;
     }
 
     /**

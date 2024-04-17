@@ -103,6 +103,8 @@ class ImportController extends BaseApiController
         $sse->message('info', 'Done');
 
         $sse->message('exit', 'done');
+
+        exit;
     }
 
     private function getImporter(): FreeformImporter

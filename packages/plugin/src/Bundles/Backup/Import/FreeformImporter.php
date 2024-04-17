@@ -100,7 +100,16 @@ class FreeformImporter
 
             $formRecord->save();
 
+            if ($formRecord->hasErrors()) {
+                $errors = $formRecord->getErrorSummary(false);
+                $this->sse->message('err', json_encode($errors));
+                $this->sse->message('progress', 1);
+
+                continue;
+            }
+
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
+
             $fieldRecords = [];
 
             foreach ($form->notifications as $notification) {

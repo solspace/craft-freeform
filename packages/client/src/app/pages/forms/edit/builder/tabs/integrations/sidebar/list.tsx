@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
+import { useForceUpdate } from '@ff-client/hooks/use-force-update';
 import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import type { IntegrationCategory } from '@ff-client/types/integrations';
 
@@ -15,6 +16,9 @@ export const List: React.FC = () => {
   const { data, isFetching } = useQueryFormIntegrations(
     formId && Number(formId)
   );
+
+  // Due to issues with react-query race conditions, we need to force a re-render
+  useForceUpdate();
 
   useEffect(() => {
     if (!id && data) {

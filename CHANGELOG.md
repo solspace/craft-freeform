@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.1.13 - 2024-04-17
+
+### Added
+- Added Craft element search support for submissions. You may need to run `./craft freeform/submissions/resave --update-search-index` once for this to work.
+- Added `freeform/submissions/resave` CLI command to resave all existing submissions.
+- Added `freeform/submissions/fix-titles` CLI command to fix the migration of Element titles for sites that have upgraded from Craft 4 to Craft 5. This command needs to be run once after the migration.
+
+### Fixed
+- Fixed a visual issue with the Quick Export modal styles in Craft 5.
+- Fixed a bug where the Express Forms migration utility would not work if there were no fields in a form.
+- Fixed a race condition issue where refreshing the browser in the form builder would sometimes show stale or invalid data on section tabs.
+
 ## 5.1.12 - 2024-04-12
 
 ### Changed

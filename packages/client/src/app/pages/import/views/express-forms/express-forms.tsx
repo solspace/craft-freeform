@@ -35,6 +35,7 @@ export const ImportExpressForms: React.FC = () => {
   const [progress, setProgress] = useState<[number, number]>([0, 0]);
   const [total, setTotal] = useState<[number, number]>([0, 0]);
   const [info, setInfo] = useState<string>();
+  const [errors, setErrors] = useState<string[]>([]);
 
   const { data, isFetching } = useExpressFormsDataQuery();
   const progressAnimation = useProgressAnimation(displayProgress);
@@ -74,10 +75,15 @@ export const ImportExpressForms: React.FC = () => {
 
     source.addEventListener('total', (event) => {
       setTotal([parseInt(event.data), 0]);
+      setErrors([]);
     });
 
     source.addEventListener('info', (event) => {
       setInfo(event.data);
+    });
+
+    source.addEventListener('err', (event) => {
+      setErrors((prev) => [...prev, JSON.parse(event.data)]);
     });
 
     source.addEventListener('reset', (event) => {
@@ -257,6 +263,14 @@ export const ImportExpressForms: React.FC = () => {
             {info}
           </Progress>
         </ProgressWrapper>
+
+        {errors.length > 0 && (
+          <ul className="errors">
+            {errors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        )}
 
         <DoneWrapper style={doneAnimation}>
           <Done>

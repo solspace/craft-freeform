@@ -73,10 +73,12 @@ export const PreviewForms: React.FC<Props> = ({ forms, options, onUpdate }) => {
 
             <ul>
               {form.pages.map((page) => {
-                const fields = page.layout.rows.reduce(
-                  (count, row) => count + row.fields.length,
-                  0
-                );
+                const fields = Array.isArray(page?.layout?.rows)
+                  ? page.layout.rows.reduce(
+                      (count, row) => count + row.fields.length,
+                      0
+                    )
+                  : 0;
 
                 const fieldString = translate('{fields} fields', { fields });
 

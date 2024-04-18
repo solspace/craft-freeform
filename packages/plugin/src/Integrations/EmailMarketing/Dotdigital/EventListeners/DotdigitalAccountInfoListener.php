@@ -43,8 +43,9 @@ class DotdigitalAccountInfoListener extends FeatureBundle
 
         if (isset($json)) {
             $properties = array_filter($json->properties, fn ($property) => 'ApiEndpoint' === $property->name);
+            $properties = array_values($properties);
 
-            if (!empty($properties)) {
+            if (!empty($properties) && \count($properties) > 0) {
                 $integration->setApiUrl($properties[0]->value);
             }
         }

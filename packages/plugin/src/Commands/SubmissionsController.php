@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Commands;
 
 use craft\console\Controller;
-use craft\elements\User;
 use craft\queue\jobs\ResaveElements;
 use craft\queue\Queue;
 use craft\services\Elements;
@@ -135,16 +134,6 @@ class SubmissionsController extends Controller
             throw new \Exception('No Form found');
         }
 
-        if ($this->authorId) {
-            $user = \Craft::$app->users->getUserById($this->authorId);
-        } else {
-            $user = User::findOne();
-        }
-
-        if (!$user) {
-            throw new \Exception('No Author specified');
-        }
-
         if (!is_numeric($this->status)) {
             if (null === $this->status || 'any' === $this->status) {
                 $status = $form->getSettings()->getGeneral()->defaultStatus;
@@ -266,7 +255,7 @@ class SubmissionsController extends Controller
             }
 
             $submission = Submission::create($form);
-            $submission->userId = $user->id;
+            $submission->userId = $this->authorId;
             $submission->isSpam = $this->spam;
             $submission->statusId = $form->getSettings()->getGeneral()->defaultStatus;
             $submission->setFormFieldValues($values);

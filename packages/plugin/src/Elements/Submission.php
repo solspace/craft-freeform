@@ -556,14 +556,6 @@ class Submission extends Element
         return $this->fieldCollection;
     }
 
-    protected static function defineSearchableAttributes(): array
-    {
-        $parent = parent::defineSearchableAttributes();
-        $parent[] = self::FREEFORM_CONTENT_ATTRIBUTE;
-
-        return $parent;
-    }
-
     protected static function defineSources(?string $context = null): array
     {
         static $sources;

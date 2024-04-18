@@ -32,61 +32,62 @@ use yii\helpers\Console;
 
 class SubmissionsController extends Controller
 {
-    /**
-     * @var bool whether to update the search indexes for the resaved elements
-     */
+    /** @var bool whether to update the search indexes for the resaved elements */
     public bool $updateSearchIndex = false;
 
-    /**
-     * @var null|int|string the ID(s) of the elements to resave
-     */
+    /** @var null|int|string the ID(s) of the elements to resave */
     public null|int|string $elementId = null;
 
-    /**
-     * @var null|string the UUID(s) of the elements to resave
-     */
+    /** @var null|string the UUID(s) of the elements to resave */
     public ?string $uid = null;
 
-    /**
-     * @var string The status(es) of elements to resave. Can be set to multiple comma-separated statuses.
-     */
+    /** @var int|string The status(es) of elements to resave. Can be set to multiple comma-separated statuses. */
     public int|string $status = 'any';
 
-    /**
-     * @var bool whether the elements should be resaved via a queue job
-     *
-     * @since 3.7.0
-     */
+    /** @var bool whether the elements should be resaved via a queue job */
     public bool $queue = false;
 
-    /**
-     * @var null|int the number of elements to skip
-     */
+    /** @var null|int the number of elements to skip */
     public ?int $offset = null;
 
-    /**
-     * @var null|int the number of elements to resave
-     */
+    /** @var null|int the number of elements to resave */
     public ?int $limit = null;
 
     public ?string $locale = Factory::DEFAULT_LOCALE;
 
-    /**
-     * @var null|int The amount of submissions to generate
-     */
+    /** @var null|int The amount of submissions to generate */
     public ?int $count = 1;
 
-    /**
-     * @var int|string The form handle or ID to generate submissions for
-     */
+    /** @var null|int|string The form handle or ID to generate submissions for */
     public null|int|string $form = null;
 
     public ?int $authorId = null;
 
-    /**
-     * @var bool Mark generated submissions as spam
-     */
+    /** @var bool Mark generated submissions as spam */
     public bool $spam = false;
+
+    /** @var null|string Start dates from this date (Can use relative wording.) */
+    public ?string $rangeStart = null;
+
+    /** @var null|string End dates with this date (Can use relative wording.) */
+    public ?string $rangeEnd = null;
+
+    public ?bool $verbose = false;
+    public ?bool $dryRun = false;
+
+    public function optionAliases(): array
+    {
+        return [
+            'l' => 'locale',
+            'c' => 'count',
+            'f' => 'form',
+            'a' => 'authorId',
+            's' => 'status',
+            'rs' => 'rangeStart',
+            're' => 'rangeEnd',
+            'v' => 'verbose',
+        ];
+    }
 
     public function options($actionID): array
     {
@@ -99,6 +100,10 @@ class SubmissionsController extends Controller
                 'spam',
                 'authorId',
                 'status',
+                'rangeStart',
+                'rangeEnd',
+                'verbose',
+                'dryRun',
             ],
             'resave' => [
                 'updateSearchIndex',
@@ -120,6 +125,7 @@ class SubmissionsController extends Controller
 
         $faker = Factory::create($this->locale);
         $freeform = Freeform::getInstance();
+        $verbose = $this->verbose;
 
         $name = 1 === $this->count ? Submission::lowerDisplayName() : Submission::pluralLowerDisplayName();
         $this->stdout("Generating {$this->count} {$name} for form \"{$this->form}\"...\n\n", Console::FG_YELLOW);
@@ -151,7 +157,13 @@ class SubmissionsController extends Controller
             throw new \Exception('No status found');
         }
 
-        Console::startProgress(0, $this->count, '', 0.44);
+        if ($this->dryRun) {
+            $this->stdout("Dry run enabled. No submissions will be saved.\n\n", Console::FG_YELLOW);
+        }
+
+        if (!$verbose) {
+            Console::startProgress(0, $this->count, '', 0.44);
+        }
 
         for ($i = 0; $i < $this->count; ++$i) {
             $values = [];
@@ -183,13 +195,19 @@ class SubmissionsController extends Controller
                     $isDate = \in_array($field->getDateTimeType(), [DatetimeField::DATETIME_TYPE_DATE, DatetimeField::DATETIME_TYPE_BOTH], true);
                     $isTime = \in_array($field->getDateTimeType(), [DatetimeField::DATETIME_TYPE_TIME, DatetimeField::DATETIME_TYPE_BOTH], true);
 
+                    if ($this->rangeStart || $this->rangeEnd) {
+                        $date = $faker->dateTimeBetween($this->rangeStart, $this->rangeEnd);
+                    } else {
+                        $date = $faker->dateTime;
+                    }
+
                     $chunks = [];
                     if ($isDate) {
-                        $chunks[] = $faker->date($field->getDateFormat());
+                        $chunks[] = $date->format($field->getDateFormat());
                     }
 
                     if ($isTime) {
-                        $chunks[] = $faker->time($field->getTimeFormat());
+                        $chunks[] = $date->format($field->getTimeFormat());
                     }
 
                     if ($chunks) {
@@ -228,9 +246,20 @@ class SubmissionsController extends Controller
                 } elseif ($field instanceof InvisibleField) {
                     continue;
                 } elseif ($field instanceof TextField) {
-                    $value = $faker->name;
+                    $handle = strtolower($field->getHandle());
+                    if (str_contains($handle, 'name')) {
+                        if (str_contains($handle, 'first')) {
+                            $value = $faker->firstName;
+                        } elseif (str_contains($handle, 'last')) {
+                            $value = $faker->lastName;
+                        } else {
+                            $value = $faker->name;
+                        }
+                    } else {
+                        $value = $faker->sentence;
+                    }
                 } else {
-                    $value = $faker->sentence;
+                    $value = $faker->text;
                 }
 
                 $values[$field->getHandle()] = $value;
@@ -242,12 +271,34 @@ class SubmissionsController extends Controller
             $submission->statusId = $form->getSettings()->getGeneral()->defaultStatus;
             $submission->setFormFieldValues($values);
 
-            \Craft::$app->elements->saveElement($submission, false, false, true);
+            if (!$this->dryRun) {
+                \Craft::$app->elements->saveElement($submission, false, false, true);
+            }
 
-            Console::updateProgress($i + 1, $this->count);
+            if (!$verbose) {
+                Console::updateProgress($i + 1, $this->count);
+            }
+
+            if ($verbose || $this->dryRun) {
+                $signatureFields = $form->getLayout()->getFields(SignatureField::class);
+                foreach ($signatureFields as $field) {
+                    $values[$field->getHandle()] = '**** redacted ****';
+                }
+
+                if (!$this->dryRun) {
+                    $this->stdout("Submission #{$submission->id} created\n");
+                } else {
+                    $number = $i + 1;
+                    $this->stdout("Generated Submission #{$number} preview\n");
+                }
+
+                $this->stdout(json_encode($values, \JSON_PRETTY_PRINT)."\n\n");
+            }
         }
 
-        Console::endProgress(true);
+        if (!$verbose) {
+            Console::endProgress(true);
+        }
 
         $this->stdout("\n\n--- done ---\n", Console::FG_YELLOW);
 

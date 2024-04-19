@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.1.13.1 - 2024-04-18
+
+### Fixed
+- Fixed an issue with the **Dotdigital** integration.
+
 ## 5.1.13 - 2024-04-17
 
 ### Added

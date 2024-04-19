@@ -26,7 +26,8 @@
     "doctrine/annotations": "^2.0",
     "phpoffice/phpspreadsheet": "^1.29",
     "composer/class-map-generator": "^1.1",
-    "tecnickcom/tcpdf": "^6.4"
+    "tecnickcom/tcpdf": "^6.4",
+    "fakerphp/faker": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",

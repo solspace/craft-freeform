@@ -209,6 +209,16 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
         return $this->dateTimeType;
     }
 
+    public function isShowDate(): bool
+    {
+        return \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_DATE, self::DATETIME_TYPE_BOTH], true);
+    }
+
+    public function isShowTime(): bool
+    {
+        return \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_TIME, self::DATETIME_TYPE_BOTH], true);
+    }
+
     public function isGeneratePlaceholder(): bool
     {
         return $this->generatePlaceholder;

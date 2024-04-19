@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.1.14 - 2024-04-19
+
+### Added
+- Added `freeform/submissions/generate` CLI command to allow the creation of fake submission data into forms. Useful for testing and troubleshooting some issues.
+- Added support for searching into specific fields in the CP Submission element search bar (e.g. `firstName:bob`). You may need to run `./craft freeform/submissions/resave --update-search-index` once for this to work.
+
 ## 5.1.13.1 - 2024-04-18
 
 ### Fixed

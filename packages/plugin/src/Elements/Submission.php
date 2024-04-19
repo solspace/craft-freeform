@@ -56,8 +56,6 @@ class Submission extends Element
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
-    public const FREEFORM_CONTENT_ATTRIBUTE = 'freeformContent';
-
     public ?int $formId = null;
     public ?int $userId = null;
     public ?int $statusId = null;
@@ -142,6 +140,21 @@ class Submission extends Element
         return parent::__isset($name);
     }
 
+    public function __call($name, $params)
+    {
+        // Check if they are trying to access a submission field directly
+        if (CraftStringHelper::startsWith($name, 'get')) {
+            $fieldHandle = CraftStringHelper::lowercaseFirst(substr($name, 3));
+            $field = $this->getFieldCollection()->get($fieldHandle);
+
+            if ($field) {
+                return $field->getValueAsString();
+            }
+        }
+
+        return parent::__call($name, $params);
+    }
+
     public static function find(): SubmissionQuery
     {
         return (new SubmissionQuery(self::class))->isSpam(false);
@@ -211,18 +224,6 @@ class Submission extends Element
     public static function getContentTableName(Form $form): string
     {
         return self::generateContentTableName($form->getId(), $form->getHandle());
-    }
-
-    public function getFreeformContent(): string
-    {
-        $keywords = '';
-
-        /** @var FieldInterface $field */
-        foreach ($this as $field) {
-            $keywords .= $field->getValueAsString().' ';
-        }
-
-        return $keywords;
     }
 
     public static function generateContentTableName(int $id, string $handle): string
@@ -558,14 +559,6 @@ class Submission extends Element
         return $this->fieldCollection;
     }
 
-    protected static function defineSearchableAttributes(): array
-    {
-        $parent = parent::defineSearchableAttributes();
-        $parent[] = self::FREEFORM_CONTENT_ATTRIBUTE;
-
-        return $parent;
-    }
-
     protected static function defineSources(?string $context = null): array
     {
         static $sources;
@@ -644,6 +637,23 @@ class Submission extends Element
             'dateCreated',
             'form',
         ];
+    }
+
+    protected static function defineSearchableAttributes(): array
+    {
+        $searchable = parent::defineSearchableAttributes();
+
+        $forms = Freeform::getInstance()->forms->getAllForms();
+
+        foreach ($forms as $form) {
+            $layout = $form->getLayout();
+            /** @var FieldInterface $field */
+            foreach ($layout->getFields() as $field) {
+                $searchable[] = $field->getHandle();
+            }
+        }
+
+        return array_unique($searchable);
     }
 
     protected static function defineActions(?string $source = null): array

@@ -11,11 +11,13 @@ use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
+use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
+use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 
 class RuleProvider
 {
@@ -27,12 +29,14 @@ class RuleProvider
             return [
                 'pages' => [],
                 'fields' => [],
+                'submitForm' => null,
             ];
         }
 
         return [
             'pages' => $this->getPageRules($form),
             'fields' => $this->getFieldRules($form),
+            'submitForm' => $this->getSubmitFormRule($form),
         ];
     }
 
@@ -100,6 +104,23 @@ class RuleProvider
             if ($rule->getPage() === $page) {
                 return $rule;
             }
+        }
+
+        return null;
+    }
+
+    public function getSubmitFormRule(Form $form): ?SubmitFormRule
+    {
+        $submitRule = SubmitFormRuleRecord::getExistingRule($form->getId());
+        if ($submitRule) {
+            $ruleRecord = $submitRule->getRule()->one();
+
+            return new SubmitFormRule(
+                $submitRule->id,
+                $ruleRecord->uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
         }
 
         return null;

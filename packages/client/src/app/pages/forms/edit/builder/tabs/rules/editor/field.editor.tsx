@@ -15,7 +15,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field-editor.styles';
+import { RulesEditorWrapper } from './field.editor.styles';
 
 export const FieldRulesEditor: React.FC = () => {
   const { formId, uid } = useParams();

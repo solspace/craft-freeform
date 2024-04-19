@@ -92,3 +92,5 @@ export type NotificationRule = Rule & {
   notification: string;
   send: boolean;
 };
+
+export type SubmitFormRule = Rule;

@@ -43,6 +43,12 @@ class RulesBundle extends FeatureBundle
             PageContext::EVENT_PAGE_JUMP,
             [$this, 'handleFormPageJump']
         );
+
+        Event::on(
+            PageContext::class,
+            PageContext::EVENT_PAGE_JUMP,
+            [$this, 'handleFormSubmit']
+        );
     }
 
     public static function getPriority(): int
@@ -96,5 +102,15 @@ class RulesBundle extends FeatureBundle
         }
 
         $event->setJumpToIndex($index);
+    }
+
+    public function handleFormSubmit(PageJumpEvent $event): void
+    {
+        $form = $event->getForm();
+        if (!$this->ruleValidator->isFormSubmittable($form)) {
+            return;
+        }
+
+        $event->setJumpToIndex(-999);
     }
 }

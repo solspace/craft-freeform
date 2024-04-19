@@ -15,6 +15,7 @@ import {
   PageLabel,
   PageWrapper,
 } from './pages.styles';
+
 type Props = {
   page: PageType;
 };

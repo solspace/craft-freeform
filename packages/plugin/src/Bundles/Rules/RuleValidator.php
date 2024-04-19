@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Rules;
 use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Rules\Rule;
 use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
@@ -52,13 +53,49 @@ class RuleValidator
         return null;
     }
 
-    private function triggersRule(Form $form, RuleInterface $rule): bool
+    public function isFormSubmittable(Form $form): bool
+    {
+        $rule = $this->ruleProvider->getSubmitFormRule($form);
+        if (!$rule) {
+            return false;
+        }
+
+        $currentPage = $form->getCurrentPage();
+
+        $availablePages = new PageCollection();
+        foreach ($form->getPages() as $page) {
+            if ($page->getIndex() > $currentPage->getIndex()) {
+                break;
+            }
+
+            $availablePages->add($page);
+        }
+
+        return $this->triggersRule($form, $rule, $availablePages);
+    }
+
+    private function triggersRule(Form $form, RuleInterface $rule, ?PageCollection $availablePages = null): bool
     {
         $conditions = $rule->getConditions();
 
         $matchesSome = false;
         $matchesAll = true;
         foreach ($conditions as $condition) {
+            if ($availablePages) {
+                $hasField = false;
+                foreach ($availablePages as $page) {
+                    if ($page->getFields()->has($condition->getField())) {
+                        $hasField = true;
+
+                        break;
+                    }
+                }
+
+                if (!$hasField) {
+                    continue;
+                }
+            }
+
             $isConditionFieldHidden = $this->isFieldHidden($form, $condition->getField());
             if ($isConditionFieldHidden) {
                 $postedValue = null;

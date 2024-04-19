@@ -15,6 +15,9 @@ export const fieldRuleSelectors = {
       ) ||
       state.rules.pages.items.some((rule) =>
         rule.conditions.some((condition) => condition.field === fieldUid)
+      ) ||
+      state.rules.submitForm.item?.conditions.some(
+        (condition) => condition.field === fieldUid
       ),
   usedByFields: (fieldUid: string) =>
     createSelector(

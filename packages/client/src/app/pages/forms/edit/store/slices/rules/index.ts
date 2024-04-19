@@ -6,6 +6,7 @@ import './rules.persistence';
 import fields from './fields';
 import notifications from './notifications';
 import pages from './pages';
+import submitForm from './submit-form';
 
 export type RuleState<T extends Rule> = {
   initialized: boolean;
@@ -16,6 +17,7 @@ const rules = combineReducers({
   fields,
   pages,
   notifications,
+  submitForm,
 });
 
 export default rules;

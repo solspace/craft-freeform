@@ -41,7 +41,7 @@ class SubmissionsController extends Controller
     public ?string $uid = null;
 
     /** @var int|string The status(es) of elements to resave. Can be set to multiple comma-separated statuses. */
-    public int|string $status = 'any';
+    public null|int|string $status = null;
 
     /** @var bool whether the elements should be resaved via a queue job */
     public bool $queue = false;
@@ -124,7 +124,7 @@ class SubmissionsController extends Controller
 
         $faker = Factory::create($this->locale);
         $freeform = Freeform::getInstance();
-        $verbose = $this->verbose;
+        $verbose = $this->verbose || $this->dryRun;
 
         $name = 1 === $this->count ? Submission::lowerDisplayName() : Submission::pluralLowerDisplayName();
         $this->stdout("Generating {$this->count} {$name} for form \"{$this->form}\"...\n\n", Console::FG_YELLOW);
@@ -134,16 +134,36 @@ class SubmissionsController extends Controller
             throw new \Exception('No Form found');
         }
 
-        if (!is_numeric($this->status)) {
-            if (null === $this->status || 'any' === $this->status) {
-                $status = $form->getSettings()->getGeneral()->defaultStatus;
-            } else {
-                $status = $freeform->statuses->getStatusByHandle($this->status)?->id;
-            }
+        $defaultStatus = $form->getSettings()->getGeneral()->defaultStatus;
+        $allStatuses = $freeform->statuses->getAllStatuses();
+
+        if ('any' === $this->status) {
+            $statuses = array_keys($allStatuses);
+        } elseif (is_numeric($this->status)) {
+            $statuses = [$this->status];
+        } else {
+            $statuses = explode(',', $this->status);
+            $statuses = array_map(
+                function ($status) use ($allStatuses) {
+                    if (is_numeric($status)) {
+                        return $allStatuses[$status]?->id;
+                    }
+
+                    foreach ($allStatuses as $statusModel) {
+                        if ($statusModel->handle === $status) {
+                            return $statusModel->id;
+                        }
+                    }
+
+                    return null;
+                },
+                $statuses,
+            );
+            $statuses = array_filter($statuses);
         }
 
-        if (!$status) {
-            throw new \Exception('No status found');
+        if (empty($statuses)) {
+            $statuses = [$defaultStatus];
         }
 
         if ($this->dryRun) {
@@ -181,21 +201,14 @@ class SubmissionsController extends Controller
                         $field->getMaxValue() ?? 1000,
                     );
                 } elseif ($field instanceof DatetimeField) {
-                    $isDate = \in_array($field->getDateTimeType(), [DatetimeField::DATETIME_TYPE_DATE, DatetimeField::DATETIME_TYPE_BOTH], true);
-                    $isTime = \in_array($field->getDateTimeType(), [DatetimeField::DATETIME_TYPE_TIME, DatetimeField::DATETIME_TYPE_BOTH], true);
-
-                    if ($this->rangeStart || $this->rangeEnd) {
-                        $date = $faker->dateTimeBetween($this->rangeStart, $this->rangeEnd);
-                    } else {
-                        $date = $faker->dateTime;
-                    }
+                    $date = $faker->dateTimeBetween('-3 months', '+3 months');
 
                     $chunks = [];
-                    if ($isDate) {
+                    if ($field->isShowDate()) {
                         $chunks[] = $date->format($field->getDateFormat());
                     }
 
-                    if ($isTime) {
+                    if ($field->isShowTime()) {
                         $chunks[] = $date->format($field->getTimeFormat());
                     }
 
@@ -254,10 +267,20 @@ class SubmissionsController extends Controller
                 $values[$field->getHandle()] = $value;
             }
 
+            $dateCreated = new \DateTime();
+            if ($this->rangeStart || $this->rangeEnd) {
+                $dateCreated = $faker->dateTimeBetween(
+                    $this->rangeStart ?? '-1 year',
+                    $this->rangeEnd ?? 'now'
+                );
+            }
+
             $submission = Submission::create($form);
             $submission->userId = $this->authorId;
             $submission->isSpam = $this->spam;
-            $submission->statusId = $form->getSettings()->getGeneral()->defaultStatus;
+            $submission->statusId = $faker->randomElement($statuses);
+            $submission->dateCreated = $dateCreated;
+            $submission->dateUpdated = $dateCreated;
             $submission->setFormFieldValues($values);
 
             if (!$this->dryRun) {
@@ -268,7 +291,7 @@ class SubmissionsController extends Controller
                 Console::updateProgress($i + 1, $this->count);
             }
 
-            if ($verbose || $this->dryRun) {
+            if ($verbose) {
                 $signatureFields = $form->getLayout()->getFields(SignatureField::class);
                 foreach ($signatureFields as $field) {
                     $values[$field->getHandle()] = '**** redacted ****';
@@ -280,6 +303,9 @@ class SubmissionsController extends Controller
                     $number = $i + 1;
                     $this->stdout("Generated Submission #{$number} preview\n");
                 }
+
+                $this->stdout("Date Created: {$submission->dateCreated->format('Y-m-d H:i:s')}\n");
+                $this->stdout("Status: {$submission->getStatus()}\n");
 
                 $this->stdout(json_encode($values, \JSON_PRETTY_PRINT)."\n\n");
             }
@@ -382,7 +408,7 @@ class SubmissionsController extends Controller
             $criteria['uid'] = explode(',', $this->uid);
         }
 
-        if ('any' === $this->status) {
+        if ('any' === $this->status || null === $this->status) {
             $criteria['status'] = null;
         } elseif ($this->status) {
             $criteria['status'] = explode(',', $this->status);

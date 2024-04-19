@@ -10,6 +10,7 @@ use craft\elements\Asset;
 use craft\elements\User;
 use craft\events\RegisterElementActionsEvent;
 use craft\helpers\Cp;
+use craft\helpers\Db;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
@@ -447,8 +448,10 @@ class Submission extends Element
 
         $contentTable = self::getContentTableName($this->getForm());
         if ($isNew) {
-            $insertData['id'] = $this->id;
             $contentData['id'] = $this->id;
+            $insertData['id'] = $this->id;
+            $insertData['dateCreated'] = Db::prepareDateForDb($this->dateCreated);
+            $insertData['dateUpdated'] = Db::prepareDateForDb($this->dateUpdated);
 
             \Craft::$app->db->createCommand()
                 ->insert(self::TABLE, $insertData)

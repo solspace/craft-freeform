@@ -131,7 +131,7 @@ class SubmissionsController extends Controller
 
         $form = $freeform->forms->getFormByHandleOrId($this->form);
         if (!$form) {
-            throw new \Exception('No Form found');
+            throw new \Exception('No form found. Please specify a valid form handle or ID.');
         }
 
         $defaultStatus = $form->getSettings()->getGeneral()->defaultStatus;

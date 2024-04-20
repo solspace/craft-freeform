@@ -67,23 +67,25 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      <Label className="label">
-        <LabelIcon>
-          <Icon style={spinnerAnimation}>
-            <SpinnerIcon />
-          </Icon>
-          <Icon
-            style={iconAnimation}
-            dangerouslySetInnerHTML={{ __html: type.icon }}
-          />
-        </LabelIcon>
+      {type.type !== 'checkbox' && (
+        <Label className="label">
+          <LabelIcon>
+            <Icon style={spinnerAnimation}>
+              <SpinnerIcon />
+            </Icon>
+            <Icon
+              style={iconAnimation}
+              dangerouslySetInnerHTML={{ __html: type.icon }}
+            />
+          </LabelIcon>
 
-        <LabelText>{field.properties.label || type?.name}</LabelText>
+          <LabelText>{field.properties.label || type?.name}</LabelText>
 
-        {field.properties.required && <span className="required" />}
+          {field.properties.required && <span className="required" />}
 
-        <FieldAssociationsBadges uid={uid} />
-      </Label>
+          <FieldAssociationsBadges uid={uid} />
+        </Label>
+      )}
 
       {field.properties.instructions && (
         <Instructions>{field.properties.instructions}</Instructions>

@@ -21,6 +21,7 @@ interface FieldInterface
 {
     public const EVENT_TRANSFORM_FROM_POST = 'transform-from-post';
     public const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
+    public const EVENT_TRANSFORM_FOR_STORAGE = 'transform-for-storage';
     public const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
 
     public const EVENT_BEFORE_SAVE = 'before-save';

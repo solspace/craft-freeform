@@ -23,6 +23,7 @@ use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
 use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
@@ -431,7 +432,10 @@ class Submission extends Element
                 continue;
             }
 
-            $value = $field->getValue();
+            $event = new TransformValueEvent($field, $field->getValue());
+            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FOR_STORAGE, $event);
+
+            $value = $event->getValue();
 
             if (\is_array($value)) {
                 $value = json_encode($value);

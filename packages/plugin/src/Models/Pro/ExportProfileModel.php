@@ -231,6 +231,8 @@ class ExportProfileModel extends Model
 
     private function buildCommand(): Query
     {
+        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
+
         $form = $this->getForm();
         $fieldData = $this->getFieldSettings();
 
@@ -251,7 +253,7 @@ class ExportProfileModel extends Model
             } else {
                 $fieldName = $fieldId;
                 $fieldName = match ($fieldName) {
-                    'title' => 'c.[['.$fieldName.']]',
+                    'title' => $isCraft5 ? 'es.[[title]]' : 'c.[['.$fieldName.']]',
                     'status' => 'stat.[[name]] AS status',
                     default => 's.[['.$fieldName.']]',
                 };
@@ -355,10 +357,15 @@ class ExportProfileModel extends Model
             ->select(implode(',', $searchableFields))
             ->from(Submission::TABLE.' s')
             ->innerJoin(StatusRecord::TABLE.' stat', 'stat.[[id]] = s.[[statusId]]')
-            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
             ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(implode(' AND ', $conditions), $parameters)
         ;
+
+        if ($isCraft5) {
+            $command->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        } else {
+            $command->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
+        }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

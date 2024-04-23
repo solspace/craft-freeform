@@ -10,6 +10,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\VersionHelper;
 use Solspace\Freeform\Records\StatusRecord;
 
 class ExportProfileModel extends Model
@@ -231,6 +232,7 @@ class ExportProfileModel extends Model
 
     private function buildCommand(): Query
     {
+        $isCraft4 = VersionHelper::isCraft4();
         $form = $this->getForm();
         $fieldData = $this->getFieldSettings();
 
@@ -247,14 +249,22 @@ class ExportProfileModel extends Model
                 $fieldName = Submission::getFieldColumnName($field);
                 $fieldHandle = $field->getHandle();
 
-                $searchableFields[] = "sc.{$fieldName} as {$fieldHandle}";
+                $searchableFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
             } else {
                 $fieldName = $fieldId;
-                $fieldName = match ($fieldName) {
-                    'title' => 'c.[['.$fieldName.']]',
-                    'status' => 'stat.[[name]] AS status',
-                    default => 's.[['.$fieldName.']]',
-                };
+                if ($isCraft4) {
+                    $fieldName = match ($fieldName) {
+                        'title' => 'c.[['.$fieldName.']]',
+                        'status' => 'stat.[[name]] AS status',
+                        default => 's.[['.$fieldName.']]',
+                    };
+                } else {
+                    $fieldName = match ($fieldName) {
+                        'title' => 'es.[['.$fieldName.']]',
+                        'status' => 'stat.[[name]] AS status',
+                        default => 's.[['.$fieldName.']]',
+                    };
+                }
 
                 $searchableFields[] = $fieldName;
             }
@@ -351,14 +361,19 @@ class ExportProfileModel extends Model
             }
         }
 
-        $command = (new Query())
-            ->select(implode(',', $searchableFields))
-            ->from(Submission::TABLE.' s')
-            ->innerJoin(StatusRecord::TABLE.' stat', 'stat.[[id]] = s.[[statusId]]')
-            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
-            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
-            ->where(implode(' AND ', $conditions), $parameters)
-        ;
+        $command = (new Query());
+        $command->select(implode(',', $searchableFields));
+        $command->from(Submission::TABLE.' s');
+        $command->innerJoin(StatusRecord::TABLE.' stat', 'stat.[[id]] = s.[[statusId]]');
+
+        if ($isCraft4) {
+            $command->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
+        } else {
+            $command->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        }
+
+        $command->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]');
+        $command->where(implode(' AND ', $conditions), $parameters);
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

@@ -18,6 +18,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\FreeformConfig;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\VersionHelper;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\FreeformClientBundle;
 use yii\db\Query;
@@ -77,6 +78,7 @@ class FormsController extends BaseController
     {
         $this->requirePostRequest();
         $request = $this->request;
+        $isCraft4 = VersionHelper::isCraft4();
 
         $id = $request->post('id');
         $type = $request->post('type', 'csv');
@@ -97,7 +99,16 @@ class FormsController extends BaseController
             );
         }
 
-        $selectFields = ['[[s.id]]', '[[s.ip]]', '[[s.dateCreated]]', '[[c.title]]'];
+        $selectFields = [];
+        $selectFields[] = '[[s.id]]';
+        $selectFields[] = '[[s.ip]]';
+        $selectFields[] = '[[s.dateCreated]]';
+
+        if ($isCraft4) {
+            $selectFields[] = '[[c.title]]';
+        } else {
+            $selectFields[] = '[[es.title]]';
+        }
 
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             $fieldName = Submission::getFieldColumnName($field);
@@ -106,13 +117,18 @@ class FormsController extends BaseController
             $selectFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
         }
 
-        $query = (new Query())
-            ->select($selectFields)
-            ->from(Submission::TABLE.' s')
-            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
-            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
-            ->where(['s.[[formId]]' => $id])
-        ;
+        $query = (new Query());
+        $query->select($selectFields);
+        $query->from(Submission::TABLE.' s');
+
+        if ($isCraft4) {
+            $query->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
+        } else {
+            $query->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        }
+
+        $query->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]');
+        $query->where(['s.[[formId]]' => $id]);
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

@@ -647,7 +647,7 @@ class FieldGenerator extends AbstractGenerator
                 } else {
                     $value = $source->getValue();
 
-                    if (empty($value) && method_exists($source,'getDefaultValue')) {
+                    if (empty($value) && \method_exists($source,'getDefaultValue')) {
                         $value = $source->getDefaultValue();
                     }
                 }

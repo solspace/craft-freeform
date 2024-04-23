@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Connections\Transformers;
 
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -31,6 +32,10 @@ abstract class AbstractFieldTransformer implements TransformerInterface
 
         if ($field instanceof DatetimeField) {
             return new DateTransformer($field, $craftFieldHandle);
+        }
+
+        if ($field instanceof CheckboxField) {
+            return new CheckboxTransformer($field, $craftFieldHandle);
         }
 
         return new StringTransformer($field, $craftFieldHandle);

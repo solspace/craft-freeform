@@ -647,6 +647,7 @@ class Submission extends Element
 
         foreach ($forms as $form) {
             $layout = $form->getLayout();
+
             /** @var FieldInterface $field */
             foreach ($layout->getFields() as $field) {
                 $searchable[] = $field->getHandle();

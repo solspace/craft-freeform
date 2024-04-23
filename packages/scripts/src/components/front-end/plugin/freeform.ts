@@ -21,6 +21,7 @@ import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
+import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 import type { Callback } from 'types/events';
 import { type FreeformResponse } from 'types/events';
@@ -596,7 +597,7 @@ export default class Freeform {
     return data;
   };
 
-  quickSave = async (secret: string, token?: string): Promise<string | undefined> => {
+  quickSave = async (secret: string, token?: string): Promise<string | false | undefined> => {
     const { form } = this;
     const data = this._prepareFormData();
     data.set('action', 'freeform/submit/quick-save');
@@ -605,16 +606,25 @@ export default class Freeform {
       data.set('token', token);
     }
 
-    const request = await axios<FreeformResponse & { storageToken: string }>({
-      method: form.getAttribute('method'),
-      url: form.getAttribute('action') || window.location.href,
-      data,
-      headers: {
-        'Cache-Control': 'no-cache',
-        'X-Requested-With': 'XMLHttpRequest',
-        HTTP_X_REQUESTED_WITH: 'XMLHttpRequest',
-      },
-    });
+    let request: AxiosResponse<FreeformResponse & { storageToken: string }>;
+    try {
+      request = await axios<FreeformResponse & { storageToken: string }>({
+        method: form.getAttribute('method'),
+        url: form.getAttribute('action') || window.location.href,
+        data,
+        headers: {
+          'Cache-Control': 'no-cache',
+          'X-Requested-With': 'XMLHttpRequest',
+          HTTP_X_REQUESTED_WITH: 'XMLHttpRequest',
+        },
+      });
+    } catch (error) {
+      if (error?.response?.status === 417) {
+        this.unlockSubmit();
+
+        return false;
+      }
+    }
 
     this._removeMessages();
 

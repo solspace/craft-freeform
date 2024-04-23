@@ -36,7 +36,13 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
       }
 
       const token = await event.freeform.quickSave(secret, id);
-      if (!token) {
+      // If token is false, we proceed, because stripe is not meant to execute
+      if (token === false) {
+        return true;
+      }
+
+      // If token is undefined, we halt submit, because it could not save
+      if (token === undefined) {
         return false;
       }
 

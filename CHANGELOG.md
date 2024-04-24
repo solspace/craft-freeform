@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.1.15 - 2024-04-24
+
+### Changed
+- Updated GraphQL to include HTML and Rich Text field types.
+
+### Fixed
+- Fixed a bug where the _Export Profiles_ page in the CP would display an error in Craft 5 when any profiles exist.
+- Fixed a bug where Stripe Payment submissions were still processed when flagged as spam by Freeform.
+- Fixed a bug where the form builder included two labels for Checkbox fields.
+- Fixed a bug where creating a new Site and setting it to be the Primary site (at the same time) would fail due to Freeform.
+- Fixed a bug where the old approach of `FreeformField_Submit` and `FreeformField_Save` were still showing under `fields` in the GraphQL explorer.
+
 ## 5.1.14 - 2024-04-19
 
 ### Added

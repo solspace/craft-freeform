@@ -160,6 +160,7 @@ class QuickExportController extends BaseController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
+        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
         $settings = $this->getExportSettings();
 
         $formId = \Craft::$app->request->post('form_id');
@@ -216,33 +217,35 @@ class QuickExportController extends BaseController
                 $fieldName = Submission::getFieldColumnName($field);
                 $fieldHandle = $field->getHandle();
 
-                $searchableFields[] = "sc.{$fieldName} as {$fieldHandle}";
+                $searchableFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
             } else {
                 $fieldName = $fieldId;
-
                 $fieldName = match ($fieldName) {
-                    'title' => 'c.'.$fieldName,
-                    'cc_status' => 'p.status as cc_status',
-                    'cc_amount' => 'p.amount as cc_amount',
-                    'cc_currency' => 'p.currency as cc_currency',
-                    'cc_card' => 'p.last4 as cc_card',
-                    default => "s.{$fieldName}",
+                    'title' => $isCraft5 ? 'es.[[title]]' : 'c.[['.$fieldName.']]',
+                    'cc_status' => 'p.[[status]] as cc_status',
+                    'cc_amount' => 'p.[[amount]] as cc_amount',
+                    'cc_currency' => 'p.[[currency]] as cc_currency',
+                    'cc_card' => 'p.[[last4]] as cc_card',
+                    default => 's.[['.$fieldName.']]',
                 };
 
                 $searchableFields[] = $fieldName;
             }
         }
 
-        $contentTable = Submission::getContentTableName($form);
-
         $query = (new Query())
             ->select($searchableFields)
             ->from(Submission::TABLE.' s')
-            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
-            ->innerJoin("{$contentTable} sc", 'sc.[[id]] = s.[[id]]')
+            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(['s.[[formId]]' => $form->getId()])
             ->andWhere(['s.[[isSpam]]' => $isSpam])
         ;
+
+        if ($isCraft5) {
+            $query->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        } else {
+            $query->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
+        }
 
         // TODO: reimplement with payments
 

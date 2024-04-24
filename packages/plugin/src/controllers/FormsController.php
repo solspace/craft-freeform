@@ -77,6 +77,7 @@ class FormsController extends BaseController
     {
         $this->requirePostRequest();
         $request = $this->request;
+        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
 
         $id = $request->post('id');
         $type = $request->post('type', 'csv');
@@ -97,7 +98,11 @@ class FormsController extends BaseController
             );
         }
 
-        $selectFields = ['[[s.id]]', '[[s.ip]]', '[[s.dateCreated]]', '[[c.title]]'];
+        $selectFields = [];
+        $selectFields[] = '[[s.id]]';
+        $selectFields[] = '[[s.ip]]';
+        $selectFields[] = '[[s.dateCreated]]';
+        $selectFields[] = $isCraft5 ? '[[es.title]]' : '[[c.title]]';
 
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             $fieldName = Submission::getFieldColumnName($field);
@@ -109,10 +114,15 @@ class FormsController extends BaseController
         $query = (new Query())
             ->select($selectFields)
             ->from(Submission::TABLE.' s')
-            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
             ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(['s.[[formId]]' => $id])
         ;
+
+        if ($isCraft5) {
+            $query->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        } else {
+            $query->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
+        }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

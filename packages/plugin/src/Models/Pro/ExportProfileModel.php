@@ -249,7 +249,7 @@ class ExportProfileModel extends Model
                 $fieldName = Submission::getFieldColumnName($field);
                 $fieldHandle = $field->getHandle();
 
-                $searchableFields[] = "sc.{$fieldName} as {$fieldHandle}";
+                $searchableFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
             } else {
                 $fieldName = $fieldId;
                 $fieldName = match ($fieldName) {

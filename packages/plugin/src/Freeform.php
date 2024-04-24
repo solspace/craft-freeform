@@ -599,7 +599,7 @@ class Freeform extends Plugin
 
         Event::on(
             Sites::class,
-            Sites::EVENT_BEFORE_SAVE_SITE,
+            Sites::EVENT_AFTER_SAVE_SITE,
             function (SiteEvent $event) {
                 if ($event->site->primary && (int) $event->site->id !== (int) $event->oldPrimarySiteId) {
                     $oldId = $event->oldPrimarySiteId;
@@ -615,11 +615,13 @@ class Freeform extends Plugin
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
 
-                    \Craft::$app->db->createCommand()->update(
-                        '{{%content}}',
-                        ['siteId' => $newId],
-                        ['siteId' => $oldId, 'elementId' => $ids]
-                    )->execute();
+                    if (version_compare(\Craft::$app->version, '5.0.0-alpha', '<')) {
+                        \Craft::$app->db->createCommand()->update(
+                            '{{%content}}',
+                            ['siteId' => $newId],
+                            ['siteId' => $oldId, 'elementId' => $ids]
+                        )->execute();
+                    }
                 }
             }
         );

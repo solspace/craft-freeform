@@ -22,7 +22,6 @@ export const MiniMap: React.FC = () => {
         {isFetching && <LoaderMiniMap />}
         {!isFetching &&
           pages.map((page) => <Page key={page.uid} page={page} />)}
-
         <SubmitForm />
       </MiniMapWrapper>
     </Sidebar>

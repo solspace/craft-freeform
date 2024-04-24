@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\Rules;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\Condition;
@@ -30,6 +29,7 @@ class RuleProvider
                 'pages' => [],
                 'fields' => [],
                 'submitForm' => null,
+                'buttons' => [],
             ];
         }
 
@@ -37,6 +37,7 @@ class RuleProvider
             'pages' => $this->getPageRules($form),
             'fields' => $this->getFieldRules($form),
             'submitForm' => $this->getSubmitFormRule($form),
+            'buttons' => $this->getButtonRules($form),
         ];
     }
 
@@ -72,6 +73,32 @@ class RuleProvider
     }
 
     /**
+     * @return FieldRule[]
+     */
+    public function getButtonRules(Form $form): array
+    {
+        $rules = PageRuleRecord::getExistingRules($form->getId());
+
+        $array = [];
+        foreach ($rules as $uid => $pageRule) {
+            /** @var RuleRecord $rule */
+            $ruleRecord = $pageRule->getRule()->one();
+            $rule = new PageRule(
+                $pageRule->id,
+                $uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
+
+            $rule->setPage($form->getLayout()->getPages()->get($pageRule->pageId));
+
+            $array[] = $rule;
+        }
+
+        return $array;
+    }
+
+    /**
      * @return PageRule[]
      */
     public function getPageRules(Form $form): array
@@ -95,18 +122,6 @@ class RuleProvider
         }
 
         return $array;
-    }
-
-    public function getPageRule(Form $form, Page $page): ?PageRule
-    {
-        $rules = $this->getPageRules($form);
-        foreach ($rules as $rule) {
-            if ($rule->getPage() === $page) {
-                return $rule;
-            }
-        }
-
-        return null;
     }
 
     public function getSubmitFormRule(Form $form): ?SubmitFormRule

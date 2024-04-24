@@ -94,3 +94,11 @@ export type NotificationRule = Rule & {
 };
 
 export type SubmitFormRule = Rule;
+
+export type PageButtonType = 'submit' | 'save' | 'back' | 'group';
+
+export type ButtonRule = Rule & {
+  page: string;
+  button: PageButtonType;
+  display: Display;
+};

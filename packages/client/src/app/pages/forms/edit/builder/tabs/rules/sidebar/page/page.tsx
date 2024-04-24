@@ -7,6 +7,7 @@ import classes from '@ff-client/utils/classes';
 
 import { Layout } from '../layout/layout';
 
+import { Buttons } from './buttons/buttons';
 import PageIconSvg from './page-icon.svg';
 import {
   PageBody,
@@ -21,18 +22,18 @@ type Props = {
 };
 
 export const Page: React.FC<Props> = ({ page }) => {
-  const { uid: activePageUid } = useParams();
+  const { uid: activePageUid, button } = useParams();
   const navigate = useNavigate();
 
   const hasRule = useSelector(pageRuleSelectors.hasRule(page.uid));
 
   const { label, uid } = page;
-  const currentPage = activePageUid === uid;
+  const currentPage = activePageUid === uid && !button;
 
   return (
     <PageWrapper>
       <PageButton
-        onClick={() => navigate(activePageUid === uid ? '' : `page/${uid}`)}
+        onClick={() => navigate(currentPage ? '' : `page/${uid}`)}
         className={classes(currentPage && 'active', hasRule && 'has-rule')}
       >
         <PageIcon>
@@ -44,6 +45,7 @@ export const Page: React.FC<Props> = ({ page }) => {
         className={classes(currentPage && 'active', hasRule && 'has-rule')}
       >
         <Layout layoutUid={page.layoutUid} />
+        <Buttons page={page} />
       </PageBody>
     </PageWrapper>
   );

@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 
 import './rules.persistence';
 
+import buttons from './buttons';
 import fields from './fields';
 import notifications from './notifications';
 import pages from './pages';
@@ -18,6 +19,7 @@ const rules = combineReducers({
   pages,
   notifications,
   submitForm,
+  buttons,
 });
 
 export default rules;

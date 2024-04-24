@@ -62,7 +62,6 @@ use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Helpers\VersionHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
@@ -616,7 +615,7 @@ class Freeform extends Plugin
                         ['siteId' => $oldId, 'elementId' => $ids]
                     )->execute();
 
-                    if (VersionHelper::isCraft4()) {
+                    if (version_compare(\Craft::$app->version, '5.0.0-alpha', '<')) {
                         \Craft::$app->db->createCommand()->update(
                             '{{%content}}',
                             ['siteId' => $newId],

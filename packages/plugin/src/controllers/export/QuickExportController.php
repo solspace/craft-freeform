@@ -12,7 +12,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Helpers\VersionHelper;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -161,7 +160,7 @@ class QuickExportController extends BaseController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
-        $isCraft4 = VersionHelper::isCraft4();
+        $isCraft5 = version_compare(\Craft::$app->version, '5.0.0-alpha', '>=');
         $settings = $this->getExportSettings();
 
         $formId = \Craft::$app->request->post('form_id');
@@ -221,46 +220,32 @@ class QuickExportController extends BaseController
                 $searchableFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
             } else {
                 $fieldName = $fieldId;
-
-                if ($isCraft4) {
-                    $fieldName = match ($fieldName) {
-                        'title' => 'c.[['.$fieldName.']]',
-                        'cc_status' => 'p.[[status]] as cc_status',
-                        'cc_amount' => 'p.[[amount]] as cc_amount',
-                        'cc_currency' => 'p.[[currency]] as cc_currency',
-                        'cc_card' => 'p.[[last4]] as cc_card',
-                        default => 's.[['.$fieldName.']]',
-                    };
-                } else {
-                    $fieldName = match ($fieldName) {
-                        'title' => 'es.[['.$fieldName.']]',
-                        'cc_status' => 'p.[[status]] as cc_status',
-                        'cc_amount' => 'p.[[amount]] as cc_amount',
-                        'cc_currency' => 'p.[[currency]] as cc_currency',
-                        'cc_card' => 'p.[[last4]] as cc_card',
-                        default => 's.[['.$fieldName.']]',
-                    };
-                }
+                $fieldName = match ($fieldName) {
+                    'title' => $isCraft5 ? 'es.[[title]]' : 'c.[['.$fieldName.']]',
+                    'cc_status' => 'p.[[status]] as cc_status',
+                    'cc_amount' => 'p.[[amount]] as cc_amount',
+                    'cc_currency' => 'p.[[currency]] as cc_currency',
+                    'cc_card' => 'p.[[last4]] as cc_card',
+                    default => 's.[['.$fieldName.']]',
+                };
 
                 $searchableFields[] = $fieldName;
             }
         }
 
-        $contentTable = Submission::getContentTableName($form);
+        $query = (new Query())
+            ->select($searchableFields)
+            ->from(Submission::TABLE.' s')
+            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
+            ->where(['s.[[formId]]' => $form->getId()])
+            ->andWhere(['s.[[isSpam]]' => $isSpam])
+        ;
 
-        $query = (new Query());
-        $query->select($searchableFields);
-        $query->from(Submission::TABLE.' s');
-
-        if ($isCraft4) {
-            $query->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
-        } else {
+        if ($isCraft5) {
             $query->innerJoin('{{%elements_sites}} es', 'es.[[elementId]] = s.[[id]]');
+        } else {
+            $query->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]');
         }
-
-        $query->innerJoin("{$contentTable} sc", 'sc.[[id]] = s.[[id]]');
-        $query->where(['s.[[formId]]' => $form->getId()]);
-        $query->andWhere(['s.[[isSpam]]' => $isSpam]);
 
         // TODO: reimplement with payments
 

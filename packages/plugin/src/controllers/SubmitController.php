@@ -23,6 +23,7 @@ use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 use yii\filters\Cors;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -78,6 +79,10 @@ class SubmitController extends BaseController
 
         $form = $this->getFormFromRequest();
         $form->handleRequest($request);
+
+        if ($form->isMarkedAsSpam()) {
+            throw new HttpException(417, 'Form is invalid');
+        }
 
         $bag = new SessionBag($form->getId(), $form->getProperties()->toArray(), $form->getAttributes()->toArray());
 
@@ -174,7 +179,6 @@ class SubmitController extends BaseController
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
             'html' => $form->render(),
-            'actions' => $form->getActions(),
             'multipage' => $form->isMultiPage(),
             'duplicate' => $form->isDuplicate(),
         ];

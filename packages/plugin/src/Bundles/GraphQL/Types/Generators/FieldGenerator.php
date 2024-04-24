@@ -42,8 +42,6 @@ class FieldGenerator extends AbstractGenerator
         $types = parent::generateTypes($context);
 
         $fieldTypes = \Craft::$container->get(FieldTypesProvider::class)->getTypeShorthands();
-        $fieldTypes[FreeformFieldInterface::TYPE_SUBMIT] = FreeformFieldInterface::TYPE_SUBMIT;
-        $fieldTypes[FreeformFieldInterface::TYPE_SAVE] = FreeformFieldInterface::TYPE_SAVE;
         $fieldTypes[FreeformFieldInterface::TYPE_HTML] = FreeformFieldInterface::TYPE_HTML;
         $fieldTypes[FreeformFieldInterface::TYPE_RICH_TEXT] = FreeformFieldInterface::TYPE_RICH_TEXT;
         $fieldTypes[FreeformFieldInterface::TYPE_CONFIRMATION] = FreeformFieldInterface::TYPE_CONFIRMATION;
@@ -95,58 +93,6 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'rows',
                 'type' => Type::int(),
                 'description' => 'Number of rows to show for this textarea',
-            ];
-        }
-
-        if (FreeformFieldInterface::TYPE_SUBMIT === $typeName) {
-            $fieldDefinitions['labelNext'] = [
-                'name' => 'labelNext',
-                'type' => Type::string(),
-                'description' => 'Label for the "next" button',
-            ];
-
-            $fieldDefinitions['labelPrev'] = [
-                'name' => 'labelPrev',
-                'type' => Type::string(),
-                'description' => 'Label for the "previous" button',
-            ];
-
-            $fieldDefinitions['disablePrev'] = [
-                'name' => 'disablePrev',
-                'type' => Type::boolean(),
-                'description' => 'Is the "previous" button disabled',
-            ];
-
-            $fieldDefinitions['position'] = [
-                'name' => 'position',
-                'type' => Type::string(),
-                'description' => 'Position of the buttons',
-            ];
-        }
-
-        if (FreeformFieldInterface::TYPE_SAVE === $typeName) {
-            $fieldDefinitions['position'] = [
-                'name' => 'position',
-                'type' => Type::string(),
-                'description' => 'Position of the buttons',
-            ];
-
-            $fieldDefinitions['url'] = [
-                'name' => 'url',
-                'type' => Type::string(),
-                'description' => 'Return Url',
-            ];
-
-            $fieldDefinitions['emailFieldHash'] = [
-                'name' => 'emailFieldHash',
-                'type' => Type::string(),
-                'description' => 'Target Email field',
-            ];
-
-            $fieldDefinitions['notificationId'] = [
-                'name' => 'notificationId',
-                'type' => Type::int(),
-                'description' => 'Notification ID',
             ];
         }
 

@@ -599,7 +599,7 @@ class Freeform extends Plugin
 
         Event::on(
             Sites::class,
-            Sites::EVENT_BEFORE_SAVE_SITE,
+            Sites::EVENT_AFTER_SAVE_SITE,
             function (SiteEvent $event) {
                 if ($event->site->primary && (int) $event->site->id !== (int) $event->oldPrimarySiteId) {
                     $oldId = $event->oldPrimarySiteId;

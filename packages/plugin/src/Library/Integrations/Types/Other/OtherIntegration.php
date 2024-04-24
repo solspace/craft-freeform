@@ -12,13 +12,6 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\Other;
 
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
-abstract class OtherIntegration extends APIIntegration implements OtherIntegrationInterface
-{
-    protected function getProcessableFields(string $category): array
-    {
-        return Freeform::getInstance()->integrations->getFields($this, $category);
-    }
-}
+abstract class OtherIntegration extends APIIntegration implements OtherIntegrationInterface {}

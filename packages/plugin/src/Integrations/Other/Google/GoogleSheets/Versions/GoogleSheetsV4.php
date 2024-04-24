@@ -30,4 +30,9 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
     {
         return parent::getApiRootUrl().'/'.self::API_VERSION;
     }
+
+    protected function getProcessableFields(string $category): array
+    {
+        // TODO: Implement getProcessableFields() method.
+    }
 }

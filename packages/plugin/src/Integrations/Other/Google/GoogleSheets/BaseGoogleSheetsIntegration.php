@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -37,9 +38,10 @@ abstract class BaseGoogleSheetsIntegration extends OtherIntegration implements O
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Google Sheets Id',
+        order: 4,
         placeholder: 'Enter your Google Sheets ID.',
     )]
-    private ?string $googleSheetsId = null;
+    protected ?string $googleSheetsId = null;
 
     public function checkConnection(Client $client): bool
     {

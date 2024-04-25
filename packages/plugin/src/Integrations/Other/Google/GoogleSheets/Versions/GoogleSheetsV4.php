@@ -16,6 +16,7 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -36,14 +37,24 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
     // ==========================================
     //                   Deals
     // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(
+        label: 'Map Deals',
+        instructions: 'Should map to the Deals endpoint.',
+        order: 5,
+    )]
+    protected bool $mapDeals = false;
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Google Sheets fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Google Sheets Deals fields',
         order: 6,
-        source: 'api/integrations/crm/fields/',
+        source: 'api/integrations/other/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;

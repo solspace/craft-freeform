@@ -12,4 +12,7 @@
 
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
-interface GoogleSheetsIntegrationInterface {}
+interface GoogleSheetsIntegrationInterface
+{
+    public function getGoogleSheetsId(): ?string;
+}

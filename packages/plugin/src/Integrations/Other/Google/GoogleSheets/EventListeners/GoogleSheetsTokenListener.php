@@ -7,7 +7,6 @@ use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\GoogleSheetsIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
@@ -55,6 +54,7 @@ class GoogleSheetsTokenListener extends FeatureBundle
         // Add necessary parameters to the authentication event
         $event
             ->add('scope', $formattedScopes)
+            ->add('prompt', 'consent')
             ->add('access_type', 'offline')
         ;
     }

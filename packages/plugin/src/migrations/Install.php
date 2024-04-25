@@ -338,6 +338,11 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->integer()->notNull())
                 ->addField('formId', $this->integer()->notNull()),
 
+            (new Table('freeform_rules_submit_form'))
+                ->addField('id', $this->integer()->notNull())
+                ->addField('pageId', $this->integer()->notNull())
+                ->addField('button', $this->string(30)->notNull()),
+
             (new Table('freeform_rules_conditions'))
                 ->addField('id', $this->primaryKey())
                 ->addField('ruleId', $this->integer()->notNull())
@@ -374,6 +379,7 @@ class Install extends StreamlinedInstallMigration
             $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
             $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
             $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_submit_form}}', 'id');
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_buttons}}', 'id');
         }
 
         $this->addForeignKey(null, '{{%freeform_rules_fields}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
@@ -384,6 +390,8 @@ class Install extends StreamlinedInstallMigration
         $this->addForeignKey(null, '{{%freeform_rules_notifications}}', ['notificationId'], '{{%freeform_forms_notifications}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_rules_submit_form}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_rules_submit_form}}', ['formId'], '{{%freeform_forms}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_buttons}}', ['id'], '{{%freeform_rules}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
+        $this->addForeignKey(null, '{{%freeform_rules_buttons}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE);
 

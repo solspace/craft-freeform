@@ -1,7 +1,10 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getButtonGroups } from '@editor/builder/tabs/layout/field-layout/page/page-buttons/page-buttons.operations';
-import type { Page } from '@editor/builder/types/layout';
+import type { Page, PageButton } from '@editor/builder/types/layout';
+import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
+import type { PageButtonType } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
 
 import { Button, ButtonGroup, ButtonsWrapper } from './buttons.styles';
@@ -10,11 +13,38 @@ type Props = {
   page: Page;
 };
 
-export const Buttons: React.FC<Props> = ({ page }) => {
-  const params = useParams();
-  console.log(params);
-  const { button: currentButton } = useParams();
+type ButtonItemProps = {
+  page: Page;
+  button: PageButton;
+};
+
+const ButtonItem: React.FC<ButtonItemProps> = ({
+  page,
+  button: { handle, label },
+}) => {
+  const { uid, button: currentButton } = useParams();
   const navigate = useNavigate();
+
+  const hasRule = useSelector(
+    buttonRuleSelectors.hasRule(page.uid, handle as PageButtonType)
+  );
+
+  return (
+    <Button
+      type="button"
+      className={classes(
+        handle,
+        uid === page.uid && handle === currentButton && 'active',
+        hasRule && 'has-rule'
+      )}
+      onClick={() => navigate(`page/${page.uid}/buttons/${handle}`)}
+    >
+      {label}
+    </Button>
+  );
+};
+
+export const Buttons: React.FC<Props> = ({ page }) => {
   const buttonGroups = getButtonGroups(page);
 
   return (
@@ -22,20 +52,7 @@ export const Buttons: React.FC<Props> = ({ page }) => {
       {buttonGroups.map((group, index) => (
         <ButtonGroup key={index} className="page-buttons">
           {group.map((button, index) => (
-            <Button
-              className={classes(
-                'btn small',
-                button.handle === 'submit' && 'submit',
-                button.handle === currentButton && 'active'
-              )}
-              key={index}
-              type="button"
-              onClick={() => {
-                navigate(`page/${page.uid}/buttons/${button.handle}`);
-              }}
-            >
-              {button.label}
-            </Button>
+            <ButtonItem key={index} button={button} page={page} />
           ))}
         </ButtonGroup>
       ))}

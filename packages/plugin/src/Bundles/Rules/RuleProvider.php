@@ -8,9 +8,11 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
+use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
+use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
@@ -73,24 +75,25 @@ class RuleProvider
     }
 
     /**
-     * @return FieldRule[]
+     * @return ButtonRule[]
      */
     public function getButtonRules(Form $form): array
     {
-        $rules = PageRuleRecord::getExistingRules($form->getId());
+        $rules = ButtonRuleRecord::getExistingRules($form->getId());
 
         $array = [];
-        foreach ($rules as $uid => $pageRule) {
+        foreach ($rules as $uid => $buttonRule) {
             /** @var RuleRecord $rule */
-            $ruleRecord = $pageRule->getRule()->one();
-            $rule = new PageRule(
-                $pageRule->id,
+            $ruleRecord = $buttonRule->getRule()->one();
+            $rule = new ButtonRule(
+                $buttonRule->id,
                 $uid,
                 $ruleRecord->combinator,
                 $this->compileConditions($form, $ruleRecord),
             );
 
-            $rule->setPage($form->getLayout()->getPages()->get($pageRule->pageId));
+            $rule->setPage($form->getLayout()->getPages()->get($buttonRule->pageId));
+            $rule->setButton($buttonRule->button);
 
             $array[] = $rule;
         }

@@ -44,6 +44,10 @@ class SubmitFormRulesPersistence extends FeatureBundle
             }
         }
 
+        if (!$record && !$payload) {
+            return;
+        }
+
         if (!$record) {
             $record = new SubmitFormRuleRecord();
             $record->formId = $form->getId();

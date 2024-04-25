@@ -87,7 +87,7 @@ export const ButtonRulesEditor: React.FC = () => {
       <Remove
         onClick={() => {
           dispatch(buttonRuleActions.remove(rule.uid));
-          navigate('../..');
+          navigate('..');
         }}
       />
 

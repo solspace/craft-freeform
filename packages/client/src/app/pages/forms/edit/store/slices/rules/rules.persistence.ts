@@ -11,7 +11,7 @@ const persist: SaveSubscriber = (_, data) => {
     pages: pages.initialized ? pages.items : null,
     notifications: notifications.initialized ? notifications.items : null,
     submitForm: submitForm.item,
-    buttons: buttons,
+    buttons: buttons.initialized ? buttons.items : null,
   };
 };
 

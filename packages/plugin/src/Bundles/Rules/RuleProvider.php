@@ -77,12 +77,17 @@ class RuleProvider
     /**
      * @return ButtonRule[]
      */
-    public function getButtonRules(Form $form): array
+    public function getButtonRules(Form $form, bool $currentPageOnly = false): array
     {
         $rules = ButtonRuleRecord::getExistingRules($form->getId());
+        $currentPage = $form->getCurrentPage();
 
         $array = [];
         foreach ($rules as $uid => $buttonRule) {
+            if ($currentPageOnly && $currentPage->getId() !== $buttonRule->pageId) {
+                continue;
+            }
+
             /** @var RuleRecord $rule */
             $ruleRecord = $buttonRule->getRule()->one();
             $rule = new ButtonRule(
@@ -94,11 +99,24 @@ class RuleProvider
 
             $rule->setPage($form->getLayout()->getPages()->get($buttonRule->pageId));
             $rule->setButton($buttonRule->button);
+            $rule->setDisplay($buttonRule->display);
 
             $array[] = $rule;
         }
 
         return $array;
+    }
+
+    public function getButtonRule(Form $form, string $button): ?ButtonRule
+    {
+        $rules = $this->getButtonRules($form, true);
+        foreach ($rules as $rule) {
+            if ($rule->getButton() === $button) {
+                return $rule;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -110,7 +128,6 @@ class RuleProvider
 
         $array = [];
         foreach ($rules as $uid => $pageRule) {
-            /** @var RuleRecord $rule */
             $ruleRecord = $pageRule->getRule()->one();
             $rule = new PageRule(
                 $pageRule->id,

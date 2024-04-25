@@ -11,6 +11,7 @@ import type { PageButtonType } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
+import { DisplaySelect } from '../conditions/display/display';
 import { ConditionTable } from '../conditions/table/condition-table';
 
 import { Remove } from './remove-button/remove';
@@ -102,7 +103,19 @@ export const ButtonRulesEditor: React.FC = () => {
       {!isFetching && (
         <>
           <ConfigurationDescription className="short">
-            {translate('Go to this page when')}
+            <DisplaySelect
+              value={rule.display}
+              onChange={(value) =>
+                dispatch(
+                  buttonRuleActions.modifyDisplay({
+                    ruleUid: rule.uid,
+                    display: value,
+                  })
+                )
+              }
+            />
+
+            {translate('this button when')}
 
             <CombinatorSelect
               value={rule.combinator}

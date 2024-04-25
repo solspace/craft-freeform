@@ -338,10 +338,11 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->integer()->notNull())
                 ->addField('formId', $this->integer()->notNull()),
 
-            (new Table('freeform_rules_submit_form'))
+            (new Table('freeform_rules_buttons'))
                 ->addField('id', $this->integer()->notNull())
                 ->addField('pageId', $this->integer()->notNull())
-                ->addField('button', $this->string(30)->notNull()),
+                ->addField('button', $this->string(30)->notNull())
+                ->addField('display', $this->string(10)->notNull()),
 
             (new Table('freeform_rules_conditions'))
                 ->addField('id', $this->primaryKey())

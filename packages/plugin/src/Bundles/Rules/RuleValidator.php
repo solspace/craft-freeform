@@ -8,6 +8,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Rules\Rule;
 use Solspace\Freeform\Library\Rules\RuleInterface;
+use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use yii\base\Event;
 
@@ -28,6 +29,19 @@ class RuleValidator
         }
 
         $shouldShow = FieldRule::DISPLAY_SHOW === $rule->getDisplay();
+        $triggersRule = $this->triggersRule($form, $rule);
+
+        return $shouldShow ? !$triggersRule : $triggersRule;
+    }
+
+    public function isButtonHidden(Form $form, string $button): bool
+    {
+        $rule = $this->ruleProvider->getButtonRule($form, $button);
+        if (!$rule) {
+            return false;
+        }
+
+        $shouldShow = ButtonRule::DISPLAY_SHOW === $rule->getDisplay();
         $triggersRule = $this->triggersRule($form, $rule);
 
         return $shouldShow ? !$triggersRule : $triggersRule;

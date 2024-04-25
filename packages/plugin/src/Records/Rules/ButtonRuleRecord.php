@@ -9,6 +9,7 @@ use yii\db\ActiveQuery;
  * @property int       $id
  * @property int       $pageId
  * @property string    $button
+ * @property string    $display
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid

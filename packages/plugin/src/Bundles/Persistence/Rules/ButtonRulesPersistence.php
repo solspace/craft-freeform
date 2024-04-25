@@ -63,6 +63,7 @@ class ButtonRulesPersistence extends FeatureBundle
             $record->id = $rule->id;
             $record->pageId = $page->id;
             $record->button = $button;
+            $record->display = $data->display;
             $record->save();
 
             $usedRuleUids[] = $rule->uid;

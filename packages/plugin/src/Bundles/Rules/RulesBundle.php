@@ -72,7 +72,7 @@ class RulesBundle extends FeatureBundle
     {
         $rules = [
             'fields' => $this->ruleProvider->getFieldRules($event->getForm()),
-            'button' => $this->ruleProvider->getButtonRules($event->getForm()),
+            'buttons' => $this->ruleProvider->getButtonRules($event->getForm(), true),
         ];
 
         $serialized = $this->serializer->serialize(

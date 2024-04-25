@@ -9,9 +9,12 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class ButtonRule extends Rule
 {
-    private Page $page;
+    public const DISPLAY_SHOW = 'show';
+    public const DISPLAY_HIDE = 'hide';
 
+    private Page $page;
     private string $button;
+    private string $display;
 
     public function getPage(): Page
     {
@@ -32,7 +35,7 @@ class ButtonRule extends Rule
         return $this;
     }
 
-    #[Groups(['builder'])]
+    #[Groups(['builder', 'front-end'])]
     public function getButton(): string
     {
         return $this->button;
@@ -41,6 +44,19 @@ class ButtonRule extends Rule
     public function setButton(string $button): self
     {
         $this->button = $button;
+
+        return $this;
+    }
+
+    #[Groups(['front-end', 'builder'])]
+    public function getDisplay(): string
+    {
+        return $this->display;
+    }
+
+    public function setDisplay(string $display): self
+    {
+        $this->display = $display;
 
         return $this;
     }

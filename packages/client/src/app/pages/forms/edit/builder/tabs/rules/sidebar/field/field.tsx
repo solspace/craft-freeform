@@ -2,10 +2,12 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields';
+import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import { submitFormRuleSelectors } from '@editor/store/slices/rules/submit-form/submit-form.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
+import type { PageButtonType } from '@ff-client/types/rules';
 import { operatorTypes } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
 
@@ -24,21 +26,27 @@ type Props = {
 };
 
 export const Field: React.FC<Props> = ({ field }) => {
-  const { uid: activeFieldUid } = useParams();
+  const { uid: activeFieldUid, button: activeButton } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
   const type = useFieldType(field?.typeClass);
-
   const currentField = activeFieldUid === field.uid;
+
   const activeRule = useSelector(fieldRuleSelectors.one(activeFieldUid));
   const activePageRule = useSelector(pageRuleSelectors.one(activeFieldUid));
   const submitFormRule = useSelector(submitFormRuleSelectors.one);
+  const buttonRule = useSelector(
+    buttonRuleSelectors.one(activeFieldUid, activeButton as PageButtonType)
+  );
+
   const hasRule = useSelector(fieldRuleSelectors.hasRule(field.uid));
-  const hasPageRule = useSelector(pageRuleSelectors.hasRule(field.uid));
+  const hasPageRule = useSelector(pageRuleSelectors.hasFieldInRule(field.uid));
+  const hasButtonRule = useSelector(
+    buttonRuleSelectors.hasFieldInRule(field.uid)
+  );
 
   const isSubmitFormRuleOpen = location.pathname.endsWith('/rules/submit');
-
   const isInCondition = useSelector(
     fieldRuleSelectors.isInCondition(field.uid)
   );
@@ -50,6 +58,10 @@ export const Field: React.FC<Props> = ({ field }) => {
     ) ||
     (isSubmitFormRuleOpen &&
       submitFormRule?.conditions.find(
+        (condition) => condition.field === field.uid
+      )) ||
+    (activeButton &&
+      buttonRule?.conditions.find(
         (condition) => condition.field === field.uid
       ));
 
@@ -66,7 +78,7 @@ export const Field: React.FC<Props> = ({ field }) => {
       className={classes(
         type?.type === 'group' && 'group',
         currentField && 'active',
-        (hasRule || hasPageRule) && 'has-rule',
+        (hasRule || hasPageRule || hasButtonRule) && 'has-rule',
         isInCondition && 'is-in-condition',
         isInActiveCondition && 'is-in-condition-active',
         operatorTypes.negative.includes(isInActiveCondition?.operator) &&

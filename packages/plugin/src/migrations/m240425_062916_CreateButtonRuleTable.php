@@ -18,6 +18,7 @@ class m240425_062916_CreateButtonRuleTable extends Migration
                 'id' => $this->integer()->notNull(),
                 'pageId' => $this->integer()->notNull(),
                 'button' => $this->string(10)->notNull(),
+                'display' => $this->string(10)->notNull(),
                 'dateCreated' => $this->dateTime()->notNull(),
                 'dateUpdated' => $this->dateTime()->notNull(),
                 'uid' => $this->uid(),

@@ -3,22 +3,32 @@ import type { FieldRule } from '@ff-client/types/rules';
 import { createSelector } from '@reduxjs/toolkit';
 
 export const fieldRuleSelectors = {
-  one:
-    (fieldUid: string) =>
-    (state: RootState): FieldRule | undefined =>
-      state.rules.fields.items.find((rule) => rule.field === fieldUid),
-  isInCondition:
-    (fieldUid: string) =>
-    (state: RootState): boolean =>
-      state.rules.fields.items.some((rule) =>
-        rule.conditions.some((condition) => condition.field === fieldUid)
-      ) ||
-      state.rules.pages.items.some((rule) =>
-        rule.conditions.some((condition) => condition.field === fieldUid)
-      ) ||
-      state.rules.submitForm.item?.conditions.some(
-        (condition) => condition.field === fieldUid
-      ),
+  one: (fieldUid: string) =>
+    createSelector(
+      (state: RootState) => state.rules.fields.items,
+      (fields): FieldRule | undefined =>
+        fields.find((rule) => rule.field === fieldUid)
+    ),
+  isInCondition: (fieldUid: string) =>
+    createSelector(
+      (state: RootState) => state.rules.fields.items,
+      (state: RootState) => state.rules.pages.items,
+      (state: RootState) => state.rules.submitForm.item,
+      (state: RootState) => state.rules.buttons.items,
+      (fields, pages, submitForm, buttons): boolean =>
+        fields.some((rule) =>
+          rule.conditions.some((condition) => condition.field === fieldUid)
+        ) ||
+        pages.some((rule) =>
+          rule.conditions.some((condition) => condition.field === fieldUid)
+        ) ||
+        submitForm?.conditions.some(
+          (condition) => condition.field === fieldUid
+        ) ||
+        buttons.some((rule) =>
+          rule.conditions.some((condition) => condition.field === fieldUid)
+        )
+    ),
   usedByFields: (fieldUid: string) =>
     createSelector(
       (state: RootState) => state.rules.fields.items,
@@ -32,8 +42,10 @@ export const fieldRuleSelectors = {
         return usedInfieldsUids;
       }
     ),
-  hasRule:
-    (fieldUid: string) =>
-    (state: RootState): boolean =>
-      !!state.rules.fields.items.find((rule) => rule.field === fieldUid),
+  hasRule: (fieldUid: string) =>
+    createSelector(
+      (state: RootState) => state.rules.fields.items,
+      (fields): boolean =>
+        Boolean(fields.find((rule) => rule.field === fieldUid))
+    ),
 } as const;

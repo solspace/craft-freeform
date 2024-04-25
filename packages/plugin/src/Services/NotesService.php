@@ -15,6 +15,10 @@ class NotesService extends BaseService
      */
     public function saveNote($submissionId)
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
         $note = \Craft::$app->request->post(SubmissionNoteRecord::NOTE_FIELD_NAME);
 
         if (null === $note) {

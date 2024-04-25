@@ -25,6 +25,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
   const { uid, button: currentButton } = useParams();
   const navigate = useNavigate();
 
+  const currentPage = uid === page.uid && handle === currentButton;
   const hasRule = useSelector(
     buttonRuleSelectors.hasRule(page.uid, handle as PageButtonType)
   );
@@ -34,10 +35,12 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
       type="button"
       className={classes(
         handle,
-        uid === page.uid && handle === currentButton && 'active',
+        currentPage && 'active',
         hasRule && 'has-rule'
       )}
-      onClick={() => navigate(`page/${page.uid}/buttons/${handle}`)}
+      onClick={() =>
+        navigate(currentPage ? '' : `page/${page.uid}/buttons/${handle}`)
+      }
     >
       {label}
     </Button>

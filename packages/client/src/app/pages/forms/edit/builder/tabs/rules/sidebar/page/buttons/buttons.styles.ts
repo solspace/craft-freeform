@@ -43,15 +43,15 @@ export const Button = styled.button`
   }
 
   &.submit {
-    background-color: ${colors.red600};
+    background-color: ${colors.gray600};
     color: ${colors.white};
 
     &.active {
-      background-color: ${colors.red900};
+      background-color: ${colors.gray900};
     }
 
     &:hover:not(.active) {
-      background-color: #c82020;
+      background-color: ${colors.gray900};
     }
   }
 

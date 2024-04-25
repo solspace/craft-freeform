@@ -9,7 +9,7 @@ import classes from '@ff-client/utils/classes';
 import { PageFieldLayoutWrapper } from '../../layout/layout.styles';
 
 import { getButtonGroups } from './page-buttons.operations';
-import { ButtonGroup, ButtonGroupWrapper } from './page-buttons.styles';
+import { Button, ButtonGroup, ButtonGroupWrapper } from './page-buttons.styles';
 
 type Props = {
   page: Page;
@@ -18,7 +18,7 @@ type Props = {
 const buttonClasses: Record<string, string> = {
   back: 'btn',
   save: 'btn',
-  submit: 'btn submit',
+  submit: 'btn btn-submit',
 };
 
 export const PageButtons: React.FC<Props> = ({ page }) => {
@@ -52,13 +52,13 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         {buttonGroups.map((group, index) => (
           <ButtonGroup key={index} className="page-buttons">
             {group.map((button, index) => (
-              <button
+              <Button
                 className={buttonClasses[button?.handle]}
                 key={index}
                 type="button"
               >
                 {button.label}
-              </button>
+              </Button>
             ))}
           </ButtonGroup>
         ))}

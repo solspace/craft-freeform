@@ -1,4 +1,4 @@
-import { borderRadius, spacings } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const ButtonGroupWrapper = styled.div`
@@ -34,4 +34,13 @@ export const ButtonGroup = styled.div`
   gap: ${spacings.md};
 `;
 
-export const Button = styled.button``;
+export const Button = styled.button`
+  &.btn-submit {
+    background-color: ${colors.gray600};
+    color: white;
+
+    &:hover {
+      background-color: ${colors.gray700};
+    }
+  }
+`;

@@ -21,9 +21,14 @@ export const enum Operator {
   IsNotOneOf = 'isNotOneOf',
 }
 
+type FieldValue = string | string[] | number | boolean;
+
 type RulesData = {
-  fields: FieldRule[];
-  buttons: ButtonRule[];
+  values: Record<string, FieldValue>;
+  rules: {
+    fields: FieldRule[];
+    buttons: ButtonRule[];
+  };
 };
 
 type Rule = {
@@ -62,10 +67,6 @@ class RuleHandler implements FreeformHandler {
     this.freeform = freeform;
     this.form = freeform.form as HTMLFormElement;
 
-    if (this.form.dataset.hasRules === undefined) {
-      return;
-    }
-
     this.reload();
   }
 
@@ -75,7 +76,10 @@ class RuleHandler implements FreeformHandler {
       return;
     }
 
-    const rules: RulesData = JSON.parse(rulesElement.textContent as string);
+    const { rules }: RulesData = JSON.parse(rulesElement.textContent as string);
+    if (rules.fields.length === 0 && rules.buttons.length === 0) {
+      return;
+    }
 
     // Iterate through all form elements
     Array.from(this.form.elements).forEach((element) => {
@@ -148,6 +152,10 @@ class RuleHandler implements FreeformHandler {
       'field' in rule ? `[data-field-container="${rule.field}"]` : `[data-button-container="${rule.button}"]`;
 
     const container = document.querySelector<HTMLDivElement>(selector);
+    if (!container) {
+      return;
+    }
+
     const { display, combinator, conditions } = rule;
 
     // Either all conditions must be true, or at least one must be true

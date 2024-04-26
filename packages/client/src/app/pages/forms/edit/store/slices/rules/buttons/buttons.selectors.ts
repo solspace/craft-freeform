@@ -19,7 +19,7 @@ export const buttonRuleSelectors = {
     ),
   hasFieldInRule: (fieldUid: string) =>
     createSelector(
-      (state: RootState) => state.rules.fields.items,
+      (state: RootState) => state.rules.buttons.items,
       (fields): boolean =>
         Boolean(
           fields.find((rule) =>

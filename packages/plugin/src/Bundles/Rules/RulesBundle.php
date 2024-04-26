@@ -71,8 +71,11 @@ class RulesBundle extends FeatureBundle
     public function attachRulesJSON(RenderTagEvent $event): void
     {
         $rules = [
-            'fields' => $this->ruleProvider->getFieldRules($event->getForm()),
-            'buttons' => $this->ruleProvider->getButtonRules($event->getForm(), true),
+            'values' => [],
+            'rules' => [
+                'fields' => $this->ruleProvider->getFieldRules($event->getForm()),
+                'buttons' => $this->ruleProvider->getButtonRules($event->getForm(), true),
+            ],
         ];
 
         $serialized = $this->serializer->serialize(

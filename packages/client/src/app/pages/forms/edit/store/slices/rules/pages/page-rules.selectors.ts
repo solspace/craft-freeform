@@ -15,7 +15,7 @@ export const pageRuleSelectors = {
     ),
   hasFieldInRule: (fieldUid: string) =>
     createSelector(
-      (state: RootState) => state.rules.fields.items,
+      (state: RootState) => state.rules.pages.items,
       (fields): boolean =>
         Boolean(
           fields.find((rule) =>

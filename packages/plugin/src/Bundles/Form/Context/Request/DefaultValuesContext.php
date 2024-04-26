@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Form\Form;
 use yii\base\Event;
@@ -25,6 +26,10 @@ class DefaultValuesContext
 
         $fields = $form->getLayout()->getFields(DefaultValueInterface::class);
         foreach ($fields as $field) {
+            if ($field instanceof CheckboxField) {
+                continue;
+            }
+
             $field->setValue($field->getDefaultValue());
         }
     }

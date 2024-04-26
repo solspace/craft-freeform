@@ -21,11 +21,23 @@ export const enum Operator {
   IsNotOneOf = 'isNotOneOf',
 }
 
+type RulesData = {
+  fields: FieldRule[];
+  buttons: ButtonRule[];
+};
+
 type Rule = {
-  field: string;
   display: 'show' | 'hide';
   combinator: 'and' | 'or';
   conditions: RuleCondition[];
+};
+
+type FieldRule = Rule & {
+  field: string;
+};
+
+type ButtonRule = Rule & {
+  button: string;
 };
 
 type RuleCondition = {
@@ -33,6 +45,14 @@ type RuleCondition = {
   operator: Operator;
   value: string;
 };
+
+const filterMatchingRules = (element: Element) => (rule: Rule) =>
+  rule.conditions.some((condition) => {
+    const elementName = (element as HTMLInputElement).name;
+    const conditionName = condition.field;
+
+    return conditionName === elementName || `${conditionName}[]` === elementName;
+  });
 
 class RuleHandler implements FreeformHandler {
   freeform: Freeform;
@@ -55,21 +75,17 @@ class RuleHandler implements FreeformHandler {
       return;
     }
 
-    const rules: Rule[] = JSON.parse(rulesElement.textContent as string);
+    const rules: RulesData = JSON.parse(rulesElement.textContent as string);
 
     // Iterate through all form elements
     Array.from(this.form.elements).forEach((element) => {
       // Find matching rules that are relying on this field
-      const matchedRules: Rule[] = rules.filter((rule) =>
-        rule.conditions.some((condition) => {
-          const elementName = (element as HTMLInputElement).name;
-          const conditionName = condition.field;
+      const matchedFieldRules: FieldRule[] = rules.fields.filter(filterMatchingRules(element));
+      const matchedButtonRules: ButtonRule[] = rules.buttons.filter(filterMatchingRules(element));
 
-          return conditionName === elementName || `${conditionName}[]` === elementName;
-        })
-      );
+      const combinedRules = [...matchedFieldRules, ...matchedButtonRules];
 
-      if (matchedRules.length === 0) {
+      if (combinedRules.length === 0) {
         return;
       }
 
@@ -106,33 +122,33 @@ class RuleHandler implements FreeformHandler {
 
       // Create a callback which will be called when a field is changed
       const callback =
-        (rule: Rule): EventListenerOrEventListenerObject =>
+        (rule: FieldRule | ButtonRule): EventListenerOrEventListenerObject =>
         () => {
           // Trigger the main rule applying for this field
           this.applyRule(rule);
 
           // Trigger any related rules which are affected by this field
           // this allows for nested rules to work
-          rules.filter((r) => r !== rule).forEach((r) => this.applyRule(r));
+          rules.fields.filter((r) => r !== rule).forEach((r) => this.applyRule(r));
         };
 
       // Attach event listeners
-      matchedRules.forEach((rule) => {
+      combinedRules.forEach((rule) => {
         element.addEventListener(listener, callback(rule));
       });
     });
 
     // Trigger all rules on load
-    rules.forEach((rule) => this.applyRule(rule));
+    rules.fields.forEach((rule) => this.applyRule(rule));
+    rules.buttons.forEach((rule) => this.applyRule(rule));
   };
 
-  applyRule = (rule: Rule): boolean => {
-    const { field, display, combinator, conditions } = rule;
+  applyRule = (rule: FieldRule | ButtonRule) => {
+    const selector =
+      'field' in rule ? `[data-field-container="${rule.field}"]` : `[data-button-container="${rule.button}"]`;
 
-    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${field}"]`);
-    if (!fieldContainer) {
-      return false;
-    }
+    const container = document.querySelector<HTMLDivElement>(selector);
+    const { display, combinator, conditions } = rule;
 
     // Either all conditions must be true, or at least one must be true
     // based on the combinator value
@@ -141,22 +157,22 @@ class RuleHandler implements FreeformHandler {
 
     // Change the `display` property in the styles based on the the rule's "show"/"hide" setting
     if (display === 'show') {
-      fieldContainer.style.display = shouldDisplay ? '' : 'none';
+      container.style.display = shouldDisplay ? '' : 'none';
       if (shouldDisplay) {
-        delete fieldContainer.dataset.hidden;
+        delete container.dataset.hidden;
       } else {
-        fieldContainer.dataset.hidden = '';
+        container.dataset.hidden = '';
       }
     } else {
-      fieldContainer.style.display = shouldDisplay ? 'none' : '';
+      container.style.display = shouldDisplay ? 'none' : '';
       if (!shouldDisplay) {
-        delete fieldContainer.dataset.hidden;
+        delete container.dataset.hidden;
       } else {
-        fieldContainer.dataset.hidden = '';
+        container.dataset.hidden = '';
       }
     }
 
-    dispatchCustomEvent(events.rules.applied, { rule }, fieldContainer);
+    dispatchCustomEvent(events.rules.applied, { rule }, container);
 
     return true;
   };

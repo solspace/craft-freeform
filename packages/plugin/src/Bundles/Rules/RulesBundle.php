@@ -43,6 +43,12 @@ class RulesBundle extends FeatureBundle
             PageContext::EVENT_PAGE_JUMP,
             [$this, 'handleFormPageJump']
         );
+
+        Event::on(
+            PageContext::class,
+            PageContext::EVENT_PAGE_JUMP,
+            [$this, 'handleFormSubmit']
+        );
     }
 
     public static function getPriority(): int
@@ -64,7 +70,11 @@ class RulesBundle extends FeatureBundle
 
     public function attachRulesJSON(RenderTagEvent $event): void
     {
-        $rules = $this->ruleProvider->getFieldRules($event->getForm());
+        $rules = [
+            'fields' => $this->ruleProvider->getFieldRules($event->getForm()),
+            'buttons' => $this->ruleProvider->getButtonRules($event->getForm(), true),
+        ];
+
         $serialized = $this->serializer->serialize(
             $rules,
             'json',
@@ -96,5 +106,15 @@ class RulesBundle extends FeatureBundle
         }
 
         $event->setJumpToIndex($index);
+    }
+
+    public function handleFormSubmit(PageJumpEvent $event): void
+    {
+        $form = $event->getForm();
+        if (!$this->ruleValidator->isFormSubmittable($form)) {
+            return;
+        }
+
+        $event->setJumpToIndex(-999);
     }
 }

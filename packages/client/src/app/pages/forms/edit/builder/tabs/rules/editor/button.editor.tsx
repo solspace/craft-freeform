@@ -4,33 +4,59 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
-import { pageRuleActions } from '@editor/store/slices/rules/pages';
-import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
+import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
+import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import { useQueryFormRules } from '@ff-client/queries/rules';
+import type { PageButtonType } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
+import { DisplaySelect } from '../conditions/display/display';
 import { ConditionTable } from '../conditions/table/condition-table';
 
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
-import { RulesEditorWrapper } from './field-editor.styles';
+import { RulesEditorWrapper } from './field.editor.styles';
 
-export const PageRulesEditor: React.FC = () => {
-  const { formId, uid } = useParams();
+type Params = {
+  formId: string;
+  button: PageButtonType;
+  uid: string;
+};
+
+export const ButtonRulesEditor: React.FC = () => {
+  const { formId, button, uid } = useParams<Params>();
   const { isFetching } = useQueryFormRules(Number(formId || 0));
 
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const page = useSelector(pageSelecors.one(uid));
-  const rule = useSelector(pageRuleSelectors.one(uid));
+  const rule = useSelector(buttonRuleSelectors.one(uid, button));
 
   if (!page) {
     return null;
   }
 
-  const { label } = page;
+  const { buttons } = page;
+  let label: string;
+  switch (button) {
+    case 'save':
+      label = buttons.saveLabel;
+      break;
+
+    case 'submit':
+      label = buttons.submitLabel;
+      break;
+
+    case 'back':
+      label = buttons.backLabel;
+      break;
+
+    default:
+      label = translate('Button Group');
+      break;
+  }
 
   if (!rule) {
     return (
@@ -46,7 +72,9 @@ export const PageRulesEditor: React.FC = () => {
         {!isFetching && (
           <button
             className="btn add icon dashed"
-            onClick={() => dispatch(pageRuleActions.add(uid))}
+            onClick={() =>
+              dispatch(buttonRuleActions.add({ pageUid: uid, button }))
+            }
           >
             {translate('Add rules')}
           </button>
@@ -59,7 +87,7 @@ export const PageRulesEditor: React.FC = () => {
     <RulesEditorWrapper>
       <Remove
         onClick={() => {
-          dispatch(pageRuleActions.remove(uid));
+          dispatch(buttonRuleActions.remove(rule.uid));
           navigate('..');
         }}
       />
@@ -75,13 +103,25 @@ export const PageRulesEditor: React.FC = () => {
       {!isFetching && (
         <>
           <ConfigurationDescription className="short">
-            {translate('Go to this page when')}
+            <DisplaySelect
+              value={rule.display}
+              onChange={(value) =>
+                dispatch(
+                  buttonRuleActions.modifyDisplay({
+                    ruleUid: rule.uid,
+                    display: value,
+                  })
+                )
+              }
+            />
+
+            {translate('this button when')}
 
             <CombinatorSelect
               value={rule.combinator}
               onChange={(value) =>
                 dispatch(
-                  pageRuleActions.modifyCombinator({
+                  buttonRuleActions.modifyCombinator({
                     ruleUid: rule.uid,
                     combinator: value,
                   })
@@ -96,7 +136,7 @@ export const PageRulesEditor: React.FC = () => {
             conditions={rule.conditions}
             onChange={(conditions) => {
               dispatch(
-                pageRuleActions.modifyConditions({
+                buttonRuleActions.modifyConditions({
                   ruleUid: rule.uid,
                   conditions,
                 })

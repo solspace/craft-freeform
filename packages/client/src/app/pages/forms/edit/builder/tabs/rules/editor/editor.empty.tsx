@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { RulesEditorWrapper } from './field-editor.styles';
+import { RulesEditorWrapper } from './field.editor.styles';
 
 export const RulesEmpty: React.FC = () => {
   return (

@@ -4,18 +4,21 @@ namespace Solspace\Freeform\Bundles\Rules;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
+use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
+use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
+use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
+use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 
 class RuleProvider
 {
@@ -27,12 +30,16 @@ class RuleProvider
             return [
                 'pages' => [],
                 'fields' => [],
+                'submitForm' => null,
+                'buttons' => [],
             ];
         }
 
         return [
             'pages' => $this->getPageRules($form),
             'fields' => $this->getFieldRules($form),
+            'submitForm' => $this->getSubmitFormRule($form),
+            'buttons' => $this->getButtonRules($form),
         ];
     }
 
@@ -68,6 +75,51 @@ class RuleProvider
     }
 
     /**
+     * @return ButtonRule[]
+     */
+    public function getButtonRules(Form $form, bool $currentPageOnly = false): array
+    {
+        $rules = ButtonRuleRecord::getExistingRules($form->getId());
+        $currentPage = $form->getCurrentPage();
+
+        $array = [];
+        foreach ($rules as $uid => $buttonRule) {
+            if ($currentPageOnly && $currentPage->getId() !== $buttonRule->pageId) {
+                continue;
+            }
+
+            /** @var RuleRecord $rule */
+            $ruleRecord = $buttonRule->getRule()->one();
+            $rule = new ButtonRule(
+                $buttonRule->id,
+                $uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
+
+            $rule->setPage($form->getLayout()->getPages()->get($buttonRule->pageId));
+            $rule->setButton($buttonRule->button);
+            $rule->setDisplay($buttonRule->display);
+
+            $array[] = $rule;
+        }
+
+        return $array;
+    }
+
+    public function getButtonRule(Form $form, string $button): ?ButtonRule
+    {
+        $rules = $this->getButtonRules($form, true);
+        foreach ($rules as $rule) {
+            if ($rule->getButton() === $button) {
+                return $rule;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return PageRule[]
      */
     public function getPageRules(Form $form): array
@@ -76,7 +128,6 @@ class RuleProvider
 
         $array = [];
         foreach ($rules as $uid => $pageRule) {
-            /** @var RuleRecord $rule */
             $ruleRecord = $pageRule->getRule()->one();
             $rule = new PageRule(
                 $pageRule->id,
@@ -93,13 +144,18 @@ class RuleProvider
         return $array;
     }
 
-    public function getPageRule(Form $form, Page $page): ?PageRule
+    public function getSubmitFormRule(Form $form): ?SubmitFormRule
     {
-        $rules = $this->getPageRules($form);
-        foreach ($rules as $rule) {
-            if ($rule->getPage() === $page) {
-                return $rule;
-            }
+        $submitRule = SubmitFormRuleRecord::getExistingRule($form->getId());
+        if ($submitRule) {
+            $ruleRecord = $submitRule->getRule()->one();
+
+            return new SubmitFormRule(
+                $submitRule->id,
+                $ruleRecord->uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
         }
 
         return null;

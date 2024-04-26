@@ -1,11 +1,15 @@
 import { useDispatch } from 'react-redux';
+import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
 import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
 import { pageRuleActions } from '@editor/store/slices/rules/pages';
+import { submitFormRuleActions } from '@editor/store/slices/rules/submit-form';
 import type {
+  ButtonRule,
   FieldRule,
   NotificationRule,
   PageRule,
+  SubmitFormRule,
 } from '@ff-client/types/rules';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,6 +26,8 @@ export const QKRules = {
 type FormRules = {
   fields: FieldRule[];
   pages: PageRule[];
+  submitForm?: SubmitFormRule;
+  buttons: ButtonRule[];
 };
 
 export const useRulesQueryReset = (): (() => void) => {
@@ -46,6 +52,8 @@ export const useQueryFormRules = (
         .then((res) => {
           dispatch(fieldRuleActions.set(res.fields));
           dispatch(pageRuleActions.set(res.pages));
+          dispatch(submitFormRuleActions.set(res.submitForm));
+          dispatch(buttonRuleActions.set(res.buttons));
 
           return res;
         }),

@@ -40,6 +40,15 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return null;
     }
 
+    public function has(mixed $identificator): bool
+    {
+        try {
+            return (bool) $this->get($identificator);
+        } catch (FreeformException) {
+            return false;
+        }
+    }
+
     public function getList(null|array|string $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
     {
         if (null === $implements) {
@@ -92,15 +101,6 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         }
 
         return $indexed;
-    }
-
-    public function has(int|string $identificator): bool
-    {
-        try {
-            return (bool) $this->get($identificator);
-        } catch (FreeformException) {
-            return false;
-        }
     }
 
     public function add(FieldInterface $field): self

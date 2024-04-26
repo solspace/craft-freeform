@@ -8,9 +8,11 @@ import { PropertyEditor as IntegrationsEditor } from './tabs/integrations/proper
 import { LayoutEditor } from './tabs/layout/layout';
 import { Notifications } from './tabs/notifications/notifications';
 import { PropertyEditor as NotificationsEditor } from './tabs/notifications/property-editor/property-editor';
+import { ButtonRulesEditor } from './tabs/rules/editor/button.editor';
 import { RulesEmpty } from './tabs/rules/editor/editor.empty';
-import { FieldRulesEditor } from './tabs/rules/editor/field-editor';
-import { PageRulesEditor } from './tabs/rules/editor/page-editor';
+import { FieldRulesEditor } from './tabs/rules/editor/field.editor';
+import { PageRulesEditor } from './tabs/rules/editor/page.editor';
+import { SubmitFormRulesEditor } from './tabs/rules/editor/submit-form.editor';
 import { Rules } from './tabs/rules/rules';
 import { Tabs } from './tabs/tabs';
 import { BuilderContent, BuilderWrapper } from './builder.styles';
@@ -32,6 +34,11 @@ export const Builder: React.FC = () => {
             <Route index element={<RulesEmpty />} />
             <Route path="field/:uid" element={<FieldRulesEditor />} />
             <Route path="page/:uid" element={<PageRulesEditor />} />
+            <Route
+              path="page/:uid/buttons/:button"
+              element={<ButtonRulesEditor />}
+            />
+            <Route path="submit" element={<SubmitFormRulesEditor />} />
           </Route>
           <Route path="settings" element={<FormSettings />}>
             <Route index element={<SettingsEditor />} />

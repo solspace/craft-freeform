@@ -1,6 +1,8 @@
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+import { Button } from './buttons/buttons.styles';
+
 export const PageWrapper = styled.div`
   display: flex;
   flex: 1;
@@ -78,6 +80,14 @@ export const PageBody = styled.div`
   &.active {
     background-color: ${colors.gray500};
     border-color: ${colors.gray700};
+
+    ${Button} {
+      background-color: ${colors.gray100};
+
+      &.submit {
+        background-color: ${colors.red600};
+      }
+    }
   }
 `;
 

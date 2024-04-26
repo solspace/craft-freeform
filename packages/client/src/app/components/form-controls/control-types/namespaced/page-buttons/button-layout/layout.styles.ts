@@ -26,7 +26,7 @@ export const Button = styled.button`
   }
 
   &.submit {
-    background-color: ${colors.red500} !important;
+    background-color: ${colors.gray600} !important;
     fill: ${colors.white} !important;
   }
 `;
@@ -58,6 +58,11 @@ export const LayoutBlock = styled.li`
     ${Button} {
       background: ${colors.white};
       fill: ${colors.gray500};
+
+      &.submit {
+        background-color: ${colors.gray200} !important;
+        fill: ${colors.gray600} !important;
+      }
     }
   }
 

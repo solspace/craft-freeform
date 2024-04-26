@@ -260,6 +260,7 @@ class PageButtons
                 ->clone()
                 ->merge($customAttributes)
                 ->replace('data-freeform-action', 'submit')
+                ->replace('data-button-container', 'submit')
                 ->replace('name', self::INPUT_NAME_SUBMIT)
                 ->replace('type', 'submit')
         );
@@ -286,6 +287,7 @@ class PageButtons
                 ->clone()
                 ->merge($customAttributes)
                 ->replace('data-freeform-action', 'back')
+                ->replace('data-button-container', 'back')
                 ->replace('name', self::INPUT_NAME_PREVIOUS_PAGE)
                 ->replace('type', 'submit')
         );
@@ -312,6 +314,7 @@ class PageButtons
                 ->clone()
                 ->merge($customAttributes)
                 ->replace('data-freeform-action', 'save')
+                ->replace('data-button-container', 'save')
                 ->replace('type', 'submit')
         );
     }

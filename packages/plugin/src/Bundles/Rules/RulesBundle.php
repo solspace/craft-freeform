@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -70,8 +71,20 @@ class RulesBundle extends FeatureBundle
 
     public function attachRulesJSON(RenderTagEvent $event): void
     {
+        $values = [];
+        foreach ($event->getForm()->getLayout()->getFields()->getStorableFields() as $field) {
+            $processEvent = new ProcessPostedRuleValueEvent($field);
+            Event::trigger(
+                RuleValidator::class,
+                RuleValidator::EVENT_PROCESS_POSTED_RULE_VALUE,
+                $processEvent
+            );
+
+            $values[$field->getHandle()] = $processEvent->getValue();
+        }
+
         $rules = [
-            'values' => [],
+            'values' => $values,
             'rules' => [
                 'fields' => $this->ruleProvider->getFieldRules($event->getForm()),
                 'buttons' => $this->ruleProvider->getButtonRules($event->getForm(), true),

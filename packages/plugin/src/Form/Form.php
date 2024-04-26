@@ -664,6 +664,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function isDisabled(): DisabledFunctionality
     {
         $disableSettings = $this->disableFunctionality ?: $this->getProperties()->get(self::DATA_DISABLE);
+        if ($this->isMarkedAsSpam()) {
+            $disableSettings = true;
+        }
 
         return new DisabledFunctionality($disableSettings);
     }

@@ -317,7 +317,9 @@ class Settings extends Model
 
     public function setAttributes($values, $safeOnly = true): void
     {
-        $values['defaults'] = new Defaults($values['defaults'] ?? []);
+        if (\array_key_exists('defaults', $values)) {
+            $values['defaults'] = new Defaults($values['defaults']);
+        }
 
         parent::setAttributes($values, $safeOnly);
     }

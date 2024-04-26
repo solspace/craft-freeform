@@ -63,6 +63,8 @@ class RuleHandler implements FreeformHandler {
   freeform: Freeform;
   form: HTMLFormElement;
 
+  values: Record<string, FieldValue>;
+
   constructor(freeform: Freeform) {
     this.freeform = freeform;
     this.form = freeform.form as HTMLFormElement;
@@ -76,7 +78,8 @@ class RuleHandler implements FreeformHandler {
       return;
     }
 
-    const { rules }: RulesData = JSON.parse(rulesElement.textContent as string);
+    const { rules, values }: RulesData = JSON.parse(rulesElement.textContent as string);
+    this.values = values;
     if (rules.fields.length === 0 && rules.buttons.length === 0) {
       return;
     }
@@ -186,39 +189,48 @@ class RuleHandler implements FreeformHandler {
   };
 
   private verifyCondition = (condition: RuleCondition): boolean => {
-    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${condition.field}"]`);
-    if (!fieldContainer) {
-      return;
-    }
-
-    const field = this.form[condition.field] || this.form[`${condition.field}[]`];
-
-    const isCheckbox = fieldContainer.getAttribute('data-field-type') === 'checkbox';
-
-    // Default the value to `null` if the field is hidden, which will help
-    // with triggering nested rules
-    const isHidden = fieldContainer.dataset.hidden !== undefined;
-
     let currentValue: string | string[] | null = null;
 
-    if (isHidden) {
-      currentValue = null;
-    } else {
-      if (isCheckbox) {
-        const checkboxField = field[1] as HTMLInputElement;
-        currentValue = checkboxField.checked ? '1' : '';
-      } else if (field instanceof HTMLSelectElement && field.multiple) {
-        currentValue = Array.from(field.options)
-          .filter((option) => option.selected)
-          .map((option) => option.value);
-      } else if (field instanceof RadioNodeList) {
-        currentValue = Array.from(field)
-          .filter((checkbox) => (checkbox as HTMLInputElement).checked)
-          .map((checkbox) => (checkbox as HTMLInputElement).value);
+    const fieldContainer = document.querySelector<HTMLDivElement>(`[data-field-container="${condition.field}"]`);
+    if (fieldContainer) {
+      const field = this.form[condition.field] || this.form[`${condition.field}[]`];
+
+      const isCheckbox = fieldContainer.getAttribute('data-field-type') === 'checkbox';
+
+      // Default the value to `null` if the field is hidden, which will help
+      // with triggering nested rules
+      const isHidden = fieldContainer.dataset.hidden !== undefined;
+
+      if (isHidden) {
+        currentValue = null;
       } else {
-        currentValue = field.value;
+        if (isCheckbox) {
+          const checkboxField = field[1] as HTMLInputElement;
+          currentValue = checkboxField.checked ? '1' : '';
+        } else if (field instanceof HTMLSelectElement && field.multiple) {
+          currentValue = Array.from(field.options)
+            .filter((option) => option.selected)
+            .map((option) => option.value);
+        } else if (field instanceof RadioNodeList) {
+          currentValue = Array.from(field)
+            .filter((checkbox) => (checkbox as HTMLInputElement).checked)
+            .map((checkbox) => (checkbox as HTMLInputElement).value);
+        } else {
+          currentValue = field.value;
+        }
+      }
+    } else {
+      const storedValue = this.values[condition.field] || '';
+      if (typeof storedValue === 'boolean') {
+        currentValue = storedValue ? '1' : '';
+      } else if (typeof storedValue === 'number') {
+        currentValue = `${storedValue}`;
+      } else {
+        currentValue = storedValue;
       }
     }
+
+    console.log({ currentValue, condition });
 
     if (typeof currentValue === 'object') {
       switch (condition.operator) {

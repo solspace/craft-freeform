@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.1.16 - 2024-04-26
+
+### Added
+- Added the ability to set conditional rules that can prematurely fully submit the form if matched.
+- Added the ability to set conditional rules on Submit, Back and Save buttons.
+- Added support for using conditional rules across different pages, e.g. _Field C_ on _Page 2_ will display if _Field A_ on _Page 1_ is _X_.
+
+### Changed
+- Updated the color of submit buttons inside the form builder to dark gray to prevent confusion with actual action buttons.
+
+### Fixed
+- Fixed a bug where saving any Freeform settings would clear the Form Builder "defaults" settings.
+- Fixed a bug where submissions flagged as spam would still send data off to integrations instead of being queued.
+- Fixed some potential issues with submitting Checkbox fields.
+
 ## 5.1.15 - 2024-04-24
 
 ### Changed

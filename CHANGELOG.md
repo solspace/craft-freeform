@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 4.1.17 - 2024-04-29
+
+### Added
+- Added Craft element search support for submissions. You may need to run `./craft freeform/submissions/resave --update-search-index` once for this to work.
+- Added `freeform/submissions/resave` CLI command to resave all existing submissions.
+
+### Changes
+- Updated GraphQL to include HTML and Rich Text field types.
+
+### Fixed
+- Fixed a bug where setting a Calendar Event to be **All Day** in the Calendar Events integration was not working.
+- Fixed a bug where submission saving in the console could fail.
+
 ## 4.1.16 - 2024-04-04
 
 ### Changed

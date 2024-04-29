@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.1.16.1 - 2024-04-29
+
+### Fixed
+- Fixed a bug where the update migration for 5.1.16 was not automatically being triggered.
+
 ## 5.1.16 - 2024-04-26
 
 ### Added

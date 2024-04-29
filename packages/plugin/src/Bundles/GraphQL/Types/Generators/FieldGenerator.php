@@ -599,6 +599,20 @@ class FieldGenerator extends AbstractGenerator
                 'type' => Type::boolean(),
                 'description' => 'Should twig be allowed in this field',
             ];
+
+            $fieldDefinitions['content'] = [
+                'name' => 'content',
+                'type' => Type::string(),
+                'description' => 'The HTML content to be rendered',
+            ];
+        }
+
+        if (FreeformFieldInterface::TYPE_RICH_TEXT === $typeName) {
+            $fieldDefinitions['content'] = [
+                'name' => 'content',
+                'type' => Type::string(),
+                'description' => 'The HTML content to be rendered',
+            ];
         }
 
         return $fieldDefinitions;
@@ -614,12 +628,32 @@ class FieldGenerator extends AbstractGenerator
             FreeformFieldInterface::TYPE_TABLE,
         ];
 
+        $htmlValues = [
+            FreeformFieldInterface::TYPE_HTML,
+            FreeformFieldInterface::TYPE_RICH_TEXT,
+        ];
+
         $isMultiple = \in_array($typeName, $multipleValues, true);
+
+        $isHtml = \in_array($typeName, $htmlValues, true);
 
         return [
             'name' => 'value'.($isMultiple ? 's' : ''),
             'type' => ($isMultiple ? Type::listOf(Type::string()) : Type::string()),
-            'description' => "Field's default value",
+            'description' => "Field's value",
+            'resolve' => function ($source) use ($isHtml) {
+                if ($isHtml) {
+                    $value = $source->getContent();
+                } else {
+                    $value = $source->getValue();
+
+                    if (empty($value) && \method_exists($source, 'getDefaultValue')) {
+                        $value = $source->getDefaultValue();
+                    }
+                }
+
+                return $value;
+            },
         ];
     }
 }

@@ -100,7 +100,7 @@ class CalendarEvents extends AbstractConnection
         $currentSiteId = \Craft::$app->sites->currentSite->id;
 
         $event->siteId = $currentSiteId;
-        $event->allDay = $this->isAllDay();
+        $event->allDay = empty($event->allDay) ? $this->isAllDay() : true;
         $event->enabled = !$this->isDisabled();
 
         return $event;

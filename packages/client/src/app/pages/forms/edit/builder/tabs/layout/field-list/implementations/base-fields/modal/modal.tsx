@@ -99,78 +99,81 @@ export const CreateModal: ModalType = ({ closeModal }) => {
           {errors?.length && (
             <ErrorBlock>{translate('Something went wrong!')}</ErrorBlock>
           )}
-          {state.groups?.grouped?.map((group) => (
-            <GroupLayout key={group.uid} data-id={group.uid}>
-              <GroupType>
-                <GroupHeader>
-                  <Tooltip
-                    trigger="click"
-                    position="right"
-                    interactive
-                    interactiveBorder={0}
-                    size="small"
-                    theme="light"
-                    arrow
-                    html={
-                      <ColorPicker>
-                        <SketchPicker
-                          color={colorPicker?.color || group.color}
-                          onChange={(color) =>
+          {state.groups?.grouped?.map(
+            (group) =>
+              group.uid !== 'hidden' && (
+                <GroupLayout key={group.uid} data-id={group.uid}>
+                  <GroupType>
+                    <GroupHeader>
+                      <Tooltip
+                        trigger="click"
+                        position="right"
+                        interactive
+                        interactiveBorder={0}
+                        size="small"
+                        theme="light"
+                        arrow
+                        html={
+                          <ColorPicker>
+                            <SketchPicker
+                              color={colorPicker?.color || group.color}
+                              onChange={(color) =>
+                                setColorPicker({
+                                  groupUid: group.uid,
+                                  color: color.hex,
+                                })
+                              }
+                              onChangeComplete={(color) => {
+                                updateGroupInfo('color', color.hex, group.uid);
+                              }}
+                            />
+                          </ColorPicker>
+                        }
+                      >
+                        <ColorCircle
+                          color={group.color}
+                          onClick={() =>
                             setColorPicker({
                               groupUid: group.uid,
-                              color: color.hex,
+                              color: group.color,
                             })
                           }
-                          onChangeComplete={(color) => {
-                            updateGroupInfo('color', color.hex, group.uid);
-                          }}
                         />
-                      </ColorPicker>
-                    }
-                  >
-                    <ColorCircle
+                      </Tooltip>
+                      <FormComponent
+                        value={group.label}
+                        property={{
+                          type: PropertyType.Label,
+                          handle: group.uid,
+                        }}
+                        updateValue={(value: string) =>
+                          updateGroupInfo('label', value, group.uid)
+                        }
+                      />
+                    </GroupHeader>
+                    <GroupItemWrapper
+                      $empty={translate('Drag and drop any field here')}
+                      ref={(el) => {
+                        initializeGroupedSortable(el, group.uid, fieldListRefs);
+                      }}
                       color={group.color}
-                      onClick={() =>
-                        setColorPicker({
-                          groupUid: group.uid,
-                          color: group.color,
-                        })
-                      }
-                    />
-                  </Tooltip>
-                  <FormComponent
-                    value={group.label}
-                    property={{
-                      type: PropertyType.Label,
-                      handle: group.uid,
-                    }}
-                    updateValue={(value: string) =>
-                      updateGroupInfo('label', value, group.uid)
-                    }
-                  />
-                </GroupHeader>
-                <GroupItemWrapper
-                  $empty={translate('Drag and drop any field here')}
-                  ref={(el) => {
-                    initializeGroupedSortable(el, group.uid, fieldListRefs);
-                  }}
-                  color={group.color}
-                >
-                  {group.types?.map((item) => (
-                    <FieldItem key={item} typeClass={item} />
-                  ))}
-                </GroupItemWrapper>
-              </GroupType>
-              <CloseAndMoveWrapper>
-                <button className="group-remove">
-                  <CrossIcon />
-                </button>
-                <button className="handle">
-                  <MoveIcon />
-                </button>
-              </CloseAndMoveWrapper>
-            </GroupLayout>
-          ))}
+                    >
+                      {group.types?.map((item) => (
+                        <FieldItem key={item} typeClass={item} />
+                      ))}
+                    </GroupItemWrapper>
+                  </GroupType>
+                  <CloseAndMoveWrapper>
+                    <button className="group-remove">
+                      <CrossIcon />
+                    </button>
+                    <button className="handle">
+                      <MoveIcon />
+                    </button>
+                  </CloseAndMoveWrapper>
+                </GroupLayout>
+              )
+          )}
         </GroupWrapper>
         <FieldListWrapper>
           <button
@@ -204,9 +207,16 @@ export const CreateModal: ModalType = ({ closeModal }) => {
                 )}
                 ref={(el) => (fieldListRefs.current.hidden = el)}
               >
-                {state.groups?.hidden?.map((item) => (
-                  <FieldItem key={item} typeClass={item} />
-                ))}
+                {state.groups?.grouped?.map(
+                  (group) =>
+                    group.uid === 'hidden' && (
+                      <>
+                        {group.types.map((item) => (
+                          <FieldItem key={item} typeClass={item} />
+                        ))}
+                      </>
+                    )
+                )}
               </FieldTypes>
             </UHField>
           </UHFieldWrapper>

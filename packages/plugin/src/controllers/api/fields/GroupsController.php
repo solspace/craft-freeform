@@ -24,6 +24,11 @@ class GroupsController extends BaseApiController
         $hiddenTypes = $this->request->getBodyParam('hidden', []);
         FieldTypeGroupRecord::deleteAll();
 
+        $groupRecord = new FieldTypeGroupRecord();
+        $groupRecord->uid = 'hidden';
+        $groupRecord->types = json_encode($hiddenTypes);
+        $groupRecord->save();
+
         foreach ($groups as $group) {
             $groupRecord = new FieldTypeGroupRecord();
             $groupRecord->uid = $group['uid'];
@@ -32,8 +37,6 @@ class GroupsController extends BaseApiController
             $groupRecord->types = json_encode($group['types']);
             $groupRecord->save();
         }
-
-        $this->getSettingsService()->saveSettings(['hiddenFieldTypes' => $hiddenTypes]);
 
         return null;
     }
@@ -47,14 +50,11 @@ class GroupsController extends BaseApiController
         $response = (object) [
             'types' => [],
             'groups' => [
-                'hidden' => [],
                 'grouped' => [],
             ],
         ];
 
         if ($freeform->isPro()) {
-            $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
-
             $grouped = [];
 
             $flattenedAssignedTypes = [];
@@ -76,12 +76,10 @@ class GroupsController extends BaseApiController
             $unassignedTypes = array_diff(
                 $types,
                 $flattenedAssignedTypes,
-                $hiddenFieldTypes
             );
 
             $response->types = [...$unassignedTypes];
             $response->groups = (object) [
-                'hidden' => $hiddenFieldTypes,
                 'grouped' => $grouped,
             ];
 

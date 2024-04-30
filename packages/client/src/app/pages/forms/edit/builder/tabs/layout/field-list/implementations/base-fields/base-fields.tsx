@@ -48,16 +48,19 @@ export const BaseFields: React.FC = () => {
       editionIsPro={config.editions.is(Edition.Pro)}
       title={title}
     >
-      {data.groups.grouped?.map((group) => (
-        <GroupWrapper key={group.uid} color={group.color}>
-          {group.types.length > 0 && (
-            <>
-              {group.label && <GroupName>{group.label}</GroupName>}
-              <List>{renderFieldItems(group.types)}</List>
-            </>
-          )}
-        </GroupWrapper>
-      ))}
+      {data.groups.grouped?.map(
+        (group) =>
+          group.uid !== 'hidden' && (
+            <GroupWrapper key={group.uid} color={group.color}>
+              {group.types.length > 0 && (
+                <>
+                  {group.label && <GroupName>{group.label}</GroupName>}
+                  <List>{renderFieldItems(group.types)}</List>
+                </>
+              )}
+            </GroupWrapper>
+          )
+      )}
 
       {data?.types && <List>{renderFieldItems(data.types)}</List>}
     </FieldGroup>

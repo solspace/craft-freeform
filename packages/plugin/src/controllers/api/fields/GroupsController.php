@@ -24,10 +24,12 @@ class GroupsController extends BaseApiController
         $hiddenTypes = $this->request->getBodyParam('hidden', []);
         FieldTypeGroupRecord::deleteAll();
 
-        $groupRecord = new FieldTypeGroupRecord();
-        $groupRecord->uid = 'hidden';
-        $groupRecord->types = json_encode($hiddenTypes);
-        $groupRecord->save();
+        if (!empty($hiddenTypes)) {
+            $groupRecord = new FieldTypeGroupRecord();
+            $groupRecord->uid = 'hidden';
+            $groupRecord->types = json_encode($hiddenTypes);
+            $groupRecord->save();
+        }
 
         foreach ($groups as $group) {
             $groupRecord = new FieldTypeGroupRecord();
@@ -50,36 +52,40 @@ class GroupsController extends BaseApiController
         $response = (object) [
             'types' => [],
             'groups' => [
+                'hidden' => [],
                 'grouped' => [],
             ],
         ];
 
         if ($freeform->isPro()) {
+            $hiddenFieldTypes = [];
             $grouped = [];
-
             $flattenedAssignedTypes = [];
 
             foreach ($groups as $group) {
                 $decodedTypes = JsonHelper::decode($group['types'], true);
+                $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, array_values($decodedTypes));
 
-                $flattenedAssignedTypes = array_merge(
-                    $flattenedAssignedTypes,
-                    array_values($decodedTypes),
-                );
+                if ('hidden' === $group['uid']) {
+                    $hiddenFieldTypes = array_merge($hiddenFieldTypes, array_values($decodedTypes));
+
+                    continue;
+                }
 
                 $array = $group->toArray();
                 $array['types'] = $decodedTypes;
-
                 $grouped[] = $array;
             }
 
             $unassignedTypes = array_diff(
                 $types,
                 $flattenedAssignedTypes,
+                $hiddenFieldTypes
             );
 
             $response->types = [...$unassignedTypes];
             $response->groups = (object) [
+                'hidden' => $hiddenFieldTypes,
                 'grouped' => $grouped,
             ];
 

@@ -6,7 +6,7 @@
 - Added Craft element search support for submissions. You may need to run `./craft freeform/submissions/resave --update-search-index` once for this to work.
 - Added `freeform/submissions/resave` CLI command to resave all existing submissions.
 
-### Changes
+### Changed
 - Updated GraphQL to include HTML and Rich Text field types.
 
 ### Fixed

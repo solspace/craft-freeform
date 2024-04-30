@@ -24,12 +24,10 @@ class GroupsController extends BaseApiController
         $hiddenTypes = $this->request->getBodyParam('hidden', []);
         FieldTypeGroupRecord::deleteAll();
 
-        if (!empty($hiddenTypes)) {
-            $groupRecord = new FieldTypeGroupRecord();
-            $groupRecord->uid = 'hidden';
-            $groupRecord->types = json_encode($hiddenTypes);
-            $groupRecord->save();
-        }
+        $groupRecord = new FieldTypeGroupRecord();
+        $groupRecord->label = '__freeform_hidden__';
+        $groupRecord->types = json_encode($hiddenTypes);
+        $groupRecord->save();
 
         foreach ($groups as $group) {
             $groupRecord = new FieldTypeGroupRecord();
@@ -66,7 +64,7 @@ class GroupsController extends BaseApiController
                 $decodedTypes = JsonHelper::decode($group['types'], true);
                 $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, array_values($decodedTypes));
 
-                if ('hidden' === $group['uid']) {
+                if ('__freeform_hidden__' === $group['label']) {
                     $hiddenFieldTypes = array_merge($hiddenFieldTypes, array_values($decodedTypes));
 
                     continue;

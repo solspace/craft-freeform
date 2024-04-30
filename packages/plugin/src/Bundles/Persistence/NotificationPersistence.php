@@ -27,6 +27,10 @@ class NotificationPersistence extends FeatureBundle
 
     public function handleNotificationSave(PersistFormEvent $event): void
     {
+        if ($event->hasErrors()) {
+            return;
+        }
+
         $notifications = $event->getPayload()->notifications ?? null;
         if (null === $notifications) {
             return;
@@ -71,10 +75,6 @@ class NotificationPersistence extends FeatureBundle
                 ->delete(FormNotificationRecord::TABLE, ['uid' => $deletableUIDs])
                 ->execute()
             ;
-        }
-
-        if ($event->hasErrors()) {
-            return;
         }
 
         foreach ($records as $record) {

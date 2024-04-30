@@ -173,14 +173,14 @@ class IntegrationsService extends BaseService
             $model->addError('integration', $e->getMessage());
         }
 
-        $this->updateModelFromIntegration($model, $integration);
-
         $isNew = !$model->id;
 
         $beforeSaveEvent = new SaveEvent($model, $integration, $isNew);
         if ($triggerEvents) {
             $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
         }
+
+        $this->updateModelFromIntegration($model, $integration);
 
         if ($isNew) {
             $record = new IntegrationRecord();

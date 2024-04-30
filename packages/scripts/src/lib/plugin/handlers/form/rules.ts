@@ -230,8 +230,6 @@ class RuleHandler implements FreeformHandler {
       }
     }
 
-    console.log({ currentValue, condition });
-
     if (typeof currentValue === 'object') {
       switch (condition.operator) {
         case Operator.Equals:

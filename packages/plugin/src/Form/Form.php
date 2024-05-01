@@ -787,8 +787,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
             'properties' => $this->getProperties(),
             'attributes' => $this->getAttributes(),
-            'createdBy' => $this->getCreatedBy(),
-            'updatedBy' => $this->getUpdatedBy(),
             'settings' => [
                 'behavior' => $settings->getBehavior(),
                 'general' => $settings->getGeneral(),

@@ -24,6 +24,11 @@ class GroupsController extends BaseApiController
         $hiddenTypes = $this->request->getBodyParam('hidden', []);
         FieldTypeGroupRecord::deleteAll();
 
+        $groupRecord = new FieldTypeGroupRecord();
+        $groupRecord->label = '__freeform_hidden__';
+        $groupRecord->types = json_encode($hiddenTypes);
+        $groupRecord->save();
+
         foreach ($groups as $group) {
             $groupRecord = new FieldTypeGroupRecord();
             $groupRecord->uid = $group['uid'];
@@ -32,8 +37,6 @@ class GroupsController extends BaseApiController
             $groupRecord->types = json_encode($group['types']);
             $groupRecord->save();
         }
-
-        $this->getSettingsService()->saveSettings(['hiddenFieldTypes' => $hiddenTypes]);
 
         return null;
     }
@@ -53,23 +56,24 @@ class GroupsController extends BaseApiController
         ];
 
         if ($freeform->isPro()) {
-            $hiddenFieldTypes = $freeform->settings->getSettingsModel()->hiddenFieldTypes;
-
+            $hiddenFieldTypes = [];
             $grouped = [];
-
             $flattenedAssignedTypes = [];
 
             foreach ($groups as $group) {
                 $decodedTypes = JsonHelper::decode($group['types'], true);
+                $values = array_values($decodedTypes);
 
-                $flattenedAssignedTypes = array_merge(
-                    $flattenedAssignedTypes,
-                    array_values($decodedTypes),
-                );
+                $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, $values);
+
+                if ('__freeform_hidden__' === $group['label']) {
+                    $hiddenFieldTypes = array_merge($hiddenFieldTypes, $values);
+
+                    continue;
+                }
 
                 $array = $group->toArray();
                 $array['types'] = $decodedTypes;
-
                 $grouped[] = $array;
             }
 

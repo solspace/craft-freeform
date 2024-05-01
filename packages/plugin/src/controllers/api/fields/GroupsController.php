@@ -62,10 +62,12 @@ class GroupsController extends BaseApiController
 
             foreach ($groups as $group) {
                 $decodedTypes = JsonHelper::decode($group['types'], true);
-                $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, array_values($decodedTypes));
+                $values = array_values($decodedTypes);
+
+                $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, $values);
 
                 if ('__freeform_hidden__' === $group['label']) {
-                    $hiddenFieldTypes = array_merge($hiddenFieldTypes, array_values($decodedTypes));
+                    $hiddenFieldTypes = array_merge($hiddenFieldTypes, $values);
 
                     continue;
                 }

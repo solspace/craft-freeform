@@ -60,4 +60,5 @@ class FreeformSettings
     public ?int $saveFormTtl = null;
     public ?int $saveFormSessionLimit = null;
     public ?bool $bypassSpamCheckOnLoggedInUsers = null;
+    public ?string $hiddenFieldTypes = null;
 }

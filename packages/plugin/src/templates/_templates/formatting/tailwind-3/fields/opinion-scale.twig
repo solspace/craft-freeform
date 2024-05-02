@@ -1,6 +1,7 @@
 {{ field.renderContainerOpeningTag }}
 
     {{ field.renderLabel }}
+    {{ field.renderInstructions }}
 
     <ul class="w-full text-sm font-medium border border-slate-400 rounded flex">
         {% for scale in field.scales %}
@@ -43,7 +44,6 @@
         </ul>
     {% endif %}
 
-    {{ field.renderInstructions }}
     {{ field.renderErrors }}
 
 {{ field.renderContainerClosingTag }}

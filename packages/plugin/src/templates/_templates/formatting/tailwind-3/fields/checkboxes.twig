@@ -11,6 +11,7 @@
 {{ field.renderContainerOpeningTag }}
 
     {{ field.renderLabel }}
+    {{ field.renderInstructions }}
     {% for index, option in field.options %}
         <div class="flex items-center mb-1">
             <input type="checkbox"
@@ -25,7 +26,6 @@
             </label>
         </div>
     {% endfor %}
-    {{ field.renderInstructions }}
     {{ field.renderErrors }}
 
 {{ field.renderContainerClosingTag }}

@@ -100,8 +100,11 @@ class ReCaptchaBundle extends FeatureBundle
 
         $added[] = $version;
 
-        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
-
+        $scriptPath = \Craft::$app->getAssetManager()->getPublishedUrl(
+            '@freeform/Resources/',
+            true,
+            'js/scripts/front-end/captchas/recaptcha/'.$version.'.js',
+        );
         $event->addScript($scriptPath);
     }
 

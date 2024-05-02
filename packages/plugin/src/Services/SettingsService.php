@@ -372,12 +372,20 @@ class SettingsService extends BaseService
 
     public function getPluginJsPath(): string
     {
-        return \Yii::getAlias('@freeform/Resources/js/scripts/front-end/plugin/freeform.js');
+        return \Craft::$app->getAssetManager()->getPublishedUrl(
+            '@freeform/Resources/',
+            true,
+            'js/scripts/front-end/plugin/freeform.js',
+        );
     }
 
     public function getPluginCssPath(): string
     {
-        return \Yii::getAlias('@freeform/Resources/css/front-end/plugin/freeform.css');
+        return \Craft::$app->getAssetManager()->getPublishedUrl(
+            '@freeform/Resources/',
+            true,
+            'css/front-end/plugin/freeform.css',
+        );
     }
 
     public function isFormFieldShowOnlyAllowedForms(): bool

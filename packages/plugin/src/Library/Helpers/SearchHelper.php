@@ -16,17 +16,13 @@ class SearchHelper
 
     public static function adjustSearchQuery(SearchQuery $query)
     {
-        $reflectionClass = new \ReflectionClass(SearchQuery::class);
-        $reflectionProperty = $reflectionClass->getProperty('_tokens');
-
-        $tokens = $reflectionProperty->getValue($query);
-
         $modifyTerm = static function (SearchQueryTerm $term) {
             if ($term->attribute) {
                 $term->attribute = SearchHelper::maybeTruncateHandle($term->attribute);
             }
         };
 
+        $tokens = $query->getTokens();
         foreach ($tokens as &$termOrGroup) {
             // Token can be a group of terms or a single term.
             if ($termOrGroup instanceof SearchQueryTermGroup) {
@@ -38,7 +34,5 @@ class SearchHelper
                 $modifyTerm($termOrGroup);
             }
         }
-
-        $reflectionProperty->setValue($query, $tokens);
     }
 }

@@ -9,6 +9,7 @@ use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormRecord;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -79,9 +80,11 @@ class FormsController extends BaseApiController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
+        $sites = SitesHelper::getCurrentCpPageSiteHandle();
+
         return $this->formTransformer->transformList(
             array_values(
-                $this->getFormsService()->getAllForms()
+                $this->getFormsService()->getAllForms(sites: $sites)
             )
         );
     }

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Configuration;
 
+use craft\models\Site;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\SettingsService;
 
@@ -18,6 +19,9 @@ class FreeformConfig implements \JsonSerializable
         $settingsModel = $settings->getSettingsModel();
         $edition = $plugin->edition();
 
+        $currentSite = \Craft::$app->sites->currentSite;
+        $sites = \Craft::$app->sites->getAllSites();
+
         $this->config = [
             'templates' => [
                 'native' => (bool) $settingsModel->defaults->includeSampleTemplates,
@@ -30,6 +34,17 @@ class FreeformConfig implements \JsonSerializable
             'editions' => [
                 'edition' => $plugin->edition,
                 'tiers' => $plugin->edition()->getEditions(),
+            ],
+            'sites' => [
+                'current' => $currentSite->id,
+                'list' => array_map(
+                    fn (Site $site) => [
+                        'id' => $site->id,
+                        'name' => $site->name,
+                        'handle' => $site->handle,
+                    ],
+                    $sites,
+                ),
             ],
         ];
     }

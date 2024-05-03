@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\base\Event;
 use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\App;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
@@ -33,6 +34,7 @@ use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Error\LoaderError;
@@ -61,10 +63,11 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @return Form[]
      */
-    public function getAllForms(bool $orderByName = false): array
+    public function getAllForms(bool $orderByName = false, null|array|string $sites = null): array
     {
         if (null === self::$formsById || !self::$allFormsLoaded) {
             $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $sites);
             if ($orderByName) {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
@@ -544,6 +547,25 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return null;
+    }
+
+    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    {
+        if (null === $sites) {
+            return;
+        }
+
+        if (\is_string($sites)) {
+            $sites = [$sites];
+        }
+
+        $sites = array_filter($sites);
+
+        $query
+            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
+            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
+            ->andWhere(['in', 'sites.[[handle]]', $sites])
+        ;
     }
 
     private function getFormQuery(): Query

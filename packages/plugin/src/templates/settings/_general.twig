@@ -60,6 +60,15 @@
         },
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Forms and their Submissions are only visible on the Site they are created on"|t('freeform'),
+        instructions: "When enabled, forms will only be visible for the Site they were created on. This allows you to filter forms lists by Sites and prevent other users from accessing forms that belong to Sites they don't have access to."|t('freeform'),
+        name: "settings[sitesEnabled]",
+        on: settings.sitesEnabled,
+        errors: settings.errors("sitesEnabled"),
+        warning: "This only simulates visibility within the Freeform control panel. It does not actually enable and disable forms per site the same way Craft does."|t('freeform'),
+    }) }}
+
     <hr>
 
     <h2>{{ "Element Field Type"|t('freeform') }}</h2>

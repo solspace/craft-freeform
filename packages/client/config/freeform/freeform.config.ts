@@ -1,3 +1,5 @@
+import type { Site } from '@ff-client/types/sites';
+
 export enum Edition {
   Pro = 'pro',
   Lite = 'lite',
@@ -20,6 +22,10 @@ type Config = {
     is: (edition: Edition) => boolean;
     isAtLeast: (edition: Edition) => boolean;
     isAtMost: (edition: Edition) => boolean;
+  };
+  sites: {
+    current: number;
+    list: Site[];
   };
 };
 

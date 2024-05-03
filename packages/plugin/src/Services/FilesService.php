@@ -546,12 +546,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             $folder = $rootFolder;
         } else {
             try {
-                $renderedSubpath = \Craft::$app->view->renderString(
-                    $subpath,
-                    [
-                        'form' => $form,
-                    ]
-                );
+                $renderedSubpath = \Craft::$app->view->renderString($subpath, ['form' => $form]);
             } catch (Throwable $e) {
                 throw new InvalidSubpathException($subpath, null, 0, $e);
             }

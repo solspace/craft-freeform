@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.1.17 - 2024-05-03
+
+### Added
+- Added **Assets** as an Element source for populating Freeform field options.
+- Confirmed compatibility with Craft 5.1.x.
+
+### Changed
+- Improved Twig template debugging for formatting templates.
+- Updated **Tailwind** formatting template to have instructions below the field label instead of below the input.
+- Updated the JSON payload from forms to no longer contain details of the user(s) that created and last updated the form.
+- Updated the **Field Type Manager** to store field types set to hidden in the database instead of the Project Config file.
+
+### Fixed
+- Fixed a bug where Freeform fields with long handles could cause Craft's search indexing jobs to fail.
+- Fixed a bug where Export Notifications would fail if they contained multiple email addresses.
+- Fixed a bug where conditional rules were outputted to the browser console.
+- Fixed a bug where some integration could fail due to model properties being before EVENT_BEFORE_SAVE.
+- Fixed a bug where Notification Persistence would throw errors if the form upsert event has errors.
+
 ## 5.1.16.1 - 2024-04-29
 
 ### Fixed

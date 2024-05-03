@@ -4,6 +4,7 @@ namespace Solspace\Freeform\controllers\api\types;
 
 use Solspace\Freeform\Bundles\Transformers\Options\OptionTypeTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Assets\Assets;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Categories;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags;
@@ -34,6 +35,7 @@ class OptionsController extends BaseApiController
     public function actionGetElementTypes(): Response
     {
         $types = [
+            new Assets(),
             new Entries(),
             new Users(),
             new Categories(),

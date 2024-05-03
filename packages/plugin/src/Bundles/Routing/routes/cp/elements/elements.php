@@ -1,6 +1,9 @@
 <?php
 
 return [
+    // Assets
+    'freeform/api/elements/assets/fields' => 'freeform/api/elements/asset/field-options',
+
     // Entries
     'freeform/api/elements/entries/entry-types' => 'freeform/api/elements/entry/get-entry-types',
     'freeform/api/elements/entries/fields' => 'freeform/api/elements/entry/get-field-options',

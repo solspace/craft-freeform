@@ -79,7 +79,7 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
         try {
             $field = $this->getTargetField();
             if (!$field) {
-                return 'no target field chosen';
+                return 'No target field chosen.';
             }
 
             $attributes = $field

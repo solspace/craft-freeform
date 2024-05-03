@@ -15,14 +15,17 @@ namespace Solspace\Freeform;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
 use craft\services\Fields;
+use craft\services\Search;
 use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use Solspace\Freeform\controllers\SubmissionsController;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
@@ -62,6 +65,7 @@ use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FieldTypeGroupRecord;
@@ -630,6 +634,16 @@ class Freeform extends Plugin
             SubmissionsService::class,
             SubmissionsService::EVENT_AFTER_SUBMIT,
             [$this->relations, 'relate']
+        );
+
+        Event::on(
+            Search::class,
+            Search::EVENT_BEFORE_SEARCH,
+            function (SearchEvent $event) {
+                if ($event->elementQuery instanceof SubmissionQuery) {
+                    SearchHelper::adjustSearchQuery($event->query);
+                }
+            }
         );
     }
 

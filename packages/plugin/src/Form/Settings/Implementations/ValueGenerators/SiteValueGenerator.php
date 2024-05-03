@@ -11,6 +11,11 @@ class SiteValueGenerator implements ValueGeneratorInterface
 
     public function generateValue(?object $referenceObject): ?array
     {
-        return [$this->sites->getCurrentSite()->handle];
+        $sites = $this->sites->getEditableSites();
+
+        return array_map(
+            fn ($site) => $site->id,
+            $sites
+        );
     }
 }

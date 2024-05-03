@@ -87,7 +87,7 @@ class GeneralSettings extends SettingsNamespace
         selectAll: true,
         options: SiteOptions::class,
     )]
-    public ?array $sites = null;
+    public array $sites = [];
 
     #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]

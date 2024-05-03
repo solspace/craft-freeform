@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Records\Form;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Records\FormRecord;
 
 /**
  * @property int       $id
@@ -29,6 +30,41 @@ class FormSiteRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public static function updateSitesForForm(int $formId, array $siteIds)
+    {
+        $deletable = self::find()
+            ->where(['formId' => $formId])
+            ->andWhere(['not', ['siteId' => $siteIds]])
+            ->all()
+        ;
+
+        foreach ($deletable as $record) {
+            $record->delete();
+        }
+
+        $existingSiteIds = self::find()
+            ->select('siteId')
+            ->where(['formId' => $formId])
+            ->column()
+        ;
+
+        $newIds = array_diff($siteIds, $existingSiteIds);
+
+        foreach ($newIds as $newId) {
+            $record = new self();
+            $record->formId = $formId;
+            $record->siteId = $newId;
+            $record->save();
+        }
+
+        $form = FormRecord::findOne(['id' => $formId]);
+        $metadata = json_decode($form->metadata);
+        $metadata->general->sites = array_map('strval', $siteIds);
+
+        $form->metadata = json_encode($metadata);
+        $form->save();
     }
 
     public function rules(): array

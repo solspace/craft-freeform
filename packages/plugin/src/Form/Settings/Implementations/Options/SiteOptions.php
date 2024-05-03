@@ -17,7 +17,7 @@ class SiteOptions implements OptionsGeneratorInterface
 
         $sites = $this->sites->getEditableSites();
         foreach ($sites as $site) {
-            $options->add($site->handle, $site->name);
+            $options->add($site->id, $site->name);
         }
 
         return $options;

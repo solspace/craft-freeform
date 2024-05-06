@@ -262,7 +262,7 @@ if (form) {
 {% macro renderRows(form, rows) %}
     {% for row in rows %}
         {% set width = (12 / (row|length)) %}
-        <div{{ form.attributes.row }}>
+        <div{{ form.attributes.row|raw }}>
             {% for field in row %}
                 {% do field.setParameters({
                     attributes: {

@@ -54,12 +54,12 @@
 {# Success and error message handling for non-AJAX forms #}
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
-        <div{{ form.attributes.success }}>
+        <div{{ form.attributes.success|raw }}>
             <p>{{ form.settings.successMessage | t('freeform') }}</p>
         </div>
     {% endif %}
     {% if form.hasErrors %}
-        <div{{ form.attributes.errors }}>
+        <div{{ form.attributes.errors|raw }}>
             <p>{{ form.settings.errorMessage | t('freeform') }}</p>
 
             {% if form.errors|length %}

@@ -20,6 +20,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
+use Solspace\Freeform\Fields\Interfaces\NoLabelInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
@@ -33,7 +34,7 @@ use Twig\Markup;
     iconPath: __DIR__.'/Icons/checkbox.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox.ejs',
 )]
-class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface, DefaultValueInterface
+class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
 

@@ -14,13 +14,13 @@ import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-la
 
 import { useLoaderAnimation } from './cell.animations';
 import {
-  CheckboxPreviewWrapper,
   FieldCellWrapper,
   Icon,
   Instructions,
   Label,
   LabelIcon,
   LabelText,
+  Row,
 } from './cell.styles';
 import { FieldAssociationsBadges } from './cell-badges';
 import { useFieldPreview } from './use-field-preview';
@@ -39,8 +39,8 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
     type: contextType,
     uid: contextUid,
   } = useSelector(contextSelectors.focus);
-  const isInputOnly = useMemo(
-    () => type?.implements?.includes('inputOnly') || false,
+  const noLabel = useMemo(
+    () => type?.implements?.includes('noLabel') || false,
     [type]
   );
   const isActive = useMemo(() => {
@@ -68,7 +68,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      {type.type !== 'checkbox' && (
+      {!noLabel && (
         <Label className="label">
           <LabelIcon>
             <Icon style={spinnerAnimation}>
@@ -98,11 +98,11 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
 
       {type.type !== Type.Group && (
         <>
-          {isInputOnly && type.type == 'checkbox' ? (
-            <CheckboxPreviewWrapper>
+          {noLabel ? (
+            <Row>
               <div dangerouslySetInnerHTML={{ __html: preview }} />
               <FieldAssociationsBadges uid={uid} />
-            </CheckboxPreviewWrapper>
+            </Row>
           ) : (
             <div dangerouslySetInnerHTML={{ __html: preview }} />
           )}

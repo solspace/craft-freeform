@@ -123,7 +123,7 @@ export const FieldCellWrapper = styled.div`
   }
 `;
 
-export const CheckboxPreviewWrapper = styled.div`
+export const Row = styled.div`
   display: flex;
   flex-direction: row;
 `;

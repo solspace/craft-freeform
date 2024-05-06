@@ -33,7 +33,7 @@ class FormLimiting extends FeatureBundle
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleDuplicateCheck']);
+        Event::on(Form::class, Form::EVENT_RENDER_AFTER_CLOSING_TAG, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleDuplicateCheck']);
     }

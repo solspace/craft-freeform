@@ -1,12 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.1.18.1 - 2024-05-06
+
+> [!WARNING]
+> If you are experiencing visual issues with form layouts and styles on the front end, please update Freeform and ensure you're adding the `|raw` filter to `form.attributes.success` and `form.attributes.errors` in any custom formatting templates you may have when not using AJAX.
+
+### Changed
+- Added the `|raw` filter to `form.attributes.success` and `form.attributes.errors` in sample formatting templates as they began parsing with an extra set of quotes around them when not using AJAX.
+
 ## 5.1.18 - 2024-05-06
 
 > [!WARNING]
 > If you are experiencing visual issues with form layouts and styles on the front end, please update Freeform and ensure you're adding the `|raw` filter to `form.attributes.row` in any custom formatting templates you may have.
 
 ### Changed
-- Added the `|raw` filter to `form.attributes.row` in sample formatting templates as they began parsing with an extra set of quotes around them
+- Added the `|raw` filter to `form.attributes.row` in sample formatting templates as they began parsing with an extra set of quotes around them.
 
 ### Fixed
 - Fixed a bug where forms would fail when loading if a **Confirm** field was used and the **Duplicate Check** setting was set to _Anyone - Once per Email Address_.

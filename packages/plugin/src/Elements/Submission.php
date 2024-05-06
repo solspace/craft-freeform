@@ -39,6 +39,7 @@ use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
@@ -554,8 +555,10 @@ class Submission extends Element
         static $sources;
 
         if (null === $sources) {
+            $sites = SitesHelper::getEditableSiteHandles();
+
             $formsService = Freeform::getInstance()->forms;
-            $forms = $formsService->getAllForms();
+            $forms = $formsService->getAllForms(sites: $sites);
 
             $allowedFormIds = Freeform::getInstance()->submissions->getAllowedReadFormIds();
 

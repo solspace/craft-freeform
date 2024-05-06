@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import config from '@config/freeform/freeform.config';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
@@ -50,23 +49,10 @@ export const List: React.FC = () => {
     });
   }, []);
 
-  const { current, list, change } = useSiteContext();
-
   return (
     <>
       <Header>
         <Title>{translate('Forms')}</Title>
-
-        <select
-          value={current.handle}
-          onChange={(event) => {
-            change(event.target.value);
-          }}
-        >
-          {list.map((site) => (
-            <option key={site.handle} value={site.handle} label={site.name} />
-          ))}
-        </select>
 
         {(!formLimit || formCount < formLimit) && (
           <button className="btn submit add icon" onClick={openCreateFormModal}>

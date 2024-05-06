@@ -19,6 +19,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\LoggerService;
@@ -36,7 +37,8 @@ class FreeformVariable
      */
     public function form($handleOrId, ?array $properties = null): ?Form
     {
-        $form = $this->getFormService()->getFormByHandleOrId($handleOrId);
+        $site = SitesHelper::getFrontendSiteHandle();
+        $form = $this->getFormService()->getFormByHandleOrId($handleOrId, $site);
         if (!$form) {
             return null;
         }
@@ -51,7 +53,8 @@ class FreeformVariable
     {
         $formService = $this->getFormService();
 
-        $forms = $formService->getAllForms();
+        $sites = SitesHelper::getSiteHandlesForFrontend();
+        $forms = $formService->getAllForms(sites: $sites);
 
         return $forms ?: [];
     }

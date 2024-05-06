@@ -12,9 +12,10 @@ import type { AxiosError } from 'axios';
 import axios from 'axios';
 
 export const QKForms = {
-  all: (site: string) => ['forms', site] as const,
-  single: (site: string, id: number) => [...QKForms.all(site), id] as const,
-  settings: (site: string) => [...QKForms.all(site), 'settings'] as const,
+  base: ['forms'] as const,
+  all: (site: string) => [...QKForms.base, site] as const,
+  single: (id: number) => [...QKForms.base, id] as const,
+  settings: () => [...QKForms.base, 'settings'] as const,
 };
 
 export type FormWithStats = Form & {
@@ -51,10 +52,8 @@ export const useQueryFormsWithStats = (): UseQueryResult<
 export const useQuerySingleForm = (
   id?: number
 ): UseQueryResult<ExtendedFormType, AxiosError> => {
-  const { current } = useSiteContext();
-
   return useQuery<ExtendedFormType, AxiosError>(
-    QKForms.single(current.handle, id),
+    QKForms.single(id),
     () =>
       axios.get<ExtendedFormType>(`/api/forms/${id}`).then((res) => res.data),
     {
@@ -69,10 +68,9 @@ export const useQueryFormSettings = (): UseQueryResult<
   AxiosError
 > => {
   const dispatch = useAppDispatch();
-  const { current } = useSiteContext();
 
   return useQuery<FormSettingNamespace[], AxiosError>(
-    QKForms.settings(current.handle),
+    QKForms.settings(),
     () =>
       axios
         .get<FormSettingNamespace[]>(`/api/forms/settings`)

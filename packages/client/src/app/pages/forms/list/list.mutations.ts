@@ -1,3 +1,4 @@
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { QKForms } from '@ff-client/queries/forms';
 import type { Form } from '@ff-client/types/forms';
 import type { UseMutationResult } from '@tanstack/react-query';
@@ -12,13 +13,14 @@ export const useDeleteFormMutation = (): UseMutationResult<
   number
 > => {
   const queryClient = useQueryClient();
+  const { current } = useSiteContext();
 
   return useMutation((id) => axios.delete(`/api/forms/${id}`), {
     onMutate: (id) => {
       return id;
     },
     onSuccess: (_, id) => {
-      queryClient.setQueryData(QKForms.all, (old: Form[]) =>
+      queryClient.setQueryData(QKForms.all(current.handle), (old: Form[]) =>
         old.filter((form) => form.id !== id)
       );
     },
@@ -32,11 +34,12 @@ export const useCloneFormMutation = (): UseMutationResult<
   number
 > => {
   const queryClient = useQueryClient();
+  const { current } = useSiteContext();
 
   return useMutation((id) => axios.post(`/api/forms/${id}/clone`), {
     onMutate: (id) => id,
     onSuccess: () => {
-      queryClient.invalidateQueries(QKForms.all);
+      queryClient.invalidateQueries(QKForms.all(current.handle));
     },
   });
 };

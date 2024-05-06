@@ -31,11 +31,21 @@ class FreeformConfig implements \JsonSerializable
                 'forms' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FORMS,
                 'fields' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FIELDS,
             ],
+            'metadata' => [
+                'craft' => [
+                    'is5' => version_compare(\Craft::$app->version, '5.0.0', '>='),
+                    'version' => \Craft::$app->version,
+                ],
+                'freeform' => [
+                    'version' => $plugin->getVersion(),
+                ],
+            ],
             'editions' => [
                 'edition' => $plugin->edition,
                 'tiers' => $plugin->edition()->getEditions(),
             ],
             'sites' => [
+                'enabled' => $settingsModel->sitesEnabled,
                 'current' => $currentSite->id,
                 'list' => array_map(
                     fn (Site $site) => [

@@ -57,6 +57,7 @@ class ModalController extends BaseApiController
         $data->settings->general->handle = $handle;
         $data->settings->general->formattingTemplate = $data->formattingTemplate;
         $data->settings->general->storeData = $data->storeData;
+        $data->settings->general->sites = $data->sites;
 
         $persistData = (object) ['form' => $data];
 

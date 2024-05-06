@@ -1,10 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-} from 'react';
+import React, { createContext, useCallback, useContext } from 'react';
 import config from '@config/freeform/freeform.config';
 import type { Site } from '@ff-client/types/sites';
 
@@ -27,7 +22,6 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
   const change = useCallback(
     (site: string) => {
-      console.log('>>>', site);
       const foundSite = config.sites.list.find((s) => s.handle === site);
       if (foundSite) {
         setCurrent(foundSite);
@@ -35,12 +29,6 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
     },
     [config.sites, current]
   );
-
-  console.log(current);
-
-  useEffect(() => {
-    //
-  }, []);
 
   return (
     <SiteContext.Provider

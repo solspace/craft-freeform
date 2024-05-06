@@ -15,6 +15,15 @@ type Config = {
     forms?: number;
     fields?: number;
   };
+  metadata: {
+    craft: {
+      is5: boolean;
+      version: string;
+    };
+    freeform: {
+      version: string;
+    };
+  };
   editions: {
     edition: Edition;
     tiers: Edition[];
@@ -24,6 +33,7 @@ type Config = {
     isAtMost: (edition: Edition) => boolean;
   };
   sites: {
+    enabled: boolean;
     current: number;
     list: Site[];
   };

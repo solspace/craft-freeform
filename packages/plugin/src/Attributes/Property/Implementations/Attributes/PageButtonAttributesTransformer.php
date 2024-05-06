@@ -9,7 +9,7 @@ class PageButtonAttributesTransformer implements TransformerInterface
 {
     public function transform($value): ButtonAttributesCollection
     {
-        return new ButtonAttributesCollection($value);
+        return new ButtonAttributesCollection($value ?? []);
     }
 
     public function reverseTransform($value): object

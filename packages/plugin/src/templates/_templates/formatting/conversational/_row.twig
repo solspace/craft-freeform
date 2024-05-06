@@ -12,7 +12,7 @@
 
         {% set questionId = loop.index %}
         {% set questionTotal = loop.length %}
-        <div id="q{{ questionId }}" class="freeform-page" {{ form.attributes.row }}>
+        <div id="q{{ questionId }}" class="freeform-page" {{ form.attributes.row|raw }}>
             <div class="freeform-question">
             {% for field in row %}
 

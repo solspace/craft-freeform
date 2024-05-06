@@ -14,6 +14,7 @@ import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-la
 
 import { useLoaderAnimation } from './cell.animations';
 import {
+  CheckboxPreviewWrapper,
   FieldCellWrapper,
   Icon,
   Instructions,
@@ -97,8 +98,14 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
 
       {type.type !== Type.Group && (
         <>
-          <div dangerouslySetInnerHTML={{ __html: preview }} />
-          {isInputOnly && <FieldAssociationsBadges uid={uid} />}
+          {isInputOnly && type.type == 'checkbox' ? (
+            <CheckboxPreviewWrapper>
+              <div dangerouslySetInnerHTML={{ __html: preview }} />
+              <FieldAssociationsBadges uid={uid} />
+            </CheckboxPreviewWrapper>
+          ) : (
+            <div dangerouslySetInnerHTML={{ __html: preview }} />
+          )}
         </>
       )}
     </FieldCellWrapper>

@@ -122,3 +122,8 @@ export const FieldCellWrapper = styled.div`
     border-radius: 3px;
   }
 `;
+
+export const CheckboxPreviewWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`;

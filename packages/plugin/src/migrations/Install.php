@@ -169,7 +169,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('color', $this->string(30))
-                ->addField('isDefault', $this->boolean())
                 ->addField('sortOrder', $this->integer()),
 
             (new Table('freeform_unfinalized_files'))

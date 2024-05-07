@@ -35,27 +35,23 @@ class StatusesService extends BaseService implements StatusHandlerInterface
     private static $statusByHandleCache = [];
     private static $allStatusesLoaded;
 
-    /**
-     * Get the ID of the default status.
-     */
     public function getDefaultStatusId(): int
     {
-        $id = (new Query())
-            ->select(['id'])
-            ->from(StatusRecord::TABLE)
-            ->where(['isDefault' => true])
-            ->scalar()
+        return Freeform::getInstance()
+            ->settings
+            ->getSettingsModel()
+            ->defaults
+            ->settings
+            ->dataStorage
+            ->defaultStatus
+            ->getValue()
         ;
-
-        return (int) $id;
     }
 
     /**
-     * @param bool $indexById
-     *
      * @return StatusRecord[]
      */
-    public function getAllStatuses($indexById = true): array
+    public function getAllStatuses(bool $indexById = true): array
     {
         if (null === self::$statusCache || !self::$allStatusesLoaded) {
             self::$statusCache = [];
@@ -92,9 +88,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         return $list;
     }
 
-    /**
-     * Returns an array of status ID's.
-     */
     public function getAllStatusIds(): array
     {
         return (new Query())
@@ -105,12 +98,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         ;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return null|StatusModel
-     */
-    public function getStatusById($id)
+    public function getStatusById(int $id): ?StatusModel
     {
         if (!isset(self::$statusCache[$id])) {
             $result = $this->getStatusQuery()
@@ -129,10 +117,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         return self::$statusCache[$id];
     }
 
-    /**
-     * @return null|StatusModel
-     */
-    public function getStatusByHandle(string $handle)
+    public function getStatusByHandle(string $handle): ?StatusModel
     {
         if (!isset(self::$statusByHandleCache[$handle])) {
             $result = $this->getStatusQuery()
@@ -151,9 +136,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         return self::$statusByHandleCache[$handle];
     }
 
-    /**
-     * @throws \Exception
-     */
     public function save(StatusModel $model): bool
     {
         $isNew = !$model->id;
@@ -166,7 +148,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
 
         $record->name = $model->name;
         $record->handle = $model->handle;
-        $record->isDefault = $model->isDefault;
         $record->color = $model->color;
         $record->sortOrder = $model->sortOrder;
 
@@ -188,21 +169,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
                     $transaction->commit();
                 }
 
-                // Force other default statuses to be turned off
-                if ($record->isDefault) {
-                    \Craft::$app
-                        ->getDb()
-                        ->createCommand()
-                        ->update(
-                            StatusRecord::TABLE,
-                            ['isDefault' => 0],
-                            'id != :id',
-                            ['id' => $record->id]
-                        )
-                        ->execute()
-                    ;
-                }
-
                 $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
 
                 return true;
@@ -218,14 +184,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         return false;
     }
 
-    /**
-     * @param int $id
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    public function deleteById($id)
+    public function deleteById(int $id): bool
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -240,21 +199,19 @@ class StatusesService extends BaseService implements StatusHandlerInterface
             return false;
         }
 
+        if ($this->getDefaultStatusId() == $id) {
+            return false;
+        }
+
         $beforeDeleteEvent = new DeleteEvent($model);
         $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
         if (!$beforeDeleteEvent->isValid) {
             return false;
         }
 
-        if ($record->isDefault) {
-            return false;
-        }
-
         $transaction = \Craft::$app->getDb()->beginTransaction();
 
         try {
-            Freeform::getInstance()->submissions->swapStatuses($record->id, $this->getDefaultStatusId());
-
             $affectedRows = \Craft::$app
                 ->getDb()
                 ->createCommand()
@@ -265,8 +222,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
             if (null !== $transaction) {
                 $transaction->commit();
             }
-
-            Freeform::getInstance()->forms->swapDeletedStatusToDefault($record->id, $this->getDefaultStatusId());
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
 
@@ -282,24 +237,16 @@ class StatusesService extends BaseService implements StatusHandlerInterface
 
     public function getNextSortOrder(): int
     {
-        $maxSortOrder = (new Query())
+        return (int) (new Query())
             ->select('MAX([[sortOrder]])')
             ->from(StatusRecord::TABLE)
             ->scalar()
         ;
-
-        return (int) $maxSortOrder + 1;
     }
 
     private function createStatus(array $data): StatusModel
     {
-        $status = new StatusModel($data);
-
-        $status->isDefault = (bool) $status->isDefault;
-        $status->id = (int) $status->id;
-        $status->sortOrder = (int) $status->sortOrder;
-
-        return $status;
+        return new StatusModel($data);
     }
 
     private function getStatusQuery(): Query
@@ -310,7 +257,6 @@ class StatusesService extends BaseService implements StatusHandlerInterface
                     'statuses.id',
                     'statuses.name',
                     'statuses.handle',
-                    'statuses.isDefault',
                     'statuses.color',
                     'statuses.sortOrder',
                 ]

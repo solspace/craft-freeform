@@ -51,10 +51,14 @@
                             {{ status.handle }}
                         </code>
                     </td>
-                    <td>{% if status.isDefault %}<span data-icon="check"></span>{% endif %}</td>
-                    <td class="thin"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a></td>
+                    <td>{% if status.id == defaultStatusId %}<span data-icon="check"></span>{% endif %}</td>
                     <td class="thin">
-                        {% if currentUser.can("freeform-settingsAccess") and not status.isDefault %}
+                        {% if currentUser.can("freeform-settingsAccess") and (statuses|length) > 1 %}
+                            <a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                    <td class="thin">
+                        {% if currentUser.can("freeform-settingsAccess") and status.id != defaultStatusId and (statuses|length) > 1 %}
                             <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                         {% endif %}
                     </td>

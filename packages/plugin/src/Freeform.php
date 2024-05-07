@@ -304,7 +304,6 @@ class Freeform extends Plugin
         $status->handle = 'open';
         $status->color = 'green';
         $status->sortOrder = 2;
-        $status->isDefault = 1;
         $status->save();
 
         $status = StatusRecord::create();

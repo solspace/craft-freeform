@@ -245,27 +245,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     }
 
     /**
-     * @param int $oldStatusId
-     * @param int $newStatusId
-     */
-    public function swapStatuses($oldStatusId, $newStatusId)
-    {
-        $oldStatusId = (int) $oldStatusId;
-        $newStatusId = (int) $newStatusId;
-
-        \Craft::$app
-            ->db
-            ->createCommand()
-            ->update(
-                Submission::TABLE,
-                ['statusId' => $newStatusId],
-                'statusId = :oldStatusId',
-                ['oldStatusId' => $oldStatusId]
-            )
-        ;
-    }
-
-    /**
      * Gets all submission data by their ID's
      * And returns it as an associative array.
      */

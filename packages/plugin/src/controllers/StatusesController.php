@@ -30,7 +30,13 @@ class StatusesController extends BaseController
         $statuses = $this->getStatusesService()->getAllStatuses();
         $this->view->registerAssetBundle(StatisticsBundle::class);
 
-        return $this->renderTemplate('freeform/statuses', ['statuses' => $statuses]);
+        return $this->renderTemplate(
+            'freeform/statuses',
+            [
+                'statuses' => $statuses,
+                'defaultStatusId' => $this->getStatusesService()->getDefaultStatusId(),
+            ]
+        );
     }
 
     public function actionCreate(): Response
@@ -132,6 +138,16 @@ class StatusesController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $statusId = \Craft::$app->request->post('id');
+
+        $count = \count($this->getStatusesService()->getAllStatusIds());
+        if ($count <= 1) {
+            $this->response->statusCode = 400;
+
+            return $this->asJson([
+                'success' => false,
+                'message' => Freeform::t('You cannot delete the last status.'),
+            ]);
+        }
 
         $this->getStatusesService()->deleteById($statusId);
 

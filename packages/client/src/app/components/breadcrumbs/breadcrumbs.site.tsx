@@ -22,6 +22,10 @@ export const SiteCrumb: React.FC = () => {
     return null;
   }
 
+  if (list.length <= 1) {
+    return null;
+  }
+
   return (
     <li className="crumb">
       <a id="site-crumb" className="crumb-link">

@@ -27,7 +27,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
 
   const [initialValues, setInitialValues] = useState<GenericValue>({});
   const [state, setState] = useState<GenericValue>({
-    sites: [currentSite.handle],
+    sites: [currentSite.id],
   });
   const [errors, setErrors] = useState<GenericValue>();
 
@@ -35,13 +35,15 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
 
   useEffect(() => {
     if (data) {
-      const values = data?.reduce(
+      const values: GenericValue = data?.reduce(
         (combined, current) => ({
           ...combined,
           [current.handle]: current.value,
         }),
         {}
       );
+
+      values.sites = [currentSite.id];
 
       setState(values);
       setInitialValues(values);
@@ -51,7 +53,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
   useEffect(() => {
     setState((prev: GenericValue) => ({
       ...prev,
-      sites: [currentSite.handle],
+      sites: [currentSite.id],
     }));
   }, [currentSite.id]);
 

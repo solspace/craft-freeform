@@ -8,6 +8,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -19,17 +20,29 @@ class ProfilesController extends BaseController
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
+        $this->view->registerAssetBundle(SettingsBundle::class);
+
+        $site = SitesHelper::getCurrentCpSite();
+        $sites = \Craft::$app->sites->getEditableSites();
+        $forms = $this->getFormsService()->getAllForms(sites: $site?->handle);
+        $formIds = array_map(fn (Form $form) => $form->getId(), $forms);
 
         $exportProfileService = $this->getExportProfileService();
         $exportProfiles = $exportProfileService->getAllProfiles();
 
-        $this->view->registerAssetBundle(SettingsBundle::class);
+        $exportProfiles = array_filter(
+            $exportProfiles,
+            fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
+        );
 
         return $this->renderTemplate(
             'freeform/export/profiles',
             [
                 'exportProfiles' => $exportProfiles,
                 'exporters' => $exportProfileService->getExporterTypes(),
+                'selectedSite' => $site,
+                'selectableSites' => $sites,
+                'forms' => $forms,
             ]
         );
     }

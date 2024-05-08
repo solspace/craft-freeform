@@ -131,7 +131,7 @@ class SubmitController extends BaseController
             ],
             'Access-Control-Allow-Credentials' => !\is_array($origins) || !\in_array('*', $origins, true),
             'Access-Control-Max-Age' => 86400,
-            'Origin' => $origins,
+            'Origin' => \is_array($origins) ? $origins : [$origins],
         ];
 
         $event = new ConfigureCORSEvent($corsHeaders);

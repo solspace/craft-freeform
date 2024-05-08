@@ -193,7 +193,7 @@ class FreeformFeedService extends Component
 
         try {
             $feedUrl = App::parseEnv('$FREEFORM_API_FEED_URL');
-            if ('$FREEFORM_API_FEED_URL' === $feedUrl) {
+            if ('$FREEFORM_API_FEED_URL' === $feedUrl || null === $feedUrl) {
                 $feedUrl = self::FREEFORM_API_FEED_URL;
             }
 

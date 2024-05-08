@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.37 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting a Calendar Event to be **All Day** in the Calendar Events integration was not working.
+
 ## 3.13.36 - 2024-04-12
 
 ### Fixed

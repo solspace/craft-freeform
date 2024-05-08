@@ -105,15 +105,6 @@
         instructions: 'The color of the status circle when viewing inside CP.'|t('freeform')
     },colorField) }}
 
-    {{ forms.lightswitchField({
-        label: "Is Default"|t('freeform'),
-        instructions: "Set this status to be selected by default when creating new forms?"|t('freeform'),
-        name: "isDefault",
-        on: status.isDefault,
-        disabled: status.isDefault,
-        errors: status.errors("isDefault"),
-    }) }}
-
 {% endblock %}
 
 

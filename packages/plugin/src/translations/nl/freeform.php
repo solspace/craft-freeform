@@ -412,7 +412,7 @@ return [
     'Migrate' => 'Migreren',
     'Success Templates' => 'Sjablonen Succes',
     'Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form.' => 'Geef een relatief pad op naar de map Craft Templates waar uw map met successjablonen zich bevindt. Als je de directory nog niet hebt aangemaakt, doe dat dan voordat je deze instelling invult. Hierdoor kunt u Twig-sjabloonbestanden gebruiken voor uw succesopmaak en kan Freeform deze bestanden lokaliseren bij het toewijzen aan een formulier.',
-    'Is Default' => 'Is standaard',
+    'Default' => 'Standaard',
     'New Status' => 'Nieuwe Status',
     'Form Type' => 'Formuliertype',
     'Form Types' => 'Formulier Typen',

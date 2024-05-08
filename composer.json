@@ -49,7 +49,7 @@
     "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php"
   },
   "extra": {
-    "schemaVersion": "5.0.25",
+    "schemaVersion": "5.0.26",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

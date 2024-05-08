@@ -21,7 +21,7 @@ class FreeformConfig implements \JsonSerializable
         $edition = $plugin->edition();
 
         $currentSiteId = SitesHelper::getCurrentCpPageSiteId();
-        $sites = \Craft::$app->sites->getAllSites();
+        $sites = \Craft::$app->sites->getEditableSites();
 
         $this->config = [
             'templates' => [

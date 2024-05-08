@@ -110,7 +110,7 @@ abstract class BaseIntegration implements IntegrationInterface
     {
         $message = $exception->getMessage();
         if ($exception instanceof RequestException) {
-            $message = $exception->getResponse()->getBody()->getContents();
+            $message = (string) $exception->getResponse()->getBody();
         }
 
         Freeform::getInstance()
@@ -118,7 +118,10 @@ abstract class BaseIntegration implements IntegrationInterface
             ->getLogger(FreeformLogger::INTEGRATION)
             ->error(
                 $category.': '.$message,
-                ['exception' => $exception->getMessage()],
+                ['integration' => [
+                    'id' => $this->getId(),
+                    'handle' => $this->getHandle(),
+                ]],
             )
         ;
 

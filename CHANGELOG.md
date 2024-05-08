@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.1.19 - 2024-05-08
+
+### Changed
+- Updated the **Settings → Statuses** to no longer have conflicting logic to set the default status for new forms. This is now done in the **Settings → Form Builder** area in Freeform 5+.
+- Improved integration errors to log more meaningful error messages.
+
+### Fixed
+- Fixed a bug where the Update Notices feature for the Freeform dashboard was not working.
+- Fixed a bug where clicking the Source type an additional time would clear any option settings you currently have for Options-based field types.
+- Fixed a bug where setting `allowedGraphqlOrigins` to `false` in _general.php_ would cause form submissions to crash.
+
 ## 5.1.18.1 - 2024-05-06
 
 > [!WARNING]

@@ -7,7 +7,7 @@ export type Defaults = {
   previewHtml: boolean;
   twigInHtml: boolean;
   twigIsolation: boolean;
-  includeSamepleTempltes: boolean;
+  includeSampleTemplates: boolean;
 
   notifications: {
     admin: { template: ConfigItem<string> };

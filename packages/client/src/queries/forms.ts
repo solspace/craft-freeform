@@ -39,11 +39,11 @@ export const useQueryFormsWithStats = (): UseQueryResult<
   const { current } = useSiteContext();
 
   return useQuery<FormWithStats[], AxiosError>(
-    QKForms.all(current.handle),
+    QKForms.all(current?.handle || 'default'),
     () =>
       axios
         .get<FormWithStats[]>('/api/forms', {
-          params: { site: current.handle },
+          params: { site: current?.handle },
         })
         .then((res) => res.data)
   );

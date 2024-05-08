@@ -2,20 +2,39 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
+use craft\models\Site;
 use Solspace\Freeform\Freeform;
 
 class SitesHelper
 {
-    public static function getCurrentCpPageSiteHandle(): ?string
+    public static function getCurrentCpSite(): ?Site
     {
         if (!self::isEnabled()) {
             return null;
         }
 
-        $query = \Craft::$app->request->getQueryParam('site');
-        $server = \Craft::$app->sites->getCurrentSite()->handle;
+        $site = null;
 
-        return $query ?? $server;
+        $query = \Craft::$app->request->getQueryParam('site');
+        if ($query) {
+            $site = \Craft::$app->sites->getSiteByHandle($query);
+        }
+
+        if (!$site) {
+            $site = \Craft::$app->sites->getCurrentSite();
+        }
+
+        return $site;
+    }
+
+    public static function getCurrentCpPageSiteId(): ?int
+    {
+        return self::getCurrentCpSite()?->id;
+    }
+
+    public static function getCurrentCpPageSiteHandle(): ?string
+    {
+        return self::getCurrentCpSite()?->handle;
     }
 
     public static function getFrontendSiteHandle(): ?string

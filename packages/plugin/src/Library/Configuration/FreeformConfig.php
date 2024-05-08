@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Configuration;
 
 use craft\models\Site;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Services\SettingsService;
 
 class FreeformConfig implements \JsonSerializable
@@ -19,7 +20,7 @@ class FreeformConfig implements \JsonSerializable
         $settingsModel = $settings->getSettingsModel();
         $edition = $plugin->edition();
 
-        $currentSite = \Craft::$app->sites->currentSite;
+        $currentSiteId = SitesHelper::getCurrentCpPageSiteId();
         $sites = \Craft::$app->sites->getAllSites();
 
         $this->config = [
@@ -46,7 +47,7 @@ class FreeformConfig implements \JsonSerializable
             ],
             'sites' => [
                 'enabled' => $settingsModel->sitesEnabled,
-                'current' => $currentSite->id,
+                'current' => $currentSiteId,
                 'list' => array_map(
                     fn (Site $site) => [
                         'id' => $site->id,

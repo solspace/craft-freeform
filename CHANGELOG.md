@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.18 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting `allowedGraphqlOrigins` to `false` in _general.php_ would cause form submissions to crash.
+
 ## 4.1.17 - 2024-04-29
 
 ### Added

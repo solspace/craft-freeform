@@ -60,9 +60,11 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
           <ButtonGroup
             options={sourceLabels}
             value={source}
-            onClick={(selectedSource) =>
-              updateValue(generateDefaultValue(selectedSource as Source))
-            }
+            onClick={(selectedSource) => {
+              if (selectedSource !== source) {
+                updateValue(generateDefaultValue(selectedSource as Source));
+              }
+            }}
           />
         </ControlWrapper>
       )}

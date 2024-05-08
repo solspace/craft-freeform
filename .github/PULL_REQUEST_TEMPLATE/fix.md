@@ -1,10 +1,7 @@
 ### Related Ticket Number
-
-[Ticket number that this PR is related to]
+[ticket-number](url-to-the-ticket)
 
 ### Description
-
 Description of the problem
 
-- list of fixes and changes
-- ..
+- fixes

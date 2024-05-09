@@ -79,6 +79,7 @@ class GeneralSettings extends SettingsNamespace
 
     #[Section(self::SECTION_GENERAL)]
     #[ValueGenerator(SiteValueGenerator::class)]
+    #[VisibilityFilter('Boolean(context.config.sites.enabled)')]
     #[Validators\Required]
     #[Input\Checkboxes(
         label: 'Sites',

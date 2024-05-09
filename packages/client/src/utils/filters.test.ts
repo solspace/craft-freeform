@@ -29,5 +29,14 @@ describe('filters', () => {
 
       expect(filterTest(filters, dataset)).toBeTruthy();
     });
+
+    it('does not filter out with correct context', () => {
+      const dataset = { foo: 'bin', baz: 'qux' };
+      const filters: string[] = ['context.config.foo === "bar"'];
+
+      expect(
+        filterTest(filters, dataset, { config: { foo: 'bar' } })
+      ).toBeTruthy();
+    });
   });
 });

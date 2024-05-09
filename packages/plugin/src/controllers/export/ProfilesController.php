@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\controllers\export;
 
+use craft\helpers\Cp;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
@@ -23,7 +24,7 @@ class ProfilesController extends BaseController
         $this->view->registerAssetBundle(SettingsBundle::class);
 
         $site = SitesHelper::getCurrentCpSite();
-        $sites = \Craft::$app->sites->getEditableSites();
+        $sites = SitesHelper::getEditableSites();
         $forms = $this->getFormsService()->getAllForms(sites: $site?->handle);
         $formIds = array_map(fn (Form $form) => $form->getId(), $forms);
 
@@ -35,6 +36,26 @@ class ProfilesController extends BaseController
             fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
         );
 
+        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5.0.0', '>=');
+
+        $crumbs = [
+            ['label' => Freeform::getInstance()->name, 'url' => UrlHelper::cpUrl('freeform')],
+            ['label' => Freeform::t('Export'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
+            ['label' => Freeform::t('Profiles'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
+        ];
+
+        if ($isCraft5 && $site && \Craft::$app->getIsMultiSite()) {
+            array_unshift($crumbs, [
+                'id' => 'site-crumb',
+                'icon' => Cp::earthIcon(),
+                'label' => \Craft::t('site', $site->name),
+                'menu' => [
+                    'label' => \Craft::t('site', 'Select site'),
+                    'items' => Cp::siteMenuItems($sites, $site),
+                ],
+            ]);
+        }
+
         return $this->renderTemplate(
             'freeform/export/profiles',
             [
@@ -42,7 +63,10 @@ class ProfilesController extends BaseController
                 'exporters' => $exportProfileService->getExporterTypes(),
                 'selectedSite' => $site,
                 'selectableSites' => $sites,
+                'isCraft5' => $isCraft5,
                 'forms' => $forms,
+                'crumbs' => $crumbs,
+                'showSiteMenu' => true,
             ]
         );
     }

@@ -55,23 +55,24 @@ class SitesHelper
         return [self::getFrontendSiteHandle()];
     }
 
+    public static function getEditableSites(): array
+    {
+        return \Craft::$app->sites->getEditableSites();
+    }
+
     public static function getEditableSiteHandles(): ?array
     {
-        $sites = \Craft::$app->sites->getEditableSites();
-
         return array_map(
             fn ($site) => $site->handle,
-            $sites
+            self::getEditableSites()
         );
     }
 
     public static function getEditableSiteIds(): ?array
     {
-        $sites = \Craft::$app->sites->getEditableSites();
-
         return array_map(
             fn ($site) => $site->id,
-            $sites
+            self::getEditableSites()
         );
     }
 

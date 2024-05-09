@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.2.0 - Unreleased
+
+### Added
+- Added optional **Site Filtering** setting for forms and submissions. Allows you to filter form lists by Sites and prevents other admins from accessing forms that belong to Sites they don't have access to.
+    - This only controls access to forms and submissions. It does not enable translations per site.
+    - If you'd like to retroactively apply this change, you should run the `./craft freeform/submissions/resave` CLI command after enabling this setting.
+- Added settings for **Password** field to set a minimum number of characters to be used (_Min Length_) and whether the password should contain at least one number, one lowercase letter, one uppercase letter, and one special character (_Character Variability_).
+
+### Changed
+- Updated sample formatting templates to use `novalidate`. It was previously incorrectly being applied to inputs instead of `<form>`.
+
 ## 5.1.19.1 - 2024-05-09
 
 ### Fixed

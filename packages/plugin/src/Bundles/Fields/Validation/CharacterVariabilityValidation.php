@@ -4,13 +4,15 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
+use Solspace\Freeform\Fields\Interfaces\CharacterVariabilityInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class MaxLengthValidation extends FeatureBundle
+class CharacterVariabilityValidation extends FeatureBundle
 {
+    private const PATTERN = '/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{4,}$/';
+
     public function __construct()
     {
         Event::on(
@@ -23,7 +25,11 @@ class MaxLengthValidation extends FeatureBundle
     public function validate(ValidateEvent $event): void
     {
         $field = $event->getField();
-        if (!$field instanceof MaxLengthInterface) {
+        if (!$field instanceof CharacterVariabilityInterface) {
+            return;
+        }
+
+        if (!$field->isUseCharacterVariability()) {
             return;
         }
 
@@ -32,17 +38,9 @@ class MaxLengthValidation extends FeatureBundle
             return;
         }
 
-        $maxLength = $field->getMaxLength();
-        if ($maxLength <= 0) {
-            return;
-        }
-
-        if (\strlen($value) > $maxLength) {
+        if (!preg_match(self::PATTERN, $value)) {
             $field->addError(
-                Freeform::t(
-                    'Value must be no more than {maxLength} characters',
-                    ['maxLength' => $maxLength]
-                )
+                Freeform::t('Your password should contain at least one number, one lowercase letter, one uppercase letter, and one special character.')
             );
         }
     }

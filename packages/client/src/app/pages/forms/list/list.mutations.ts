@@ -13,15 +13,16 @@ export const useDeleteFormMutation = (): UseMutationResult<
   number
 > => {
   const queryClient = useQueryClient();
-  const { current } = useSiteContext();
+  const { getCurrentHandleWithFallback } = useSiteContext();
 
   return useMutation((id) => axios.delete(`/api/forms/${id}`), {
     onMutate: (id) => {
       return id;
     },
     onSuccess: (_, id) => {
-      queryClient.setQueryData(QKForms.all(current.handle), (old: Form[]) =>
-        old.filter((form) => form.id !== id)
+      queryClient.setQueryData(
+        QKForms.all(getCurrentHandleWithFallback()),
+        (old: Form[]) => old.filter((form) => form.id !== id)
       );
     },
   });
@@ -34,12 +35,14 @@ export const useCloneFormMutation = (): UseMutationResult<
   number
 > => {
   const queryClient = useQueryClient();
-  const { current } = useSiteContext();
+  const { getCurrentHandleWithFallback } = useSiteContext();
 
   return useMutation((id) => axios.post(`/api/forms/${id}/clone`), {
     onMutate: (id) => id,
     onSuccess: () => {
-      queryClient.invalidateQueries(QKForms.all(current.handle));
+      queryClient.invalidateQueries(
+        QKForms.all(getCurrentHandleWithFallback())
+      );
     },
   });
 };

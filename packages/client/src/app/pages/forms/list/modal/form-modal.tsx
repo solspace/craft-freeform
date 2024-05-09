@@ -27,7 +27,7 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
 
   const [initialValues, setInitialValues] = useState<GenericValue>({});
   const [state, setState] = useState<GenericValue>({
-    sites: [currentSite.id],
+    sites: currentSite ? [currentSite.id] : null,
   });
   const [errors, setErrors] = useState<GenericValue>();
 
@@ -43,7 +43,9 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
         {}
       );
 
-      values.sites = [currentSite.id];
+      if (currentSite) {
+        values.sites = [currentSite.id];
+      }
 
       setState(values);
       setInitialValues(values);
@@ -53,9 +55,9 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
   useEffect(() => {
     setState((prev: GenericValue) => ({
       ...prev,
-      sites: [currentSite.id],
+      sites: currentSite ? [currentSite.id] : null,
     }));
-  }, [currentSite.id]);
+  }, [currentSite]);
 
   const navigate = useNavigate();
 

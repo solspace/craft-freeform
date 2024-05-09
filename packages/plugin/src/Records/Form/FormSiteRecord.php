@@ -32,7 +32,7 @@ class FormSiteRecord extends ActiveRecord
         return self::TABLE;
     }
 
-    public static function updateSitesForForm(int $formId, array $siteIds)
+    public static function updateSitesForForm(int $formId, array $siteIds): void
     {
         $deletable = self::find()
             ->where(['formId' => $formId])

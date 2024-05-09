@@ -9,14 +9,18 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import config from '@config/freeform/freeform.config';
 import type { Site } from '@ff-client/types/sites';
 
+const DEFAULT_HANDLE = 'default';
+
 type ContextType = {
   current?: Site;
   list?: Site[];
   change: (site: number | string) => void;
+  getCurrentHandleWithFallback: () => string;
 };
 
 const SiteContext = createContext<ContextType>({
   change: () => void {},
+  getCurrentHandleWithFallback: () => '',
 });
 
 export const useSiteContext = (): ContextType => useContext(SiteContext);
@@ -63,6 +67,8 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
         current,
         list: config.sites.list,
         change,
+        getCurrentHandleWithFallback: () =>
+          current ? current.handle : DEFAULT_HANDLE,
       }}
     >
       {children}

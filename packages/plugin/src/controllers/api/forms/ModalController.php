@@ -10,6 +10,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\DataObjects\FormModal\CreateFormModal;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
@@ -57,7 +58,12 @@ class ModalController extends BaseApiController
         $data->settings->general->handle = $handle;
         $data->settings->general->formattingTemplate = $data->formattingTemplate;
         $data->settings->general->storeData = $data->storeData;
-        $data->settings->general->sites = $data->sites;
+
+        if (!empty($data->sites)) {
+            $data->settings->general->sites = $data->sites;
+        } else {
+            $data->settings->general->sites = SitesHelper::getEditableSiteIds();
+        }
 
         $persistData = (object) ['form' => $data];
 

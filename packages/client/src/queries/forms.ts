@@ -36,10 +36,10 @@ export const useQueryFormsWithStats = (): UseQueryResult<
   FormWithStats[],
   AxiosError
 > => {
-  const { current } = useSiteContext();
+  const { current, getCurrentHandleWithFallback } = useSiteContext();
 
   return useQuery<FormWithStats[], AxiosError>(
-    QKForms.all(current?.handle || 'default'),
+    QKForms.all(getCurrentHandleWithFallback()),
     () =>
       axios
         .get<FormWithStats[]>('/api/forms', {

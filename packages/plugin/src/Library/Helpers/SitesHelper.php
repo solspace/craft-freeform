@@ -57,14 +57,20 @@ class SitesHelper
 
     public static function getEditableSiteHandles(): ?array
     {
-        if (!self::isEnabled()) {
-            return null;
-        }
-
         $sites = \Craft::$app->sites->getEditableSites();
 
         return array_map(
             fn ($site) => $site->handle,
+            $sites
+        );
+    }
+
+    public static function getEditableSiteIds(): ?array
+    {
+        $sites = \Craft::$app->sites->getEditableSites();
+
+        return array_map(
+            fn ($site) => $site->id,
             $sites
         );
     }

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.1.19.1 - 2024-05-09
+
+### Fixed
+- Fixed a bug where attempting to update to Freeform 5.1.19 could cause the process to crash.
+- Fixed input placeholder styles for Bootstrap sample formatting templates.
+
 ## 5.1.19 - 2024-05-08
 
 ### Changed
@@ -612,6 +618,11 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.18 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting `allowedGraphqlOrigins` to `false` in _general.php_ would cause form submissions to crash.
+
 ## 4.1.17 - 2024-04-29
 
 ### Added
@@ -1093,6 +1104,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.37 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting a Calendar Event to be **All Day** in the Calendar Events integration was not working.
 
 ## 3.13.36 - 2024-04-12
 

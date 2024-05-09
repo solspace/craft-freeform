@@ -54,8 +54,8 @@ class TextField extends AbstractField implements PlaceholderInterface, DefaultVa
     {
         $description = $this->getContentGqlDescription();
 
-        if (!empty($this->maxLength)) {
-            $description[] = 'Max length: '.$this->maxLength.'.';
+        if (!empty($this->getMaxLength())) {
+            $description[] = 'Max length: '.$this->getMaxLength().'.';
         }
 
         $description = implode("\n", $description);

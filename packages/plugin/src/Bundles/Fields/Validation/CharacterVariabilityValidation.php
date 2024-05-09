@@ -40,7 +40,7 @@ class CharacterVariabilityValidation extends FeatureBundle
 
         if (!preg_match(self::PATTERN, $value)) {
             $field->addError(
-                Freeform::t('Value should contain at least one number, one lowercase letter, one uppercase letter, and one special character')
+                Freeform::t('Your password should contain at least one number, one lowercase letter, one uppercase letter, and one special character.')
             );
         }
     }

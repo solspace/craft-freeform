@@ -11,7 +11,7 @@ use yii\base\Event;
 
 class CharacterVariabilityValidation extends FeatureBundle
 {
-    private const PATTERN = '/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,}$/';
+    private const PATTERN = '/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{4,}$/';
 
     public function __construct()
     {

@@ -465,6 +465,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
         $description = $this->getContentGqlDescription();
         $description[] = 'Format: "'.$this->getHumanReadableFormat().'".';
 
+        if (!empty($this->getMaxLength())) {
+            $description[] = 'Max length: '.$this->getMaxLength().'.';
+        }
+
         $description = implode("\n", $description);
 
         return [

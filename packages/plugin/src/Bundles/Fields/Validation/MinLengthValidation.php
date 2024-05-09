@@ -4,12 +4,12 @@ namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
+use Solspace\Freeform\Fields\Interfaces\MinLengthInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class MaxLengthValidation extends FeatureBundle
+class MinLengthValidation extends FeatureBundle
 {
     public function __construct()
     {
@@ -23,7 +23,7 @@ class MaxLengthValidation extends FeatureBundle
     public function validate(ValidateEvent $event): void
     {
         $field = $event->getField();
-        if (!$field instanceof MaxLengthInterface) {
+        if (!$field instanceof MinLengthInterface) {
             return;
         }
 
@@ -32,16 +32,16 @@ class MaxLengthValidation extends FeatureBundle
             return;
         }
 
-        $maxLength = $field->getMaxLength();
-        if ($maxLength <= 0) {
+        $minLength = $field->getMinLength();
+        if ($minLength <= 0) {
             return;
         }
 
-        if (\strlen($value) > $maxLength) {
+        if (\strlen($value) < $minLength) {
             $field->addError(
                 Freeform::t(
-                    'Value must be no more than {maxLength} characters',
-                    ['maxLength' => $maxLength]
+                    'Value must be more than {minLength} characters',
+                    ['minLength' => $minLength],
                 )
             );
         }

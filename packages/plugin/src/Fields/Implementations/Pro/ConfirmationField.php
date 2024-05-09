@@ -65,6 +65,10 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
         $description = $this->getContentGqlDescription();
         $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
 
+        if (!empty($this->getMaxLength())) {
+            $description[] = 'Max length: '.$this->getMaxLength().'.';
+        }
+
         $description = implode("\n", $description);
 
         return [

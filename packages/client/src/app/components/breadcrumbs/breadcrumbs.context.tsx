@@ -4,6 +4,7 @@ import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import cloneDeep from 'lodash.clonedeep';
 
+import { SiteCrumb } from './breadcrumbs.site';
 import type { Breadcrumb } from './breadcrumbs.types';
 
 type ContextType = {
@@ -74,6 +75,7 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
   useEffect(() => {
     const crumbs = document.getElementById('crumbs');
     crumbs.style.display = 'block';
+    crumbs.style.overflow = 'initial';
     crumbs.classList.remove('empty');
   }, []);
 
@@ -83,6 +85,7 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
       {createPortal(
         <nav aria-label="Breadcrumbs">
           <ul id="crumb-list" className="breadcrumb-list">
+            <SiteCrumb />
             {stack.map(({ label, url }, i) => (
               <li key={i} className="crumb">
                 <Link to={url}>{label}</Link>

@@ -18,6 +18,11 @@ class SubmissionFieldType extends BaseRelationField
         return Freeform::t('Add a submission');
     }
 
+    public static function icon(): string
+    {
+        return '@freeform/icon-mask.svg';
+    }
+
     public static function elementType(): string
     {
         return Submission::class;

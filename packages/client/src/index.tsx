@@ -20,6 +20,7 @@ import { ImportFreeformData } from './app/pages/import/views/freeform-data/freef
 import { SurveyResults } from './app/pages/surveys/results/results';
 import { Welcome } from './app/pages/welcome/welcome';
 import { EscapeStackProvider } from './contexts/escape/escape.context';
+import { SiteProvider } from './contexts/site/site.context';
 import ManualStyles from './styles/manual';
 import { debug } from './utils/debug';
 import { generateUrl } from './utils/urls';
@@ -43,33 +44,38 @@ root.render(
   <DndProvider backend={HTML5Backend}>
     <BrowserRouter basename={generateUrl('/', false)}>
       <QueryClientProvider client={queryClient}>
-        <EscapeStackProvider>
-          <BreadcrumbProvider>
-            <PortalProvider>
-              <Breadcrumb id="root" label="Freeform" url="/forms" />
-              <ManualStyles />
-              <ReactQueryDevtools />
-              <CpNavigation />
-              <Routes>
-                <Route path="/" element={<App />}>
-                  <Route path="forms">
-                    <Route path=":formId/*" element={<Form />} />
-                    <Route index element={<Forms />} />
-                  </Route>
-                  <Route path="/surveys/:handle" element={<SurveyResults />} />
-                  <Route path="welcome" element={<Welcome />} />
-                  <Route path="import" element={<Import />}>
-                    <Route path="data" element={<ImportFreeformData />} />
+        <SiteProvider>
+          <EscapeStackProvider>
+            <BreadcrumbProvider>
+              <PortalProvider>
+                <Breadcrumb id="root" label="Freeform" url="/forms" />
+                <ManualStyles />
+                <ReactQueryDevtools />
+                <CpNavigation />
+                <Routes>
+                  <Route path="/" element={<App />}>
+                    <Route path="forms">
+                      <Route path=":formId/*" element={<Form />} />
+                      <Route index element={<Forms />} />
+                    </Route>
                     <Route
-                      path="express-forms"
-                      element={<ImportExpressForms />}
+                      path="/surveys/:handle"
+                      element={<SurveyResults />}
                     />
+                    <Route path="welcome" element={<Welcome />} />
+                    <Route path="import" element={<Import />}>
+                      <Route path="data" element={<ImportFreeformData />} />
+                      <Route
+                        path="express-forms"
+                        element={<ImportExpressForms />}
+                      />
+                    </Route>
                   </Route>
-                </Route>
-              </Routes>
-            </PortalProvider>
-          </BreadcrumbProvider>
-        </EscapeStackProvider>
+                </Routes>
+              </PortalProvider>
+            </BreadcrumbProvider>
+          </EscapeStackProvider>
+        </SiteProvider>
       </QueryClientProvider>
     </BrowserRouter>
   </DndProvider>

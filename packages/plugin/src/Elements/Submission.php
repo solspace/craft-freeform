@@ -39,6 +39,7 @@ use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
@@ -167,6 +168,21 @@ class Submission extends Element
         return Freeform::t('Submission');
     }
 
+    public static function lowerDisplayName(): string
+    {
+        return Freeform::t('submission');
+    }
+
+    public static function pluralDisplayName(): string
+    {
+        return Freeform::t('Submissions');
+    }
+
+    public static function pluralLowerDisplayName(): string
+    {
+        return Freeform::t('submissions');
+    }
+
     public static function refHandle(): ?string
     {
         return 'submission';
@@ -180,6 +196,11 @@ class Submission extends Element
     public static function hasTitles(): bool
     {
         return true;
+    }
+
+    public static function isLocalized(): bool
+    {
+        return Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
     }
 
     public static function hasStatuses(): bool
@@ -554,8 +575,10 @@ class Submission extends Element
         static $sources;
 
         if (null === $sources) {
+            $site = SitesHelper::getCurrentCpSite();
+
             $formsService = Freeform::getInstance()->forms;
-            $forms = $formsService->getAllForms();
+            $forms = $formsService->getAllForms(sites: $site?->handle);
 
             $allowedFormIds = Freeform::getInstance()->submissions->getAllowedReadFormIds();
 

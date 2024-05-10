@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import config from '@config/freeform/freeform.config';
 import type {
   GenericValue,
   VisibilityFilter,
@@ -14,8 +15,10 @@ export const useVisibility = (
       return true;
     }
 
+    const context = { config };
+
     try {
-      return filterTest(filters, values);
+      return filterTest(filters, values, context);
     } catch (error) {
       console.error(
         `Failed to evaluate visibility expression: ${filters.join(' && ')}`

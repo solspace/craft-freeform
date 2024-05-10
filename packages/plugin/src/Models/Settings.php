@@ -235,6 +235,8 @@ class Settings extends Model
 
     public bool $allowDashesInFieldHandles = false;
 
+    public bool $sitesEnabled = false;
+
     public Defaults $defaults;
 
     /**

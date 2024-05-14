@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\EventListeners;
 
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
@@ -57,18 +56,8 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_PAYMENT_GATEWAYS);
-
-        $hasIntegration = false;
-        foreach ($integrations as $integration) {
-            if ($integration instanceof Stripe && $integration->isEnabled()) {
-                $hasIntegration = true;
-
-                break;
-            }
-        }
-
-        if (!$hasIntegration) {
+        $integration = $this->integrationsProvider->getFirstForForm($form, Stripe::class, true);
+        if (!$integration) {
             return;
         }
 

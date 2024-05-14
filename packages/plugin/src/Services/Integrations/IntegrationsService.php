@@ -349,8 +349,24 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function getForForm(?Form $form = null, ?string $type = null): array
-    {
+    public function getFirstForForm(
+        ?Form $form = null,
+        ?string $type = null,
+        ?bool $enabled = null,
+        ?callable $filter = null
+    ): ?IntegrationInterface {
+        $integrations = $this->getForForm($form, $type, $enabled, $filter);
+        $first = reset($integrations);
+
+        return $first ?: null;
+    }
+
+    public function getForForm(
+        ?Form $form = null,
+        ?string $type = null,
+        ?bool $enabled = null,
+        ?callable $filter = null
+    ): array {
         static $cache;
         if (null === $cache) {
             $cache = [];
@@ -361,7 +377,17 @@ class IntegrationsService extends BaseService
         $key = ($form?->getId() ?? '0').$type;
 
         if (!isset($cache[$key])) {
-            $integrations = $this->getAllIntegrations($type);
+            $isClassType = class_exists($type) || interface_exists($type);
+
+            $integrations = $this->getAllIntegrations($isClassType ? null : $type);
+
+            // Only classes that match class type
+            if ($isClassType) {
+                $integrations = array_filter(
+                    $integrations,
+                    fn (IntegrationModel $model) => is_a($model->class, $type, true)
+                );
+            }
 
             $integrations = array_filter(
                 $integrations,
@@ -387,18 +413,18 @@ class IntegrationsService extends BaseService
                 $formIntegration = $formIntegrationRecords[$integration->id] ?? null;
                 if ($formIntegration) {
                     $metadata = JsonHelper::decode($formIntegration->metadata ?? '{}', true);
-                    $enabled = $formIntegration->enabled;
+                    $enabledOverride = $formIntegration->enabled;
                 }
 
                 if (!$formIntegration) {
                     if (isset($integration->metadata['enabledByDefault'])) {
-                        $enabled = (bool) $integration->metadata['enabledByDefault'];
+                        $enabledOverride = (bool) $integration->metadata['enabledByDefault'];
                     } else {
-                        $enabled = false;
+                        $enabledOverride = false;
                     }
                 }
 
-                $integration->enabled = $enabled;
+                $integration->enabled = $enabledOverride;
                 $integration->metadata = array_merge(
                     $integration->metadata,
                     $metadata
@@ -409,6 +435,17 @@ class IntegrationsService extends BaseService
                 fn (IntegrationModel $record) => $record->getIntegrationObject(),
                 $integrations
             );
+
+            if (null !== $enabled) {
+                $integrationObjects = array_filter(
+                    $integrationObjects,
+                    fn (IntegrationInterface $integration) => $integration->isEnabled() === $enabled
+                );
+            }
+
+            if ($filter) {
+                $integrationObjects = array_filter($integrationObjects, $filter);
+            }
 
             $eligibleIntegrationObjects = array_filter(
                 $integrationObjects,

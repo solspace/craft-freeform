@@ -14,14 +14,9 @@ namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Versions;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
-use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
-use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\BaseGoogleSheetsIntegration;
+use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Utilities\SheetsHelper;
 
 #[Type(
     name: 'Google Sheets',
@@ -32,102 +27,75 @@ use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\BaseGoogleSheetsInt
 )]
 class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
 {
-    protected const API_VERSION = 'v2';
-
-    // ==========================================
-    //                   Deals
-    // ==========================================
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
-        label: 'Map Deals',
-        instructions: 'Should map to the Deals endpoint.',
-        order: 5,
-    )]
-    protected bool $mapDeals = false;
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[ValueTransformer(FieldMappingTransformer::class)]
-    #[VisibilityFilter('Boolean(enabled)')]
-    #[VisibilityFilter('Boolean(values.mapDeals)')]
-    #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Google Sheets Deals fields',
-        order: 6,
-        source: 'api/integrations/other/fields/'.self::CATEGORY_DEAL,
-        parameterFields: ['id' => 'id'],
-    )]
-    protected ?FieldMapping $dealMapping = null;
+    protected const API_VERSION = 'v4';
 
     public function getApiRootUrl(): string
     {
         return parent::getApiRootUrl().'/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function getSheetNames(string $googleSheetsId, Client $client): array
     {
-        $this->processDeals($form, $client);
+        $url = $this->getEndpoint("spreadsheets/{$googleSheetsId}?fields=sheets(properties)");
 
-        return true;
-    }
-
-    protected function getProcessableFields(string $category): array {}
-
-    private function processDeals(Form $form, Client $client): void
-    {
-        if (!$this->mapDeals) {
-            return;
-        }
-
-        $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
-        if (!$mapping) {
-            return;
-        }
-
-        $mapping['Stage'] = $this->getStage() ?? 'Qualification';
-        $mapping['Account_Name'] = ['id' => $this->accountId];
-        $mapping['Contact_Name'] = ['id' => $this->contactId];
+        $names = [];
 
         try {
-            $response = $client->post(
-                $this->getEndpoint('/Deals'),
-                [
-                    'json' => [
-                        'data' => [$mapping],
-                    ],
-                ],
-            );
+            [, $json] = $this->getJsonResponse($client->get($url));
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
-
-            $json = json_decode((string) $response->getBody(), true);
-
-            $this->processGoogleSheetsResponseError($json);
-
-            if (isset($json['data'][0])) {
-                $data = $json['data'][0];
-
-                $this->dealId = $data['details']['id'];
-            }
-
-            if ($this->dealId && $this->contactId) {
-                $response = $client->put(
-                    $this->getEndpoint('/Contacts/'.$this->contactId.'/Deals/'.$this->dealId),
-                    [
-                        'json' => [
-                            'data' => [
-                                ['Contact_Role' => $this->getDefaultContactRoleId()],
-                            ],
-                        ],
-                    ],
-                );
-
-                $json = json_decode((string) $response->getBody(), true);
-
-                $this->processGoogleSheetsResponseError($json);
+            foreach ($json->sheets as $sheet) {
+                $names[] = $sheet->properties->title;
             }
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
         }
+
+        return $names;
+    }
+
+    public function getSheetColumnsCount(string $googleSheetsId, string $sheetName, Client $client): int
+    {
+        $url = $this->getEndpoint("spreadsheets/{$googleSheetsId}?fields=sheets(properties)");
+
+        [, $json] = $this->getJsonResponse($client->get($url));
+
+        foreach ($json->sheets as $sheetData) {
+            if ($sheetData->properties->title === $sheetName) {
+                return $sheetData->properties->gridProperties->columnCount;
+            }
+        }
+
+        return $json->sheets[0]->properties->gridProperties->columnCount;
+    }
+
+    public function push(Form $form, Client $client): void
+    {
+        $query = http_build_query([
+            'valueInputOption' => $this->isProcessValues() ? 'USER_ENTERED' : 'RAW',
+            'insertDataOption' => $this->getInsertOption() ?? self::INSERT_OPTION_OVERWRITE,
+        ]);
+
+        $spreadsheetId = $this->getGoogleSheetsId();
+        $sheet = $this->getSheet() ?: null;
+
+        $mapping = $this->processMapping($form, $this->getFieldMapping(), 'default');
+
+        $firstColumn = min(...array_keys($mapping));
+        $lastColumn = max(...array_keys($mapping));
+
+        $offset = $this->getOffset() ?: 0;
+        $range = SheetsHelper::getA1($firstColumn, $offset);
+
+        $values = [];
+        for ($i = $firstColumn; $i <= $lastColumn; ++$i) {
+            if (\array_key_exists($i, $mapping)) {
+                $values[] = $mapping[$i];
+            } else {
+                $values[] = null;
+            }
+        }
+
+        $url = $this->getEndpoint("spreadsheets/{$spreadsheetId}/values/{$sheet}!{$range}:append?{$query}");
+        $client->post($url, ['json' => ['values' => [$values]]]);
     }
 }

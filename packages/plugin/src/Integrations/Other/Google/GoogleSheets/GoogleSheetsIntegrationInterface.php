@@ -12,7 +12,16 @@
 
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
+use GuzzleHttp\Client;
+use Solspace\Freeform\Form\Form;
+
 interface GoogleSheetsIntegrationInterface
 {
     public function getGoogleSheetsId(): ?string;
+
+    public function push(Form $form, Client $client): void;
+
+    public function getSheetNames(string $googleSheetsId, Client $client): array;
+
+    public function getSheetColumnsCount(string $googleSheetsId, string $sheetName, Client $client): int;
 }

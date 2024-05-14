@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import {
   findFirstValue,
@@ -25,9 +26,10 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   updateValue,
   context,
 }) => {
+  const { formId } = useParams();
   const { source, parameterFields, emptyOption } = property;
 
-  const params: Record<string, string> = {};
+  const params: Record<string, string> = { formId };
   if (parameterFields) {
     Object.entries(parameterFields).forEach(([key, value]) => {
       params[value] = extractParameter(context, key);

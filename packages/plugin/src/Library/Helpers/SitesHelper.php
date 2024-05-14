@@ -15,9 +15,11 @@ class SitesHelper
 
         $site = null;
 
-        $query = \Craft::$app->request->getQueryParam('site');
-        if ($query) {
-            $site = \Craft::$app->sites->getSiteByHandle($query);
+        if (!\Craft::$app->request->isConsoleRequest) {
+            $query = \Craft::$app->request->getQueryParam('site');
+            if ($query) {
+                $site = \Craft::$app->sites->getSiteByHandle($query);
+            }
         }
 
         if (!$site) {

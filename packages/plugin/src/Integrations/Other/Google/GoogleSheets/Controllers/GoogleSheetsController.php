@@ -30,7 +30,7 @@ class GoogleSheetsController extends BaseApiController
 
     public function actionColumnFields(): Response
     {
-        [$form, $integration, $client, $googleSheetsId] = $this->getResources();
+        [$integration, $client, $googleSheetsId] = $this->getResources();
         if (!$googleSheetsId) {
             return $this->asSerializedJson([]);
         }
@@ -57,7 +57,7 @@ class GoogleSheetsController extends BaseApiController
     {
         $collection = new OptionCollection();
 
-        [$form, $integration, $client, $googleSheetsId] = $this->getResources();
+        [$integration, $client, $googleSheetsId] = $this->getResources();
         if (!$googleSheetsId) {
             return $this->asSerializedJson($collection);
         }
@@ -93,6 +93,6 @@ class GoogleSheetsController extends BaseApiController
 
         $client = $this->clientProvider->getAuthorizedClient($integration);
 
-        return [$form, $integration, $client, $googleSheetsId];
+        return [$integration, $client, $googleSheetsId];
     }
 }

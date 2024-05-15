@@ -39,19 +39,20 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     protected const INSERT_OPTION_OVERWRITE = 'OVERWRITE';
     protected const INSERT_OPTION_INSERT_ROWS = 'INSERT_ROWS';
 
-    #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Required]
     #[Input\Text(
-        label: 'Google Sheets Id',
+        label: 'Google Sheets ID',
+        instructions: 'Enter your Google Sheets ID.',
         order: 4,
-        placeholder: 'Enter your Google Sheets ID.',
+        placeholder: 'E.g. 4hzvcabRd6yZwux7vK80-NK02zSDD7U-X8MePslAiHvc',
     )]
     protected ?string $googleSheetsId = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\DynamicSelect(
-        label: 'Sheet (Optional)',
-        instructions: 'Select the sheet you want to push data to. If left empty, it will push to the first sheet.',
+        label: 'Sheet (optional)',
+        instructions: 'Choose the sheet the data should be pushed to. If you leave this field empty, the data will automatically be pushed to the first sheet.',
         order: 5,
         emptyOption: 'First Sheet',
         source: 'api/google-sheets/sheets',
@@ -64,30 +65,30 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Integer(
-        label: 'Offset (Optional)',
-        instructions: 'Enter the number of rows to skip from the beginning. (0 to start from the first row, 3 to skip the first 3 rows, etc.)',
+        label: 'Row Offset (optional)',
+        instructions: "Enter the number of rows to skip from the beginning of the sheet. Input '0' to start from the first row, or '3' to skip the first 3 rows, and so on.",
         order: 5,
         placeholder: '0',
     )]
     protected ?int $offset = null;
 
     #[Input\Boolean(
-        label: 'Process User Input',
-        instructions: 'If will treat the data as user entered and convert to formulas, formats, dates, etc. Otherwise it won\'t',
+        label: 'Process User-inputted Formulas and Formats',
+        instructions: 'Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.',
         order: 6,
     )]
     protected bool $processValues = false;
 
     #[Input\Select(
-        label: 'Insert Option',
-        instructions: 'Select how to insert data into the Google Sheet.',
+        label: 'Row Insert Behavior',
+        instructions: "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data.",
         order: 7,
         options: [
-            self::INSERT_OPTION_OVERWRITE => 'Overwrite',
-            self::INSERT_OPTION_INSERT_ROWS => 'Insert Rows',
+            self::INSERT_OPTION_INSERT_ROWS => 'Insert New Row',
+            self::INSERT_OPTION_OVERWRITE => 'Replace Next Empty Row',
         ],
     )]
-    protected string $insertOption = self::INSERT_OPTION_OVERWRITE;
+    protected string $insertOption = self::INSERT_OPTION_INSERT_ROWS;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]

@@ -37,11 +37,35 @@ class FormIntegrationsProvider
     }
 
     /**
-     * @return IntegrationInterface[]
+     * @template T of IntegrationInterface
+     *
+     * @param null|class-string<T> $type
+     *
+     * @return T[]
      */
-    public function getForForm(?Form $form = null, ?string $type = null): array
-    {
-        return $this->integrationsService->getForForm($form, $type);
+    public function getForForm(
+        ?Form $form = null,
+        ?string $type = null,
+        ?bool $enabled = null,
+        ?callable $filter = null
+    ): array {
+        return $this->integrationsService->getForForm($form, $type, $enabled, $filter);
+    }
+
+    /**
+     * @template T of IntegrationInterface
+     *
+     * @param null|class-string<T> $type
+     *
+     * @return null|T
+     */
+    public function getFirstForForm(
+        ?Form $form = null,
+        ?string $type = null,
+        ?bool $enabled = null,
+        ?callable $filter = null
+    ): ?IntegrationInterface {
+        return $this->integrationsService->getFirstForForm($form, $type, $enabled, $filter);
     }
 
     /**

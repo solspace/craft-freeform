@@ -26,6 +26,7 @@ use Stripe\StripeClient;
 #[Type(
     name: 'Stripe',
     type: Type::TYPE_PAYMENT_GATEWAYS,
+    readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class Stripe extends PaymentGatewayIntegration

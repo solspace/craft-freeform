@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Integration\Type as IntegrationType;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -365,15 +364,11 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         ]);
 
         $provider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $integrations = $provider->getForForm($this->getForm(), IntegrationType::TYPE_PAYMENT_GATEWAYS);
+        $integrations = $provider->getForForm($this->getForm(), Stripe::class, true);
 
         $fieldMapping = [];
         foreach ($integrations as $integration) {
-            if (
-                $integration instanceof Stripe
-                && $integration->isEnabled()
-                && $integration->getId() === $this->integration->getId()
-            ) {
+            if ($integration->getId() === $this->integration->getId()) {
                 $fieldMapping = $integration->getMappedFieldHandles($this->getForm());
 
                 break;

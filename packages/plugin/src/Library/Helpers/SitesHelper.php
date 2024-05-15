@@ -80,6 +80,10 @@ class SitesHelper
 
     public static function isEnabled(): bool
     {
+        if (!Freeform::getInstance()->edition()->isAtLeast(Freeform::EDITION_PRO)) {
+            return false;
+        }
+
         return Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
     }
 }

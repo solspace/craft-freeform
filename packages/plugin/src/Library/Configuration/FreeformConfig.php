@@ -46,7 +46,7 @@ class FreeformConfig implements \JsonSerializable
                 'tiers' => $plugin->edition()->getEditions(),
             ],
             'sites' => [
-                'enabled' => $settingsModel->sitesEnabled,
+                'enabled' => SitesHelper::isEnabled(),
                 'current' => $currentSiteId,
                 'list' => array_map(
                     fn (Site $site) => [

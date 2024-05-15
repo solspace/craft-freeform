@@ -200,7 +200,7 @@ class Submission extends Element
 
     public static function isLocalized(): bool
     {
-        return Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
+        return SitesHelper::isEnabled();
     }
 
     public static function hasStatuses(): bool

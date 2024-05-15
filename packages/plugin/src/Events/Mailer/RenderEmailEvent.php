@@ -60,6 +60,27 @@ class RenderEmailEvent extends ArrayableEvent
         return $this;
     }
 
+    public function get(string $key): mixed
+    {
+        return $this->getFieldValue($key);
+    }
+
+    public function add(string $key, mixed $value): self
+    {
+        $this->setFieldValue($key, $value);
+
+        return $this;
+    }
+
+    public function addBatch(array $values): self
+    {
+        foreach ($values as $key => $value) {
+            $this->add($key, $value);
+        }
+
+        return $this;
+    }
+
     public function getSubmission(): ?Submission
     {
         return $this->submission;

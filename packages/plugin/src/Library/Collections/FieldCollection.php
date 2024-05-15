@@ -40,6 +40,14 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return null;
     }
 
+    public function ids(): array
+    {
+        return array_map(
+            fn (FieldInterface $field) => $field->getId(),
+            $this->fields
+        );
+    }
+
     public function has(mixed $identificator): bool
     {
         try {

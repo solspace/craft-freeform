@@ -80,8 +80,8 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
 
         $mapping = $this->processMapping($form, $this->getFieldMapping(), 'default');
 
-        $firstColumn = min(...array_keys($mapping));
-        $lastColumn = max(...array_keys($mapping));
+        $firstColumn = min(9999999, ...array_keys($mapping));
+        $lastColumn = max(0, ...array_keys($mapping));
 
         $offset = $this->getOffset() ?: 0;
         $rangeStart = SheetsHelper::getA1($firstColumn, $offset);

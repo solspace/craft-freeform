@@ -42,8 +42,8 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Required]
     #[Input\Text(
-        label: 'Google Sheets ID',
-        instructions: 'Enter your Google Sheets ID.',
+        label: 'Google Sheets Spreadsheet ID',
+        instructions: 'Enter your Google Sheets spreadsheet ID.',
         order: 4,
         placeholder: 'E.g. 4hzvcabRd6yZwux7vK80-NK02zSDD7U-X8MePslAiHvc',
     )]

@@ -50,6 +50,8 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     protected ?string $googleSheetsId = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.googleSheetsId)')]
     #[Input\DynamicSelect(
         label: 'Sheet (optional)',
         instructions: 'Choose the sheet the data should be pushed to. If you leave this field empty, the data will automatically be pushed to the first sheet.',
@@ -64,6 +66,8 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     protected ?string $sheet;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.googleSheetsId)')]
     #[Input\Integer(
         label: 'Row Offset (optional)',
         instructions: "Enter the number of rows to skip from the beginning of the sheet. Input '0' to start from the first row, or '3' to skip the first 3 rows, and so on.",
@@ -93,6 +97,7 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.googleSheetsId)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Google Sheet columns',
         order: 9,

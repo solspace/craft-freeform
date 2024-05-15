@@ -281,7 +281,7 @@ class IntegrationsService extends BaseService
                 continue;
             }
 
-            $value = $model->metadata[$property->handle];
+            $value = $model->metadata[$property->handle] ?? null;
             if ($value) {
                 $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }

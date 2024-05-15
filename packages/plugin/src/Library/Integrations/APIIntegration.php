@@ -69,11 +69,7 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
                 $value
             );
 
-            Event::trigger(
-                APIIntegrationInterface::class,
-                APIIntegrationInterface::EVENT_PROCESS_VALUE,
-                $event
-            );
+            Event::trigger($this, self::EVENT_PROCESS_VALUE, $event);
 
             $keyValueMap[$key] = $event->getValue();
         }

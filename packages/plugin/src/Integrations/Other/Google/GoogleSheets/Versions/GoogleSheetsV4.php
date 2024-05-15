@@ -84,7 +84,9 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
         $lastColumn = max(...array_keys($mapping));
 
         $offset = $this->getOffset() ?: 0;
-        $range = SheetsHelper::getA1($firstColumn, $offset);
+        $rangeStart = SheetsHelper::getA1($firstColumn, $offset);
+        $rangeEnd = SheetsHelper::getA1($lastColumn, $offset);
+        $range = $rangeStart.':'.$rangeEnd;
 
         $values = [];
         for ($i = $firstColumn; $i <= $lastColumn; ++$i) {

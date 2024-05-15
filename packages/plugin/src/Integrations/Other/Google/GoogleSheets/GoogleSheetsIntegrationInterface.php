@@ -14,8 +14,9 @@ namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 
-interface GoogleSheetsIntegrationInterface
+interface GoogleSheetsIntegrationInterface extends APIIntegrationInterface
 {
     public function getGoogleSheetsId(): ?string;
 

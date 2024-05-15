@@ -69,10 +69,6 @@ class EmailMarketingBundle extends FeatureBundle
         /** @var EmailMarketingIntegrationInterface[] $integrations */
         $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_EMAIL_MARKETING);
         foreach ($integrations as $integration) {
-            if (!$integration->isEnabled()) {
-                continue;
-            }
-
             $client = $this->clientProvider->getAuthorizedClient($integration);
 
             try {

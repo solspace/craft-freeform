@@ -416,7 +416,7 @@ return [
     'Migrate' => 'Migrate',
     'Success Templates' => 'Success Templates',
     'Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form.' => 'Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form.',
-    'Is Default' => 'Is Default',
+    'Default' => 'Default',
     'New Status' => 'New Status',
     'Form Type' => 'Form Type',
     'Form Types' => 'Form Types',

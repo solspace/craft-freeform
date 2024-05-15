@@ -29,9 +29,6 @@ label.required:after {
     color: #d00;
     margin-left: 3px;
 }
-input::placeholder {
-    color: #a2a6aa !important;
-}
 .alert p:last-of-type {
     margin-bottom: 0;
 }

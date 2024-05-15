@@ -13,6 +13,7 @@ use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\ActiveRecord;
@@ -57,6 +58,7 @@ class FormDuplicator
         $this->clonePages($form);
         $this->cloneRows($form);
         $this->cloneFields($form);
+        $this->cloneSites($form);
 
         $form = $this->formsService->getFormById($form->id);
 
@@ -102,7 +104,7 @@ class FormDuplicator
         return $clone;
     }
 
-    private function cloneLayouts(FormRecord $form)
+    private function cloneLayouts(FormRecord $form): void
     {
         foreach ($this->layouts as $id => $layout) {
             $clone = new FormLayoutRecord();
@@ -121,7 +123,7 @@ class FormDuplicator
         }
     }
 
-    private function clonePages(FormRecord $form)
+    private function clonePages(FormRecord $form): void
     {
         foreach ($this->pages as $id => $page) {
             $clone = new FormPageRecord();
@@ -140,7 +142,7 @@ class FormDuplicator
         }
     }
 
-    private function cloneRows(FormRecord $form)
+    private function cloneRows(FormRecord $form): void
     {
         foreach ($this->rows as $id => $row) {
             $clone = new FormRowRecord();
@@ -159,7 +161,7 @@ class FormDuplicator
         }
     }
 
-    private function cloneFields(FormRecord $form)
+    private function cloneFields(FormRecord $form): void
     {
         foreach ($this->fields as $id => $field) {
             $clone = new FormFieldRecord();
@@ -182,6 +184,18 @@ class FormDuplicator
             }
 
             $this->fields[$id] = $clone;
+        }
+    }
+
+    private function cloneSites(FormRecord $form): void
+    {
+        $siteIds = FormSiteRecord::find(['formId' => $form->id])->select('siteId')->column();
+
+        foreach ($siteIds as $siteId) {
+            $siteRecord = new FormSiteRecord();
+            $siteRecord->formId = $form->id;
+            $siteRecord->siteId = $siteId;
+            $siteRecord->save();
         }
     }
 

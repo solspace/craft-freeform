@@ -8,6 +8,7 @@ import {
   ModalHeader,
 } from '@components/modals/modal.styles';
 import type { ModalContainerProps } from '@components/modals/modal.types';
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { Form } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
@@ -21,17 +22,20 @@ import { FormWrapper } from './form-modal.styles';
 export const CreateFormModal: React.FC<ModalContainerProps> = ({
   closeModal,
 }) => {
+  const { current: currentSite } = useSiteContext();
   const [isSaving, setIsSaving] = useState(false);
 
   const [initialValues, setInitialValues] = useState<GenericValue>({});
-  const [state, setState] = useState<GenericValue>({});
+  const [state, setState] = useState<GenericValue>({
+    sites: currentSite ? [currentSite.id] : null,
+  });
   const [errors, setErrors] = useState<GenericValue>();
 
   const { data, isFetching } = useFetchFormModalType();
 
   useEffect(() => {
     if (data) {
-      const values = data?.reduce(
+      const values: GenericValue = data?.reduce(
         (combined, current) => ({
           ...combined,
           [current.handle]: current.value,
@@ -39,10 +43,21 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
         {}
       );
 
+      if (currentSite) {
+        values.sites = [currentSite.id];
+      }
+
       setState(values);
       setInitialValues(values);
     }
   }, [data]);
+
+  useEffect(() => {
+    setState((prev: GenericValue) => ({
+      ...prev,
+      sites: currentSite ? [currentSite.id] : null,
+    }));
+  }, [currentSite]);
 
   const navigate = useNavigate();
 

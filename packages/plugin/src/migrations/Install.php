@@ -40,6 +40,14 @@ class Install extends StreamlinedInstallMigration
                     ForeignKey::CASCADE
                 ),
 
+            (new Table('freeform_forms_sites'))
+                ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('siteId', $this->integer()->notNull())
+                ->addIndex(['siteId', 'formId'], true)
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('siteId', 'sites', 'id', ForeignKey::CASCADE),
+
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())
                 ->addField('formId', $this->integer()->notNull())
@@ -169,7 +177,6 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('color', $this->string(30))
-                ->addField('isDefault', $this->boolean())
                 ->addField('sortOrder', $this->integer()),
 
             (new Table('freeform_unfinalized_files'))

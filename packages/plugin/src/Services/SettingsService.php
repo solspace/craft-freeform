@@ -52,7 +52,7 @@ class SettingsService extends BaseService
             $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
             $honeypot = $integrationProvider->getSingleton($form, Honeypot::class);
 
-            return $honeypot && $honeypot->isEnabled();
+            return (bool) $honeypot;
         }
 
         return false;
@@ -245,7 +245,8 @@ class SettingsService extends BaseService
             'integrations/captchas' => ['title' => Freeform::t('Captchas')],
             'integrations/payment-gateways' => ['title' => Freeform::t('Payments')],
             'integrations/webhooks' => ['title' => Freeform::t('Webhooks')],
-            'integrations/single' => ['title' => Freeform::t('Other')],
+            'integrations/single' => ['title' => Freeform::t('Single')],
+            'integrations/other' => ['title' => Freeform::t('Other')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'error-log' => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],
@@ -290,6 +291,7 @@ class SettingsService extends BaseService
             'integrations/elements',
             'integrations/webhooks',
             'integrations/single',
+            'integrations/other',
         ];
 
         return !\in_array($sectionName, $nonSettingSections, true);

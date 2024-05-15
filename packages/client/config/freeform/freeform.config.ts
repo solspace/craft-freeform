@@ -1,3 +1,5 @@
+import type { Site } from '@ff-client/types/sites';
+
 export enum Edition {
   Pro = 'pro',
   Lite = 'lite',
@@ -13,6 +15,15 @@ type Config = {
     forms?: number;
     fields?: number;
   };
+  metadata: {
+    craft: {
+      is5: boolean;
+      version: string;
+    };
+    freeform: {
+      version: string;
+    };
+  };
   editions: {
     edition: Edition;
     tiers: Edition[];
@@ -20,6 +31,11 @@ type Config = {
     is: (edition: Edition) => boolean;
     isAtLeast: (edition: Edition) => boolean;
     isAtMost: (edition: Edition) => boolean;
+  };
+  sites: {
+    enabled: boolean;
+    current: number;
+    list: Site[];
   };
 };
 

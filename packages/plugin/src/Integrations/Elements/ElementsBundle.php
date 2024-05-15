@@ -14,7 +14,6 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\MailerService;
@@ -166,16 +165,12 @@ class ElementsBundle extends FeatureBundle
      */
     private function getElementIntegrations(Form $form): array
     {
-        $integrations = $this->integrationsProvider->getForForm($form);
-        $integrations = array_filter(
-            $integrations,
-            fn (IntegrationInterface $integration) => $integration instanceof ElementIntegrationInterface
-        );
+        $integrations = $this->integrationsProvider->getForForm($form, ElementIntegrationInterface::class);
 
         return array_values(
             array_filter(
                 $integrations,
-                fn (ElementIntegrationInterface $integration) => $integration->isEnabled() && $integration->isConnectable()
+                fn (ElementIntegrationInterface $integration) => $integration->isConnectable()
             )
         );
     }

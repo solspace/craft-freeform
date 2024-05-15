@@ -10,6 +10,7 @@
         row: { class: "row" },
         success: { class: "alert alert-success" },
         errors: { class: "alert alert-danger" },
+        novalidate: true,
     },
     buttons: {
         attributes: {
@@ -23,7 +24,6 @@
             attributes: {
                 container: { class: "mb-3 col-12" },
                 input: {
-                    novalidate: true,
                     class: "form-control"
                 },
                 label: { class: "mb-1" },
@@ -93,12 +93,12 @@
 {# Success and error message handling for non-AJAX forms #}
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
-        <div{{ form.attributes.success }}>
+        <div{{ form.attributes.success|raw }}>
             <p>{{ form.settings.successMessage | t('freeform') }}</p>
         </div>
     {% endif %}
     {% if form.hasErrors %}
-        <div{{ form.attributes.errors }}>
+        <div{{ form.attributes.errors|raw }}>
             <p>{{ form.settings.errorMessage | t('freeform') }}</p>
 
             {% if form.errors|length %}

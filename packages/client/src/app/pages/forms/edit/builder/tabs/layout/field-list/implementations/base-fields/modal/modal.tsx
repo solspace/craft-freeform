@@ -87,7 +87,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   return (
     <ModalContainer style={{ maxWidth: '70%' }}>
       <ModalHeader>
-        <h1>{translate('Field Manager')}</h1>
+        <h1>{translate('Field Type Manager')}</h1>
       </ModalHeader>
       <ManagerWrapper>
         <GroupWrapper

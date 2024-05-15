@@ -49,8 +49,16 @@ class PropertyProvider
     ): void {
         $editableProperties = $this->getEditableProperties($object);
 
-        foreach ($properties as $key => $value) {
+        $propertyValueStack = $properties;
+        foreach ($editableProperties as $property) {
+            if (!\array_key_exists($property->handle, $propertyValueStack)) {
+                $propertyValueStack[$property->handle] = null;
+            }
+        }
+
+        foreach ($propertyValueStack as $key => $value) {
             $editableProperty = $editableProperties->get($key);
+
             if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
                 $value = $editableProperty->transformer->transform($value);
             }

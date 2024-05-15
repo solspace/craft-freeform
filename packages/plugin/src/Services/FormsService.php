@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\base\Event;
 use craft\db\Query;
+use craft\db\Table;
 use craft\helpers\App;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
@@ -33,6 +34,7 @@ use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Error\LoaderError;
@@ -49,7 +51,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     /** @var Form[] */
     private static array $formsByHandle = [];
 
-    private static bool $allFormsLoaded = false;
+    private static array $allFormsCache = [];
 
     private static array $spamCountIncrementedForms = [];
 
@@ -61,31 +63,36 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @return Form[]
      */
-    public function getAllForms(bool $orderByName = false): array
+    public function getAllForms(bool $orderByName = false, null|array|string $sites = null): array
     {
-        if (null === self::$formsById || !self::$allFormsLoaded) {
+        if ($sites && \is_array($sites)) {
+            sort($sites);
+        }
+
+        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
+        if (!\array_key_exists($key, self::$allFormsCache)) {
             $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $sites);
             if ($orderByName) {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 
             $results = $query->all();
 
-            self::$formsById = [];
+            self::$allFormsCache[$key] = [];
             foreach ($results as $result) {
                 try {
                     $form = $this->createForm($result);
 
+                    self::$allFormsCache[$key][$form->getId()] = $form;
                     self::$formsById[$form->getId()] = $form;
                     self::$formsByHandle[$form->getHandle()] = $form;
                 } catch (InvalidFormTypeException) {
                 }
             }
-
-            self::$allFormsLoaded = true;
         }
 
-        return self::$formsById;
+        return self::$allFormsCache[$key];
     }
 
     public function getResolvedForms(array $arguments = []): array
@@ -154,10 +161,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
-    public function getFormById(int $id, bool $refresh = false): ?Form
+    public function getFormById(int $id, bool $refresh = false, ?string $site = null): ?Form
     {
         if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$id]))) {
-            $result = $this->getFormQuery()->where(['id' => $id])->one();
+            $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $site);
+            $query->where(['forms.id' => $id]);
+
+            $result = $query->one();
             if (!$result) {
                 self::$formsById[$id] = null;
 
@@ -177,10 +188,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById[$id];
     }
 
-    public function getFormByHandle(string $handle): ?Form
+    public function getFormByHandle(string $handle, ?string $site = null): ?Form
     {
         if (null === self::$formsByHandle || !isset(self::$formsByHandle[$handle])) {
-            $result = $this->getFormQuery()->where(['handle' => $handle])->one();
+            $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $site);
+            $query->andWhere(['forms.handle' => $handle]);
+
+            $result = $query->one();
             if (!$result) {
                 self::$formsByHandle[$handle] = null;
 
@@ -200,13 +215,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsByHandle[$handle];
     }
 
-    public function getFormByHandleOrId(int|string $handleOrId): ?Form
+    public function getFormByHandleOrId(int|string $handleOrId, ?string $site = null): ?Form
     {
         if (is_numeric($handleOrId)) {
-            return $this->getFormById($handleOrId);
+            return $this->getFormById($handleOrId, site: $site);
         }
 
-        return $this->getFormByHandle($handleOrId);
+        return $this->getFormByHandle($handleOrId, $site);
     }
 
     /**
@@ -318,6 +333,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($customTemplates as $template) {
             if (str_ends_with($template->getFilePath(), $templateName)) {
                 $templatePath = $template->getFilePath();
+                $templatePath = str_replace(\Craft::getAlias('@templates/'), '', $templatePath);
 
                 break;
             }
@@ -327,6 +343,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             foreach ($solspaceTemplates as $template) {
                 if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
+                    $templatePath = str_replace(\Craft::getAlias('@freeform/templates/'), '', $templatePath);
+                    $templatePath = 'freeform/'.$templatePath;
                     $templateMode = View::TEMPLATE_MODE_CP;
 
                     break;
@@ -334,7 +352,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
         }
 
-        if (null === $templatePath || !file_exists($templatePath)) {
+        if (null === $templatePath) {
             throw new FreeformException(
                 Freeform::t(
                     "Form template '{name}' not found",
@@ -343,8 +361,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $output = \Craft::$app->view->renderString(
-            file_get_contents($templatePath),
+        $output = \Craft::$app->view->renderTemplate(
+            $templatePath,
             [
                 'form' => $form,
                 'formCss' => $this->getFormattingTemplateCss($templateName),
@@ -369,12 +387,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($templates as $template) {
             if ($template->getFileName() === $templateName) {
                 $templatePath = $template->getFilePath();
+                $templatePath = str_replace(\Craft::getAlias('@templates/'), '', $templatePath);
 
                 break;
             }
         }
 
-        if (null === $templatePath || !file_exists($templatePath)) {
+        if (null === $templatePath) {
             throw new FreeformException(
                 Freeform::t(
                     "Success template '{name}' not found",
@@ -383,8 +402,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $output = \Craft::$app->view->renderString(
-            file_get_contents($templatePath),
+        $output = \Craft::$app->view->renderTemplate(
+            $templatePath,
             ['form' => $form]
         );
 
@@ -540,6 +559,25 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return null;
+    }
+
+    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    {
+        if (null === $sites) {
+            return;
+        }
+
+        if (\is_string($sites)) {
+            $sites = [$sites];
+        }
+
+        $sites = array_filter($sites);
+
+        $query
+            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
+            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
+            ->andWhere(['in', 'sites.[[handle]]', $sites])
+        ;
     }
 
     private function getFormQuery(): Query

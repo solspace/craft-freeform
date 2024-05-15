@@ -1,5 +1,76 @@
 # Solspace Freeform Changelog
 
+## 5.2.0 - 2024-05-15
+
+### Added
+- Added optional **Site Filtering** setting for forms and submissions (Pro). This setting allows you to filter form lists by Sites and prevents other admins from accessing forms that belong to Sites they don't have access to.
+    - This only controls access to forms and submissions. It does not enable translations per site.
+    - If you'd like to apply this change retroactively, you should run the `./craft freeform/submissions/resave` CLI command after enabling this setting.
+- Added settings for **Password** field to set a minimum number of characters to be used (_Min Length_) and whether the password should contain at least one number, one lowercase letter, one uppercase letter, and one special character (_Character Variability_).
+- Added an integration for **Google Sheets** (Pro).
+
+### Changed
+- Updated sample formatting templates to use `novalidate`. It was previously incorrectly applied to inputs instead of `<form>`.
+
+### Fixed
+- Fixed a bug where Stripe payment information was unavailable in email notifications.
+
+## 5.1.19.1 - 2024-05-09
+
+### Fixed
+- Fixed a bug where attempting to update to Freeform 5.1.19 could cause the process to crash.
+- Fixed input placeholder styles for Bootstrap sample formatting templates.
+
+## 5.1.19 - 2024-05-08
+
+### Changed
+- Updated the **Settings → Statuses** to no longer have conflicting logic to set the default status for new forms. This is now done in the **Settings → Form Builder** area in Freeform 5+.
+- Improved integration errors to log more meaningful error messages.
+
+### Fixed
+- Fixed a bug where the Update Notices feature for the Freeform dashboard was not working.
+- Fixed a bug where clicking the Source type an additional time would clear any option settings you currently have for Options-based field types.
+- Fixed a bug where setting `allowedGraphqlOrigins` to `false` in _general.php_ would cause form submissions to crash.
+
+## 5.1.18.1 - 2024-05-06
+
+> [!WARNING]
+> If you are experiencing visual issues with form layouts and styles on the front end, please update Freeform and ensure you're adding the `|raw` filter to `form.attributes.success` and `form.attributes.errors` in any custom formatting templates you may have when not using AJAX.
+
+### Changed
+- Added the `|raw` filter to `form.attributes.success` and `form.attributes.errors` in sample formatting templates as they began parsing with an extra set of quotes around them when not using AJAX.
+
+## 5.1.18 - 2024-05-06
+
+> [!WARNING]
+> If you are experiencing visual issues with form layouts and styles on the front end, please update Freeform and ensure you're adding the `|raw` filter to `form.attributes.row` in any custom formatting templates you may have.
+
+### Changed
+- Added the `|raw` filter to `form.attributes.row` in sample formatting templates as they began parsing with an extra set of quotes around them.
+
+### Fixed
+- Fixed a bug where forms would fail when loading if a **Confirm** field was used and the **Duplicate Check** setting was set to _Anyone - Once per Email Address_.
+- Fixed a bug where the form builder's field association badges for Checkbox, HTML, and Rich Text fields did not display correctly.
+
+## 5.1.17 - 2024-05-03
+
+### Added
+- Added **Assets** as an Element source for populating Freeform field options.
+- Confirmed compatibility with Craft 5.1.x.
+
+### Changed
+- Improved Twig template debugging for formatting templates.
+- Updated **Tailwind** formatting template to have instructions below the field label instead of below the input.
+- Updated the JSON payload from forms to no longer contain details of the user(s) that created and last updated the form.
+- Updated the **Field Type Manager** to store field types set to hidden in the database instead of the Project Config file.
+
+### Fixed
+- Fixed a bug where Freeform fields with long handles could cause Craft's search indexing jobs to fail.
+- Fixed a bug where Export Notifications would fail if they contained multiple email addresses.
+- Fixed a bug where conditional rules were outputted to the browser console.
+- Fixed a bug where some integration could fail due to model properties being before EVENT_BEFORE_SAVE.
+- Fixed a bug where Notification Persistence would throw errors if the form upsert event has errors.
+
 ## 5.1.16.1 - 2024-04-29
 
 ### Fixed
@@ -562,6 +633,11 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.18 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting `allowedGraphqlOrigins` to `false` in _general.php_ would cause form submissions to crash.
+
 ## 4.1.17 - 2024-04-29
 
 ### Added
@@ -1043,6 +1119,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.37 - 2024-05-08
+
+### Fixed
+- Fixed a bug where setting a Calendar Event to be **All Day** in the Calendar Events integration was not working.
 
 ## 3.13.36 - 2024-04-12
 

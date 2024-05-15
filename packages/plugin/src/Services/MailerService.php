@@ -293,7 +293,7 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     private function getFieldValues(FieldCollection $fields, Form $form, ?Submission $submission = null): array
     {
-        $postedValues = [];
+        $values = [];
         $usableFields = [];
         $fieldsAndBlocks = [];
 
@@ -314,23 +314,23 @@ class MailerService extends BaseService implements MailHandlerInterface
 
             $fieldsAndBlocks[] = $field;
             $usableFields[] = $field;
-            $postedValues[$field->getHandle()] = $field;
+            $values[$field->getHandle()] = $field;
         }
 
         // TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->hasFields(PaymentFieldInterface::class)) {
             $payments = PaymentRecord::findAll(['submissionId' => $submission->getId()]);
-            $postedValues['payments'] = $payments;
+            $values['payments'] = $payments;
         }
 
-        $postedValues['allFields'] = $usableFields;
-        $postedValues['allFieldsAndBlocks'] = $fieldsAndBlocks;
-        $postedValues['form'] = $form;
-        $postedValues['submission'] = $submission;
-        $postedValues['dateCreated'] = new \DateTime();
-        $postedValues['token'] = $submission?->token;
+        $values['allFields'] = $usableFields;
+        $values['allFieldsAndBlocks'] = $fieldsAndBlocks;
+        $values['form'] = $form;
+        $values['submission'] = $submission;
+        $values['dateCreated'] = new \DateTime();
+        $values['token'] = $submission?->token;
 
-        return $postedValues;
+        return $values;
     }
 
     private function notifyAboutEmailSendingError(

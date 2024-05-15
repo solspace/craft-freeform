@@ -16,8 +16,10 @@ use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\SiteOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTemplateGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SiteValueGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
@@ -74,6 +76,18 @@ class GeneralSettings extends SettingsNamespace
         options: FormTypeOptions::class,
     )]
     public string $type = Regular::class;
+
+    #[Section(self::SECTION_GENERAL)]
+    #[ValueGenerator(SiteValueGenerator::class)]
+    #[VisibilityFilter('Boolean(context.config.sites.enabled)')]
+    #[Input\Checkboxes(
+        label: 'Sites',
+        instructions: 'Select the sites where this form should be available.',
+        order: 4,
+        selectAll: true,
+        options: SiteOptions::class,
+    )]
+    public array $sites = [];
 
     #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]

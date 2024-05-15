@@ -24,7 +24,6 @@ use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
@@ -60,7 +59,7 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', $this->getType())
             ->setIfEmpty('id', $this->getIdAttribute())
-            ->setIfEmpty('placeholder', Freeform::t($this->getPlaceholder()))
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
             ->setIfEmpty('value', $this->getValue())
             ->set($this->getRequiredAttribute())
         ;

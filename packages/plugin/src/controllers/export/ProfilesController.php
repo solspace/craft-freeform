@@ -2,12 +2,14 @@
 
 namespace Solspace\Freeform\controllers\export;
 
+use craft\helpers\Cp;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -19,17 +21,52 @@ class ProfilesController extends BaseController
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
+        $this->view->registerAssetBundle(SettingsBundle::class);
+
+        $site = SitesHelper::getCurrentCpSite();
+        $sites = SitesHelper::getEditableSites();
+        $forms = $this->getFormsService()->getAllForms(sites: $site?->handle);
+        $formIds = array_map(fn (Form $form) => $form->getId(), $forms);
 
         $exportProfileService = $this->getExportProfileService();
         $exportProfiles = $exportProfileService->getAllProfiles();
 
-        $this->view->registerAssetBundle(SettingsBundle::class);
+        $exportProfiles = array_filter(
+            $exportProfiles,
+            fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
+        );
+
+        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5.0.0', '>=');
+
+        $crumbs = [
+            ['label' => Freeform::getInstance()->name, 'url' => UrlHelper::cpUrl('freeform')],
+            ['label' => Freeform::t('Export'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
+            ['label' => Freeform::t('Profiles'), 'url' => UrlHelper::cpUrl('freeform/export/profiles')],
+        ];
+
+        if ($isCraft5 && $site && \Craft::$app->getIsMultiSite()) {
+            array_unshift($crumbs, [
+                'id' => 'site-crumb',
+                'icon' => Cp::earthIcon(),
+                'label' => \Craft::t('site', $site->name),
+                'menu' => [
+                    'label' => \Craft::t('site', 'Select site'),
+                    'items' => Cp::siteMenuItems($sites, $site),
+                ],
+            ]);
+        }
 
         return $this->renderTemplate(
             'freeform/export/profiles',
             [
                 'exportProfiles' => $exportProfiles,
                 'exporters' => $exportProfileService->getExporterTypes(),
+                'selectedSite' => $site,
+                'selectableSites' => $sites,
+                'isCraft5' => $isCraft5,
+                'forms' => $forms,
+                'crumbs' => $crumbs,
+                'showSiteMenu' => true,
             ]
         );
     }

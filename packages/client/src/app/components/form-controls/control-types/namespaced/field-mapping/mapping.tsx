@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { useParams } from 'react-router-dom';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { FieldMappingProperty } from '@ff-client/types/properties';
@@ -20,7 +21,9 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
   updateValue,
   context,
 }) => {
-  const params: Record<string, string> = {};
+  const { formId } = useParams();
+
+  const params: Record<string, string> = { formId };
   if (property.parameterFields) {
     Object.entries(property.parameterFields).forEach(([key, value]) => {
       params[value] = extractParameter(context, key);

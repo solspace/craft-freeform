@@ -10,7 +10,7 @@
 
         {% set columnCount = row|length %}
 
-        <div{{ form.attributes.row }}>
+        <div{{ form.attributes.row|raw }}>
             {% for field in row %}
 
                 {% do field.setParameters({

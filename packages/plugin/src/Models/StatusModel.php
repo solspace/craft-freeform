@@ -27,26 +27,13 @@ use Solspace\Freeform\Records\StatusRecord;
  */
 class StatusModel extends Model implements \JsonSerializable
 {
-    /** @var int */
-    public $id;
+    public ?int $id = null;
+    public string $name = '';
+    public string $handle = '';
+    public string $color = '#27AE60';
+    public int $sortOrder = 0;
 
-    /** @var string */
-    public $name;
-
-    /** @var string */
-    public $handle;
-
-    /** @var bool */
-    public $isDefault;
-
-    /** @var string */
-    public $color;
-
-    /** @var int */
-    public $sortOrder;
-
-    /** @var string[] */
-    private static $hexMap = [
+    private static array $hexMap = [
         'green' => '#27AE60',
         'orange' => '#F2842D',
         'red' => '#D0021B',
@@ -60,9 +47,6 @@ class StatusModel extends Model implements \JsonSerializable
         'black' => '#32475E',
     ];
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return $this->name;
@@ -96,16 +80,12 @@ class StatusModel extends Model implements \JsonSerializable
         ];
     }
 
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            'id' => (int) $this->id,
+            'id' => $this->id,
             'name' => $this->name,
             'handle' => $this->handle,
-            'isDefault' => (bool) $this->isDefault,
             'color' => $this->color,
         ];
     }

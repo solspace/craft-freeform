@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
@@ -142,17 +141,6 @@ class hCaptchaBundle extends FeatureBundle
             return null;
         }
 
-        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_CAPTCHAS);
-        foreach ($integrations as $integration) {
-            if (!$integration->isEnabled()) {
-                continue;
-            }
-
-            if ($integration instanceof hCaptcha) {
-                return $integration;
-            }
-        }
-
-        return null;
+        return $this->formIntegrationsProvider->getFirstForForm($form, hCaptcha::class);
     }
 }

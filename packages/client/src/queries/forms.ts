@@ -1,5 +1,6 @@
 import { useAppDispatch } from '@editor/store';
 import { formActions } from '@editor/store/slices/form';
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import type {
   ExtendedFormType,
   Form,
@@ -11,9 +12,10 @@ import type { AxiosError } from 'axios';
 import axios from 'axios';
 
 export const QKForms = {
-  all: ['forms'] as const,
-  single: (id: number) => [...QKForms.all, id] as const,
-  settings: () => [...QKForms.all, 'settings'] as const,
+  base: ['forms'] as const,
+  all: (site: string) => [...QKForms.base, site] as const,
+  single: (id: number) => [...QKForms.base, id] as const,
+  settings: () => [...QKForms.base, 'settings'] as const,
 };
 
 export type FormWithStats = Form & {
@@ -34,8 +36,16 @@ export const useQueryFormsWithStats = (): UseQueryResult<
   FormWithStats[],
   AxiosError
 > => {
-  return useQuery<FormWithStats[], AxiosError>(QKForms.all, () =>
-    axios.get<FormWithStats[]>('/api/forms').then((res) => res.data)
+  const { current, getCurrentHandleWithFallback } = useSiteContext();
+
+  return useQuery<FormWithStats[], AxiosError>(
+    QKForms.all(getCurrentHandleWithFallback()),
+    () =>
+      axios
+        .get<FormWithStats[]>('/api/forms', {
+          params: { site: current?.handle },
+        })
+        .then((res) => res.data)
   );
 };
 

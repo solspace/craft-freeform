@@ -25,7 +25,7 @@ class IntegrationsController extends BaseApiController
     {
         $form = $this->getFormsService()->getFormById($formId);
 
-        $integrations = $this->formIntegrationsProvider->getForForm($form);
+        $integrations = $this->formIntegrationsProvider->getForForm($form, enabled: null);
         $dtos = $this->integrationDTOProvider->convert($integrations);
 
         $this->response->format = Response::FORMAT_JSON;

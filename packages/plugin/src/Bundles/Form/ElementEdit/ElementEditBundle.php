@@ -55,7 +55,7 @@ class ElementEditBundle extends FeatureBundle
         foreach ($integrations as $instance) {
             $fieldMapping = $instance->getFieldMapping();
             $attributeMapping = $instance->getAttributeMapping();
-            if ($instance->isEnabled() && ($fieldMapping || $attributeMapping)) {
+            if ($fieldMapping || $attributeMapping) {
                 $integration = $instance;
 
                 break;

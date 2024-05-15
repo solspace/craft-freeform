@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use yii\db\Schema;
 
 class FormFieldType extends Field
@@ -24,6 +25,11 @@ class FormFieldType extends Field
     public static function defaultSelectionLabel(): string
     {
         return Freeform::t('Add a form');
+    }
+
+    public static function icon(): string
+    {
+        return '@freeform/icon-mask.svg';
     }
 
     // Craft 4
@@ -42,7 +48,8 @@ class FormFieldType extends Field
     {
         $freeform = Freeform::getInstance();
 
-        $forms = $freeform->forms->getAllForms(true);
+        $site = SitesHelper::getCurrentCpPageSiteHandle();
+        $forms = $freeform->forms->getAllForms(true, $site);
 
         if ($freeform->settings->isFormFieldShowOnlyAllowedForms()) {
             $allowedIds = $freeform->forms->getAllowedFormIds();

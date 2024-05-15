@@ -27,12 +27,16 @@ class MaxLengthValidation extends FeatureBundle
             return;
         }
 
+        $value = $field->getValue();
+        if (empty($value)) {
+            return;
+        }
+
         $maxLength = $field->getMaxLength();
         if ($maxLength <= 0) {
             return;
         }
 
-        $value = $field->getValue();
         if (\strlen($value) > $maxLength) {
             $field->addError(
                 Freeform::t(

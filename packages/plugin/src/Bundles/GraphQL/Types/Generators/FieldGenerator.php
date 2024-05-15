@@ -542,6 +542,17 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
+        $minLengthTypes = [
+            FreeformFieldInterface::TYPE_PASSWORD,
+        ];
+        if (\in_array($typeName, $minLengthTypes, true)) {
+            $fieldDefinitions['minLength'] = [
+                'name' => 'minLength',
+                'type' => Type::int(),
+                'description' => 'The minimum length of characters for this field',
+            ];
+        }
+
         $maxLengthTypes = [
             FreeformFieldInterface::TYPE_TEXT,
             FreeformFieldInterface::TYPE_TEXTAREA,

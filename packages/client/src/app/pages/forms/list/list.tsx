@@ -11,7 +11,14 @@ import { CardLoading } from './card/card.loading';
 import { useCreateFormModal } from './modal/use-create-form-modal';
 import { Notices } from './notices/notices';
 import { EmptyList } from './list.empty';
-import { ContentContainer, Header, Title, Wrapper } from './list.styles';
+import { ListSites } from './list.sites';
+import {
+  Button,
+  ContentContainer,
+  Header,
+  Title,
+  Wrapper,
+} from './list.styles';
 
 export const List: React.FC = () => {
   const { data, isFetching } = useQueryFormsWithStats();
@@ -53,10 +60,13 @@ export const List: React.FC = () => {
     <>
       <Header>
         <Title>{translate('Forms')}</Title>
+
+        <ListSites />
+
         {(!formLimit || formCount < formLimit) && (
-          <button className="btn submit add icon" onClick={openCreateFormModal}>
+          <Button className="btn submit add icon" onClick={openCreateFormModal}>
             {translate('Add new Form')}
-          </button>
+          </Button>
         )}
       </Header>
       <ContentContainer>

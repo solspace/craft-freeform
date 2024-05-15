@@ -10,6 +10,8 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Records\StatusRecord;
@@ -193,6 +195,15 @@ class SubmissionQuery extends ElementQuery
 
         if (null !== $this->formId) {
             $this->subQuery->andWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
+        }
+
+        if (SitesHelper::isEnabled()) {
+            $site = SitesHelper::getCurrentCpSite();
+            $this->subQuery->innerJoin(
+                FormSiteRecord::TABLE.' form_sites',
+                'form_sites.[[formId]] = '.$table.'.[[formId]] AND form_sites.[[siteId]] = :siteId',
+                ['siteId' => $site->id]
+            );
         }
 
         $this->query->select($select);

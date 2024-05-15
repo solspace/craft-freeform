@@ -78,10 +78,6 @@ class CrmBundle extends FeatureBundle
         /** @var CRMIntegrationInterface[] $integrations */
         $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_CRM);
         foreach ($integrations as $integration) {
-            if (!$integration->isEnabled()) {
-                continue;
-            }
-
             $client = $this->clientProvider->getAuthorizedClient($integration);
             $integration->push($form, $client);
         }

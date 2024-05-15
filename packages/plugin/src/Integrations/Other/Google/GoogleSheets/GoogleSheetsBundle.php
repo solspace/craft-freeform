@@ -47,12 +47,7 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
-        $integrations = $this->formIntegrationsProvider->getForForm(
-            $form,
-            GoogleSheetsIntegrationInterface::class,
-            true
-        );
-
+        $integrations = $this->formIntegrationsProvider->getForForm($form, GoogleSheetsIntegrationInterface::class);
         foreach ($integrations as $integration) {
             $client = $this->clientProvider->getAuthorizedClient($integration);
             $integration->push($form, $client);

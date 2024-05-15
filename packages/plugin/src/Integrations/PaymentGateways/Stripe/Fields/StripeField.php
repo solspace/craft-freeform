@@ -364,7 +364,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         ]);
 
         $provider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $integrations = $provider->getForForm($this->getForm(), Stripe::class, true);
+        $integrations = $provider->getForForm($this->getForm(), Stripe::class);
 
         $fieldMapping = [];
         foreach ($integrations as $integration) {

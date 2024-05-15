@@ -56,7 +56,7 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $integration = $this->integrationsProvider->getFirstForForm($form, Stripe::class, true);
+        $integration = $this->integrationsProvider->getFirstForForm($form, Stripe::class);
         if (!$integration) {
             return;
         }

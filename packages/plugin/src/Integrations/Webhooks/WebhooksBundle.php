@@ -54,12 +54,7 @@ class WebhooksBundle extends FeatureBundle
 
         /** @var WebhookIntegrationInterface[] $webhooks */
         $webhooks = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_WEBHOOKS);
-
         foreach ($webhooks as $webhook) {
-            if (!$webhook->isEnabled()) {
-                continue;
-            }
-
             $webhook->trigger($form);
         }
     }

@@ -52,7 +52,7 @@ class SettingsService extends BaseService
             $integrationProvider = \Craft::$container->get(FormIntegrationsProvider::class);
             $honeypot = $integrationProvider->getSingleton($form, Honeypot::class);
 
-            return $honeypot && $honeypot->isEnabled();
+            return (bool) $honeypot;
         }
 
         return false;

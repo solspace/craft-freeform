@@ -141,6 +141,6 @@ class hCaptchaBundle extends FeatureBundle
             return null;
         }
 
-        return $this->formIntegrationsProvider->getFirstForForm($form, hCaptcha::class, true);
+        return $this->formIntegrationsProvider->getFirstForForm($form, hCaptcha::class);
     }
 }

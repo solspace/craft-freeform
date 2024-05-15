@@ -46,7 +46,7 @@ class FormIntegrationsProvider
     public function getForForm(
         ?Form $form = null,
         ?string $type = null,
-        ?bool $enabled = null,
+        ?bool $enabled = true,
         ?callable $filter = null
     ): array {
         return $this->integrationsService->getForForm($form, $type, $enabled, $filter);
@@ -62,7 +62,7 @@ class FormIntegrationsProvider
     public function getFirstForForm(
         ?Form $form = null,
         ?string $type = null,
-        ?bool $enabled = null,
+        ?bool $enabled = true,
         ?callable $filter = null
     ): ?IntegrationInterface {
         return $this->integrationsService->getFirstForForm($form, $type, $enabled, $filter);

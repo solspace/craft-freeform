@@ -1,6 +1,5 @@
 name: Report an Issue (v2)
 description: Create a report about a bug or something that isn't working correctly in Freeform.
-title: ""
 labels: "issue"
 assignees:
   - kjmartens

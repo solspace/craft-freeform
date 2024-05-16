@@ -1,7 +1,7 @@
 name: Report an Issue (v2)
 description: Create a report about a bug or something that isn't working correctly in Freeform.
 title: ""
-labels: ["issue"]
+labels: "issue"
 assignees:
   - kjmartens
 body:
@@ -15,7 +15,6 @@ body:
       label: What happened?
       description: Please describe the issue that is happening.
       placeholder: Please elaborate as much as possible.
-      value: ""
     validations:
       required: true
   - type: textarea
@@ -25,7 +24,6 @@ body:
       description: If you are seeing any errors, please copy and paste those here (including the stack trace if possible). Be sure to check the Craft error logs to find more detailed errors.
       placeholder: This will be automatically formatted into code, so no need for backticks.
       render: shell
-      value: ""
     validations:
       required: false
   - type: textarea
@@ -34,7 +32,10 @@ body:
       label: How can we reproduce this?
       description: Please describe how we can reproduce this issue. If possible, please simplify the issue as much as possible (while still seeing the issue) on your site.
       placeholder: Please elaborate as much as possible.
-      value: "1. 2. 3."
+      value:  |
+        1. 
+        2. 
+        3. 
     validations:
       required: true
   - type: dropdown

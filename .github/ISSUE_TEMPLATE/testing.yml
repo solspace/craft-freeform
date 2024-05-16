@@ -34,11 +34,7 @@ body:
       label: How can we reproduce this?
       description: Please describe how we can reproduce this issue. If possible, please simplify the issue as much as possible (while still seeing the issue) on your site.
       placeholder: Please elaborate as much as possible.
-      value: "
-        1.
-        2.
-        3.
-      "
+      value: "1. 2. 3."
     validations:
       required: true
   - type: dropdown

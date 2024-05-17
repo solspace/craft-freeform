@@ -1,0 +1,87 @@
+name: Report an Issue
+description: Create a report about a bug or something that isn't working correctly in Freeform.
+labels: issue
+assignees:
+  - kjmartens
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this report!
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Please describe the issue that is happening.
+      placeholder: Please elaborate as much as possible.
+    validations:
+      required: true
+  - type: textarea
+    id: errors-stack-trace
+    attributes:
+      label: Errors and Stack Trace (if available)
+      description: If you are seeing any errors, please copy and paste those here (including the stack trace if possible). Be sure to check the Craft error logs to find more detailed errors.
+      placeholder: This will be automatically formatted into code, so no need for backticks.
+      render: shell
+    validations:
+      required: false
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: How can we reproduce this?
+      description: Please describe how we can reproduce this issue. If possible, please simplify the issue as much as possible (while still seeing the issue) on your site.
+      placeholder: Please elaborate as much as possible.
+      value:  |
+        1. 
+        2. 
+        3. 
+    validations:
+      required: true
+  - type: dropdown
+    id: freeform-edition
+    attributes:
+      label: Freeform Edition
+      description: What edition of Freeform are you running?
+      options:
+        - Pro
+        - Lite
+        - Express
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: freeform-version
+    attributes:
+      label: Freeform Version
+      description: What version of Freeform are you using?
+      placeholder: e.g. 5.3.1
+    validations:
+      required: true
+  - type: input
+    id: craft-version
+    attributes:
+      label: Craft Version
+      description: What version of Craft are you running?
+      placeholder: e.g. 5.1.8
+    validations:
+      required: true
+  - type: dropdown
+    id: when-started
+    attributes:
+      label: When did this issue start?
+      description: Choose all that apply.
+      multiple: true
+      options:
+        - Fresh install of Freeform
+        - After upgrading from older Freeform version
+        - After upgrading from older Craft version
+        - After a change to hosting configuration
+        - Unsure
+  - type: input
+    id: previous-freeform-version
+    attributes:
+      label: Previous Freeform Version
+      description: If this issue began after an update to Freeform, please let us know which version of Freeform you updated from.
+      placeholder: e.g. 5.1.17
+    validations:
+      required: false

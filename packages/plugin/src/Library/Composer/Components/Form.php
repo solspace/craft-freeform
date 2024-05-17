@@ -1323,19 +1323,17 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             $isFormValid = false;
         }
 
-        if ($isFormValid) {
-            foreach ($currentPageFields as $field) {
-                if ($field instanceof FileUploadInterface) {
-                    try {
-                        $field->uploadFile();
-                    } catch (\Exception $e) {
-                        $isFormValid = false;
-                        $this->logger->error($e->getMessage(), ['field' => $field]);
-                    }
+        foreach ($currentPageFields as $field) {
+            if ($field instanceof FileUploadInterface) {
+                try {
+                    $field->uploadFile();
+                } catch (\Exception $e) {
+                    $isFormValid = false;
+                    $this->logger->error($e->getMessage(), ['field' => $field]);
+                }
 
-                    if ($field->hasErrors()) {
-                        $isFormValid = false;
-                    }
+                if ($field->hasErrors()) {
+                    $isFormValid = false;
                 }
             }
         }

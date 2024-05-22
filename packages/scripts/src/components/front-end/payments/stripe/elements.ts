@@ -1,6 +1,7 @@
 import events from '@lib/plugin/constants/event-types';
 import { addListeners } from '@lib/plugin/helpers/event-handling';
 
+import ffStripeEvents from './elements.events';
 import { loadStripeContainers, submitStripe } from './elements.submit';
 import type { StripeElement, StripeFunctionConstructorProps } from './elements.types';
 
@@ -25,34 +26,38 @@ const attachStripeToForm = async (form: HTMLFormElement) => {
   addListeners(form, [events.form.submit], submitStripe(props));
 };
 
-window.onload = () => {
+document.addEventListener(ffStripeEvents.load, () => {
   // Attach to all forms
   const forms = document.querySelectorAll<HTMLFormElement>('form[data-freeform]');
   forms.forEach((form) => {
     attachStripeToForm(form);
   });
+});
 
-  const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-    if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
-      attachStripeToForm(node);
+window.onload = () => {
+  document.dispatchEvent(new CustomEvent(ffStripeEvents.load));
+};
+
+const recursiveFreeformAttachment = (node: HTMLFormElement) => {
+  if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
+    attachStripeToForm(node);
+  }
+
+  node?.childNodes.forEach(recursiveFreeformAttachment);
+};
+
+// Add an observer which listens for new forms
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    if (mutation.type !== 'childList') {
+      return;
     }
 
-    node?.childNodes.forEach(recursiveFreeformAttachment);
-  };
-
-  // Add an observer which listens for new forms
-  const observer = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      if (mutation.type !== 'childList') {
-        return;
-      }
-
-      mutation.addedNodes.forEach((node) => {
-        recursiveFreeformAttachment(node as HTMLFormElement);
-      });
+    mutation.addedNodes.forEach((node) => {
+      recursiveFreeformAttachment(node as HTMLFormElement);
     });
   });
+});
 
-  // Start the observer
-  observer.observe(document.body, { childList: true, subtree: true });
-};
+// Start the observer
+observer.observe(document.body, { childList: true, subtree: true });

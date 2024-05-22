@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.2.2 - 2024-05-22
+
+### Added
+- Added `freeform-stripe-load` event for Payments forms and moved Mutation Observer outside of `window.onload`.
+
+### Changed
+- Updated the Conditional Rules JSON attachment from `<script>` to `<div>` with a data attribute for better compatibility with JS frameworks.
+
+### Fixed
+- Fixed a bug where fetching Payment records (`freeform.payments`) in the Submissions query was not available.
+- Fixed a bug where an error about `freeform_feed` would be triggered when attempting to install Freeform.
+
 ## 5.2.1 - 2024-05-21
 
 ### Fixed

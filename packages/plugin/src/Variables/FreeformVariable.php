@@ -18,9 +18,13 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePaymentService;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
@@ -182,6 +186,55 @@ class FreeformVariable
         $this->getSiteTemplatesDirectories($siteTemplatesPath, $siteTemplatesPath);
 
         return $this->siteTemplatesDirectories;
+    }
+
+    public function payments(int|Submission $submission, ?string $paymentFieldHandle = null): null|array|PaymentModel
+    {
+        if (is_numeric($submission)) {
+            $submission = Freeform::getInstance()->submissions->getSubmissionById($submission);
+        }
+
+        if (!$submission) {
+            return null;
+        }
+
+        $form = $submission->getForm();
+
+        if ($paymentFieldHandle) {
+            $field = $form->getLayout()->getFields()->get($paymentFieldHandle);
+            $fieldIds = [$field->getId()];
+        } else {
+            $fieldIds = array_map(
+                fn (PaymentFieldInterface $field) => $field->getId(),
+                $form
+                    ->getLayout()
+                    ->getFields(PaymentFieldInterface::class)
+                    ->getIterator()
+                    ->getArrayCopy()
+            );
+        }
+
+        $records = PaymentRecord::find()
+            ->where(['submissionId' => $submission->id])
+            ->andWhere(['fieldId' => $fieldIds])
+            ->all()
+        ;
+
+        $paymentService = \Craft::$container->get(StripePaymentService::class);
+        $payments = array_map(
+            fn (PaymentRecord $record) => $paymentService->recordToModel($record),
+            $records
+        );
+
+        if (!$payments) {
+            return null;
+        }
+
+        if (1 === \count($payments)) {
+            return $payments[0];
+        }
+
+        return $payments;
     }
 
     private function getSiteTemplatesDirectories(string $siteTemplatesPath, string $currentPath): void

@@ -86,6 +86,10 @@ class FreeformFeedService extends Component
             return;
         }
 
+        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+            return;
+        }
+
         $this->parseFeed();
     }
 

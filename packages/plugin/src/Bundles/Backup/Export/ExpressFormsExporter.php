@@ -39,6 +39,7 @@ use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -98,6 +99,7 @@ class ExpressFormsExporter implements ExporterInterface
 
     private function collectForms(?array $ids = null): FormCollection
     {
+        $colorGenerator = new RandomColorGenerator();
         $collection = new FormCollection();
 
         $forms = (new Query())
@@ -107,15 +109,7 @@ class ExpressFormsExporter implements ExporterInterface
             ->all()
         ;
 
-        $defaultStatus = (int) (new Query())
-            ->select('id')
-            ->from('{{%freeform_statuses}}')
-            ->where(['isDefault' => true])
-            ->limit(1)
-            ->scalar()
-        ;
-
-        $colorGenerator = new RandomColorGenerator();
+        $defaultStatus = Freeform::getInstance()->statuses->getDefaultStatusId();
 
         foreach ($forms as $index => $form) {
             $exported = new Form();

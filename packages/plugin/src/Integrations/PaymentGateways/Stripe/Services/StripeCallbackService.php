@@ -42,7 +42,7 @@ class StripeCallbackService
 
             $paymentIntent = $stripe->paymentIntents->retrieve(
                 $paymentIntent->id,
-                ['expand' => ['customer', 'payment_method', 'invoice.subscription']]
+                ['expand' => ['customer', 'payment_method', 'invoice.subscription.plan.product']]
             );
 
             $form->quickLoad($payload);
@@ -86,6 +86,13 @@ class StripeCallbackService
         if ($paymentMethod) {
             $metadata['type'] = $paymentMethod->type;
             $metadata['details'] = $paymentMethod->{$paymentMethod->type}->toArray();
+        }
+
+        $planName = $paymentIntent?->invoice?->subscription?->plan?->product?->name ?? null;
+        if ($planName) {
+            $metadata['planName'] = $planName;
+            $metadata['interval'] = $paymentIntent?->invoice?->subscription?->plan?->interval ?? null;
+            $metadata['frequency'] = $paymentIntent?->invoice?->subscription?->plan?->interval_count ?? null;
         }
 
         $payment->metadata = $metadata;

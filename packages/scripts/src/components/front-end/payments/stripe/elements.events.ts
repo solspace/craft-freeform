@@ -8,6 +8,7 @@ export type StripeAppearanceEvent = {
 };
 
 const events = {
+  load: `${prefix}-load`,
   render: {
     appearance: `${prefix}-appearance`,
   },

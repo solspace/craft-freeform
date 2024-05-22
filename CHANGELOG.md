@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.2.1 - 2024-05-21
+
+### Fixed
+- Fixed a bug where the Express Forms migration was not working as of Freeform 5.1.19+.
+
 ## 5.2.0 - 2024-05-15
 
 ### Added

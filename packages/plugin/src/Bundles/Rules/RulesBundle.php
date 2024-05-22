@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Rules\ProcessPostedRuleValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use yii\base\Event;
@@ -97,9 +98,12 @@ class RulesBundle extends FeatureBundle
             ['groups' => 'front-end']
         );
 
-        $event->addChunk(
-            '<script type="application/json" data-rules-json>'.$serialized.'</script>'
-        );
+        $attributes = (new Attributes())
+            ->set('data-rules-json', $serialized)
+            ->set('style', 'display: none;')
+        ;
+
+        $event->addChunk("<div{$attributes}></div>");
     }
 
     public function validateField(ValidateEvent $event): void

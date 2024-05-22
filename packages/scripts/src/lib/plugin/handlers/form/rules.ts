@@ -73,12 +73,12 @@ class RuleHandler implements FreeformHandler {
   }
 
   reload = () => {
-    const rulesElement = this.form.querySelector('[data-rules-json]');
+    const rulesElement = this.form.querySelector<HTMLDivElement>('[data-rules-json]');
     if (!rulesElement) {
       return;
     }
 
-    const { rules, values }: RulesData = JSON.parse(rulesElement.textContent as string);
+    const { rules, values }: RulesData = JSON.parse(rulesElement.dataset.rulesJson);
     this.values = values;
     if (rules.fields.length === 0 && rules.buttons.length === 0) {
       return;

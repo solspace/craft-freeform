@@ -1,8 +1,6 @@
 /* LAYOUT */
-html, body {
+.freeform-form {
     font-family: sans-serif;
-}
-* {
     box-sizing: border-box;
 }
 .freeform-row::after {
@@ -16,7 +14,10 @@ html, body {
 }
 
 /* BUTTONS */
-button {
+.freeform-form [data-freeform-controls] {
+    margin-top: 15px;
+}
+.freeform-form button {
     font: 400 18px sans-serif;
     line-height: 1.5;
     color: #ffffff;
@@ -26,52 +27,50 @@ button {
     border-radius: 5px;
     background-color: #0d6efd;
     padding: 5px 15px;
-    margin-right: 10px;
+    margin: 0 10px !important;
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
     justify-content: center;
 }
-button:only-child,
-button:last-child {
+.freeform-form button:only-child,
+.freeform-form button:last-child {
     margin-right: 0;
 }
-button:hover {
+.freeform-form button:hover {
     color: #ffffff;
     background-color: #0b5ed7;
     border-color: #0a58ca;
 }
-button[data-freeform-action="back"] {
-    font: 400 18px sans-serif;
+.freeform-form button[data-freeform-action="back"] {
     color: #6c757d;
     background-color: transparent;
     border-color: #6c757d;
 }
-button[data-freeform-action="back"]:hover {
+.freeform-form button[data-freeform-action="back"]:hover {
     color: #ffffff;
     background-color: #6c757d;
     border-color: #6c757d;
 }
-button[type=submit].freeform-processing {
+.freeform-form button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-button[type=submit].freeform-processing:before {
+.freeform-form button[type=submit].freeform-processing:before {
     content: "";
     display: block;
     flex: 1 0 11px;
     width: 11px;
     height: 11px;
-    margin-right: 10px;
     border-style: solid;
     border-width: 2px;
     border-color: transparent transparent #fff #fff;
     border-radius: 50%;
     animation: freeform-processing .5s linear infinite;
 }
-button:disabled {
+.freeform-form button:disabled {
     color: #ffffff;
     background-color: #5082cc;
     border-color: #497bc5;
@@ -327,7 +326,6 @@ button:disabled {
     padding: 0;
     list-style: none;
     display: block;
-    width: 100%;
 }
 .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios .freeform-errors,
 .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .freeform-errors {
@@ -546,7 +544,6 @@ button:disabled {
     margin-right: auto;
     margin-bottom: 20px;
     padding: 15px 20px;
-    width: 100%;
     border-radius: 5px;
 }
 .freeform-form-success p,

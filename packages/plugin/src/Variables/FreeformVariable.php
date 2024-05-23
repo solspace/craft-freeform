@@ -126,8 +126,11 @@ class FreeformVariable
 
     public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup
     {
-        $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
-        $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
+        $jsPath = \Craft::getAlias('@freeform/Resources/'.$this->getSettingsService()->getPluginJsPath());
+        $cssPath = \Craft::getAlias('@freeform/Resources/'.$this->getSettingsService()->getPluginCssPath());
+
+        $jsHash = sha1_file($jsPath);
+        $cssHash = sha1_file($cssPath);
 
         $js = UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]);
         $css = UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]);
@@ -165,11 +168,6 @@ class FreeformVariable
         $points = \array_slice($points, 0, $marks);
 
         return implode('.', $points);
-    }
-
-    public function isPossibleLoadingStaticScripts(): bool
-    {
-        return $this->getFormService()->isPossibleLoadingStaticScripts();
     }
 
     public function notifications(): NotificationsService

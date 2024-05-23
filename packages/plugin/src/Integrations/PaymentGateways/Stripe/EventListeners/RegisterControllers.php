@@ -58,12 +58,6 @@ class RegisterControllers extends FeatureBundle
                     'route' => 'freeform/stripe-webhook/webhooks',
                     'verb' => ['POST', 'GET'],
                 ]);
-
-                $event->rules[] = new UrlRule([
-                    'pattern' => 'freeform/scripts/stripe.js',
-                    'route' => 'freeform/stripe-scripts',
-                    'verb' => ['GET'],
-                ]);
             }
         );
 

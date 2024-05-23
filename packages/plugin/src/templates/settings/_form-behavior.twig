@@ -67,19 +67,15 @@
         },
     }) }}
 
-    {% set canUsePointers = craft.freeform.isPossibleLoadingStaticScripts() %}
-
     {{ forms.selectField({
         label: "Freeform Script Insert Type"|t('freeform'),
         instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
-        warning: not canUsePointers and settings.scriptInsertType == "pointers" ? "It seems like your server configuration prevents static URL files to be used. Please choose another method."|t("freeform"),
         tip: "<b>As Static URLs</b> (recommended) offers built-in browser caching and a static endpoint that delivers the latest Freeform scripts, but are not physical files and therefore cannot have server rules applied. <b>As Files</b> (recommended if having issues with Static URLs) are actual physical files generated inside of the 'cpresources' folder by Craft's asset manager with no caching. <b>Inline</b> will add the scripts as inline scripts and may be useful as a workaround if the other 2 options are not working. This doesn't allow for caching, and pollutes the source code."|t('freeform'),
         name: "settings[scriptInsertType]",
         value: settings.scriptInsertType,
         errors: settings.errors("scriptInsertType"),
         options: {
-            "pointers": "As Static URLs"|t('freeform') ~ (canUsePointers ? " (recommended)" : "")|t('freeform'),
-            "files": "As Files"|t('freeform') ~ (not canUsePointers ? " (recommended)" : "")|t('freeform'),
+            "files": "As Files"|t('freeform') ~ " (recommended)"|t('freeform'),
             "inline": "Inline"|t('freeform'),
         },
     }) }}

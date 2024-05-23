@@ -64,8 +64,8 @@ class RegisterField extends FeatureBundle
         if (null === $stripeScriptLoaded) {
             $stripeScriptLoaded = true;
 
-            $scriptPath = \Craft::getAlias('@freeform-scripts/front-end/payments/stripe/elements.js');
-            $event->addScript($scriptPath, 'freeform/scripts/stripe.js', ['class' => 'freeform-stripe-script']);
+            $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
+            $event->addScript($scriptPath, ['class' => 'freeform-stripe-script']);
         }
     }
 }

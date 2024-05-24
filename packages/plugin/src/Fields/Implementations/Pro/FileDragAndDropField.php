@@ -29,8 +29,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     protected string $accent = self::DEFAULT_ACCENT;
 
     #[Input\Select(
-        label: 'Accent Color',
-        instructions: 'Select accent color',
+        label: 'Theme',
+        instructions: 'Select theme',
         order: 7,
         options: [
             'light' => 'Light',

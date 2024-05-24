@@ -1,21 +1,19 @@
 /* LAYOUT */
-html, body {
+.freeform-form {
     font-family: sans-serif;
-}
-* {
     box-sizing: border-box;
 }
-.required::after {
+.freeform-form .required::after {
     content: "*";
     color: #d00;
     margin-left: 5px;
 }
-button[type=submit].freeform-processing {
+.freeform-form button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-button[type=submit].freeform-processing:before {
+.freeform-form button[type=submit].freeform-processing:before {
     content: "";
     display: block;
     flex: 1 0 11px;
@@ -36,7 +34,7 @@ button[type=submit].freeform-processing:before {
         transform: rotate(1turn);
     }
 }
-.input-group-one-line > div {
+.freeform-form .input-group-one-line > div {
     float: left;
     margin-right: 15px;
 }

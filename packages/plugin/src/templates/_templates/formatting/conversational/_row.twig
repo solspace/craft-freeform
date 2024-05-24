@@ -35,7 +35,7 @@
                         <a href="#q{{ questionId + '1' }}">Next</a>
                     {% endif %}
                     {% if questionId == questionTotal %}
-                        <button type="submit" class="submit-button" data-freeform-action="submit">Submit</button>
+                        <button type="submit" data-button-container="submit" data-freeform-action="submit">Submit</button>
                     {% endif %}
                     {% if questionId > "1" %}
                         <a href="#q{{ questionId - '1' }}" class="previous">Previous</a>

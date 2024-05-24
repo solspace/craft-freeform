@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
@@ -126,14 +125,11 @@ class FreeformVariable
 
     public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup
     {
-        $jsPath = \Craft::getAlias('@freeform/Resources/'.$this->getSettingsService()->getPluginJsPath());
-        $cssPath = \Craft::getAlias('@freeform/Resources/'.$this->getSettingsService()->getPluginCssPath());
+        $jsPath = $this->getSettingsService()->getPluginJsPath();
+        $cssPath = $this->getSettingsService()->getPluginCssPath();
 
-        $jsHash = sha1_file($jsPath);
-        $cssHash = sha1_file($cssPath);
-
-        $js = UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]);
-        $css = UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]);
+        $js = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $jsPath);
+        $css = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $cssPath);
 
         $output = '<script type="text/javascript" src="'.$js.'" '.$attributes.'></script>'.\PHP_EOL;
         $output .= '<link rel="stylesheet" href="'.$css.'" '.$styleAttributes.' />';

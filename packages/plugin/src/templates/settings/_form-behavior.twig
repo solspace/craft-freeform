@@ -70,7 +70,6 @@
     {{ forms.selectField({
         label: "Freeform Script Insert Type"|t('freeform'),
         instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
-        tip: "<b>As Files</b> (recommended) are actual physical files generated inside of the 'cpresources' folder by Craft's asset manager. <b>As Static URLs</b> (deprecated) offers a static endpoint that delivers the latest Freeform scripts, but are not physical files and therefore cannot have server rules applied. <b>Inline</b> will add the scripts and CSS directly into the template."|t('freeform'),
         name: "settings[scriptInsertType]",
         value: settings.scriptInsertType,
         errors: settings.errors("scriptInsertType"),

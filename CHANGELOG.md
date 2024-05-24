@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 5.3.0 - Unreleased
+
+### Changed
+- Improved the Script Insert feature:
+    The _Static URLs_ option is no longer available, and the default is now Craft's _Asset Bundles_ (an improved version of _As Files_). This ensures the best performance and reliability for any site and compatibility with Craft Cloud.
+    - The file pointers endpoints (_Static URLs) remain available for backward compatibility.
+    - The manual script loading approach (`loadFreeformPlugin`) will also automatically load Asset Bundle URLs.
+    - Renamed the _Freeform Script Insertion Location_ and _Freeform Script Insert Type_ settings to _Script Insert Location_ and _Script Insert Type_, respectively.
+- Updated the demo templates:
+    - The submissions index view now orders submissions in descending order.
+    - The submission view now includes an enhanced display of assets for _File Drag & Drop_ fields (in addition to regular File fields).
+- Various updates to sample formatting templates:
+    - No longer include vague CSS classes to avoid conflict with other site styles. Added `freeform-form` class to the `<form>` tag for all sample templates.
+    - No longer force overrides for `addButtonLabel` and `removeButtonLabel` on Table fields.
+    - Improved display and positioning of submit buttons on _Basic_ sample templates.
+    - Improved display of success and error banners on _Basic_ sample templates.
+
+### Fixed
+- Fixed a bug where the `tableAttributes` template overrides for Table fields were not working.
+- Fixed a bug where displaying assets from File fields in CP Submissions was broken.
+- Fixed a bug where the _Theme_ setting was mislabeled for _File Drag & Drop_ fields inside the form builder.
+
 ## 5.2.2 - 2024-05-22
 
 ### Added

@@ -345,7 +345,7 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->settings->autoScroll,
                 ),
                 new DiagnosticItem(
-                    'Freeform Script Insertion Location: <b>{{ value|capitalize }}</b>',
+                    'Script Insert Location: <b>{{ value|capitalize }}</b>',
                     $this->getSummary()->statistics->settings->jsInsertLocation,
                     [
                         new NoticeValidator(
@@ -356,7 +356,7 @@ class DiagnosticsService extends BaseService
                     ]
                 ),
                 new DiagnosticItem(
-                    'Freeform Script Insert Type: <b>{{ value }}</b>',
+                    'Script Insert Type: <b>{{ value }}</b>',
                     $this->getJsInsertType()
                 ),
                 new DiagnosticItem(
@@ -580,8 +580,8 @@ class DiagnosticsService extends BaseService
     private function getJsInsertType(): string
     {
         return match ($this->getSummary()->statistics->settings->jsInsertType) {
-            Settings::SCRIPT_INSERT_TYPE_POINTERS => 'As Static URLs',
-            Settings::SCRIPT_INSERT_TYPE_FILES => 'As Files',
+            Settings::SCRIPT_INSERT_TYPE_POINTERS => 'Static URLs',
+            Settings::SCRIPT_INSERT_TYPE_FILES => 'Asset Bundles',
             Settings::SCRIPT_INSERT_TYPE_INLINE => 'Inline Scripts',
             default => '',
         };

@@ -1,11 +1,11 @@
 {# CSS styling #}
 <style>
-    button[type=submit].freeform-processing {
+    .freeform-form button[type=submit].freeform-processing {
         display: inline-flex;
         flex-wrap: nowrap;
         align-items: center;
     }
-    button[type=submit].freeform-processing:before {
+    .freeform-form button[type=submit].freeform-processing:before {
         content: "";
         display: block;
         flex: 1 0 11px;
@@ -119,6 +119,7 @@
 {# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
+        form: { class: "freeform-form" },
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success" },
         errors: { class: "freeform-form-errors" },

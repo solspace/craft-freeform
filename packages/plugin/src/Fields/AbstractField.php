@@ -415,7 +415,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getAttributes(): FieldAttributesCollection
     {
-        $event = new CompileFieldAttributesEvent($this, $this->attributes->clone());
+        $event = new CompileFieldAttributesEvent(
+            $this,
+            $this->attributes->clone(),
+            FieldAttributesCollection::class
+        );
+
         Event::trigger($this, self::EVENT_COMPILE_ATTRIBUTES, $event);
 
         return $event->getAttributes();

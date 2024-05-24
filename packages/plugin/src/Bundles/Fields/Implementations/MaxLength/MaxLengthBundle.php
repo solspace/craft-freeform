@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Fields\Implementations\MaxLength;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -21,6 +22,10 @@ class MaxLengthBundle extends FeatureBundle
 
     public function updateContainerAttributes(CompileFieldAttributesEvent $event): void
     {
+        if (FieldAttributesCollection::class !== $event->getClass()) {
+            return;
+        }
+
         $field = $event->getField();
         if (!$field instanceof MaxLengthInterface) {
             return;

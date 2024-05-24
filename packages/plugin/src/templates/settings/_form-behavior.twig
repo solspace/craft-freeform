@@ -54,13 +54,13 @@
     <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
 
     {{ forms.selectField({
-        label: "Freeform Script Insertion Location"|t('freeform'),
+        label: "Script Insert Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
         name: "settings[scriptInsertLocation]",
         value: settings.scriptInsertLocation,
         errors: settings.errors("scriptInsertLocation"),
         options: {
-            "footer": "Page Footer"|t('freeform'),
+            "footer": "Page Footer (recommended)"|t('freeform'),
             "header": "Page Header"|t('freeform'),
             "form": "Inside Form"|t('freeform'),
             "manual": "None (add manually)"|t('freeform'),
@@ -68,13 +68,13 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Freeform Script Insert Type"|t('freeform'),
+        label: "Script Insert Type"|t('freeform'),
         instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
         name: "settings[scriptInsertType]",
         value: settings.scriptInsertType,
         errors: settings.errors("scriptInsertType"),
         options: {
-            "files": "As Files (recommended)"|t('freeform'),
+            "files": "Asset Bundles (recommended)"|t('freeform'),
             "inline": "Inline"|t('freeform'),
         },
     }) }}

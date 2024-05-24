@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
-use craft\helpers\UrlHelper;
 use craft\web\View;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\Settings;
@@ -78,14 +78,14 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         return $this;
     }
 
-    public function addScript(?string $filePath = null, ?string $url = null, array $attributes = []): self
+    public function addScript(string $filePath, array $attributes = []): self
     {
-        return $this->addLoadableElement($filePath, $url, attributes: $attributes);
+        return $this->addLoadableElement($filePath, attributes: $attributes);
     }
 
-    public function addStylesheet(?string $filePath = null, ?string $url = null, array $attributes = []): self
+    public function addStylesheet(string $filePath, array $attributes = []): self
     {
-        return $this->addLoadableElement($filePath, $url, self::ELEMENT_STYLE, $attributes);
+        return $this->addLoadableElement($filePath, self::ELEMENT_STYLE, $attributes);
     }
 
     public function getChunksAsString(): string
@@ -105,7 +105,6 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 
     private function addLoadableElement(
         ?string $filePath = null,
-        ?string $url = null,
         string $type = self::ELEMENT_SCRIPT,
         array $attributes = [],
     ): self {
@@ -113,24 +112,20 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             return $this;
         }
 
+        $fullPath = \Craft::getAlias('@freeform/Resources/'.$filePath);
+
         $view = \Craft::$app->getView();
         $insertType = $this->getSettingsService()->scriptInsertType();
         $insertLocation = $this->getSettingsService()->getSettingsModel()->scriptInsertLocation;
 
-        // Make a string out of passed attributes
-        $attributes = array_map(
-            fn ($key, $value) => $key.'="'.$value.'"',
-            array_keys($attributes),
-            $attributes
-        );
-        $attributes = $attributes ? ' '.implode(' ', $attributes) : '';
+        $attributesObject = Attributes::fromArray($attributes);
 
         if (self::ELEMENT_SCRIPT === $type) {
-            [$wrapOpen, $wrapClose] = ['<script type="text/javascript"'.$attributes.'>', '</script>'];
-            $tag = '<script type="text/javascript" src="%s"'.$attributes.'></script>';
+            [$wrapOpen, $wrapClose] = ['<script type="text/javascript"'.$attributesObject.'>', '</script>'];
+            $tag = '<script type="text/javascript" src="%s"'.$attributesObject.'></script>';
         } else {
-            [$wrapOpen, $wrapClose] = ['<style type="text/css"'.$attributes.'>', '</style>'];
-            $tag = '<link rel="stylesheet" type="text/css" href="%s"'.$attributes.' />';
+            [$wrapOpen, $wrapClose] = ['<style type="text/css"'.$attributesObject.'>', '</style>'];
+            $tag = '<link rel="stylesheet" type="text/css" href="%s"'.$attributesObject.' />';
         }
 
         $position = match ($insertLocation) {
@@ -139,8 +134,8 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             default => null,
         };
 
-        if (Settings::SCRIPT_INSERT_TYPE_INLINE === $insertType && $filePath) {
-            $chunk = file_get_contents($filePath);
+        if (Settings::SCRIPT_INSERT_TYPE_INLINE === $insertType) {
+            $chunk = file_get_contents($fullPath);
 
             if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
                 $this->addChunk($wrapOpen.$chunk.$wrapClose);
@@ -151,7 +146,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             if (self::ELEMENT_SCRIPT === $type) {
                 $view->registerJs($chunk, $position);
             } else {
-                $view->registerCss($chunk, ['position' => $position]);
+                $view->registerCss($chunk, array_merge(['position' => $position], $attributes));
             }
 
             return $this;
@@ -162,40 +157,13 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             self::ELEMENT_STYLE => [$view, 'registerCssFile'],
         };
 
-        $isInsertFile = Settings::SCRIPT_INSERT_TYPE_FILES === $insertType;
-        $isFilePath = (bool) $filePath;
+        $chunk = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $filePath);
 
-        $isInsertPointers = Settings::SCRIPT_INSERT_TYPE_POINTERS === $insertType;
-        $isUrl = (bool) $url;
-
-        if ($isFilePath && ($isInsertFile || ($isInsertPointers && !$url))) {
-            $chunk = \Craft::$app->assetManager->getPublishedUrl($filePath, true);
-
-            if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
-                return $this->addChunk(sprintf($tag, $chunk));
-            }
-
-            $inserter($chunk, ['position' => $position]);
-
-            return $this;
+        if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
+            return $this->addChunk(sprintf($tag, $chunk));
         }
 
-        if ($isUrl && ($isInsertPointers || ($isInsertFile && !$filePath))) {
-            $hash = null;
-            if ($filePath) {
-                $hash = substr(sha1_file($filePath), 0, 5);
-            }
-
-            $chunk = UrlHelper::siteUrl($url, ['v' => $hash]);
-
-            if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
-                return $this->addChunk(sprintf($tag, $chunk));
-            }
-
-            $inserter($chunk, ['position' => $position]);
-
-            return $this;
-        }
+        $inserter($chunk, array_merge(['position' => $position], $attributes));
 
         return $this;
     }

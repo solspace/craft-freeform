@@ -42,8 +42,9 @@ class Settings extends Model
     public const SCRIPT_INSERT_LOCATION_FORM = 'form';
     public const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
-    public const SCRIPT_INSERT_TYPE_FILES = 'files';
+    /** @deprecated No longer used since Freeform v5.2.3. Use SCRIPT_INSERT_TYPE_FILES instead. */
     public const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
+    public const SCRIPT_INSERT_TYPE_FILES = 'files';
     public const SCRIPT_INSERT_TYPE_INLINE = 'inline';
 
     public const CONTEXT_TYPE_PAYLOAD = 'payload';
@@ -253,7 +254,7 @@ class Settings extends Model
         $this->exportHandlesAsNames = false;
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
-        $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_POINTERS;
+        $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_FILES;
         $this->formSubmitDisable = true;
         $this->rememberPageSubmitOrder = true;
 

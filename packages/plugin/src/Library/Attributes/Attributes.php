@@ -81,6 +81,17 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         }
     }
 
+    public static function fromArray(array $attributes): self
+    {
+        $instance = new self();
+
+        foreach ($attributes as $key => $value) {
+            $instance->set($key, $value);
+        }
+
+        return $instance;
+    }
+
     public function get(string $name, mixed $default = null): mixed
     {
         return $this->attributes[$name] ?? $default;

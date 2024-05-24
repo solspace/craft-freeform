@@ -1,7 +1,6 @@
 {% extends "freeform/_layouts/main" %}
 
 {% set title = "Freeform Setup"|t('freeform') %}
-{% set canInsertPointers = craft.freeform.isPossibleLoadingStaticScripts() %}
 
 {% block content %}
 
@@ -21,7 +20,7 @@
 				"autoScroll": {{ settings.autoScrollToErrors ? 'true' : 'false' }},
 				"jsInsertLocation": "footer",
 				"jsInsertType": "{{ canInsertPointers ? "pointers" : "files" }}",
-				"canInsertPointers": {{ canInsertPointers ? 'true' : 'false' }},
+				"canInsertPointers": false,
 				"sessionType": "payload"
 			},
 			"spam": {

@@ -219,9 +219,10 @@ class Freeform extends Plugin
     public function init(): void
     {
         parent::init();
-        \Yii::setAlias('@freeform-scripts', __DIR__.'/Resources/js/scripts');
-        \Yii::setAlias('@freeform-styles', __DIR__.'/Resources/css');
         \Yii::setAlias('@freeform', __DIR__);
+        \Yii::setAlias('@freeform-resources', '@freeform/Resources');
+        \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
+        \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
 
         // TODO: refactor these into separate bundles
         $this->initControllerMap();

@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -35,6 +36,10 @@ class RulesInitialState extends FeatureBundle
 
     public function setInitialState(CompileFieldAttributesEvent $event): void
     {
+        if (FieldAttributesCollection::class !== $event->getClass()) {
+            return;
+        }
+
         $field = $event->getField();
         $form = $field->getForm();
 

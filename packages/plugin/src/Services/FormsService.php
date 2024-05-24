@@ -17,10 +17,7 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\App;
 use craft\helpers\Template;
-use craft\helpers\UrlHelper;
 use craft\web\View;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
@@ -441,20 +438,15 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         if (null === $pluginJsLoaded) {
             $pluginJsLoaded = true;
-
             $jsPath = $this->getSettingsService()->getPluginJsPath();
-            $url = 'freeform/plugin.js';
 
-            $event->addScript($jsPath, $url);
+            $event->addScript($jsPath);
         }
 
         if (null === $pluginCssLoaded) {
             $pluginCssLoaded = true;
-
             $cssPath = $this->getSettingsService()->getPluginCssPath();
-            $url = 'freeform/plugin.css';
-
-            $event->addStylesheet($cssPath, $url);
+            $event->addStylesheet($cssPath);
         }
     }
 
@@ -504,21 +496,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return '';
-    }
-
-    public function isPossibleLoadingStaticScripts(): bool
-    {
-        $client = new Client(['verify' => false]);
-
-        try {
-            $response = $client->get(UrlHelper::siteUrl('freeform/plugin.js'));
-            $body = (string) $response->getBody();
-
-            return preg_match('/freeform\.js/', $body);
-        } catch (GuzzleException) {
-        }
-
-        return false;
     }
 
     public function getReturnUrl(Form $form): ?string

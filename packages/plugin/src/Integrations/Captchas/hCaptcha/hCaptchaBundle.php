@@ -98,9 +98,7 @@ class hCaptchaBundle extends FeatureBundle
 
         $added[] = $version;
 
-        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/hcaptcha/'.$version.'.js');
-
-        $event->addScript($scriptPath);
+        $event->addScript('js/scripts/front-end/captchas/hcaptcha/'.$version.'.js');
     }
 
     public function triggerValidation(ValidationEvent $event): void

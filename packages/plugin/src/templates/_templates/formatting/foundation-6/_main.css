@@ -1,9 +1,9 @@
-button[type=submit].freeform-processing {
+.freeform-form button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-button[type=submit].freeform-processing:before {
+.freeform-form button[type=submit].freeform-processing:before {
     content: "";
     display: block;
     flex: 1 0 11px;
@@ -25,31 +25,31 @@ button[type=submit].freeform-processing:before {
     }
 }
 
-.cell > label:first-child,
+.freeform-form .cell > label:first-child,
 .freeform-fieldtype-checkbox > label {
     font-weight: 600;
     margin-bottom: 2px;
 }
-input,
-textarea,
-select {
+.freeform-form input,
+.freeform-form textarea,
+.freeform-form select {
     margin-bottom: 0 !important;
 }
-.input-group-one-line label {
+.freeform-form .input-group-one-line label {
     display: inline-block;
     margin: 0 15px 0 0;
 }
-input[type="radio"],
-input[type="checkbox"] {
+.freeform-form input[type="radio"],
+.freeform-form input[type="checkbox"] {
     margin: 0 7px 0 0;
     padding: 0;
 }
-input[type="radio"] + label,
-input[type="checkbox"] + label {
+.freeform-form input[type="radio"] + label,
+.freeform-form input[type="checkbox"] + label {
     margin: 0;
     padding: 0;
 }
-label.required:after {
+.freeform-form label.required:after {
     content: "*";
     margin-left: 3px;
     color: red;
@@ -79,22 +79,22 @@ label.required:after {
     border-bottom: none;
     background: lightgray;
 }
-.grid-margin-x {
+.freeform-form .grid-margin-x {
     padding: 7px 0;
 }
-.errors {
+.freeform-form .errors {
     color: red;
     margin-bottom: 0 !important;
 }
-.help-text {
+.freeform-form .help-text {
     color: gray;
     line-height: 1.8;
     margin-top: -8px;
     margin-bottom: 2px;
 }
-.has-error {
+.freeform-form .has-error {
     border: 1px solid red;
 }
-.submit-buttons {
+.freeform-form .submit-buttons {
     margin-top: 20px !important;
 }

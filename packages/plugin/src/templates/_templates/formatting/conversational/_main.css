@@ -1,11 +1,13 @@
 /* LAYOUT */
 html, body {
-    font-family: sans-serif;
     margin: 0 auto;
     padding: 0;
     height: 100%;
     width: 100%;
     scroll-behavior: smooth;
+}
+.freeform-form {
+    font-family: sans-serif;
 }
 .freeform-page {
     background: #212529;
@@ -61,7 +63,6 @@ html, body {
     margin-right: auto;
     margin-bottom: 20px;
     padding: 15px 20px;
-    width: 100%;
     border-radius: 5px;
 }
 .freeform-form-success p,
@@ -91,10 +92,10 @@ html, body {
 }
 
 /* BUTTONS */
-div[data-freeform-controls] {
+.freeform-form [data-freeform-controls] {
     display: none;
 }
-button,
+.freeform-form button,
 .freeform-buttons a {
     font: 400 16px sans-serif;
     line-height: 1.5;
@@ -114,13 +115,13 @@ button,
 .freeform-buttons {
     justify-content: center;
 }
-.freeform-buttons a, .submit-button {
+.freeform-buttons a, .freeform-buttons button {
     font: 400 22px sans-serif;
     border: 1px solid #0d6efd;
     background-color: #0d6efd;
     padding: 10px 25px;
 }
-.freeform-buttons a:hover, .submit-button:hover {
+.freeform-buttons a:hover, .freeform-buttons button:hover {
     color: #ffffff;
     background-color: #0b5ed7;
     border-color: #0a58ca;
@@ -155,7 +156,6 @@ label.freeform-required:after {
     padding: 0;
     list-style: none;
     display: block;
-    width: 100%;
 }
 .freeform-fieldtype-radios .freeform-errors,
 .freeform-fieldtype-checkboxes .freeform-errors {
@@ -169,9 +169,9 @@ label.freeform-required:after {
 .freeform-errors > li:not(:first-child) {
     margin-top: 3px;
 }
-input,
-textarea,
-select {
+.freeform-form input,
+.freeform-form textarea,
+.freeform-form select {
     font: normal 25px sans-serif;
     color: #ffffff;
     background-color: transparent;
@@ -182,30 +182,30 @@ select {
     display: block;
     resize: none;
 }
-input:focus,
-textarea:focus,
-select:focus {
+.freeform-form input:focus,
+.freeform-form textarea:focus,
+.freeform-form select:focus {
     border-bottom: 2px solid #0b5ed7;
     outline: 0;
     transition: border-color .15s ease-in-out;
 }
-input::placeholder,
-textarea::placeholder {
+.freeform-form input::placeholder,
+.freeform-form textarea::placeholder {
     font: italic 200 18px sans-serif;
     color: #6c757d;
 }
-input.freeform-has-errors,
-textarea.freeform-has-errors,
-select.freeform-has-errors {
+.freeform-form input.freeform-has-errors,
+.freeform-form textarea.freeform-has-errors,
+.freeform-form select.freeform-has-errors {
     border-bottom: 2px solid #dc3545;
 }
 
 /* RADIOS, CHECKBOXES & MULTI-SELECT FIELDS */
-input[type="radio"],
-input[type="checkbox"] {
+.freeform-form input[type="radio"],
+.freeform-form input[type="checkbox"] {
     display: none;
 }
-select["multiple"] {
+.freeform-form select["multiple"] {
     display: none;
 }
 .freeform-fieldtype-radios label:not(:first-child),
@@ -252,22 +252,22 @@ select["multiple"] {
 .freeform-fieldtype-multiple-select .freeform-has-errors + label:not(:first-child) {
     border: 1px dashed #dc3545;
 }
-input[type="radio"]:checked + label,
-input[type="checkbox"]:checked + label {
+.freeform-form input[type="radio"]:checked + label,
+.freeform-form input[type="checkbox"]:checked + label {
     color: #0d6efd;
     background-color: #1a1d20;
     border: 1px solid #0d6efd;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
 }
-input[type="radio"]:checked + label:after,
-input[type="checkbox"]:checked + label:after {
+.freeform-form input[type="radio"]:checked + label:after,
+.freeform-form input[type="checkbox"]:checked + label:after {
     font: normal 18px sans-serif;
     color: #ffffff;
     content: "✓";
     margin-left: 15px;
 }
-input[type="radio"]:checked + label span,
-input[type="checkbox"]:checked + label span {
+.freeform-form input[type="radio"]:checked + label span,
+.freeform-form input[type="checkbox"]:checked + label span {
     color: #ffffff;
     background-color: #0d6efd;
     border: 1px solid #0d6efd;
@@ -554,7 +554,7 @@ input[type="checkbox"]:checked + label span {
 }
 
 /* SUBMIT LOADING INDICATOR */
-button[type=submit].freeform-processing {
+.freeform-form button[type=submit].freeform-processing {
     display: -ms-inline-flexbox;
     display: inline-flex;
     -ms-flex-wrap: nowrap;
@@ -562,7 +562,7 @@ button[type=submit].freeform-processing {
     -ms-flex-align: center;
     align-items: center;
 }
-button[type=submit].freeform-processing:before {
+.freeform-form button[type=submit].freeform-processing:before {
     content: '';
     display: block;
     -ms-flex: 1 0 11px;
@@ -576,7 +576,7 @@ button[type=submit].freeform-processing:before {
     border-radius: 50%;
     animation: freeform-processing .5s linear infinite;
 }
-button:disabled {
+.freeform-form button:disabled {
     color: #ffffff;
     background-color: #5082cc;
     border-color: #497bc5;

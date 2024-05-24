@@ -4,6 +4,9 @@ namespace Solspace\Freeform\controllers;
 
 use yii\web\Response;
 
+/**
+ * @deprecated No longer used in Freeform 5.2.3
+ */
 class BaseFilesProxyController extends BaseController
 {
     protected function getFileResponse(string $filepath, string $filename, string $mimeType): Response

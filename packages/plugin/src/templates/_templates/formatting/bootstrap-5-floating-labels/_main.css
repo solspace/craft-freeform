@@ -1,9 +1,9 @@
-button[type=submit].freeform-processing {
+.freeform-form button[type=submit].freeform-processing {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
 }
-button[type=submit].freeform-processing:before {
+.freeform-form button[type=submit].freeform-processing:before {
     content: "";
     display: block;
     flex: 1 0 11px;
@@ -24,19 +24,19 @@ button[type=submit].freeform-processing:before {
         transform: rotate(1turn);
     }
 }
-label.required:after {
+.freeform-form label.required:after {
     content: "*";
     color: #d00;
     margin-left: 3px;
 }
-.alert p:last-of-type {
+.freeform-form .alert p:last-of-type {
     margin-bottom: 0;
 }
-.mt-n1 {
+.freeform-form .mt-n1 {
     margin-top: -0.5rem !important;
 }
 
 /* FLOATING LABELS SPECIFIC STYLES */
-.form-floating > label {
+.freeform-form .form-floating > label {
     left: 12px;
 }

@@ -99,9 +99,7 @@ class ReCaptchaBundle extends FeatureBundle
 
         $added[] = $version;
 
-        $scriptPath = \Craft::getAlias('@freeform/Resources/js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
-
-        $event->addScript($scriptPath);
+        $event->addScript('js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
     }
 
     public function triggerValidation(ValidationEvent $event): void

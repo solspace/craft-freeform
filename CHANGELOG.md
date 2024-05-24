@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.3.0 - Unreleased
+## 5.3.0 - 2024-05-24
 
 ### Changed
 - Improved the Script Insert feature:

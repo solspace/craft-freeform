@@ -9,7 +9,7 @@
             {% for asset in assets|filter(asset => asset is not null) %}
                 {% set thumbSizes = [30, 60, 100, 200] %}
                 {% set srcset = "" %}
-                {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
+                {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ craft.app.assets.thumbUrl(asset, size) ~ " " ~ size ~ "w" %}{%- endfor -%}
                 {% set srcset = srcset|trim(", ") %}
 
                 <div class="element small removable hasthumb" style="padding-right: 20px;">

@@ -15,7 +15,8 @@
         {% set form = freeform.form(formHandle) %}
         {% set submissions = freeform.submissions({
             form: formHandle,
-            isSpam: spamMode|default(false)
+            isSpam: spamMode|default(false),
+            orderBy: 'dateCreated DESC'
         }).all %}
         {% set submissionCount = freeform.submissions({formId: form.id}).count %}
         {% set spamCount = freeform.submissions({formId: form.id, isSpam: true}).count %}

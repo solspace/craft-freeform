@@ -13,6 +13,7 @@
 namespace Solspace\Freeform;
 
 use craft\base\Plugin;
+use craft\events\IndexKeywordsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SearchEvent;
@@ -642,6 +643,16 @@ class Freeform extends Plugin
             function (SearchEvent $event) {
                 if ($event->elementQuery instanceof SubmissionQuery) {
                     SearchHelper::adjustSearchQuery($event->query);
+                }
+            }
+        );
+
+        Event::on(
+            Search::class,
+            Search::EVENT_BEFORE_INDEX_KEYWORDS,
+            function (IndexKeywordsEvent $event) {
+                if ($event->element instanceof Submission) {
+                    SearchHelper::alignSearchableAttributes($event);
                 }
             }
         );

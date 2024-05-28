@@ -2,10 +2,12 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
+use craft\events\IndexKeywordsEvent;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\search\SearchQuery;
 use craft\search\SearchQueryTerm;
 use craft\search\SearchQueryTermGroup;
+use Solspace\Freeform\Elements\Submission;
 
 class SearchHelper
 {
@@ -14,7 +16,7 @@ class SearchHelper
         return CraftStringHelper::first($handle, $maxLen);
     }
 
-    public static function adjustSearchQuery(SearchQuery $query)
+    public static function adjustSearchQuery(SearchQuery $query): void
     {
         $modifyTerm = static function (SearchQueryTerm $term) {
             if ($term->attribute) {
@@ -34,5 +36,24 @@ class SearchHelper
                 $modifyTerm($termOrGroup);
             }
         }
+    }
+
+    /**
+     * Ensure the keyword indexing process doesn't attempt to index the same attribute twice.
+     * This method course-corrects for Submission elements listing all form fields as searchable attributes.
+     */
+    public static function alignSearchableAttributes(IndexKeywordsEvent $event): void
+    {
+        /** @var Submission $submission */
+        $submission = $event->element;
+        $attribute = CraftStringHelper::toLowerCase($event->attribute);
+
+        if ($submission->hasIndexedAttribute($attribute)) {
+            $event->isValid = false;
+
+            return;
+        }
+
+        $submission->addIndexedAttribute($attribute);
     }
 }

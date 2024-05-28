@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.3.1 - 2024-05-28
+
+### Fixed
+- Fixed a bug that could cause the Craft search index to break if multiple forms had fields with the same handle.
+
 ## 5.3.0 - 2024-05-24
 
 ### Changed

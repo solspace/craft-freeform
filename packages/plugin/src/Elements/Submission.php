@@ -70,6 +70,7 @@ class Submission extends Element
     private ?FieldCollection $fieldCollection = null;
     private static array $permissionCache = [];
     private static array $deletableTokens = [];
+    private array $indexedAttributeCache = [];
 
     /** @var SpamReason[] */
     private ?array $spamReasons = null;
@@ -288,6 +289,16 @@ class Submission extends Element
         }
 
         return $this->spamReasons;
+    }
+
+    public function addIndexedAttribute(string $attribute): void
+    {
+        $this->indexedAttributeCache[$attribute] = true;
+    }
+
+    public function hasIndexedAttribute(string $attribute): bool
+    {
+        return \array_key_exists($attribute, $this->indexedAttributeCache);
     }
 
     public function getAuthor(): ?User
@@ -607,7 +618,17 @@ class Submission extends Element
                     ],
                 ];
             }
-
+            $items[] = ['heading' => ''];
+            $items[] = [
+                'key' => 'form:'.$form->getId(),
+                'label' => $form->getName(),
+                'data' => [
+                    'handle' => $form->getHandle(),
+                ],
+                'criteria' => [
+                    'formId' => $form->getId(),
+                ],
+            ];
             $sources = $items;
         }
 

@@ -26,6 +26,8 @@ import { debug } from './utils/debug';
 import { generateUrl } from './utils/urls';
 import App from './App';
 
+import './styles.css';
+
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
 

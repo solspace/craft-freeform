@@ -51,6 +51,26 @@
 
     <hr>
 
+    <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for Email Notifications"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        name: "settings[useQueueForEmailNotifications]",
+        on: settings.useQueueForEmailNotifications,
+        errors: settings.errors("useQueueForEmailNotifications"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for Integrations"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        name: "settings[useQueueForIntegrations]",
+        on: settings.useQueueForIntegrations,
+        errors: settings.errors("useQueueForIntegrations"),
+    }) }}
+
+    <hr>
+
     <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
 
     {{ forms.selectField({

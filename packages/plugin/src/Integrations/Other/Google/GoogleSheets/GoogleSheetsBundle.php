@@ -12,19 +12,17 @@
 
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
-use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use craft\helpers\Queue;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
 class GoogleSheetsBundle extends FeatureBundle
 {
-    public function __construct(
-        private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
-    ) {
+    public function __construct()
+    {
         Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
@@ -43,14 +41,18 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
+        if (!$this->plugin()->googleSheets->hasIntegrations($form)) {
+            return;
+        }
+
         if ($form->isDisabled()->api) {
             return;
         }
 
-        $integrations = $this->formIntegrationsProvider->getForForm($form, GoogleSheetsIntegrationInterface::class);
-        foreach ($integrations as $integration) {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+        if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
+            Queue::push(new ProcessGoogleSheetsIntegrationsJob(['formId' => $form->getId()]));
+        } else {
+            $this->plugin()->googleSheets->processIntegrations($form);
         }
     }
 }

@@ -548,6 +548,11 @@ return [
     'Page Footer' => 'Page Footer',
     'Inside Form' => 'Inside Form',
     'None (add manually)' => 'None (add manually)',
+    'Form Processing' => 'Form Processing',
+    'Use Queue for Email Notifications' => 'Use Queue for Email Notifications',
+    "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>",
+    'Use Queue for Integrations' => 'Use Queue for Integrations',
+    "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>",
 
     // Statuses controller
     'Create a new status' => 'Create a new status',

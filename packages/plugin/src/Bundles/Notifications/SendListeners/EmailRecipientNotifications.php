@@ -31,12 +31,12 @@ class EmailRecipientNotifications extends FeatureBundle
         $submission = $event->getSubmission();
 
         foreach ($notifications as $notification) {
-            $fieldHandle = $notification->getField()?->getHandle();
-            if (!$fieldHandle) {
+            $field = $fields->get($notification->getField());
+            if (!$field) {
                 continue;
             }
 
-            $recipient = $form->get($fieldHandle)->getValue();
+            $recipient = $field->getValue();
 
             if (!$recipient) {
                 continue;

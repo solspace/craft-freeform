@@ -12,12 +12,24 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Records\CrmFieldRecord;
+use Solspace\Freeform\Services\BaseService;
 
-class CrmService extends IntegrationsService
+class CrmService extends BaseService
 {
+    public function __construct(
+        protected FormIntegrationsProvider $integrationsProvider,
+        protected IntegrationClientProvider $clientProvider,
+    ) {
+        parent::__construct();
+    }
+
     /**
      * @return FieldObject[]
      */
@@ -87,5 +99,20 @@ class CrmService extends IntegrationsService
             ),
             $existingRecords
         );
+    }
+
+    public function processIntegrations(Form $form): void
+    {
+        /** @var CRMIntegrationInterface[] $integrations */
+        $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_CRM);
+        foreach ($integrations as $integration) {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->push($form, $client);
+        }
+    }
+
+    public function hasIntegrations(Form $form): bool
+    {
+        return \count($this->integrationsProvider->getForForm($form, Type::TYPE_CRM)) > 0;
     }
 }

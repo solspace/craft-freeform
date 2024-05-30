@@ -544,6 +544,11 @@ return [
     'Page Footer' => 'Pagina Footer',
     'Inside Form' => 'Inside Form',
     'None (add manually)' => 'Geen (handmatig toevoegen)',
+    'Form Processing' => 'Formulierverwerking',
+    'Use Queue for Email Notifications' => 'Gebruik wachtrij voor e-mailmeldingen',
+    "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Gebruik het wachtrijsysteem van Craft om e-mails te activeren. Als u dit inschakelt, wordt de verwerking van indieningen voor uw gebruikers versneld. Dit hangt af van routinematig verkeer naar uw Craft-configuratiescherm of van het implementeren van een goede wachtrijverwerkingsmethode die niet afhankelijk is van iemand die uw configuratiescherm bezoekt. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Meer informatie</a>",
+    'Use Queue for Integrations' => 'Gebruik wachtrij voor integraties',
+    "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Gebruik het wachtrijsysteem van Craft om integraties (CRM en e-mailmarketing) te activeren. Als u dit inschakelt, wordt de verwerking van indieningen voor uw gebruikers versneld. Dit hangt af van routinematig verkeer naar uw Craft-configuratiescherm of van het implementeren van een goede wachtrijverwerkingsmethode die niet afhankelijk is van iemand die uw configuratiescherm bezoekt. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Meer informatie</a>",
 
     // Statussen controller
     'Create a new status' => 'Creëer een nieuwe status',

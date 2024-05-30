@@ -1,0 +1,6 @@
+@media print {
+    craft-global-sidebar,
+    #global-header {
+        display: none;
+    }
+}

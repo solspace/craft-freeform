@@ -29,12 +29,12 @@ class DynamicRecipients extends FeatureBundle
         $fields = $event->getFields();
 
         foreach ($notifications as $notification) {
-            $fieldHandle = $notification->getField()?->getHandle();
-            if (!$fieldHandle) {
+            $field = $fields->get($notification->getField());
+            if (!$field) {
                 continue;
             }
 
-            $value = $form->get($fieldHandle)->getValue();
+            $value = $field->getValue();
             if (!\is_array($value)) {
                 $value = [$value];
             }

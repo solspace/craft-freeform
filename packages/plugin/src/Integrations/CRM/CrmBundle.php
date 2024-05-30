@@ -12,24 +12,20 @@
 
 namespace Solspace\Freeform\Integrations\CRM;
 
-use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use craft\helpers\Queue;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\ProcessCrmIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class CrmBundle extends FeatureBundle
 {
-    public function __construct(
-        private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
-    ) {
+    public function __construct()
+    {
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
@@ -71,15 +67,18 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
+        if (!$this->plugin()->crm->hasIntegrations($form)) {
+            return;
+        }
+
         if ($form->isDisabled()->api) {
             return;
         }
 
-        /** @var CRMIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_CRM);
-        foreach ($integrations as $integration) {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+        if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
+            Queue::push(new ProcessCrmIntegrationsJob(['formId' => $form->getId()]));
+        } else {
+            $this->plugin()->crm->processIntegrations($form);
         }
     }
 }

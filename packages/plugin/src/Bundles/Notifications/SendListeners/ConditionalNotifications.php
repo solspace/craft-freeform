@@ -55,8 +55,12 @@ class ConditionalNotifications extends FeatureBundle
             $matchesSome = false;
             $matchesAll = true;
             foreach ($conditions as $condition) {
-                $field = $form->get($condition->getField()->getId());
-                $postedValue = $field?->getValue();
+                $field = $fields->get($condition->getField());
+                if (!$field) {
+                    continue;
+                }
+
+                $postedValue = $field->getValue();
 
                 $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
                 if ($valueMatch) {

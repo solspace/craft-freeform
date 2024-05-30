@@ -12,14 +12,26 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Records\EmailMarketingFieldRecord;
 use Solspace\Freeform\Records\EmailMarketingListRecord;
+use Solspace\Freeform\Services\BaseService;
 
-class EmailMarketingService extends IntegrationsService
+class EmailMarketingService extends BaseService
 {
+    public function __construct(
+        protected FormIntegrationsProvider $integrationsProvider,
+        protected IntegrationClientProvider $clientProvider,
+    ) {
+        parent::__construct();
+    }
+
     public function getListObjectById(?int $id): ?ListObject
     {
         $record = EmailMarketingListRecord::findOne(['id' => $id]);
@@ -161,5 +173,20 @@ class EmailMarketingService extends IntegrationsService
             ),
             $existingRecords
         );
+    }
+
+    public function processIntegrations(Form $form): void
+    {
+        /** @var EmailMarketingIntegrationInterface[] $integrations */
+        $integrations = $this->integrationsProvider->getForForm($form, Type::TYPE_EMAIL_MARKETING);
+        foreach ($integrations as $integration) {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->push($form, $client);
+        }
+    }
+
+    public function hasIntegrations(Form $form): bool
+    {
+        return \count($this->integrationsProvider->getForForm($form, Type::TYPE_EMAIL_MARKETING)) > 0;
     }
 }

@@ -341,7 +341,9 @@ class FormsService extends BaseService implements FormHandlerInterface
                 if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
                     $templatePath = str_replace(\Craft::getAlias('@freeform/templates/'), '', $templatePath);
-                    $templatePath = 'freeform/'.$templatePath;
+                    if (\DIRECTORY_SEPARATOR === '/') {
+                        $templatePath = 'freeform/'.$templatePath;
+                    }
                     $templateMode = View::TEMPLATE_MODE_CP;
 
                     break;

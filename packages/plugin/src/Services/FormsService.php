@@ -384,7 +384,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($templates as $template) {
             if ($template->getFileName() === $templateName) {
                 $templatePath = $template->getFilePath();
-                $templatePath = str_replace(\Craft::getAlias('@templates/'), '', $templatePath);
+                $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
 
                 break;
             }

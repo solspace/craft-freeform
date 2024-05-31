@@ -12,7 +12,6 @@ use craft\events\RegisterElementActionsEvent;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
-use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Commons\Helpers\StringHelper;
@@ -449,8 +448,8 @@ class Submission extends Element
                 $value = json_encode($value);
             }
 
-            if (\PHP_VERSION_ID >= 50400) {
-                $value = LitEmoji::unicodeToShortcode($value);
+            if (\PHP_VERSION_ID >= 50400 && null !== $value) {
+                $value = CraftStringHelper::emojiToShortcodes($value);
             }
 
             $contentData[self::getFieldColumnName($field)] = $value;

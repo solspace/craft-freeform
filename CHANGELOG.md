@@ -1,11 +1,12 @@
 # Solspace Freeform Changelog
 
-## 5.3.2 - 2024-05-31 (unreleased)
+## 5.3.2 - 2024-05-31
 
 ### Changed
 - Updating the Surveys & Polls report/results page to include additional CSS that hides the Craft navbar and header for printing (or saving as PDF).
 
 ### Fixed
+- Fixed a bug where the Table field type's built-in JS and max rows settings inside the form builder did not affect the front end.
 - Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radios, Dropdown, and Opinion Scale field types.
 
 ## 5.3.1 - 2024-05-28

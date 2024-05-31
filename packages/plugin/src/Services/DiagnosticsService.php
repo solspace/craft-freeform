@@ -36,7 +36,7 @@ class DiagnosticsService extends BaseService
                         'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.9.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.10.0', '<'),
                         'Potential Craft Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
                     ),
@@ -52,7 +52,7 @@ class DiagnosticsService extends BaseService
                         'You have an incompatible version of PHP installed for this site environment. This version of Freeform currently supports PHP 8.0.2 and greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value, '8.2', '<'),
+                        fn ($value) => version_compare($value, '8.3', '<'),
                         'Potential PHP Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please confirm you're using a version of Freeform tested for compatibility with this version of PHP."
                     ),
@@ -239,23 +239,19 @@ class DiagnosticsService extends BaseService
                 [
                     'isPro' => Freeform::getInstance()->isPro(),
                     'version' => Freeform::getInstance()->getVersion(),
+                ],
+                [
+                    new SuggestionValidator(
+                        fn ($value) => version_compare($value['version'], '5.0.0', '>='),
+                        'A new major version of Freeform is available!',
+                        '<a href="{{ extra.url }}">Update to Freeform 5</a> to unlock an impressive new form-building experience, flexible templating options and much more! Freeform 5 is compatible with both Craft 4 and Craft 5.',
+                        ['url' => 'https://docs.solspace.com/craft/freeform/v5/']
+                    ),
                 ]
             ),
             new DiagnosticItem(
                 'Craft Email configuration: <b>{{ value.transport }}</b>',
-                ['transport' => $emailTransport, 'issues' => $emailIssues],
-                [
-                    new SuggestionValidator(
-                        fn ($value) => 'misaligned_from' !== $value['issues'],
-                        'Potential Email Configuration issue',
-                        "When using SMTP for the Craft Email settings, the 'From Email' in email notification templates should always contain a matching email address, otherwise the notifications may not send. If you wish to have a different email address for this, consider using 'Reply to Email' instead."
-                    ),
-                    new NoticeValidator(
-                        fn ($value) => 'misaligned_from' !== $value['issues'],
-                        'Potential Email Configuration issue',
-                        "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings."
-                    ),
-                ]
+                ['transport' => $emailTransport, 'issues' => $emailIssues]
             ),
             'Spam settings' => [
                 new DiagnosticItem(

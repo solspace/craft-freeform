@@ -15,6 +15,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Interfaces\TableInterface;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -30,7 +31,7 @@ use yii\base\Event;
     iconPath: __DIR__.'/../Icons/table.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/table.ejs',
 )]
-class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface, EncryptionInterface
+class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface, EncryptionInterface, TableInterface
 {
     use EncryptionTrait;
     use MultipleValueTrait;
@@ -66,7 +67,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     protected TableLayout $tableLayout;
 
     #[Input\Boolean('Use built-in javascript for adding and removing rows')]
-    protected bool $useScript = false;
+    protected bool $useScript = true;
 
     #[Input\Integer(
         label: 'Maximum number of rows',
@@ -335,6 +336,14 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             ->replace('data-freeform-table')
         ;
 
+        if ($this->isUseScript()) {
+            $tableAttributes->set('data-scripts-enabled', true);
+        }
+
+        if ($this->getMaxRows()) {
+            $tableAttributes->set('data-max-rows', $this->getMaxRows());
+        }
+
         $rowAttributes = $attributes->getRow();
 
         $id = $this->getIdAttribute();
@@ -429,22 +438,28 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $output .= '</td>';
             }
 
-            $output .= '<td'.$columnAttributes.'>';
             if ($this->getRemoveButtonMarkup()) {
+                $output .= '<td'.$columnAttributes.'>';
                 $output .= $this->getRemoveButtonMarkup();
+                $output .= '</td>';
             } else {
-                $buttonAttributes = $attributes
-                    ->getRemoveButton()
-                    ->clone()
-                    ->replace('data-freeform-table-remove-row')
-                    ->setIfEmpty('type', 'button')
-                ;
+                if ($this->isUseScript()) {
+                    $output .= '<td'.$columnAttributes.'>';
 
-                $output .= '<button'.$buttonAttributes.'>'
-                    .($this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel())
-                    .'</button>';
+                    $buttonAttributes = $attributes
+                        ->getRemoveButton()
+                        ->clone()
+                        ->replace('data-freeform-table-remove-row')
+                        ->setIfEmpty('type', 'button')
+                    ;
+
+                    $output .= '<button'.$buttonAttributes.'>'
+                        .($this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel())
+                        .'</button>';
+
+                    $output .= '</td>';
+                }
             }
-            $output .= '</td>';
 
             $output .= '</tr>';
         }
@@ -454,17 +469,19 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         if ($this->getAddButtonMarkup()) {
             $output .= $this->getAddButtonMarkup();
         } else {
-            $buttonAttributes = $attributes
-                ->getAddButton()
-                ->clone()
-                ->replace('data-freeform-table-add-row')
-                ->replace('data-target', $id)
-                ->setIfEmpty('type', 'button')
-            ;
+            if ($this->isUseScript()) {
+                $buttonAttributes = $attributes
+                    ->getAddButton()
+                    ->clone()
+                    ->replace('data-freeform-table-add-row')
+                    ->replace('data-target', $id)
+                    ->setIfEmpty('type', 'button')
+                ;
 
-            $output .= '<button'.$buttonAttributes.'>'
-                .($this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel())
-                .'</button>';
+                $output .= '<button'.$buttonAttributes.'>'
+                    .($this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel())
+                    .'</button>';
+            }
         }
 
         return $output;

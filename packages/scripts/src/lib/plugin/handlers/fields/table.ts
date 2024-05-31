@@ -6,7 +6,9 @@ import type { FreeformHandler } from 'types/form';
 class Table implements FreeformHandler {
   PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
 
-  freeform;
+  freeform: Freeform;
+
+  addButton: HTMLButtonElement;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -16,7 +18,7 @@ class Table implements FreeformHandler {
   reload = () => {
     const tables = this.freeform.form.querySelectorAll('[data-freeform-table]');
     tables.forEach((table) => {
-      const button = table.parentNode.querySelector('[data-freeform-table-add-row]');
+      this.addButton = table.parentNode.querySelector<HTMLButtonElement>('[data-freeform-table-add-row]');
 
       const removeRowButtons = table.querySelectorAll('[data-freeform-table-remove-row]');
       for (let j = 0; j < removeRowButtons.length; j++) {
@@ -24,7 +26,9 @@ class Table implements FreeformHandler {
         removeButton.addEventListener('click', this.removeRow);
       }
 
-      if (button) {
+      this.toggleAddButton(table);
+
+      if (this.addButton) {
         const getNextMaxIndex = () => {
           const inputs = table.querySelectorAll<HTMLInputElement>('textarea, input, select');
           let maxIndex = 0;
@@ -43,7 +47,7 @@ class Table implements FreeformHandler {
           return ++maxIndex;
         };
 
-        button.addEventListener('click', () => {
+        this.addButton.addEventListener('click', () => {
           const referenceRow = table.querySelector<HTMLTableRowElement>('tbody > tr:last-child');
 
           if (referenceRow) {
@@ -82,6 +86,8 @@ class Table implements FreeformHandler {
               table,
               row: cloneRow,
             });
+
+            this.toggleAddButton(table);
           }
         });
       }
@@ -101,6 +107,17 @@ class Table implements FreeformHandler {
     this.freeform._dispatchEvent(events.table.onRemoveRow, { table, row });
     removeElement(row);
     this.freeform._dispatchEvent(events.table.afterRemoveRow, { table });
+
+    this.toggleAddButton(table);
+  };
+
+  toggleAddButton = (table: Element) => {
+    const maxRows: number | string = table.getAttribute('data-max-rows');
+    const totalRows = table.querySelectorAll<HTMLTableRowElement>('tbody > tr').length;
+
+    if (maxRows && this.addButton) {
+      this.addButton.style.display = totalRows >= parseInt(maxRows, 10) ? 'none' : 'block';
+    }
   };
 }
 

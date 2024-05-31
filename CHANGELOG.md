@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 4.1.19 - 2024-05-31
+
+### Changed
+- Updated Diagnostics page to verify compatibility for PHP 8.2 and Craft 4.9.x.
+- Removed the _Resources_ subnav link.
+
+### Fixed
+- Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radio, Select, and Opinion Scale field types.
+
 ## 4.1.18 - 2024-05-08
 
 ### Fixed

@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.3.2 - 2024-05-31 (unreleased)
+
+### Changed
+- Updating the Surveys & Polls report/results page to include additional CSS that hides the Craft navbar and header for printing (or saving as PDF).
+
+### Fixed
+- Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radios, Dropdown, and Opinion Scale field types.
+
 ## 5.3.1 - 2024-05-28
 
 ### Fixed
@@ -676,6 +684,15 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.19 - 2024-05-31
+
+### Changed
+- Updated Diagnostics page to verify compatibility for PHP 8.2 and Craft 4.9.x.
+- Removed the _Resources_ subnav link.
+
+### Fixed
+- Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radio, Select, and Opinion Scale field types.
 
 ## 4.1.18 - 2024-05-08
 

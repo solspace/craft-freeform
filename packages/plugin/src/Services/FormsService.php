@@ -330,7 +330,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($customTemplates as $template) {
             if (str_ends_with($template->getFilePath(), $templateName)) {
                 $templatePath = $template->getFilePath();
-                $templatePath = str_replace(\Craft::getAlias('@templates/'), '', $templatePath);
+                $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
 
                 break;
             }
@@ -340,8 +340,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             foreach ($solspaceTemplates as $template) {
                 if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
-                    $templatePath = str_replace(\Craft::getAlias('@freeform/templates/'), '', $templatePath);
-                    $templatePath = 'freeform'.\DIRECTORY_SEPARATOR.$templatePath;
+                    $templatePath = str_replace(\Craft::getAlias('@freeform/templates'), '', $templatePath);
+                    $templatePath = 'freeform'.$templatePath;
                     $templateMode = View::TEMPLATE_MODE_CP;
 
                     break;

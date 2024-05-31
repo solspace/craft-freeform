@@ -14,7 +14,6 @@ use craft\helpers\Db;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
-use LitEmoji\LitEmoji;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
@@ -460,7 +459,7 @@ class Submission extends Element
             }
 
             if (\PHP_VERSION_ID >= 50400 && null !== $value) {
-                $value = LitEmoji::unicodeToShortcode($value);
+                $value = CraftStringHelper::emojiToShortcodes($value);
             }
 
             $event = new ProcessFieldValueEvent($field, $value);

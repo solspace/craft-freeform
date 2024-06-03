@@ -30,22 +30,11 @@ class PasswordTransform extends FeatureBundle
                     return;
                 }
 
-                // Remove the `newPassword` rule
                 foreach ($event->rules as $key => $rule) {
                     if (isset($rule[0]) && $rule[0] === ['newPassword']) {
                         unset($event->rules[$key]);
                     }
                 }
-
-                // To add our own `newPassword` rules based on the password field type min length
-                /*
-                $event->rules[] = [
-                    ['newPassword'],
-                    'string',
-                    'min' => $this->minLength,
-                    'tooShort' => \Craft::t('yii', 'Password is too short'),
-                ];
-                */
             }
         );
     }

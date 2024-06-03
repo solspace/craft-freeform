@@ -1296,4 +1296,10 @@ return [
     'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.' => 'Sorry, we kunnen uw inzending op dit moment niet accepteren. Er is niet genoeg tijd verstreken voordat het formulier verzonden kan worden.',
     'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.' => 'Sorry, we kunnen uw inzending op dit moment niet accepteren. Er is te veel tijd verstreken om het formulier te verzenden.',
     'Allow' => 'Toestaan',
+
+    // Template Manager
+    'Default From Email for New Templates' => 'Standaard uit e-mail voor nieuwe sjablonen',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "Het standaard e-mailadres dat moet worden opgenomen in de instelling 'Van e-mail' van nieuwe e-mailmeldingssjablonen.",
+    'Default From Name for New Templates' => 'Standaard Van-naam voor nieuwe sjablonen',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "De standaardnaam die moet worden opgenomen in de instelling 'Van e-mail' van nieuwe e-mailmeldingssjablonen.",
 ];

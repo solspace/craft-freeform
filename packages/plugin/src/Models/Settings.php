@@ -238,6 +238,10 @@ class Settings extends Model
 
     public bool $sitesEnabled = false;
 
+    public string $defaultFromEmail = "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+
+    public string $defaultFromName = "{{ craft.app.projectConfig.get('email.fromName') }}";
+
     public Defaults $defaults;
 
     /**

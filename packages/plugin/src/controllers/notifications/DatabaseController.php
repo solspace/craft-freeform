@@ -33,7 +33,17 @@ class DatabaseController extends AbstractNotificationsController
 
     public function actionCreate(): Response
     {
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $date = (new \DateTime())->format('Ymd-His');
+        $name = "new-template-{$date}";
+
         $record = NotificationTemplateRecord::create();
+        $record->name = "New Template on {$date}";
+        $record->handle = $name;
+        $record->fromEmail = $settingsModel->defaultFromEmail;
+        $record->fromName = $settingsModel->defaultFromName;
+
         $title = Freeform::t('Create a new email notification template');
 
         return $this->renderEditForm($record, $title);

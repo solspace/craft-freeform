@@ -17,6 +17,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 use yii\base\Event;
 
 class GoogleSheetsBundle extends FeatureBundle
@@ -41,7 +42,7 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->googleSheets->hasIntegrations($form)) {
+        if (!$this->plugin()->integrations->hasIntegrations($form, GoogleSheetsIntegrationInterface::class)) {
             return;
         }
 
@@ -52,7 +53,7 @@ class GoogleSheetsBundle extends FeatureBundle
         if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
             Queue::push(new ProcessGoogleSheetsIntegrationsJob(['formId' => $form->getId()]));
         } else {
-            $this->plugin()->googleSheets->processIntegrations($form);
+            $this->plugin()->integrations->processIntegrations($form, GoogleSheetsIntegrationInterface::class);
         }
     }
 }

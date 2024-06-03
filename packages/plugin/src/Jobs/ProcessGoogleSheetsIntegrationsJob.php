@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Jobs;
 
 use craft\queue\BaseJob;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 
 class ProcessGoogleSheetsIntegrationsJob extends BaseJob
 {
@@ -13,7 +14,7 @@ class ProcessGoogleSheetsIntegrationsJob extends BaseJob
     {
         $freeform = Freeform::getInstance();
 
-        $freeform->googleSheets->processIntegrations($freeform->forms->getFormById($this->formId));
+        $freeform->integrations->processIntegrations($freeform->forms->getFormById($this->formId), GoogleSheetsIntegrationInterface::class);
     }
 
     protected function defaultDescription(): ?string

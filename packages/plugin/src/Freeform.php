@@ -81,7 +81,6 @@ use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
-use Solspace\Freeform\Services\Integrations\GoogleSheetsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\LockService;
@@ -120,7 +119,6 @@ use yii\db\Query;
  * @property LayoutsService             $formLayouts
  * @property MailerService              $mailer
  * @property EmailMarketingService      $emailMarketing
- * @property GoogleSheetsService        $googleSheets
  * @property NotificationsService       $notifications
  * @property SettingsService            $settings
  * @property StatusesService            $statuses
@@ -418,7 +416,6 @@ class Freeform extends Plugin
                 'fields' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,
                 'mailer' => MailerService::class,
-                'googleSheets' => GoogleSheetsService::class,
                 'emailMarketing' => EmailMarketingService::class,
                 'notifications' => NotificationsService::class,
                 'settings' => SettingsService::class,

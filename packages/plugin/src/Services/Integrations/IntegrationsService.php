@@ -465,6 +465,20 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
+    public function hasIntegrations(Form $form, string $type): bool
+    {
+        return \count($this->getForForm($form, $type)) > 0;
+    }
+
+    public function processIntegrations(Form $form, string $type): void
+    {
+        $integrations = $this->getForForm($form, $type);
+        foreach ($integrations as $integration) {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->push($form, $client);
+        }
+    }
+
     protected function getQuery(?string $type = null): Query
     {
         $query = (new Query())

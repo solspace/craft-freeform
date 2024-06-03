@@ -19,6 +19,7 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Jobs\ProcessCrmIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
@@ -67,7 +68,7 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->crm->hasIntegrations($form)) {
+        if (!$this->plugin()->integrations->hasIntegrations($form, CRMIntegrationInterface::class)) {
             return;
         }
 
@@ -78,7 +79,7 @@ class CrmBundle extends FeatureBundle
         if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
             Queue::push(new ProcessCrmIntegrationsJob(['formId' => $form->getId()]));
         } else {
-            $this->plugin()->crm->processIntegrations($form);
+            $this->plugin()->integrations->processIntegrations($form, CRMIntegrationInterface::class);
         }
     }
 }

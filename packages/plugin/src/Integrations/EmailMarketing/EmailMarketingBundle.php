@@ -9,6 +9,7 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Jobs\ProcessEmailMarketingIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
+use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
@@ -57,7 +58,7 @@ class EmailMarketingBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->emailMarketing->hasIntegrations($form)) {
+        if (!$this->plugin()->integrations->hasIntegrations($form, EmailMarketingIntegrationInterface::class)) {
             return;
         }
 
@@ -68,7 +69,7 @@ class EmailMarketingBundle extends FeatureBundle
         if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
             Queue::push(new ProcessEmailMarketingIntegrationsJob(['formId' => $form->getId()]));
         } else {
-            $this->plugin()->emailMarketing->processIntegrations($form);
+            $this->plugin()->integrations->processIntegrations($form, EmailMarketingIntegrationInterface::class);
         }
     }
 }

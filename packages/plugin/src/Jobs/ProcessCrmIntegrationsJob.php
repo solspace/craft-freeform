@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Jobs;
 
 use craft\queue\BaseJob;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 
 class ProcessCrmIntegrationsJob extends BaseJob
 {
@@ -13,7 +14,7 @@ class ProcessCrmIntegrationsJob extends BaseJob
     {
         $freeform = Freeform::getInstance();
 
-        $freeform->crm->processIntegrations($freeform->forms->getFormById($this->formId));
+        $freeform->integrations->processIntegrations($freeform->forms->getFormById($this->formId), CRMIntegrationInterface::class);
     }
 
     protected function defaultDescription(): ?string

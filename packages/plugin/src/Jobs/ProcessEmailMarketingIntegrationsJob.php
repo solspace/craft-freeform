@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Jobs;
 
 use craft\queue\BaseJob;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 
 class ProcessEmailMarketingIntegrationsJob extends BaseJob
 {
@@ -13,7 +14,7 @@ class ProcessEmailMarketingIntegrationsJob extends BaseJob
     {
         $freeform = Freeform::getInstance();
 
-        $freeform->emailMarketing->processIntegrations($freeform->forms->getFormById($this->formId));
+        $freeform->integrations->processIntegrations($freeform->forms->getFormById($this->formId), EmailMarketingIntegrationInterface::class);
     }
 
     protected function defaultDescription(): ?string

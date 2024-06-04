@@ -324,7 +324,6 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         $customTemplates = $settings->getCustomFormTemplates();
         $solspaceTemplates = $settings->getSolspaceFormTemplates();
-        $settingsModel = $this->getSettingsService()->getSettingsModel();
 
         $templateMode = View::TEMPLATE_MODE_SITE;
         $templatePath = null;
@@ -366,8 +365,6 @@ class FormsService extends BaseService implements FormHandlerInterface
             [
                 'form' => $form,
                 'formCss' => $this->getFormattingTemplateCss($templateName),
-                'defaultFromEmail' => $settingsModel->defaultFromEmail,
-                'defaultFromName' => $settingsModel->defaultFromName,
             ],
             $templateMode,
         );

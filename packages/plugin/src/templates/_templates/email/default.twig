@@ -1,16 +1,6 @@
-{% set fromEmail = "{{ craft.app.projectConfig.get('email.fromEmail') }}" %}
-{% if defaultFromEmail is defined and defaultFromEmail|length %}
-    {% set fromEmail = defaultFromEmail %}
-{% endif %}
-
-{% set fromName = "{{ craft.app.projectConfig.get('email.fromName') }}" %}
-{% if defaultFromName is defined and defaultFromName|length %}
-    {% set fromName = defaultFromName %}
-{% endif %}
-
 {# subject: New submission on your {{ form.name }} form #}
-{# fromEmail: {{ fromEmail }} #}
-{# fromName: {{ fromName }} #}
+{# fromEmail: __placeholderFromEmail__ #}
+{# fromName: __placeholderFromName__ #}
 {# replyToName: #}
 {# replyToEmail: #}
 {# cc: #}

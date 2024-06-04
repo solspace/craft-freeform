@@ -62,4 +62,8 @@ return [
     // NOTICES
     'freeform/api/notices' => 'freeform/api/notices',
     'freeform/api/notices/<id:\d+>' => 'freeform/api/notices',
+
+    // LIMITED USERS
+    'freeform/api/limited-users' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:\d+>' => 'freeform/api/limited-users',
 ];

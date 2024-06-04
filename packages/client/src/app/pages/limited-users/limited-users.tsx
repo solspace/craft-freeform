@@ -1,15 +1,22 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import translate from '@ff-client/utils/translations';
 
-import { data } from './data';
+import { useLimitedUsersQuery } from './limited-users.queries';
 import { GroupWrapper, List } from './limited-users.styles';
 import { ItemBlock } from './limited-users.sub-components';
 import type { Item, RecursiveUpdate } from './limited-users.types';
 
 export const LimitedUsers: React.FC = () => {
-  const [state, setState] = useState(data);
+  const { data, isFetching } = useLimitedUsersQuery();
+  const [state, setState] = useState([]);
+
+  useEffect(() => {
+    if (data) {
+      setState(data);
+    }
+  }, [data]);
 
   const updateValue: RecursiveUpdate = (id, updates): void => {
     const updateItem = (items: Item[], path?: string): Item[] => {
@@ -32,6 +39,10 @@ export const LimitedUsers: React.FC = () => {
 
     setState((prev) => updateItem(prev));
   };
+
+  if (!data && isFetching) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -457,7 +458,16 @@ class Settings extends Model
             );
         }
 
-        return file_get_contents($path);
+        $email = $this->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+        $name = $this->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
+
+        $content = file_get_contents($path);
+
+        return preg_replace(
+            ['/\{# fromEmail: __placeholder__ #}', '{# fromName: __placeholder__ #}'],
+            [$email, $name],
+            $content
+        );
     }
 
     public function getSuccessTemplateContent(): string

@@ -18,6 +18,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\IntegrationsQueueModel;
 use Solspace\Freeform\Records\IntegrationsQueueRecord;
+use yii\db\Exception;
 
 class IntegrationsQueueService extends BaseService
 {
@@ -161,7 +162,7 @@ class IntegrationsQueueService extends BaseService
                 ->delete(IntegrationsQueueRecord::TABLE, ['submissionId' => $submissionId])
                 ->execute()
             ;
-        } catch (\yii\db\Exception $e) {
+        } catch (Exception $e) {
             return false;
         }
 

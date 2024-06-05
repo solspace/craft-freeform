@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.3.3 - 2024-06-05
+
+### Changed
+- Updated the Password field type's Minimum Length setting to suppress Craft's minimum password length message when integrating with a Craft User to handle user registration.
+- Updated the Freeform Diagnostics page to include additional checks and improve some existing ones.
+
+### Fixed
+- Fixed a bug where Windows servers would show an error when attempting to load formatting templates.
+- Fixed a bug where a duplicate form filter could sometimes display in the CP Submissions index page.
+
 ## 5.3.2 - 2024-05-31
 
 ### Changed

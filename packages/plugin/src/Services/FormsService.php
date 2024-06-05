@@ -330,7 +330,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($customTemplates as $template) {
             if (str_ends_with($template->getFilePath(), $templateName)) {
                 $templatePath = $template->getFilePath();
-                $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
+                //  $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
 
                 break;
             }
@@ -340,8 +340,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             foreach ($solspaceTemplates as $template) {
                 if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
-                    $templatePath = str_replace(\Craft::getAlias('@freeform/templates'), '', $templatePath);
-                    $templatePath = 'freeform'.$templatePath;
+                    //  $templatePath = str_replace(\Craft::getAlias('@freeform/templates'), '', $templatePath);
+                    //  $templatePath = 'freeform'.$templatePath;
                     $templateMode = View::TEMPLATE_MODE_CP;
 
                     break;
@@ -349,7 +349,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
         }
 
-        if (null === $templatePath) {
+        // if (null === $templatePath) {
+        if (null === $templatePath || !file_exists($templatePath)) {
             throw new FreeformException(
                 Freeform::t(
                     "Form template '{name}' not found",
@@ -358,8 +359,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $output = \Craft::$app->view->renderTemplate(
-            $templatePath,
+        //  $output = \Craft::$app->view->renderTemplate(
+        //      $templatePath,
+        $output = \Craft::$app->view->renderString(
+            file_get_contents($templatePath),
             [
                 'form' => $form,
                 'formCss' => $this->getFormattingTemplateCss($templateName),
@@ -384,13 +387,14 @@ class FormsService extends BaseService implements FormHandlerInterface
         foreach ($templates as $template) {
             if ($template->getFileName() === $templateName) {
                 $templatePath = $template->getFilePath();
-                $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
+                //  $templatePath = str_replace(\Craft::getAlias('@templates'), '', $templatePath);
 
                 break;
             }
         }
 
-        if (null === $templatePath) {
+        //  if (null === $templatePath) {
+        if (null === $templatePath || !file_exists($templatePath)) {
             throw new FreeformException(
                 Freeform::t(
                     "Success template '{name}' not found",
@@ -399,8 +403,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $output = \Craft::$app->view->renderTemplate(
-            $templatePath,
+        //  $output = \Craft::$app->view->renderTemplate(
+        //      $templatePath,
+        $output = \Craft::$app->view->renderString(
+            file_get_contents($templatePath),
             ['form' => $form]
         );
 

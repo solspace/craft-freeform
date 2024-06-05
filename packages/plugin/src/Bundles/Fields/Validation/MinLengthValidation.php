@@ -40,7 +40,7 @@ class MinLengthValidation extends FeatureBundle
         if (\strlen($value) < $minLength) {
             $field->addError(
                 Freeform::t(
-                    'Value must be more than {minLength} characters',
+                    'Value must be at least {minLength} characters',
                     ['minLength' => $minLength],
                 )
             );

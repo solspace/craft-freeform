@@ -1169,6 +1169,7 @@ return [
     'Server Checks' => 'Servercontroles',
     'Freeform Stats' => 'Freeform Statistieken',
     'Freeform Checks' => 'Freeform Controles',
+    'Modules' => 'Modules',
 
     // Craft Dashboard Widgets
     'Enter a custom widget title, or leave blank to use default.' => 'Pas de widgettitel aan. Standaard leeg laten.',

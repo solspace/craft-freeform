@@ -29,6 +29,7 @@ class DiagnosticsController extends BaseController
         $configurations = $diagnostics->getFreeformConfigurations();
         $integrations = $diagnostics->getFreeformIntegrations();
         $formType = $diagnostics->getFreeformFormType();
+        $modules = $diagnostics->getCraftModules();
 
         $combined = array_merge($server, $stats, $configurations);
         [$warnings, $suggestions] = $this->compileBanners($combined);
@@ -41,6 +42,7 @@ class DiagnosticsController extends BaseController
                 'configurations' => $configurations,
                 'integrations' => $integrations,
                 'formType' => $formType,
+                'modules' => $modules,
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
             ]

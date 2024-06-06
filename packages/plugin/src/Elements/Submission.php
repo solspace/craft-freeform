@@ -617,17 +617,7 @@ class Submission extends Element
                     ],
                 ];
             }
-            $items[] = ['heading' => ''];
-            $items[] = [
-                'key' => 'form:'.$form->getId(),
-                'label' => $form->getName(),
-                'data' => [
-                    'handle' => $form->getHandle(),
-                ],
-                'criteria' => [
-                    'formId' => $form->getId(),
-                ],
-            ];
+
             $sources = $items;
         }
 

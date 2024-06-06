@@ -40,12 +40,16 @@ class FilesController extends AbstractNotificationsController
             throw new ForbiddenHttpException(Freeform::t('Creating file based notification templates is prohibited'));
         }
 
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
         $date = (new \DateTime())->format('Ymd-His');
         $name = "new-template-{$date}";
 
         $record = $this->getService()->create($name);
         $record->name = "New Template on {$date}";
         $record->handle = $name;
+        $record->fromEmail = $settingsModel->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+        $record->fromName = $settingsModel->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
 
         $title = Freeform::t('Create a new email notification template');
 

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.3.3.1 - 2024-06-05
+
+### Changed
+- Reverted improved Twig template debugging for formatting templates change (5.1.17) for now, as it is causing issues with Windows servers.
+
 ## 5.3.3 - 2024-06-05
 
 ### Changed

@@ -19,6 +19,6 @@ class ProcessGoogleSheetsIntegrationsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Process Google Sheets Integrations');
+        return Freeform::t('Freeform: Processing Google Sheets Integrations');
     }
 }

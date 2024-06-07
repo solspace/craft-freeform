@@ -19,6 +19,6 @@ class ProcessEmailMarketingIntegrationsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Process Email Marketing Integrations');
+        return Freeform::t('Freeform: Processing Email Marketing Integrations');
     }
 }

@@ -19,6 +19,6 @@ class ProcessCrmIntegrationsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Process CRM Integrations');
+        return Freeform::t('Freeform: Processing CRM Integrations');
     }
 }

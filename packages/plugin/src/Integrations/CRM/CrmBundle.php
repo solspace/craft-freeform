@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Integrations\CRM;
 
 use craft\helpers\Queue;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
@@ -25,8 +26,9 @@ use yii\base\Event;
 
 class CrmBundle extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
@@ -68,11 +70,11 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->integrations->hasIntegrations($form, CRMIntegrationInterface::class)) {
+        if ($form->isDisabled()->api) {
             return;
         }
 
-        if ($form->isDisabled()->api) {
+        if (!$this->integrationsProvider->getForForm($form, CRMIntegrationInterface::class)) {
             return;
         }
 

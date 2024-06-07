@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
 use craft\helpers\Queue;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
@@ -22,8 +23,9 @@ use yii\base\Event;
 
 class GoogleSheetsBundle extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {
         Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
@@ -42,11 +44,11 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->integrations->hasIntegrations($form, GoogleSheetsIntegrationInterface::class)) {
+        if ($form->isDisabled()->api) {
             return;
         }
 
-        if ($form->isDisabled()->api) {
+        if (!$this->integrationsProvider->getForForm($form, GoogleSheetsIntegrationInterface::class)) {
             return;
         }
 

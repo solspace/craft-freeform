@@ -23,6 +23,6 @@ class SendDigestJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Send Digest Email');
+        return Freeform::t('Freeform: Send Digest Email');
     }
 }

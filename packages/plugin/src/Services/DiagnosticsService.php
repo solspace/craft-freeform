@@ -527,11 +527,13 @@ class DiagnosticsService extends BaseService
                 continue;
             }
 
-            $diagnosticItems[] = new DiagnosticItem($module->id.': '.$module::class, ['value' => $module]);
+            if (!empty($module->id)) {
+                $diagnosticItems[] = new DiagnosticItem($module->id.': '.$module::class, []);
+            }
         }
 
-        if (0 === \count($diagnosticItems)) {
-            $diagnosticItems[] = new DiagnosticItem(Translation::translate('No modules are installed'), []);
+        if (empty($diagnosticItems)) {
+            $diagnosticItems[] = new DiagnosticItem(Translation::translate('No modules are installed.'), []);
         }
 
         return $diagnosticItems;

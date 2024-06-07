@@ -17,6 +17,6 @@ class PurgeSpamJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return 'Freeform: Purge Spam';
+        return 'Freeform: Purging Old Spam Submissions';
     }
 }

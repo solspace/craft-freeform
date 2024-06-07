@@ -26,6 +26,6 @@ class ProcessNotificationsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Process Email Notifications');
+        return Freeform::t('Freeform: Processing Email Notifications');
     }
 }

@@ -1,5 +1,29 @@
 # Solspace Freeform Changelog
 
+## 5.3.3.1 - 2024-06-05
+
+### Changed
+- Reverted improved Twig template debugging for formatting templates change (5.1.17) for now, as it is causing issues with Windows servers.
+
+## 5.3.3 - 2024-06-05
+
+### Changed
+- Updated the Password field type's Minimum Length setting to suppress Craft's minimum password length message when integrating with a Craft User to handle user registration.
+- Updated the Freeform Diagnostics page to include additional checks and improve some existing ones.
+
+### Fixed
+- Fixed a bug where Windows servers would show an error when attempting to load formatting templates.
+- Fixed a bug where a duplicate form filter could sometimes display in the CP Submissions index page.
+
+## 5.3.2 - 2024-05-31
+
+### Changed
+- Updating the Surveys & Polls report/results page to include additional CSS that hides the Craft navbar and header for printing (or saving as PDF).
+
+### Fixed
+- Fixed a bug where the Table field type's built-in JS and max rows settings inside the form builder did not affect the front end.
+- Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radios, Dropdown, and Opinion Scale field types.
+
 ## 5.3.1 - 2024-05-28
 
 ### Fixed
@@ -676,6 +700,15 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.19 - 2024-05-31
+
+### Changed
+- Updated Diagnostics page to verify compatibility for PHP 8.2 and Craft 4.9.x.
+- Removed the _Resources_ subnav link.
+
+### Fixed
+- Fixed a bug where _en_ and _em_ dash characters were not saving in submission data on Radio, Select, and Opinion Scale field types.
 
 ## 4.1.18 - 2024-05-08
 

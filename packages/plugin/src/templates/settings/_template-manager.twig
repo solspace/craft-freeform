@@ -120,6 +120,32 @@
         {% endfor %}
 
         {{ forms.autosuggestField({
+            label: "Default From Email for New Templates"|t('freeform'),
+            id: "defaultFromEmail",
+            class: "code",
+            suggestEnvVars: true,
+            suggestAliases: false,
+            limit: 10,
+            name: "settings[defaultFromEmail]",
+            value: settings.defaultFromEmail,
+            errors: settings.getErrors("defaultFromEmail"),
+            instructions: "The default email address to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+        }) }}
+
+        {{ forms.autosuggestField({
+            label: "Default From Name for New Templates"|t('freeform'),
+            id: "defaultFromName",
+            class: "code",
+            suggestEnvVars: true,
+            suggestAliases: false,
+            limit: 10,
+            name: "settings[defaultFromName]",
+            value: settings.defaultFromName,
+            errors: settings.getErrors("defaultFromName"),
+            instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+        }) }}
+
+        {{ forms.autosuggestField({
             label: "File Directory Path"|t('freeform'),
             id: "emailTemplateDirectory",
             class: "code",

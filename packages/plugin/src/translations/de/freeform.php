@@ -698,4 +698,10 @@ return [
     'Payment type is not configured!' => 'Zahlungstyp ist nicht konfiguriert!',
     'Payment amount is not configured!' => 'Zahlungs-Betrag ist nicht konfiguriert!',
     'Subscription plan is not configured!' => 'Subscription-Plan ist nicht konfiguriert!',
+
+    // Template Manager
+    'Default From Email for New Templates' => 'Standardabsender-E-Mail für neue Vorlagen',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "Die Standard-E-Mail-Adresse, die in die Einstellung 'Von E-Mail' neuer E-Mail-Benachrichtigungsvorlagen aufgenommen werden soll.",
+    'Default From Name for New Templates' => 'Standardabsendername für neue Vorlagen',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "Der Standardname, der in die Einstellung 'Von E-Mail' neuer E-Mail-Benachrichtigungsvorlagen aufgenommen werden soll.",
 ];

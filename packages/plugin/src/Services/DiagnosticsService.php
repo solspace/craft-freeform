@@ -42,14 +42,14 @@ class DiagnosticsService extends BaseService
 
         return [
             new DiagnosticItem(
-                'Freeform <b>{{ value.edition|capitalize }} {{ value.version }}</b>',
+                'Freeform <b>{{ value.edition|title }} {{ value.version }}</b>',
                 [
                     'edition' => Freeform::getInstance()->edition,
                     'version' => Freeform::getInstance()->getVersion(),
                 ]
             ),
             new DiagnosticItem(
-                'Craft <b>{{ value.edition == "pro" ? "Pro " }}{{ value.version }}</b>',
+                'Craft <b>{{ value.edition|title }} {{ value.version }}</b>',
                 [
                     'version' => $system->craftVersion,
                     'edition' => $system->craftEdition,
@@ -84,7 +84,7 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '{{ value.driver == "pgsql" ? "PostgreSQL" : "MySQL" }} <b>{{ value.version }}</b>',
+                'Database Driver: <b>{{ value.driver == "pgsql" ? "PostgreSQL" : value.driver == "mysql" ? "MySQL" : "MariaDB" }} {{ value.version }}</b>',
                 [
                     'driver' => $system->databaseDriver,
                     'version' => \Craft::$app->db->getServerVersion(),
@@ -113,6 +113,17 @@ class DiagnosticsService extends BaseService
                         'The current minimum PostgreSQL version Freeform supports is 9.5.x or greater.'
                     ),
                 ]
+            ),
+            new DiagnosticItem(
+                'OS: <b>{{ value }}</b>',
+                sprintf('%s %s', \PHP_OS, php_uname('r')),
+            ),
+            new DiagnosticItem(
+                'Dev Mode: <b>{{ value.devmode == 1 ? "On" : "Off" }}</b> / Allow Admin Changes: <b>{{ value.allowadmin == 1 ? "Yes" : "No" }}</b>',
+                [
+                    'devmode' => \Craft::$app->getConfig()->getGeneral()->devMode,
+                    'allowadmin' => \Craft::$app->getConfig()->getGeneral()->allowAdminChanges,
+                ],
             ),
             new DiagnosticItem(
                 'Memory Limit: <b>{{ value }}</b>',

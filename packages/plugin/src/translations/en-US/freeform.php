@@ -1301,4 +1301,10 @@ return [
     'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.' => 'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.',
     'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.' => 'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.',
     'Allow' => 'Allow',
+
+    // Template Manager
+    'Default From Email for New Templates' => 'Default From Email for New Templates',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "The default email address to be included in the 'From Email' setting of new email notification templates.",
+    'Default From Name for New Templates' => 'Default From Name for New Templates',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "The default name to be included in the 'From Email' setting of new email notification templates.",
 ];

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing;
 
 use craft\helpers\Queue;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
@@ -15,8 +16,9 @@ use yii\base\Event;
 
 class EmailMarketingBundle extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
@@ -58,11 +60,11 @@ class EmailMarketingBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->plugin()->integrations->hasIntegrations($form, EmailMarketingIntegrationInterface::class)) {
+        if ($form->isDisabled()->api) {
             return;
         }
 
-        if ($form->isDisabled()->api) {
+        if (!$this->integrationsProvider->getForForm($form, EmailMarketingIntegrationInterface::class)) {
             return;
         }
 

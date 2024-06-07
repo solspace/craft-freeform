@@ -1174,6 +1174,7 @@ return [
     'Server Checks' => 'Server Checks',
     'Freeform Stats' => 'Freeform Stats',
     'Freeform Checks' => 'Freeform Checks',
+    'Modules' => 'Modules',
 
     // Craft Dashboard Widgets
     'Enter a custom widget title, or leave blank to use default.' => 'Enter a custom widget title, or leave blank to use default.',

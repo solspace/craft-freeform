@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.3.4 - 2024-06-07
+
+### Added
+- Added a list of active modules to the Freeform Diagnostics page.
+
+### Changed
+- Minor updates to the plugin icon for better visibility in Craft 5.
+
+### Fixed
+- Fixed a potential error when uninstalling Freeform 5.
+
 ## 5.3.3.1 - 2024-06-05
 
 ### Changed

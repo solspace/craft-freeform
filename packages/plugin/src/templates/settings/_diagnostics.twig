@@ -95,9 +95,7 @@
         {% set leftSections = [
             {'title': "Server Checks"|t('freeform'), 'items': server},
             {'title': "Statistics"|t('freeform'), 'items': stats},
-            {'title': "Integrations"|t('freeform'), 'items': integrations},
-            {'title': "Form Types"|t('freeform'), 'items': formType},
-            {'title': "Modules"|t('freeform'), 'items': modules}
+            {'title': "Integrations"|t('freeform'), 'items': integrations}
         ] %}
         <div class="diag">
             {% for section in leftSections %}
@@ -110,14 +108,20 @@
             {% endfor %}
         </div>
 
-        {% set rightSection = {'title': "Freeform Configuration"|t('freeform'), 'items': configurations} %}
+        {% set rightSections = [
+            {'title': "Freeform Configuration"|t('freeform'), 'items': configurations},
+            {'title': "Form Types"|t('freeform'), 'items': formType},
+            {'title': "Modules"|t('freeform'), 'items': modules}
+        ] %}
         <div class="diag">
-            {% if rightSection.items|length > 0 %}
-                <div class="diag-list">
-                    <h2>{{ rightSection.title }}</h2>
-                    {{ _self.renderItems(rightSection.items) }}
-                </div>
-            {% endif %}
+            {% for section in rightSections %}
+                {% if section.items|length > 0 %}
+                    <div class="diag-list">
+                        <h2>{{ section.title }}</h2>
+                        {{ _self.renderItems(section.items) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

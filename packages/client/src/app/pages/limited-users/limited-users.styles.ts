@@ -126,11 +126,16 @@ export const Actions = styled.div`
 `;
 
 export const List = styled.ul`
-  //
+  transition: opacity 0.2s ease-out;
 `;
 
 export const ListItem = styled.li`
   position: relative;
+
+  &[data-disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 
   &[data-type='group'] {
     &[data-nesting='0']:not(:last-child) {

@@ -18,6 +18,7 @@ import { Import } from './app/pages/import/import';
 import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
 import { ImportFreeformData } from './app/pages/import/views/freeform-data/freeform-data';
 import { LimitedUsers } from './app/pages/limited-users/limited-users';
+import { LimitedUsersDetail } from './app/pages/limited-users/limited-users.detail';
 import { SurveyResults } from './app/pages/surveys/results/results';
 import { Welcome } from './app/pages/welcome/welcome';
 import { EscapeStackProvider } from './contexts/escape/escape.context';
@@ -73,10 +74,10 @@ root.render(
                         element={<ImportExpressForms />}
                       />
                     </Route>
-                    <Route
-                      path="settings/limited-users"
-                      element={<LimitedUsers />}
-                    />
+                    <Route path="settings/limited-users">
+                      <Route path=":id" element={<LimitedUsersDetail />} />
+                      <Route index element={<LimitedUsers />} />
+                    </Route>
                   </Route>
                 </Routes>
               </PortalProvider>

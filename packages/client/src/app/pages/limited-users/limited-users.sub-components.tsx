@@ -228,7 +228,11 @@ export const ItemBlock: React.FC<{
       {controls}
 
       {item.children && (
-        <List>
+        <List
+          className={classes(
+            item.type === 'boolean' && !item.enabled && 'disabled'
+          )}
+        >
           {item.children.map((item) => (
             <ItemBlock
               key={item.id}

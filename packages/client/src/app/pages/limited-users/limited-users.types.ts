@@ -42,3 +42,9 @@ export type ItemEdit = {
 };
 
 export type RecursiveUpdate = (id: string, updates: ItemEdit) => void;
+
+export type DetailResponse = {
+  id: number;
+  name: string;
+  items: Item[];
+};

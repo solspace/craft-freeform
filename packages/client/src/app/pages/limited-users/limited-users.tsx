@@ -1,44 +1,13 @@
 /* eslint-disable react/display-name */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import translate from '@ff-client/utils/translations';
 
 import { useLimitedUsersQuery } from './limited-users.queries';
-import { GroupWrapper, List } from './limited-users.styles';
-import { ItemBlock } from './limited-users.sub-components';
-import type { Item, RecursiveUpdate } from './limited-users.types';
 
 export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
-  const [state, setState] = useState([]);
-
-  useEffect(() => {
-    if (data) {
-      setState(data);
-    }
-  }, [data]);
-
-  const updateValue: RecursiveUpdate = (id, updates): void => {
-    const updateItem = (items: Item[], path?: string): Item[] => {
-      return items.map((item) => {
-        const currentPath = path ? `${path}.${item.id}` : item.id;
-        if (currentPath === id) {
-          return { ...item, ...updates };
-        }
-
-        if (item.children) {
-          return {
-            ...item,
-            children: updateItem(item.children, currentPath),
-          };
-        }
-
-        return item;
-      });
-    };
-
-    setState((prev) => updateItem(prev));
-  };
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -61,13 +30,13 @@ export const LimitedUsers: React.FC = () => {
         </header>
       </div>
 
-      <GroupWrapper>
-        <List>
-          {state.map((item) => (
-            <ItemBlock key={item.id} item={item} updateValue={updateValue} />
-          ))}
-        </List>
-      </GroupWrapper>
+      <ul>
+        {data.map((item) => (
+          <li key={item.id}>
+            <Link to={`${item.id}`}>{item.name}</Link>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };

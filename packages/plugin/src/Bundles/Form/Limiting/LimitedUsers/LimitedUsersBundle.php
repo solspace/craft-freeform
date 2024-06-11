@@ -26,6 +26,6 @@ class LimitedUsersBundle extends FeatureBundle
 
         $checker = $this->limitedUserChecker;
 
-        dd($checker->can('settings.tab.general.handle'));
+        // dd($checker->can('settings.tab.general.handle'));
     }
 }

@@ -9,7 +9,7 @@ class LimitedUserChecker
 {
     public function __construct() {}
 
-    public function can(string $path): bool
+    public function can(string $path, ?string $includes = null): bool
     {
         if ($this->isConsole()) {
             return true;
@@ -19,14 +19,28 @@ class LimitedUserChecker
             return true;
         }
 
+        $value = $this->get($path);
+        if (null === $value) {
+            return true;
+        }
+
+        if (null !== $includes && \is_array($value)) {
+            return \in_array($includes, $value, true);
+        }
+
+        return (bool) $value;
+    }
+
+    public function get(string $path): null|array|bool|string
+    {
         $user = $this->getCurrentUser();
         if ($user->admin) {
-            return true;
+            return null;
         }
 
         $settings = $this->getFirstPermissionSettings();
         if (null === $settings) {
-            return true;
+            return null;
         }
 
         $parts = explode('.', $path);
@@ -40,41 +54,54 @@ class LimitedUserChecker
             }
         }
 
-        return $settings[$path] ?? true;
+        return $settings[$path] ?? null;
     }
 
-    // TODO: cache this result
     private function getFirstPermissionSettings(): ?array
     {
-        $permissionName = 'freeform-limitedusers';
-        $id = null;
+        static $settings;
 
-        $user = $this->getCurrentUser();
-        $permissionList = \Craft::$app->userPermissions->getPermissionsByUserId($user->getId());
-        foreach ($permissionList as $permission) {
-            if (str_starts_with($permission, $permissionName)) {
-                if (!str_contains($permission, ':')) {
-                    continue;
+        if (null === $settings) {
+            $permissionName = 'freeform-limitedusers';
+            $id = null;
+
+            $user = $this->getCurrentUser();
+            $permissionList = \Craft::$app->userPermissions->getPermissionsByUserId($user->getId());
+            foreach ($permissionList as $permission) {
+                if (str_starts_with($permission, $permissionName)) {
+                    if (!str_contains($permission, ':')) {
+                        continue;
+                    }
+
+                    [, $permissionId] = explode(':', $permission);
+
+                    $id = $permissionId;
+
+                    break;
                 }
-
-                [, $permissionId] = explode(':', $permission);
-
-                $id = $permissionId;
-
-                break;
             }
+
+            if (!$id) {
+                $settings = false;
+
+                return null;
+            }
+
+            $record = LimitedUsersRecord::findOne(['id' => $id]);
+            if (!$record) {
+                $settings = false;
+
+                return null;
+            }
+
+            $settings = json_decode($record->settings, true);
         }
 
-        if (!$id) {
+        if (false === $settings) {
             return null;
         }
 
-        $record = LimitedUsersRecord::findOne(['id' => $id]);
-        if (!$record) {
-            return null;
-        }
-
-        return json_decode($record->settings, true);
+        return $settings;
     }
 
     private function isConsole(): bool

@@ -4,7 +4,7 @@ import { ControlWrapper } from '@components/form-controls/control.styles';
 import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import type { Field } from '@editor/store/slices/layout/fields';
-import type { FieldType } from '@ff-client/types/properties';
+import type { FieldType } from '@ff-client/types/fields';
 import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';

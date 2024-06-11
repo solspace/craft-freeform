@@ -31,7 +31,7 @@ export const LimitedUsers: React.FC = () => {
       </div>
 
       <ul>
-        {data.map((item) => (
+        {data.items.map((item) => (
           <li key={item.id}>
             <Link to={`${item.id}`}>{item.name}</Link>
           </li>

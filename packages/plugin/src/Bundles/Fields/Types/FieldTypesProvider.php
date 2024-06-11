@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Attributes\Property\SectionProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
@@ -28,6 +29,7 @@ class FieldTypesProvider
         private PropertyProvider $propertyProvider,
         private ImplementationProvider $implementationProvider,
         private SectionProvider $sectionProvider,
+        private LimitedUserChecker $checker,
     ) {}
 
     public function getRegisteredTypes(): array
@@ -130,6 +132,7 @@ class FieldTypesProvider
         $fieldType->previewTemplate = $type->previewTemplatePath ? file_get_contents($type->previewTemplatePath) : null;
         $fieldType->implements = $this->implementationProvider->getImplementations($typeClass);
         $fieldType->properties = $this->propertyProvider->getEditableProperties($typeClass);
+        $fieldType->visible = $this->checker->can('layout.fieldTypes', $fieldType->typeClass);
 
         return $fieldType;
     }

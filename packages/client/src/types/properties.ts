@@ -288,15 +288,6 @@ export type Property =
   | WYSIWYGProperty
   | CodeEditorProperty;
 
-export type FieldType = {
-  name: string;
-  typeClass: string;
-  type: string;
-  icon?: string;
-  implements: string[];
-  properties: Property[];
-};
-
 export type Section = {
   handle: string;
   label: string;

@@ -36,7 +36,11 @@ class FormsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
+        $translations = include __DIR__.'/../Resources/builder-translations.php';
+
         $this->view->registerAssetBundle(FreeformClientBundle::class);
+        $this->view->registerTranslations(Freeform::TRANSLATION_CATEGORY, $translations);
+
         $config = \Craft::$container->get(FreeformConfig::class);
 
         return $this->renderTemplate('freeform/forms', [

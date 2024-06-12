@@ -46,6 +46,18 @@ class TotalsProvider
         WebsiteField::class,
     ];
 
+    private const TEXT_FIELD_TYPES = [
+        TextField::class,
+        TextareaField::class,
+        EmailField::class,
+        NumberField::class,
+        PhoneField::class,
+        RegexField::class,
+        WebsiteField::class,
+    ];
+
+    private const MAX_TEXT_ANSWERS = 20;
+
     private array $formTotalsCache = [];
 
     public function get(Form $form): FormTotals
@@ -75,6 +87,7 @@ class TotalsProvider
                     's.[[formId]]' => $form->getId(),
                     's.[[isSpam]]' => false,
                 ])
+                ->orderBy(['s.[[id]]' => \SORT_DESC])
             ;
 
             $formTotals = new FormTotals($form);
@@ -83,6 +96,8 @@ class TotalsProvider
             foreach ($fields as $field) {
                 $fieldTotalsCollection->add(new FieldTotals($field), $field->getId());
             }
+
+            $textAnswerCount = [];
 
             foreach ($query->batch() as $results) {
                 foreach ($results as $row) {
@@ -109,6 +124,7 @@ class TotalsProvider
                             }
                         }
 
+                        $isText = \in_array($field::class, self::TEXT_FIELD_TYPES, true);
                         $hasOptions = false;
                         if ($field instanceof OptionsInterface) {
                             $hasOptions = true;
@@ -163,6 +179,18 @@ class TotalsProvider
                             if (null === $breakdown) {
                                 if ($hasOptions) {
                                     continue 2;
+                                }
+
+                                if ($isText) {
+                                    if (!isset($textAnswerCount[$field->getId()])) {
+                                        $textAnswerCount[$field->getId()] = 0;
+                                    }
+
+                                    ++$textAnswerCount[$field->getId()];
+
+                                    if ($textAnswerCount[$field->getId()] > self::MAX_TEXT_ANSWERS) {
+                                        continue 2;
+                                    }
                                 }
 
                                 $breakdown = new AnswerBreakdown($totals, $value, $value);

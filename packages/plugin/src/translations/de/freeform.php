@@ -653,6 +653,15 @@ return [
     'You haven\'t created any forms yet!' => 'Du hast noch keine Formulare erstellt!',
     'Are you sure you want to clear the Error log?' => 'Bist du dir sicher, dass du den Error Log leeren möchtest?',
 
+    // Diagnostics
+    'Diagnostics' => 'Diagnose',
+    'Warnings' => 'Warnungen',
+    'Suggestions' => 'Vorschläge',
+    'Server Checks' => 'Serverprüfungen',
+    'Freeform Stats' => 'Freeform-Statistiken',
+    'Freeform Checks' => 'Freiformprüfungen',
+    'Modules' => 'Module',
+
     // Craft Dashboard Widgets
     'Enter a custom widget title, or leave blank to use default.' => 'Passe den Widget-Titel an. Leer lassen für standardmäßigen Titel.',
     'Success Message' => 'Erfolgsnachricht',

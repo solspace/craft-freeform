@@ -2,9 +2,11 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\base\PluginInterface;
 use craft\db\Query;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
+use craft\i18n\Translation;
 use craft\mail\transportadapters\Gmail;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
@@ -514,6 +516,27 @@ class DiagnosticsService extends BaseService
                 ),
             ],
         ];
+    }
+
+    public function getCraftModules(): array
+    {
+        $diagnosticItems = [];
+
+        foreach (\Craft::$app->getModules() as $module) {
+            if ($module instanceof PluginInterface) {
+                continue;
+            }
+
+            if (!empty($module->id)) {
+                $diagnosticItems[] = new DiagnosticItem($module->id.': '.$module::class, []);
+            }
+        }
+
+        if (empty($diagnosticItems)) {
+            $diagnosticItems[] = new DiagnosticItem(Translation::translate('No modules are installed.'), []);
+        }
+
+        return $diagnosticItems;
     }
 
     private function getEmailSettings(): array

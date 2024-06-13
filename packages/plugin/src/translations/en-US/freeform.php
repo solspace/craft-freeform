@@ -1281,7 +1281,7 @@ return [
     'generic' => 'Unknown',
     'honeypot' => 'Honeypot',
     'js_test' => 'Honeypot JS Test',
-    'recaptcha' => 'Captcha Failure',
+    'captcha' => 'Captcha Failure',
     'blocked_keywords' => 'Blocked Keywords',
     'blocked_email_address' => 'Blocked Email Address',
     'blocked_ip' => 'Blocked IP',

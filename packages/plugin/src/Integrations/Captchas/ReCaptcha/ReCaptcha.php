@@ -39,11 +39,11 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Flag(self::FLAG_AS_HIDDEN_IN_INSTANCE)]
     #[Input\Select(
         label: 'Captcha Type',
-        instructions: 'Choose which reCAPTCHA version and type you want to use.',
+        instructions: 'Choose the reCAPTCHA type to use. The options below are compatible with the Enterprise API and the Classic legacy keys.',
         options: [
-            self::VERSION_V2_CHECKBOX => 'reCAPTCHA v2 Checkbox',
-            self::VERSION_V2_INVISIBLE => 'reCAPTCHA v2 Invisible',
-            self::VERSION_V3 => 'reCAPTCHA v3',
+            self::VERSION_V2_CHECKBOX => 'Challenge - Checkbox (v2)',
+            self::VERSION_V2_INVISIBLE => 'Challenge - Invisible (v2)',
+            self::VERSION_V3 => 'Score Based (v3)',
         ],
     )]
     private string $version = self::VERSION_V2_CHECKBOX;
@@ -130,7 +130,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[VisibilityFilter('values.version === "v3"')]
     #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
     #[Input\Text(
-        instructions: 'The action to use when validating the Captcha. This is only used for reCAPTCHA v3.',
+        instructions: 'The action to use when validating the Captcha.',
         placeholder: 'submit',
     )]
     private string $action = 'submit';

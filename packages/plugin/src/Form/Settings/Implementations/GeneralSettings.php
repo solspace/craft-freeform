@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FormAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
@@ -54,6 +55,7 @@ class GeneralSettings extends SettingsNamespace
     public string $name = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[Limitation('settings.tab.general.handle')]
     #[Input\Text(
         label: 'Form Handle',
         instructions: 'Enter a name for this form that will be referred to in your templates.',
@@ -67,6 +69,7 @@ class GeneralSettings extends SettingsNamespace
     public string $handle = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[Limitation('settings.tab.general.type')]
     #[Validators\Required]
     #[DefaultValue('settings.general.formType')]
     #[Input\Select(
@@ -90,6 +93,7 @@ class GeneralSettings extends SettingsNamespace
     public array $sites = [];
 
     #[Section(self::SECTION_GENERAL)]
+    #[Limitation('settings.tab.general.submissionTitle')]
     #[Validators\Required]
     #[DefaultValue('settings.general.submissionTitle')]
     #[Input\Text(
@@ -99,6 +103,7 @@ class GeneralSettings extends SettingsNamespace
     public ?string $submissionTitle = null;
 
     #[Section(self::SECTION_GENERAL)]
+    #[Limitation('settings.tab.general.formattingTemplate')]
     #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Validators\Required]
     #[DefaultValue('settings.general.formattingTemplate')]

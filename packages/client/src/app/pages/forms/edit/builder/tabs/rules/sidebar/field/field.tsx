@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import config from '@config/freeform/freeform.config';
 import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields';
 import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export const Field: React.FC<Props> = ({ field }) => {
+  const canEdit = config.limitations.can('rules.tab.fields');
   const { uid: activeFieldUid, button: activeButton } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -73,7 +75,9 @@ export const Field: React.FC<Props> = ({ field }) => {
     <FieldWrapper
       onClick={(event) => {
         event.stopPropagation();
-        navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`);
+        if (canEdit) {
+          navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`);
+        }
       }}
       className={classes(
         type?.type === 'group' && 'group',
@@ -81,6 +85,7 @@ export const Field: React.FC<Props> = ({ field }) => {
         (hasRule || hasPageRule || hasButtonRule) && 'has-rule',
         isInCondition && 'is-in-condition',
         isInActiveCondition && 'is-in-condition-active',
+        !canEdit && 'read-only',
         operatorTypes.negative.includes(isInActiveCondition?.operator) &&
           'not-equals'
       )}

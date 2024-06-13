@@ -9,6 +9,7 @@ return [
     'freeform/settings/template-manager' => 'freeform/settings/provide-setting',
     'freeform/settings/limited-users' => 'freeform/forms',
     'freeform/settings/limited-users/<id:\d+>' => 'freeform/forms',
+    'freeform/settings/limited-users/new' => 'freeform/forms',
     'freeform/settings/spam' => 'freeform/settings/provide-setting',
     'freeform/settings/add-demo-template' => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template' => 'freeform/settings/add-email-template',

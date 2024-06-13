@@ -57,6 +57,16 @@ class LimitedUserChecker
         return $settings[$path] ?? null;
     }
 
+    public function getAll(): ?array
+    {
+        $user = $this->getCurrentUser();
+        if ($user->admin) {
+            return null;
+        }
+
+        return $this->getFirstPermissionSettings();
+    }
+
     private function getFirstPermissionSettings(): ?array
     {
         static $settings;

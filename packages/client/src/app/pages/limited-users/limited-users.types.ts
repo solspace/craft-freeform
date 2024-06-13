@@ -46,5 +46,8 @@ export type RecursiveUpdate = (id: string, updates: ItemEdit) => void;
 export type DetailResponse = {
   id: number;
   name: string;
+  description: string;
   items: Item[];
 };
+
+export type ListResponse = Array<Omit<DetailResponse, 'items'>>;

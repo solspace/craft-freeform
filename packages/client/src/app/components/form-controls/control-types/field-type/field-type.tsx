@@ -33,10 +33,12 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
         handle: 'typeClass',
         label: translate(property.label),
         instructions: translate(property.instructions),
-        options: types.map((type) => ({
-          label: type.name,
-          value: type.typeClass,
-        })),
+        options: types
+          .filter((type) => type.visible !== false)
+          .map((type) => ({
+            label: type.name,
+            value: type.typeClass,
+          })),
       }}
       updateValue={(value) => {
         if (

@@ -18,6 +18,11 @@ class SettingsController extends BaseController
         parent::init();
     }
 
+    public function actionNavigation(): Response
+    {
+        return $this->asJson(Freeform::getInstance()->settings->getSettingsNavigation());
+    }
+
     public function actionGeneral(): Response
     {
         $this->requirePostRequest();

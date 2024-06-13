@@ -74,6 +74,7 @@ type BaseProperty<T, PT extends PropertyType> = {
   width?: number;
   disabled?: boolean;
   flags?: string[];
+  visible?: boolean;
   visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];
   category?: string;

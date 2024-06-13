@@ -14,6 +14,7 @@ class m240521_110910_CreateLimitedUsersTable extends Migration
         $this->createTable('{{%freeform_limited_users}}', [
             'id' => $this->primaryKey(),
             'name' => $this->string()->notNull(),
+            'description' => $this->text()->notNull(),
             'settings' => $this->longText()->notNull(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),

@@ -374,6 +374,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_limited_users'))
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string()->notNull())
+                ->addField('description', $this->text()->notNull())
                 ->addField('settings', $this->longText()->notNull()),
 
             (new Table('freeform_survey_preferences'))

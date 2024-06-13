@@ -2,12 +2,18 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
+import { EmptyBlock } from '@components/empty-block/empty-block';
 import translate from '@ff-client/utils/translations';
 
-import { useLimitedUsersQuery } from './limited-users.queries';
+import {
+  useLimitedUsersDeleteMutation,
+  useLimitedUsersQuery,
+} from './limited-users.queries';
+import { SettingsSidebar } from './limited-users.sidebar';
 
 export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
+  const mutation = useLimitedUsersDeleteMutation();
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -23,20 +29,74 @@ export const LimitedUsers: React.FC = () => {
       />
 
       <div id="header-container">
-        <header id="header" style={{ paddingLeft: 0 }}>
+        <header id="header" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <div id="page-title" className="flex">
             <h1 className="screen-title">{translate('Limited Users')}</h1>
           </div>
+
+          <Link to="new" className="btn submit add icon">
+            {translate('New Group')}
+          </Link>
         </header>
       </div>
 
-      <ul>
-        {data.items.map((item) => (
-          <li key={item.id}>
-            <Link to={`${item.id}`}>{item.name}</Link>
-          </li>
-        ))}
-      </ul>
+      <div id="main-content" className="has-sidebar">
+        <SettingsSidebar />
+
+        <div id="content-container">
+          <div id="content" className="content-pane">
+            <div className="tablepane">
+              {data.length > 0 && (
+                <table className="data fullwidth">
+                  <thead>
+                    <tr>
+                      <th>{translate('Name')}</th>
+                      <th>{translate('Description')}</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((item) => (
+                      <tr key={item.id}>
+                        <th>
+                          <Link to={`${item.id}`}>{item.name}</Link>
+                        </th>
+                        <td>{item.description}</td>
+                        <td className="thin">
+                          <a
+                            className="delete icon"
+                            title="Delete"
+                            onClick={() => {
+                              if (
+                                confirm(
+                                  translate(
+                                    'Are you sure you want to delete this?'
+                                  )
+                                )
+                              ) {
+                                mutation.mutate(item.id);
+                              }
+                            }}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+
+              {data.length === 0 && (
+                <div style={{ padding: '50px 0 50px' }}>
+                  <EmptyBlock
+                    title={translate('No entries')}
+                    subtitle={`Click on "+ New Group" to add more`}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

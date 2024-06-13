@@ -34,9 +34,4 @@ export const EmptyBlockWrapper = styled.div`
   gap: 5px;
 
   height: 100%;
-
-  > * {
-    position: relative;
-    top: -40px;
-  }
 `;

@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUsersProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Records\LimitedUsersRecord;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class LimitedUsersController extends BaseApiController
 {
@@ -20,6 +21,18 @@ class LimitedUsersController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
+    public function actionDelete(int $id): Response
+    {
+        $record = LimitedUsersRecord::findOne(['id' => $id]);
+        if (!$record) {
+            throw new NotFoundHttpException('Limited Users set not found');
+        }
+
+        $record->delete();
+
+        return $this->asEmptyResponse(204);
+    }
+
     protected function get(): array|object
     {
         $records = LimitedUsersRecord::find()->all();
@@ -28,6 +41,7 @@ class LimitedUsersController extends BaseApiController
             fn (LimitedUsersRecord $record) => [
                 'id' => $record->id,
                 'name' => $record->name,
+                'description' => $record->description,
             ],
             $records
         );
@@ -35,7 +49,15 @@ class LimitedUsersController extends BaseApiController
 
     protected function getOne(int|string $id): null|array|object
     {
-        $record = LimitedUsersRecord::findOne(['id' => $id]);
+        if ('new' === $id) {
+            $record = new LimitedUsersRecord();
+            $record->name = 'Limited Users';
+            $record->description = '';
+            $record->settings = '[]';
+        } else {
+            $record = LimitedUsersRecord::findOne(['id' => $id]);
+        }
+
         if (!$record) {
             throw new NotFoundHttpException('Limited Users set not found');
         }
@@ -49,26 +71,36 @@ class LimitedUsersController extends BaseApiController
         return [
             'id' => $record->id,
             'name' => $record->name,
+            'description' => $record->description,
             'items' => $items,
         ];
     }
 
     protected function post(null|int|string $id = null): null|array|object
     {
-        $record = LimitedUsersRecord::findOne(['id' => $id]);
+        if ('new' === $id) {
+            $record = new LimitedUsersRecord();
+        } else {
+            $record = LimitedUsersRecord::findOne(['id' => $id]);
+        }
+
         if (!$record) {
             throw new NotFoundHttpException('Limited Users set not found');
         }
 
         $items = $this->request->post('items');
         $name = $this->request->post('name', 'Limited Functionality');
+        $description = $this->request->post('description', '');
 
         $data = $this->limitedUsersProvider->compileSettings($items);
 
         $record->settings = json_encode($data);
         $record->name = $name;
+        $record->description = $description;
         $record->save();
 
-        return null;
+        return [
+            'id' => $record->id,
+        ];
     }
 }

@@ -4,6 +4,7 @@ import styled from 'styled-components';
 export const GroupWrapper = styled.div`
   background-color: white;
   padding: ${spacings.xl};
+  border-radius: 5px;
 `;
 
 export const TitleBlock = styled.div`
@@ -52,7 +53,7 @@ export const ControlArea = styled.div`
 
 export const ToggleList = styled.ul`
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 6px;
 `;
 

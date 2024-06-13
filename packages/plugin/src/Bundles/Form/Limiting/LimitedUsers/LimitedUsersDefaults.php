@@ -35,6 +35,10 @@ use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years;
 use Solspace\Freeform\Library\Helpers\ArrayHelper;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField as EmailFieldNotification;
 
 class LimitedUsersDefaults
 {
@@ -69,53 +73,53 @@ class LimitedUsersDefaults
                             TableField::class,
                         ])
                         ->setOptions($this->getFieldTypes()),
-                    (new Select('maxColumns', 'Maximum Fields Per Row'))
-                        ->setValue('4')
-                        ->setOptions(ArrayHelper::generate(8, fn ($i) => [$i + 1, $i + 1])),
+                    // (new Select('maxColumns', 'Maximum Fields Per Row'))
+                    //     ->setValue('4')
+                    //     ->setOptions(ArrayHelper::generate(8, fn ($i) => [$i + 1, $i + 1])),
                     (new Group('fields', 'Field Properties'))
                         ->setChildren([
                             new Boolean('handles', 'Field Handles', true),
                             new Boolean('attributes', 'Field Attribute Editor', true),
                             new Boolean('types', 'Field Type Switcher'),
                         ]),
-                    (new Group('options', 'Field Option Sources'))
-                        ->setChildren([
-                            new Boolean('custom', 'Custom Options', true),
-                            (new Boolean('elements', 'Elements', true))
-                                ->setChildren([
-                                    (new Toggles('types', 'Allowed Types'))
-                                        ->setValues([
-                                            Entries::class,
-                                            Categories::class,
-                                            Users::class,
-                                        ])
-                                        ->setOptions($this->getElementTypes()),
-                                ]),
-                            (new Boolean('predefined', 'Predefined', true))
-                                ->setChildren([
-                                    (new Toggles('types', 'Allowed Types'))
-                                        ->setValues([
-                                            States::class,
-                                            Languages::class,
-                                            Numbers::class,
-                                            Years::class,
-                                            Months::class,
-                                            Days::class,
-                                            DaysOfWeek::class,
-                                        ])
-                                        ->setOptions($this->getPredefinedTypes()),
-                                ]),
-                            new Boolean('convert', 'Convert to Custom Values (for Element and Predefined populators)'),
-                        ]),
+                    // (new Group('options', 'Field Option Sources'))
+                    //     ->setChildren([
+                    //         new Boolean('custom', 'Custom Options', true),
+                    //         (new Boolean('elements', 'Elements', true))
+                    //             ->setChildren([
+                    //                 (new Toggles('types', 'Allowed Types'))
+                    //                     ->setValues([
+                    //                         Entries::class,
+                    //                         Categories::class,
+                    //                         Users::class,
+                    //                     ])
+                    //                     ->setOptions($this->getElementTypes()),
+                    //             ]),
+                    //         (new Boolean('predefined', 'Predefined', true))
+                    //             ->setChildren([
+                    //                 (new Toggles('types', 'Allowed Types'))
+                    //                     ->setValues([
+                    //                         States::class,
+                    //                         Languages::class,
+                    //                         Numbers::class,
+                    //                         Years::class,
+                    //                         Months::class,
+                    //                         Days::class,
+                    //                         DaysOfWeek::class,
+                    //                     ])
+                    //                     ->setOptions($this->getPredefinedTypes()),
+                    //             ]),
+                    //         new Boolean('convert', 'Convert to Custom Values (for Element and Predefined populators)'),
+                    //     ]),
                 ]),
             (new Group('notifications', 'Notifications'))
                 ->setChildren([
                     (new Boolean('tab', 'Notifications Tab', true))
                         ->setChildren([
-                            new Boolean('admin', 'Admin'),
-                            new Boolean('conditional', 'Conditional'),
-                            new Boolean('user', 'User Select'),
-                            new Boolean('email', 'Email Field'),
+                            new Boolean(Admin::class, 'Admin'),
+                            new Boolean(Conditional::class, 'Conditional'),
+                            new Boolean(Dynamic::class, 'User Select'),
+                            new Boolean(EmailFieldNotification::class, 'Email Field'),
                         ]),
                 ]),
             (new Group('rules', 'Rules'))
@@ -125,6 +129,7 @@ class LimitedUsersDefaults
                             new Boolean('fields', 'Rules on Fields'),
                             new Boolean('buttons', 'Rules on Buttons'),
                             new Boolean('pages', 'Rules on Pages'),
+                            new Boolean('submit', 'Rules on Submit Form'),
                         ]),
                 ]),
             (new Group('integrations', 'Integrations'))
@@ -142,9 +147,9 @@ class LimitedUsersDefaults
                                     new Boolean('submissionTitle', 'Submission Title'),
                                     new Boolean('formattingTemplate', 'formattingTemplate'),
                                 ]),
-                            new Boolean('dataStorage', 'Data Storage'),
+                            new Boolean('data-storage', 'Data Storage'),
                             new Boolean('processing', 'Processing'),
-                            new Boolean('successErrors', 'Success & Errors'),
+                            new Boolean('success-and-errors', 'Success & Errors'),
                             new Boolean('limits', 'Limits'),
                         ]),
                 ]),

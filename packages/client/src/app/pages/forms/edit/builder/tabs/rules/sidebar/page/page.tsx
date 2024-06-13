@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
+import config from '@config/freeform/freeform.config';
 import type { Page as PageType } from '@editor/builder/types/layout';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import classes from '@ff-client/utils/classes';
@@ -22,6 +23,7 @@ type Props = {
 };
 
 export const Page: React.FC<Props> = ({ page }) => {
+  const canEdit = config.limitations.can('rules.tab.pages');
   const { uid: activePageUid, button } = useParams();
   const navigate = useNavigate();
 
@@ -33,8 +35,12 @@ export const Page: React.FC<Props> = ({ page }) => {
   return (
     <PageWrapper>
       <PageButton
-        onClick={() => navigate(currentPage ? '' : `page/${uid}`)}
-        className={classes(currentPage && 'active', hasRule && 'has-rule')}
+        onClick={() => canEdit && navigate(currentPage ? '' : `page/${uid}`)}
+        className={classes(
+          currentPage && 'active',
+          hasRule && 'has-rule',
+          !canEdit && 'read-only'
+        )}
       >
         <PageIcon>
           <PageIconSvg />

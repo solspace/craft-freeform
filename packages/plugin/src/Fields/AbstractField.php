@@ -101,6 +101,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
+    #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
@@ -140,6 +141,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/advanced.svg',
         order: 1000,
     )]
+    #[Limitation('layout.fields.types')]
     #[Input\FieldType(
         label: 'Field Type',
         instructions: 'Change the type of this field.',

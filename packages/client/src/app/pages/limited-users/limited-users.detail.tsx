@@ -1,33 +1,36 @@
 /* eslint-disable react/display-name */
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
+import Textarea from '@components/form-controls/control-types/textarea/textarea';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import {
   useLimitedUsersMutation,
-  useLimitedUsersQuery,
+  useLimitedUsersSingleQuery,
 } from './limited-users.queries';
+import { SettingsSidebar } from './limited-users.sidebar';
 import { GroupWrapper, List } from './limited-users.styles';
 import { ItemBlock } from './limited-users.sub-components';
 import type { Item, RecursiveUpdate } from './limited-users.types';
 
 export const LimitedUsersDetail: React.FC = () => {
   const { id } = useParams();
-  const { data, isFetching } = useLimitedUsersQuery(
-    id ? Number(id) : undefined
-  );
+  const { data, isFetching } = useLimitedUsersSingleQuery(id);
+  const navigate = useNavigate();
 
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [state, setState] = useState([]);
-  const mutation = useLimitedUsersMutation(Number(id));
+  const mutation = useLimitedUsersMutation(id);
 
   useEffect(() => {
     if (data) {
       setName(data.name);
+      setDescription(data.description);
       setState(data.items);
     }
   }, [data]);
@@ -73,14 +76,26 @@ export const LimitedUsersDetail: React.FC = () => {
       />
 
       <div id="header-container">
-        <header id="header" style={{ paddingLeft: 0 }}>
+        <header id="header" style={{ paddingLeft: 0, paddingRight: 0 }}>
           <div id="page-title" className="flex">
             <h1 className="screen-title">{translate('Limited Users')}</h1>
           </div>
 
           <button
             className="btn submit"
-            onClick={() => mutation.mutate({ name, items: state })}
+            onClick={() =>
+              mutation.mutate(
+                { name, description, items: state },
+                {
+                  onSuccess: (data) => {
+                    const newId = data.data.id;
+                    if (`${id}` !== `${newId}`) {
+                      navigate(`/settings/limited-users/${newId}`);
+                    }
+                  },
+                }
+              )
+            }
           >
             <LoadingText
               loading={mutation.isLoading}
@@ -93,26 +108,54 @@ export const LimitedUsersDetail: React.FC = () => {
         </header>
       </div>
 
-      <GroupWrapper>
-        <String
-          property={{
-            handle: 'name',
-            label: 'Name',
-            instructions: 'Enter the name of the limited user permission.',
-            type: PropertyType.String,
-          }}
-          value={name}
-          updateValue={(value) => setName(value)}
-        />
+      <div id="main-content" className="has-sidebar">
+        <SettingsSidebar />
 
-        <hr />
+        <div id="content-container">
+          <div id="content" className="content-pane" style={{ padding: 0 }}>
+            <GroupWrapper>
+              <String
+                property={{
+                  handle: 'name',
+                  label: 'Name',
+                  instructions:
+                    'Enter the name of the limited user permission.',
+                  type: PropertyType.String,
+                }}
+                value={name}
+                updateValue={(value) => setName(value)}
+              />
 
-        <List>
-          {state.map((item) => (
-            <ItemBlock key={item.id} item={item} updateValue={updateValue} />
-          ))}
-        </List>
-      </GroupWrapper>
+              <br />
+
+              <Textarea
+                property={{
+                  handle: 'description',
+                  label: 'Description',
+                  instructions: 'Enter a description for this permission.',
+                  type: PropertyType.Textarea,
+                  rows: 4,
+                  flags: [],
+                }}
+                value={description}
+                updateValue={(value) => setDescription(value)}
+              />
+
+              <hr />
+
+              <List>
+                {state.map((item) => (
+                  <ItemBlock
+                    key={item.id}
+                    item={item}
+                    updateValue={updateValue}
+                  />
+                ))}
+              </List>
+            </GroupWrapper>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

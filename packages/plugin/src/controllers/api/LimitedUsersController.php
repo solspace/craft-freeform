@@ -5,6 +5,8 @@ namespace Solspace\Freeform\controllers\api;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUsersDefaults;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUsersProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\LimitedUsersRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -18,6 +20,8 @@ class LimitedUsersController extends BaseApiController
         private LimitedUsersDefaults $limitedUsersDefaults,
         private LimitedUsersProvider $limitedUsersProvider,
     ) {
+        PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         parent::__construct($id, $module, $config);
     }
 

@@ -239,6 +239,10 @@ class Settings extends Model
 
     public bool $sitesEnabled = false;
 
+    public string $defaultFromEmail = "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+
+    public string $defaultFromName = "{{ craft.app.projectConfig.get('email.fromName') }}";
+
     public Defaults $defaults;
 
     /**
@@ -461,12 +465,10 @@ class Settings extends Model
         $email = $this->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
         $name = $this->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
 
-        $content = file_get_contents($path);
-
-        return preg_replace(
-            ['/\{# fromEmail: __placeholder__ #}', '{# fromName: __placeholder__ #}'],
+        return str_replace(
+            ['__placeholderFromEmail__', '__placeholderFromName__'],
             [$email, $name],
-            $content
+            file_get_contents($path)
         );
     }
 

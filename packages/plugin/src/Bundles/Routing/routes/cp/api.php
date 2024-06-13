@@ -47,7 +47,7 @@ return [
     'freeform/api/types/options/predefined' => 'freeform/api/types/options/get-predefined-types',
 
     // GENERAL
-    'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',
+    'freeform/api/settings/get-submission-data' => 'freeform/api/settings/get-submission-data',
     'freeform/api/modal/forms/options' => 'freeform/api/modal/options',
     'freeform/api/modal/forms' => 'freeform/api/forms/index',
 

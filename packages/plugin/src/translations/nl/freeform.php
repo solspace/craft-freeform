@@ -1281,7 +1281,7 @@ return [
     'generic' => 'Onbekend',
     'honeypot' => 'Honeypot',
     'js_test' => 'Honeypot JS-test',
-    'recaptcha' => 'Captcha-fout',
+    'captcha' => 'Captcha-fout',
     'blocked_keywords' => 'Geblokkeerde zoekwoorden',
     'blocked_email_address' => 'Geblokkeerd e-mailadres',
     'blocked_ip' => 'Geblokkeerd IP-adres',

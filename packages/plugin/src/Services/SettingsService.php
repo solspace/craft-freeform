@@ -227,7 +227,7 @@ class SettingsService extends BaseService
 
     public function getSettingsNavigation(): array
     {
-        $isCraftPro = \Craft::$app->getEdition() === \Craft::Pro;
+        $isCraftPro = \Craft::Pro === \Craft::$app->getEdition();
         $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
 
         $nav = [

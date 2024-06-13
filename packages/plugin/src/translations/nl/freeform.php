@@ -1280,7 +1280,7 @@ return [
     'Marked as spam because' => 'Gemarkeerd als spam omdat',
     'generic' => 'Onbekend',
     'honeypot' => 'Honeypot',
-    'js_test' => 'Honeypot JS-test',
+    'js_test' => 'Javascript-test',
     'captcha' => 'Captcha-fout',
     'blocked_keywords' => 'Geblokkeerde zoekwoorden',
     'blocked_email_address' => 'Geblokkeerd e-mailadres',

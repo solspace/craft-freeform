@@ -41,11 +41,6 @@ class OptionInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => "Option's label",
             ],
-            'checked' => [
-                'name' => 'checked',
-                'type' => Type::boolean(),
-                'description' => 'Is the option checked',
-            ],
         ], static::getName());
     }
 }

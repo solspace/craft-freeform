@@ -52,7 +52,7 @@ class LimitedUsersDefaults
         return [
             (new Group('layout', 'Layout'))
                 ->setChildren([
-                    new Boolean('multiPageForms', 'Create Multi-page forms', true),
+                    new Boolean('multiPageForms', 'Add Pages to Forms', true),
                     (new Toggles('fieldTypes', 'Allowed Field Types'))
                         ->setValues([
                             TextField::class,
@@ -76,10 +76,12 @@ class LimitedUsersDefaults
                     // (new Select('maxColumns', 'Maximum Fields Per Row'))
                     //     ->setValue('4')
                     //     ->setOptions(ArrayHelper::generate(8, fn ($i) => [$i + 1, $i + 1])),
-                    (new Group('fields', 'Field Properties'))
+                    
+                    (new Boolean('fields', 'Advanced Field Properties', true))
                         ->setChildren([
                             new Boolean('handles', 'Field Handles', true),
                             new Boolean('attributes', 'Field Attribute Editor', true),
+                            new Boolean('encrypted', 'Encrypt Field Data'),
                             new Boolean('types', 'Field Type Switcher'),
                         ]),
                     // (new Group('options', 'Field Option Sources'))
@@ -145,7 +147,8 @@ class LimitedUsersDefaults
                                     new Boolean('handle', 'Form Handle'),
                                     new Boolean('type', 'Form Type'),
                                     new Boolean('submissionTitle', 'Submission Title'),
-                                    new Boolean('formattingTemplate', 'formattingTemplate'),
+                                    new Boolean('formattingTemplate', 'Formatting Template'),
+                                    new Boolean('attributes', 'Attributes'),
                                 ]),
                             new Boolean('data-storage', 'Data Storage'),
                             new Boolean('processing', 'Processing'),

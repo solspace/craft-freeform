@@ -156,12 +156,22 @@ export const ListItem = styled.li`
     }
   }
 
-  &[data-nesting='3'] {
+  &[data-nesting='2'] {
     ${TitleBlock} {
       gap: 10px;
 
       &:before {
         content: '—';
+      }
+    }
+  }
+
+  &[data-nesting='3'] {
+    ${TitleBlock} {
+      gap: 10px;
+
+      &:before {
+        content: '———';
       }
     }
   }

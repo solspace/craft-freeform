@@ -133,6 +133,7 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
+    #[Limitation('settings.tab.general.attributes')]
     #[ValueTransformer(FormAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your form elements.',

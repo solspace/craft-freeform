@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
@@ -100,6 +101,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     protected ?string $removeButtonMarkup = null;
 
     #[Section('attributes')]
+    #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(TableAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',

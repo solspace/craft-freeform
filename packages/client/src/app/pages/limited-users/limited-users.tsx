@@ -86,10 +86,10 @@ export const LimitedUsers: React.FC = () => {
               )}
 
               {data.length === 0 && (
-                <div style={{ padding: '50px 0 50px' }}>
+                <div style={{ padding: '100px 0 100px' }}>
                   <EmptyBlock
-                    title={translate('No entries')}
-                    subtitle={`Click on "+ New Group" to add more`}
+                    title={translate('No groups exist yet')}
+                    subtitle={`Click on the "New Group" button to set up your first Limited User permission group.`}
                   />
                 </div>
               )}

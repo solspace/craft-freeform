@@ -76,7 +76,7 @@ class LimitedUsersDefaults
                     // (new Select('maxColumns', 'Maximum Fields Per Row'))
                     //     ->setValue('4')
                     //     ->setOptions(ArrayHelper::generate(8, fn ($i) => [$i + 1, $i + 1])),
-                    
+
                     (new Boolean('fields', 'Advanced Field Properties', true))
                         ->setChildren([
                             new Boolean('handles', 'Field Handles', true),

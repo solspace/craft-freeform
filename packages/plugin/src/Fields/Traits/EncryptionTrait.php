@@ -14,8 +14,8 @@ namespace Solspace\Freeform\Fields\Traits;
 
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Section;
 
 trait EncryptionTrait
 {

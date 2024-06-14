@@ -6,6 +6,7 @@ import String from '@components/form-controls/control-types/string/string';
 import Textarea from '@components/form-controls/control-types/textarea/textarea';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { PropertyType } from '@ff-client/types/properties';
+import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -87,11 +88,11 @@ export const LimitedUsersDetail: React.FC = () => {
               mutation.mutate(
                 { name, description, items: state },
                 {
-                  onSuccess: (data) => {
-                    const newId = data.data.id;
-                    if (`${id}` !== `${newId}`) {
-                      navigate(`/settings/limited-users/${newId}`);
-                    }
+                  onSuccess: () => {
+                    navigate(`/settings/limited-users`);
+                    notifications.success(
+                      translate('Permission saved successfully')
+                    );
                   },
                 }
               )

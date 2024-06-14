@@ -34,7 +34,7 @@ const FieldType: React.FC<ControlType<FieldTypeProperty>> = ({
         label: translate(property.label),
         instructions: translate(property.instructions),
         options: types.map((type) => ({
-          label: type.name,
+          label: translate(type.name),
           value: type.typeClass,
         })),
       }}

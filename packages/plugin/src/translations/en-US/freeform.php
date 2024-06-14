@@ -11,7 +11,6 @@
  */
 
 return [
-
     // Form Builder
 
     // Form Builder // Universal
@@ -131,7 +130,7 @@ return [
     'Plain Text' => 'Plain Text',
     'Hidden' => 'Hidden',
     'Insert Field' => 'Insert Field',
-    "or type <mark>@</mark> to search on field handles" => "or type <mark>@</mark> to search on field handles",
+    'or type <mark>@</mark> to search on field handles' => 'or type <mark>@</mark> to search on field handles',
     'Supported Operators Reference Guide' => 'Supported Operators Reference Guide',
     'Arithmetic' => 'Arithmetic',
     'Bitwise' => 'Bitwise',
@@ -144,7 +143,7 @@ return [
     'Select a Stripe integration to use for this field.' => 'Select a Stripe integration to use for this field.',
     'No integration selected.' => 'No integration selected.',
     'Description' => 'Description',
-    "Enter a description for this payment. You can use the <code>form</code> object in twig." => "Enter a description for this payment. You can use the <code>form</code> object in twig.",
+    'Enter a description for this payment. You can use the <code>form</code> object in twig.' => 'Enter a description for this payment. You can use the <code>form</code> object in twig.',
     'Payment Type' => 'Payment Type',
     'Single' => 'Single',
     'Subscription' => 'Subscription',
@@ -157,7 +156,7 @@ return [
     'Select a Number field which will determine the payment amount.' => 'Select a Number field which will determine the payment amount.',
     'Payment Currency' => 'Payment Currency',
     'Subscription Product Name' => 'Subscription Product Name',
-    "Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig." => "Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig.",
+    'Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig.' => 'Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig.',
     'Subscription Interval Type' => 'Subscription Interval Type',
     'Static' => 'Static',
     'Subscription Interval' => 'Subscription Interval',
@@ -166,17 +165,17 @@ return [
     'Month' => 'Month',
     'Year' => 'Year',
     'Subscription Interval Field' => 'Subscription Interval Field',
-    "Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)" => "Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)",
+    'Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)' => 'Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)',
     'Subscription Interval Count Type' => 'Subscription Interval Count Type',
     'Interval Count' => 'Interval Count',
-    "Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months." => "Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months.",
+    'Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months.' => 'Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months.',
     'Subscription Interval Count Field' => 'Subscription Interval Count Field',
     'Select a field which will determine the interval count.' => 'Select a field which will determine the interval count.',
     'Redirect after payment' => 'Redirect after payment',
     'Successful Payment Redirect' => 'Successful Payment Redirect',
-    "Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig." => "Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig.",
+    'Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig.' => 'Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig.',
     'Failed Payment Redirect' => 'Failed Payment Redirect',
-    "Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig." => "Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig.",
+    'Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig.' => 'Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig.',
     'Appearance' => 'Appearance',
     'Theme' => 'Theme',
     'Choose the base theme to be used for styling the appearance of the Stripe field. Styles can be further fine-tuned at template-level using JS overrides.' => 'Choose the base theme to be used for styling the appearance of the Stripe field. Styles can be further fine-tuned at template-level using JS overrides.',
@@ -257,31 +256,13 @@ return [
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
 
-
-
-
-
     'Rules' => 'Rules',
-
-
-
-
 
     'Integrations' => 'Integrations',
 
-
-
     'Settings' => 'Settings',
 
-
-
-
-
     'Dashboard' => 'Dashboard',
-    
-    
-
-    
 
     'Are you sure? You might potentially lose important data.' => 'Are you sure? You might potentially lose important data.',
     'Do not map this field' => 'Do not map this field',
@@ -299,14 +280,14 @@ return [
     'Add a custom value' => 'Add a custom value',
     'Press <b>enter</b> while focusing an input to add a new set of inputs.' => 'Press <b>enter</b> while focusing an input to add a new set of inputs.',
     'Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.' => 'Are you sure? This will allow you to customize and reorder the options, but they will become out of sync with the Element or Predefined options currently configured.',
-    
+
     'empty' => 'empty',
     'Created by' => 'Created by',
     'Created' => 'Created',
     'at' => 'at',
     'Last Updated by' => 'Last Updated by',
     'Last Updated' => 'Last Updated',
-    
+
     'No integrations found' => 'No integrations found',
     'To add an integration, click the button below' => 'To add an integration, click the button below',
     'Add integration' => 'Add integration',
@@ -314,16 +295,10 @@ return [
     'Drop a field here' => 'Drop a field here',
     '+ insert row' => '+ insert row',
 
-
-
-
-
-    
     'Search in' => 'Search in',
-    
-    
+
     'Create a favorite' => 'Create a favorite',
-    
+
     'No notifications found' => 'No notifications found',
     'To add a notification, use the sidebar on the left' => 'To add a notification, use the sidebar on the left',
     'New' => 'New',
@@ -359,7 +334,7 @@ return [
     'Go to this page when' => 'Go to this page when',
     'Submit form' => 'Submit form',
     'Submit this form when ' => 'Submit this form when ',
-    
+
     'Submit Form' => 'Submit Form',
     'New Form' => 'New Form',
     'There were problems saving the form.' => 'There were problems saving the form.',
@@ -404,16 +379,6 @@ return [
     'Create Forms' => 'Create Forms',
     'Install Demo' => 'Install Demo',
     'Configure Freeform' => 'Configure Freeform',
-
-
-
-
-
-
-
-
-
-
 
     // // Universal
     // 'Save and continue editing' => 'Save and continue editing',

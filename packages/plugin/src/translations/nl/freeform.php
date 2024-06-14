@@ -11,7 +11,6 @@
  */
 
 return [
-
     // Form Builder
 
     // Form Builder // Universal
@@ -50,11 +49,11 @@ return [
     'Label' => 'Label',
     'Field label used to describe the field' => 'Veldlabel dat wordt gebruikt om het veld te beschrijven',
     'Handle' => 'Handvat',
-    "How you'll refer to this field in templates" => "Hoe u in sjablonen naar dit veld verwijst",
+    "How you'll refer to this field in templates" => 'Hoe u in sjablonen naar dit veld verwijst',
     'Instructions' => 'Instructies',
     'Field specific user instructions' => 'Veldspecifieke gebruikersinstructies',
     'Placeholder' => 'Tijdelijke aanduiding',
-    "The text that will be shown if the field doesn't have a value" => "De tekst die getoond wordt als het veld geen waarde heeft",
+    "The text that will be shown if the field doesn't have a value" => 'De tekst die getoond wordt als het veld geen waarde heeft',
     'Require this field' => 'Dit veld vereisen',
     'Configuration' => 'Configuratie',
     'Default value' => 'Standaardwaarde',
@@ -90,7 +89,7 @@ return [
     'Initial value' => 'Beginwaarde',
     "You can use 'now', 'today', '5 days ago', '2024-01-01 20:00:00', etc." => "Je kunt 'nu', 'vandaag', '5 dagen geleden', '2024-01-01 20:00:00', enz. gebruiken.",
     'Force a locale' => 'Forceer een locale',
-    "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. <code>fr</code>, <code>de</code>, etc." => "Gebruikt standaard de landinstelling van de site die in Craft is ingesteld. Om een andere landinstelling te forceren, specificeert u een 2-cijferige taalcode, bijvoorbeeld <code>fr</code>, <code>de</code>, enz.",
+    "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. <code>fr</code>, <code>de</code>, etc." => 'Gebruikt standaard de landinstelling van de site die in Craft is ingesteld. Om een andere landinstelling te forceren, specificeert u een 2-cijferige taalcode, bijvoorbeeld <code>fr</code>, <code>de</code>, enz.',
     'Use built-in datepicker' => 'Gebruik ingebouwde datumkiezer',
     'Use date format as placeholder' => 'Gebruik datumformaat als placeholder',
     'Date Settings' => 'Datuminstellingen',
@@ -131,7 +130,7 @@ return [
     'Plain Text' => 'Platte tekst',
     'Hidden' => 'Verborgen',
     'Insert Field' => 'Veld invoegen',
-    "or type <mark>@</mark> to search on field handles" => "of typ <mark>@</mark> om op veldingangen te zoeken",
+    'or type <mark>@</mark> to search on field handles' => 'of typ <mark>@</mark> om op veldingangen te zoeken',
     'Supported Operators Reference Guide' => 'Ondersteunde Operators Referentiegids',
     'Arithmetic' => 'Rekenkunde',
     'Bitwise' => 'Bitgewijs',
@@ -144,7 +143,7 @@ return [
     'Select a Stripe integration to use for this field.' => 'Selecteer een Stripe-integratie om voor dit veld te gebruiken.',
     'No integration selected.' => 'Geen integratie geselecteerd.',
     'Description' => 'Beschrijving',
-    "Enter a description for this payment. You can use the <code>form</code> object in twig." => "Voer een omschrijving in voor deze betaling. U kunt het <code>form</code> object in twig gebruiken.",
+    'Enter a description for this payment. You can use the <code>form</code> object in twig.' => 'Voer een omschrijving in voor deze betaling. U kunt het <code>form</code> object in twig gebruiken.',
     'Payment Type' => 'Betalingstype',
     'Single' => 'Enkel',
     'Subscription' => 'Abonnement',
@@ -157,7 +156,7 @@ return [
     'Select a Number field which will determine the payment amount.' => 'Selecteer een nummerveld dat het betalingsbedrag bepaalt.',
     'Payment Currency' => 'Betalingsvaluta',
     'Subscription Product Name' => 'Productnaam abonnement',
-    "Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig." => "Vul de naam in van het product waarop u zich wilt abonneren. U kunt de <code>formulier</code>- en <code>integratie</code>-objecten in twig gebruiken.",
+    'Enter the name of the product you want to subscribe to. You can use the <code>form</code> and <code>integration</code> objects in twig.' => 'Vul de naam in van het product waarop u zich wilt abonneren. U kunt de <code>formulier</code>- en <code>integratie</code>-objecten in twig gebruiken.',
     'Subscription Interval Type' => 'Type abonnementsinterval',
     'Static' => 'Statisch',
     'Subscription Interval' => 'Abonnementinterval',
@@ -166,17 +165,17 @@ return [
     'Month' => 'Maand',
     'Year' => 'Jaar',
     'Subscription Interval Field' => 'Abonnementintervalveld',
-    "Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)" => "Selecteer een veld dat het interval bepaalt (beschikbare waarden: <code>jaar</code>, <code>maand</code>, <code>week</code>, <code>dag</code>. code>)",
+    'Select a field which will determine the interval. (Available values: <code>year</code>, <code>month</code>, <code>week</code>, <code>day</code>)' => 'Selecteer een veld dat het interval bepaalt (beschikbare waarden: <code>jaar</code>, <code>maand</code>, <code>week</code>, <code>dag</code>. code>)',
     'Subscription Interval Count Type' => 'Type abonnementsintervaltelling',
     'Interval Count' => 'Intervaltelling',
-    "Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months." => "Voer het aantal intervallen in tussen elke abonnementsbetaling. Als u interval <code>maand</code> gebruikt en tel <code>3</code>, wordt het abonnement elke 3 maanden in rekening gebracht.",
+    'Enter the number of intervals between each subscription payment. If using interval <code>month</code> and count <code>3</code>, the subscription will be charged every 3 months.' => 'Voer het aantal intervallen in tussen elke abonnementsbetaling. Als u interval <code>maand</code> gebruikt en tel <code>3</code>, wordt het abonnement elke 3 maanden in rekening gebracht.',
     'Subscription Interval Count Field' => 'Telveld abonnementsinterval',
     'Select a field which will determine the interval count.' => 'Selecteer een veld dat de intervaltelling bepaalt.',
     'Redirect after payment' => 'Doorsturen na betaling',
     'Successful Payment Redirect' => 'Succesvolle betalingsomleiding',
-    "Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig." => "Voer een URL in waarnaar u wilt doorverwijzen na een succesvolle betaling. U kunt de objecten <code>form</code>, <code>submission</code> en <code>betalingIntent</code> in twig gebruiken.",
+    'Enter a URL to redirect to after a successful payment. You can use the <code>form</code>, <code>submission</code> and <code>paymentIntent</code> objects in twig.' => 'Voer een URL in waarnaar u wilt doorverwijzen na een succesvolle betaling. U kunt de objecten <code>form</code>, <code>submission</code> en <code>betalingIntent</code> in twig gebruiken.',
     'Failed Payment Redirect' => 'Mislukte betalingsomleiding',
-    "Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig." => "Voer een URL in waarnaar u wilt doorverwijzen na een mislukte betaling. U kunt de objecten <code>form</code> en <code>betalingIntent</code> in twig gebruiken.",
+    'Enter a URL to redirect to after a failed payment. You can use the <code>form</code> and <code>paymentIntent</code> objects in twig.' => 'Voer een URL in waarnaar u wilt doorverwijzen na een mislukte betaling. U kunt de objecten <code>form</code> en <code>betalingIntent</code> in twig gebruiken.',
     'Appearance' => 'Uiterlijk',
     'Theme' => 'Thema',
     'Choose the base theme to be used for styling the appearance of the Stripe field. Styles can be further fine-tuned at template-level using JS overrides.' => 'Kies het basisthema dat moet worden gebruikt voor het vormgeven van het uiterlijk van het Streepveld. Stijlen kunnen op sjabloonniveau verder worden verfijnd met behulp van JS-overrides.',
@@ -212,7 +211,7 @@ return [
     'Table field has not been configured yet.' => 'Tabelveld is nog niet geconfigureerd.',
     'Table Layout' => 'Tabelindeling',
     'Use semicolon ";" separated values for dropdown options.' => 'Gebruik puntkomma ";" gescheiden waarden voor vervolgkeuzeopties.',
-    'Use built-in javascript for adding and removing rows' =>'Gebruik ingebouwd javascript voor het toevoegen en verwijderen van rijen',
+    'Use built-in javascript for adding and removing rows' => 'Gebruik ingebouwd javascript voor het toevoegen en verwijderen van rijen',
     'Maximum number of rows' => 'Maximum aantal rijen',
     'Set the maximum number of rows that can be added to the table.' => 'Stel het maximale aantal rijen in dat aan de tabel kan worden toegevoegd.',
     'Add Button Label' => 'Knoplabel toevoegen',
@@ -257,25 +256,11 @@ return [
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',
 
-
-
-
-
     'Rules' => 'Regels',
-
-
-
-
 
     'Integrations' => 'Integraties',
 
-
-
     'Settings' => 'Instellingen',
-
-
-
-
 
     // // Algemeen
     // 'Save and continue editing' => 'Opslaan en doorgaan met bewerken',

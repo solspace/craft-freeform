@@ -1,4 +1,5 @@
 import React from 'react';
+import translate from '@ff-client/utils/translations';
 
 import { Instructions } from './control.styles';
 
@@ -10,6 +11,8 @@ const FormInstructions: React.FC<Props> = ({ instructions }) => {
   if (!instructions) {
     return null;
   }
+
+  instructions = translate(instructions);
 
   const parts = instructions.split(/`([^`]+)`/g);
   const compiledInstructions = parts.map((part, index) => {

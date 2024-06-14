@@ -46,13 +46,13 @@ export const BaseFields: React.FC = () => {
         onClick: openModal,
       }}
       editionIsPro={config.editions.is(Edition.Pro)}
-      title={title}
+      title={translate(title)}
     >
       {data.groups.grouped?.map((group) => (
         <GroupWrapper key={group.uid} color={group.color}>
           {group.types.length > 0 && (
             <>
-              {group.label && <GroupName>{group.label}</GroupName>}
+              {group.label && <GroupName>{translate(group.label)}</GroupName>}
               <List>{renderFieldItems(group.types)}</List>
             </>
           )}

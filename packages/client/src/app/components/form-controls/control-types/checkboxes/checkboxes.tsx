@@ -6,6 +6,7 @@ import type {
   Option,
   OptionGroup,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 import { CheckboxesWrapper, SelectAllWrapper } from './checkboxes.styles';
 
@@ -59,7 +60,7 @@ const Checkboxes: React.FC<ControlType<CheckboxesProperty>> = ({
               }
             }}
           />
-          <label htmlFor={`${handle}-all`}>Select All</label>
+          <label htmlFor={`${handle}-all`}>{translate('Select All')}</label>
         </SelectAllWrapper>
       )}
 

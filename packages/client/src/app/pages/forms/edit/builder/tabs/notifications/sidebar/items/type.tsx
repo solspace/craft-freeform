@@ -31,7 +31,7 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
   return (
     <Wrapper>
       <LabelWrapper>
-        <Label>{name}</Label>
+        <Label>{translate(name)}</Label>
         <Button
           className={classes('btn', 'add', 'icon', 'small', 'dashed')}
           onClick={() => {

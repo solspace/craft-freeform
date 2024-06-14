@@ -284,6 +284,7 @@ class SettingsService extends BaseService
     public function isSectionASetting(string $sectionName): bool
     {
         $nonSettingSections = [
+            'limited-users',
             'statuses',
             'error-log',
             'diagnostics',

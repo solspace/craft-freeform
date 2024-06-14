@@ -10,6 +10,10 @@ import { PageTabsContainer, PageTabsWrapper } from './page-tabs.styles';
 export const PageTabs: React.FC = () => {
   const pages = useSelector(pageSelecors.all);
 
+  const canAddPages =
+    config.editions.isAtLeast(Edition.Lite) &&
+    config.limitations.can('layout.multiPageForms');
+
   return (
     <PageTabsWrapper>
       <PageTabsContainer>
@@ -17,7 +21,7 @@ export const PageTabs: React.FC = () => {
           <Tab key={page.uid} index={index} page={page} />
         ))}
 
-        {config.editions.isAtLeast(Edition.Lite) && <NewTab />}
+        {canAddPages && <NewTab />}
       </PageTabsContainer>
     </PageTabsWrapper>
   );

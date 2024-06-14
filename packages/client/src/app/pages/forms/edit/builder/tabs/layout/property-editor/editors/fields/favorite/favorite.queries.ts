@@ -3,9 +3,9 @@ import { QKFavorites } from '@ff-client/queries/field-favorites';
 import type { APIError } from '@ff-client/types/api';
 import type {
   FieldFavorite,
+  FieldType,
   PropertyValueCollection,
 } from '@ff-client/types/fields';
-import type { FieldType } from '@ff-client/types/properties';
 import type {
   UseMutationOptions,
   UseMutationResult,

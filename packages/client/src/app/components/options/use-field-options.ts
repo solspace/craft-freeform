@@ -4,9 +4,9 @@ import {
   Source,
 } from '@components/form-controls/control-types/options/options.types';
 import type { Field } from '@editor/store/slices/layout/fields';
+import type { FieldType } from '@ff-client/types/fields';
 import { Implementation, Type } from '@ff-client/types/fields';
 import {
-  type FieldType,
   type OptionCollection,
   PropertyType,
 } from '@ff-client/types/properties';

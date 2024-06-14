@@ -6,6 +6,7 @@ import {
   useResolvedPath,
 } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
+import config from '@config/freeform/freeform.config';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
@@ -14,6 +15,7 @@ import { SettingsSidebar } from './settings.sidebar';
 import { FormSettingsWrapper } from './settings.styles';
 
 export const FormSettings: React.FC = () => {
+  const limitations = config.limitations;
   const { sectionHandle } = useParams();
   const navigate = useNavigate();
   const currentPath = useResolvedPath('');
@@ -22,7 +24,9 @@ export const FormSettings: React.FC = () => {
 
   useEffect(() => {
     if (!sectionHandle) {
-      const firstSection = data?.[0]?.sections[0];
+      const firstSection = data?.[0]?.sections.filter((section) =>
+        limitations.can(`settings.tab.${section.handle}`)
+      )?.[0];
       if (firstSection) {
         navigate(`${firstSection.handle}`);
       }

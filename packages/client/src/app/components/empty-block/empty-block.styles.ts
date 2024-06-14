@@ -2,7 +2,7 @@ import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Icon = styled.div`
-  font-size: 20rem;
+  font-size: 10rem;
   margin: 0 0 1.5rem;
 `;
 
@@ -10,7 +10,7 @@ export const Title = styled.h2`
   margin: 0;
   padding: 0;
 
-  font-size: 2.8rem;
+  font-size: 1.5rem;
   color: ${colors.gray500};
 `;
 
@@ -34,9 +34,4 @@ export const EmptyBlockWrapper = styled.div`
   gap: 5px;
 
   height: 100%;
-
-  > * {
-    position: relative;
-    top: -40px;
-  }
 `;

@@ -4,21 +4,7 @@ namespace Solspace\Freeform\controllers\api\types;
 
 use Solspace\Freeform\Bundles\Transformers\Options\OptionTypeTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Assets\Assets;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories\Categories;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries\Entries;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags\Tags;
-use Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Countries\Countries;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Currencies\Currencies;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Days\Days;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\DaysOfWeek\DaysOfWeek;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Languages\Languages;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months\Months;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Provinces\Provinces;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
-use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years;
+use Solspace\Freeform\Fields\Properties\Options\Elements\Types\OptionTypesProvider;
 use yii\web\Response;
 
 class OptionsController extends BaseApiController
@@ -28,49 +14,19 @@ class OptionsController extends BaseApiController
         $module,
         $config,
         private OptionTypeTransformer $optionTypeTransformer,
+        private OptionTypesProvider $optionTypesProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
 
     public function actionGetElementTypes(): Response
     {
-        $types = [
-            new Assets(),
-            new Entries(),
-            new Users(),
-            new Categories(),
-            new Tags(),
-        ];
-
-        $serialized = [];
-        foreach ($types as $type) {
-            $serialized[] = $this->optionTypeTransformer->transform($type);
-        }
-
-        return $this->asSerializedJson($serialized);
+        return $this->getSerializedTypes($this->optionTypesProvider->getElementTypes());
     }
 
     public function actionGetPredefinedTypes(): Response
     {
-        $types = [
-            new States(),
-            new Provinces(),
-            new Countries(),
-            new Languages(),
-            new Currencies(),
-            new Numbers(),
-            new Years(),
-            new Months(),
-            new Days(),
-            new DaysOfWeek(),
-        ];
-
-        $serialized = [];
-        foreach ($types as $type) {
-            $serialized[] = $this->optionTypeTransformer->transform($type);
-        }
-
-        return $this->asSerializedJson($serialized);
+        return $this->getSerializedTypes($this->optionTypesProvider->getPredefinedTypes());
     }
 
     public function actionOptions(string $type): Response
@@ -85,5 +41,15 @@ class OptionsController extends BaseApiController
         $options = $this->getOptionsService()->getOptions($formId, $fieldId, $query);
 
         return $this->asJson($options);
+    }
+
+    private function getSerializedTypes(array $types): Response
+    {
+        $serialized = [];
+        foreach ($types as $type) {
+            $serialized[] = $this->optionTypeTransformer->transform($type);
+        }
+
+        return $this->asSerializedJson($serialized);
     }
 }

@@ -111,7 +111,7 @@ class PropertyProviderTest extends TestCase
             [[
                 'type' => 'string',
                 'handle' => 'defaultValue',
-                'label' => 'Default Value',
+                'label' => 'Default value',
                 'instructions' => null,
                 'order' => 1,
                 'value' => 'pulled from defaults',

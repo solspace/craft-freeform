@@ -179,6 +179,7 @@ class SubmitController extends BaseController
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
             'html' => $form->render(),
+            'actions' => $form->getActions(),
             'multipage' => $form->isMultiPage(),
             'duplicate' => $form->isDuplicate(),
         ];

@@ -21,7 +21,7 @@ export const LimitedUsers: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumb id="settings" label="Settings" url="settings" />
+      <Breadcrumb id="settings" label="Settings" url="." external />
       <Breadcrumb
         id="limited-users"
         label="Limited Users"

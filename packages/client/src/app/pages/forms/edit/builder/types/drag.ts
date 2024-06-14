@@ -1,6 +1,5 @@
 import type { Field } from '@editor/store/slices/layout/fields';
-import type { FieldFavorite } from '@ff-client/types/fields';
-import type { FieldType } from '@ff-client/types/properties';
+import type { FieldFavorite, FieldType } from '@ff-client/types/fields';
 
 import type { OptionRow, Page } from './layout';
 

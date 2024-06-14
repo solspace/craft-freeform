@@ -37,6 +37,11 @@ type Config = {
     current: number;
     list: Site[];
   };
+  limitations: {
+    items: null | Record<string, boolean | string | string[]>;
+    can: (key: string) => boolean | undefined;
+    get: (key: string) => boolean | string | string[] | undefined;
+  };
 };
 
 const element = document.getElementById('freeform-config') as HTMLScriptElement;
@@ -67,6 +72,37 @@ const config: Config = {
       }
 
       return editions.indexOf(config.editions.edition) <= index;
+    },
+  },
+  limitations: {
+    ...baseConfig.limitations,
+
+    can: (key: string): boolean | undefined => {
+      const limitations = config.limitations?.items;
+      if (!limitations) {
+        return true;
+      }
+
+      const parts = key.split('.');
+
+      for (let i = 0; i < parts.length; i++) {
+        const currentChain = parts.slice(0, i + 1).join('.');
+
+        if (limitations[currentChain] === false) {
+          return false;
+        }
+      }
+
+      return limitations[key] !== undefined ? Boolean(limitations[key]) : true;
+    },
+
+    get: (key: string): boolean | string | string[] | undefined => {
+      const limitations = config.limitations?.items;
+      if (!limitations) {
+        return undefined;
+      }
+
+      return limitations[key];
     },
   },
 };

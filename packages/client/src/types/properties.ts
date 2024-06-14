@@ -74,6 +74,7 @@ type BaseProperty<T, PT extends PropertyType> = {
   width?: number;
   disabled?: boolean;
   flags?: string[];
+  visible?: boolean;
   visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];
   category?: string;
@@ -287,15 +288,6 @@ export type Property =
   | TextareaProperty
   | WYSIWYGProperty
   | CodeEditorProperty;
-
-export type FieldType = {
-  name: string;
-  typeClass: string;
-  type: string;
-  icon?: string;
-  implements: string[];
-  properties: Property[];
-};
 
 export type Section = {
   handle: string;

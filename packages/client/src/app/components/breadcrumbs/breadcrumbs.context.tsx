@@ -86,9 +86,10 @@ export const BreadcrumbProvider: React.FC<PropsWithChildren> = ({
         <nav aria-label="Breadcrumbs">
           <ul id="crumb-list" className="breadcrumb-list">
             <SiteCrumb />
-            {stack.map(({ label, url }, i) => (
+            {stack.map(({ label, url, external }, i) => (
               <li key={i} className="crumb">
-                <Link to={url}>{label}</Link>
+                {external && <a href={url}>{label}</a>}
+                {!external && <Link to={url}>{label}</Link>}
               </li>
             ))}
           </ul>

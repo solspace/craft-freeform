@@ -39,8 +39,8 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         label: 'Captcha Type',
         instructions: 'Choose which hCaptcha type you want to use.',
         options: [
-            self::VERSION_INVISIBLE => 'hCaptcha Invisible',
-            self::VERSION_CHECKBOX => 'hCaptcha Checkbox',
+            self::VERSION_INVISIBLE => 'Invisible',
+            self::VERSION_CHECKBOX => 'Checkbox',
         ],
     )]
     private string $version = self::VERSION_INVISIBLE;

@@ -1,6 +1,6 @@
+import type { FieldType } from '@ff-client/types/fields';
 import { type PropertyValueCollection } from '@ff-client/types/fields';
 import type { GenericValue } from '@ff-client/types/properties';
-import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import camelCase from 'lodash.camelcase';

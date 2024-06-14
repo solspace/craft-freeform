@@ -49,4 +49,16 @@ class ArrayHelper
 
         return $result;
     }
+
+    public static function generate(int $iterations, callable $fn): array
+    {
+        $result = [];
+        for ($i = 0; $i < $iterations; ++$i) {
+            [$key, $value] = $fn($i);
+
+            $result[$key] = $value;
+        }
+
+        return $result;
+    }
 }

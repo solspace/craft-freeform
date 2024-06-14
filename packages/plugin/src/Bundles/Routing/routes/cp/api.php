@@ -55,6 +55,7 @@ return [
     'freeform/api/settings/general' => 'freeform/api/settings/general',
     'freeform/api/settings/spam' => 'freeform/api/settings/spam',
     'freeform/api/settings/reliability' => 'freeform/api/settings/reliability',
+    'freeform/api/settings/navigation' => 'freeform/api/settings/navigation',
 
     // OPTIONS
     'freeform/api/options' => 'freeform/api/options/generate-options',
@@ -62,4 +63,10 @@ return [
     // NOTICES
     'freeform/api/notices' => 'freeform/api/notices',
     'freeform/api/notices/<id:\d+>' => 'freeform/api/notices',
+
+    // LIMITED USERS
+    'freeform/api/limited-users' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:new>' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:\d+>' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:\d+>/delete' => 'freeform/api/limited-users/delete',
 ];

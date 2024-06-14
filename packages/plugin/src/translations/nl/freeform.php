@@ -23,8 +23,6 @@ return [
     'Add new Form' => 'Nieuw formulier toevoegen',
     'Create a new Form' => 'Maak een nieuw formulier aan',
     'Form Name' => 'Formuliernaam',
-    'Formatting Template' => 'Template opmaken',
-    'Store Submitted Data for this Form' => 'Bewaar de ingediende gegevens voor dit formulier',
     'All submissions for this form will be stored in the database.' => 'Alle inzendingen voor dit formulier worden opgeslagen in de database.',
 
     // Form Builder // Universal
@@ -339,10 +337,152 @@ return [
     'is not empty' => 'is niet leeg',
     'Add a condition' => 'Voeg een voorwaarde toe',
 
-
+    // Form Builder // Integrations
     'Integrations' => 'Integraties',
+    'single' => 'Enkel',
+    'elements' => 'Elementen',
+    'email marketing' => 'E-mailmarketing',
+    'crm' => 'CRM',
+    'payment gateways' => 'Betalingsgateways',
+    'other' => 'Andere',
+    "captchas" => "Captcha's",
+    'Attribute Mapping' => 'Kenmerktoewijzing',
+    'Field Mapping' => 'Veldtoewijzing',
+    'Do not map this field' => 'Wijs dit veld niet toe',
 
+    // Form Builder // Integrations // GTM
+    'Event Name' => 'Evenementnaam',
+    'Specify a custom event name to be triggered when the form is submitted.' => 'Geef een aangepaste gebeurtenisnaam op die moet worden geactiveerd wanneer het formulier wordt verzonden.',
+
+    // Form Builder // Integrations // Honeypot
+    'Honeypot' => 'Honingpot',
+    'Custom Input Name' => 'Aangepaste invoernaam',
+    "Enter a new value to rename the default Freeform Honeypot input name. The default is 'freeform_form_handle'." => "Voer een nieuwe waarde in om de standaard Freeform Honeypot-invoernaam te hernoemen. De standaardwaarde is 'freeform_form_handle'.",
+    'Custom Error Message' => 'Aangepaste foutmelding',
+    'Enter a new value to change the default error message for the Freeform Honeypot. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Voer een nieuwe waarde in om de standaardfoutmelding voor de Freeform Honeypot te wijzigen. Dit wordt alleen toegepast als de instelling Spamgedrag is ingesteld op Foutmeldingen weergeven.',
+
+    // Form Builder // Integrations // JS Test
+    'Javascript Test' => 'Javascript-test',
+    "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Voer een nieuwe waarde in om de standaard Freeform Javascript Test-invoernaam te hernoemen. De standaardwaarde is 'freeform_check'.",
+    'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Voer een nieuwe waarde in om het standaardfoutbericht voor de Freeform Javascript Test te wijzigen. Dit wordt alleen toegepast als de instelling Spamgedrag is ingesteld op Foutmeldingen weergeven.',
+
+    // Form Builder // Integrations // Post Forwarding
+    'Post Forwarding' => 'Post doorsturen',
+    'URL' => 'URL',
+    'Enter the URL where the POST request should be sent.' => 'Voer de URL in waar het POST-verzoek naartoe moet worden verzonden.',
+    'Error Trigger' => 'Fouttrigger',
+    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'." => "Geef een trefwoord of woordgroep op waar Freeform in de uitvoer van de externe POST-URL naar moet kijken om te weten of en wanneer er een fout is om te loggen, bijvoorbeeld 'fout' of 'er is een fout opgetreden'.",
+
+    // Form Builder // Integrations // Elements
+    'Users' => 'Gebruikers',
+    'Activate Users' => 'Activeer gebruikers',
+    'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.' => 'Wanneer ingeschakeld, worden nieuwe gebruikers automatisch geactiveerd bij het aanmaken. Wordt anders op in behandeling gezet.',
+    'Send Activation Email' => 'Activeringsmail versturen',
+    'Users will receive a Craft email with activation details if this is enabled.' => 'Gebruikers ontvangen een Craft-e-mail met activeringsgegevens als dit is ingeschakeld.',
+    'User Group' => 'Gebruikersgroep',
+    'Select the user group to assign the user to.' => 'Selecteer de gebruikersgroep waaraan u de gebruiker wilt toewijzen.',
+    'Entries' => 'Inzendingen',
+    'Entry Type' => 'Invoertype',
+    'Select an entry type' => 'Selecteer een invoertype',
+    'Select the Freeform fields to be mapped to the applicable Entry attributes' => 'Selecteer de vrije-vormvelden die moeten worden toegewezen aan de toepasselijke Entry-attributen',
+    'Select the Freeform fields to be mapped to the applicable custom Entry fields' => 'Selecteer de vrije-vormvelden die moeten worden toegewezen aan de toepasselijke aangepaste invoervelden',
+
+    // Form Builder // Integrations // Captchas
+    'Only load Captcha scripts once the user interacts with the form' => 'Laad alleen Captcha-scripts zodra de gebruiker interactie heeft met het formulier',
+    "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting." => "Als u wilt dat de bijbehorende Captcha-scripts pas worden geladen zodra een gebruiker het formulier begint in te vullen, schakelt u deze instelling in. Als u wilt dat uw formulieren klaar zijn voor gebruik wanneer de pagina wordt geladen, schakelt u deze instelling uit.",
+    'Failure Behavior' => 'Faalgedrag',
+    'Display Error Message' => 'Foutmelding weergeven',
+    'Send to Spam Folder' => 'Verzenden naar spammap',
+    'Score Threshold' => 'Scoredrempel',
+    'The minimum score required for the Captcha to pass validation. The score is a number between 0 and 1. A score of 0.5 is generally recommended.' => 'De minimale score die nodig is om de Captcha te laten valideren. De score is een getal tussen 0 en 1. Over het algemeen wordt een score van 0,5 aanbevolen.',
+    'Action' => 'Actie',
+    'The action to use when validating the Captcha.' => 'De actie die moet worden gebruikt bij het valideren van de Captcha.',
+    'Locale' => 'Lokaal',
+    'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'De landinstelling die voor de Captcha moet worden gebruikt als taal-ID, b.v. <code>en</code>, <code>de</code>, etc. Als je dit veld leeg laat, wordt de landinstelling automatisch gedetecteerd.',
+    'The error message to display when the Captcha validation fails.' => 'De foutmelding die wordt weergegeven als de Captcha-validatie mislukt.',
+    'Size' => 'Grootte',
+
+    // Form Builder // Integrations // Settings
     'Settings' => 'Instellingen',
+    'Created' => 'Aangemaakt',
+    'Created by' => 'Aangemaakt door',
+    'at' => 'bij',
+    'Last Updated' => 'Laatst bijgewerkt',
+    'Last Updated by' => 'Laatst bijgewerkt door',
+
+    // Form Builder // Integrations // Settings // General
+    'General' => 'Algemeen',
+    'Enter a name for this form.' => 'Voer een naam in voor dit formulier.',
+    'Form Handle' => 'Formulierhandvat',
+    'Enter a name for this form that will be referred to in your templates.' => 'Voer een naam in voor dit formulier waarnaar in uw sjablonen wordt verwezen.',
+    'Form Type' => 'Formuliertype',
+    'Select the type of form this is.' => 'Selecteer welk type formulier dit is.',
+    'Submission Title' => 'Titel van indiening',
+    'How the titles of submissions should be auto-generated for this form.' => 'Hoe de titels van inzendingen automatisch moeten worden gegenereerd voor dit formulier.',
+    'Formatting Template' => 'Template opmaken',
+    'Select a formatting template to be used when rendering this form.' => 'Selecteer een opmaaksjabloon die u wilt gebruiken bij het weergeven van dit formulier.',
+    'Form Description' => 'Formulierbeschrijving',
+    'Enter a description or notes for this form.' => 'Voer een beschrijving of opmerkingen in voor dit formulier.',
+    'Form Color' => 'Formulierkleur',
+    'Choose a color for this form (generally used in the control panel).' => 'Kies een kleur voor dit formulier (meestal gebruikt in het controlepaneel).',
+    'Add attributes to your form elements.' => 'Voeg attributen toe aan uw formulierelementen.',
+
+    // Form Builder // Integrations // Settings // Data Storage
+    'Data Storage' => 'Gegevensopslag',
+    'Store Submitted Data for this Form' => 'Bewaar de ingediende gegevens voor dit formulier',
+    'All submissions users make on this form will be stored in the database.' => 'Alle inzendingen die gebruikers op dit formulier indienen, worden in de database opgeslagen.',
+    'Default Status' => 'Standaardstatus',
+    'Select the default status for each submission of this form.' => 'Selecteer de standaardstatus voor elke indiening van dit formulier.',
+    'Collect IP Addresses' => 'Verzamel IP-adressen',
+    'Collect and store each users IP address when submitting the form.' => 'Verzamel en bewaar het IP-adres van elke gebruiker bij het indienen van het formulier.',
+    'Allow Users to Opt-in' => 'Gebruikers toestaan zich aan te melden',
+    'Allow users to choose whether they want their submission data stored in the database.' => 'Laat gebruikers kiezen of ze hun inzendingsgegevens in de database willen opslaan.',
+    'Opt-in Checkbox' => 'Opt-in-checkbox',
+    'Select the checkbox field that will act as the opt-in for the user submitting the form.' => 'Selecteer het selectievakje dat zal fungeren als aanmelding voor de gebruiker die het formulier indient.',
+    'Please select a field...' => 'Selecteer een veld...',
+
+    // Form Builder // Integrations // Settings // Processing
+    'Processing' => 'Verwerken',
+    'Use AJAX' => 'Gebruik AJAX',
+    'Use built-in AJAX for this form when handling validation and submission of the form' => 'Gebruik ingebouwde AJAX voor dit formulier bij het afhandelen van de validatie en indiening van het formulier',
+    'Show Processing Indicator on Submit' => 'Toon verwerkingsindicator bij indiening',
+    'Show a spinner icon on the submit button when the user submits the form until it finishes processing.' => 'Toon een draaipictogram op de verzendknop wanneer de gebruiker het formulier verzendt totdat de verwerking is voltooid.',
+    'Show Processing Text on Submit' => 'Toon verwerkingstekst bij indiening',
+    "Show 'processing' text on the submit button when the user submits the form until it finishes processing." => "Toon 'verwerking'-tekst op de verzendknop wanneer de gebruiker het formulier verzendt totdat de verwerking is voltooid.",
+    'Processing Text' => 'Tekst verwerken',
+    "Enter the text you'd like to appear on the submit button when the form is processing" => "Voer de tekst in die u op de verzendknop wilt weergeven wanneer het formulier wordt verwerkt",
+
+    // Form Builder // Integrations // Settings // Success & Errors
+    'Success & Errors' => 'Succes & Fouten',
+    'Success Behavior' => 'Succesgedrag',
+    "Select how you'd like the success return of this form to be handled. May also be overridden at the template level." => "Selecteer hoe u wilt dat de succesvolle terugkeer van dit formulier wordt afgehandeld. Kan ook worden overschreven op sjabloonniveau.",
+    'Replace form with a Success message' => 'Formulier vervangen door een succesbericht',
+    'Reload form with a Success banner above' => 'Formulier opnieuw laden met een succesbanner erboven',
+    'Return the Submitter to the following URL' => 'Retourneer de indiener naar de volgende URL',
+    'Return URL' => 'Retour-URL',
+    'Set a URL for the form to be redirected to after successful submit.' => 'Stel een URL in waarnaar het formulier moet worden doorgestuurd na succesvolle verzending.',
+    'Success Template' => 'Successjabloon',
+    "Select the template you'd like to replace the form in the page after a successful submit." => "Selecteer de sjabloon waarvan u het formulier op de pagina wilt vervangen na een succesvolle indiening.",
+    'Choose a template' => 'Kies een sjabloon',
+    'Success Message' => 'Succesbericht',
+    'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.' => 'Voer tekst in die bovenaan het formulier moet worden weergegeven als de verzending succesvol is (AJAX), of laad uw sjabloon in met {{ form.settings.successMessage }}.',
+    'Error Message' => 'Foutmelding',
+    'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.' => 'Voer de tekst in die bovenaan het formulier moet worden weergegeven als er fouten in het formulier staan na verzending (AJAX), of laad uw sjabloon in met {{ form.settings.errorMessage }}.',
+
+    // Form Builder // Integrations // Settings // Limits
+    'Limits' => 'Grenzen',
+    'Duplicate Check' => 'Dubbele cheque',
+    'Select an option for restricting users when submitting this form.' => 'Selecteer een optie om gebruikers te beperken bij het indienen van dit formulier.',
+    'Do not limit' => 'Beperk niet',
+    'Logged in Users Only - No Limit' => 'Alleen ingelogde gebruikers - geen limiet',
+    'Logged in Users Only - Once per Form' => 'Alleen ingelogde gebruikers - één keer per formulier',
+    'Anyone - Once per Email Address' => 'Iedereen - Eén keer per e-mailadres',
+    'Anyone - Once per Logged in User or Guest Cookie' => 'Iedereen - Eenmaal per ingelogde gebruiker of gastcookie',
+    'Anyone - Once per Logged in User or Guest IP or Cookie' => 'Iedereen - Eenmaal per ingelogde gebruiker of gast-IP of cookie',
+    'Stop Submissions After Date' => 'Inzendingen stoppen na datum',
+    'Set a date after which this form will no longer accept new submissions.' => 'Stel een datum in waarna dit formulier geen nieuwe inzendingen meer accepteert.',
+
+
 
     // // Algemeen
     // 'Save and continue editing' => 'Opslaan en doorgaan met bewerken',

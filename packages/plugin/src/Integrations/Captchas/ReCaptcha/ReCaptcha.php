@@ -130,7 +130,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[VisibilityFilter('values.version === "v3"')]
     #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
     #[Input\Text(
-        instructions: 'The action to use when validating the Captcha. This is only used for reCAPTCHA v3.',
+        instructions: 'The action to use when validating the Captcha.',
         placeholder: 'submit',
     )]
     private string $action = 'submit';

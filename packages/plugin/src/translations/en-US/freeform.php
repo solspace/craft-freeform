@@ -23,8 +23,6 @@ return [
     'Add new Form' => 'Add new Form',
     'Create a new Form' => 'Create a new Form',
     'Form Name' => 'Form Name',
-    'Formatting Template' => 'Formatting Template',
-    'Store Submitted Data for this Form' => 'Store Submitted Data for this Form',
     'All submissions for this form will be stored in the database.' => 'All submissions for this form will be stored in the database.',
 
     // Form Builder // Universal
@@ -339,12 +337,152 @@ return [
     'is not empty' => 'is not empty',
     'Add a condition' => 'Add a condition',
 
-
-
-
+    // Form Builder // Integrations
     'Integrations' => 'Integrations',
+    'single' => 'Single',
+    'elements' => 'Elements',
+    'email marketing' => 'Email Marketing',
+    'crm' => 'CRM',
+    'payment gateways' => 'Payment Gateways',
+    'other' => 'Other',
+    'captchas' => 'Captchas',
+    'Attribute Mapping' => 'Attribute Mapping',
+    'Field Mapping' => 'Field Mapping',
+    'Do not map this field' => 'Do not map this field',
 
+    // Form Builder // Integrations // GTM
+    'Event Name' => 'Event Name',
+    'Specify a custom event name to be triggered when the form is submitted.' => 'Specify a custom event name to be triggered when the form is submitted.',
+
+    // Form Builder // Integrations // Honeypot
+    'Honeypot' => 'Honeypot',
+    'Custom Input Name' => 'Custom Input Name',
+    "Enter a new value to rename the default Freeform Honeypot input name. The default is 'freeform_form_handle'." => "Enter a new value to rename the default Freeform Honeypot input name. The default is 'freeform_form_handle'.",
+    'Custom Error Message' => 'Custom Error Message',
+    'Enter a new value to change the default error message for the Freeform Honeypot. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Enter a new value to change the default error message for the Freeform Honeypot. This is only applied if the Spam Behavior setting is set to Display Error Messages.',
+
+    // Form Builder // Integrations // JS Test
+    'Javascript Test' => 'Javascript Test',
+    "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'.",
+    'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.',
+
+    // Form Builder // Integrations // Post Forwarding
+    'Post Forwarding' => 'Post Forwarding',
+    'URL' => 'URL',
+    'Enter the URL where the POST request should be sent.' => 'Enter the URL where the POST request should be sent.',
+    'Error Trigger' => 'Error Trigger',
+    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'." => "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'.",
+
+    // Form Builder // Integrations // Elements
+    'Users' => 'Users',
+    'Activate Users' => 'Activate Users',
+    'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.' => 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
+    'Send Activation Email' => 'Send Activation Email',
+    'Users will receive a Craft email with activation details if this is enabled.' => 'Users will receive a Craft email with activation details if this is enabled.',
+    'User Group' => 'User Group',
+    'Select the user group to assign the user to.' => 'Select the user group to assign the user to.',
+    'Entries' => 'Entries',
+    'Entry Type' => 'Entry Type',
+    'Select an entry type' => 'Select an entry type',
+    'Select the Freeform fields to be mapped to the applicable Entry attributes' => 'Select the Freeform fields to be mapped to the applicable Entry attributes',
+    'Select the Freeform fields to be mapped to the applicable custom Entry fields' => 'Select the Freeform fields to be mapped to the applicable custom Entry fields',
+
+    // Form Builder // Integrations // Captchas
+    'Only load Captcha scripts once the user interacts with the form' => 'Only load Captcha scripts once the user interacts with the form',
+    "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting." => "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
+    'Failure Behavior' => 'Failure Behavior',
+    'Display Error Message' => 'Display Error Message',
+    'Send to Spam Folder' => 'Send to Spam Folder',
+    'Score Threshold' => 'Score Threshold',
+    'The minimum score required for the Captcha to pass validation. The score is a number between 0 and 1. A score of 0.5 is generally recommended.' => 'The minimum score required for the Captcha to pass validation. The score is a number between 0 and 1. A score of 0.5 is generally recommended.',
+    'Action' => 'Action',
+    'The action to use when validating the Captcha.' => 'The action to use when validating the Captcha.',
+    'Locale' => 'Locale',
+    'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.',
+    'The error message to display when the Captcha validation fails.' => 'The error message to display when the Captcha validation fails.',
+    'Size' => 'Size',
+
+    // Form Builder // Integrations // Settings
     'Settings' => 'Settings',
+    'Created' => 'Created',
+    'Created by' => 'Created by',
+    'at' => 'at',
+    'Last Updated' => 'Last Updated',
+    'Last Updated by' => 'Last Updated by',
+
+    // Form Builder // Integrations // Settings // General
+    'General' => 'General',
+    'Enter a name for this form.' => 'Enter a name for this form.',
+    'Form Handle' => 'Form Handle',
+    'Enter a name for this form that will be referred to in your templates.' => 'Enter a name for this form that will be referred to in your templates.',
+    'Form Type' => 'Form Type',
+    'Select the type of form this is.' => 'Select the type of form this is.',
+    'Submission Title' => 'Submission Title',
+    'How the titles of submissions should be auto-generated for this form.' => 'How the titles of submissions should be auto-generated for this form.',
+    'Formatting Template' => 'Formatting Template',
+    'Select a formatting template to be used when rendering this form.' => 'Select a formatting template to be used when rendering this form.',
+    'Form Description' => 'Form Description',
+    'Enter a description or notes for this form.' => 'Enter a description or notes for this form.',
+    'Form Color' => 'Form Color',
+    'Choose a color for this form (generally used in the control panel).' => 'Choose a color for this form (generally used in the control panel).',
+    'Add attributes to your form elements.' => 'Add attributes to your form elements.',
+
+    // Form Builder // Integrations // Settings // Data Storage
+    'Data Storage' => 'Data Storage',
+    'Store Submitted Data for this Form' => 'Store Submitted Data for this Form',
+    'All submissions users make on this form will be stored in the database.' => 'All submissions users make on this form will be stored in the database.',
+    'Default Status' => 'Default Status',
+    'Select the default status for each submission of this form.' => 'Select the default status for each submission of this form.',
+    'Collect IP Addresses' => 'Collect IP Addresses',
+    'Collect and store each users IP address when submitting the form.' => 'Collect and store each users IP address when submitting the form.',
+    'Allow Users to Opt-in' => 'Allow Users to Opt-in',
+    'Allow users to choose whether they want their submission data stored in the database.' => 'Allow users to choose whether they want their submission data stored in the database.',
+    'Opt-in Checkbox' => 'Opt-in Checkbox',
+    'Select the checkbox field that will act as the opt-in for the user submitting the form.' => 'Select the checkbox field that will act as the opt-in for the user submitting the form.',
+    'Please select a field...' => 'Please select a field...',
+
+    // Form Builder // Integrations // Settings // Processing
+    'Processing' => 'Processing',
+    'Use AJAX' => 'Use AJAX',
+    'Use built-in AJAX for this form when handling validation and submission of the form' => 'Use built-in AJAX for this form when handling validation and submission of the form',
+    'Show Processing Indicator on Submit' => 'Show Processing Indicator on Submit',
+    'Show a spinner icon on the submit button when the user submits the form until it finishes processing.' => 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
+    'Show Processing Text on Submit' => 'Show Processing Text on Submit',
+    "Show 'processing' text on the submit button when the user submits the form until it finishes processing." => "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
+    'Processing Text' => 'Processing Text',
+    "Enter the text you'd like to appear on the submit button when the form is processing" => "Enter the text you'd like to appear on the submit button when the form is processing",
+
+    // Form Builder // Integrations // Settings // Success & Errors
+    'Success & Errors' => 'Success & Errors',
+    'Success Behavior' => 'Success Behavior',
+    "Select how you'd like the success return of this form to be handled. May also be overridden at the template level." => "Select how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+    'Replace form with a Success message' => 'Replace form with a Success message',
+    'Reload form with a Success banner above' => 'Reload form with a Success banner above',
+    'Return the Submitter to the following URL' => 'Return the Submitter to the following URL',
+    'Return URL' => 'Return URL',
+    'Set a URL for the form to be redirected to after successful submit.' => 'Set a URL for the form to be redirected to after successful submit.',
+    'Success Template' => 'Success Template',
+    "Select the template you'd like to replace the form in the page after a successful submit." => "Select the template you'd like to replace the form in the page after a successful submit.",
+    'Choose a template' => 'Choose a template',
+    'Success Message' => 'Success Message',
+    'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.' => 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.',
+    'Error Message' => 'Error Message',
+    'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.' => 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.',
+
+    // Form Builder // Integrations // Settings // Limits
+    'Limits' => 'Limits',
+    'Duplicate Check' => 'Duplicate Check',
+    'Select an option for restricting users when submitting this form.' => 'Select an option for restricting users when submitting this form.',
+    'Do not limit' => 'Do not limit',
+    'Logged in Users Only - No Limit' => 'Logged in Users Only - No Limit',
+    'Logged in Users Only - Once per Form' => 'Logged in Users Only - Once per Form',
+    'Anyone - Once per Email Address' => 'Anyone - Once per Email Address',
+    'Anyone - Once per Logged in User or Guest Cookie' => 'Anyone - Once per Logged in User or Guest Cookie',
+    'Anyone - Once per Logged in User or Guest IP or Cookie' => 'Anyone - Once per Logged in User or Guest IP or Cookie',
+    'Stop Submissions After Date' => 'Stop Submissions After Date',
+    'Set a date after which this form will no longer accept new submissions.' => 'Set a date after which this form will no longer accept new submissions.',
+    
+
 
     'Dashboard' => 'Dashboard',
 

@@ -34,7 +34,7 @@ class LimitedUserChecker
     public function get(string $path): null|array|bool|string
     {
         $user = $this->getCurrentUser();
-        if ($user->admin) {
+        if ($user?->admin) {
             return null;
         }
 
@@ -76,6 +76,10 @@ class LimitedUserChecker
             $id = null;
 
             $user = $this->getCurrentUser();
+            if (!$user) {
+                return null;
+            }
+
             $permissionList = \Craft::$app->userPermissions->getPermissionsByUserId($user->getId());
             foreach ($permissionList as $permission) {
                 if (str_starts_with($permission, $permissionName)) {

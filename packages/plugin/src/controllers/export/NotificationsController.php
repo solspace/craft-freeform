@@ -34,7 +34,7 @@ class NotificationsController extends BaseController
 
         $notification = new ExportNotificationRecord();
 
-        return $this->renderEditForm($notification, Freeform::t('Create a new Export Profile'));
+        return $this->renderEditForm($notification, Freeform::t('Create a new Export Notification'));
     }
 
     public function actionEdit(int $id): Response

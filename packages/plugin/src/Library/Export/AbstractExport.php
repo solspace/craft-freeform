@@ -146,7 +146,7 @@ abstract class AbstractExport implements ExportInterface
                     $label = match ($fieldId) {
                         'id' => 'ID',
                         'dateCreated' => 'Date Created',
-                        'ip' => 'IP',
+                        'ip' => 'IP Address',
                         'cc_type' => 'Payment Type',
                         'cc_amount' => 'Payment Amount',
                         'cc_currency' => 'Payment Currency',

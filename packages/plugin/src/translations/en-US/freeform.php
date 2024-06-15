@@ -481,8 +481,24 @@ return [
     'Anyone - Once per Logged in User or Guest IP or Cookie' => 'Anyone - Once per Logged in User or Guest IP or Cookie',
     'Stop Submissions After Date' => 'Stop Submissions After Date',
     'Set a date after which this form will no longer accept new submissions.' => 'Set a date after which this form will no longer accept new submissions.',
-    
 
+    // Submissions
+    'Quick Export' => 'Quick Export',
+    'Export data' => 'Export data',
+    'Export as' => 'Export as',
+    'Form' => 'Form',
+    'Fields for' => 'Fields for',
+    'Export' => 'Export',
+    'Set status' => 'Set status',
+    'Export to CSV' => 'Export to CSV',
+    'Resend Notifications' => 'Resend Notifications',
+    'Send Additional Notification' => 'Send Additional Notification',
+    'Notifications sent successfully.' => 'Notifications sent successfully.',
+    'Notification Template' => 'Notification Template',
+    'Email Address(es)' => 'Email Address(es)',
+
+
+    
 
     'Dashboard' => 'Dashboard',
 

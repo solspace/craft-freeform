@@ -482,6 +482,21 @@ return [
     'Stop Submissions After Date' => 'Inzendingen stoppen na datum',
     'Set a date after which this form will no longer accept new submissions.' => 'Stel een datum in waarna dit formulier geen nieuwe inzendingen meer accepteert.',
 
+    // Submissions
+    'Quick Export' => 'Snel Exporteren',
+    'Export data' => 'Exportgegevens',
+    'Export as' => 'Exporteren als',
+    'Form' => 'Formulier',
+    'Fields for' => 'Velden voor',
+    'Export' => 'Exporteren',
+    'Set status' => 'Status instellen',
+    'Export to CSV' => 'Exporteren naar CSV',
+    'Resend Notifications' => 'Meldingen opnieuw verzenden',
+    'Send Additional Notification' => 'Verstuur aanvullende melding',
+    'Notifications sent successfully.' => 'Meldingen zijn succesvol verzonden.',
+    'Notification Template' => 'Meldingssjabloon',
+    'Email Address(es)' => 'E-mailadres(sen)',
+
 
 
     // // Algemeen

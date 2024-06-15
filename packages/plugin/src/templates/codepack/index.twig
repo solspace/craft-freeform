@@ -40,7 +40,7 @@
                 <td width="95%">
                     {{ forms.textField({
                         label: "Install Path"|t('freeform'),
-                        instructions: "The folder name you'd like the demo templates installed to, relative to the Craft templates directory.",
+                        instructions: "The folder name you'd like the demo templates installed to, relative to the Craft templates directory."|t('freeform'),
                         id: 'prefix',
                         name: 'prefix',
                         value: prefix,
@@ -68,7 +68,7 @@
 
     <hr />
     <div class="field">
-        <p>The following templates, assets and routes will be installed and configured:</p>
+        <p>{{ "The following templates, assets and routes will be installed and configured:"|t('freeform') }}</p>
     </div>
 
     <div id="components-wrapper">

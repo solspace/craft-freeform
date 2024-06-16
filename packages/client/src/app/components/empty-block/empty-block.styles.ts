@@ -14,6 +14,15 @@ export const Title = styled.h2`
   color: ${colors.gray500};
 `;
 
+export const LiteTitle = styled.h2`
+  margin: 0;
+  padding: 0;
+
+  font-size: 1.2rem;
+  font-weight: normal;
+  color: ${colors.gray500};
+`;
+
 export const Subtitle = styled.p`
   margin: 0;
   padding: 0;
@@ -34,4 +43,8 @@ export const EmptyBlockWrapper = styled.div`
   gap: 5px;
 
   height: 100%;
+
+  &.padded {
+    padding: 3rem 1rem;
+  }
 `;

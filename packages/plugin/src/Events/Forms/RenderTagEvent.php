@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\Settings;
@@ -112,7 +113,12 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             return $this;
         }
 
-        $fullPath = \Craft::getAlias('@freeform/Resources/'.$filePath);
+        $isAbsolute = FileHelper::isAbsolute($filePath);
+        if ($isAbsolute) {
+            $fullPath = $filePath;
+        } else {
+            $fullPath = \Craft::getAlias('@freeform/Resources/'.$filePath);
+        }
 
         $view = \Craft::$app->getView();
         $insertType = $this->getSettingsService()->scriptInsertType();
@@ -157,7 +163,11 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             self::ELEMENT_STYLE => [$view, 'registerCssFile'],
         };
 
-        $chunk = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $filePath);
+        if ($isAbsolute) {
+            $chunk = \Craft::$app->assetManager->getPublishedUrl($fullPath, true);
+        } else {
+            $chunk = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $filePath);
+        }
 
         if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
             return $this->addChunk(sprintf($tag, $chunk));

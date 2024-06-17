@@ -835,6 +835,25 @@ return [
 
     // Settings // Limited Users
     'Limited Users' => 'Beperkte gebruikers',
+    'Enter the name of the limited user permission.' => 'Voer de naam van de beperkte gebruikersmachtiging in.',
+    'Enter a description for this permission.' => 'Voer een beschrijving in voor deze toestemming.',
+    'Enable All' => 'Alles inschakelen',
+    'Disable All' => 'Alles uitschakelen',
+    "Add Pages to Forms" => "Pagina's toevoegen aan formulieren",
+    'Allowed Field Types' => 'Toegestane veldtypen',
+    'Advanced Field Properties' => 'Geavanceerde veldeigenschappen',
+    'Field Handles' => 'Veldhandvatten',
+    'Field Attribute Editor' => 'Veldkenmerkeditor',
+    'Encrypt Field Data' => 'Veldgegevens coderen',
+    'Field Type Switcher' => 'Veldtypeschakelaar',
+    'Notifications Tab' => 'Tabblad Meldingen',
+    'Rules Tab' => 'Tabblad Regels',
+    'Rules on Fields' => 'Regels op velden',
+    'Rules on Buttons' => 'Regels op knoppen',
+    "Rules on Pages" => "Regels op pagina's",
+    'Rules on Submit Form' => 'Regels voor het indienen van een formulier',
+    'Integrations Tab' => 'Integraties Tab',
+    'Settings Tab' => 'Tabblad Instellingen',
 
     // Settings // Template Manager
     'Template Manager' => 'Sjabloonbeheerder',
@@ -852,6 +871,10 @@ return [
     "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder." => "Selecteer welke opslagmethode u wilt gebruiken bij het maken van nieuwe e-mailmeldingen met de optie 'Nieuwe sjabloon toevoegen' in de formulierbouwer.",
     'Allow File-based Email Templates to be created inside the Control Panel' => 'Sta toe dat op bestanden gebaseerde e-mailsjablonen worden gemaakt in het configuratiescherm',
     'Allowing users to generate template files from inside the CP can potentially cause issues with certain workflows.' => 'Gebruikers toestaan sjabloonbestanden te genereren vanuit de CP kan mogelijk problemen veroorzaken met bepaalde workflows.',
+    'Default From Email for New Templates' => 'Standaard uit e-mail voor nieuwe sjablonen',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "Het standaard e-mailadres dat moet worden opgenomen in de 'Van e-mail'-instelling van nieuwe e-mailmeldingssjablonen.",
+    'Default From Name for New Templates' => 'Standaard Van-naam voor nieuwe sjablonen',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "De standaardnaam die moet worden opgenomen in de 'Van e-mail'-instelling van nieuwe e-mailmeldingssjablonen.",
     'File Directory Path' => 'Bestandsmappad',
     'Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications.' => 'Geef een relatief pad op naar de map Craft Templates waar de map met e-mailsjablonen zich bevindt. Als u de directory nog niet heeft aangemaakt, doe dat dan eerst voordat u deze instelling invult. Hierdoor kun je Twig-sjabloonbestanden gebruiken voor de opmaak van je e-mail en kan Freeform deze bestanden lokaliseren bij het instellen van meldingen.',
     'Migration Utility' => 'Migratiehulpprogramma',
@@ -1188,6 +1211,7 @@ return [
     "If you'd like to give users access to manage only some forms' submissions, check off the ones here. These selections will be overridden by the 'Manage All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions." => "Als u gebruikers toegang wilt geven om de inzendingen van slechts enkele formulieren te beheren, vinkt u de formulieren hier aan. Deze selecties worden overschreven door het selectievakje 'Alle inzendingen beheren'. 'Beheren'-rechten overschrijven ook alle 'Lezen'-rechten. ' rechten.",
     "If you'd like to give users access to all forms, check off this checkbox. It will also override any selections in the 'Manage Forms Individually' settings." => "Als u gebruikers toegang wilt geven tot alle formulieren, vink dan dit selectievakje aan. Het overschrijft ook alle selecties in de instellingen 'Formulieren individueel beheren'.",
     "If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox." => "Als u gebruikers toegang wilt geven tot slechts enkele formulieren, vink dan de formulieren hier aan. Deze selecties worden overschreven door het selectievakje 'Alle formulieren beheren'.",
+    'Enable limited users functionality.' => 'Schakel beperkte gebruikersfunctionaliteit in.',
 
     // Install Welcome
     'Welcome' => 'Welkom',

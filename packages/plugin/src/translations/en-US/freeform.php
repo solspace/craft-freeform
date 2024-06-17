@@ -835,6 +835,25 @@ return [
 
     // Settings // Limited Users
     'Limited Users' => 'Limited Users',
+    'Enter the name of the limited user permission.' => 'Enter the name of the limited user permission.',
+    'Enter a description for this permission.' => 'Enter a description for this permission.',
+    'Enable All' => 'Enable All',
+    'Disable All' => 'Disable All',
+    'Add Pages to Forms' => 'Add Pages to Forms',
+    'Allowed Field Types' => 'Allowed Field Types',
+    'Advanced Field Properties' => 'Advanced Field Properties',
+    'Field Handles' => 'Field Handles',
+    'Field Attribute Editor' => 'Field Attribute Editor',
+    'Encrypt Field Data' => 'Encrypt Field Data',
+    'Field Type Switcher' => 'Field Type Switcher',
+    'Notifications Tab' => 'Notifications Tab',
+    'Rules Tab' => 'Rules Tab',
+    'Rules on Fields' => 'Rules on Fields',
+    'Rules on Buttons' => 'Rules on Buttons',
+    'Rules on Pages' => 'Rules on Pages',
+    'Rules on Submit Form' => 'Rules on Submit Form',
+    'Integrations Tab' => 'Integrations Tab',
+    'Settings Tab' => 'Settings Tab',
 
     // Settings // Template Manager
     'Template Manager' => 'Template Manager',
@@ -852,6 +871,10 @@ return [
     "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder." => "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder.",
     'Allow File-based Email Templates to be created inside the Control Panel' => 'Allow File-based Email Templates to be created inside the Control Panel',
     'Allowing users to generate template files from inside the CP can potentially cause issues with certain workflows.' => 'Allowing users to generate template files from inside the CP can potentially cause issues with certain workflows.',
+    'Default From Email for New Templates' => 'Default From Email for New Templates',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "The default email address to be included in the 'From Email' setting of new email notification templates.",
+    'Default From Name for New Templates' => 'Default From Name for New Templates',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "The default name to be included in the 'From Email' setting of new email notification templates.",
     'File Directory Path' => 'File Directory Path',
     'Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications.' => 'Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications.',
     'Migration Utility' => 'Migration Utility',
@@ -1188,6 +1211,7 @@ return [
     "If you'd like to give users access to manage only some forms' submissions, check off the ones here. These selections will be overridden by the 'Manage All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions." => "If you'd like to give users access to manage only some forms' submissions, check off the ones here. These selections will be overridden by the 'Manage All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions.",
     "If you'd like to give users access to all forms, check off this checkbox. It will also override any selections in the 'Manage Forms Individually' settings." => "If you'd like to give users access to all forms, check off this checkbox. It will also override any selections in the 'Manage Forms Individually' settings.",
     "If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox." => "If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox.",
+    'Enable limited users functionality.' => 'Enable limited users functionality.',
 
     // Install Welcome
     'Welcome' => 'Welcome',

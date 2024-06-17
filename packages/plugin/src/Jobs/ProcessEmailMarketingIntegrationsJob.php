@@ -24,21 +24,7 @@ class ProcessEmailMarketingIntegrationsJob extends BaseJob implements Integratio
 
     public function execute($queue): void
     {
-        $freeform = Freeform::getInstance();
-
-        $form = $freeform->forms->getFormById($this->formId);
-        if (!$form) {
-            return;
-        }
-
-        $submission = $freeform->submissions->getSubmissionById($this->submissionId);
-        if (!$submission) {
-            return;
-        }
-
-        $form = FreeformQueueHandler::rehydrateForm($form, $submission);
-
-        $freeform->integrations->processIntegrations($form, EmailMarketingIntegrationInterface::class);
+        Freeform::getInstance()->integrations->processIntegrations($this->formId, $this->submissionId, EmailMarketingIntegrationInterface::class);
     }
 
     protected function defaultDescription(): ?string

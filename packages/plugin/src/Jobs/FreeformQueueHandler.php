@@ -48,7 +48,7 @@ class FreeformQueueHandler
         }
     }
 
-    public static function rehydrateForm(Form $form, Submission $submission): Form
+    public function rehydrateForm(Form $form, Submission $submission): Form
     {
         $submissionFields = $submission->getFieldCollection();
 

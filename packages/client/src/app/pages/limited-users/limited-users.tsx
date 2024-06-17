@@ -36,9 +36,11 @@ export const LimitedUsers: React.FC = () => {
             <h1 className="screen-title">{translate('Limited Users')}</h1>
           </div>
 
-          <Link to="new" className="btn submit add icon">
-            {translate('New Group')}
-          </Link>
+          {isPro && (
+            <Link to="new" className="btn submit add icon">
+              {translate('New Group')}
+            </Link>
+          )}
         </header>
       </div>
 

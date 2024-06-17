@@ -36,7 +36,7 @@ class DeleteSubmissionAction extends ElementAction implements DeleteActionInterf
             return Freeform::t('Delete permanently');
         }
 
-        return Freeform::t('Delete…');
+        return Freeform::t('Delete...');
     }
 
     public function getConfirmationMessage(): string

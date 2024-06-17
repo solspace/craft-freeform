@@ -35,7 +35,7 @@ export const FavoriteFields: React.FC = () => {
 
   return (
     <FieldGroup
-      title={title}
+      title={translate(title)}
       button={{
         icon: <EditIcon />,
         title: translate('Edit Favorites'),

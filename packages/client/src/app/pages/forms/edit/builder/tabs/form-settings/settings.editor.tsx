@@ -4,6 +4,7 @@ import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import type { FormSettingNamespace } from '@ff-client/types/forms';
 import type { Section } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 import { FieldComponent } from './field-component';
 import {
@@ -45,7 +46,7 @@ export const SettingsEditor: React.FC = () => {
         label={selectedSection.label}
         url={currentPath.pathname}
       />
-      <SectionHeader>{selectedSection?.label}</SectionHeader>
+      <SectionHeader>{translate(selectedSection?.label)}</SectionHeader>
 
       <SectionContainer>
         {properties

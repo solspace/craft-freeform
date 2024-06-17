@@ -69,7 +69,7 @@
         </div>
         <div>
             {{ forms.field({
-                label: "Include Freeform's Sample Formatting Templates",
+                label: "Include Freeform's Sample Formatting Templates"|t('freeform'),
                 instructions: "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting."|t('freeform'),
             }) }}
         </div>
@@ -78,7 +78,7 @@
     {% for catName, category in settings.defaults %}
         <hr>
 
-        <h2>{{ category.label }}</h2>
+        <h2>{{ category.label|t('freeform') }}</h2>
         <ul class="categories">
             {% for subName, subCategory in category %}
                 <li>
@@ -88,11 +88,11 @@
 
                             <li>
                                 <label>
-                                    {{ subCategory.label }}
+                                    {{ subCategory.label|t('freeform') }}
 
                                     {{ include('freeform/settings/arrow-icon.svg') }}
 
-                                    {{ item.label }}
+                                    {{ item.label|t('freeform') }}
                                 </label>
 
                                 <div>

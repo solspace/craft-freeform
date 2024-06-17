@@ -4,6 +4,7 @@ import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
 import { useForceUpdate } from '@ff-client/hooks/use-force-update';
 import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import type { IntegrationCategory } from '@ff-client/types/integrations';
+import translate from '@ff-client/utils/translations';
 
 import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';
@@ -53,7 +54,7 @@ export const List: React.FC = () => {
     if (!categories[type]) {
       categories[type] = {
         type,
-        label: type.replace('-', ' '),
+        label: translate(type.replace('-', ' ')),
         children: [],
       };
     }

@@ -387,6 +387,16 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
     }
 
+    public function isNotificationQueueEnabled(): bool
+    {
+        return $this->getSettingsModel()->useQueueForEmailNotifications;
+    }
+
+    public function isIntegrationQueueEnabled(): bool
+    {
+        return $this->getSettingsModel()->useQueueForIntegrations;
+    }
+
     private function getTemplatesIn(?string $path): array
     {
         if (!$path || !is_dir($path)) {

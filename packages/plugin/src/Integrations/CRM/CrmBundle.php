@@ -12,11 +12,11 @@
 
 namespace Solspace\Freeform\Integrations\CRM;
 
-use craft\helpers\Queue;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessCrmIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
@@ -27,7 +27,8 @@ use yii\base\Event;
 class CrmBundle extends FeatureBundle
 {
     public function __construct(
-        private FormIntegrationsProvider $integrationsProvider,
+        private FormIntegrationsProvider $formIntegrationsProvider,
+        private FreeformQueueHandler $queueHandler,
     ) {
         Event::on(
             IntegrationsService::class,
@@ -74,14 +75,15 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->integrationsProvider->getForForm($form, CRMIntegrationInterface::class)) {
+        if (!$this->formIntegrationsProvider->getForForm($form, CRMIntegrationInterface::class)) {
             return;
         }
 
-        if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
-            Queue::push(new ProcessCrmIntegrationsJob(['formId' => $form->getId()]));
-        } else {
-            $this->plugin()->integrations->processIntegrations($form, CRMIntegrationInterface::class);
-        }
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessCrmIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

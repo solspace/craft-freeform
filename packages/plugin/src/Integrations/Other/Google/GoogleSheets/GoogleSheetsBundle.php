@@ -12,10 +12,10 @@
 
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
-use craft\helpers\Queue;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
@@ -25,6 +25,7 @@ class GoogleSheetsBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
+        private FreeformQueueHandler $queueHandler
     ) {
         Event::on(
             Submission::class,
@@ -52,10 +53,11 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
-        if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
-            Queue::push(new ProcessGoogleSheetsIntegrationsJob(['formId' => $form->getId()]));
-        } else {
-            $this->plugin()->integrations->processIntegrations($form, GoogleSheetsIntegrationInterface::class);
-        }
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessGoogleSheetsIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

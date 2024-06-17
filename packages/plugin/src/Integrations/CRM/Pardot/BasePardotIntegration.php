@@ -49,7 +49,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
-        label: 'Use custom URL?',
+        label: 'Use Custom URL?',
         instructions: 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. "mycompany.my.salesforce.com").',
         order: 2,
     )]

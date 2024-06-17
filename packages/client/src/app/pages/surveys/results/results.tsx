@@ -28,7 +28,7 @@ export const SurveyResults: React.FC = () => {
     <>
       <Breadcrumb
         id="survey-results"
-        label={translate('Surveys')}
+        label={translate('Surveys & Polls')}
         url={'/forms'}
       />
       {isLoading && <ResultsLoadingSkeleton />}

@@ -12,6 +12,7 @@ import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import { PopUpPortal } from '../pop-up-portal';
 
@@ -71,6 +72,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
       setOpen(!open);
     }
   }, [loading, open]);
+
+  if (emptyOption) {
+    emptyOption = translate(emptyOption);
+  }
 
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,
@@ -173,7 +178,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
               <CloseIcon />
             </CloseButton>
             <Search
-              placeholder="Search..."
+              placeholder={translate('Search...')}
               ref={searchRef}
               value={query}
               onClick={(event) => event.stopPropagation()}

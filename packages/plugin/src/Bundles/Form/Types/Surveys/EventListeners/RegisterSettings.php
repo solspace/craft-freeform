@@ -28,7 +28,7 @@ class RegisterSettings extends FeatureBundle
                 }
 
                 $event->addHeader('form-types', Freeform::t('Form Types'), 'spam');
-                $event->addNavigationItem('surveys', 'Surveys & Polls', 'form-types');
+                $event->addNavigationItem('surveys', Freeform::t('Surveys & Polls'), 'form-types');
             }
         );
     }

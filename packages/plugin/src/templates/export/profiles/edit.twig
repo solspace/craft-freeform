@@ -121,7 +121,7 @@
                 <table id="field-settings" class="data fullwidth collapsible">
                     <thead>
                     <th></th>
-                    <th width="50">{{ 'Enabled?'|t('app') }}</th>
+                    <th width="50">{{ 'Enabled'|t('app') }}</th>
                     <th>{{ 'Field Name'|t('freeform') }}</th>
                     </thead>
                     <tbody>
@@ -237,7 +237,7 @@
                 </table>
 
                 <div class="btn dashed add icon" id="add-filter">
-                    {{ addRowLabel is defined ? addRowLabel : "Add an option"|t }}
+                    {{ addRowLabel is defined ? addRowLabel : "Add an option"|t('freeform') }}
                 </div>
 
             </div>

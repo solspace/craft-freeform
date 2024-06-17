@@ -1,5 +1,6 @@
 import React from 'react';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import { Label } from './control.styles';
 
@@ -16,7 +17,7 @@ const FormLabel: React.FC<Props> = ({ label, handle, required }) => {
 
   return (
     <Label className={classes(required && 'is-required')} htmlFor={handle}>
-      {label}
+      {translate(label)}
     </Label>
   );
 };

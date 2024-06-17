@@ -14,7 +14,7 @@ class DeleteAllSubmissionsAction extends ElementAction
 
     public function getTriggerLabel(): string
     {
-        return Freeform::t('Delete All…');
+        return Freeform::t('Delete All...');
     }
 
     public static function isDestructive(): bool

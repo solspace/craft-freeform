@@ -3,9 +3,9 @@
         <table class="data fullwidth">
             <thead>
             <tr>
-                <th>{{ "Title"|t }}</th>
-                <th>{{ "Form"|t }}</th>
-                <th>{{ "Date"|t }}</th>
+                <th>{{ "Title"|t('app') }}</th>
+                <th>{{ "Form"|t('freeform') }}</th>
+                <th>{{ "Date"|t('freeform') }}</th>
             </tr>
             </thead>
             <tbody>
@@ -26,6 +26,6 @@
             </tbody>
         </table>
     {% else %}
-        <p>{{ "No submissions."|t }}</p>
+        <p>{{ "No submissions."|t('freeform') }}</p>
     {% endif %}
 </div>

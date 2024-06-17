@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Input\DatePicker;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
@@ -40,6 +42,7 @@ class PropertyProvider
         private Container $container,
         private ImplementationProvider $implementationProvider,
         private DefaultsProvider $defaultsProvider,
+        private LimitedUserChecker $checker,
     ) {}
 
     public function setObjectProperties(
@@ -131,6 +134,7 @@ class PropertyProvider
             $this->processMiddleware($property, $attribute);
             $this->processVisibilityFilters($property, $attribute);
             $this->processDateProperties($attribute);
+            $this->processLimitations($property, $attribute);
 
             $this->processValue($property, $attribute, $referenceObject);
 
@@ -369,5 +373,15 @@ class PropertyProvider
         if ($attribute->maxDate) {
             $attribute->maxDate = (new Carbon($attribute->maxDate))->toIso8601String();
         }
+    }
+
+    private function processLimitations(\ReflectionProperty $property, Property $attribute): void
+    {
+        $limitation = AttributeHelper::findAttribute($property, Limitation::class);
+        if (!$limitation) {
+            return;
+        }
+
+        $attribute->visible = $this->checker->can($limitation->expression);
     }
 }

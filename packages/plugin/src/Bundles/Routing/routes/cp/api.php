@@ -47,7 +47,7 @@ return [
     'freeform/api/types/options/predefined' => 'freeform/api/types/options/get-predefined-types',
 
     // GENERAL
-    'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',
+    'freeform/api/settings/get-submission-data' => 'freeform/api/settings/get-submission-data',
     'freeform/api/modal/forms/options' => 'freeform/api/modal/options',
     'freeform/api/modal/forms' => 'freeform/api/forms/index',
 
@@ -55,6 +55,7 @@ return [
     'freeform/api/settings/general' => 'freeform/api/settings/general',
     'freeform/api/settings/spam' => 'freeform/api/settings/spam',
     'freeform/api/settings/reliability' => 'freeform/api/settings/reliability',
+    'freeform/api/settings/navigation' => 'freeform/api/settings/navigation',
 
     // OPTIONS
     'freeform/api/options' => 'freeform/api/options/generate-options',
@@ -62,4 +63,10 @@ return [
     // NOTICES
     'freeform/api/notices' => 'freeform/api/notices',
     'freeform/api/notices/<id:\d+>' => 'freeform/api/notices',
+
+    // LIMITED USERS
+    'freeform/api/limited-users' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:new>' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:\d+>' => 'freeform/api/limited-users',
+    'freeform/api/limited-users/<id:\d+>/delete' => 'freeform/api/limited-users/delete',
 ];

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import config from '@config/freeform/freeform.config';
 import { SettingsOwnership } from '@editor/builder/tabs/form-settings/settings.ownership';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
@@ -18,6 +19,7 @@ import {
 } from './settings.sidebar.styles';
 
 export const SettingsSidebar: React.FC = () => {
+  const limitations = config.limitations;
   const navigate = useNavigate();
   const { sectionHandle } = useParams();
 
@@ -57,19 +59,25 @@ export const SettingsSidebar: React.FC = () => {
     <Sidebar $lean>
       <SectionWrapper>
         {data.map((namespace) =>
-          namespace.sections.map((section) => (
-            <SectionLink
-              key={section.handle}
-              onClick={() => navigate(`${section.handle}`)}
-              className={classes(
-                sectionHandle === section.handle && 'active',
-                sectionsWithErrors.includes(section.handle) && 'errors'
-              )}
-            >
-              <SectionIcon dangerouslySetInnerHTML={{ __html: section.icon }} />
-              {translate(section.label)}
-            </SectionLink>
-          ))
+          namespace.sections
+            .filter((section) =>
+              limitations.can(`settings.tab.${section.handle}`)
+            )
+            .map((section) => (
+              <SectionLink
+                key={section.handle}
+                onClick={() => navigate(`${section.handle}`)}
+                className={classes(
+                  sectionHandle === section.handle && 'active',
+                  sectionsWithErrors.includes(section.handle) && 'errors'
+                )}
+              >
+                <SectionIcon
+                  dangerouslySetInnerHTML={{ __html: section.icon }}
+                />
+                {translate(section.label)}
+              </SectionLink>
+            ))
         )}
       </SectionWrapper>
       <SettingsOwnership />

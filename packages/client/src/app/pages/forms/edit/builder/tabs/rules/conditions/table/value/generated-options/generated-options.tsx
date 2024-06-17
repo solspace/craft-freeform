@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { useFieldOptions } from '@components/options/use-field-options';
 import type { Field } from '@editor/store/slices/layout/fields';
-import type { FieldType } from '@ff-client/types/properties';
+import type { FieldType } from '@ff-client/types/fields';
 import translate from '@ff-client/utils/translations';
 
 type Props = {

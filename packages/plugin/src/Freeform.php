@@ -15,14 +15,12 @@ namespace Solspace\Freeform;
 use craft\base\Plugin;
 use craft\events\IndexKeywordsEvent;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
 use craft\services\Fields;
 use craft\services\Search;
 use craft\services\Sites;
-use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use Solspace\Freeform\controllers\SubmissionsController;
@@ -65,7 +63,6 @@ use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
 use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
-use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\Settings;
@@ -166,6 +163,7 @@ class Freeform extends Plugin
     public const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
     public const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
     public const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
+    public const PERMISSION_LIMITED_USERS = 'freeform-limitedUsers';
     public const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';
     public const PERMISSION_SUBMISSIONS_READ = 'freeform-submissionsRead';
     public const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
@@ -230,7 +228,6 @@ class Freeform extends Plugin
         $this->initServices();
         $this->initTwigVariables();
         $this->initFieldTypes();
-        $this->initPermissions();
         $this->initEventListeners();
         $this->initBetaAssets();
         $this->initPaymentAssets();
@@ -478,119 +475,6 @@ class Freeform extends Plugin
                 $event->types[] = SubmissionFieldType::class;
             }
         );
-    }
-
-    // TODO: move into a feature bundle
-    private function initPermissions(): void
-    {
-        if (\Craft::$app->getEdition() >= \Craft::Pro) {
-            Event::on(
-                UserPermissions::class,
-                UserPermissions::EVENT_REGISTER_PERMISSIONS,
-                function (RegisterUserPermissionsEvent $event) {
-                    $forms = $this->forms->getAllFormNames();
-
-                    $readPermissions = $managePermissions = $formPermissions = [];
-                    foreach ($forms as $id => $name) {
-                        $readKey = PermissionHelper::prepareNestedPermission(
-                            self::PERMISSION_SUBMISSIONS_READ,
-                            $id
-                        );
-                        $manageKey = PermissionHelper::prepareNestedPermission(
-                            self::PERMISSION_SUBMISSIONS_MANAGE,
-                            $id
-                        );
-                        $formPermissionName = PermissionHelper::prepareNestedPermission(
-                            self::PERMISSION_FORMS_MANAGE,
-                            $id
-                        );
-
-                        $readPermissions[$readKey] = ['label' => $name];
-                        $managePermissions[$manageKey] = ['label' => $name];
-                        $formPermissions[$formPermissionName] = ['label' => $name];
-                    }
-
-                    $permissions = [
-                        self::PERMISSION_SUBMISSIONS_ACCESS => [
-                            'label' => self::t('Access Submissions'),
-                            'nested' => [
-                                self::PERMISSION_SUBMISSIONS_READ => [
-                                    'label' => self::t('Read All Submissions'),
-                                    'info' => self::t("If you'd like to give users access to read all forms' submissions, check off this checkbox. It will also override any selections in the 'Read Submissions by Form' settings. 'Manage' permissions will also override any 'Read' permissions."),
-                                ],
-                                self::PERMISSION_SUBMISSIONS_READ_INDIVIDUAL => [
-                                    'label' => self::t('Read Submissions by Form'),
-                                    'info' => self::t("If you'd like to give users access to read only some forms' submissions, check off the ones here. These selections will be overridden by the 'Read All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions."),
-                                    'nested' => $readPermissions,
-                                ],
-                                self::PERMISSION_SUBMISSIONS_MANAGE => [
-                                    'label' => self::t('Manage All Submissions'),
-                                    'info' => self::t("If you'd like to give users access to manage all forms' submissions, check off this checkbox. It will also override any selections in the 'Manage Submissions by Form' settings. 'Manage' permissions will also override any 'Read' permissions."),
-                                ],
-                                self::PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL => [
-                                    'label' => self::t('Manage Submissions by Form'),
-                                    'info' => self::t("If you'd like to give users access to manage only some forms' submissions, check off the ones here. These selections will be overridden by the 'Manage All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions."),
-                                    'nested' => $managePermissions,
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_FORMS_ACCESS => [
-                            'label' => self::t('Access Forms'),
-                            'nested' => [
-                                self::PERMISSION_FORMS_CREATE => ['label' => self::t('Create New Forms')],
-                                self::PERMISSION_FORMS_DELETE => ['label' => self::t('Delete Forms')],
-                                self::PERMISSION_FORMS_MANAGE => [
-                                    'label' => self::t('Manage All Forms'),
-                                    'info' => self::t("If you'd like to give users access to all forms, check off this checkbox. It will also override any selections in the 'Manage Forms Individually' settings."),
-                                ],
-                                self::PERMISSION_FORMS_MANAGE_INDIVIDUAL => [
-                                    'label' => self::t('Manage Forms Individually'),
-                                    'info' => self::t("If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox."),
-                                    'nested' => $formPermissions,
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_NOTIFICATIONS_ACCESS => [
-                            'label' => self::t('Access Email Templates'),
-                            'nested' => [
-                                self::PERMISSION_NOTIFICATIONS_MANAGE => [
-                                    'label' => self::t(
-                                        'Manage Email Templates'
-                                    ),
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_ACCESS_QUICK_EXPORT => ['label' => self::t('Access Quick Exporting')],
-                        self::PERMISSION_EXPORT_PROFILES_ACCESS => [
-                            'label' => self::t('Access Export Profiles'),
-                            'nested' => [
-                                self::PERMISSION_EXPORT_PROFILES_MANAGE => [
-                                    'label' => self::t(
-                                        'Manage Export Profiles'
-                                    ),
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_EXPORT_NOTIFICATIONS_ACCESS => [
-                            'label' => self::t('Access Export Notifications'),
-                            'nested' => [
-                                self::PERMISSION_EXPORT_NOTIFICATIONS_MANAGE => [
-                                    'label' => self::t(
-                                        'Manage Export Notifications'
-                                    ),
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_SETTINGS_ACCESS => ['label' => self::t('Access Settings')],
-                    ];
-
-                    $event->permissions[] = [
-                        'heading' => $this->name,
-                        'permissions' => $permissions,
-                    ];
-                }
-            );
-        }
     }
 
     // TODO: move into a feature bundle

@@ -3,7 +3,7 @@ import type { ConnectDragSource } from 'react-dnd';
 import { useDrag } from 'react-dnd';
 import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
-import type { FieldType } from '@ff-client/types/properties';
+import type { FieldType } from '@ff-client/types/fields';
 
 import { useDragContext } from '../../../drag.context';
 

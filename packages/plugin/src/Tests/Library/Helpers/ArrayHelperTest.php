@@ -63,4 +63,22 @@ class ArrayHelperTest extends TestCase
             ArrayHelper::keyFlatten($input)
         );
     }
+
+    public function testGenerate(): void
+    {
+        $iterations = 5;
+        $result = ArrayHelper::generate($iterations, fn ($i) => ["key-{$i}", "value-{$i}"]);
+
+        $this->assertCount($iterations, $result);
+        $this->assertSame(
+            [
+                'key-0' => 'value-0',
+                'key-1' => 'value-1',
+                'key-2' => 'value-2',
+                'key-3' => 'value-3',
+                'key-4' => 'value-4',
+            ],
+            $result
+        );
+    }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useAppDispatch } from '@editor/store';
 import { fieldThunks } from '@editor/store/thunks/fields';
-import type { FieldType } from '@ff-client/types/properties';
+import type { FieldType } from '@ff-client/types/fields';
 import translate from '@ff-client/utils/translations';
 
 import { Field } from '../../field-group/field/field';

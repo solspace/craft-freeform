@@ -9,6 +9,7 @@ class FieldType implements \JsonSerializable
     public string $name = '';
     public string $type = '';
     public string $typeClass = '';
+    public bool $visible = true;
     public ?string $icon = null;
     public ?string $previewTemplate = null;
     public array $implements = [];
@@ -40,6 +41,7 @@ class FieldType implements \JsonSerializable
             'name' => $this->name,
             'type' => $this->type,
             'typeClass' => $this->typeClass,
+            'visible' => $this->visible,
             'icon' => $this->icon,
             'previewTemplate' => $this->previewTemplate,
             'implements' => $this->implements,

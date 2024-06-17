@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Search } from '@editor/store/slices/search';
 import { searchSelectors } from '@editor/store/slices/search/search.selectors';
+import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import type { FieldForm } from '@ff-client/types/fields';
 import classes from '@ff-client/utils/classes';
 
@@ -24,6 +25,7 @@ type Props = {
 export const FormBlock: React.FC<Props> = ({ form }) => {
   const [expanded, setExpanded] = useState(false);
   const searchQuery = useSelector(searchSelectors.query(Search.Fields));
+  const findType = useFieldTypeSearch();
 
   const isOpen = expanded || searchQuery.length > 0;
 
@@ -44,9 +46,18 @@ export const FormBlock: React.FC<Props> = ({ form }) => {
       </FormTitle>
       <FieldListContainer style={animation}>
         <List>
-          {form.fields.map((field) => (
-            <FieldItem key={field.uid} field={field} />
-          ))}
+          {form.fields.map((field) => {
+            const fieldType = findType(field.typeClass);
+            if (!fieldType) {
+              return null;
+            }
+
+            if (!fieldType?.visible) {
+              return null;
+            }
+
+            return <FieldItem key={field.id} field={field} />;
+          })}
         </List>
       </FieldListContainer>
     </FormBlockWrapper>

@@ -262,6 +262,8 @@ class SettingsService extends BaseService
             }
         }
 
+        $nav = array_filter($nav);
+
         $event = new RegisterSettingsNavigationEvent($nav);
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);
 
@@ -281,6 +283,7 @@ class SettingsService extends BaseService
     public function isSectionASetting(string $sectionName): bool
     {
         $nonSettingSections = [
+            'limited-users',
             'statuses',
             'error-log',
             'diagnostics',

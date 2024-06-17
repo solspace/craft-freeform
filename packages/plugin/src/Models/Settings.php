@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -238,6 +239,10 @@ class Settings extends Model
 
     public bool $sitesEnabled = false;
 
+    public string $defaultFromEmail = "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+
+    public string $defaultFromName = "{{ craft.app.projectConfig.get('email.fromName') }}";
+
     public Defaults $defaults;
 
     /**
@@ -457,7 +462,14 @@ class Settings extends Model
             );
         }
 
-        return file_get_contents($path);
+        $email = $this->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+        $name = $this->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
+
+        return str_replace(
+            ['__placeholderFromEmail__', '__placeholderFromName__'],
+            [$email, $name],
+            file_get_contents($path)
+        );
     }
 
     public function getSuccessTemplateContent(): string

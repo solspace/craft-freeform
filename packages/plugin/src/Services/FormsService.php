@@ -279,9 +279,17 @@ class FormsService extends BaseService implements FormHandlerInterface
             ;
 
             foreach ($submissionQuery->batch() as $submissions) {
-                foreach ($submissions as $submission) {
-                    \Craft::$app->elements->deleteElement($submission, true);
-                }
+                $ids = array_map(
+                    fn (Submission $submission) => $submission->getId(),
+                    $submissions
+                );
+
+                \Craft::$app
+                    ->db
+                    ->createCommand()
+                    ->delete(Table::ELEMENTS, ['id' => $ids])
+                    ->execute()
+                ;
             }
 
             $affectedRows = \Craft::$app
@@ -291,9 +299,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ->execute()
             ;
 
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
+            $transaction?->commit();
 
             \Craft::$app
                 ->getDb()

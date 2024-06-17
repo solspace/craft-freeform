@@ -1,8 +1,17 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Bundles\Notifications;
 
-use craft\helpers\Queue;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
@@ -10,7 +19,6 @@ use Solspace\Freeform\Events\Notifications\RegisterNotificationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Jobs\ProcessNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
@@ -49,12 +57,8 @@ class NotificationsBundle extends FeatureBundle
             return;
         }
 
-        if ($this->plugin()->settings->getSettingsModel()->useQueueForEmailNotifications) {
-            Queue::push(new ProcessNotificationsJob(['submissionId' => $submission->getId()]));
-        } else {
-            $event = new SendNotificationsEvent($form, $submission, $fields, $this->plugin()->mailer);
-            Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
-        }
+        $event = new SendNotificationsEvent($form, $submission, $fields, $this->plugin()->mailer);
+        Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 
     public function registerNotificationTypes(RegisterNotificationTypesEvent $event): void

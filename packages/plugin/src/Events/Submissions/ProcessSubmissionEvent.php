@@ -8,11 +8,9 @@ use Solspace\Freeform\Form\Form;
 
 class ProcessSubmissionEvent extends CancelableArrayableEvent
 {
-    /** @var Form */
-    private $form;
+    private Form $form;
 
-    /** @var Submission */
-    private $submission;
+    private Submission $submission;
 
     public function __construct(Form $form, Submission $submission)
     {

@@ -1,12 +1,22 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Integrations\EmailMarketing;
 
-use craft\helpers\Queue;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\ProcessEmailMarketingIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
@@ -17,7 +27,8 @@ use yii\base\Event;
 class EmailMarketingBundle extends FeatureBundle
 {
     public function __construct(
-        private FormIntegrationsProvider $integrationsProvider,
+        private FormIntegrationsProvider $formIntegrationsProvider,
+        private FreeformQueueHandler $queueHandler,
     ) {
         Event::on(
             IntegrationsService::class,
@@ -64,14 +75,15 @@ class EmailMarketingBundle extends FeatureBundle
             return;
         }
 
-        if (!$this->integrationsProvider->getForForm($form, EmailMarketingIntegrationInterface::class)) {
+        if (!$this->formIntegrationsProvider->getForForm($form, EmailMarketingIntegrationInterface::class)) {
             return;
         }
 
-        if ($this->plugin()->settings->getSettingsModel()->useQueueForIntegrations) {
-            Queue::push(new ProcessEmailMarketingIntegrationsJob(['formId' => $form->getId()]));
-        } else {
-            $this->plugin()->integrations->processIntegrations($form, EmailMarketingIntegrationInterface::class);
-        }
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessEmailMarketingIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

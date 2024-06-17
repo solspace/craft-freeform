@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.3.5 - 2024-06-13
+
+### Added
+- Verified support for Craft 5.2.
+- Verified support for the reCAPTCHA Enterprise API and updated the Settings page.
+
+### Changed
+- Updated Survey & Poll report summary page to limit Text answers to the most recent 20 each to help with performance and readability.
+
+### Fixed
+- Fixed a bug where the Entries Elements integration was not working correctly on multi-site setups when attempting to map to a section with the primary site disabled.
+- Fixed a bug where the spam reason was not displaying correctly for Captchas and JS Test.
+- Fixed a bug where 'checked' was available for option-based fields in the GraphQL Explorer.
+
 ## 5.3.4 - 2024-06-07
 
 ### Added

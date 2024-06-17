@@ -9,10 +9,10 @@ All **hCaptcha** offerings will be automatically loaded and handled by Freeform 
 
 If you're not already familiar, here's an overview of how each Captcha works:
 
-### hCaptcha Checkbox
+### hCaptcha Checkbox (Lite/Pro only)
 This is based off of _reCAPTCHA_ and works very similarly. All users submitting your form must check off the hCaptcha checkbox, and in some cases, users will be presented the puzzle to solve to submit the form successfully.
 
-### hCaptcha Invisible
+### hCaptcha Invisible (Lite/Pro only)
 Most users will not even know it's automatically validating them, but like the hCaptcha Checkbox described above, some users will be presented a modal on the page with the puzzle to solve when they click the submit button.
 
 ## Setup Instructions

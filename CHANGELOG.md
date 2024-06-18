@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.4.0 - Unreleased
+## 5.4.0 - 2024-06-18
 
 ### Added
 - Added Limited Users feature (Pro), which allows you to customize the form builder experience for specific users or groups.

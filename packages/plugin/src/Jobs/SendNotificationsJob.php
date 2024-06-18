@@ -14,6 +14,8 @@ namespace Solspace\Freeform\Jobs;
 
 use craft\queue\BaseJob;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 {
@@ -21,9 +23,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 
     public ?int $submissionId = null;
 
-    public ?string $recipients = null;
+    public ?RecipientCollection $recipients = null;
 
-    public ?string $template = null;
+    public ?NotificationTemplate $template = null;
 
     public function execute($queue): void
     {
@@ -43,21 +45,19 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 
         $fields = $form->getLayout()->getFields();
 
-        $recipients = unserialize($this->recipients);
-        if (!$recipients) {
+        if (!$this->recipients) {
             return;
         }
 
-        $template = unserialize($this->template);
-        if (!$template) {
+        if (!$this->template) {
             return;
         }
 
         $freeform->mailer->sendEmail(
             $form,
-            $recipients,
+            $this->recipients,
             $fields,
-            $template,
+            $this->template,
             $submission,
         );
     }

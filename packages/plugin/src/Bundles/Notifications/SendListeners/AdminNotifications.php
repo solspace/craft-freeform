@@ -61,8 +61,8 @@ class AdminNotifications extends FeatureBundle
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
                     'submissionId' => $event->getSubmission()->getId(),
-                    'recipients' => serialize($recipients),
-                    'template' => serialize($template),
+                    'recipients' => $recipients,
+                    'template' => $template,
                 ])
             );
         }

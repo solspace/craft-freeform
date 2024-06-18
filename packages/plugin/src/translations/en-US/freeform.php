@@ -835,6 +835,11 @@ return [
 
     // Settings // Limited Users
     'Limited Users' => 'Limited Users',
+    'No groups exist yet' => 'No groups exist yet',
+    'Click on the "New Group" button to set up your first Limited User permission group.' => 'Click on the "New Group" button to set up your first Limited User permission group.',
+    'New Group' => 'New Group',
+    'Are you sure you want to delete this?' => 'Are you sure you want to delete this?',
+    'Permission saved successfully.' => 'Permission saved successfully.',
     'Enter the name of the limited user permission.' => 'Enter the name of the limited user permission.',
     'Enter a description for this permission.' => 'Enter a description for this permission.',
     'Enable All' => 'Enable All',

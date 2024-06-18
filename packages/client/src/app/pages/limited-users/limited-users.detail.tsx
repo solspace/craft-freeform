@@ -96,7 +96,7 @@ export const LimitedUsersDetail: React.FC = () => {
                   onSuccess: () => {
                     navigate(`/settings/limited-users`);
                     notifications.success(
-                      translate('Permission saved successfully')
+                      translate('Permission saved successfully.')
                     );
                   },
                 }

@@ -12,13 +12,7 @@
 
 namespace Solspace\Freeform\Jobs;
 
-use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Fields\TransformValueEvent;
-use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\SettingsService;
-use yii\base\Event;
 
 class FreeformQueueHandler
 {
@@ -46,32 +40,5 @@ class FreeformQueueHandler
         } else {
             $job->execute($queue);
         }
-    }
-
-    public function rehydrateForm(Form $form, Submission $submission): Form
-    {
-        $submissionFields = $submission->getFieldCollection();
-
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
-                continue;
-            }
-
-            $submissionField = $submissionFields->get($field);
-            if (!$submissionField) {
-                continue;
-            }
-
-            $event = new TransformValueEvent($field, $submissionField->getValue());
-            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
-
-            if (!$event->isValid) {
-                continue;
-            }
-
-            $field->setValue($event->getValue());
-        }
-
-        return $form;
     }
 }

@@ -16,8 +16,10 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
-use Solspace\Freeform\Jobs\SendEmailRecipientNotificationsJob;
+use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 use yii\base\Event;
 
@@ -41,14 +43,40 @@ class EmailRecipientNotifications extends FeatureBundle
             return;
         }
 
-        if (!$this->notificationsProvider->getByFormAndClass($form, EmailField::class)) {
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, EmailField::class);
+        if (!$notifications) {
             return;
         }
 
-        $this->queueHandler->executeNotificationJob(
-            new SendEmailRecipientNotificationsJob([
-                'submissionId' => $event->getSubmission()->getId(),
-            ])
-        );
+        $fields = $event->getFields();
+
+        foreach ($notifications as $notification) {
+            $field = $fields->get($notification->getField());
+            if (!$field) {
+                continue;
+            }
+
+            $recipient = $field->getValue();
+            if (!$recipient) {
+                continue;
+            }
+
+            $notificationTemplate = $notification->getTemplate();
+            if (!$notificationTemplate) {
+                continue;
+            }
+
+            $recipientCollection = new RecipientCollection();
+            $recipientCollection->add(new Recipient($recipient));
+
+            $this->queueHandler->executeNotificationJob(
+                new SendNotificationsJob([
+                    'formId' => $form->getId(),
+                    'submissionId' => $event->getSubmission()->getId(),
+                    'recipients' => serialize($recipientCollection),
+                    'template' => serialize($notificationTemplate),
+                ])
+            );
+        }
     }
 }

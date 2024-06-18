@@ -15,8 +15,11 @@ namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
-use Solspace\Freeform\Jobs\SendDynamicTemplateRecipientsNotificationsJob;
+use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use yii\base\Event;
 
 class DynamicTemplateRecipients extends FeatureBundle
@@ -40,14 +43,37 @@ class DynamicTemplateRecipients extends FeatureBundle
         }
 
         $data = $form->getProperties()->get(self::BAG_KEY);
+
+        $template = $data['template'] ?? null;
         $recipients = $data['recipients'] ?? [];
-        if (!$recipients) {
+
+        if (empty($recipients) || !$template) {
             return;
         }
 
+        $notification = $this->plugin()->notifications->requireNotification($form, $template, 'Dynamic Notification from template params');
+        if (!$notification) {
+            return;
+        }
+
+        $recipientCollection = new RecipientCollection();
+
+        if (\is_array($recipients)) {
+            foreach ($recipients as $recipient) {
+                $recipientCollection->add(new Recipient($recipient, ''));
+            }
+        } else {
+            $recipientCollection->add(new Recipient($recipients, ''));
+        }
+
+        $notificationTemplate = NotificationTemplate::fromRecord($notification);
+
         $this->queueHandler->executeNotificationJob(
-            new SendDynamicTemplateRecipientsNotificationsJob([
+            new SendNotificationsJob([
+                'formId' => $form->getId(),
                 'submissionId' => $event->getSubmission()->getId(),
+                'recipients' => serialize($recipientCollection),
+                'template' => serialize($notificationTemplate),
             ])
         );
     }

@@ -481,7 +481,7 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $form = $this->queueHandler->rehydrateForm($form, $submission);
+        $form->valuesFromSubmission($submission);
 
         /** @var IntegrationInterface[] $integrations */
         $integrations = $this->getForForm($form, $type);

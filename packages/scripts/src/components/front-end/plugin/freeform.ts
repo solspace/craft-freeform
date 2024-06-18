@@ -12,6 +12,7 @@ import CalculationHandler from '@lib/plugin/handlers/fields/calculations';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
+import RatingHandler from '@lib/plugin/handlers/fields/rating';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
@@ -69,6 +70,7 @@ export default class Freeform {
     DatePickerHandler,
     CalculationHandler,
     InputMaskHandler,
+    RatingHandler,
     SignatureHandler,
     TableHandler,
     GoogleTagManager,

@@ -143,13 +143,10 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
 
         $spanAttributes = (new Attributes())
             ->append('class', 'form-rating-field-wrapper')
-            ->append('class', $this->getFormSha().'-'.$this->getHandle().'-rating-wrapper')
             ->set('id', $this->getIdAttribute())
         ;
 
-        $output = $this->getStyles();
-
-        $output .= '<div>';
+        $output = '<div>';
         $output .= '<span'.$spanAttributes.'>';
 
         $maxValue = $this->getMaxValue();
@@ -168,30 +165,9 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
             $output .= '<label for="'.$starId.'"></label>';
         }
         $output .= '</span>';
-        $output .= '<div style="clear: both;"></div>';
         $output .= '</div>';
 
         return $output;
-    }
-
-    private function getStyles(): string
-    {
-        $freeform = \Yii::getAlias('@freeform');
-        $cssPath = $freeform.'/Resources/css/front-end/fields/rating.css';
-
-        $output = '<style>'.\PHP_EOL;
-        $output .= @file_get_contents($cssPath);
-        $output .= '</style>';
-
-        $replaceMap = [
-            'formhash' => $this->getFormSha(),
-            'fieldname' => $this->getHandle(),
-            'coloridle' => $this->getColorIdle(),
-            'colorhover' => $this->getColorHover(),
-            'colorselected' => $this->getColorSelected(),
-        ];
-
-        return str_replace(array_keys($replaceMap), $replaceMap, $output);
     }
 
     private function getFormSha(): string

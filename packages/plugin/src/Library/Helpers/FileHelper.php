@@ -23,4 +23,16 @@ class FileHelper
 
         return mime_content_type($filePath);
     }
+
+    public static function isAbsolute(string $path): bool
+    {
+        if (empty($path)) {
+            throw new \InvalidArgumentException('Empty path');
+        }
+
+        $hasDirSeparator = \DIRECTORY_SEPARATOR === $path[0];
+        $matchesDriveLetter = preg_match('~\A[A-Z]+:(?![^/\\\\])~i', $path) > 0;
+
+        return $hasDirSeparator || $matchesDriveLetter;
+    }
 }

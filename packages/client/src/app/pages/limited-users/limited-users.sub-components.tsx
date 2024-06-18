@@ -43,7 +43,9 @@ const Boolean: React.FC<Props<BooleanItem, boolean>> = ({
         />
       </Control>
       <TitleBlock>
-        <Label onClick={() => updateValue(!item.enabled)}>{item.name}</Label>
+        <Label onClick={() => updateValue(!item.enabled)}>
+          {translate(item.name)}
+        </Label>
       </TitleBlock>
     </Block>
   );
@@ -61,7 +63,7 @@ const Select: React.FC<Props<SelectItem, string>> = ({ item, updateValue }) => {
             {item.options.map((option) => (
               <option
                 key={option.value}
-                label={option.label}
+                label={translate(option.label)}
                 value={option.value}
               />
             ))}
@@ -91,7 +93,7 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
     <Block className="triage">
       <Control />
       <TitleBlock>
-        <Label>{item.name}</Label>
+        <Label>{translate(item.name)}</Label>
         <Actions>
           <a
             className={classes(
@@ -124,7 +126,7 @@ const Toggles: React.FC<Props<TogglesItem, string[]>> = ({
               {item.values.includes(option.value) && (
                 <i className="fa-sharp fa-solid fa-check" />
               )}
-              {option.label}
+              {translate(option.label)}
             </ToggleListItem>
           ))}
         </ToggleList>

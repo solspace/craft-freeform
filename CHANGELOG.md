@@ -5,7 +5,7 @@
 ### Added
 - Added Limited Users feature (Pro), which allows you to customize the form builder experience for specific users or groups.
     - You can choose which field types are available and which settings and page tabs are visible.
-    - This ensures that these users are not overwhelmed by advanced settings and prevent them from accidentally breaking your forms or site.
+    - This ensures that these users are not overwhelmed by advanced settings and prevents them from accidentally breaking your forms or site.
     - Multiple limited user groups can be created.
 - Added ability to set email notifications and integrations to use Craft's queue.
 - Added settings to control the Default 'From Name' and 'From Name' when creating new email notification templates.

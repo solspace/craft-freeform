@@ -72,8 +72,8 @@ class DynamicTemplateRecipients extends FeatureBundle
             new SendNotificationsJob([
                 'formId' => $form->getId(),
                 'submissionId' => $event->getSubmission()->getId(),
-                'recipients' => serialize($recipientCollection),
-                'template' => serialize($notificationTemplate),
+                'recipients' => $recipientCollection,
+                'template' => $notificationTemplate,
             ])
         );
     }

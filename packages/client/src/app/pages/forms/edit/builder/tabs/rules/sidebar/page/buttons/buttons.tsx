@@ -7,6 +7,7 @@ import type { Page, PageButton } from '@editor/builder/types/layout';
 import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import type { PageButtonType } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import { Button, ButtonGroup, ButtonsWrapper } from './buttons.styles';
 
@@ -48,7 +49,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
         navigate(currentPage ? '' : `page/${page.uid}/buttons/${handle}`)
       }
     >
-      {label}
+      {translate(label)}
     </Button>
   );
 };

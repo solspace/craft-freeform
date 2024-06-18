@@ -59,15 +59,20 @@ export const LimitedUsersDetail: React.FC = () => {
   };
 
   if (!data && isFetching) {
-    return <div>Loading...</div>;
+    return <div>{translate('Loading...')}</div>;
   }
 
   return (
     <div>
-      <Breadcrumb id="settings" label="Settings" url=".." external />
+      <Breadcrumb
+        id="settings"
+        label={translate('Settings')}
+        url=".."
+        external
+      />
       <Breadcrumb
         id="limited-users"
-        label="Limited Users"
+        label={translate('Limited Users')}
         url="settings/limited-users"
       />
       <Breadcrumb
@@ -91,7 +96,7 @@ export const LimitedUsersDetail: React.FC = () => {
                   onSuccess: () => {
                     navigate(`/settings/limited-users`);
                     notifications.success(
-                      translate('Permission saved successfully')
+                      translate('Permission saved successfully.')
                     );
                   },
                 }
@@ -118,9 +123,10 @@ export const LimitedUsersDetail: React.FC = () => {
               <String
                 property={{
                   handle: 'name',
-                  label: 'Name',
-                  instructions:
-                    'Enter the name of the limited user permission.',
+                  label: translate('Name'),
+                  instructions: translate(
+                    'Enter the name of the limited user permission.'
+                  ),
                   type: PropertyType.String,
                 }}
                 value={name}
@@ -132,8 +138,10 @@ export const LimitedUsersDetail: React.FC = () => {
               <Textarea
                 property={{
                   handle: 'description',
-                  label: 'Description',
-                  instructions: 'Enter a description for this permission.',
+                  label: translate('Description'),
+                  instructions: translate(
+                    'Enter a description for this permission.'
+                  ),
                   type: PropertyType.Textarea,
                   rows: 4,
                   flags: [],

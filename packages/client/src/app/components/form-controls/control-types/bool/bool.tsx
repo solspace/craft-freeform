@@ -5,6 +5,7 @@ import FormInstructions from '@components/form-controls/instructions';
 import type { ControlType } from '@components/form-controls/types';
 import type { BooleanProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import {
   CheckboxItem,
@@ -34,7 +35,7 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
           />
         </CheckboxItem>
         <TextWrapper onClick={() => updateValue(!enabled)}>
-          <label htmlFor={handle}>{label}</label>
+          <label htmlFor={handle}>{translate(label)}</label>
           <FormInstructions instructions={property.instructions} />
         </TextWrapper>
       </CheckboxWrapper>

@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
+namespace Solspace\Freeform\Library\Integrations\Types\Other;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;

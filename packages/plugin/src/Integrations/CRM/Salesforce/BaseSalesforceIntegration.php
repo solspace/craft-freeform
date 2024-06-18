@@ -59,7 +59,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to <code>test.salesforce.com</code> instead of <code>login.salesforce.com</code> or <code>mycompany.my.salesforce.com</code>).',
+        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com" or "mycompany.my.salesforce.com").',
         order: 3,
     )]
     protected bool $sandboxMode = false;

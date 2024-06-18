@@ -31,7 +31,7 @@ const PageButton: React.FC<ControlType<PageButtonProperty>> = ({
             />
           )}
 
-          <Label>{property.label}</Label>
+          <Label>{translate(property.label)}</Label>
         </CheckboxWrapper>
       </PageButtonWrapper>
 

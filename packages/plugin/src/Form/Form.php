@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
@@ -35,6 +36,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Page;
@@ -848,6 +850,30 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getSuccessMessage(): string
     {
         return $this->getSettings()->getBehavior()->getSuccessMessage();
+    }
+
+    public function valuesFromSubmission(Submission $submission): void
+    {
+        $fields = $submission->getFieldCollection();
+
+        foreach ($this->getLayout()->getFields() as $field) {
+            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+                continue;
+            }
+
+            if (!$fields->has($field)) {
+                continue;
+            }
+
+            $event = new TransformValueEvent($field, $fields->get($field)->getValue());
+            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
+
+            if (!$event->isValid) {
+                continue;
+            }
+
+            $field->setValue($event->getValue());
+        }
     }
 
     private function createSubmission(): void

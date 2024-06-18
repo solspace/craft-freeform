@@ -34,10 +34,6 @@ class OptionType extends AbstractObjectType
             return $source->getLabel() ?? null;
         }
 
-        if ('checked' === $resolveInfo->fieldName) {
-            return $source->isChecked() ?? false;
-        }
-
         return null;
     }
 }

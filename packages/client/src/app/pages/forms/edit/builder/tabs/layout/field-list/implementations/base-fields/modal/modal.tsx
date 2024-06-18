@@ -178,7 +178,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
             type="button"
             className="btn add icon dashed"
           >
-            Add Group
+            {translate('Add Group')}
           </button>
           <UHFieldWrapper>
             <UHField className="unassigned">

@@ -3,8 +3,8 @@
 <div>
 
     {{ forms.textField({
-        label: "Title"|t,
-        instructions: "Enter a custom widget title, or leave blank to use default."|t,
+        label: "Title"|t('app'),
+        instructions: "Enter a custom widget title, or leave blank to use default."|t('freeform'),
         id: 'title',
         name: 'title',
         value: settings.title,
@@ -12,11 +12,11 @@
     }) }}
 
     {{ forms.textField({
-        label: "Success Message"|t,
-        instructions: "Customize the message to be displayed to the user when the form has been successfully submitted."|t,
+        label: "Success Message"|t('freeform'),
+        instructions: "Customize the message to be displayed to the user when the form has been successfully submitted."|t('freeform'),
         id: 'successMessage',
         name: 'successMessage',
-        placeholder: 'Form submitted successfully!',
+        placeholder: 'Form submitted successfully!'|t('freeform'),
         value: settings.successMessage,
         errors: settings.getErrors('successMessage'),
     }) }}

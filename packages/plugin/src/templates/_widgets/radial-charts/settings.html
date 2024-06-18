@@ -2,8 +2,8 @@
 
 
 {{ forms.textField({
-    label: "Title"|t,
-    instructions: "Enter a custom widget title, or leave blank to use default."|t,
+    label: "Title"|t('app'),
+    instructions: "Enter a custom widget title, or leave blank to use default."|t('freeform'),
     id: 'title',
     name: 'title',
     value: settings.title,
@@ -11,7 +11,7 @@
 }) }}
 
 {{ forms.selectField({
-    label: "Chart Type"|t,
+    label: "Chart Type"|t('freeform'),
     id: 'chartType',
     name: 'chartType',
     options: chartTypes,
@@ -20,7 +20,7 @@
 }) }}
 
 {{ forms.selectField({
-    label: "Chart Height"|t,
+    label: "Chart Height"|t('freeform'),
     id: 'chartHeight',
     name: 'chartHeight',
     options: {
@@ -40,7 +40,7 @@
 }) }}
 
 {{ forms.selectField({
-    label: "Date Range"|t,
+    label: "Date Range"|t('freeform'),
     id: 'dateRange',
     name: 'dateRange',
     options: dateRangeOptions,
@@ -51,7 +51,7 @@
 {% if fieldValueSettings is defined and fieldValueSettings %}
 
     {{ forms.selectField({
-        label: "Form"|t,
+        label: "Form"|t('freeform'),
         id: 'formId',
         name: 'formId',
         options: formOptions,
@@ -60,7 +60,7 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Field"|t,
+        label: "Field"|t('freeform'),
         id: 'fieldId',
         name: 'fieldId',
         options: fieldList,
@@ -69,7 +69,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Include Empty Values"|t,
+        label: "Include Empty Values"|t('freeform'),
         id: 'showEmpty',
         name: 'showEmpty',
         on: settings.showEmpty,
@@ -79,8 +79,8 @@
 {% else %}
 
     {{ forms.checkboxSelectField({
-        label: "Forms"|t,
-        instructions: "Select the forms for which submission data should be included."|t,
+        label: "Forms"|t('freeform'),
+        instructions: "Select the forms for which submission data should be included."|t('freeform'),
         id: 'formIds',
         name: 'formIds',
         options: formOptions,

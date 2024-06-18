@@ -1,4 +1,14 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 
@@ -6,6 +16,8 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Bundles\Rules\ConditionValidator;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
+use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
@@ -16,6 +28,7 @@ class ConditionalNotifications extends FeatureBundle
     public function __construct(
         private NotificationsProvider $notificationsProvider,
         private ConditionValidator $conditionValidator,
+        private FreeformQueueHandler $queueHandler
     ) {
         Event::on(
             Form::class,
@@ -31,19 +44,32 @@ class ConditionalNotifications extends FeatureBundle
 
     public function sendToRecipients(SendNotificationsEvent $event): void
     {
+        if (!$event->isValid) {
+            return;
+        }
+
         $form = $event->getForm();
         if ($form->isDisabled()->conditionalNotifications) {
             return;
         }
 
         $notifications = $this->notificationsProvider->getByFormAndClass($form, Conditional::class);
+        if (!$notifications) {
+            return;
+        }
 
-        $submission = $event->getSubmission();
         $fields = $event->getFields();
 
         foreach ($notifications as $notification) {
             $recipients = $notification->getRecipients();
+            if (!$recipients) {
+                continue;
+            }
+
             $template = $notification->getTemplate();
+            if (!$template) {
+                continue;
+            }
 
             $rule = $notification->getRule();
             if (!$rule) {
@@ -55,8 +81,12 @@ class ConditionalNotifications extends FeatureBundle
             $matchesSome = false;
             $matchesAll = true;
             foreach ($conditions as $condition) {
-                $field = $form->get($condition->getField()->getId());
-                $postedValue = $field?->getValue();
+                $field = $fields->get($condition->getField());
+                if (!$field) {
+                    continue;
+                }
+
+                $postedValue = $field->getValue();
 
                 $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
                 if ($valueMatch) {
@@ -77,16 +107,14 @@ class ConditionalNotifications extends FeatureBundle
                 continue;
             }
 
-            $event
-                ->getMailer()
-                ->sendEmail(
-                    $form,
-                    $recipients,
-                    $fields,
-                    $template,
-                    $submission,
-                )
-            ;
+            $this->queueHandler->executeNotificationJob(
+                new SendNotificationsJob([
+                    'formId' => $form->getId(),
+                    'submissionId' => $event->getSubmission()->getId(),
+                    'recipients' => $recipients,
+                    'template' => $template,
+                ])
+            );
         }
     }
 }

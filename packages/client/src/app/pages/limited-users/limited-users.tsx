@@ -23,10 +23,15 @@ export const LimitedUsers: React.FC = () => {
 
   return (
     <div>
-      <Breadcrumb id="settings" label="Settings" url="." external />
+      <Breadcrumb
+        id="settings"
+        label={translate('Settings')}
+        url="."
+        external
+      />
       <Breadcrumb
         id="limited-users"
-        label="Limited Users"
+        label={translate('Limited Users')}
         url="settings/limited-users"
       />
 
@@ -36,9 +41,11 @@ export const LimitedUsers: React.FC = () => {
             <h1 className="screen-title">{translate('Limited Users')}</h1>
           </div>
 
-          <Link to="new" className="btn submit add icon">
-            {translate('New Group')}
-          </Link>
+          {isPro && (
+            <Link to="new" className="btn submit add icon">
+              {translate('New Group')}
+            </Link>
+          )}
         </header>
       </div>
 
@@ -62,13 +69,15 @@ export const LimitedUsers: React.FC = () => {
                       {data.map((item) => (
                         <tr key={item.id}>
                           <th>
-                            <Link to={`${item.id}`}>{item.name}</Link>
+                            <Link to={`${item.id}`}>
+                              {item.name}
+                            </Link>
                           </th>
                           <td>{item.description}</td>
                           <td className="thin">
                             <a
                               className="delete icon"
-                              title="Delete"
+                              title={translate('Delete')}
                               onClick={() => {
                                 if (
                                   confirm(
@@ -92,7 +101,9 @@ export const LimitedUsers: React.FC = () => {
                   <div style={{ padding: '100px 0 100px' }}>
                     <EmptyBlock
                       title={translate('No groups exist yet')}
-                      subtitle={`Click on the "New Group" button to set up your first Limited User permission group.`}
+                      subtitle={translate(
+                        `Click on the "New Group" button to set up your first Limited User permission group.`
+                      )}
                     />
                   </div>
                 )}

@@ -92,7 +92,7 @@ class QuickExportController extends BaseController
                     'checked' => true,
                 ];
                 $fieldSetting['ip'] = [
-                    'label' => 'IP',
+                    'label' => 'IP Address',
                     'checked' => true,
                 ];
                 $fieldSetting['dateCreated'] = [

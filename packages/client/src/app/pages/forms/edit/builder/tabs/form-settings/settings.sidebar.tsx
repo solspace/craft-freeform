@@ -10,6 +10,7 @@ import type { FormSettingNamespace } from '@ff-client/types/forms';
 import type { Section } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
+import translate from '@ff-client/utils/translations';
 
 import {
   SectionIcon,
@@ -74,7 +75,7 @@ export const SettingsSidebar: React.FC = () => {
                 <SectionIcon
                   dangerouslySetInnerHTML={{ __html: section.icon }}
                 />
-                {section.label}
+                {translate(section.label)}
               </SectionLink>
             ))
         )}

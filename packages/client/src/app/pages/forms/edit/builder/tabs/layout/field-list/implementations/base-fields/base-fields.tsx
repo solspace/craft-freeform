@@ -64,7 +64,7 @@ export const BaseFields: React.FC = () => {
         onClick: openModal,
       }}
       editionIsPro={config.editions.is(Edition.Pro)}
-      title={title}
+      title={translate(title)}
     >
       {data.groups.grouped?.map((group) => (
         <Group key={group.uid} group={group} />

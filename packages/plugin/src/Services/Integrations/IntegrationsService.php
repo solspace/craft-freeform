@@ -21,6 +21,7 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -44,6 +45,7 @@ class IntegrationsService extends BaseService
         $config,
         protected IntegrationClientProvider $clientProvider,
         private PropertyProvider $propertyProvider,
+        private FreeformQueueHandler $queueHandler,
     ) {
         parent::__construct($config);
     }
@@ -463,6 +465,30 @@ class IntegrationsService extends BaseService
         }
 
         return $cache[$key];
+    }
+
+    public function processIntegrations(int $formId, int $submissionId, string $type): void
+    {
+        $freeform = Freeform::getInstance();
+
+        $form = $freeform->forms->getFormById($formId);
+        if (!$form) {
+            return;
+        }
+
+        $submission = $freeform->submissions->getSubmissionById($submissionId);
+        if (!$submission) {
+            return;
+        }
+
+        $form->valuesFromSubmission($submission);
+
+        /** @var IntegrationInterface[] $integrations */
+        $integrations = $this->getForForm($form, $type);
+        foreach ($integrations as $integration) {
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->push($form, $client);
+        }
     }
 
     protected function getQuery(?string $type = null): Query

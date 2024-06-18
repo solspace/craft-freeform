@@ -245,6 +245,10 @@ class Settings extends Model
 
     public Defaults $defaults;
 
+    public bool $useQueueForEmailNotifications = false;
+
+    public bool $useQueueForIntegrations = false;
+
     /**
      * Settings constructor.
      */

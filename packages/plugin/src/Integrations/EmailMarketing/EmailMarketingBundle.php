@@ -1,15 +1,24 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Integrations\EmailMarketing;
 
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
+use Solspace\Freeform\Jobs\ProcessEmailMarketingIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -19,7 +28,7 @@ class EmailMarketingBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
+        private FreeformQueueHandler $queueHandler,
     ) {
         Event::on(
             IntegrationsService::class,
@@ -66,16 +75,15 @@ class EmailMarketingBundle extends FeatureBundle
             return;
         }
 
-        /** @var EmailMarketingIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_EMAIL_MARKETING);
-        foreach ($integrations as $integration) {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-
-            try {
-                $integration->push($form, $client);
-            } catch (IntegrationException) {
-                // Do nothing
-            }
+        if (!$this->formIntegrationsProvider->getForForm($form, EmailMarketingIntegrationInterface::class)) {
+            return;
         }
+
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessEmailMarketingIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

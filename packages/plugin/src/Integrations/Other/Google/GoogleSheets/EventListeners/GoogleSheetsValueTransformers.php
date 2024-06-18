@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets\EventListener
 
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
-use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\GoogleSheetsIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 use yii\base\Event;
 
 class GoogleSheetsValueTransformers extends FeatureBundle

@@ -12,12 +12,12 @@
 
 namespace Solspace\Freeform\Integrations\CRM;
 
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
+use Solspace\Freeform\Jobs\ProcessCrmIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
@@ -28,7 +28,7 @@ class CrmBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
+        private FreeformQueueHandler $queueHandler,
     ) {
         Event::on(
             IntegrationsService::class,
@@ -75,11 +75,15 @@ class CrmBundle extends FeatureBundle
             return;
         }
 
-        /** @var CRMIntegrationInterface[] $integrations */
-        $integrations = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_CRM);
-        foreach ($integrations as $integration) {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+        if (!$this->formIntegrationsProvider->getForForm($form, CRMIntegrationInterface::class)) {
+            return;
         }
+
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessCrmIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

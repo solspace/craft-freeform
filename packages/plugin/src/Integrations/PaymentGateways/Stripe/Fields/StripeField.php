@@ -386,9 +386,10 @@ class StripeField extends AbstractField implements PaymentFieldInterface
             'fieldMapping' => $fieldMapping,
         ]);
 
-        $output .= '<script data-stripe-config type="application/json">'.$config.'</script>';
-
-        $stripeAttributes = (new Attributes())->set('data-freeform-stripe-card', true);
+        $stripeAttributes = (new Attributes())
+            ->set('data-freeform-stripe-card', true)
+            ->set('data-config', $config)
+        ;
         $output .= '<div'.$stripeAttributes.'></div>';
 
         if (!$this->integration) {

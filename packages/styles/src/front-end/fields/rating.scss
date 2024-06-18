@@ -1,62 +1,68 @@
-.form-rating-field-wrapper {
-  float: left;
-}
+[data-field-type="rating"] {
+  --ff-rating-color-idle: #DDDDDD;
+  --ff-rating-color-hover: #FFD700;
+  --ff-rating-color-selected: #FF7700;
 
-.formhash-fieldname-rating-wrapper {
-  float: left;
+  .form-rating-field-wrapper {
+    float: left;
 
-  &:not(:checked) {
-    > input {
-      position: absolute;
-      left: -9999px;
-      clip: rect(0, 0, 0, 0);
+    &:after {
+      content: '';
+      display: table;
+      clear: both;
     }
 
-    > label {
-      float: right;
-      //width: 1em;
-      //padding: 0 .1em;
-      overflow: hidden;
-      white-space: nowrap;
-      cursor: pointer;
-      font-size: 200%;
-      font-weight: 100;
-      line-height: 1.2;
-      color: coloridle;
-      font-family: sans-serif;
-
-      &:before {
-        content: '★ ';
-        border: none;
+    &:not(:checked) {
+      > input {
+        position: absolute;
+        left: -9999px;
+        clip: rect(0, 0, 0, 0);
       }
 
-      &:after {
-        content: '';
-        display: none;
+      > label {
+        float: right;
+        overflow: hidden;
+        white-space: nowrap;
+        cursor: pointer;
+        font-size: 200%;
+        font-weight: 100;
+        line-height: 1.2;
+        color: var(--ff-rating-color-idle);
+        font-family: sans-serif;
+
+        &:before {
+          content: '★ ';
+          border: none;
+        }
+
+        &:after {
+          content: '';
+          display: none;
+        }
+      }
+
+      > label:hover,
+      > label:hover ~ label {
+        color: var(--ff-rating-color-hover);
       }
     }
 
-    > label:hover,
-    > label:hover ~ label {
-      color: colorhover;
+    > input:checked ~ label {
+      color: var(--ff-rating-color-selected);
     }
-  }
 
-  > input:checked ~ label {
-    color: colorselected;
-  }
+    > input:checked + label:hover,
+    > input:checked + label:hover ~ label,
+    > input:checked ~ label:hover,
+    > input:checked ~ label:hover ~ label,
+    > label:hover ~ input:checked ~ label {
+      color: var(--ff-rating-color-hover);
+    }
 
-  > input:checked + label:hover,
-  > input:checked + label:hover ~ label,
-  > input:checked ~ label:hover,
-  > input:checked ~ label:hover ~ label,
-  > label:hover ~ input:checked ~ label {
-    color: colorhover;
-  }
-
-  > label:active {
-    position: relative;
-    top: 2px;
-    left: 2px;
+    > label:active {
+      position: relative;
+      top: 2px;
+      left: 2px;
+    }
   }
 }

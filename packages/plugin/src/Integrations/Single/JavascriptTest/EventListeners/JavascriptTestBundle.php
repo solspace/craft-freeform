@@ -14,7 +14,6 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
-use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
@@ -132,7 +131,7 @@ class JavascriptTestBundle extends FeatureBundle
 
         return <<<EOS
             <div class="{$id}" style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">
-                <label aria-hidden="true" tabindex="-1" for="{$id}">Freeform Check</label>
+                <label data-ff-check aria-hidden="true" tabindex="-1" for="{$id}">Freeform Check</label>
                 <input {$attributes} />
             </div>
             EOS;
@@ -150,19 +149,7 @@ class JavascriptTestBundle extends FeatureBundle
             return;
         }
 
-        $name = $integration->getInputName();
-        $fieldPrefix = $form->getFieldPrefix();
-        $id = $fieldPrefix.$name;
-
-        $twig = new IsolatedTwig();
-
-        $script = file_get_contents(__DIR__.'/../Scripts/js-test.js');
-        $script = $twig->render($script, [
-            'id' => $form->getAnchor(),
-            'name' => $name,
-        ]);
-
-        $event->addChunk("<script>{$script}</script>");
+        $event->addScript(__DIR__.'/../Scripts/js-test.js');
     }
 
     public function attachToAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void

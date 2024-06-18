@@ -19,6 +19,10 @@ export const loadStripeContainers = (props: StripeFunctionConstructorProps) => a
 
 export const submitStripe = (props: StripeFunctionConstructorProps) => async (event: FreeformEvent) => {
   event.addCallback(async () => {
+    if (event.isBackButtonPressed) {
+      return;
+    }
+
     const { elementMap, form } = props;
 
     const containers = selectVisibleContainers(form);
@@ -60,6 +64,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
       if (error) {
         event.freeform._renderFormErrors([error.message]);
+        event.freeform._scrollToForm();
       }
 
       return false;

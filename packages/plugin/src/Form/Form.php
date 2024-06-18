@@ -330,17 +330,12 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     /**
      * @return FormActionInterface[]
-     *
-     * @deprecated No longer used as of Freeform 5.x
      */
     public function getActions(): array
     {
         return $this->actions ?? [];
     }
 
-    /**
-     * @deprecated No longer used as of Freeform 5.x
-     */
     public function addAction(FormActionInterface $action): self
     {
         $this->actions[] = $action;

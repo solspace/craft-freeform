@@ -70,10 +70,10 @@ export const LimitedUsers: React.FC = () => {
                         <tr key={item.id}>
                           <th>
                             <Link to={`${item.id}`}>
-                              {translate(item.name)}
+                              {item.name}
                             </Link>
                           </th>
-                          <td>{translate(item.description)}</td>
+                          <td>{item.description}</td>
                           <td className="thin">
                             <a
                               className="delete icon"

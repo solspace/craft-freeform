@@ -164,7 +164,7 @@ export const Group: React.FC<{
   return (
     <Block className="solo">
       <TitleBlock>
-        <Heading>{item.name}</Heading>
+        <Heading>{translate(item.name)}</Heading>
         {nesting === 0 && (
           <Actions>
             <a onClick={update(true)}>{translate('Enable All')}</a>

@@ -835,6 +835,11 @@ return [
 
     // Settings // Limited Users
     'Limited Users' => 'Beperkte gebruikers',
+    'No groups exist yet' => 'Er bestaan nog geen groepen',
+    'Click on the "New Group" button to set up your first Limited User permission group.' => 'Klik op de knop "Nieuwe groep" om uw eerste beperkte gebruikersmachtigingsgroep in te stellen.',
+    'New Group' => 'Nieuwe groep',
+    'Are you sure you want to delete this?' => 'Weet je zeker dat je dit wilt verwijderen?',
+    'Permission saved successfully.' => 'Toestemming succesvol opgeslagen.',
     'Enter the name of the limited user permission.' => 'Voer de naam van de beperkte gebruikersmachtiging in.',
     'Enter a description for this permission.' => 'Voer een beschrijving in voor deze toestemming.',
     'Enable All' => 'Alles inschakelen',

@@ -69,9 +69,7 @@ export const LimitedUsers: React.FC = () => {
                       {data.map((item) => (
                         <tr key={item.id}>
                           <th>
-                            <Link to={`${item.id}`}>
-                              {item.name}
-                            </Link>
+                            <Link to={`${item.id}`}>{item.name}</Link>
                           </th>
                           <td>{item.description}</td>
                           <td className="thin">

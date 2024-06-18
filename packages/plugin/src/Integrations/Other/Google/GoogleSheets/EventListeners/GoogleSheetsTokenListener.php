@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets\EventListeners;
 
 use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
-use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\GoogleSheetsIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 use yii\base\Event;
 
 class GoogleSheetsTokenListener extends FeatureBundle

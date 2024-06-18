@@ -16,7 +16,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
-use Solspace\Freeform\Jobs\SendAdminNotificationsJob;
+use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use yii\base\Event;
@@ -41,14 +41,30 @@ class AdminNotifications extends FeatureBundle
             return;
         }
 
-        if (!$this->notificationsProvider->getByFormAndClass($form, Admin::class)) {
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, Admin::class);
+        if (!$notifications) {
             return;
         }
 
-        $this->queueHandler->executeNotificationJob(
-            new SendAdminNotificationsJob([
-                'submissionId' => $event->getSubmission()->getId(),
-            ])
-        );
+        foreach ($notifications as $notification) {
+            $recipients = $notification->getRecipients();
+            if (!$recipients) {
+                continue;
+            }
+
+            $template = $notification->getTemplate();
+            if (!$template) {
+                continue;
+            }
+
+            $this->queueHandler->executeNotificationJob(
+                new SendNotificationsJob([
+                    'formId' => $form->getId(),
+                    'submissionId' => $event->getSubmission()->getId(),
+                    'recipients' => serialize($recipients),
+                    'template' => serialize($template),
+                ])
+            );
+        }
     }
 }

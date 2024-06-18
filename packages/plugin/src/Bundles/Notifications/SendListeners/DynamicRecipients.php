@@ -1,4 +1,14 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2024, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 
@@ -6,7 +16,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
-use Solspace\Freeform\Jobs\SendDynamicRecipientsNotificationsJob;
+use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use yii\base\Event;
@@ -31,14 +41,51 @@ class DynamicRecipients extends FeatureBundle
             return;
         }
 
-        if (!$this->notificationsProvider->getByFormAndClass($form, Dynamic::class)) {
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, Dynamic::class);
+        if (!$notifications) {
             return;
         }
 
-        $this->queueHandler->executeNotificationJob(
-            new SendDynamicRecipientsNotificationsJob([
-                'submissionId' => $event->getSubmission()->getId(),
-            ])
-        );
+        $fields = $event->getFields();
+
+        foreach ($notifications as $notification) {
+            $field = $fields->get($notification->getField());
+            if (!$field) {
+                continue;
+            }
+
+            $value = $field->getValue();
+            if (!\is_array($value)) {
+                $value = [$value];
+            }
+
+            $defaultTemplate = $notification->getTemplate();
+            $defaultRecipients = $notification->getRecipients();
+
+            $recipientMapping = $notification->getRecipientMapping();
+            foreach ($value as $selectedValue) {
+                $mapping = $recipientMapping->getMappingByValue($selectedValue);
+
+                $template = $defaultTemplate;
+                $recipients = $defaultRecipients;
+                if ($mapping) {
+                    $template = $mapping->getTemplate() ?? $template;
+                    $recipients = $mapping->getRecipients()->count() ? $mapping->getRecipients() : $recipients;
+                }
+
+                if (!$recipients->emailsToArray() || !$template) {
+                    continue;
+                }
+
+                $this->queueHandler->executeNotificationJob(
+                    new SendNotificationsJob([
+                        'formId' => $form->getId(),
+                        'submissionId' => $event->getSubmission()->getId(),
+                        'recipients' => serialize($recipients),
+                        'template' => serialize($template),
+                    ])
+                );
+            }
+        }
     }
 }

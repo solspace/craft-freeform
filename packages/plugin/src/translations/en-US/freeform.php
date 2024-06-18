@@ -1254,6 +1254,16 @@ return [
     'Missing submissions ID in payment details' => 'Missing submissions ID in payment details',
     'Event is not linked to freeform submission' => 'Event is not linked to freeform submission',
 
+    // Craft Queue Jobs
+    'Freeform: Processing CRM Integrations' => 'Freeform: Processing CRM Integrations',
+    'Freeform: Processing Email Marketing Integrations' => 'Freeform: Processing Email Marketing Integrations',
+    'Freeform: Processing Google Sheets Integrations' => 'Freeform: Processing Google Sheets Integrations',
+    'Freeform: Sending Digest Email' => 'Freeform: Sending Digest Email',
+    'Freeform: Processing Notifications' => 'Freeform: Processing Notifications',
+    'Freeform: Purging Old Submissions' => 'Freeform: Purging Old Submissions',
+    'Freeform: Purging Old Spam Submissions' => 'Freeform: Purging Old Spam Submissions',
+    'Freeform: Purging Unfinalized Assets' => 'Freeform: Purging Unfinalized Assets',
+
     // Front End Form Errors // Fields
     'This field is required' => 'This field is required',
     '{email} is not a valid email address' => '{email} is not a valid email address',

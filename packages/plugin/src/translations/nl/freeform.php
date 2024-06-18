@@ -1254,6 +1254,16 @@ return [
     'Missing submissions ID in payment details' => 'Ontbrekende inzendings-ID in betalingsgegevens',
     'Event is not linked to freeform submission' => 'Evenement is niet gekoppeld aan inzending in vrije vorm',
 
+    // Craft Queue Jobs
+    'Freeform: Processing CRM Integrations' => 'Freeform: CRM-integraties verwerken',
+    'Freeform: Processing Email Marketing Integrations' => 'Freeform: E-mailmarketingintegraties verwerken',
+    'Freeform: Processing Google Sheets Integrations' => 'Freeform: Google Spreadsheets-integraties verwerken',
+    'Freeform: Sending Digest Email' => 'Freeform: Samenvatting-e-mail verzenden',
+    'Freeform: Processing Notifications' => 'Freeform: Meldingen verwerken',
+    'Freeform: Purging Old Submissions' => 'Freeform: Oude inzendingen opschonen',
+    'Freeform: Purging Old Spam Submissions' => 'Freeform: Oude spaminzendingen opschonen',
+    'Freeform: Purging Unfinalized Assets' => 'Freeform: Niet-gefinaliseerde activa opschonen',
+
     // Front End Form Errors // Fields
     'This field is required' => 'Dit veld is verplicht',
     '{email} is not a valid email address' => '{email} is geen geldig e-mailadres',

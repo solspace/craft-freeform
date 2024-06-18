@@ -1,6 +1,7 @@
 import React from 'react';
 import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import { useFetchFavorites } from '@ff-client/queries/field-favorites';
+import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import translate from '@ff-client/utils/translations';
 import EditIcon from '@ff-icons/actions/edit.icon.svg';
 
@@ -18,6 +19,7 @@ export const FavoriteFields: React.FC = () => {
   const select = useSelectSearchedFavorites();
   const { data, isFetching, isError, error } = useFetchFavorites({ select });
   const openModal = useCreateModal();
+  const findType = useFieldTypeSearch();
 
   if (!data && isFetching) {
     return <LoaderFieldGroup words={[60]} items={2} />;
@@ -33,7 +35,7 @@ export const FavoriteFields: React.FC = () => {
 
   return (
     <FieldGroup
-      title={title}
+      title={translate(title)}
       button={{
         icon: <EditIcon />,
         title: translate('Edit Favorites'),
@@ -41,9 +43,18 @@ export const FavoriteFields: React.FC = () => {
       }}
     >
       <List>
-        {data.map((favorite) => (
-          <FieldItem key={favorite.uid} favorite={favorite} />
-        ))}
+        {data.map((favorite) => {
+          const fieldType = findType(favorite.typeClass);
+          if (!fieldType) {
+            return null;
+          }
+
+          if (!fieldType?.visible) {
+            return null;
+          }
+
+          return <FieldItem key={favorite.id} favorite={favorite} />;
+        })}
       </List>
     </FieldGroup>
   );

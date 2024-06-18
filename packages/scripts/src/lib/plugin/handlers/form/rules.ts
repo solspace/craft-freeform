@@ -154,7 +154,7 @@ class RuleHandler implements FreeformHandler {
     const selector =
       'field' in rule ? `[data-field-container="${rule.field}"]` : `[data-button-container="${rule.button}"]`;
 
-    const container = document.querySelector<HTMLDivElement>(selector);
+    const container = this.form.querySelector<HTMLDivElement>(selector);
     if (!container) {
       return;
     }

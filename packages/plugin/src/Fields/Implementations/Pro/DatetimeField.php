@@ -196,7 +196,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
      */
     public function getType(): string
     {
-        return self::TYPE_DATETIME;
+        if ($this->useDatepicker) {
+            return 'text';
+        }
+
+        return match ($this->dateTimeType) {
+            self::DATETIME_TYPE_BOTH => 'datetime-local',
+            self::DATETIME_TYPE_DATE => 'date',
+            self::DATETIME_TYPE_TIME => 'time',
+        };
     }
 
     public function getInitialValue(): string

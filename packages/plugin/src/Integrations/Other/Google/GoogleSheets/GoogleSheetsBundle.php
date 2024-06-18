@@ -13,17 +13,19 @@
 namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
+use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 use yii\base\Event;
 
 class GoogleSheetsBundle extends FeatureBundle
 {
     public function __construct(
-        private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationClientProvider $clientProvider,
+        private FormIntegrationsProvider $integrationsProvider,
+        private FreeformQueueHandler $queueHandler
     ) {
         Event::on(
             Submission::class,
@@ -47,10 +49,15 @@ class GoogleSheetsBundle extends FeatureBundle
             return;
         }
 
-        $integrations = $this->formIntegrationsProvider->getForForm($form, GoogleSheetsIntegrationInterface::class);
-        foreach ($integrations as $integration) {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+        if (!$this->integrationsProvider->getForForm($form, GoogleSheetsIntegrationInterface::class)) {
+            return;
         }
+
+        $this->queueHandler->executeIntegrationJob(
+            new ProcessGoogleSheetsIntegrationsJob([
+                'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()->getId(),
+            ])
+        );
     }
 }

@@ -15,6 +15,7 @@ export type FieldType = {
   name: string;
   typeClass: string;
   type: string;
+  visible: boolean;
   icon?: string;
   previewTemplate?: string;
   implements: string[];

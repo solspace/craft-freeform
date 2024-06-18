@@ -2,8 +2,8 @@
 
 
 {{ forms.textField({
-    label: "Title"|t,
-    instructions: "Enter a custom widget title, or leave blank to use default."|t,
+    label: "Title"|t('app'),
+    instructions: "Enter a custom widget title, or leave blank to use default."|t('freeform'),
     id: 'title',
     name: 'title',
     value: settings.title,
@@ -11,8 +11,8 @@
 }) }}
 
 {{ forms.textField({
-    label: "Limit"|t,
-    instructions: "The maximum number of submissions to show."|t,
+    label: "Limit"|t('freeform'),
+    instructions: "The maximum number of submissions to show."|t('freeform'),
     id: 'limit',
     name: 'limit',
     value: settings.limit,
@@ -20,8 +20,8 @@
 }) }}
 
 {{ forms.checkboxSelectField({
-    label: "Forms"|t,
-    instructions: "Select the forms for which submission data should be included."|t,
+    label: "Forms"|t('freeform'),
+    instructions: "Select the forms for which submission data should be included."|t('freeform'),
     id: 'formIds',
     name: 'formIds',
     options: formOptions,

@@ -10,6 +10,7 @@ import {
   useFieldType,
 } from '@ff-client/queries/field-types';
 import { type Property } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 import { CloseLink, Icon, Title } from '../../property-editor.styles';
 import { SectionBlock } from '../../section-block';
@@ -39,7 +40,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
       <FieldPropertiesWrapper>
         <Title>
           <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
-          <span>{type.name}</span>
+          <span>{translate(type.name)}</span>
         </Title>
         <SectionWrapper>
           <Skeleton />
@@ -52,13 +53,15 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   sections
     .sort((a, b) => a.order - b.order)
     .forEach(({ handle, label, icon }, sectionIndex) => {
-      const properties = type.properties.filter(sectionFilter(handle));
+      const properties = type.properties
+        .filter(sectionFilter(handle))
+        .filter((property) => property.visible);
       if (!properties.length) {
         return;
       }
 
       sectionBlocks.push(
-        <SectionBlock label={label} icon={icon} key={handle}>
+        <SectionBlock label={translate(label)} icon={icon} key={handle}>
           {properties.map((property, propertyIndex) => (
             <FieldComponent
               autoFocus={sectionIndex === 0 && propertyIndex === 0}
@@ -79,7 +82,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
       <FavoriteButton field={field} />
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
-        <span>{type.name}</span>
+        <span>{translate(type.name)}</span>
       </Title>
       <SectionWrapper>{sectionBlocks}</SectionWrapper>
     </FieldPropertiesWrapper>

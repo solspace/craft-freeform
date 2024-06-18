@@ -22,6 +22,8 @@ abstract class Property
     /** @var VisibilityFilter[] */
     public array $visibilityFilters = [];
 
+    public bool $visible = true;
+
     /** @var Edition[] */
     public ?array $editions = null;
 

@@ -112,4 +112,16 @@ export const FieldWrapper = styled(animated.div)`
       border-left-color: ${colors.teal550};
     }
   }
+
+  &.read-only {
+    &,
+    * {
+      cursor: default;
+    }
+
+    &:hover {
+      background-color: ${colors.gray100};
+      border-color: ${colors.gray100};
+    }
+  }
 `;

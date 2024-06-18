@@ -1,7 +1,7 @@
 var form = document.querySelector('form[data-id="{{ id }}"]');
 var jsTest = function (event) {
-  event.form.querySelector('input[name="{{ name }}"]').value = '';
+  event.form.querySelector('[data-ff-check] + input[name]').value = '';
 }
 
-form.addEventListener('freeform-ready', jsTest);
-form.addEventListener('freeform-ajax-after-submit', jsTest);
+document.addEventListener('freeform-ready', jsTest);
+document.addEventListener('freeform-ajax-after-submit', jsTest);

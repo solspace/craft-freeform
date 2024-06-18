@@ -32,7 +32,7 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 
     #[TextArea(
         label: 'Error Trigger',
-        instructions: 'Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there’s an error to log, e.g. ‘error’ or ‘an error occurred’.',
+        instructions: "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'.",
     )]
     protected string $errorTrigger = '';
 

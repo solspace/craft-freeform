@@ -39,7 +39,8 @@ class TextareaField extends AbstractField implements PlaceholderInterface, Defau
     use PlaceholderTrait;
 
     #[Input\TextArea(
-        instructions: 'The default value of this field.',
+        label: 'Default value',
+        instructions: 'Enter a default value for this field',
     )]
     protected ?string $defaultValue = '';
 

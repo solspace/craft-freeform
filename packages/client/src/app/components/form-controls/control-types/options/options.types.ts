@@ -4,6 +4,7 @@ import type {
   OptionsProperty,
   Property,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 export enum Source {
   Custom = 'custom',
@@ -14,15 +15,15 @@ export enum Source {
 export const sourceLabels: OptionCollection = [
   {
     value: 'custom',
-    label: 'Custom',
+    label: translate('Custom'),
   },
   {
     value: 'elements',
-    label: 'Elements',
+    label: translate('Elements'),
   },
   {
     value: 'predefined',
-    label: 'Predefined',
+    label: translate('Predefined'),
   },
 ];
 

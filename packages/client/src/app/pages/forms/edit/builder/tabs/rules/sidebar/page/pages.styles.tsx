@@ -56,6 +56,10 @@ export const PageButton = styled.button`
     outline: none;
   }
 
+  &.read-only {
+    cursor: default !important;
+  }
+
   svg {
     width: 18px;
     height: 18px;

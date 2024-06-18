@@ -39,7 +39,7 @@ class SingleController extends BaseController
         return $this->renderTemplate(
             'freeform/settings/integrations/singleton/list',
             [
-                'title' => 'Other',
+                'title' => 'Single',
                 'types' => $types,
                 'integrations' => $integrationsByClass,
                 'handle' => $handle,

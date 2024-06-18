@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import config from '@config/freeform/freeform.config';
 import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
 import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/items/type.skeleton';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
@@ -14,6 +15,7 @@ import { NotificationItem } from './items/item';
 import { ScrollableList } from './list.styles';
 
 export const List: React.FC = () => {
+  const limitations = config.limitations;
   const { formId, uid } = useParams();
   const navigate = useNavigate();
 
@@ -45,22 +47,26 @@ export const List: React.FC = () => {
   return (
     <Sidebar $lean>
       <ScrollableList>
-        {notificationTypes.map((type) => (
-          <NotificationTypeItem key={type.className} type={type}>
-            {notifications &&
-              notifications
-                ?.filter(
-                  (notification) => notification.className === type.className
-                )
-                .map((notification) => (
-                  <NotificationItem
-                    key={notification.uid}
-                    icon={type.icon}
-                    notification={notification}
-                  />
-                ))}
-          </NotificationTypeItem>
-        ))}
+        {notificationTypes
+          .filter((type) =>
+            limitations.can(`notifications.tab.${type.className}`)
+          )
+          .map((type) => (
+            <NotificationTypeItem key={type.className} type={type}>
+              {notifications &&
+                notifications
+                  ?.filter(
+                    (notification) => notification.className === type.className
+                  )
+                  .map((notification) => (
+                    <NotificationItem
+                      key={notification.uid}
+                      icon={type.icon}
+                      notification={notification}
+                    />
+                  ))}
+            </NotificationTypeItem>
+          ))}
       </ScrollableList>
     </Sidebar>
   );

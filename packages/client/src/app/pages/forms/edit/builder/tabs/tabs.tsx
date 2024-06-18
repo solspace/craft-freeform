@@ -27,6 +27,7 @@ import {
 } from './tabs.styles';
 
 export const Tabs: React.FC = () => {
+  const limitations = config.limitations;
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
   const state = useSelector(contextSelectors.state);
@@ -75,21 +76,25 @@ export const Tabs: React.FC = () => {
         <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
           <span>{translate('Layout')}</span>
         </NavLink>
-        <NavLink
-          to="notifications"
-          className={classes(notificationsHaveErrors && 'errors')}
-        >
-          <span>{translate('Notifications')}</span>
-        </NavLink>
-        {config.editions.is(Edition.Pro) && (
+        {limitations.can('notifications.tab') && (
+          <NavLink
+            to="notifications"
+            className={classes(notificationsHaveErrors && 'errors')}
+          >
+            <span>{translate('Notifications')}</span>
+          </NavLink>
+        )}
+        {config.editions.is(Edition.Pro) && limitations.can('rules.tab') && (
           <NavLink to="rules">
             <span>{translate('Rules')}</span>
           </NavLink>
         )}
-        <NavLink to="integrations">
-          <span>{translate('Integrations')}</span>
-        </NavLink>
-        {formSettingsData && (
+        {config.limitations.can('integrations.tab') && (
+          <NavLink to="integrations">
+            <span>{translate('Integrations')}</span>
+          </NavLink>
+        )}
+        {formSettingsData && config.limitations.can('settings.tab') && (
           <NavLink
             to="settings"
             className={classes(

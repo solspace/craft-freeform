@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 
@@ -49,9 +50,11 @@ class NotificationTemplateRecord extends ActiveRecord
 
     public static function create(): self
     {
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
         $record = new self();
-        $record->fromEmail = \Craft::$app->projectConfig->get('email.fromEmail');
-        $record->fromName = \Craft::$app->projectConfig->get('email.fromName');
+        $record->fromEmail = $settingsModel->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
+        $record->fromName = $settingsModel->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
         $record->subject = 'New submission on your {{ form.name }} form';
         $record->autoText = true;
         $record->bodyHtml = <<<'EOT'

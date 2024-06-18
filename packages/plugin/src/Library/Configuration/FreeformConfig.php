@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Configuration;
 
 use craft\models\Site;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Services\SettingsService;
@@ -14,8 +15,10 @@ class FreeformConfig implements \JsonSerializable
 
     private array $config = [];
 
-    public function __construct(SettingsService $settings)
-    {
+    public function __construct(
+        SettingsService $settings,
+        LimitedUserChecker $limitedUserChecker,
+    ) {
         $plugin = Freeform::getInstance();
         $settingsModel = $settings->getSettingsModel();
         $edition = $plugin->edition();
@@ -56,6 +59,9 @@ class FreeformConfig implements \JsonSerializable
                     ],
                     $sites,
                 ),
+            ],
+            'limitations' => [
+                'items' => $limitedUserChecker->getAll(),
             ],
         ];
     }

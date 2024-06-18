@@ -1,5 +1,28 @@
 # Solspace Freeform Changelog
 
+## 5.4.0 - Unreleased
+
+### Added
+- Added Limited Users feature (Pro), which allows you to customize the form builder experience for specific users or groups.
+    - You can choose which field types are available and which settings and page tabs are visible.
+    - This ensures that these users are not overwhelmed by advanced settings and prevents them from accidentally breaking your forms or site.
+    - Multiple limited user groups can be created.
+- Added ability to set email notifications and integrations to use Craft's queue.
+- Added settings to control the Default 'From Name' and 'From Name' when creating new email notification templates.
+- Added a chart to the Submissions index page.
+- Added full translation support for the form builder and overhauled the English and Dutch translation files to be complete.
+
+### Changed
+- Updated email notifications and integrations to be now handled by Craft's jobs. These can optionally be queued as well.
+- Moved all remaining inline CSS and Javascript into external script files. This does not include inline CSS and JS for sample formatting templates.
+- Updated the Date & Time field type to use `date`, `time`, and `datetime-local` when not using the Flatpickr date/time picker feature.
+
+### Fixed
+- Fixed a bug where the form Save & Continue feature was not working correctly.
+- Fixed a bug where Stripe Payment forms would not scroll to the top of the form if there were errors.
+- Fixed a bug that prevented clicking the Back button on a page that contained a Stripe Payment field from working.
+- Fixed a bug where conditional rules were not being scoped within each form, which could affect other similar forms.
+
 ## 5.3.5 - 2024-06-13
 
 ### Added

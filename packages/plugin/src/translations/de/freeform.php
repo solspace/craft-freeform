@@ -175,6 +175,11 @@ return [
     'Page Footer' => 'Page Footer',
     'Inside Form' => 'Im Formular',
     'None (add manually)' => 'Nichts (manuell hinzufügen)',
+    'Form Processing' => 'Formularverarbeitung',
+    'Use Queue for Email Notifications' => 'Verwenden Sie die Warteschlange für E-Mail-Benachrichtigungen',
+    "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Nutzen Sie das Warteschlangensystem von Craft, um E-Mails auszulösen. Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt. Dies hängt entweder vom routinemäßigen Datenverkehr zu Ihrem Craft-Kontrollfeld oder von der Implementierung einer ordnungsgemäßen Warteschlangenverarbeitungsmethode ab, die nicht darauf angewiesen ist, dass jemand Ihr Kontrollfeld besucht. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Weitere Informationen</a>",
+    'Use Queue for Integrations' => 'Verwenden Sie die Warteschlange für Integrationen',
+    "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Nutzen Sie das Warteschlangensystem von Craft, um Integrationen auszulösen (CRM und E-Mail-Marketing). Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt. Dies hängt entweder vom routinemäßigen Datenverkehr zu Ihrem Craft-Kontrollfeld oder von der Implementierung einer ordnungsgemäßen Warteschlangenverarbeitungsmethode ab, die nicht darauf angewiesen ist, dass jemand Ihr Kontrollfeld besucht. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Weitere Informationen</a>",
 
     // Statuses controller
     'Create a new status' => 'Neuen Status erstellen',
@@ -702,4 +707,10 @@ return [
     'Payment type is not configured!' => 'Zahlungstyp ist nicht konfiguriert!',
     'Payment amount is not configured!' => 'Zahlungs-Betrag ist nicht konfiguriert!',
     'Subscription plan is not configured!' => 'Subscription-Plan ist nicht konfiguriert!',
+
+    // Template Manager
+    'Default From Email for New Templates' => 'Standardabsender-E-Mail für neue Vorlagen',
+    "The default email address to be included in the 'From Email' setting of new email notification templates." => "Die Standard-E-Mail-Adresse, die in die Einstellung 'Von E-Mail' neuer E-Mail-Benachrichtigungsvorlagen aufgenommen werden soll.",
+    'Default From Name for New Templates' => 'Standardabsendername für neue Vorlagen',
+    "The default name to be included in the 'From Email' setting of new email notification templates." => "Der Standardname, der in die Einstellung 'Von E-Mail' neuer E-Mail-Benachrichtigungsvorlagen aufgenommen werden soll.",
 ];

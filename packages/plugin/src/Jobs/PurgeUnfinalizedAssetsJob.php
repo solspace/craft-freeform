@@ -16,6 +16,6 @@ class PurgeUnfinalizedAssetsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return 'Purge Unfinalized Assets';
+        return Freeform::t('Freeform: Purging Unfinalized Assets');
     }
 }

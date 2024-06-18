@@ -38,12 +38,9 @@ export const Welcome: React.FC = () => {
       </InstallWrapper>
 
       <ExtraContentWrapper style={extra}>
-        {translate(`
-          Thank you for choosing Freeform! Craft will install the free
-          Express edition by default. If you wish to maximize your
-          experience, be sure to manually switch the edition to Lite or
-          Pro. Below are a few helpful links to get you started.
-        `)}
+        {translate(
+          'Thank you for choosing Freeform! Craft will install the free Express edition by default. If you wish to maximize your experience, be sure to manually switch the edition to Lite or Pro. Below are a few helpful links to get you started.'
+        )}
       </ExtraContentWrapper>
 
       <ButtonsWrapper>

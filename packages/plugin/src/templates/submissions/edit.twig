@@ -170,7 +170,7 @@
 
         <div class="field">
             <div class="heading">
-                <label>Form</label>
+                <label>{{ 'Form'|t('freeform') }}</label>
             </div>
             <div class="input ltr">
                 <span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/submissions/&source=form%3A' ~ form.id) }}">{{ form.name }}</a>
@@ -220,7 +220,7 @@
                 <div class="value">{{ submission.id }}</div>
             </div>
             <div class="data">
-                <h5 class="heading">{{ "Freeform ID"|t('app') }}</h5>
+                <h5 class="heading">{{ "Freeform ID"|t('freeform') }}</h5>
                 <div class="value">{{ submission.incrementalId }}</div>
             </div>
             <div class="data">

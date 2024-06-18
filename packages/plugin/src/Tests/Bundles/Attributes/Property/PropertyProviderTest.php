@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use yii\di\Container;
 
@@ -41,12 +42,15 @@ class PropertyProviderTest extends TestCase
             ->willReturn('pulled from defaults')
         ;
 
+        $mockLimitationChecker = $this->createMock(LimitedUserChecker::class);
+
         $this->provider = $this
             ->getMockBuilder(PropertyProvider::class)
             ->setConstructorArgs([
                 $mockContainer,
                 $mockImplementationProvider,
                 $mockDefaultsProvider,
+                $mockLimitationChecker,
             ])
             ->onlyMethods(['getPluginEdition'])
             ->getMock()

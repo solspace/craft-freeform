@@ -14,7 +14,7 @@ class AllowSpamAction extends ElementAction
 
     public function getTriggerLabel(): string
     {
-        return Freeform::t('Allow selected…');
+        return Freeform::t('Allow selected...');
     }
 
     public static function isDestructive(): bool

@@ -88,7 +88,7 @@ export const AttributesEditor: React.FC<Props> = ({
               className={classes(tabEntry === tab && 'active')}
               onClick={() => setTab(tabEntry)}
             >
-              {tabEntry.label}
+              {translate(tabEntry.label)}
             </a>
           ))}
       </AttributeTypeTabs>

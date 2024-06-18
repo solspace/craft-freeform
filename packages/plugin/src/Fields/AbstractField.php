@@ -17,6 +17,7 @@ use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
@@ -73,6 +74,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     )]
     #[Middleware('handle')]
     #[Flag('code')]
+    #[Limitation('layout.fields.handles')]
     #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(100)]
@@ -99,6 +101,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
+    #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
@@ -138,6 +141,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/advanced.svg',
         order: 1000,
     )]
+    #[Limitation('layout.fields.types')]
     #[Input\FieldType(
         label: 'Field Type',
         instructions: 'Change the type of this field.',

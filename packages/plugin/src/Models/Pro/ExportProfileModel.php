@@ -175,7 +175,7 @@ class ExportProfileModel extends Model
                 'checked' => true,
             ];
             $fieldSettings['ip'] = [
-                'label' => 'IP',
+                'label' => 'IP Address',
                 'checked' => true,
             ];
             $fieldSettings['dateCreated'] = [

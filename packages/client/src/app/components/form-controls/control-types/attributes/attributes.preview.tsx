@@ -4,6 +4,7 @@ import type {
   AttributeTab,
 } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import {
   Name,
@@ -39,7 +40,7 @@ const RenderAttributes: React.FC<{
     <AttributeListWrapper
       className={classes(!attributeArray.length && 'empty')}
     >
-      <AttributeTitle>{tab.label}</AttributeTitle>
+      <AttributeTitle>{translate(tab.label)}</AttributeTitle>
       {!!attributeArray.length && (
         <AttributeList>
           {attributeArray.map(([name, value], idx) => (

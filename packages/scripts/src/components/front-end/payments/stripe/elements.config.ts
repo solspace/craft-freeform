@@ -6,12 +6,12 @@ import type { Config } from './elements.types';
 const stripeInstances = new Map<string, Stripe>();
 
 const config = (container: HTMLDivElement): Config | undefined => {
-  const configElement = container.querySelector<HTMLScriptElement>('script[data-stripe-config]');
+  const configElement = container.querySelector<HTMLScriptElement>('[data-freeform-stripe-card][data-config]');
   if (!configElement) {
     return undefined;
   }
 
-  const config = JSON.parse(configElement.innerText) as Config;
+  const config = JSON.parse(configElement.dataset.config) as Config;
 
   return {
     ...config,

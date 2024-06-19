@@ -4,6 +4,8 @@ import type { ControlType } from '@components/form-controls/types';
 import type { TextareaProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
+import { TextArea } from './textarea.styles';
+
 const Textarea: React.FC<ControlType<TextareaProperty>> = ({
   value,
   property,
@@ -15,12 +17,12 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
 
   return (
     <Control property={property} errors={errors}>
-      <textarea
+      <TextArea
         id={handle}
         className={classes(
           'text',
           'fullwidth',
-          property.flags.includes('as-readonly-in-instance') && 'readonly',
+          property.flags.includes('as-readonly-in-instance') && 'read-only',
           property.flags.includes('code') && 'code'
         )}
         readOnly={property.flags.includes('as-readonly-in-instance')}

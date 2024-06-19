@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\SpamBlocking\Emails;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArrayTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -17,12 +18,12 @@ use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrai
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
 #[Type(
-    name: 'Email Spam Block',
+    name: 'Email Addresses',
     type: Type::TYPE_SPAM_BLOCK,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class EmailSpamBlock extends SpamBlockingIntegration
+class BlockEmailAddresses extends SpamBlockingIntegration
 {
     use EnabledByDefaultTrait;
 
@@ -47,6 +48,7 @@ class EmailSpamBlock extends SpamBlockingIntegration
         instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
         rows: 8,
     )]
+    #[Message('The values entered here will apply only to this form, and will be in addition to the default values set for the main integration')]
     protected array $emails = [];
 
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
@@ -61,7 +63,7 @@ class EmailSpamBlock extends SpamBlockingIntegration
     public function validate(Form $form, bool $displayErrors): void
     {
         $emails = $this->getCombinedEmails();
-        if (!$this->emails) {
+        if (!$emails) {
             return;
         }
 

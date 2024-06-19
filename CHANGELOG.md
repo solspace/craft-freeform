@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.4.1 - 2024-06-19
+
+### Fixed
+- Fixed a bug where the form builder would not load correctly on the Express and Lite editions.
+
 ## 5.4.0 - 2024-06-18
 
 ### Added

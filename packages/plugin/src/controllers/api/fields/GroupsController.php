@@ -30,11 +30,13 @@ class GroupsController extends BaseApiController
         $groupRecord->save();
 
         foreach ($groups as $group) {
+            $types = array_values($group['types'] ?? []);
+
             $groupRecord = new FieldTypeGroupRecord();
             $groupRecord->uid = $group['uid'];
             $groupRecord->label = $group['label'];
             $groupRecord->color = $group['color'];
-            $groupRecord->types = json_encode($group['types']);
+            $groupRecord->types = $types ? json_encode($types) : '[]';
             $groupRecord->save();
         }
 
@@ -73,7 +75,7 @@ class GroupsController extends BaseApiController
                 }
 
                 $array = $group->toArray();
-                $array['types'] = $decodedTypes;
+                $array['types'] = array_values($decodedTypes);
                 $grouped[] = $array;
             }
 
@@ -83,7 +85,7 @@ class GroupsController extends BaseApiController
                 $hiddenFieldTypes
             );
 
-            $response->types = [...$unassignedTypes];
+            $response->types = array_values([...$unassignedTypes]);
             $response->groups = (object) [
                 'hidden' => $hiddenFieldTypes,
                 'grouped' => $grouped,
@@ -103,7 +105,7 @@ class GroupsController extends BaseApiController
                 'uid' => $group->uid,
                 'label' => $group->label,
                 'color' => $group->color,
-                'types' => $filteredTypes,
+                'types' => array_values($filteredTypes),
             ];
         }, $groups);
 

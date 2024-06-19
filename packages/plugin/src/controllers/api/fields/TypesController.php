@@ -27,20 +27,5 @@ class TypesController extends BaseApiController
     protected function get(): array
     {
         return $this->fieldTypesProvider->getTypes();
-        $allowedTypes = $this->checker->get('layout.fieldTypes');
-        if (null === $allowedTypes) {
-            return $types;
-        }
-
-        $result = [];
-        foreach ($allowedTypes as $allowedType) {
-            foreach ($types as $type) {
-                if ($allowedType === $type->typeClass) {
-                    $result[] = $type;
-                }
-            }
-        }
-
-        return $result;
     }
 }

@@ -20,8 +20,10 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
         className={classes(
           'text',
           'fullwidth',
+          property.flags.includes('as-readonly-in-instance') && 'readonly',
           property.flags.includes('code') && 'code'
         )}
+        readOnly={property.flags.includes('as-readonly-in-instance')}
         rows={rows}
         value={value ?? ''}
         placeholder={property.placeholder}

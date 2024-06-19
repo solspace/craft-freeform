@@ -245,6 +245,7 @@ class SettingsService extends BaseService
             'integrations/captchas' => ['title' => Freeform::t('Captchas')],
             'integrations/payment-gateways' => ['title' => Freeform::t('Payments')],
             'integrations/webhooks' => ['title' => Freeform::t('Webhooks')],
+            'integrations/spam-blocking' => ['title' => Freeform::t('Spam Blocking')],
             'integrations/single' => ['title' => Freeform::t('Single')],
             'integrations/other' => ['title' => Freeform::t('Other')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],

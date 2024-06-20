@@ -5,6 +5,7 @@ import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import Textarea from '@components/form-controls/control-types/textarea/textarea';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import { PropertyType } from '@ff-client/types/properties';
 import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
@@ -27,6 +28,8 @@ export const LimitedUsersDetail: React.FC = () => {
   const [description, setDescription] = useState('');
   const [state, setState] = useState([]);
   const mutation = useLimitedUsersMutation(id);
+
+  useSidebarSelect(5);
 
   useEffect(() => {
     if (data) {

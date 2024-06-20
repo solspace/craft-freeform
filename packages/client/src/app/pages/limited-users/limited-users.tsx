@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { EmptyBlock } from '@components/empty-block/empty-block';
 import config, { Edition } from '@config/freeform/freeform.config';
+import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -19,6 +20,8 @@ export const LimitedUsers: React.FC = () => {
   const mutation = useLimitedUsersDeleteMutation();
   const isPro = config.editions.isAtLeast(Edition.Pro);
   const isCraft5 = config.metadata.craft.is5;
+
+  useSidebarSelect(5);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;

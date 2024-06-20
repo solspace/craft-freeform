@@ -27,30 +27,34 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 {
     use EnabledByDefaultTrait;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Display errors about blocked email(s) under each email field',
+        label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
     protected bool $errorsBelowFields = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Input\Text(
-        label: 'Blocked Emails Error Message',
+        label: 'Error Message',
         instructions: 'The message shown to users when blocked emails are submitted. Can use the `{email}` variable.',
         placeholder: 'Invalid Email Address',
     )]
     protected string $errorMessage = '';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
-        label: 'Blocked Email Addresses',
+        label: 'Blocked Email Addresses for this Form',
         instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
         rows: 8,
     )]
     #[Message('The values entered here will apply only to this form, and will be in addition to the default values set for the main integration')]
     protected array $emails = [];
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(

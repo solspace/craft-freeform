@@ -24,15 +24,17 @@ class BlockIpAddresses extends SpamBlockingIntegration
 {
     use EnabledByDefaultTrait;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
-        label: 'Blocked IP Addresses',
+        label: 'Blocked IP Addresses for this Form',
         instructions: 'Enter IP addresses you would like blocked. Separate multiples on new lines.',
         rows: 8,
     )]
     protected array $ips = [];
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(

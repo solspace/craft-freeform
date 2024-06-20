@@ -26,29 +26,33 @@ class BlockKeywords extends SpamBlockingIntegration
 {
     use EnabledByDefaultTrait;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
-        label: 'Display errors about blocked keyword(s) under each text/textarea field',
+        label: 'Display Errors about Blocked Keywords under each Field',
         instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
     protected bool $errorsBelowFields = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Input\Text(
-        label: 'Blocked Keywords Error Message',
+        label: 'Error Message',
         instructions: 'The message shown to users when blocked keywords are submitted. Can use `{value}` and `{keyword}` variables.',
         placeholder: 'Invalid Entry Data',
     )]
     protected string $errorMessage = '';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
-        label: 'Blocked Keywords',
+        label: 'Blocked Keywords for this Form',
         instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. "generate new leads"), asterisks for wildcards (e.g. lead*), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
         rows: 8,
     )]
     protected array $keywords = [];
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(

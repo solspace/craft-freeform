@@ -5,8 +5,10 @@ namespace Solspace\Freeform\Integrations\SpamBlocking\IpAddresses;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArrayTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -32,6 +34,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
         instructions: 'Enter IP addresses you would like blocked. Separate multiples on new lines.',
         rows: 8,
     )]
+    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
     protected array $ips = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
@@ -42,6 +45,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
         instructions: 'Enter IP addresses you would like blocked. Separate multiples on new lines.',
         rows: 8,
     )]
+    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultIps = [];
 
     public function validate(Form $form, bool $displayErrors): void

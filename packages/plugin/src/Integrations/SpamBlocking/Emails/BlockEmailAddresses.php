@@ -51,7 +51,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
         instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
         rows: 8,
     )]
-    #[Message('The values entered here will apply only to this form, and will be in addition to the default values set for the main integration')]
+    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
     protected array $emails = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
@@ -62,6 +62,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
         instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
         rows: 8,
     )]
+    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultEmails = [];
 
     public function validate(Form $form, bool $displayErrors): void

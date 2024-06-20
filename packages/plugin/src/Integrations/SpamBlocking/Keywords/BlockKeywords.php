@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\SpamBlocking\Keywords;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArrayTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -50,6 +51,7 @@ class BlockKeywords extends SpamBlockingIntegration
         instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. "generate new leads"), asterisks for wildcards (e.g. lead*), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
         rows: 8,
     )]
+    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
     protected array $keywords = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
@@ -60,6 +62,7 @@ class BlockKeywords extends SpamBlockingIntegration
         instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. "generate new leads"), asterisks for wildcards (e.g. lead*), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
         rows: 8,
     )]
+    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultKeywords = [];
 
     public function validate(Form $form, bool $displayErrors): void

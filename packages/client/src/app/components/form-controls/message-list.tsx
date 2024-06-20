@@ -3,6 +3,7 @@ import React from 'react';
 import { colors } from '@ff-client/styles/variables';
 import type { Message } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 import styled from 'styled-components';
 
 type Props = ComponentPropsWithRef<'ul'> & {
@@ -42,7 +43,7 @@ export const FormMessageList: React.FC<Props> = ({ messages, ...props }) => {
           className={classes(`message-type-${type}`, type, 'has-icon')}
         >
           <span className="icon"></span>
-          {message}
+          {translate(message)}
         </li>
       ))}
     </MessageListComponent>

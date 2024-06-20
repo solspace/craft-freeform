@@ -98,10 +98,7 @@ class RulesBundle extends FeatureBundle
             ['groups' => 'front-end']
         );
 
-        $attributes = (new Attributes())
-            ->set('data-rules-json', $serialized)
-            ->set('style', 'display: none;')
-        ;
+        $attributes = new Attributes(['data-rules-json' => $serialized]);
 
         $event->addChunk("<div{$attributes}></div>");
     }

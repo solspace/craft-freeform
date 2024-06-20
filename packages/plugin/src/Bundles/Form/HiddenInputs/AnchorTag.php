@@ -22,7 +22,7 @@ class AnchorTag extends FeatureBundle
         $form = $event->getForm();
 
         if (Freeform::getInstance()->forms->isAutoscrollToErrorsEnabled()) {
-            $event->addChunk('<div id="'.$form->getAnchor().'" data-scroll-anchor style="display: none;"></div>');
+            $event->addChunk('<div id="'.$form->getAnchor().'" data-scroll-anchor></div>');
         }
     }
 

@@ -1041,6 +1041,8 @@ return [
     'Integration does not implement authorizable interface' => 'Integratie implementeert geen geautoriseerde interface',
     'API Key is required' => 'API-sleutel is vereist',
     'Client ID is required' => 'Client-ID is vereist',
+    'Click to expand' => 'Klik om uit te vouwen',
+    'Collapse' => 'Samenvouwen',
 
     // Integrations // Email Marketing
     'Email Marketing' => 'Email Reclame',
@@ -1174,6 +1176,8 @@ return [
     'If enabled, this integration will be enabled by default on all forms.' => 'Indien ingeschakeld, wordt deze integratie standaard ingeschakeld op alle formulieren.',
     'Container ID' => 'Container-ID',
     'Add this if you want Google Tag Manager scripts added to your page by Freeform. Leave blank if you are adding your own GTM scripts.' => 'Voeg dit toe als u Google Tag Manager-scripts door Freeform aan uw pagina wilt toevoegen. Laat dit leeg als u uw eigen GTM-scripts toevoegt.',
+    'Include Uploaded Files' => 'Inclusief geüploade bestanden',
+    'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.' => 'Als er bestanden aanwezig zijn in de formulierinzending, worden deze aan de payload toegevoegd en verzonden als meerdelige formuliergegevens.',
 
     // Integrations // Other/Google Sheets
     'Other' => 'Ander',

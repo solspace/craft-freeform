@@ -15,6 +15,7 @@ class Type
     public const TYPE_PAYMENT_GATEWAYS = 'payment-gateways';
     public const TYPE_WEBHOOKS = 'webhooks';
     public const TYPE_SINGLE = 'single';
+    public const TYPE_SPAM_BLOCK = 'spam-blocking';
     public const TYPE_OTHER = 'other';
 
     public array $editions = [];

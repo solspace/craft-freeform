@@ -74,6 +74,7 @@ type BaseProperty<T, PT extends PropertyType> = {
   width?: number;
   disabled?: boolean;
   flags?: string[];
+  messages?: Message[];
   visible?: boolean;
   visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];
@@ -81,6 +82,11 @@ type BaseProperty<T, PT extends PropertyType> = {
   section?: string;
   tab?: string;
   group?: string;
+};
+
+export type Message = {
+  type: 'error' | 'warning' | 'info';
+  message: string;
 };
 
 export type AttributeTab = {

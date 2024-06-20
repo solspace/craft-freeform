@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
@@ -135,6 +136,7 @@ class PropertyProvider
             $this->processVisibilityFilters($property, $attribute);
             $this->processDateProperties($attribute);
             $this->processLimitations($property, $attribute);
+            $this->processMessages($property, $attribute);
 
             $this->processValue($property, $attribute, $referenceObject);
 
@@ -336,6 +338,11 @@ class PropertyProvider
     private function processFlags(\ReflectionProperty $property, Property $attribute): void
     {
         $attribute->flags = AttributeHelper::findAttributes($property, Flag::class);
+    }
+
+    private function processMessages(\ReflectionProperty $property, Property $attribute): void
+    {
+        $attribute->messages = AttributeHelper::findAttributes($property, Message::class);
     }
 
     private function processValidators(\ReflectionProperty $property, Property $attribute): void

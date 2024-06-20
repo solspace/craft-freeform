@@ -29,6 +29,7 @@ abstract class Property
 
     /** @var Flag[] */
     public array $flags = [];
+    public array $messages = [];
 
     public ?string $section = null;
     public bool $required = false;

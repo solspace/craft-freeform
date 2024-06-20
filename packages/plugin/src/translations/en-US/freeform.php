@@ -1041,6 +1041,8 @@ return [
     'Integration does not implement authorizable interface' => 'Integration does not implement authorizable interface',
     'API Key is required' => 'API Key is required',
     'Client ID is required' => 'Client ID is required',
+    'Click to expand' => 'Click to expand',
+    'Collapse' => 'Collapse',
 
     // Integrations // Email Marketing
     'Email Marketing' => 'Email Marketing',
@@ -1168,6 +1170,8 @@ return [
     'Message' => 'Message',
     'The message to send to Slack. You can use Twig syntax to render dynamic content.' => 'The message to send to Slack. You can use Twig syntax to render dynamic content.',
     'Webhook URL is required' => 'Webhook URL is required',
+    'Include Uploaded Files' => 'Include Uploaded Files',
+    'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.' => 'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.',
 
     // Integrations // Single
     'Enabled by default' => 'Enabled by default',

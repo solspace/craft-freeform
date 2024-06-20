@@ -38,8 +38,8 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     protected string $errorTrigger = '';
 
     #[Boolean(
-        label: 'Send Files',
-        instructions: 'Whether to send uploaded files to the external URL.',
+        label: 'Include Uploaded Files',
+        instructions: 'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.',
     )]
     protected bool $sendFiles = false;
 

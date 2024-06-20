@@ -67,7 +67,7 @@ class PostForwardingTrigger extends FeatureBundle
                 continue;
             }
 
-            if ($field instanceof FileUploadField) {
+            if ($field instanceof FileUploadField && $integration->isSendFiles()) {
                 $assets = $field->getAssets()->all();
 
                 /** @var Asset $asset */
@@ -113,7 +113,7 @@ class PostForwardingTrigger extends FeatureBundle
 
         $isOptionValid = array_intersect(array_keys($options), self::VALID_OPTIONS);
         if (!$isOptionValid) {
-            if (empty($files)) {
+            if (empty($files) || !$integration->isSendFiles()) {
                 $options[RequestOptions::FORM_PARAMS] = $payload;
             } else {
                 $options[RequestOptions::MULTIPART] = array_merge(

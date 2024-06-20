@@ -62,6 +62,11 @@ class IntegrationsController extends BaseController
 
         $model = IntegrationModel::create($type);
 
+        $serviceProvider = $this->request->get('serviceProvider');
+        if (null !== $serviceProvider) {
+            $model->class = $serviceProvider;
+        }
+
         return $this->renderEditForm($model);
     }
 

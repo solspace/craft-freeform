@@ -20,6 +20,7 @@ interface IntegrationInterface
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_AS_HIDDEN_IN_INSTANCE = 'as-hidden-in-instance';
+    public const FLAG_AS_READONLY_IN_INSTANCE = 'as-readonly-in-instance';
     public const FLAG_INSTANCE_ONLY = 'instance';
     public const FLAG_INTERNAL = 'internal';
     public const FLAG_ENCRYPTED = 'encrypted';

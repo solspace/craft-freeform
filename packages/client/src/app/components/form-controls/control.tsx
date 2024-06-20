@@ -10,6 +10,7 @@ import type { Property } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
 import { FormErrorList } from './error-list';
+import { FormMessageList } from './message-list';
 
 type Props = {
   property: Property;
@@ -32,6 +33,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       <FormInstructions instructions={instructions} />
       <FormField>{children}</FormField>
       <FormErrorList errors={errors} />
+      <FormMessageList messages={property.messages} />
     </ControlWrapper>
   );
 };

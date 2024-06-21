@@ -113,6 +113,7 @@ export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type HiddenProperty = BaseProperty<string, PropertyType.Hidden>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
   rows: number;
+  focus?: boolean;
 };
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {

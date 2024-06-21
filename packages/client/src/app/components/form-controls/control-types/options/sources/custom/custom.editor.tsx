@@ -12,6 +12,7 @@ import { DraggableRow } from '@components/form-controls/draggable-row';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import CrossIcon from '@components/form-controls/icons/cross.svg';
 import MoveIcon from '@components/form-controls/icons/move.svg';
+import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
@@ -19,12 +20,16 @@ import translate from '@ff-client/utils/translations';
 import type {
   ConfigurationProps,
   CustomOptionsConfiguration,
+  Option,
 } from '../../options.types';
 
+import { Bulk } from './custom.bulk';
+import { BulkButton, BulkWrapper, ChoiceWrapper } from './custom.editor.styles';
 import {
   addOption,
   deleteOption,
   moveOption,
+  setOptions,
   toggleUseCustomValues,
   updateOption,
 } from './custom.operations';
@@ -53,19 +58,68 @@ export const CustomEditor: React.FC<
     );
   };
 
+  const bulkImport = (
+    values: string,
+    separator: string,
+    append: boolean
+  ): void => {
+    let currentOptions: Option[] = [];
+    if (append) {
+      if (options[0] && options[0].label === '' && options[0].value === '') {
+        currentOptions = [];
+      } else {
+        currentOptions = [...options];
+      }
+    }
+
+    values.split('\n').forEach((line) => {
+      let [label, value] = line.split(separator);
+      label = label.trim();
+      value = value?.trim();
+
+      if (!label && !value) {
+        return;
+      }
+
+      currentOptions.push({
+        label: label,
+        value: useCustomValues && !!value ? value : label,
+      });
+    });
+
+    updateValue(setOptions(value, currentOptions));
+  };
+
   return (
     <PreviewEditor>
-      <Bool
-        property={{
-          label: translate('Use custom values'),
-          handle: 'useCustomValues',
-          type: PropertyType.Boolean,
-        }}
-        value={useCustomValues}
-        updateValue={() =>
-          updateValue(toggleUseCustomValues(value, !useCustomValues))
-        }
-      />
+      <ChoiceWrapper>
+        <Bool
+          property={{
+            label: translate('Use custom values'),
+            handle: 'useCustomValues',
+            type: PropertyType.Boolean,
+          }}
+          value={useCustomValues}
+          updateValue={() =>
+            updateValue(toggleUseCustomValues(value, !useCustomValues))
+          }
+        />
+
+        <BulkWrapper>
+          <PreviewableComponent
+            preview={
+              <BulkButton>
+                <i className="fa-duotone fa-list" />
+                <span>{translate('Add options in bulk')}</span>
+              </BulkButton>
+            }
+          >
+            {(isEditing, close) => (
+              <Bulk open={isEditing} close={close} bulkImport={bulkImport} />
+            )}
+          </PreviewableComponent>
+        </BulkWrapper>
+      </ChoiceWrapper>
       {!!options.length && (
         <TableContainer>
           <TabularOptions>

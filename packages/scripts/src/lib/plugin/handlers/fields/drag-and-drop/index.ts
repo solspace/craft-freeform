@@ -1,3 +1,5 @@
+import 'microtip/microtip.css';
+
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';

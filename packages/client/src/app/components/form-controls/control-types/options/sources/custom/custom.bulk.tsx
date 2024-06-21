@@ -49,7 +49,7 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         property={{
           label: translate('Separator'),
           instructions: translate(
-            'Select the separator used to separate the label and value'
+            'Select the separator used to separate the option label and value when using custom values for option labels.'
           ),
           handle: 'separator',
           type: PropertyType.Select,
@@ -68,7 +68,7 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         updateValue={(value) => setAppend(value)}
         value={append}
         property={{
-          label: translate('Append values'),
+          label: translate('Append Values'),
           handle: 'append',
           type: PropertyType.Boolean,
         }}
@@ -80,9 +80,9 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         focus={open}
         ref={textarea}
         property={{
-          label: translate('Bulk editor'),
+          label: translate('Bulk Editor'),
           instructions: translate(
-            'Enter bulk values separated by new lines. You can provide a label and a value separated by a separator. For example, if you used `{separator}` you would write: `Label{separator}Value`. You can also just provide a label.',
+            'Enter bulk values separated by new lines. If using custom values for option labels, you can provide a label and a value separated by a separator. For example, if you used `{separator}` you would write: `Label{separator}value`.',
             { separator }
           ),
           handle: 'bulkEditor',
@@ -90,8 +90,8 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
           rows: 10,
         }}
       />
-      <button className="btn" onClick={executeBulkImport}>
-        {translate(append ? 'Append bulk import' : 'Replace with bulk import')}
+      <button className="btn submit" onClick={executeBulkImport}>
+        {translate(append ? 'Append Options with Bulk Import' : 'Replace Options with Bulk Import')}
       </button>
     </BulkEditorWrapper>
   );

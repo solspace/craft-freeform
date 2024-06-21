@@ -8,8 +8,8 @@ import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config from '@config/freeform/freeform.config';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import { PropertyType } from '@ff-client/types/properties';
-import { notifications } from '@ff-client/utils/notifications';
 import classes from '@ff-client/utils/classes';
+import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -17,7 +17,7 @@ import {
   useLimitedUsersSingleQuery,
 } from './limited-users.queries';
 import { SettingsSidebar } from './limited-users.sidebar';
-import { GroupWrapper, List, ContentContainer } from './limited-users.styles';
+import { ContentContainer, GroupWrapper, List } from './limited-users.styles';
 import { ItemBlock } from './limited-users.sub-components';
 import type { Item, RecursiveUpdate } from './limited-users.types';
 

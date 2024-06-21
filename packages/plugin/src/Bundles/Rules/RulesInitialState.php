@@ -75,7 +75,6 @@ class RulesInitialState extends FeatureBundle
     {
         $attributes
             ->set('data-hidden', true)
-            ->append('style', 'display: none;')
         ;
     }
 }

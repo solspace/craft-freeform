@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.4.2 - Unreleased
+
+### Changed
+- Updated remaining unnecessary inline `style` attributes to be handled in `freeform.css` file instead.
+
+### Fixed
+- Fixed some visual issues in the settings area of the Limited Users feature.
+
 ## 5.4.1 - 2024-06-19
 
 ### Fixed

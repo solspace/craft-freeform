@@ -1,6 +1,13 @@
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+export const ContentContainer = styled.div`
+  &.craft-4 {
+    max-width: calc(100% - 250px) !important;
+    width: calc(100% - 250px) !important;
+  }
+`;
+
 export const GroupWrapper = styled.div`
   background-color: white;
   padding: ${spacings.xl};

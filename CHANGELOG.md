@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.4.2 - Unreleased
+## 5.4.2 - 2024-06-21
 
 ### Changed
 - Updated remaining unnecessary inline `style` attributes to be handled in `freeform.css` file instead.

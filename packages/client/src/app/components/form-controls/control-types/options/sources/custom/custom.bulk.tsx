@@ -91,7 +91,11 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
         }}
       />
       <button className="btn submit" onClick={executeBulkImport}>
-        {translate(append ? 'Append Options with Bulk Import' : 'Replace Options with Bulk Import')}
+        {translate(
+          append
+            ? 'Append Options with Bulk Import'
+            : 'Replace Options with Bulk Import'
+        )}
       </button>
     </BulkEditorWrapper>
   );

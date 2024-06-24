@@ -24,7 +24,7 @@ return [
     'Create a new Form' => 'Maak een nieuw formulier aan',
     'Form Name' => 'Formuliernaam',
     'All submissions for this form will be stored in the database.' => 'Alle inzendingen voor dit formulier worden opgeslagen in de database.',
-    'Archive this Form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.' => 'Archiveer dit formulier<br>Dit formulier blijft werken en toegankelijk, maar verschijnt niet langer op de formulierendashboardpagina en de inzendingen ervan verschijnen niet in de indexlijst Inzendingen.',
+    'Archive this Form' => 'Archiveer dit formulier',
     'Restore this Form' => 'Herstel dit formulier',
     'Show archived forms' => 'Toon gearchiveerde formulieren',
     'Hide archived forms' => 'Gearchiveerde formulieren verbergen',

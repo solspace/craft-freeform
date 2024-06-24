@@ -8,7 +8,7 @@ import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import ArchiveIcon from '@ff-icons/actions/archive.svg';
 import CloneIcon from '@ff-icons/actions/clone.svg';
-import CrossIcon from '@ff-icons/actions/cross.svg';
+import CrossIcon from '@ff-icons/actions/delete.svg';
 import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
@@ -101,6 +101,22 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             <CloneIcon />
           </ControlButton>
         </Tooltip>
+        {!dateArchived && (
+          <Tooltip
+            title={translate(
+              'Archive this Form'
+            )}
+            {...tooltipProps}
+          >
+            <ControlButton
+              onClick={() => {
+                archiveMutation.mutate(id);
+              }}
+            >
+              <ArchiveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
         <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
           <ControlButton
             onClick={() => {
@@ -114,22 +130,6 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             <CrossIcon />
           </ControlButton>
         </Tooltip>
-        {!dateArchived && (
-          <Tooltip
-            title={translate(
-              'Archive this Form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.'
-            )}
-            {...tooltipProps}
-          >
-            <ControlButton
-              onClick={() => {
-                archiveMutation.mutate(id);
-              }}
-            >
-              <ArchiveIcon />
-            </ControlButton>
-          </Tooltip>
-        )}
       </Controls>
 
       <CardBody>

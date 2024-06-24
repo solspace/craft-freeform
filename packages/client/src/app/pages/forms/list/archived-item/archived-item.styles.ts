@@ -4,7 +4,11 @@ import styled from 'styled-components';
 export const Item = styled.li`
   line-height: 1.4;
   list-style-type: disc;
-  vertical-align: center;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 `;
 
 export const ItemTitle = styled.span`
@@ -14,6 +18,10 @@ export const ItemTitle = styled.span`
 
 export const ItemTitleLink = styled(ItemTitle)`
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 export const ItemDate = styled.span`
@@ -21,7 +29,7 @@ export const ItemDate = styled.span`
   margin-left: 5px;
 `;
 
-export const ItemLink = styled.span`
+export const ItemMeta = styled.span`
   margin-left: 5px;
   color: ${colors.gray200};
 
@@ -30,7 +38,13 @@ export const ItemLink = styled.span`
     padding-right: 5px;
   }
 
-  a {
+  a,
+  button {
+    cursor: pointer;
     color: var(--link-color);
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 `;

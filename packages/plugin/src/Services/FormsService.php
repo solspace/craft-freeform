@@ -103,7 +103,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $sites);
 
-            $query->where(['forms.archived' => 0]);
+            $query->where(['forms.dateArchived' => null]);
 
             if ($orderByName) {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
@@ -620,7 +620,6 @@ class FormsService extends BaseService implements FormHandlerInterface
                     'forms.dateCreated',
                     'forms.updatedByUserId',
                     'forms.dateUpdated',
-                    'forms.archived',
                     'forms.dateArchived',
                 ]
             )

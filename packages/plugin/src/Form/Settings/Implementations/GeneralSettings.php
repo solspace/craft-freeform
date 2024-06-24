@@ -133,14 +133,6 @@ class GeneralSettings extends SettingsNamespace
     public string $color = '';
 
     #[Section(self::SECTION_GENERAL)]
-    #[Input\Boolean(
-        label: 'Archive this Form',
-        instructions: 'This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.',
-        order: 8,
-    )]
-    public bool $archived = false;
-
-    #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.attributes')]
     #[ValueTransformer(FormAttributesTransformer::class)]
     #[Input\Attributes(

@@ -6,13 +6,18 @@ import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import ArchiveIcon from '@ff-icons/actions/archive.svg';
 import CloneIcon from '@ff-icons/actions/clone.svg';
 import CrossIcon from '@ff-icons/actions/cross.svg';
 import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
-import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
+import {
+  useArchiveFormMutation,
+  useCloneFormMutation,
+  useDeleteFormMutation,
+} from '../list.mutations';
 
 import {
   CardBody,
@@ -41,6 +46,7 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
 };
 
 export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
+  const archiveMutation = useArchiveFormMutation();
   const deleteMutation = useDeleteFormMutation();
   const cloneMutation = useCloneFormMutation();
 
@@ -55,12 +61,14 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
     uv: randomSubmissions(0, Math.random() > 0.9 ? 50 : 20), // 15% chance for peak day
   }));
 
-  const { id, name, settings } = form;
+  const { id, name, dateArchived, settings } = form;
   const { color, description } = settings.general;
 
+  const isArchiving =
+    archiveMutation.isLoading && archiveMutation.context === id;
   const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
   const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
-  const isDisabled = isDeleting || isCloning;
+  const isDisabled = isDeleting || isCloning || isArchiving;
 
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
@@ -106,6 +114,22 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             <CrossIcon />
           </ControlButton>
         </Tooltip>
+        {!dateArchived && (
+          <Tooltip
+            title={translate(
+              'Archive this Form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.'
+            )}
+            {...tooltipProps}
+          >
+            <ControlButton
+              onClick={() => {
+                archiveMutation.mutate(id);
+              }}
+            >
+              <ArchiveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
       </Controls>
 
       <CardBody>

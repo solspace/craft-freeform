@@ -84,7 +84,7 @@ export const List: React.FC = () => {
               >
                 {data &&
                   data
-                    .filter(({ archived }) => !archived)
+                    .filter(({ dateArchived }) => dateArchived === null)
                     .map((form) => (
                       <Card
                         key={form.id}

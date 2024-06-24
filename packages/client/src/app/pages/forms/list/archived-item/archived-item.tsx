@@ -2,13 +2,17 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { FormWithStats } from '@ff-client/queries/forms';
 import { QKForms } from '@ff-client/queries/forms';
+import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
+
+import { useRestoreFormMutation } from '../list.mutations';
 
 import {
   Item,
   ItemDate,
-  ItemLink,
+  ItemMeta,
   ItemTitle,
   ItemTitleLink,
 } from './archived-item.styles';
@@ -23,6 +27,10 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
 
   const { id, name, links, dateArchived } = form;
 
+  const restoreMutation = useRestoreFormMutation();
+  const isDisabled =
+    restoreMutation.isLoading && restoreMutation.context === id;
+
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
     navigate(`${id}`);
@@ -35,7 +43,7 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
     format(parseISO(date), 'yyyy-MM-dd');
 
   return (
-    <Item>
+    <Item className={classes(isDisabled && 'disabled')}>
       {hasTitleLink ? (
         <ItemTitleLink onClick={onNavigate}>{name}</ItemTitleLink>
       ) : (
@@ -49,15 +57,24 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
           .filter(({ count }) => count)
           .map((link, idx) =>
             link.internal ? (
-              <ItemLink key={idx}>
+              <ItemMeta key={idx}>
                 <NavLink to={link.url}>{link.label}</NavLink>
-              </ItemLink>
+              </ItemMeta>
             ) : (
-              <ItemLink key={idx}>
+              <ItemMeta key={idx}>
                 <a href={link.url}>{link.label}</a>
-              </ItemLink>
+              </ItemMeta>
             )
           )}
+      <ItemMeta>
+        <button
+          onClick={() => {
+            restoreMutation.mutate(id);
+          }}
+        >
+          {translate('Restore this Form')}
+        </button>
+      </ItemMeta>
     </Item>
   );
 };

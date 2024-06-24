@@ -23,7 +23,6 @@ use craft\db\ActiveRecord;
  * @property string    $name
  * @property string    $handle
  * @property int       $order
- * @property bool      $archived
  * @property int       $spamBlockCount
  * @property int       $createdByUserId
  * @property int       $updatedByUserId

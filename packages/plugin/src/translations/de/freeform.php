@@ -99,6 +99,10 @@ return [
     'All User Groups' => 'Alle User Groups',
     'All Assets' => 'Alle Assets',
     'Filename' => 'Dateiname',
+    'Archive this Form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.' => 'Dieses Formular archivieren<br>Dieses Formular funktioniert weiterhin und ist zugänglich, wird jedoch nicht mehr auf der Formular-Dashboard-Seite angezeigt und seine Einreichungen werden nicht in der Indexliste der Einreichungen angezeigt.',
+    'Restore this Form' => 'Stellen Sie dieses Formular wieder her',
+    'Show archived forms' => 'Archivierte Formulare anzeigen',
+    'Hide archived forms' => 'Archivierte Formulare ausblenden',
 
     // Notifications Controller
     'Email notifications' => 'Email-Benachrichtigungen',

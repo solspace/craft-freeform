@@ -32,7 +32,6 @@ const generateFormData = (
       color,
     },
   },
-  archived: false,
   dateArchived: null,
 });
 

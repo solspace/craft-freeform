@@ -5,18 +5,12 @@ namespace Solspace\Freeform\migrations;
 use craft\db\Migration;
 
 /**
- * m240624_113811_AddArchivedFlagAndDateToFormsTable migration.
+ * m240624_113811_AddArchivedDateToFormsTable migration.
  */
-class m240624_113811_AddArchivedFlagAndDateToFormsTable extends Migration
+class m240624_113811_AddArchivedDateToFormsTable extends Migration
 {
     public function safeUp(): bool
     {
-        $this->addColumn(
-            '{{%freeform_forms}}',
-            'archived',
-            $this->boolean()->notNull()->defaultValue(false)->after('order')
-        );
-
         $this->addColumn(
             '{{%freeform_forms}}',
             'dateArchived',
@@ -28,7 +22,6 @@ class m240624_113811_AddArchivedFlagAndDateToFormsTable extends Migration
 
     public function safeDown(): bool
     {
-        $this->dropColumn('{{%freeform_forms}}', 'archived');
         $this->dropColumn('{{%freeform_forms}}', 'dateArchived');
 
         return false;

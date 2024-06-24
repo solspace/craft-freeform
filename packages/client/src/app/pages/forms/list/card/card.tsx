@@ -101,19 +101,6 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             <CloneIcon />
           </ControlButton>
         </Tooltip>
-        <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              if (
-                confirm(translate('Are you sure you want to delete this form?'))
-              ) {
-                deleteMutation.mutate(id);
-              }
-            }}
-          >
-            <CrossIcon />
-          </ControlButton>
-        </Tooltip>
         {!dateArchived && (
           <Tooltip
             title={translate(
@@ -130,6 +117,19 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             </ControlButton>
           </Tooltip>
         )}
+        <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
+          <ControlButton
+            onClick={() => {
+              if (
+                confirm(translate('Are you sure you want to delete this form?'))
+              ) {
+                deleteMutation.mutate(id);
+              }
+            }}
+          >
+            <CrossIcon />
+          </ControlButton>
+        </Tooltip>
       </Controls>
 
       <CardBody>

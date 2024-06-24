@@ -23,6 +23,7 @@ export type FormWithStats = Form & {
     label: string;
     url: string;
     type: string;
+    count: number;
     internal: boolean;
   }>;
   chartData: Array<{ uv: number }>;

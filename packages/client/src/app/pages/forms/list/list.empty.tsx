@@ -32,6 +32,8 @@ const generateFormData = (
       color,
     },
   },
+  archived: false,
+  dateArchived: null,
 });
 
 export const EmptyList: React.FC = () => {

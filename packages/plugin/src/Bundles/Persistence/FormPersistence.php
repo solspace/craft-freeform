@@ -76,6 +76,13 @@ class FormPersistence extends FeatureBundle
         $record->name = $payload->settings?->general?->name ?? null;
         $record->handle = $payload?->settings?->general?->handle ?? null;
 
+        $record->archived = false;
+        $record->dateArchived = null;
+        if ($payload?->settings?->general?->archived) {
+            $record->archived = true;
+            $record->dateArchived = new \DateTime();
+        }
+
         $metadata = $this->getValidatedMetadata($payload, $event);
         $record->metadata = $metadata;
         $record->type = $metadata['general']->type ?? Regular::class;

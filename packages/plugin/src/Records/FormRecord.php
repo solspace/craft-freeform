@@ -13,20 +13,21 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Freeform;
 
 /**
  * Class Freeform_FormRecord.
  *
- * @property int    $id
- * @property string $type
- * @property string $metadata
- * @property string $name
- * @property string $handle
- * @property int    $order
- * @property int    $spamBlockCount
- * @property int    $createdByUserId
- * @property int    $updatedByUserId
+ * @property int       $id
+ * @property string    $type
+ * @property string    $metadata
+ * @property string    $name
+ * @property string    $handle
+ * @property int       $order
+ * @property bool      $archived
+ * @property int       $spamBlockCount
+ * @property int       $createdByUserId
+ * @property int       $updatedByUserId
+ * @property \DateTime $dateArchived
  */
 class FormRecord extends ActiveRecord
 {

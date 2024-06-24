@@ -51,16 +51,19 @@ class AttachFormLinks extends FeatureBundle
                     );
                 }
 
-                $submissions = Freeform::t('{count} Submissions', ['count' => $data->counters['submissions']]);
-                $spam = Freeform::t('{count} Spam', ['count' => $data->counters['spam']]);
+                $submissionCount = $data->counters['submissions'];
+                $spamCount = $data->counters['spam'];
+
+                $submissions = Freeform::t('{count} Submissions', ['count' => $submissionCount]);
+                $spam = Freeform::t('{count} Spam', ['count' => $spamCount]);
 
                 if ($canManageForm) {
                     $event->add($form, UrlHelper::cpUrl('freeform/forms/'.$form->getId()), 'title');
                 }
 
                 if ($canReadSubmissions || $canManageSubmissions) {
-                    $event->add($submissions, UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()), 'linkList');
-                    $event->add($spam, UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()), 'linkList');
+                    $event->add($submissions, UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()), 'linkList', $submissionCount);
+                    $event->add($spam, UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()), 'linkList', $spamCount);
                 }
             }
         );

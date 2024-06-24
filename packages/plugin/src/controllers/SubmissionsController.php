@@ -58,7 +58,7 @@ class SubmissionsController extends BaseController
             }
         }
 
-        $forms = $this->getFormsService()->getAllForms();
+        $forms = $this->getFormsService()->getAllNonArchivedForms();
 
         return $this->renderTemplate(
             $this->getTemplateBasePath(),

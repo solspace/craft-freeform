@@ -6,6 +6,7 @@ import translate from '@ff-client/utils/translations';
 import axios from 'axios';
 import Sortable from 'sortablejs';
 
+import { Archived } from './archived/archived';
 import { Card } from './card/card';
 import { CardLoading } from './card/card.loading';
 import { useCreateFormModal } from './modal/use-create-form-modal';
@@ -14,6 +15,7 @@ import { EmptyList } from './list.empty';
 import { ListSites } from './list.sites';
 import {
   Button,
+  Cards,
   ContentContainer,
   Header,
   Title,
@@ -75,25 +77,30 @@ export const List: React.FC = () => {
 
           {isEmpty && <EmptyList />}
           {!isEmpty && (
-            <Wrapper
-              ref={gridRef}
-              className={classes(isDragging && 'dragging')}
-            >
-              {data &&
-                data.map((form) => (
-                  <Card
-                    key={form.id}
-                    form={form}
-                    isDraggingInProgress={isDragging}
-                  />
-                ))}
-              {!data && isFetching && (
-                <>
-                  <CardLoading />
-                  <CardLoading />
-                  <CardLoading />
-                </>
-              )}
+            <Wrapper>
+              <Cards
+                ref={gridRef}
+                className={classes(isDragging && 'dragging')}
+              >
+                {data &&
+                  data
+                    .filter(({ archived }) => !archived)
+                    .map((form) => (
+                      <Card
+                        key={form.id}
+                        form={form}
+                        isDraggingInProgress={isDragging}
+                      />
+                    ))}
+                {!data && isFetching && (
+                  <>
+                    <CardLoading />
+                    <CardLoading />
+                    <CardLoading />
+                  </>
+                )}
+              </Cards>
+              <Archived data={data} />
             </Wrapper>
           )}
         </div>

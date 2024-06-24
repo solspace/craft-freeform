@@ -105,7 +105,7 @@ export const CardWrapper = styled.li`
     border-color: #9eb0c5;
 
     ${TitleLink} {
-      color: #0161f3;
+      color: var(--link-color);
     }
 
     ${Controls} {

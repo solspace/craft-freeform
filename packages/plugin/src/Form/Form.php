@@ -136,6 +136,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private ?int $createdByUserId;
     private ?int $updatedByUserId;
 
+    private bool $archived = false;
+    private ?Carbon $dateArchived;
+
     private ?Submission $submission = null;
 
     public function __construct(
@@ -151,6 +154,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
         $this->createdByUserId = $config['createdByUserId'] ?? null;
         $this->updatedByUserId = $config['updatedByUserId'] ?? null;
+
+        $this->archived = $config['archived'] ?? false;
+        $this->dateArchived = $this->archived ? new Carbon($config['dateArchived']) : null;
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
@@ -490,6 +496,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         }
 
         return User::findOne($this->updatedByUserId);
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->archived;
+    }
+
+    public function getDateArchived(): ?Carbon
+    {
+        return $this->dateArchived;
     }
 
     #[Ignore]

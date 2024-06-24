@@ -128,7 +128,7 @@ class HoneypotBundle extends FeatureBundle
             'tabindex' => '-1',
         ]);
 
-        $output = '<div class="'.$id.'" style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">'
+        $output = '<div class="'.$id.' ff-optical" aria-hidden="true" tabindex="-1">'
             .'<label aria-hidden="true" tabindex="-1" for="'.$id.'">Leave this field blank</label>'
             .'<input'.$attributes.' />'
             .'</div>';

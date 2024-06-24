@@ -226,12 +226,14 @@
             formatting template for the
             <div class="freeform-nav-dropdown">
                 <span class="freeform-nav-button{{ form.name is not defined ? " dropdown-glow"}}">
-                    <div class="freeform-form-circle"{{ form.name is defined ? ' style=background:' ~ form.color : ' style=display:none' }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
+                    {% set formColor = form.color is defined ? 'style="background:' ~ form.color ~ '"' : 'style="display:none"' %}
+                    <div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name is defined ? form.name : 'Select a form...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
                 {% set forms = freeform.forms %}
                 {% for form in forms %}
-                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/templates/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" style="background: {{ form.color }}"></div>{{ form.name }}</a>
+                    {% set formColor = 'style="background:' ~ form.color ~ '"' %}
+                    <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/templates/{{ pageTemplate ? pageTemplate : 'basic-light' }}/{{ form.handle }}"><div class="freeform-form-circle" {{ formColor|raw }}></div>{{ form.name }}</a>
                 {% endfor %}
                 </div>
             </div>

@@ -130,7 +130,7 @@ class JavascriptTestBundle extends FeatureBundle
         ]);
 
         return <<<EOS
-            <div class="{$id}" style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">
+            <div class="{$id} ff-optical" aria-hidden="true" tabindex="-1">
                 <label data-ff-check aria-hidden="true" tabindex="-1" for="{$id}">Freeform Check</label>
                 <input {$attributes} />
             </div>

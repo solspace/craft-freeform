@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { EmptyBlock } from '@components/empty-block/empty-block';
 import config, { Edition } from '@config/freeform/freeform.config';
+import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -11,11 +13,15 @@ import {
   useLimitedUsersQuery,
 } from './limited-users.queries';
 import { SettingsSidebar } from './limited-users.sidebar';
+import { ContentContainer } from './limited-users.styles';
 
 export const LimitedUsers: React.FC = () => {
   const { data, isFetching } = useLimitedUsersQuery();
   const mutation = useLimitedUsersDeleteMutation();
   const isPro = config.editions.isAtLeast(Edition.Pro);
+  const isCraft5 = config.metadata.craft.is5;
+
+  useSidebarSelect(5);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -52,7 +58,10 @@ export const LimitedUsers: React.FC = () => {
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar />
 
-        <div id="content-container">
+        <ContentContainer
+          id="content-container"
+          className={classes(!isCraft5 && 'craft-4')}
+        >
           <div id="content" className="content-pane">
             {isPro && (
               <div className="tablepane">
@@ -117,7 +126,7 @@ export const LimitedUsers: React.FC = () => {
               />
             )}
           </div>
-        </div>
+        </ContentContainer>
       </div>
     </div>
   );

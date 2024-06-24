@@ -23,6 +23,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('metadata', $this->longText())
                 ->addField('order', $this->integer())
                 ->addIndex(['order'])
+                ->addField('archived', $this->boolean()->notNull()->defaultValue(false))
                 ->addField('createdByUserId', $this->integer())
                 ->addField('updatedByUserId', $this->integer())
                 ->addForeignKey(
@@ -38,7 +39,8 @@ class Install extends StreamlinedInstallMigration
                     'id',
                     ForeignKey::SET_NULL,
                     ForeignKey::CASCADE
-                ),
+                )
+                ->addField('dateArchived', $this->dateTime()->null()),
 
             (new Table('freeform_forms_sites'))
                 ->addField('id', $this->primaryKey())

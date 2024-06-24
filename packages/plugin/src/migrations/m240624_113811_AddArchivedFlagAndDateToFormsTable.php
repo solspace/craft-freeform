@@ -14,7 +14,7 @@ class m240624_113811_AddArchivedFlagAndDateToFormsTable extends Migration
         $this->addColumn(
             '{{%freeform_forms}}',
             'archived',
-            $this->boolean()->defaultValue(false)->after('order')
+            $this->boolean()->notNull()->defaultValue(false)->after('order')
         );
 
         $this->addColumn(

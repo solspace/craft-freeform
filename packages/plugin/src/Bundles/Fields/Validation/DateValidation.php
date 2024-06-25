@@ -48,6 +48,14 @@ class DateValidation extends FeatureBundle
         $format = $this->parseFormat($field->getFormat());
         $value = $this->parseValue($value);
 
+        if ($field->isUseNativeTypes()) {
+            $format = match ($field->getDateTimeType()) {
+                DatetimeField::DATETIME_TYPE_DATE => 'Y-m-d',
+                DatetimeField::DATETIME_TYPE_TIME => 'H:i',
+                DatetimeField::DATETIME_TYPE_BOTH => 'Y-m-d\TH:i',
+            };
+        }
+
         $date = \DateTime::createFromFormat($format, $value);
         if (!$date || $date->format($format) !== $value) {
             $field->addError(

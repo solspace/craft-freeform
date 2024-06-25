@@ -31,6 +31,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
             isMultiple={isMultiple}
           />
         }
+        excludeClassNames={['bulk-editor']}
         onAfterEdit={() => updateValue(cleanOptions(value))}
         onEdit={() => {
           if (!value.options.length) {

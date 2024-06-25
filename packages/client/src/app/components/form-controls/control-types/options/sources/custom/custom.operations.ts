@@ -14,6 +14,14 @@ export const addOption = (
   ],
 });
 
+export const setOptions = (
+  value: CustomOptionsConfiguration,
+  options: Option[]
+): CustomOptionsConfiguration => ({
+  ...value,
+  options,
+});
+
 export const updateOption = (
   index: number,
   option: Option,

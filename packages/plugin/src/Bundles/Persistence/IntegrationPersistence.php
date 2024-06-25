@@ -2,18 +2,21 @@
 
 namespace Solspace\Freeform\Bundles\Persistence;
 
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class IntegrationPersistence extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private PropertyProvider $propertyProvider,
+    ) {
         Event::on(
             FormsController::class,
             FormsController::EVENT_UPSERT_FORM,
@@ -67,7 +70,18 @@ class IntegrationPersistence extends FeatureBundle
                 $record->integrationId = $id;
             }
 
-            $encodedMetadata = json_encode((object) array_merge($metadata, $values));
+            $metadata = array_merge($metadata, $values);
+
+            $properties = $this->propertyProvider->getEditableProperties($integrationRecord->class);
+            foreach ($properties as $property) {
+                if (isset($metadata[$property->handle])) {
+                    if ($property->hasFlag(IntegrationInterface::FLAG_AS_READONLY_IN_INSTANCE)) {
+                        unset($metadata[$property->handle]);
+                    }
+                }
+            }
+
+            $encodedMetadata = json_encode((object) $metadata);
 
             $matchEnabled = (bool) $record->enabled === (bool) $enabled;
             $matchMetadata = $encodedMetadata === $record->metadata;

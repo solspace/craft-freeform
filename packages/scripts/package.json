@@ -44,7 +44,6 @@
     "expression-language": "^1.1.4",
     "filesize": "^10.0.12",
     "lodash.isequal": "^4.5.0",
-    "locutus": "^2.0.16",
-    "microtip": "^0.2.2"
+    "locutus": "^2.0.16"
   }
 }

@@ -6,25 +6,28 @@ type OnKeypress = (
     callback: (event: KeyboardEvent) => void;
     meetsCondition?: boolean;
     type?: 'keyup' | 'keydown';
+    ref?: React.RefObject<HTMLElement>;
   },
   deps?: GenericValue[]
 ) => void;
 
 export const useOnKeypress: OnKeypress = (
-  { meetsCondition, callback, type = 'keyup' },
+  { meetsCondition, callback, type = 'keyup', ref },
   deps = []
 ): void => {
+  const target = ref?.current ?? document;
+
   useEffect(() => {
     if (meetsCondition === undefined || meetsCondition) {
-      document.addEventListener(type, callback);
+      target.addEventListener(type, callback);
     }
 
     if (meetsCondition === false) {
-      document.removeEventListener(type, callback);
+      target.removeEventListener(type, callback);
     }
 
     return () => {
-      document.removeEventListener(type, callback);
+      target.removeEventListener(type, callback);
     };
   }, [meetsCondition, ...deps]);
 };

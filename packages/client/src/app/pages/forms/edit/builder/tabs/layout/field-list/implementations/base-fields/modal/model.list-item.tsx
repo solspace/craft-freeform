@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useHover } from '@ff-client/hooks/use-hover';
 import { useFieldType } from '@ff-client/queries/field-types';
-import CrossIcon from '@ff-icons/actions/cross.svg';
+import CrossIcon from '@ff-icons/actions/delete.svg';
 
 import { Icon, Name, Remove, Wrapper } from './model.list-item.styles';
 

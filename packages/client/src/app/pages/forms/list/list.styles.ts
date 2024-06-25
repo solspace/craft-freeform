@@ -1,7 +1,13 @@
 import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const Wrapper = styled.ul`
+export const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.lg};
+`;
+
+export const Cards = styled.ul`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: ${spacings.lg};

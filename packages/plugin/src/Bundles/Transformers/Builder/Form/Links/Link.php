@@ -8,6 +8,7 @@ class Link
         private string $label,
         private string $url,
         private string $type,
+        private int $count,
         private bool $internal = false,
     ) {}
 
@@ -24,6 +25,11 @@ class Link
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function getCount(): int
+    {
+        return $this->count;
     }
 
     public function isInternal(): bool

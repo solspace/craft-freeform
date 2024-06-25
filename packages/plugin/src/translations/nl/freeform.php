@@ -24,6 +24,10 @@ return [
     'Create a new Form' => 'Maak een nieuw formulier aan',
     'Form Name' => 'Formuliernaam',
     'All submissions for this form will be stored in the database.' => 'Alle inzendingen voor dit formulier worden opgeslagen in de database.',
+    'Archive this Form' => 'Archiveer dit formulier',
+    'Restore this Form' => 'Herstel dit formulier',
+    'Show archived forms' => 'Toon gearchiveerde formulieren',
+    'Hide archived forms' => 'Gearchiveerde formulieren verbergen',
 
     // Form Builder // Universal
     'Forms' => 'Formulieren',

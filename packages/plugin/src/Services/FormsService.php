@@ -92,6 +92,41 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$allFormsCache[$key];
     }
 
+    public function getAllNonArchivedForms(bool $orderByName = false, null|array|string $sites = null): array
+    {
+        if ($sites && \is_array($sites)) {
+            sort($sites);
+        }
+
+        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
+        if (!\array_key_exists($key, self::$allFormsCache)) {
+            $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $sites);
+
+            $query->where(['forms.dateArchived' => null]);
+
+            if ($orderByName) {
+                $query->orderBy(['forms.order' => \SORT_ASC]);
+            }
+
+            $results = $query->all();
+
+            self::$allFormsCache[$key] = [];
+            foreach ($results as $result) {
+                try {
+                    $form = $this->createForm($result);
+
+                    self::$allFormsCache[$key][$form->getId()] = $form;
+                    self::$formsById[$form->getId()] = $form;
+                    self::$formsByHandle[$form->getHandle()] = $form;
+                } catch (InvalidFormTypeException) {
+                }
+            }
+        }
+
+        return self::$allFormsCache[$key];
+    }
+
     public function getResolvedForms(array $arguments = []): array
     {
         $limit = $arguments['limit'] ?? null;
@@ -585,6 +620,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                     'forms.dateCreated',
                     'forms.updatedByUserId',
                     'forms.dateUpdated',
+                    'forms.dateArchived',
                 ]
             )
             ->from(FormRecord::TABLE.' forms')

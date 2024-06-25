@@ -99,6 +99,10 @@ return [
     'All User Groups' => 'Alle User Groups',
     'All Assets' => 'Alle Assets',
     'Filename' => 'Dateiname',
+    'Archive this Form' => 'Archivieren Sie dieses Formular',
+    'Restore this Form' => 'Stellen Sie dieses Formular wieder her',
+    'Show archived forms' => 'Archivierte Formulare anzeigen',
+    'Hide archived forms' => 'Archivierte Formulare ausblenden',
 
     // Notifications Controller
     'Email notifications' => 'Email-Benachrichtigungen',

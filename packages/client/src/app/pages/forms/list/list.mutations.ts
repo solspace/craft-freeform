@@ -6,6 +6,25 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
+export const useArchiveFormMutation = (): UseMutationResult<
+  unknown,
+  Error,
+  number,
+  number
+> => {
+  const queryClient = useQueryClient();
+  const { getCurrentHandleWithFallback } = useSiteContext();
+
+  return useMutation((id) => axios.post(`/api/forms/${id}/archive`), {
+    onMutate: (id) => id,
+    onSuccess: () => {
+      queryClient.invalidateQueries(
+        QKForms.all(getCurrentHandleWithFallback())
+      );
+    },
+  });
+};
+
 export const useDeleteFormMutation = (): UseMutationResult<
   unknown,
   Error,
@@ -16,9 +35,7 @@ export const useDeleteFormMutation = (): UseMutationResult<
   const { getCurrentHandleWithFallback } = useSiteContext();
 
   return useMutation((id) => axios.delete(`/api/forms/${id}`), {
-    onMutate: (id) => {
-      return id;
-    },
+    onMutate: (id) => id,
     onSuccess: (_, id) => {
       queryClient.setQueryData(
         QKForms.all(getCurrentHandleWithFallback()),

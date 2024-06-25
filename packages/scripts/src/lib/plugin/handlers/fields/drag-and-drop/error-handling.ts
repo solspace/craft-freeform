@@ -45,4 +45,5 @@ export const addFieldErrors = (
 
   previewContainer.setAttribute('data-has-errors', '');
   errorContainer.setAttribute('aria-label', errors.join('; '));
+  errorContainer.setAttribute('title', errors.join('. '));
 };

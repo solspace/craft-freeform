@@ -7,4 +7,5 @@ export type ControlType<P extends Property, C = unknown> = {
   errors?: string[];
   context?: C;
   autoFocus?: boolean;
+  focus?: boolean;
 };

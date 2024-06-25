@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
@@ -345,6 +346,10 @@ class IntegrationsService extends BaseService
 
             if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
                 $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+            }
+
+            if ($property->transformer instanceof TransformerInterface) {
+                $value = $property->transformer->reverseTransform($value);
             }
 
             $model->metadata[$property->handle] = $value;

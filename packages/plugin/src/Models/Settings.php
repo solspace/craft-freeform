@@ -126,25 +126,53 @@ class Settings extends Model
     /** @var string */
     public $submissionThrottlingTimeFrame;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $blockedEmails;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $blockedKeywords;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $blockedKeywordsError;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $blockedEmailsError;
 
-    /** @var bool */
+    /**
+     * @var bool
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $showErrorsForBlockedEmails;
 
-    /** @var bool */
+    /**
+     * @var bool
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $showErrorsForBlockedKeywords;
 
-    /** @var string */
+    /**
+     * @var string
+     *
+     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
+     */
     public $blockedIpAddresses;
 
     /** @var int */

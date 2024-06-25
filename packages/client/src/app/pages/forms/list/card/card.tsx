@@ -102,12 +102,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
           </ControlButton>
         </Tooltip>
         {!dateArchived && (
-          <Tooltip
-            title={translate(
-              'Archive this Form'
-            )}
-            {...tooltipProps}
-          >
+          <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
             <ControlButton
               onClick={() => {
                 archiveMutation.mutate(id);

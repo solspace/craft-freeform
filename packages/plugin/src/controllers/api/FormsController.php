@@ -39,34 +39,17 @@ class FormsController extends BaseApiController
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
-        \Craft::$app->db->createCommand()
-            ->update(
-                FormRecord::TABLE,
-                ['dateArchived' => (new \DateTime())->format('Y-m-d')],
-                ['id' => $id]
-            )
-            ->execute()
-        ;
-
-        $this->response->statusCode = 204;
-        $this->response->format = Response::FORMAT_RAW;
-        $this->response->content = '';
-
-        return $this->response;
-    }
-
-    public function actionRestore(int $id): Response
-    {
-        $this->requireFormPermission($id);
-
-        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
-            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        $form = $this->getFormsService()->getFormById($id);
+        if (!$form) {
+            throw new NotFoundHttpException("Form with ID {$id} not found");
         }
 
+        $dateArchived = ($form->getDateArchived()) ? null : (new \DateTime())->format('Y-m-d');
+
         \Craft::$app->db->createCommand()
             ->update(
                 FormRecord::TABLE,
-                ['dateArchived' => null],
+                ['dateArchived' => $dateArchived],
                 ['id' => $id]
             )
             ->execute()

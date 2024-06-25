@@ -25,25 +25,6 @@ export const useArchiveFormMutation = (): UseMutationResult<
   });
 };
 
-export const useRestoreFormMutation = (): UseMutationResult<
-  unknown,
-  Error,
-  number,
-  number
-> => {
-  const queryClient = useQueryClient();
-  const { getCurrentHandleWithFallback } = useSiteContext();
-
-  return useMutation((id) => axios.post(`/api/forms/${id}/restore`), {
-    onMutate: (id) => id,
-    onSuccess: () => {
-      queryClient.invalidateQueries(
-        QKForms.all(getCurrentHandleWithFallback())
-      );
-    },
-  });
-};
-
 export const useDeleteFormMutation = (): UseMutationResult<
   unknown,
   Error,

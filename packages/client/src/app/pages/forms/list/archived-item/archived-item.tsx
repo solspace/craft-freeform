@@ -7,7 +7,7 @@ import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 
-import { useRestoreFormMutation } from '../list.mutations';
+import { useArchiveFormMutation } from '../list.mutations';
 
 import {
   Item,
@@ -27,10 +27,10 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
 
   const { id, name, links, dateArchived } = form;
 
-  const restoreMutation = useRestoreFormMutation();
+  const archiveMutation = useArchiveFormMutation();
   const isDisabled =
-    restoreMutation.isLoading && restoreMutation.context === id;
-  const isSuccess = restoreMutation.isSuccess && restoreMutation.context === id;
+    archiveMutation.isLoading && archiveMutation.context === id;
+  const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
 
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
@@ -72,7 +72,7 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
       <ItemMeta>
         <button
           onClick={() => {
-            restoreMutation.mutate(id);
+            archiveMutation.mutate(id);
           }}
         >
           {translate('Restore this Form')}

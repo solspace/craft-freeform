@@ -39,7 +39,7 @@ export const EmptyList: React.FC = () => {
   const openCreateFormModal = useCreateFormModal();
 
   return (
-    <>
+    <div>
       <p>
         {translate(
           `You don't have any forms yet. Create your first form now...`
@@ -79,6 +79,6 @@ export const EmptyList: React.FC = () => {
           )}
         />
       </MutedWrapper>
-    </>
+    </div>
   );
 };

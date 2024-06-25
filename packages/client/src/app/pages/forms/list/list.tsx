@@ -29,7 +29,17 @@ export const List: React.FC = () => {
   const formLimit = config.limits.forms;
   const formCount = data?.length || 1;
 
-  const isEmpty = !isFetching && data && !data.length;
+  const archivedForms =
+    !isFetching &&
+    data &&
+    data.filter(({ dateArchived }) => dateArchived !== null);
+
+  const forms =
+    !isFetching &&
+    data &&
+    data.filter(({ dateArchived }) => dateArchived === null);
+
+  const isEmpty = !isFetching && forms && !forms.length;
 
   const gridRef = useRef<HTMLUListElement>(null);
   const sortableRef = useRef(null);
@@ -75,34 +85,34 @@ export const List: React.FC = () => {
         <div id="content" className="content-pane">
           <Notices />
 
-          {isEmpty && <EmptyList />}
-          {!isEmpty && (
-            <Wrapper>
-              <Cards
-                ref={gridRef}
-                className={classes(isDragging && 'dragging')}
-              >
-                {data &&
-                  data
-                    .filter(({ dateArchived }) => dateArchived === null)
-                    .map((form) => (
+          <Wrapper>
+            {isEmpty && <EmptyList />}
+            {!isEmpty && (
+              <Wrapper>
+                <Cards
+                  ref={gridRef}
+                  className={classes(isDragging && 'dragging')}
+                >
+                  {forms &&
+                    forms.map((form) => (
                       <Card
                         key={form.id}
                         form={form}
                         isDraggingInProgress={isDragging}
                       />
                     ))}
-                {!data && isFetching && (
-                  <>
-                    <CardLoading />
-                    <CardLoading />
-                    <CardLoading />
-                  </>
-                )}
-              </Cards>
-              <Archived data={data} />
-            </Wrapper>
-          )}
+                  {!forms && isFetching && (
+                    <>
+                      <CardLoading />
+                      <CardLoading />
+                      <CardLoading />
+                    </>
+                  )}
+                </Cards>
+              </Wrapper>
+            )}
+            {archivedForms && <Archived data={archivedForms} />}
+          </Wrapper>
         </div>
       </ContentContainer>
     </>

@@ -14,9 +14,7 @@ export const Archived: React.FC<Props> = ({ data }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = (): void => setIsVisible(!isVisible);
 
-  const archived =
-    data && data.filter(({ dateArchived }) => dateArchived !== null);
-  const isEmpty = (data && !archived.length) ?? true;
+  const isEmpty = (data && !data.length) ?? true;
 
   if (isEmpty) {
     return null;
@@ -29,9 +27,8 @@ export const Archived: React.FC<Props> = ({ data }) => {
       </Button>
       {isVisible && (
         <ArchivedItems>
-          {archived.map((form) => (
-            <ArchivedItem key={form.id} form={form} />
-          ))}
+          {data &&
+            data.map((form) => <ArchivedItem key={form.id} form={form} />)}
         </ArchivedItems>
       )}
     </Wrapper>

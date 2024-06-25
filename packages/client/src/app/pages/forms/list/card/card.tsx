@@ -66,6 +66,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
 
   const isArchiving =
     archiveMutation.isLoading && archiveMutation.context === id;
+  const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
   const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
   const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
   const isDisabled = isDeleting || isCloning || isArchiving;
@@ -83,6 +84,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
       data-id={form.id}
       className={classes(
         isDisabled && 'disabled',
+        isSuccess && 'archived',
         isDraggingInProgress && 'dragging'
       )}
     >

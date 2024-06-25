@@ -9,6 +9,10 @@ export const Item = styled.li`
     opacity: 0.5;
     pointer-events: none;
   }
+
+  &.restored {
+    opacity: 0;
+  }
 `;
 
 export const ItemTitle = styled.span`

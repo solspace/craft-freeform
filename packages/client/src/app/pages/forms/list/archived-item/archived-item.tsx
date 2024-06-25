@@ -30,6 +30,7 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
   const restoreMutation = useRestoreFormMutation();
   const isDisabled =
     restoreMutation.isLoading && restoreMutation.context === id;
+  const isSuccess = restoreMutation.isSuccess && restoreMutation.context === id;
 
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
@@ -43,7 +44,9 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
     format(parseISO(date), 'yyyy-MM-dd');
 
   return (
-    <Item className={classes(isDisabled && 'disabled')}>
+    <Item
+      className={classes(isDisabled && 'disabled', isSuccess && 'restored')}
+    >
       {hasTitleLink ? (
         <ItemTitleLink onClick={onNavigate}>{name}</ItemTitleLink>
       ) : (

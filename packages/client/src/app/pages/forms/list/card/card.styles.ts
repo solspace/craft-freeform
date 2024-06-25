@@ -100,6 +100,10 @@ export const CardWrapper = styled.li`
     pointer-events: none;
   }
 
+  &.archived {
+    opacity: 0;
+  }
+
   &:not(.dragging):hover {
     background-color: #f3f7fd;
     border-color: #9eb0c5;

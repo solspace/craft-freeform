@@ -1,6 +1,6 @@
 import React from 'react';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
-import CrossIcon from '@ff-client/assets/icons/cross-icon.svg';
+import CrossIcon from '@ff-client/assets/icons/delete.svg';
 import type { Recipient } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
 

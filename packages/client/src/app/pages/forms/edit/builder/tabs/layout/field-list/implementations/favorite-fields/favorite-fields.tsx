@@ -3,7 +3,7 @@ import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import { useFetchFavorites } from '@ff-client/queries/field-favorites';
 import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import translate from '@ff-client/utils/translations';
-import EditIcon from '@ff-icons/actions/edit.icon.svg';
+import EditIcon from '@ff-icons/actions/edit.svg';
 
 import { FieldGroup } from '../../field-group/field-group';
 import { LoaderFieldGroup } from '../../field-group/field-group.loader';

@@ -24,7 +24,7 @@ return [
     'Create a new Form' => 'Create a new Form',
     'Form Name' => 'Form Name',
     'All submissions for this form will be stored in the database.' => 'All submissions for this form will be stored in the database.',
-    'Archive this Form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.' => 'Archive this form<br>This form will continue to work and be accessible, but it will no longer appear on the Forms dashboard page, and its submissions will not appear in the Submissions index list.',
+    'Archive this Form' => 'Archive this Form',
     'Restore this Form' => 'Restore this form',
     'Show archived forms' => 'Show archived forms',
     'Hide archived forms' => 'Hide archived forms',

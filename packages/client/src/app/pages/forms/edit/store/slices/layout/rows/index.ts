@@ -23,36 +23,36 @@ export const rowsSlice = createSlice({
       action: PayloadAction<{ layoutUid: string; uid: string; order?: number }>
     ) => {
       const { layoutUid, uid, order } = action.payload;
-      const highestOrder = Math.max(
-        -1,
-        ...state
-          .filter((row) => row.layoutUid === layoutUid)
-          .map((row) => row.order)
-      );
 
-      state.push({
+      const rows = state
+        .filter((row) => row.layoutUid === layoutUid)
+        .sort((a, b) => a.order - b.order);
+
+      const highestOrder = rows.length;
+
+      const insertIndex =
+        order !== undefined
+          ? rows.findIndex((row) => row.order === order)
+          : highestOrder + 1;
+
+      state.splice(insertIndex, 0, {
         uid,
-        order: order !== undefined ? order : highestOrder + 1,
+        order: insertIndex,
         layoutUid,
       });
 
-      if (order !== undefined) {
-        state.forEach((row) => {
-          let currentOrder = row.order;
-          if (row.uid !== uid) {
-            if (row.order >= order) {
-              currentOrder = currentOrder + 1;
-            }
-          }
-
-          row.order = currentOrder;
-        });
-      }
+      // Reset order
+      state.forEach((row, index) => {
+        row.order = index;
+      });
     },
     remove: (state, action: PayloadAction<string>) => {
       const index = state.findIndex((row) => row.uid === action.payload);
 
       state.splice(index, 1);
+      state.forEach((row, index) => {
+        row.order = index;
+      });
     },
     swap: (state, action: PayloadAction<SwapPayload>) => {
       const current = state.find(

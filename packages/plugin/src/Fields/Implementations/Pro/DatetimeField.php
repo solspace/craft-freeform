@@ -72,6 +72,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
     protected bool $useDatepicker = true;
 
     #[Input\Boolean(
+        label: 'Use native input types',
+        instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
+        order: 3,
+    )]
+    protected bool $useNativeTypes = false;
+
+    #[Input\Boolean(
         label: 'Use date format as placeholder',
         order: 3,
     )]
@@ -196,7 +203,12 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
      */
     public function getType(): string
     {
-        if ($this->useDatepicker) {
+        return self::TYPE_DATETIME;
+    }
+
+    public function getInputType(): string
+    {
+        if ($this->useDatepicker || !$this->useNativeTypes) {
             return 'text';
         }
 
@@ -269,7 +281,12 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
 
     public function isUseDatepicker(): bool
     {
-        return (bool) $this->useDatepicker;
+        return $this->useDatepicker;
+    }
+
+    public function isUseNativeTypes(): bool
+    {
+        return $this->useNativeTypes;
     }
 
     public function getMinDate(): ?string
@@ -497,7 +514,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
             ->clone()
             ->append('class', 'form-date-time-field')
             ->setIfEmpty('name', $this->getHandle())
-            ->setIfEmpty('type', $this->getType())
+            ->setIfEmpty('type', $this->getInputType())
             ->setIfEmpty('id', $this->getIdAttribute())
             ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
             ->setIfEmpty('value', $this->getValue())

@@ -33,6 +33,7 @@ return [
     'Forms' => 'Forms',
     'Cancel' => 'Cancel',
     'Saving' => 'Saving',
+    'Deleting' => 'Deleting',
     'Save' => 'Save',
     'Close' => 'Close',
     'Enabled' => 'Enabled',
@@ -562,6 +563,8 @@ return [
     'Submission could not be updated.' => 'Submission could not be updated.',
     'Submission with ID {id} not found' => 'Submission with ID {id} not found',
     'Submissions deleted successfully.' => 'Submissions deleted successfully.',
+    'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Are you sure you want to permanently delete this form? This action cannot be undone.',
+    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'To delete this form, please type <strong>DELETE</strong> in the box below:',
 
     // Submissions // Spam
     'Spam Reasons' => 'Spam Reasons',

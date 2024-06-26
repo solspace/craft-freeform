@@ -1,6 +1,6 @@
 import { useModal } from '@components/modals/modal.context';
 
-import { CreateFormModal } from './form-modal';
+import { CreateFormModal } from './create-form-modal';
 
 type CreateFormModal = () => () => void;
 

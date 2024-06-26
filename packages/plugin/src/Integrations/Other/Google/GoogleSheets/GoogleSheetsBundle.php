@@ -16,7 +16,7 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
-use Solspace\Freeform\Jobs\ProcessGoogleSheetsIntegrationsJob;
+use Solspace\Freeform\Jobs\ProcessIntegrationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 use yii\base\Event;
@@ -54,9 +54,10 @@ class GoogleSheetsBundle extends FeatureBundle
         }
 
         $this->queueHandler->executeIntegrationJob(
-            new ProcessGoogleSheetsIntegrationsJob([
+            new ProcessIntegrationsJob([
                 'formId' => $form->getId(),
-                'submissionId' => $event->getSubmission()->getId(),
+                'postedData' => $event->getSubmission()->getFormFieldValues(),
+                'type' => GoogleSheetsIntegrationInterface::class,
             ])
         );
     }

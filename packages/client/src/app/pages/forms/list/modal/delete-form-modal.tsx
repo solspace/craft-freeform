@@ -46,6 +46,10 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   };
 
   const handleDelete = async (): Promise<void> => {
+    if (!enabled) {
+      return;
+    }
+
     setIsDeleting(true);
 
     try {
@@ -89,6 +93,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         />
         <input
           type="text"
+          autoFocus={true}
           value={inputValue}
           autoComplete="off"
           onChange={handleChange}

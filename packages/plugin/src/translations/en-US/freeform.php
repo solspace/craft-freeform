@@ -16,7 +16,7 @@ return [
     'Submissions' => 'Submissions',
     'Spam' => 'Spam',
     'Survey Results' => 'Survey Results',
-    'Move' => 'Move',
+    'Move this Form Card' => 'Move this Form Card',
     'Duplicate this Form' => 'Duplicate this Form',
     'Delete this Form' => 'Delete this Form',
     'Are you sure you want to delete this form?' => 'Are you sure you want to delete this form?',
@@ -28,6 +28,7 @@ return [
     'Restore this Form' => 'Restore this form',
     'Show archived forms' => 'Show archived forms',
     'Hide archived forms' => 'Hide archived forms',
+    'archived' => 'archived',
 
     // Form Builder // Universal
     'Forms' => 'Forms',

@@ -94,11 +94,13 @@ export const Card: React.FC<Props> = ({
       )}
     >
       <Controls>
-        <Tooltip title={translate('Move')} {...tooltipProps}>
-          <ControlButton className="handle">
-            <MoveIcon />
-          </ControlButton>
-        </Tooltip>
+        {!isExpressEdition && (
+          <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
+            <ControlButton className="handle">
+              <MoveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
         {!isExpressEdition && (
           <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
             <ControlButton

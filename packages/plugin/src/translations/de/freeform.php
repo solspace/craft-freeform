@@ -103,6 +103,7 @@ return [
     'Restore this Form' => 'Stellen Sie dieses Formular wieder her',
     'Show archived forms' => 'Archivierte Formulare anzeigen',
     'Hide archived forms' => 'Archivierte Formulare ausblenden',
+    'archived' => 'archivierte',
 
     // Notifications Controller
     'Email notifications' => 'Email-Benachrichtigungen',

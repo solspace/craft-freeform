@@ -37,6 +37,7 @@ const randomSubmissions = (min: number, max: number): number =>
 type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
+  isExpressEdition?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -45,7 +46,11 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [100, 0] as unknown as number,
 };
 
-export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
+export const Card: React.FC<Props> = ({
+  form,
+  isDraggingInProgress,
+  isExpressEdition,
+}) => {
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
 
@@ -94,16 +99,18 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
             <MoveIcon />
           </ControlButton>
         </Tooltip>
-        <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              cloneMutation.mutate(id);
-            }}
-          >
-            <CloneIcon />
-          </ControlButton>
-        </Tooltip>
-        {!dateArchived && (
+        {!isExpressEdition && (
+          <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
+            <ControlButton
+              onClick={() => {
+                cloneMutation.mutate(id);
+              }}
+            >
+              <CloneIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
+        {!isExpressEdition && !dateArchived && (
           <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
             <ControlButton
               onClick={() => {

@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.5.0 - 2024-06-26
+
+### Added
+- Added the ability to bulk insert options into option-based field types (Checkboxes, Dropdown, etc).
+- Added the ability to archive forms. Archived forms will continue to work and be accessible, but will no longer appear prominently on the Forms dashboard page.
+- Added file attachments to be included in the POST Forwarding feature.
+
+### Changed
+- Changed spam blocking to be integrations now. Previously, whenever `allowAdminChanges` was set to `false`, it was no longer possible for users to modify blocked keywords, emails and IP addresses. This has been rectified by moving them from the settings to integration types. Users can now create pre-built sets of spam blocks, share them across forms, and manage each individually per form.
+    - Removed Blocked Keywords, Emails, and IP Addresses from the Spam Protection settings area.
+    - Added new integration types `Keywords`, `Emails` and `IP Addresses`.
+    - Added a migration that migrates previous settings into new integrations and applies them to existing forms.
+- Updated the **File Drag & Drop** field type to use `title` attribute to display error information on files and removed the `microtip` library, as it was incompatible with a strict Content Security Policy that doesn't allow inline styles or inline scripts to be used.
+
+### Fixed
+- Fixed a bug where rearranging fields into different rows in the form builder many times could cause it to stop working correctly.
+- Fixed a bug that intermittently prevented integrations using OAuth from working. Added a buffer time for the refresh token check.
+- Fixed a bug where failed Webhook integrations would break forms upon submission. Errors are now just logged in the Freeform error log.
+- Fixed a bug where Date & Time field validation issues with native HTML types. A new setting has been added.
+
 ## 5.4.2 - 2024-06-21
 
 ### Changed

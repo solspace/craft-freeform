@@ -51,13 +51,12 @@ class NotificationsBundle extends FeatureBundle
 
         $form = $event->getForm();
         $submission = $event->getSubmission();
-        $fields = $submission->getFieldCollection();
 
         if ($form->isMarkedAsSpam()) {
             return;
         }
 
-        $event = new SendNotificationsEvent($form, $submission, $fields, $this->plugin()->mailer);
+        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 

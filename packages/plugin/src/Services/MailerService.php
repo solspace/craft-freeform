@@ -63,7 +63,6 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function sendEmail(
         Form $form,
         RecipientCollection $recipients,
-        FieldCollection $fields,
         ?NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null
     ): int {
@@ -74,9 +73,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         $recipients = $this->processRecipients($recipients);
-
-        $form = $submission->getForm();
-        $fields = $submission->getFieldCollection();
+        $fields = $form->getFields();
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
         $renderEvent = new RenderEmailEvent($form, $notificationTemplate, $fieldValues, $submission);
@@ -96,7 +93,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $email = $this->compileMessage($notificationTemplate, $fieldValues);
                 $email->setTo([$emailAddress]);
 
-                if ($submission && $notificationTemplate->isIncludeAttachments()) {
+                if ($notificationTemplate->isIncludeAttachments()) {
                     foreach ($fields as $field) {
                         if ($field instanceof SignatureField && $field->getValueAsString()) {
                             $email->attach($field->getValueAsString(), [
@@ -111,7 +108,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                             continue;
                         }
 
-                        $fieldValue = $submission->{$field->getHandle()}->getValue();
+                        $fieldValue = $field->getValue();
                         $assetIds = $fieldValue;
                         foreach ($assetIds as $assetId) {
                             $asset = \Craft::$app->assets->getAssetById((int) $assetId);

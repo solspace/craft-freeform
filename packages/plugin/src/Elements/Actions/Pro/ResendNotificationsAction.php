@@ -7,7 +7,6 @@ use craft\elements\db\ElementQueryInterface;
 use craft\web\View;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use yii\base\Event;
@@ -29,23 +28,9 @@ class ResendNotificationsAction extends ElementAction
         /** @var Submission $submission */
         foreach ($query->all() as $submission) {
             $form = $submission->getForm();
+            $form->valuesFromSubmission($submission);
 
-            $fields = $form->getLayout()->getFields();
-            foreach ($fields as $field) {
-                if ($field instanceof NoStorageInterface) {
-                    continue;
-                }
-
-                $submissionField = $submission->{$field->getHandle()};
-                if (!$submissionField) {
-                    continue;
-                }
-
-                $value = $submissionField->getValue();
-                $field->setValue($value);
-            }
-
-            $event = new SendNotificationsEvent($form, $submission, $fields, $mailer);
+            $event = new SendNotificationsEvent($form, $submission, $mailer);
             Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
         }
 

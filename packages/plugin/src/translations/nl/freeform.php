@@ -16,7 +16,7 @@ return [
     'Submissions' => 'Inzendingen',
     'Spam' => 'Spam',
     'Survey Results' => 'Resultaten van de Enquête',
-    'Move' => 'Verplaatsen',
+    'Move this Form Card' => 'Verplaats deze formulierkaart',
     'Duplicate this Form' => 'Dupliceer dit formulier',
     'Delete this Form' => 'Verwijder dit formulier',
     'Are you sure you want to delete this form?' => 'Weet u zeker dat u dit formulier wilt verwijderen?',
@@ -28,6 +28,7 @@ return [
     'Restore this Form' => 'Herstel dit formulier',
     'Show archived forms' => 'Toon gearchiveerde formulieren',
     'Hide archived forms' => 'Gearchiveerde formulieren verbergen',
+    'archived' => 'gearchiveerde',
 
     // Form Builder // Universal
     'Forms' => 'Formulieren',

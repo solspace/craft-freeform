@@ -53,7 +53,9 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
         <ItemTitle>{name}</ItemTitle>
       )}
       {dateArchived && (
-        <ItemDate>(archived {getFormattedDate(dateArchived)})</ItemDate>
+        <ItemDate>
+          ({translate('archived')} {getFormattedDate(dateArchived)})
+        </ItemDate>
       )}
       {linkList.length > 0 &&
         linkList

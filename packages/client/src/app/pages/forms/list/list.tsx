@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import config from '@config/freeform/freeform.config';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
@@ -40,6 +40,8 @@ export const List: React.FC = () => {
     data.filter(({ dateArchived }) => dateArchived === null);
 
   const isEmpty = !isFetching && forms && !forms.length;
+
+  const isExpressEdition = config.editions.is(Edition.Express);
 
   const gridRef = useRef<HTMLUListElement>(null);
   const sortableRef = useRef(null);
@@ -99,6 +101,7 @@ export const List: React.FC = () => {
                         key={form.id}
                         form={form}
                         isDraggingInProgress={isDragging}
+                        isExpressEdition={isExpressEdition}
                       />
                     ))}
                   {!forms && isFetching && (
@@ -111,7 +114,9 @@ export const List: React.FC = () => {
                 </Cards>
               </Wrapper>
             )}
-            {archivedForms && <Archived data={archivedForms} />}
+            {!isExpressEdition && archivedForms && (
+              <Archived data={archivedForms} />
+            )}
           </Wrapper>
         </div>
       </ContentContainer>

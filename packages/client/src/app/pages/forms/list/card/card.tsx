@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
+import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
@@ -16,7 +17,6 @@ import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
-  useDeleteFormMutation,
 } from '../list.mutations';
 
 import {
@@ -37,6 +37,7 @@ const randomSubmissions = (min: number, max: number): number =>
 type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
+  isExpressEdition?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -45,9 +46,12 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [100, 0] as unknown as number,
 };
 
-export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
+export const Card: React.FC<Props> = ({
+  form,
+  isDraggingInProgress,
+  isExpressEdition,
+}) => {
   const archiveMutation = useArchiveFormMutation();
-  const deleteMutation = useDeleteFormMutation();
   const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
@@ -67,9 +71,10 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
   const isArchiving =
     archiveMutation.isLoading && archiveMutation.context === id;
   const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
-  const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
   const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
-  const isDisabled = isDeleting || isCloning || isArchiving;
+  const isDisabled = isCloning || isArchiving;
+
+  const openDeleteFormModal = useDeleteFormModal({ form });
 
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
@@ -89,21 +94,25 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
       )}
     >
       <Controls>
-        <Tooltip title={translate('Move')} {...tooltipProps}>
-          <ControlButton className="handle">
-            <MoveIcon />
-          </ControlButton>
-        </Tooltip>
-        <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              cloneMutation.mutate(id);
-            }}
-          >
-            <CloneIcon />
-          </ControlButton>
-        </Tooltip>
-        {!dateArchived && (
+        {!isExpressEdition && (
+          <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
+            <ControlButton className="handle">
+              <MoveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
+        {!isExpressEdition && (
+          <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
+            <ControlButton
+              onClick={() => {
+                cloneMutation.mutate(id);
+              }}
+            >
+              <CloneIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
+        {!isExpressEdition && !dateArchived && (
           <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
             <ControlButton
               onClick={() => {
@@ -115,15 +124,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
           </Tooltip>
         )}
         <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              if (
-                confirm(translate('Are you sure you want to delete this form?'))
-              ) {
-                deleteMutation.mutate(id);
-              }
-            }}
-          >
+          <ControlButton onClick={openDeleteFormModal}>
             <CrossIcon />
           </ControlButton>
         </Tooltip>

@@ -103,6 +103,7 @@ return [
     'Restore this Form' => 'Stellen Sie dieses Formular wieder her',
     'Show archived forms' => 'Archivierte Formulare anzeigen',
     'Hide archived forms' => 'Archivierte Formulare ausblenden',
+    'archived' => 'archivierte',
 
     // Notifications Controller
     'Email notifications' => 'Email-Benachrichtigungen',
@@ -203,6 +204,8 @@ return [
     'Submission with ID {id} not found' => 'Einreichung mit ID {id} nicht gefunden',
     'Submissions deleted successfully.' => 'Einreichungen erfolgreich gelöscht.',
     'Notes about your changes' => 'Notizen zu Ihren Änderungen',
+    'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Sind Sie sicher, dass Sie dieses Formular dauerhaft löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.',
+    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'Um dieses Formular zu löschen, geben Sie bitte <strong>DELETE</strong> in das Feld unten ein:',
 
     // Element type
     'Title' => 'Titel',
@@ -490,6 +493,7 @@ return [
     'Live HTML rendering currently disabled.' => 'Live HTML-Rendering ist deaktiviert.',
     'Quick save' => 'Schnell speichern',
     'Saving...' => 'Speichern...',
+    'Deleting' => 'Löschen',
     'Cancel' => 'Abbrechen',
     'Save and finish' => 'Speichern und Fertigstellen',
     'Save as a new form' => 'Speichern als neues Formular',

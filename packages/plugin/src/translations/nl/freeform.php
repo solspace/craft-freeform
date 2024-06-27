@@ -16,7 +16,7 @@ return [
     'Submissions' => 'Inzendingen',
     'Spam' => 'Spam',
     'Survey Results' => 'Resultaten van de Enquête',
-    'Move' => 'Verplaatsen',
+    'Move this Form Card' => 'Verplaats deze formulierkaart',
     'Duplicate this Form' => 'Dupliceer dit formulier',
     'Delete this Form' => 'Verwijder dit formulier',
     'Are you sure you want to delete this form?' => 'Weet u zeker dat u dit formulier wilt verwijderen?',
@@ -28,11 +28,13 @@ return [
     'Restore this Form' => 'Herstel dit formulier',
     'Show archived forms' => 'Toon gearchiveerde formulieren',
     'Hide archived forms' => 'Gearchiveerde formulieren verbergen',
+    'archived' => 'gearchiveerde',
 
     // Form Builder // Universal
     'Forms' => 'Formulieren',
     'Cancel' => 'Annuleren',
     'Saving' => 'Besparing',
+    'Deleting' => 'Verwijderen',
     'Save' => 'Redden',
     'Close' => 'Dichtbij',
     'Enabled' => 'Ingeschakeld',
@@ -562,6 +564,8 @@ return [
     'Submission could not be updated.' => 'Inzending kon niet worden bijgewerkt.',
     'Submission with ID {id} not found' => 'Inzending met ID {id} niet gevonden',
     'Submissions deleted successfully.' => 'Inzendingen zijn succesvol verwijderd.',
+    'Are you sure you want to permanently delete this form? This action cannot be undone.' => 'Weet u zeker dat u dit formulier definitief wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden.',
+    'To delete this form, please type <strong>DELETE</strong> in the box below:' => 'Om dit formulier te verwijderen, typt u <strong>DELETE</strong> in het onderstaande vak:',
 
     // Submissions // Spam
     'Spam Reasons' => 'Spam-redenen',

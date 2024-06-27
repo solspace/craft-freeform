@@ -24,7 +24,7 @@ export const Layout: React.FC<Props> = ({ layout }) => {
     <PageFieldLayoutWrapper ref={dropRef} className="field-layout">
       {!rows.length && (
         <EmptyLayout>
-          Drag or click fields to add them to the layout
+          {translate('Drag or click fields to add them to the layout')}
         </EmptyLayout>
       )}
       {rows.map((row) => (

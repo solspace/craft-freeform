@@ -52,6 +52,7 @@ class PageContext
             $bag->set(Form::PROPERTY_PAGE_INDEX, $index);
             $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
             $form->setPagePosted(false);
+            $form->setNavigatingBack(true);
         }
     }
 

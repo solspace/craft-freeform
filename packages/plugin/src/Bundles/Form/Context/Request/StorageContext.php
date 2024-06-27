@@ -55,14 +55,19 @@ class StorageContext
     public function storeCurrentValues(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
-        if (!$form->isFormPosted() || !$form->isPagePosted()) {
+        if (!$form->isFormPosted() || (!$form->isPagePosted() && !$form->isNavigatingBack())) {
             return;
         }
 
         $bag = $form->getProperties();
         $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
 
-        foreach ($form->getCurrentPage()->getFields() as $field) {
+        $page = $form->getCurrentPage();
+        if ($form->isNavigatingBack()) {
+            $page = $form->getNextPage();
+        }
+
+        foreach ($page->getFields() as $field) {
             if (!$field->getHandle()) {
                 continue;
             }

@@ -125,6 +125,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private array|bool $disableFunctionality = false;
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
+    private bool $navigatingBack = false;
     private bool $formPosted = false;
     private bool $duplicate = false;
     private bool $graphqlPosted = false;
@@ -255,6 +256,13 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     {
         return $this->getLayout()->getPages()->getByIndex(
             $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0)
+        );
+    }
+
+    public function getNextPage(): Page
+    {
+        return $this->layout->getPages()->getByIndex(
+            $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0) + 1
         );
     }
 
@@ -435,6 +443,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function setPagePosted(bool $pagePosted): self
     {
         $this->pagePosted = $pagePosted;
+
+        return $this;
+    }
+
+    public function isNavigatingBack(): bool
+    {
+        return $this->navigatingBack;
+    }
+
+    public function setNavigatingBack(bool $navigatingBack): self
+    {
+        $this->navigatingBack = $navigatingBack;
 
         return $this;
     }

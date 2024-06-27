@@ -33,11 +33,16 @@ class PostContext
             return;
         }
 
-        if ('POST' !== $request->getMethod() || !$form->isPagePosted()) {
+        if ('POST' !== $request->getMethod() || (!$form->isPagePosted() && !$form->isNavigatingBack())) {
             return;
         }
 
-        foreach ($form->getCurrentPage()->getFields() as $field) {
+        $page = $form->getCurrentPage();
+        if ($form->isNavigatingBack()) {
+            $page = $form->getNextPage();
+        }
+
+        foreach ($page->getFields() as $field) {
             if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
                 continue;
             }

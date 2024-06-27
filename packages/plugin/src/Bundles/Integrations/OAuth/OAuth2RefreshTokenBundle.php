@@ -46,7 +46,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
 
     public static function getPriority(): int
     {
-        return 1500;
+        return 500;
     }
 
     public function onFetchTokens(TokenPayloadEvent $event): void

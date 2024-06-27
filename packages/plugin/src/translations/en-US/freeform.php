@@ -1294,14 +1294,12 @@ return [
     'Event is not linked to freeform submission' => 'Event is not linked to freeform submission',
 
     // Craft Queue Jobs
-    'Freeform: Processing CRM Integrations' => 'Freeform: Processing CRM Integrations',
-    'Freeform: Processing Email Marketing Integrations' => 'Freeform: Processing Email Marketing Integrations',
-    'Freeform: Processing Google Sheets Integrations' => 'Freeform: Processing Google Sheets Integrations',
-    'Freeform: Sending Digest Email' => 'Freeform: Sending Digest Email',
+    'Freeform: Processing Integrations' => 'Freeform: Processing Integrations',
     'Freeform: Processing Notifications' => 'Freeform: Processing Notifications',
     'Freeform: Purging Old Submissions' => 'Freeform: Purging Old Submissions',
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Purging Old Spam Submissions',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Purging Unfinalized Assets',
+    'Freeform: Sending Digest Email' => 'Freeform: Sending Digest Email',
 
     // Front End Form Errors // Fields
     'This field is required' => 'This field is required',

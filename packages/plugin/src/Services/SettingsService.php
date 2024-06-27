@@ -292,6 +292,7 @@ class SettingsService extends BaseService
             'integrations/crm',
             'integrations/payment-gateways',
             'integrations/captchas',
+            'integrations/spam-blocking',
             'integrations/elements',
             'integrations/webhooks',
             'integrations/single',

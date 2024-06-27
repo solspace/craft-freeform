@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Library\Mailing;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
@@ -28,7 +27,6 @@ interface MailHandlerInterface
     public function sendEmail(
         Form $form,
         RecipientCollection $recipients,
-        FieldCollection $fields,
         NotificationTemplate $notificationTemplate,
         ?Submission $submission = null
     ): int;

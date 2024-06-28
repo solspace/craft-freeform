@@ -876,6 +876,21 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->getSettings()->getBehavior()->getSuccessMessage();
     }
 
+    public function valuesFromArray(array $values): void
+    {
+        foreach ($this->getLayout()->getFields() as $field) {
+            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+                continue;
+            }
+
+            if (!isset($values[$field->getHandle()])) {
+                continue;
+            }
+
+            $field->setValue($values[$field->getHandle()]);
+        }
+    }
+
     public function valuesFromSubmission(Submission $submission): void
     {
         $fields = $submission->getFieldCollection();

@@ -25,12 +25,13 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 
-abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, GoogleSheetsIntegrationInterface
+abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, GoogleSheetsIntegrationInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;

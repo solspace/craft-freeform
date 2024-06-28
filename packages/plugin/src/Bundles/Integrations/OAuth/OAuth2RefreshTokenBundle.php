@@ -11,6 +11,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
@@ -45,7 +46,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
 
     public static function getPriority(): int
     {
-        return 1500;
+        return 500;
     }
 
     public function onFetchTokens(TokenPayloadEvent $event): void
@@ -101,6 +102,10 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
 
         $issuedAt = $integration->getIssuedAt();
         $expiresIn = $integration->getExpiresIn();
+
+        if ($integration instanceof OAuth2IssuedAtMilliseconds) {
+            $issuedAt = (int) ($issuedAt / 1000);
+        }
 
         if ($issuedAt + $expiresIn - self::CHECK_BUFFER > time()) {
             return;

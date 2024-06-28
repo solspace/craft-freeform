@@ -401,10 +401,6 @@ class DiagnosticsService extends BaseService
                     ]
                 ),
                 new DiagnosticItem(
-                    'Spam Blocking: <b>{{ value|join(", ") }}</b>',
-                    $this->getSpamBlockers()
-                ),
-                new DiagnosticItem(
                     'Spam Protection Behavior : <b>{{ value }}</b>',
                     $this->getSummary()->statistics->spam->spamProtectionBehavior
                 ),

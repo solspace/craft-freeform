@@ -17,7 +17,7 @@ use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrai
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
 #[Type(
-    name: 'IP Addresses',
+    name: 'Bloocked IP Addresses',
     type: Type::TYPE_SPAM_BLOCK,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',

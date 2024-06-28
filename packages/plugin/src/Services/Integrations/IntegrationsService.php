@@ -472,7 +472,7 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
-    public function processIntegrations(int $formId, int $submissionId, string $type): void
+    public function processIntegrationJob(int $formId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
 
@@ -481,15 +481,10 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $submission = $freeform->submissions->getSubmissionById($submissionId);
-        if (!$submission) {
-            return;
-        }
-
-        $form->valuesFromSubmission($submission);
+        $form->valuesFromArray($postedData);
 
         /** @var IntegrationInterface[] $integrations */
-        $integrations = $this->getForForm($form, $type);
+        $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             $client = $this->clientProvider->getAuthorizedClient($integration);
             $integration->push($form, $client);

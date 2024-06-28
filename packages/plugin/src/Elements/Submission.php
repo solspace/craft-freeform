@@ -347,6 +347,20 @@ class Submission extends Element
         return $assets;
     }
 
+    public function getFormFieldValues(): array
+    {
+        $values = [];
+        foreach ($this as $field) {
+            if (!$field->getHandle()) {
+                continue;
+            }
+
+            $values[$field->getHandle()] = $field->getValue();
+        }
+
+        return $values;
+    }
+
     public function setFormFieldValues(array $values, bool $override = true): self
     {
         foreach ($this as $field) {

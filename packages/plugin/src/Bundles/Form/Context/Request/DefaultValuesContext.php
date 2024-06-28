@@ -2,10 +2,14 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
+use Faker\Factory;
+use Faker\Generator;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 use yii\base\Event;
 
 class DefaultValuesContext
@@ -30,7 +34,32 @@ class DefaultValuesContext
                 continue;
             }
 
-            $field->setValue($field->getDefaultValue());
+            $value = $field->getDefaultValue();
+            if (TwigHelper::isTwigValue($value) && preg_match('/\bfaker\.\b/', $value)) {
+                $value = $this->getTwig()->render($value, ['faker' => $this->getFaker()]);
+            }
+
+            $field->setValue($value);
         }
+    }
+
+    private function getTwig(): IsolatedTwig
+    {
+        static $instance;
+        if (null === $instance) {
+            $instance = new IsolatedTwig();
+        }
+
+        return $instance;
+    }
+
+    private function getFaker(): Generator
+    {
+        static $instance;
+        if (null === $instance) {
+            $instance = Factory::create(\Craft::$app->getLocale()->id);
+        }
+
+        return $instance;
     }
 }

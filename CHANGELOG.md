@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.5.1 - 2024-06-27
+
+### Changed
+- Updated the form deletion process to include a delete confirmation modal to prevent accidental deletion of forms.
+
+### Fixed
+- Fixed a bug that caused the Email Notification and Integration jobs to break when the **Store Submitted Data** setting was disabled.
+- Fixed a bug that intermittently prevented integrations using OAuth from working.
+- Fixed a bug where the Spam Blocking integrations page was not visible while admin changes were not allowed.
+- Fixed a bug where going to a previous page in multi-page forms would not retain any data entered on the current page.
+- Fixed a bug where the Move, Duplicate, and Archive form card buttons were displaying for the Express edition, which is not relevant.
+
 ## 5.5.0 - 2024-06-26
 
 ### Added

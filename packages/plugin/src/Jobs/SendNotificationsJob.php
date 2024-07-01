@@ -21,6 +21,8 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 {
     public ?int $formId = null;
 
+    public ?int $submissionId = null;
+
     public array $postedData = [];
 
     public ?RecipientCollection $recipients = null;
@@ -46,10 +48,13 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 
         $form->valuesFromArray($this->postedData);
 
+        $submission = $freeform->submissions->getSubmissionById($this->submissionId);
+
         $freeform->mailer->sendEmail(
             $form,
             $this->recipients,
             $this->template,
+            $submission,
         );
     }
 

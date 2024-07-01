@@ -32,15 +32,11 @@ abstract class BaseConstantContactIntegration extends EmailMarketingIntegration 
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/contact_lists'));
+        $response = $client->get($this->getEndpoint('/contact_lists'));
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            return !empty($json->lists);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json->lists);
     }
 
     public function fetchFields(ListObject $list, string $category, Client $client): array

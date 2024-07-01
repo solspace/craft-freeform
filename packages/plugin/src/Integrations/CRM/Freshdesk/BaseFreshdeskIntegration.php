@@ -76,13 +76,9 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/tickets'));
+        $response = $client->get($this->getEndpoint('/tickets'));
 
-            return 200 === $response->getStatusCode();
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function getApiKey(): string

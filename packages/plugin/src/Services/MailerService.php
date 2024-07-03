@@ -73,7 +73,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         $recipients = $this->processRecipients($recipients);
-        $fields = $form->getFields();
+        $fields = $form->getLayout()->getFields();
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
         $renderEvent = new RenderEmailEvent($form, $notificationTemplate, $fieldValues, $submission);

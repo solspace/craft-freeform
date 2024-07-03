@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -73,23 +72,19 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get(
-                $this->getPardotEndpoint(),
-                [
-                    'query' => [
-                        'limit' => 1,
-                        'format' => 'json',
-                    ],
+        $response = $client->get(
+            $this->getPardotEndpoint(),
+            [
+                'query' => [
+                    'limit' => 1,
+                    'format' => 'json',
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
-        } catch (RequestException $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
     }
 
     public function getAuthorizeUrl(): string

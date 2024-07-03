@@ -64,15 +64,11 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/'));
+        $response = $client->get($this->getEndpoint('/'));
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            return !empty($json->account_id);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json->account_id);
     }
 
     public function getDataCenter(): string

@@ -16,7 +16,6 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegration;
@@ -54,15 +53,11 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/lists?limit=100'));
+        $response = $client->get($this->getEndpoint('/lists?limit=100'));
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            return !empty($json['lists']);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json['lists']);
     }
 
     public function getApiToken(): string

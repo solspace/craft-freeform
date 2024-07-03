@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Integrations\CRM\Insightly;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
@@ -45,13 +44,9 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/Instance'));
+        $response = $client->get($this->getEndpoint('/Instance'));
 
-            return 200 === $response->getStatusCode();
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function getApiToken(): string

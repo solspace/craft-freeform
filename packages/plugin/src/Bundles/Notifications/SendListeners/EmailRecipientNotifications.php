@@ -72,6 +72,7 @@ class EmailRecipientNotifications extends FeatureBundle
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
+                    'submissionId' => $event->getSubmission()->id,
                     'postedData' => $postedData,
                     'recipients' => $recipientCollection,
                     'template' => $notificationTemplate,

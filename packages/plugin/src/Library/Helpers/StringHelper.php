@@ -128,4 +128,13 @@ class StringHelper
     {
         return preg_match("/({{\\s.*\\s*}}\n?)/", $value);
     }
+
+    public static function isEnvVariable(mixed $value): bool
+    {
+        if (!\is_string($value)) {
+            return false;
+        }
+
+        return (bool) preg_match('/^\$([A-Z0-9_]+)$/i', $value);
+    }
 }

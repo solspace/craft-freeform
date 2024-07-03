@@ -26,9 +26,15 @@ class ElementFieldMappingHelper
 
         foreach ($errors as $craftField => $errorList) {
             if (isset($sourceToField[$craftField])) {
-                $sourceToField[$craftField]->addErrors($errorList);
+                $field = $sourceToField[$craftField];
+
+                if ($form->getCurrentPage()->getFields()->has($field)) {
+                    $field->addErrors($errorList);
+                }
             } else {
-                $form->addErrors($errorList);
+                if ($form->isLastPage()) {
+                    $form->addErrors($errorList);
+                }
             }
         }
     }

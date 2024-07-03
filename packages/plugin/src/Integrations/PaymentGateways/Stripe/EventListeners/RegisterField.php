@@ -45,8 +45,6 @@ class RegisterField extends FeatureBundle
 
     public function attachStripeScripts(RenderTagEvent $event): void
     {
-        static $stripeScriptLoaded;
-
         if (!$event->isGenerateTag()) {
             return;
         }
@@ -61,11 +59,7 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        if (null === $stripeScriptLoaded) {
-            $stripeScriptLoaded = true;
-
-            $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
-            $event->addScript($scriptPath, ['class' => 'freeform-stripe-script']);
-        }
+        $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
+        $event->addScript($scriptPath, ['class' => 'freeform-stripe-script']);
     }
 }

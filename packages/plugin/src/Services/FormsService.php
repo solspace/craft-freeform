@@ -480,21 +480,11 @@ class FormsService extends BaseService implements FormHandlerInterface
             return;
         }
 
-        static $pluginJsLoaded;
-        static $pluginCssLoaded;
+        $jsPath = $this->getSettingsService()->getPluginJsPath();
+        $event->addScript($jsPath);
 
-        if (null === $pluginJsLoaded) {
-            $pluginJsLoaded = true;
-            $jsPath = $this->getSettingsService()->getPluginJsPath();
-
-            $event->addScript($jsPath);
-        }
-
-        if (null === $pluginCssLoaded) {
-            $pluginCssLoaded = true;
-            $cssPath = $this->getSettingsService()->getPluginCssPath();
-            $event->addStylesheet($cssPath);
-        }
+        $cssPath = $this->getSettingsService()->getPluginCssPath();
+        $event->addStylesheet($cssPath);
     }
 
     public function shouldScrollToAnchor(Form $form): bool

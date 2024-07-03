@@ -38,7 +38,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         }
       },
     },
-    []
+    [enabled]
   );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {

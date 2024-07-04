@@ -42,9 +42,9 @@ class LinkTransform extends FeatureBundle
                 }
 
                 if (\in_array('tel', $allowedTypes, true)) {
-                    if (preg_match('/^\+?[ ()0-9]+$/', $val)) {
-                        return 'tel:'.$val;
-                    }
+                    $val = preg_replace('/[^0-9]/', '', $val);
+                    
+                    return 'tel:'.$val;
                 }
 
                 if (\in_array('url', $allowedTypes, true)) {

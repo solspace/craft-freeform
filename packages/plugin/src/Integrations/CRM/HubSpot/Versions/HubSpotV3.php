@@ -116,15 +116,11 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/objects/contacts'));
+        $response = $client->get($this->getEndpoint('/objects/contacts'));
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            return 200 === $response->getStatusCode() && isset($json->results);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return 200 === $response->getStatusCode() && isset($json->results);
     }
 
     public function fetchFields(string $category, Client $client): array
@@ -195,6 +191,10 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
     private function pushContacts(Form $form, Client $client): void
     {
+        if (!$this->mapContacts) {
+            return;
+        }
+
         $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         if (!$mapping) {
             return;
@@ -249,6 +249,10 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
     private function pushCompanies(Form $form, Client $client): void
     {
+        if (!$this->mapCompanies) {
+            return;
+        }
+
         $mapping = $this->processMapping($form, $this->companyMapping, self::CATEGORY_COMPANY);
         if (!$mapping) {
             return;
@@ -322,6 +326,10 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
     private function pushDeals(Form $form, Client $client): void
     {
+        if (!$this->mapDeals) {
+            return;
+        }
+
         $properties = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
         if (!$properties) {
             return;

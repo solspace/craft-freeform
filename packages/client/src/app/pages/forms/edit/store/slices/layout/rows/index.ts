@@ -33,7 +33,7 @@ export const rowsSlice = createSlice({
       const insertIndex =
         order !== undefined
           ? rows.findIndex((row) => row.order === order)
-          : highestOrder + 1;
+          : highestOrder;
 
       state.splice(insertIndex, 0, {
         uid,

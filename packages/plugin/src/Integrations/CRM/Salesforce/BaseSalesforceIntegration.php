@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -67,15 +66,11 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/'));
+        $response = $client->get($this->getEndpoint('/'));
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            return !empty($json);
-        } catch (RequestException $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json);
     }
 
     public function getAuthorizeUrl(): string

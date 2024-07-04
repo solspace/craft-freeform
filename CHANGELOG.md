@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.5.2 - 2024-07-03
+
+### Changed
+- Improved field error validation on multi-page forms using Element integrations. If required element fields are not present on the current Freeform form page, their error validation will happen at the end of the form instead.
+- Improved integration error messages in the settings page.
+
+### Fixed
+- Fixed a bug where email notifications were not rendering all fields from all pages.
+- Fixed a bug where email notification jobs did not contain submission object data (if using that to render submission data).
+- Fixed a potential ordering issue when dragging fields between rows.
+
 ## 5.5.1 - 2024-06-27
 
 ### Changed

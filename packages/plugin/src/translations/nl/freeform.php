@@ -33,10 +33,10 @@ return [
     // Form Builder // Universal
     'Forms' => 'Formulieren',
     'Cancel' => 'Annuleren',
-    'Saving' => 'Besparing',
+    'Saving' => 'Opslaan',
     'Deleting' => 'Verwijderen',
-    'Save' => 'Redden',
-    'Close' => 'Dichtbij',
+    'Save' => 'Opslaan',
+    'Close' => 'Sluiten',
     'Enabled' => 'Ingeschakeld',
     'empty' => 'leeg',
     'Loading data' => 'Gegevens laden',

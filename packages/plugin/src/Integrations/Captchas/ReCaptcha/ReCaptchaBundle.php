@@ -90,15 +90,7 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
-        static $added = [];
-
         $version = $integration->getVersion();
-        if (\in_array($version, $added, true)) {
-            return;
-        }
-
-        $added[] = $version;
-
         $event->addScript('js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
     }
 

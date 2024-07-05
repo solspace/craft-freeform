@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.5.3 - 2024-07-04
+
+### Added
+- Added support for mapping URLs, email addresses, and phone numbers to the Craft **URL field type** for element integrations.
+- Added a `loadFormSpecificScripts` template function for manually loading additional form-specific scripts (e.g. reCAPTCHA, JS Test, etc).
+
+### Changed
+- Updated integrations to fail gracefully on the front end when a user submits the form. If there's a configuration issue or error for the integration, the form will continue to process for the user and log an error in the Freeform error log.
+- Updated integrations to no longer encrypt setting values configured with an ENV variable. Instead, the ENV variable will be stored in the database to continue working in multiple environments.
+
+### Fixed
+- Fixed a bug where email notification jobs would fail when the **Store Submission Data** setting was disabled for the form.
+
 ## 5.5.2 - 2024-07-03
 
 ### Changed

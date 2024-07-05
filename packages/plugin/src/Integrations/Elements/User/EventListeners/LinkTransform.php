@@ -43,7 +43,7 @@ class LinkTransform extends FeatureBundle
 
                 if (\in_array('tel', $allowedTypes, true)) {
                     $val = preg_replace('/[^0-9]/', '', $val);
-                    
+
                     return 'tel:'.$val;
                 }
 

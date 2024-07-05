@@ -22,11 +22,19 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     private const ELEMENT_SCRIPT = 'script';
     private const ELEMENT_STYLE = 'style';
 
+    private static array $addedScriptCache = [];
+
     /** @var string[] */
     private array $chunks = [];
 
-    public function __construct(private Form $form, private bool $generateTag = true)
-    {
+    private array $scripts = [];
+    private array $styles = [];
+
+    public function __construct(
+        private Form $form,
+        private bool $generateTag = true,
+        private bool $collectScripts = false,
+    ) {
         parent::__construct();
     }
 
@@ -48,6 +56,16 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     public function getChunks(): array
     {
         return $this->chunks;
+    }
+
+    public function getScripts(): array
+    {
+        return $this->scripts;
+    }
+
+    public function getStyles(): array
+    {
+        return $this->styles;
     }
 
     public function addChunk(string $chunk, array $variables = [], $position = self::POSITION_END): self
@@ -109,7 +127,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         string $type = self::ELEMENT_SCRIPT,
         array $attributes = [],
     ): self {
-        if ($this->isScriptsDisabled()) {
+        if ($this->isScriptsDisabled() && !$this->collectScripts) {
             return $this;
         }
 
@@ -119,6 +137,26 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         } else {
             $fullPath = \Craft::getAlias('@freeform/Resources/'.$filePath);
         }
+
+        if ($isAbsolute) {
+            $chunk = \Craft::$app->assetManager->getPublishedUrl($fullPath, true);
+        } else {
+            $chunk = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $filePath);
+        }
+
+        match ($type) {
+            self::ELEMENT_SCRIPT => $this->scripts[] = $chunk,
+            self::ELEMENT_STYLE => $this->styles[] = $chunk,
+        };
+
+        $this->scripts = array_unique($this->scripts);
+        $this->styles = array_unique($this->styles);
+
+        if (\in_array($fullPath, self::$addedScriptCache, true)) {
+            return $this;
+        }
+
+        self::$addedScriptCache[] = $fullPath;
 
         $view = \Craft::$app->getView();
         $insertType = $this->getSettingsService()->scriptInsertType();
@@ -162,12 +200,6 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
             self::ELEMENT_SCRIPT => [$view, 'registerJsFile'],
             self::ELEMENT_STYLE => [$view, 'registerCssFile'],
         };
-
-        if ($isAbsolute) {
-            $chunk = \Craft::$app->assetManager->getPublishedUrl($fullPath, true);
-        } else {
-            $chunk = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $filePath);
-        }
 
         if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
             return $this->addChunk(sprintf($tag, $chunk));

@@ -497,7 +497,11 @@ class IntegrationsService extends BaseService
         $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+
+            try {
+                $integration->push($form, $client);
+            } catch (IntegrationException $e) {
+            }
         }
     }
 

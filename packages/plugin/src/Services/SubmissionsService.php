@@ -52,8 +52,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     private static array $submissionCache = [];
     private static array $submissionTokenCache = [];
 
-    public function getSubmissionById(int $id): ?Submission
+    public function getSubmissionById(?int $id): ?Submission
     {
+        if (null === $id) {
+            return null;
+        }
+
         if (!isset(self::$submissionCache[$id])) {
             self::$submissionCache[$id] = Submission::find()->id($id)->one();
         }

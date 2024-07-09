@@ -29,13 +29,21 @@ class ExportService extends BaseService
                 'title' => Freeform::t('Notifications'),
                 'url' => 'freeform/export/notifications',
             ],
+            [
+                'title' => Freeform::t('Freeform'),
+                'url' => 'freeform/export/forms',
+            ],
+            ['heading' => 'Import'],
+            [
+                'title' => Freeform::t('Freeform'),
+                'url' => 'freeform/import/forms',
+            ],
         ];
 
         // ======= IMPORT =========
         $isInstalled = \Craft::$app->plugins->isPluginInstalled('express-forms');
         $isEnabled = \Craft::$app->plugins->isPluginEnabled('express-forms');
         if ($isInstalled && $isEnabled) {
-            $navigation[] = ['heading' => 'Import'];
             $navigation[] = [
                 'title' => Freeform::t('Express Forms'),
                 'url' => 'freeform/import/express-forms',

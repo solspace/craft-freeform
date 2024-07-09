@@ -98,4 +98,9 @@ abstract class BaseApiController extends BaseController
 
         return $this->response;
     }
+
+    protected function asFile(mixed $path, string $filename, array $options = []): Response
+    {
+        return $this->response->sendFile($path, $filename, $options);
+    }
 }

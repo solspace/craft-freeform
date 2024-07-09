@@ -5,6 +5,9 @@ namespace Solspace\Freeform\Bundles\Backup\Collections;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Library\Collections\Collection;
 
+/**
+ * @extends Collection<FormSubmissions>
+ */
 class FormSubmissionCollection extends Collection
 {
     public function getTotals(): int

@@ -803,7 +803,7 @@ return [
     '2 weeks' => '2 weken',
 
     // Settings // Form Behavior
-    'Form Behavior' => 'Vormgedrag',
+    'Form Behavior' => 'Formuliergedrag',
     'Submit Behavior' => 'Gedrag indienen',
     'Disable Submit Button on Form Submit' => 'Knop Verzenden uitschakelen bij verzenden van formulier',
     "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting." => 'Schakel dit in om de verzendknop van het formulier automatisch uit te schakelen wanneer het formulier wordt verzonden. Dit voorkomt dat het formulier dubbel wordt verzonden.',
@@ -823,7 +823,7 @@ return [
     'The location of where you want Freeform to insert its scripts for form and field functionality.' => 'De locatie waar u wilt dat Freeform de scripts voor formulier- en veldfunctionaliteit invoegt.',
     'Page Footer (recommended)' => 'Paginavoettekst (aanbevolen)',
     'Page Header' => 'Pagina hoofd',
-    'Inside Form' => 'Inside-vorm',
+    'Inside Form' => 'In het formulier',
     'None (add manually)' => 'Geen (handmatig toevoegen)',
     "With 'None' chosen, please be sure to manually load Freeform's JS and CSS with the 'freeform.loadFreeformPlugin()' function in your template(s)." => "Als u 'Geen' hebt gekozen, zorg er dan voor dat u de JS en CSS van Freeform handmatig laadt met de functie 'freeform.loadFreeformPlugin()' in uw sjabloon(s).",
     'Script Insert Type' => 'Type scriptinvoeging',

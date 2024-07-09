@@ -25,6 +25,10 @@ class BackupBundle extends FeatureBundle
                 $event->rules['freeform/import/data'] = 'freeform/forms';
                 $event->rules['freeform/import/express-forms'] = 'freeform/forms';
                 $event->rules['freeform/import/express-forms/data'] = 'freeform/backup-import/express-forms';
+
+                $event->rules['freeform/export/forms'] = 'freeform/forms';
+                $event->rules['freeform/export/forms/data'] = 'freeform/backup-export/freeform';
+                $event->rules['freeform/export'] = 'freeform/backup-export/export';
             }
         );
     }

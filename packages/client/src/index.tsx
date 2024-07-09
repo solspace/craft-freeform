@@ -14,6 +14,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '../config';
 
+import { Export } from './app/pages/export/export';
+import { ExportFreeform } from './app/pages/export/views/freeform/freeform';
 import { Form, Forms } from './app/pages/forms';
 import { Import } from './app/pages/import/import';
 import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
@@ -75,6 +77,9 @@ root.render(
                           path="express-forms"
                           element={<ImportExpressForms />}
                         />
+                      </Route>
+                      <Route path="export" element={<Export />}>
+                        <Route path="forms" element={<ExportFreeform />} />
                       </Route>
                       <Route path="settings/limited-users">
                         <Route path=":id" element={<LimitedUsersDetail />} />

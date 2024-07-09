@@ -579,26 +579,32 @@ class FormsService extends BaseService implements FormHandlerInterface
         return null;
     }
 
-    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    public function getFormsFromQuery(Query $query): array
     {
-        if (null === $sites) {
-            return;
-        }
-
-        if (\is_string($sites)) {
-            $sites = [$sites];
-        }
-
-        $sites = array_filter($sites);
-
+        $baseQuery = $this->getFormQuery();
         $query
-            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
-            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
-            ->andWhere(['in', 'sites.[[handle]]', $sites])
+            ->select($baseQuery->select)
+            ->from($baseQuery->from)
         ;
+
+        $results = $query->all();
+
+        $forms = [];
+        foreach ($results as $result) {
+            try {
+                $form = $this->createForm($result);
+
+                $forms[] = $form;
+                self::$formsById[$form->getId()] = $form;
+                self::$formsByHandle[$form->getHandle()] = $form;
+            } catch (InvalidFormTypeException) {
+            }
+        }
+
+        return $forms;
     }
 
-    private function getFormQuery(): Query
+    public function getFormQuery(): Query
     {
         return (new Query())
             ->select(
@@ -619,6 +625,25 @@ class FormsService extends BaseService implements FormHandlerInterface
             )
             ->from(FormRecord::TABLE.' forms')
             ->orderBy(['forms.order' => \SORT_ASC, 'forms.name' => \SORT_ASC])
+        ;
+    }
+
+    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    {
+        if (null === $sites) {
+            return;
+        }
+
+        if (\is_string($sites)) {
+            $sites = [$sites];
+        }
+
+        $sites = array_filter($sites);
+
+        $query
+            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
+            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
+            ->andWhere(['in', 'sites.[[handle]]', $sites])
         ;
     }
 

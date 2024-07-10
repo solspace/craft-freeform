@@ -6,7 +6,7 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Errors\ConstraintVi
 
 class WebsiteConstraint implements ConstraintInterface
 {
-    public const PATTERN = '/^((((http(s)?)|(sftp)|(ftp)|(ssh)):\/\/)|(\/\/))?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$/i';
+    public const PATTERN = '/^((((http(s)?)|(sftp)|(ftp)|(ssh)):\/\/)|(\/\/))?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,15}\b([-a-zA-Z0-9@:%_\+.~#?&\/=]*)$/i';
 
     /** @var string */
     private $message;

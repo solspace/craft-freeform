@@ -51,6 +51,9 @@ class WebhooksBundle extends FeatureBundle
     public function triggerWebhooks(SubmitEvent $event): void
     {
         $form = $event->getForm();
+        if ($form->isMarkedAsSpam()) {
+            return;
+        }
 
         /** @var WebhookIntegrationInterface[] $webhooks */
         $webhooks = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_WEBHOOKS);

@@ -34,6 +34,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         private Form $form,
         private bool $generateTag = true,
         private bool $collectScripts = false,
+        private bool $collectAllScripts = false,
     ) {
         parent::__construct();
     }
@@ -51,6 +52,11 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     public function isGenerateTag(): bool
     {
         return $this->generateTag;
+    }
+
+    public function isCollectAllScripts(): bool
+    {
+        return $this->collectAllScripts;
     }
 
     public function getChunks(): array

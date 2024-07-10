@@ -143,13 +143,21 @@ class JavascriptTestBundle extends FeatureBundle
             return;
         }
 
+        $scriptPath = __DIR__.'/../Scripts/js-test.js';
+
+        if ($event->isCollectAllScripts()) {
+            $event->addScript($scriptPath);
+
+            return;
+        }
+
         $form = $event->getForm();
         $integration = $this->getIntegration($form);
         if (!$integration) {
             return;
         }
 
-        $event->addScript(__DIR__.'/../Scripts/js-test.js');
+        $event->addScript($scriptPath);
     }
 
     public function attachToAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void

@@ -26,8 +26,12 @@ class ButtonRuleRecord extends RuleRecord
     /**
      * @return ButtonRuleRecord[]
      */
-    public static function getExistingRules(int $formId): array
+    public static function getExistingRules(?int $formId): array
     {
+        if (null === $formId) {
+            return [];
+        }
+
         /** @var ButtonRuleRecord[] $records */
         $records = self::find()
             ->select(['br.*'])

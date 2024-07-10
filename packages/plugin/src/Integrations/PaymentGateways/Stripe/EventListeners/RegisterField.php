@@ -49,6 +49,15 @@ class RegisterField extends FeatureBundle
             return;
         }
 
+        $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
+        $attributes = ['class' => 'freeform-stripe-script'];
+
+        if ($event->isCollectAllScripts()) {
+            $event->addScript($scriptPath, $attributes);
+
+            return;
+        }
+
         $form = $event->getForm();
         if (!$form->getFields()->hasFieldOfClass(StripeField::class)) {
             return;
@@ -59,7 +68,6 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
-        $event->addScript($scriptPath, ['class' => 'freeform-stripe-script']);
+        $event->addScript($scriptPath, $attributes);
     }
 }

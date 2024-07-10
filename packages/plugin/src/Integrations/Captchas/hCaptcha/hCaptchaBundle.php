@@ -82,6 +82,13 @@ class hCaptchaBundle extends FeatureBundle
             return;
         }
 
+        if ($event->isCollectAllScripts()) {
+            $event->addScript('js/scripts/front-end/captchas/hcaptcha/invisible.js');
+            $event->addScript('js/scripts/front-end/captchas/hcaptcha/checkbox.js');
+
+            return;
+        }
+
         $form = $event->getForm();
 
         $integration = $this->getHCaptchaForForm($form);

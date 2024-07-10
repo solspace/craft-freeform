@@ -83,6 +83,14 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        if ($event->isCollectAllScripts()) {
+            $event->addScript('js/scripts/front-end/captchas/recaptcha/v2-invisible.js');
+            $event->addScript('js/scripts/front-end/captchas/recaptcha/v2-checkbox.js');
+            $event->addScript('js/scripts/front-end/captchas/recaptcha/v3.js');
+
+            return;
+        }
+
         $form = $event->getForm();
 
         $integration = $this->getReCaptchaForForm($form);

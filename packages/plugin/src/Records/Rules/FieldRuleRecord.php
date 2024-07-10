@@ -26,8 +26,12 @@ class FieldRuleRecord extends RuleRecord
     /**
      * @return FieldRuleRecord[]
      */
-    public static function getExistingRules(int $formId): array
+    public static function getExistingRules(?int $formId): array
     {
+        if (null === $formId) {
+            return [];
+        }
+
         /** @var FieldRuleRecord[] $records */
         $records = self::find()
             ->select(['fr.*'])

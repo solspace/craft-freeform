@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\EventListeners;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
@@ -29,6 +30,12 @@ class RegisterField extends FeatureBundle
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachStripeScripts']
         );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this, 'collectScripts']
+        );
     }
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
@@ -49,15 +56,6 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $scriptPath = 'js/scripts/front-end/payments/stripe/elements.js';
-        $attributes = ['class' => 'freeform-stripe-script'];
-
-        if ($event->isCollectAllScripts()) {
-            $event->addScript($scriptPath, $attributes);
-
-            return;
-        }
-
         $form = $event->getForm();
         if (!$form->getFields()->hasFieldOfClass(StripeField::class)) {
             return;
@@ -68,6 +66,18 @@ class RegisterField extends FeatureBundle
             return;
         }
 
-        $event->addScript($scriptPath, $attributes);
+        $event->addScript(
+            'js/scripts/front-end/payments/stripe/elements.js',
+            ['class' => 'freeform-stripe-script']
+        );
+    }
+
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript(
+            'stripe',
+            'js/scripts/front-end/payments/stripe/elements.js',
+            ['class' => 'freeform-stripe-script']
+        );
     }
 }

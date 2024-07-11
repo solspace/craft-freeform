@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Captchas\ReCaptcha;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
@@ -26,6 +27,12 @@ class ReCaptchaBundle extends FeatureBundle
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachScripts'],
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this, 'collectScripts'],
         );
 
         Event::on(
@@ -83,14 +90,6 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
-        if ($event->isCollectAllScripts()) {
-            $event->addScript('js/scripts/front-end/captchas/recaptcha/v2-invisible.js');
-            $event->addScript('js/scripts/front-end/captchas/recaptcha/v2-checkbox.js');
-            $event->addScript('js/scripts/front-end/captchas/recaptcha/v3.js');
-
-            return;
-        }
-
         $form = $event->getForm();
 
         $integration = $this->getReCaptchaForForm($form);
@@ -100,6 +99,13 @@ class ReCaptchaBundle extends FeatureBundle
 
         $version = $integration->getVersion();
         $event->addScript('js/scripts/front-end/captchas/recaptcha/'.$version.'.js');
+    }
+
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript('recaptcha.v2-invisible', 'js/scripts/front-end/captchas/recaptcha/v2-invisible.js');
+        $event->addScript('recaptcha.v2-checkbox', 'js/scripts/front-end/captchas/recaptcha/v2-checkbox.js');
+        $event->addScript('recaptcha.v3', 'js/scripts/front-end/captchas/recaptcha/v3.js');
     }
 
     public function triggerValidation(ValidationEvent $event): void

@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Integrations\Webhooks;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
-use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
@@ -25,8 +25,8 @@ class WebhooksBundle extends FeatureBundle
         );
 
         Event::on(
-            Form::class,
-            Form::EVENT_AFTER_SUBMIT,
+            Submission::class,
+            Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'triggerWebhooks']
         );
     }
@@ -48,7 +48,7 @@ class WebhooksBundle extends FeatureBundle
         }
     }
 
-    public function triggerWebhooks(SubmitEvent $event): void
+    public function triggerWebhooks(ProcessSubmissionEvent $event): void
     {
         $form = $event->getForm();
         if ($form->isMarkedAsSpam()) {

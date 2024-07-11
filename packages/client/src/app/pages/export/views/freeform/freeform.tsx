@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import type { ImportOptions } from '@ff-client/app/pages/import/import.types';
 import { Preview } from '@ff-client/app/pages/import/preview/preview';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+
+import type { ExportOptions } from '../../export.types';
 
 import { useFormsDataQuery, useFormsExportMutation } from './freeform.queries';
 
@@ -12,15 +13,11 @@ export const ExportFreeform: React.FC = () => {
   const { mutate, isLoading } = useFormsExportMutation();
 
   const [active] = useState(false);
-  const [options, setOptions] = useState<ImportOptions>({
+  const [options, setOptions] = useState<ExportOptions>({
     forms: [],
     formSubmissions: [],
     notificationTemplates: [],
     integrations: [],
-    strategy: {
-      forms: 'skip',
-      notifications: 'skip',
-    },
   });
 
   useEffect(() => {
@@ -30,9 +27,6 @@ export const ExportFreeform: React.FC = () => {
         forms: data.forms.map((form) => form.uid),
         notificationTemplates: data.notificationTemplates.map(
           (template) => template.originalId
-        ),
-        formSubmissions: data.formSubmissions.map(
-          (submission) => submission.formUid
         ),
       }));
     }

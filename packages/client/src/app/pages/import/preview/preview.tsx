@@ -2,7 +2,8 @@ import React from 'react';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import type { FormImportData, ImportOptions } from '../import.types';
+import type { ExportOptions } from '../../export/export.types';
+import type { FormImportData } from '../import.types';
 
 import { PreviewForms } from './forms/forms';
 import { PreviewNotificationTemplates } from './notification-templates/notification-templates';
@@ -11,9 +12,9 @@ import { FileList, PreviewWrapper } from './preview.styles';
 
 type Props = {
   data?: FormImportData;
-  options: ImportOptions;
+  options: ExportOptions;
   disabled?: boolean;
-  onUpdate: (options: ImportOptions) => void;
+  onUpdate: (options: ExportOptions) => void;
 };
 
 export const Preview: React.FC<Props> = ({

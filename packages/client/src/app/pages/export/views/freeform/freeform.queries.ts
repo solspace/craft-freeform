@@ -4,10 +4,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
-import type {
-  FormImportData,
-  ImportOptions,
-} from '../../../import/import.types';
+import type { FormImportData } from '../../../import/import.types';
+import type { ExportOptions } from '../../export.types';
 
 const QKExportForms = {
   data: ['export', 'freeform', 'data'],
@@ -23,7 +21,7 @@ export const useFormsDataQuery = (): UseQueryResult<FormImportData> => {
 export const useFormsExportMutation = (): UseMutationResult<
   AxiosResponse<Blob>,
   unknown,
-  ImportOptions,
+  ExportOptions,
   unknown
 > => {
   return useMutation(

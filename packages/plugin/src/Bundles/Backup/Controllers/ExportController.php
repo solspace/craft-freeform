@@ -47,7 +47,7 @@ class ExportController extends BaseApiController
 
         foreach ($chunks as $name => $chunk) {
             $format = pathinfo($name, \PATHINFO_EXTENSION);
-            $data = $serializer->encode($chunk, $format);
+            $data = $serializer->serialize($chunk, $format);
             if (empty($data)) {
                 continue;
             }

@@ -30,6 +30,7 @@ use Solspace\Freeform\Elements\Submission as FFSubmission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 
@@ -100,6 +101,13 @@ class FreeformFormsExporter implements ExporterInterface
         $forms = $this->forms->getFormsFromQuery($query);
 
         foreach ($forms as $index => $form) {
+            /** @var FormFieldRecord[] $formFieldRecords */
+            $formFieldRecords = FormFieldRecord::find()
+                ->where(['formId' => $form->getId()])
+                ->indexBy('uid')
+                ->all()
+            ;
+
             $exported = new Form();
             $exported->uid = $form->getUid();
             $exported->name = $form->getName();
@@ -143,13 +151,18 @@ class FreeformFormsExporter implements ExporterInterface
                     $exportedRow->fields = new FieldCollection();
 
                     foreach ($row->getFields() as $field) {
+                        $fieldRecord = $formFieldRecords[$field->getUid()] ?? null;
+                        if (null === $fieldRecord) {
+                            continue;
+                        }
+
                         $exportedField = new Field();
                         $exportedField->uid = $field->getUid();
                         $exportedField->name = $field->getLabel();
                         $exportedField->handle = $field->getHandle();
                         $exportedField->type = $field::class;
                         $exportedField->required = $field->isRequired();
-                        $exportedField->metadata = [];
+                        $exportedField->metadata = json_decode($fieldRecord->metadata, true);
 
                         $exportedRow->fields->add($exportedField);
                     }

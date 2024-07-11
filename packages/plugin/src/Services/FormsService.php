@@ -477,7 +477,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function addFormPluginScripts(RenderTagEvent $event): void
     {
-        if ($event->isScriptsDisabled() && !$event->isCollectAllScripts()) {
+        if ($event->isScriptsDisabled()) {
             return;
         }
 

@@ -43,6 +43,12 @@ class JavascriptTestBundle extends FeatureBundle
 
         Event::on(
             Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this, 'collectScripts']
+        );
+
+        Event::on(
+            Form::class,
             Form::EVENT_BEFORE_VALIDATE,
             [$this, 'validateJavascript']
         );

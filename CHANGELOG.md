@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.5.4 - 2024-07-11
+
+### Added
+- Added `freeform.loadScripts()` template function for manually loading Freeform scripts (e.g. Freeform JS, reCAPTCHA, JS Test, etc).
+
+### Changed
+- Changed form deleting from a `DELETE` to `POST` request for better compatibility with server permissions.
+
+### Fixed
+- Fixed a bug where Webhooks were being triggered on submissions sent to the Spam Folder.
+- Fixed a bug where the CP Submissions chart was not showing for users with no settings access permissions.
+- Fixed a bug where integration field mapping wasn't always cleaning up correctly.
+- Fixed some Dutch translation language bugs.
+
 ## 5.5.3 - 2024-07-04
 
 ### Added

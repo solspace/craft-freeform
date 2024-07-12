@@ -211,10 +211,24 @@ class HubSpotV3 extends BaseHubSpotIntegration
             ['email' => $email],
             $this->getMappedProps($this->contactMapping)
         );
+        
+        //	Didn't find by email. Let's try to find by the hubspot user token which is set in a cookie by the Hubspot JS tracking code on front end pages. Some websites may not have this JS tracking code.
+        if (! $contact && ! empty($_COOKIE['hubspotutk'])) {
+			$base		= 'https://api.hubapi.com/contacts/v1';
+			$endpoint	= $base . '/contact/utk/' . $_COOKIE['hubspotutk'] . '/profile';
+			
+			try {			
+				$response	= $client->get($endpoint);
+				$json		= json_decode((string) $response->getBody(), false);
+				$contactId	= $json->vid;
+			} catch (\Exception $exception) {
+				$this->processException($exception, self::CATEGORY_CONTACT);
+			}
+        }
 
         try {
-            if ($contact) {
-                $contactId = $contact->id;
+            if ($contact || $contactId) {
+                $contactId = (isset($contactId)) ? $contactId: $contact->id;
 
                 if ($this->getAppendContactData()) {
                     $mapping = $this->appendValues(

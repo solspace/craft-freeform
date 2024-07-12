@@ -53,7 +53,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
     setIsDeleting(true);
 
     try {
-      await axios.delete(`/api/forms/${data?.form.id}`);
+      await axios.post(`/api/forms/delete`, { id: data?.form.id });
 
       await queryClient.invalidateQueries(
         QKForms.all(getCurrentHandleWithFallback())

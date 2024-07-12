@@ -20,6 +20,7 @@ use craft\helpers\Template;
 use craft\web\View;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
@@ -480,11 +481,14 @@ class FormsService extends BaseService implements FormHandlerInterface
             return;
         }
 
-        $jsPath = $this->getSettingsService()->getPluginJsPath();
-        $event->addScript($jsPath);
+        $event->addScript($this->getSettingsService()->getPluginJsPath());
+        $event->addStylesheet($this->getSettingsService()->getPluginCssPath());
+    }
 
-        $cssPath = $this->getSettingsService()->getPluginCssPath();
-        $event->addStylesheet($cssPath);
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript('freeform', $this->getSettingsService()->getPluginJsPath());
+        $event->addStylesheet('freeform', $this->getSettingsService()->getPluginCssPath());
     }
 
     public function shouldScrollToAnchor(Form $form): bool

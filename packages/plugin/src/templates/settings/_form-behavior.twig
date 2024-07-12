@@ -55,18 +55,20 @@
 
     {{ forms.lightswitchField({
         label: "Use Queue for Email Notifications"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users."|t('freeform'),
         name: "settings[useQueueForEmailNotifications]",
         on: settings.useQueueForEmailNotifications,
         errors: settings.errors("useQueueForEmailNotifications"),
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
     {{ forms.lightswitchField({
         label: "Use Queue for Integrations"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users. This depends on either routine traffic to your Craft control panel or implementing a proper queue-processing method that doesn't rely on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users."|t('freeform'),
         name: "settings[useQueueForIntegrations]",
         on: settings.useQueueForIntegrations,
         errors: settings.errors("useQueueForIntegrations"),
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
     <hr>

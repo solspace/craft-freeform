@@ -182,9 +182,9 @@ return [
     'None (add manually)' => 'Nichts (manuell hinzufügen)',
     'Form Processing' => 'Formularverarbeitung',
     'Use Queue for Email Notifications' => 'Verwenden Sie die Warteschlange für E-Mail-Benachrichtigungen',
-    "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => "Nutzen Sie das Warteschlangensystem von Craft, um E-Mails auszulösen. Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt.",
+    "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Nutzen Sie das Warteschlangensystem von Craft, um E-Mails auszulösen. Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt.',
     'Use Queue for Integrations' => 'Verwenden Sie die Warteschlange für Integrationen',
-    "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users." => "Nutzen Sie das Warteschlangensystem von Craft, um Integrationen auszulösen (CRM und E-Mail-Marketing). Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt.",
+    "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users." => 'Nutzen Sie das Warteschlangensystem von Craft, um Integrationen auszulösen (CRM und E-Mail-Marketing). Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt.',
     "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Dies hängt entweder vom routinemäßigen Datenverkehr zu Ihrem Craft-Kontrollfeld oder von der Implementierung einer ordnungsgemäßen Warteschlangenverarbeitungsmethode ab, die nicht darauf angewiesen ist, dass jemand Ihr Kontrollfeld besucht. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Weitere Informationen</a>",
 
     // Statuses controller

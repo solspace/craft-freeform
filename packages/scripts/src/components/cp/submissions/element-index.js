@@ -253,7 +253,7 @@ Craft.Freeform.SubmissionsTableView = Craft.TableElementIndexView.extend(
       this.$chart.removeClass('error');
 
       Craft.postActionRequest(
-        'freeform/api/settings/get-submission-data',
+        'freeform/api/submissions/get-submission-data',
         requestData,
         $.proxy(function (response, textStatus) {
           this.$spinner.addClass('hidden');

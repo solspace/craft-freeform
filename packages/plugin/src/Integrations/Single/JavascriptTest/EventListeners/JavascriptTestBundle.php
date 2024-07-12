@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Single\JavascriptTest\EventListeners;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
@@ -38,6 +39,12 @@ class JavascriptTestBundle extends FeatureBundle
             Form::class,
             Form::EVENT_RENDER_AFTER_CLOSING_TAG,
             [$this, 'addJsTestScript']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this, 'collectScripts']
         );
 
         Event::on(
@@ -150,6 +157,11 @@ class JavascriptTestBundle extends FeatureBundle
         }
 
         $event->addScript(__DIR__.'/../Scripts/js-test.js');
+    }
+
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript('freeform.js-test', __DIR__.'/../Scripts/js-test.js');
     }
 
     public function attachToAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void

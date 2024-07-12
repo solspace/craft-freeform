@@ -487,6 +487,12 @@ class Freeform extends Plugin
         );
 
         Event::on(
+            Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this->forms, 'collectScripts']
+        );
+
+        Event::on(
             Sites::class,
             Sites::EVENT_AFTER_SAVE_SITE,
             function (SiteEvent $event) {

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Captchas\hCaptcha;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
@@ -26,6 +27,12 @@ class hCaptchaBundle extends FeatureBundle
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
             [$this, 'attachScripts'],
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_COLLECT_SCRIPTS,
+            [$this, 'collectScripts'],
         );
 
         Event::on(
@@ -91,6 +98,12 @@ class hCaptchaBundle extends FeatureBundle
 
         $version = $integration->getVersion();
         $event->addScript('js/scripts/front-end/captchas/hcaptcha/'.$version.'.js');
+    }
+
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript('hcaptcha.invisible', 'js/scripts/front-end/captchas/hcaptcha/invisible.js');
+        $event->addScript('hcaptcha.checkbox', 'js/scripts/front-end/captchas/hcaptcha/checkbox.js');
     }
 
     public function triggerValidation(ValidationEvent $event): void

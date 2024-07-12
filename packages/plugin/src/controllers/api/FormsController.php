@@ -107,6 +107,22 @@ class FormsController extends BaseApiController
         return $this->response;
     }
 
+    public function actionDelete(): Response
+    {
+        $this->requirePostRequest();
+        $id = (int) \Craft::$app->request->post('id');
+        if (!$id) {
+            throw new NotFoundHttpException('No form ID provided');
+        }
+
+        $this->requireFormPermission($id);
+        $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
+
+        $this->getFormsService()->deleteById($id);
+
+        return $this->asEmptyResponse(204);
+    }
+
     protected function get(): array
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -145,17 +161,6 @@ class FormsController extends BaseApiController
         $this->response->statusCode = $event->getStatus() ?? 204;
 
         return $event->getResponseData();
-    }
-
-    protected function delete(int $id): ?bool
-    {
-        $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
-
-        $this->getFormsService()->deleteById($id);
-
-        $this->response->statusCode = 204;
-
-        return null;
     }
 
     private function requireFormPermission(int $id, string $permission = Freeform::PERMISSION_FORMS_MANAGE): void

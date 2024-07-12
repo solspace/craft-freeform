@@ -60,6 +60,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         }
 
         $form = $submission->getForm();
+        $form->setSubmission($submission);
         Freeform::getInstance()->submissions->postProcessSubmission($form, $submission);
 
         $integrationsQueue->deleteTasksBySubmissionId($submission->id);

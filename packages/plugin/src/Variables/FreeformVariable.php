@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Variables;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -124,6 +125,14 @@ class FreeformVariable
     public function loadFreeformScripts(): Markup
     {
         return $this->loadFreeformPlugin();
+    }
+
+    public function loadScripts(array $scripts = []): Markup
+    {
+        $event = new CollectScriptsEvent($scripts);
+        Event::trigger(Form::class, Form::EVENT_COLLECT_SCRIPTS, $event);
+
+        return new Markup($event->getHtml(), 'utf-8');
     }
 
     public function loadFormSpecificScripts(Form|string $form): Markup

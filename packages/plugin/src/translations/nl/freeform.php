@@ -28,9 +28,9 @@ return [
     // Form Builder // Universal
     'Forms' => 'Formulieren',
     'Cancel' => 'Annuleren',
-    'Saving' => 'Besparing',
-    'Save' => 'Redden',
-    'Close' => 'Dichtbij',
+    'Saving' => 'Opslaan',
+    'Save' => 'Opslaan',
+    'Close' => 'Sluiten',
     'Enabled' => 'Ingeschakeld',
     'empty' => 'leeg',
     'Loading data' => 'Gegevens laden',

@@ -28,13 +28,16 @@ class ExportController extends BaseApiController
         $collection = $exporter->collect(
             formIds: $post['forms'] ?? [],
             notificationIds: $post['notificationTemplates'] ?? [],
+            integrationIds: $post['integrations'] ?? [],
             formSubmissions: $post['formSubmissions'] ?? [],
             strategy: $post['strategy'] ?? [],
+            settings: $post['settings'],
         );
 
         $chunks = array_filter([
             'forms.jsonl' => $collection->getForms(),
             'notifications.jsonl' => $collection->getNotificationTemplates(),
+            'integrations.jsonl' => $collection->getIntegrations(),
             'settings.json' => $collection->getSettings(),
         ]);
 
@@ -45,6 +48,9 @@ class ExportController extends BaseApiController
             throw new \Exception('Could not create zip file');
         }
 
+        // Set password if one provided
+        // $zip->setPassword('abc');
+
         foreach ($chunks as $name => $chunk) {
             $format = pathinfo($name, \PATHINFO_EXTENSION);
             $data = $serializer->serialize($chunk, $format);
@@ -53,6 +59,7 @@ class ExportController extends BaseApiController
             }
 
             $zip->addFromString($name, $data);
+            // $zip->setEncryptionName($name, \ZipArchive::EM_AES_256);
         }
 
         $context = (new ObjectNormalizerContextBuilder())
@@ -78,6 +85,7 @@ class ExportController extends BaseApiController
             fclose($file);
 
             $zip->addFile($tmp, 'submissions-'.$uid.'.jsonl');
+            // $zip->setEncryptionName('submissions-'.$uid.'.jsonl', \ZipArchive::EM_AES_256);
         }
 
         $zip->close();

@@ -83,15 +83,17 @@ class ExpressFormsExporter implements ExporterInterface
     public function collect(
         array $formIds,
         array $notificationIds,
+        array $integrationIds,
         array $formSubmissions,
         array $strategy,
+        bool $settings,
     ): FreeformDataset {
         $dataset = new FreeformDataset();
 
         $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
         $dataset->setForms($this->collectForms($formIds));
         $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
-        $dataset->setSettings($this->collectSettings());
+        $dataset->setSettings($this->collectSettings($settings));
         $dataset->setStrategy(new ImportStrategy($strategy));
 
         return $dataset;
@@ -342,8 +344,12 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSettings(): Settings
+    private function collectSettings(bool $collect): ?Settings
     {
+        if (!$collect) {
+            return null;
+        }
+
         $settings = ExpressForms::getInstance()->settings->getSettingsModel();
 
         $exported = new Settings();

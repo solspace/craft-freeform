@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { Preview } from '@ff-client/app/pages/import/preview/preview';
+import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -18,6 +20,8 @@ export const ExportFreeform: React.FC = () => {
     formSubmissions: [],
     notificationTemplates: [],
     integrations: [],
+    settings: false,
+    password: '',
   });
 
   useEffect(() => {
@@ -65,6 +69,19 @@ export const ExportFreeform: React.FC = () => {
           </div>
         )}
 
+        <String
+          value={options.password || ''}
+          updateValue={(password) => setOptions({ ...options, password })}
+          property={{
+            handle: 'password',
+            label: 'Password Protect exported file',
+            instructions:
+              'Enter a password if you wish to password protect your zip file.',
+            type: PropertyType.String,
+            placeholder: 'Enter a password',
+          }}
+        />
+
         <button
           className={classes(
             'btn',
@@ -72,6 +89,7 @@ export const ExportFreeform: React.FC = () => {
             active && 'disabled',
             !options.forms.length &&
               !options.notificationTemplates.length &&
+              !options.integrations.length &&
               !options.formSubmissions.length &&
               'disabled'
           )}

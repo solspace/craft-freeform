@@ -12,7 +12,9 @@ interface ExporterInterface
     public function collect(
         array $formIds,
         array $notificationIds,
+        array $integrationIds,
         array $formSubmissions,
         array $strategy,
+        bool $settings,
     ): FreeformDataset;
 }

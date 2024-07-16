@@ -43,11 +43,17 @@ export type NotificationTemplate = {
   description: string;
 };
 
+export type Integration = {
+  uid: string;
+  name: string;
+  icon: string;
+};
+
 export type FormImportData = {
   forms: Form[];
   formSubmissions: Submissions[];
   notificationTemplates: NotificationTemplate[];
-  integrations: string[];
+  integrations: Integration[];
   settings: string[];
 };
 
@@ -62,4 +68,6 @@ export type ImportOptions = {
     forms: ImportStrategy;
     notifications: ImportStrategy;
   };
+  settings: boolean;
+  password?: string;
 };

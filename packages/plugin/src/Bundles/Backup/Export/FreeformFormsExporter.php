@@ -28,20 +28,22 @@ use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission as FFSubmission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
 class FreeformFormsExporter implements ExporterInterface
 {
-    private array $notificationReference = [];
-
     public function __construct(
-        private PropertyProvider $propertyProvider,
         private NotificationsProvider $notificationsProvider,
+        private PropertyProvider $propertyProvider,
         private FormsService $forms,
+        private IntegrationsService $integrations,
     ) {}
 
     public function collectDataPreview(): ImportPreview
@@ -50,6 +52,17 @@ class FreeformFormsExporter implements ExporterInterface
 
         $preview->forms = $this->collectForms();
         $preview->notificationTemplates = $this->collectNotifications();
+
+        $integrations = $this->integrations->getAllIntegrations();
+        $preview->integrations = new IntegrationCollection();
+        foreach ($integrations as $integration) {
+            $dto = new Integration();
+            $dto->name = $integration->name;
+            $dto->uid = $integration->uid;
+            $dto->icon = $integration->getIntegrationObject()->getTypeDefinition()->getIconUrl();
+
+            $preview->integrations->add($dto);
+        }
 
         $table = FFSubmission::TABLE;
 
@@ -75,15 +88,18 @@ class FreeformFormsExporter implements ExporterInterface
     public function collect(
         array $formIds,
         array $notificationIds,
+        array $integrationIds,
         array $formSubmissions,
         array $strategy,
+        bool $settings,
     ): FreeformDataset {
         $dataset = new FreeformDataset();
 
         $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
         $dataset->setForms($this->collectForms($formIds));
         $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
-        $dataset->setSettings($this->collectSettings());
+        $dataset->setIntegrations($this->collectIntegrations($integrationIds));
+        $dataset->setSettings($this->collectSettings($settings));
         $dataset->setStrategy(new ImportStrategy($strategy));
 
         return $dataset;
@@ -177,19 +193,41 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectIntegrations(): IntegrationCollection
+    private function collectIntegrations(?array $ids = null): IntegrationCollection
     {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
         $collection = new IntegrationCollection();
 
-        $integrations = ExpressForms::getInstance()->integrations->getIntegrationTypes();
+        $integrations = Freeform::getInstance()->integrations->getAllIntegrations();
         foreach ($integrations as $integration) {
-            if (!$integration->isEnabled()) {
+            if (null !== $ids && !\in_array($integration->uid, $ids, true)) {
                 continue;
             }
 
             $exported = new Integration();
-            $exported->name = $integration->getName();
-            $exported->handle = $integration->getHandle();
+            $exported->name = $integration->name;
+            $exported->handle = $integration->handle;
+            $exported->uid = $integration->uid;
+            $exported->type = $integration->type;
+
+            $metadata = $integration->metadata;
+
+            $properties = $this->propertyProvider->getEditableProperties($integration->class);
+            foreach ($properties as $property) {
+                if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                    continue;
+                }
+
+                $value = $metadata[$property->handle] ?? null;
+                $isEnvVariable = StringHelper::isEnvVariable($value);
+                if (!$isEnvVariable && $value) {
+                    $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+                }
+
+                $metadata[$property->handle] = $value;
+            }
+
+            $exported->metadata = $metadata;
 
             $collection->add($exported);
         }
@@ -269,8 +307,12 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSettings(): Settings
+    private function collectSettings(bool $collect): ?Settings
     {
+        if (!$collect) {
+            return null;
+        }
+
         return Freeform::getInstance()->settings->getSettingsModel();
     }
 }

@@ -26,6 +26,7 @@ export const ImportExpressForms: React.FC = () => {
       forms: 'skip',
       notifications: 'skip',
     },
+    settings: false,
   });
 
   const [active, setActive] = useState(false);
@@ -139,7 +140,7 @@ export const ImportExpressForms: React.FC = () => {
                 disabled={active}
                 data={data}
                 options={options}
-                onUpdate={(options) => setOptions(options)}
+                onUpdate={(opts) => setOptions({ ...options, ...opts })}
               />
             </div>
           </div>

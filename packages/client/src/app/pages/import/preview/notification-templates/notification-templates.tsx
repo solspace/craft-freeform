@@ -8,9 +8,9 @@ import {
   BlockItem,
   Blocks,
   Directory,
-  File,
   Label,
   ListItem,
+  NotificationIcon,
   Spacer,
 } from '../preview.styles';
 
@@ -73,7 +73,7 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
                 />
               </BlockItem>
               <Spacer $dash />
-              <File />
+              <NotificationIcon />
               <Label
                 $light
                 htmlFor={`notification-template-${template.originalId}`}

@@ -8,10 +8,10 @@ import {
   BlockItem,
   Blocks,
   Directory,
-  File,
   Label,
   ListItem,
   Spacer,
+  SubmissionIcon,
 } from '../preview.styles';
 
 type Props = {
@@ -73,7 +73,7 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
                 />
               </BlockItem>
               <Spacer $dash />
-              <File />
+              <SubmissionIcon />
               <Label $light htmlFor={`submissions-${submission.formUid}`}>
                 {forms.find((form) => form.uid === submission.formUid).name}
                 {` (${submission.count})`}

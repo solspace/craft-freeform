@@ -8,7 +8,7 @@ import {
   BlockItem,
   Blocks,
   Directory,
-  File,
+  FormIcon,
   Label,
   ListItem,
   Spacer,
@@ -67,34 +67,17 @@ export const PreviewForms: React.FC<Props> = ({ forms, options, onUpdate }) => {
                 />
               </BlockItem>
               <Spacer $dash />
-              <Directory />
-              <Label htmlFor={`form-${form.uid}`}>{form.name}</Label>
+              <FormIcon />
+              <Label htmlFor={`form-${form.uid}`}>
+                {form.name}
+
+                {form.pages.length > 1 && (
+                  <small>
+                    ({translate('{count} pages', { count: form.pages.length })})
+                  </small>
+                )}
+              </Label>
             </Blocks>
-
-            <ul>
-              {form.pages.map((page) => {
-                const fields = Array.isArray(page?.layout?.rows)
-                  ? page.layout.rows.reduce(
-                      (count, row) => count + row.fields.length,
-                      0
-                    )
-                  : 0;
-
-                const fieldString = translate('{fields} fields', { fields });
-
-                return (
-                  <ListItem key={page.uid}>
-                    <Blocks>
-                      <Spacer $width={3} />
-                      <File />
-                      <Label $light htmlFor={`form-${form.uid}`}>
-                        {page.label} ({fieldString})
-                      </Label>
-                    </Blocks>
-                  </ListItem>
-                );
-              })}
-            </ul>
           </ListItem>
         ))}
       </ul>

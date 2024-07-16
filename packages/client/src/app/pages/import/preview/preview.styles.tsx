@@ -13,6 +13,15 @@ export const PreviewWrapper = styled.div`
   }
 `;
 
+export const SelectAll = styled.a`
+  cursor: pointer;
+
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline !important;
+  }
+`;
+
 export const FileList = styled.div`
   padding: 10px;
 
@@ -34,6 +43,12 @@ export const Label = styled.label<LabelProps>`
 
   text-align: left;
   font-weight: ${({ $light }) => ($light ? 'normal' : 'bold')};
+
+  small {
+    padding-left: 20px;
+    font-size: 10px;
+    opacity: 0.4;
+  }
 `;
 
 export const Blocks = styled.div`
@@ -75,11 +90,16 @@ export const BlockItem = styled.div`
   height: 24px;
 `;
 
-const Icon = styled.i`
+export const Icon = styled.i`
   flex: 0 0 ${chunkWidth}px;
   font-size: 18px;
 
   text-align: center;
+
+  img {
+    width: 18px;
+    height: 18px;
+  }
 `;
 
 export const Directory: React.FC = () => {
@@ -88,6 +108,26 @@ export const Directory: React.FC = () => {
 
 export const File: React.FC = () => {
   return <Icon className="fa-light fa-file-code" />;
+};
+
+export const FormIcon: React.FC = () => {
+  return <Icon className="fa-duotone fa-clipboard-list" />;
+};
+
+export const SubmissionIcon: React.FC = () => {
+  return <Icon className="fa-duotone fa-inbox-in" />;
+};
+
+export const NotificationIcon: React.FC = () => {
+  return <Icon className="fa-light fa-envelope" />;
+};
+
+export const IntegrationIcon: React.FC = () => {
+  return <Icon className="fa-duotone fa-gear-complex-code" />;
+};
+
+export const SettingsIcon: React.FC = () => {
+  return <Icon className="fa-duotone fa-gear" />;
 };
 
 type ListItemProps = {
@@ -102,60 +142,3 @@ export const ListItem = styled.li<ListItemProps>`
     }
   }
 `;
-
-// .file-list {
-//   ul {
-//     li {
-//       .blocks {
-//         display: flex;
-//         align-items: center;
-//         justify-content: start;
-
-//         $width: 26px;
-
-//         > div {
-//           flex: 0 0 $width;
-//           height: 24px;
-//           text-align: center;
-
-//           &.spacer {
-//             position: relative;
-
-//             &:not(.spacer-empty):before {
-//               content: '';
-
-//               position: absolute;
-//               left: 4px;
-//               right: 4px;
-//               top: 9px;
-
-//               display: block;
-//               height: 2px;
-
-//               background: #b9c6d7;
-//             }
-
-//             @for $i from 1 through 12 {
-//               &-#{$i} {
-//                 flex: 0 0 ($width * $i);
-//               }
-//             }
-//           }
-
-//           &.option {
-//           }
-
-//           &.label {
-//             flex: 1;
-//             text-align: left;
-//           }
-//         }
-//       }
-
-//       i {
-//         display: block;
-//         font-size: 18px;
-//       }
-//     }
-//   }
-// }

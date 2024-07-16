@@ -91,6 +91,7 @@ class ImportController extends BaseApiController
         $dataset = $exporter->collect(
             $options['forms'] ?? [],
             $options['notificationTemplates'] ?? [],
+            $options['integrations'] ?? [],
             $options['formSubmissions'] ?? [],
             $options['strategy'] ?? [],
         );

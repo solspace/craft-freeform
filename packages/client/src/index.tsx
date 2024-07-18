@@ -14,12 +14,12 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '../config';
 
-import { Export } from './app/pages/export/export';
-import { ExportFreeform } from './app/pages/export/views/freeform/freeform';
 import { Form, Forms } from './app/pages/forms';
-import { Import } from './app/pages/import/import';
-import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
-import { ImportFreeformData } from './app/pages/import/views/freeform-data/freeform-data';
+import { Export } from './app/pages/import-export/export/export';
+import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
+import { Import } from './app/pages/import-export/import/import';
+import { ImportExpressForms } from './app/pages/import-export/import/views/express-forms/express-forms';
+import { ImportFreeformData } from './app/pages/import-export/import/views/freeform-data/freeform-data';
 import { LimitedUsers } from './app/pages/limited-users/limited-users';
 import { LimitedUsersDetail } from './app/pages/limited-users/limited-users.detail';
 import { SurveyResults } from './app/pages/surveys/results/results';

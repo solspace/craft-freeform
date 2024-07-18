@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { Preview } from '@ff-client/app/pages/import/preview/preview';
-import { Progress } from '@ff-client/app/pages/import/progress/progress';
+import { Preview } from '@ff-client/app/pages/import-export/common/preview/preview';
+import { Progress } from '@ff-client/app/pages/import-export/common/progress/progress';
 import {
   useDoneAnimation,
   useProgressAnimation,
-} from '@ff-client/app/pages/import/progress/progress.animations';
-import { useProgressEvent } from '@ff-client/app/pages/import/progress/progress.hooks';
+} from '@ff-client/app/pages/import-export/common/progress/progress.animations';
+import { useProgressEvent } from '@ff-client/app/pages/import-export/common/progress/progress.hooks';
 import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import { downloadFile } from '@ff-client/utils/files';

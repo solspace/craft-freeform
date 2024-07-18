@@ -94,6 +94,7 @@ class ImportController extends BaseApiController
             $options['integrations'] ?? [],
             $options['formSubmissions'] ?? [],
             $options['strategy'] ?? [],
+            $options['settings'] ?? false,
         );
 
         $sse->message('info', 'Starting import');

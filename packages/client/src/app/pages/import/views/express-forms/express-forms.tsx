@@ -13,6 +13,7 @@ import {
   useDoneAnimation,
   useProgressAnimation,
 } from '../../progress/progress.animations';
+import { useProgressEvent } from '../../progress/progress.hooks';
 
 import { useExpressFormsDataQuery } from './express-forms.queries';
 
@@ -29,25 +30,26 @@ export const ImportExpressForms: React.FC = () => {
     settings: false,
   });
 
-  const [active, setActive] = useState(false);
-  const [displayProgress, setDisplayProgress] = useState(false);
-  const [showDone, setShowDone] = useState(false);
-
-  const [progress, setProgress] = useState<[number, number]>([0, 0]);
-  const [total, setTotal] = useState<[number, number]>([0, 0]);
-  const [info, setInfo] = useState<string>();
-  const [errors, setErrors] = useState<string[]>([]);
+  const {
+    triggerProgress,
+    clearProgress,
+    progress: {
+      active,
+      displayProgress,
+      errors,
+      info,
+      progress,
+      showDone,
+      total,
+    },
+  } = useProgressEvent();
 
   const { data, isFetching } = useExpressFormsDataQuery();
   const progressAnimation = useProgressAnimation(displayProgress);
   const doneAnimation = useDoneAnimation(showDone);
 
   const onClick = async (): Promise<void> => {
-    setProgress([0, 0]);
-    setTotal([0, 0]);
-
-    setActive(true);
-    setInfo(undefined);
+    clearProgress();
 
     const { data } = await axios.post('/api/import/prepare', {
       exporter:
@@ -56,51 +58,7 @@ export const ImportExpressForms: React.FC = () => {
     });
 
     const url = generateUrl(`/api/import?token=${data.token}`);
-    const source = new EventSource(url);
-
-    source.onopen = () => {
-      setDisplayProgress(true);
-    };
-
-    source.onerror = () => {
-      console.error('An error occurred during import');
-      source.close();
-      setActive(false);
-      setDisplayProgress(false);
-    };
-
-    source.addEventListener('progress', (event) => {
-      const progress = parseInt(event.data);
-      setProgress((prev) => [prev[0] + progress, prev[1] + progress]);
-    });
-
-    source.addEventListener('total', (event) => {
-      setTotal([parseInt(event.data), 0]);
-      setErrors([]);
-    });
-
-    source.addEventListener('info', (event) => {
-      setInfo(event.data);
-    });
-
-    source.addEventListener('err', (event) => {
-      setErrors((prev) => [...prev, JSON.parse(event.data)]);
-    });
-
-    source.addEventListener('reset', (event) => {
-      setTotal((prev) => [prev[0], parseInt(event.data)]);
-      setProgress((prev) => [prev[0], 0]);
-    });
-
-    source.addEventListener('exit', () => {
-      source.close();
-      setDisplayProgress(false);
-      setActive(false);
-      setShowDone(true);
-      setTimeout(() => {
-        setShowDone(false);
-      }, 5000);
-    });
+    triggerProgress(url);
   };
 
   if (isFetching) {

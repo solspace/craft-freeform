@@ -1,5 +1,8 @@
-import { downloadFile } from '@ff-client/utils/files';
-import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
+import type {
+  UseMutationOptions,
+  UseMutationResult,
+  UseQueryResult,
+} from '@tanstack/react-query';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
@@ -18,27 +21,12 @@ export const useFormsDataQuery = (): UseQueryResult<FormImportData> => {
   return useQuery(QKExportForms.data, queryFunction);
 };
 
-export const useFormsExportMutation = (): UseMutationResult<
-  AxiosResponse<Blob>,
-  unknown,
-  ExportOptions,
-  unknown
-> => {
-  return useMutation(
-    (data) => axios.post('/export', data, { responseType: 'blob' }),
-    {
-      onSuccess: (data) => {
-        // format current date to YYYYMMDD-HHMMSS
-        const time = new Date()
-          .toISOString()
-          .replace(/[-:]/g, '')
-          .replace('T', '-')
-          .slice(0, -5);
+type Response = AxiosResponse<{
+  token: string;
+}>;
 
-        const name = `freeform-export-${time}.zip`;
-
-        downloadFile(data.data, name);
-      },
-    }
-  );
+export const useFormsExportMutation = (
+  options?: UseMutationOptions<Response, unknown, ExportOptions, unknown>
+): UseMutationResult<Response, unknown, ExportOptions, unknown> => {
+  return useMutation((data) => axios.post('/export/forms/init', data), options);
 };

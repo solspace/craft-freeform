@@ -3,7 +3,7 @@ import { Checkbox } from '@components/elements/checkbox/checkbox';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import type { NotificationTemplate } from '../../import.types';
+import type { NotificationTemplate } from '../../../import/import.types';
 import {
   BlockItem,
   Blocks,

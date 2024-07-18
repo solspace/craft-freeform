@@ -3,7 +3,7 @@ import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import type { ExportOptions } from '../../export/export.types';
-import type { FormImportData } from '../import.types';
+import type { FormImportData } from '../../import/import.types';
 
 import { PreviewForms } from './forms/forms';
 import { PreviewIntegrations } from './integrations/integrations';

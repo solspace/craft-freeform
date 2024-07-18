@@ -5,15 +5,15 @@ import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
-import { Done, DoneWrapper, ProgressWrapper } from '../../import.styles';
-import type { ImportOptions, ImportStrategy } from '../../import.types';
-import { Preview } from '../../preview/preview';
-import { Progress } from '../../progress/progress';
+import { Preview } from '../../../common/preview/preview';
+import { Progress } from '../../../common/progress/progress';
 import {
   useDoneAnimation,
   useProgressAnimation,
-} from '../../progress/progress.animations';
-import { useProgressEvent } from '../../progress/progress.hooks';
+} from '../../../common/progress/progress.animations';
+import { useProgressEvent } from '../../../common/progress/progress.hooks';
+import { Done, DoneWrapper, ProgressWrapper } from '../../import.styles';
+import type { ImportOptions, ImportStrategy } from '../../import.types';
 
 import { useExpressFormsDataQuery } from './express-forms.queries';
 

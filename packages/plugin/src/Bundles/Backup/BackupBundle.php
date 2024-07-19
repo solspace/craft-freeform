@@ -6,6 +6,7 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
 use Solspace\Freeform\Bundles\Backup\Controllers\ExportController;
 use Solspace\Freeform\Bundles\Backup\Controllers\ImportController;
+use Solspace\Freeform\Bundles\Backup\Controllers\ImportExportController;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
@@ -15,6 +16,7 @@ class BackupBundle extends FeatureBundle
     {
         $this->registerController('backup-export', ExportController::class);
         $this->registerController('backup-import', ImportController::class);
+        $this->registerController('backup-import-export', ImportExportController::class);
 
         Event::on(
             UrlManager::class,
@@ -31,6 +33,8 @@ class BackupBundle extends FeatureBundle
                 $event->rules['freeform/export/forms/init'] = 'freeform/backup-export/export-init';
                 $event->rules['freeform/api/export'] = 'freeform/backup-export/export';
                 $event->rules['freeform/api/export/download'] = 'freeform/backup-export/download';
+
+                $event->rules['freeform/api/import-export/navigation'] = 'freeform/backup-import-export/navigation';
             }
         );
     }

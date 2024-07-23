@@ -1,5 +1,6 @@
 import React from 'react';
 import { Checkbox } from '@components/elements/checkbox/checkbox';
+import { integrationActions } from '@editor/store/slices/integrations';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -25,7 +26,7 @@ export const PreviewIntegrations: React.FC<Props> = ({
   options,
   onUpdate,
 }) => {
-  if (!integrations.length) {
+  if (!Array.isArray(integrationActions) || !integrations.length) {
     return null;
   }
 

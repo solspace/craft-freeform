@@ -25,7 +25,7 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
   options,
   onUpdate,
 }) => {
-  if (!templates.length) {
+  if (!Array.isArray(templates) || !templates.length) {
     return null;
   }
 

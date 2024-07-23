@@ -98,19 +98,15 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
 
     public function fetchLists(Client $client): array
     {
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/lists'),
-                [
-                    'query' => [
-                        'fields' => 'lists.id,lists.name,lists.stats.member_count',
-                        'count' => 999,
-                    ],
-                ]
-            );
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $response = $client->get(
+            $this->getEndpoint('/lists'),
+            [
+                'query' => [
+                    'fields' => 'lists.id,lists.name,lists.stats.member_count',
+                    'count' => 999,
+                ],
+            ]
+        );
 
         $json = json_decode((string) $response->getBody());
 
@@ -149,108 +145,96 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
             return $fetchedInterestGroups;
         }
 
-        try {
-            $listId = $this->mailingList->getResourceId();
+        $listId = $this->mailingList->getResourceId();
 
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/interest-categories?fields=interest-categories.id,interest-categories.name'),
-                [
-                    'query' => [
-                        'count' => 999,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/interest-categories?fields=interest-categories.id,interest-categories.name'),
+            [
+                'query' => [
+                    'count' => 999,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            $interestGroups = [];
-            if (isset($json->categories)) {
-                foreach ($json->categories as $interestGroup) {
-                    if (isset($interestGroup->id, $interestGroup->title)) {
-                        $interestGroups[] = [
-                            'id' => $interestGroup->id,
-                            'name' => $interestGroup->title,
-                        ];
-                    }
+        $interestGroups = [];
+        if (isset($json->categories)) {
+            foreach ($json->categories as $interestGroup) {
+                if (isset($interestGroup->id, $interestGroup->title)) {
+                    $interestGroups[] = [
+                        'id' => $interestGroup->id,
+                        'name' => $interestGroup->title,
+                    ];
                 }
             }
-
-            $fetchedInterestGroups = $interestGroups;
-
-            return $fetchedInterestGroups;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
+
+        $fetchedInterestGroups = $interestGroups;
+
+        return $fetchedInterestGroups;
     }
 
     protected function fetchInterests(Client $client, string $interestGroup): array
     {
-        try {
-            $listId = $this->mailingList->getResourceId();
+        $listId = $this->mailingList->getResourceId();
 
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/interest-categories/'.$interestGroup.'/interests?fields=interests.id,interests.name'),
-                [
-                    'query' => [
-                        'count' => 999,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/interest-categories/'.$interestGroup.'/interests?fields=interests.id,interests.name'),
+            [
+                'query' => [
+                    'count' => 999,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            $interests = [];
-            if (isset($json->interests)) {
-                foreach ($json->interests as $interest) {
-                    if (isset($interest->id, $interest->name)) {
-                        $interests[] = [
-                            'id' => $interest->id,
-                            'name' => $interest->name,
-                        ];
-                    }
+        $interests = [];
+        if (isset($json->interests)) {
+            foreach ($json->interests as $interest) {
+                if (isset($interest->id, $interest->name)) {
+                    $interests[] = [
+                        'id' => $interest->id,
+                        'name' => $interest->name,
+                    ];
                 }
             }
-
-            return $interests;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
+
+        return $interests;
     }
 
     protected function manageTags(Client $client, string $listId, string $email, array $tags): void
     {
-        try {
-            $appendContactTags = $this->appendContactTags();
+        $appendContactTags = $this->appendContactTags();
 
-            $emailHash = md5(strtolower($email));
+        $emailHash = md5(strtolower($email));
 
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash.'/tags'),
-                [
-                    'query' => [
-                        'count' => 999,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash.'/tags'),
+            [
+                'query' => [
+                    'count' => 999,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            $memberTags = [];
-            foreach ($json->tags as $tag) {
-                $memberTags[$tag->id] = $tag->name;
-            }
+        $memberTags = [];
+        foreach ($json->tags as $tag) {
+            $memberTags[$tag->id] = $tag->name;
+        }
 
-            $tagsToAdd = array_diff($tags, $memberTags);
+        $tagsToAdd = array_diff($tags, $memberTags);
 
-            $this->addTagsForMember($client, $listId, $email, $tagsToAdd);
+        $this->addTagsForMember($client, $listId, $email, $tagsToAdd);
 
-            if (!$appendContactTags) {
-                $tagsToDelete = array_diff($memberTags, $tags);
+        if (!$appendContactTags) {
+            $tagsToDelete = array_diff($memberTags, $tags);
 
-                $this->deleteTagsForMember($client, $listId, $emailHash, $tagsToDelete);
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->deleteTagsForMember($client, $listId, $emailHash, $tagsToDelete);
         }
     }
 
@@ -281,102 +265,82 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
             return $this->existingTags;
         }
 
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/segments'),
-                [
-                    'query' => [
-                        'fields' => 'segments.id,segments.name',
-                        'count' => 999,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/segments'),
+            [
+                'query' => [
+                    'fields' => 'segments.id,segments.name',
+                    'count' => 999,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            foreach ($json->segments as $tag) {
-                $this->existingTags[$tag->id] = strtolower($tag->name);
-            }
-
-            return $this->existingTags;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        foreach ($json->segments as $tag) {
+            $this->existingTags[$tag->id] = strtolower($tag->name);
         }
+
+        return $this->existingTags;
     }
 
     private function getOrCreateTag(Client $client, string $listId, string $tagName): null|int|string
     {
-        try {
-            $existingTags = $this->fetchTags($client, $listId);
+        $existingTags = $this->fetchTags($client, $listId);
 
-            $tagNameLowerCase = strtolower($tagName);
-            if (\in_array($tagNameLowerCase, $existingTags, true)) {
-                return array_search($tagNameLowerCase, $existingTags, true);
-            }
-
-            $response = $client->post(
-                $this->getEndpoint('/lists/'.$listId.'/segments'),
-                [
-                    'json' => [
-                        'name' => $tagName,
-                        'static_segment' => [],
-                    ],
-                ],
-            );
-
-            $json = json_decode((string) $response->getBody());
-
-            return $json->id;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        $tagNameLowerCase = strtolower($tagName);
+        if (\in_array($tagNameLowerCase, $existingTags, true)) {
+            return array_search($tagNameLowerCase, $existingTags, true);
         }
+
+        $response = $client->post(
+            $this->getEndpoint('/lists/'.$listId.'/segments'),
+            [
+                'json' => [
+                    'name' => $tagName,
+                    'static_segment' => [],
+                ],
+            ],
+        );
+
+        $json = json_decode((string) $response->getBody());
+
+        return $json->id;
     }
 
     private function addTagsForMember(Client $client, string $listId, string $email, array $tags): void
     {
-        try {
-            foreach ($tags as $tag) {
-                $tagId = $this->getOrCreateTag($client, $listId, $tag);
+        foreach ($tags as $tag) {
+            $tagId = $this->getOrCreateTag($client, $listId, $tag);
 
-                $client->post(
-                    $this->getEndpoint('/lists/'.$listId.'/segments/'.$tagId.'/members'),
-                    [
-                        'json' => [
-                            'email_address' => $email,
-                        ],
+            $client->post(
+                $this->getEndpoint('/lists/'.$listId.'/segments/'.$tagId.'/members'),
+                [
+                    'json' => [
+                        'email_address' => $email,
                     ],
-                );
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+                ],
+            );
         }
     }
 
     private function deleteTagsForMember(Client $client, string $listId, string $emailHash, array $tagsToDelete): void
     {
-        try {
-            foreach ($tagsToDelete as $tagId => $tagName) {
-                $client->delete($this->getEndpoint('/lists/'.$listId.'/segments/'.$tagId.'/members/'.$emailHash));
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        foreach ($tagsToDelete as $tagId => $tagName) {
+            $client->delete($this->getEndpoint('/lists/'.$listId.'/segments/'.$tagId.'/members/'.$emailHash));
         }
     }
 
     private function fetchContactFields(Client $client, string $listId, string $category): array
     {
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/merge-fields'),
-                [
-                    'query' => [
-                        'count' => 999,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/merge-fields'),
+            [
+                'query' => [
+                    'count' => 999,
                 ],
-            );
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
+            ],
+        );
 
         $json = json_decode((string) $response->getBody());
 
@@ -411,47 +375,39 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
 
     private function fetchGDPRFields(Client $client, string $listId, string $category): array
     {
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/lists/'.$listId.'/members'),
-                [
-                    'query' => [
-                        'count' => 1,
-                        'fields' => [
-                            'members.id',
-                            'members.marketing_permissions',
-                        ],
+        $response = $client->get(
+            $this->getEndpoint('/lists/'.$listId.'/members'),
+            [
+                'query' => [
+                    'count' => 1,
+                    'fields' => [
+                        'members.id',
+                        'members.marketing_permissions',
                     ],
                 ],
-            );
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
+            ],
+        );
 
         $json = json_decode((string) $response->getBody());
 
         $fieldList = [];
 
         if (!\count($json->members)) {
-            try {
-                $tempResponse = $client->post(
-                    $this->getEndpoint('/lists/'.$listId.'/members'),
-                    [
-                        'json' => [
-                            'email_address' => rand(10000, 99999).'_temp@test.test',
-                            'status' => 'subscribed',
-                        ],
+            $tempResponse = $client->post(
+                $this->getEndpoint('/lists/'.$listId.'/members'),
+                [
+                    'json' => [
+                        'email_address' => rand(10000, 99999).'_temp@test.test',
+                        'status' => 'subscribed',
                     ],
-                );
+                ],
+            );
 
-                $tempJson = json_decode((string) $tempResponse->getBody());
+            $tempJson = json_decode((string) $tempResponse->getBody());
 
-                $marketingPermissions = $tempJson->marketing_permissions ?? [];
+            $marketingPermissions = $tempJson->marketing_permissions ?? [];
 
-                $client->delete($this->getEndpoint('/lists/'.$listId.'/members/'.$tempJson->id));
-            } catch (\Exception $exception) {
-                $this->processException($exception, $category);
-            }
+            $client->delete($this->getEndpoint('/lists/'.$listId.'/members/'.$tempJson->id));
         } else {
             $marketing = reset($json->members);
 

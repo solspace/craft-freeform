@@ -39,15 +39,10 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
         $url = $this->getEndpoint("spreadsheets/{$googleSheetsId}?fields=sheets(properties)");
 
         $names = [];
+        [, $json] = $this->getJsonResponse($client->get($url));
 
-        try {
-            [, $json] = $this->getJsonResponse($client->get($url));
-
-            foreach ($json->sheets as $sheet) {
-                $names[] = $sheet->properties->title;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        foreach ($json->sheets as $sheet) {
+            $names[] = $sheet->properties->title;
         }
 
         return $names;

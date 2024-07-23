@@ -169,14 +169,12 @@ class PipedriveV1 extends BasePipedriveIntegration
         return $url.'/api/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processOrganization($form, $client);
         $this->processPerson($form, $client);
         $this->processLeads($form, $client);
         $this->processDeals($form, $client);
-
-        return true;
     }
 
     protected function getStageId(): ?int
@@ -195,36 +193,32 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        try {
-            $userId = $this->getUserId();
-            if ($userId) {
-                $mapping['owner_id'] = $userId;
-            }
+        $userId = $this->getUserId();
+        if ($userId) {
+            $mapping['owner_id'] = $userId;
+        }
 
-            $organizationId = $this->searchForDuplicate(
-                $client,
-                ['name' => $mapping['name'] ?? null],
-                'organization',
-            );
+        $organizationId = $this->searchForDuplicate(
+            $client,
+            ['name' => $mapping['name'] ?? null],
+            'organization',
+        );
 
-            if ($organizationId) {
-                $this->organizationId = $organizationId;
-            }
+        if ($organizationId) {
+            $this->organizationId = $organizationId;
+        }
 
-            $response = $client->post(
-                $this->getEndpoint('/organizations'),
-                ['json' => $mapping],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/organizations'),
+            ['json' => $mapping],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_ORGANIZATION, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_ORGANIZATION, $response);
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            if (isset($json->data->id)) {
-                $this->organizationId = (int) $json->data->id;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        if (isset($json->data->id)) {
+            $this->organizationId = (int) $json->data->id;
         }
     }
 
@@ -245,39 +239,35 @@ class PipedriveV1 extends BasePipedriveIntegration
             'person',
         );
 
-        try {
-            $userId = $this->getUserId();
-            if ($userId) {
-                $mapping['owner_id'] = $userId;
-            }
+        $userId = $this->getUserId();
+        if ($userId) {
+            $mapping['owner_id'] = $userId;
+        }
 
-            if ($this->organizationId) {
-                $mapping['org_id'] = $this->organizationId;
-            }
+        if ($this->organizationId) {
+            $mapping['org_id'] = $this->organizationId;
+        }
 
-            if ($personId) {
-                unset($mapping['email']);
+        if ($personId) {
+            unset($mapping['email']);
 
-                $response = $client->put(
-                    $this->getEndpoint('/persons/'.$personId),
-                    ['json' => $mapping],
-                );
-            } else {
-                $response = $client->post(
-                    $this->getEndpoint('/persons'),
-                    ['json' => $mapping],
-                );
-            }
+            $response = $client->put(
+                $this->getEndpoint('/persons/'.$personId),
+                ['json' => $mapping],
+            );
+        } else {
+            $response = $client->post(
+                $this->getEndpoint('/persons'),
+                ['json' => $mapping],
+            );
+        }
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_PERSON, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_PERSON, $response);
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            if (isset($json->data->id)) {
-                $this->personId = (int) $json->data->id;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        if (isset($json->data->id)) {
+            $this->personId = (int) $json->data->id;
         }
     }
 
@@ -292,55 +282,51 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        try {
-            $userId = $this->getUserId();
-            if ($userId) {
-                $mapping['owner_id'] = $userId;
-            }
+        $userId = $this->getUserId();
+        if ($userId) {
+            $mapping['owner_id'] = $userId;
+        }
 
-            if ($this->personId) {
-                $mapping['person_id'] = $this->personId;
-            }
+        if ($this->personId) {
+            $mapping['person_id'] = $this->personId;
+        }
 
-            if ($this->organizationId) {
-                $mapping['organization_id'] = $this->organizationId;
-            }
+        if ($this->organizationId) {
+            $mapping['organization_id'] = $this->organizationId;
+        }
 
-            $value = new \stdClass();
-            $value->amount = $mapping['value'] ?? 0;
-            $value->currency = $mapping['currency'] ?? 'USD';
+        $value = new \stdClass();
+        $value->amount = $mapping['value'] ?? 0;
+        $value->currency = $mapping['currency'] ?? 'USD';
 
-            unset($mapping['currency']);
+        unset($mapping['currency']);
 
-            $mapping['value'] = $value->amount ? $value : null;
+        $mapping['value'] = $value->amount ? $value : null;
 
-            $note = $mapping['note'] ?? false;
-            unset($mapping['note']);
+        $note = $mapping['note'] ?? false;
+        unset($mapping['note']);
 
-            $response = $client->post(
-                $this->getEndpoint('/leads'),
-                ['json' => $mapping],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/leads'),
+            ['json' => $mapping],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            if (isset($json->data->id)) {
-                $this->leadId = $json->data->id;
-            }
+        if (isset($json->data->id)) {
+            $this->leadId = $json->data->id;
+        }
 
-            if (!empty($note)) {
-                $json = [
-                    'content' => $note,
-                    'lead_id' => $this->leadId,
-                    'pinned_to_lead_flag' => '1',
-                ];
+        if (!empty($note)) {
+            $json = [
+                'content' => $note,
+                'lead_id' => $this->leadId,
+                'pinned_to_lead_flag' => '1',
+            ];
 
-                $this->addNote($client, $json);
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->addNote($client, $json);
         }
     }
 
@@ -355,67 +341,59 @@ class PipedriveV1 extends BasePipedriveIntegration
             return;
         }
 
-        try {
-            $userId = $this->getUserId();
-            if ($userId) {
-                $mapping['user_id'] = $userId;
-            }
+        $userId = $this->getUserId();
+        if ($userId) {
+            $mapping['user_id'] = $userId;
+        }
 
-            $stageId = $this->getStageId();
-            if ($stageId) {
-                $mapping['stage_id'] = $stageId;
-            }
+        $stageId = $this->getStageId();
+        if ($stageId) {
+            $mapping['stage_id'] = $stageId;
+        }
 
-            if ($this->personId) {
-                $mapping['person_id'] = $this->personId;
-            }
+        if ($this->personId) {
+            $mapping['person_id'] = $this->personId;
+        }
 
-            if ($this->organizationId) {
-                $mapping['org_id'] = $this->organizationId;
-            }
+        if ($this->organizationId) {
+            $mapping['org_id'] = $this->organizationId;
+        }
 
-            $note = $mapping['note'] ?? false;
-            unset($mapping['note']);
+        $note = $mapping['note'] ?? false;
+        unset($mapping['note']);
 
-            $response = $client->post(
-                $this->getEndpoint('/deals'),
-                ['json' => $mapping],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/deals'),
+            ['json' => $mapping],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            if (isset($json->data->id)) {
-                $this->dealId = (int) $json->data->id;
-            }
+        if (isset($json->data->id)) {
+            $this->dealId = (int) $json->data->id;
+        }
 
-            if (!empty($note)) {
-                $json = [
-                    'content' => $note,
-                    'deal_id' => $this->dealId,
-                    'pinned_to_deal_flag' => '1',
-                ];
+        if (!empty($note)) {
+            $json = [
+                'content' => $note,
+                'deal_id' => $this->dealId,
+                'pinned_to_deal_flag' => '1',
+            ];
 
-                $this->addNote($client, $json);
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->addNote($client, $json);
         }
     }
 
     private function addNote(Client $client, array $json): void
     {
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/notes'),
-                ['json' => $json],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/notes'),
+            ['json' => $json],
+        );
 
-            $this->triggerAfterResponseEvent('note', $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent('note', $response);
     }
 
     private function searchForDuplicate(Client $client, array $terms, string $type): ?int
@@ -434,27 +412,22 @@ class PipedriveV1 extends BasePipedriveIntegration
                     continue;
                 }
 
-                try {
-                    $response = $client->get(
-                        $this->getEndpoint('/itemSearch'),
-                        [
-                            'query' => [
-                                'term' => $term,
-                                'item_types' => $type,
-                                'fields' => $field,
-                                'exact_match' => true,
-                                'limit' => 1,
-                            ],
-                        ]
-                    );
+                $response = $client->get(
+                    $this->getEndpoint('/itemSearch'),
+                    [
+                        'query' => [
+                            'term' => $term,
+                            'item_types' => $type,
+                            'fields' => $field,
+                            'exact_match' => true,
+                            'limit' => 1,
+                        ],
+                    ]
+                );
 
-                    $json = json_decode((string) $response->getBody(), false);
-
-                    if (\count($json->data->items) > 0) {
-                        return (int) $json->data->items[0]->item->id;
-                    }
-                } catch (\Exception $exception) {
-                    $this->processException($exception, self::LOG_CATEGORY);
+                $json = json_decode((string) $response->getBody(), false);
+                if (\count($json->data->items) > 0) {
+                    return (int) $json->data->items[0]->item->id;
                 }
             }
         }

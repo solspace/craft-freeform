@@ -67,11 +67,7 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
     {
         $listId = $list->getResourceId();
 
-        try {
-            $response = $client->get($this->getEndpoint('/lists/'.$listId.'/customfields.json'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
+        $response = $client->get($this->getEndpoint('/lists/'.$listId.'/customfields.json'));
 
         $fieldList = [
             new FieldObject(
@@ -119,12 +115,7 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
     {
         $clientId = $this->getCampaignMonitorClientId();
 
-        try {
-            $response = $client->get($this->getEndpoint('/clients/'.$clientId.'/lists.json'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/clients/'.$clientId.'/lists.json'));
         $json = json_decode((string) $response->getBody());
 
         $lists = [];

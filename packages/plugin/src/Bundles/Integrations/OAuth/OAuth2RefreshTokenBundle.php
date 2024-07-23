@@ -5,11 +5,13 @@ namespace Solspace\Freeform\Bundles\Integrations\OAuth;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
@@ -40,7 +42,13 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
         Event::on(
             IntegrationClientProvider::class,
             IntegrationClientProvider::EVENT_GET_CLIENT,
-            [$this, 'refreshTokens']
+            [$this, 'refreshIfExpired']
+        );
+
+        Event::on(
+            IntegrationInterface::class,
+            IntegrationInterface::EVENT_ON_FAILED_REQUEST,
+            [$this, 'forceRefresh']
         );
     }
 
@@ -93,7 +101,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
         $integration->setExpiresIn($payload->expires_in ?? self::DEFAULT_TOKEN_DURATION);
     }
 
-    public function refreshTokens(GetAuthorizedClientEvent $event): void
+    public function refreshIfExpired(GetAuthorizedClientEvent $event): void
     {
         $integration = $event->getIntegration();
         if (!$integration instanceof OAuth2RefreshTokenInterface) {
@@ -111,6 +119,31 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
             return;
         }
 
+        $this->refreshToken($integration);
+    }
+
+    public function forceRefresh(FailedRequestEvent $event): void
+    {
+        if (!$event->isValid) {
+            return;
+        }
+
+        $integration = $event->getIntegration();
+        if (!$integration instanceof OAuth2RefreshTokenInterface) {
+            return;
+        }
+
+        $exception = $event->getException();
+        if (401 !== $exception->getCode()) {
+            return;
+        }
+
+        $this->refreshToken($integration);
+        $event->triggerRetry();
+    }
+
+    private function refreshToken(OAuth2RefreshTokenInterface $integration): void
+    {
         if (\in_array($integration->getId(), self::$refreshedTokens, true)) {
             return;
         }

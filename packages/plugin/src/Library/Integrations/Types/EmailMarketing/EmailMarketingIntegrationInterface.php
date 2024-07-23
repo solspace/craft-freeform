@@ -13,15 +13,13 @@
 namespace Solspace\Freeform\Library\Integrations\Types\EmailMarketing;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\PushableInterface;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 
-interface EmailMarketingIntegrationInterface extends IntegrationInterface
+interface EmailMarketingIntegrationInterface extends IntegrationInterface, PushableInterface
 {
     public static function isInstallable(): bool;
-
-    public function push(Form $form, Client $client): void;
 
     public function fetchLists(Client $client): array;
 

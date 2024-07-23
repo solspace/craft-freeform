@@ -13,17 +13,12 @@
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\PushableInterface;
 
-interface CRMIntegrationInterface extends APIIntegrationInterface
+interface CRMIntegrationInterface extends APIIntegrationInterface, PushableInterface
 {
     public const EVENT_ON_PUSH = 'on-push';
-
-    /**
-     * Push objects to the CRM.
-     */
-    public function push(Form $form, Client $client): bool;
 
     public function fetchFields(string $category, Client $client): array;
 }

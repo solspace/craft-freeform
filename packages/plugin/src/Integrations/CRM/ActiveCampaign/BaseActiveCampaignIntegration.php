@@ -127,25 +127,21 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $pipelineId = null;
 
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/dealGroups'),
-                [
-                    'query' => [
-                        'filters[title]' => $pipeline,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/dealGroups'),
+            [
+                'query' => [
+                    'filters[title]' => $pipeline,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode($response->getBody(), false);
+        $json = json_decode($response->getBody(), false);
 
-            if (isset($json->dealGroups) && \count($json->dealGroups)) {
-                $item = $json->dealGroups[0];
+        if (isset($json->dealGroups) && \count($json->dealGroups)) {
+            $item = $json->dealGroups[0];
 
-                $pipelineId = $item->id;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $pipelineId = $item->id;
         }
 
         return $pipelineId;
@@ -171,26 +167,22 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
         $stageId = null;
 
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/dealStages'),
-                [
-                    'query' => [
-                        'filters[title]' => $stage,
-                        'filters[d_groupid]' => $pipelineId,
-                    ],
+        $response = $client->get(
+            $this->getEndpoint('/dealStages'),
+            [
+                'query' => [
+                    'filters[title]' => $stage,
+                    'filters[d_groupid]' => $pipelineId,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode($response->getBody(), false);
+        $json = json_decode($response->getBody(), false);
 
-            if (isset($json->dealStages) && \count($json->dealStages)) {
-                $item = $json->dealStages[0];
+        if (isset($json->dealStages) && \count($json->dealStages)) {
+            $item = $json->dealStages[0];
 
-                $stageId = $item->id;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $stageId = $item->id;
         }
 
         return $stageId;
@@ -207,17 +199,11 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         }
 
         $ownerId = null;
+        $response = $client->get($this->getEndpoint('/users/username/'.$owner));
+        $json = json_decode($response->getBody(), false);
 
-        try {
-            $response = $client->get($this->getEndpoint('/users/username/'.$owner));
-
-            $json = json_decode($response->getBody(), false);
-
-            if (!empty($json->user)) {
-                $ownerId = $json->user->id;
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        if (!empty($json->user)) {
+            $ownerId = $json->user->id;
         }
 
         return $ownerId;
@@ -225,12 +211,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     private function fetchContactFields(Client $client, string $category): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/fields?limit=999'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/fields?limit=999'));
         $json = json_decode((string) $response->getBody(), false);
 
         $fieldList = [];
@@ -264,11 +245,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     private function fetchDealFields(Client $client, string $category): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
 
         $json = json_decode((string) $response->getBody(), false);
 
@@ -307,17 +284,12 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     private function fetchAccountFields(Client $client, string $category): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/accountCustomFieldMeta'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/accountCustomFieldMeta'));
         $json = json_decode((string) $response->getBody());
 
-        $fieldList = [];
-
-        $fieldList[] = new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, true);
+        $fieldList = [
+            new FieldObject('name', 'Name', FieldObject::TYPE_STRING, $category, true),
+        ];
 
         if (isset($json->accountCustomFieldMeta)) {
             foreach ($json->accountCustomFieldMeta as $field) {

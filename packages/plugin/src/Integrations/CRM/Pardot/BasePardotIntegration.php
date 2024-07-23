@@ -198,12 +198,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     private function getCustomFields(Client $client, string $category): array
     {
-        try {
-            $response = $client->get($this->getPardotEndpoint('customField'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getPardotEndpoint('customField'));
         $json = json_decode((string) $response->getBody());
 
         if (!$json || !isset($json->result)) {

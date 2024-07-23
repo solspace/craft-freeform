@@ -2,7 +2,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import type { FormImportData } from '../../import.types';
+import type { FormImportData } from '../import.types';
 
 const QKExpressForms = {
   data: ['expressForms', 'data'],

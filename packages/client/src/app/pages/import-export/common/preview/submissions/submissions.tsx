@@ -27,7 +27,7 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
   options,
   onUpdate,
 }) => {
-  if (!submissions.length) {
+  if (!Array.isArray(submissions) || !submissions.length) {
     return null;
   }
 

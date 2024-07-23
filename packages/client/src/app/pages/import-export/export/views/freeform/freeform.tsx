@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import String from '@components/form-controls/control-types/string/string';
+import { ContentContainer } from '@components/layout/blocks/content-container';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { Preview } from '@ff-client/app/pages/import-export/common/preview/preview';
 import { Progress } from '@ff-client/app/pages/import-export/common/progress/progress';
@@ -15,7 +16,11 @@ import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
-import { Done, DoneWrapper, ProgressWrapper } from '../../export.styles';
+import {
+  Done,
+  DoneWrapper,
+  ProgressWrapper,
+} from '../../../common/progress/progress.styles';
 import type { ExportOptions } from '../../export.types';
 
 import { useFormsDataQuery, useFormsExportMutation } from './freeform.queries';
@@ -96,110 +101,102 @@ export const ExportFreeform: React.FC = () => {
   const isCurrentlyActive = isFetching || active || progressActive || isLoading;
 
   if (isFetching) {
-    return (
-      <div id="content-container">
-        <div id="content" className="content-pane">
-          {translate('Loading')}
-        </div>
-      </div>
-    );
+    return <ContentContainer>{translate('Loading')}</ContentContainer>;
   }
 
   return (
-    <div id="content-container">
-      <div id="content" className="content-pane">
-        {data && (
-          <div className="field">
-            <div className="heading">
-              <label htmlFor="">{translate('Select Data')}</label>
-            </div>
-            <div className="input">
-              <Preview
-                disabled={false}
-                data={data}
-                options={options}
-                onUpdate={(options) => setOptions(options)}
-              />
-            </div>
-          </div>
-        )}
-
-        <String
-          value={options.password || ''}
-          updateValue={(password) => setOptions({ ...options, password })}
-          property={{
-            handle: 'password',
-            label: 'Password Protect exported file',
-            instructions:
-              'Enter a password if you wish to password protect your zip file.',
-            type: PropertyType.String,
-            placeholder: 'Enter a password',
-          }}
-        />
-
+    <ContentContainer>
+      {data && (
         <div className="field">
-          <button
-            className={classes(
-              'btn',
-              'submit',
-              isCurrentlyActive && 'disabled',
-              !options.forms.length &&
-                !options.notificationTemplates.length &&
-                !options.integrations.length &&
-                !options.formSubmissions.length &&
-                'disabled'
-            )}
-            disabled={isCurrentlyActive}
-            onClick={onClick}
-          >
-            <LoadingText
-              loadingText={translate('Exporting')}
-              loading={isCurrentlyActive}
-              spinner
-            >
-              {translate('Begin Export')}
-            </LoadingText>
-          </button>
+          <div className="heading">
+            <label htmlFor="">{translate('Select Data')}</label>
+          </div>
+          <div className="input">
+            <Preview
+              disabled={false}
+              data={data}
+              options={options}
+              onUpdate={(options) => setOptions(options)}
+            />
+          </div>
         </div>
+      )}
 
-        <ProgressWrapper style={progressAnimation}>
-          <Progress
-            width="60%"
-            show
-            value={progress[0]}
-            max={total[0]}
-            active={true}
+      <String
+        value={options.password || ''}
+        updateValue={(password) => setOptions({ ...options, password })}
+        property={{
+          handle: 'password',
+          label: 'Password Protect exported file',
+          instructions:
+            'Enter a password if you wish to password protect your zip file.',
+          type: PropertyType.String,
+          placeholder: 'Enter a password',
+        }}
+      />
+
+      <div className="field">
+        <button
+          className={classes(
+            'btn',
+            'submit',
+            isCurrentlyActive && 'disabled',
+            !options.forms.length &&
+              !options.notificationTemplates.length &&
+              !options.integrations.length &&
+              !options.formSubmissions.length &&
+              'disabled'
+          )}
+          disabled={isCurrentlyActive}
+          onClick={onClick}
+        >
+          <LoadingText
+            loadingText={translate('Exporting')}
+            loading={isCurrentlyActive}
+            spinner
           >
-            {translate('Export Progress')}
-          </Progress>
-
-          <Progress
-            width="60%"
-            show
-            variant="secondary"
-            value={progress[1]}
-            max={total[1]}
-            active={true}
-          >
-            {info}
-          </Progress>
-        </ProgressWrapper>
-
-        {errors.length > 0 && (
-          <ul className="errors">
-            {errors.map((error, index) => (
-              <li key={index}>{error}</li>
-            ))}
-          </ul>
-        )}
-
-        <DoneWrapper style={doneAnimation}>
-          <Done>
-            <i className="fa-sharp fa-solid fa-check" />
-            <span>{translate('Import completed successfully!')}</span>
-          </Done>
-        </DoneWrapper>
+            {translate('Begin Export')}
+          </LoadingText>
+        </button>
       </div>
-    </div>
+
+      <ProgressWrapper style={progressAnimation}>
+        <Progress
+          width="60%"
+          show
+          value={progress[0]}
+          max={total[0]}
+          active={true}
+        >
+          {translate('Export Progress')}
+        </Progress>
+
+        <Progress
+          width="60%"
+          show
+          variant="secondary"
+          value={progress[1]}
+          max={total[1]}
+          active={true}
+        >
+          {info}
+        </Progress>
+      </ProgressWrapper>
+
+      {errors.length > 0 && (
+        <ul className="errors">
+          {errors.map((error, index) => (
+            <li key={index}>{error}</li>
+          ))}
+        </ul>
+      )}
+
+      <DoneWrapper style={doneAnimation}>
+        <Done>
+          <i className="fa-sharp fa-solid fa-check" />
+          <span>{translate('Exported successfully!')}</span>
+        </Done>
+      </DoneWrapper>
+    </ContentContainer>
   );
 };

@@ -21,7 +21,7 @@ type Props = {
 };
 
 export const PreviewForms: React.FC<Props> = ({ forms, options, onUpdate }) => {
-  if (!forms.length) {
+  if (!Array.isArray(forms) || !forms.length) {
     return null;
   }
 

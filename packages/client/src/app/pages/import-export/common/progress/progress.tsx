@@ -2,7 +2,7 @@ import type { PropsWithChildren } from 'react';
 import React from 'react';
 import classes from '@ff-client/utils/classes';
 
-import { ProgressBar, ProgressWrapper } from './progress.styles';
+import { ProgressBar, ProgressContainer } from './progress.styles';
 
 const color = {
   primary: '#e12d39',
@@ -32,7 +32,7 @@ export const Progress: React.FC<PropsWithChildren<Props>> = ({
   }
 
   return (
-    <ProgressWrapper className={classes(variant)}>
+    <ProgressContainer className={classes(variant)}>
       {children && <label>{children}</label>}
       <ProgressBar
         style={{ width }}
@@ -41,6 +41,6 @@ export const Progress: React.FC<PropsWithChildren<Props>> = ({
         $max={max}
         className={classes(active && 'active')}
       />
-    </ProgressWrapper>
+    </ProgressContainer>
   );
 };

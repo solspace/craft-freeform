@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
 use craft\helpers\App;
+use craft\helpers\FileHelper;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
+use Solspace\Freeform\Bundles\Backup\Export\FileExportReader;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
@@ -20,19 +22,7 @@ class ImportController extends BaseApiController
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
         $data = $exporter->collectDataPreview();
 
-        return $this->asSerializedJson($data);
-    }
-
-    public function actionFreeform(): Response
-    {
-        if ($this->request->isPost) {
-            return $this->asEmptyResponse(201);
-        }
-
-        return $this->renderTemplate(
-            'freeform-backup/import-freeform',
-            [],
-        );
+        return $this->asSerializedJson($data, context: ['preserve_empty_objects' => false]);
     }
 
     public function actionPrepareImport(): Response
@@ -44,7 +34,6 @@ class ImportController extends BaseApiController
 
         $exporter = $request->post('exporter');
         $options = $request->post('options', []);
-        $package = $request->post('package');
 
         $errors = new ErrorCollection();
         if (!$exporter) {
@@ -60,13 +49,58 @@ class ImportController extends BaseApiController
             [
                 'exporter' => $exporter,
                 'options' => $options,
-                'package' => $package,
             ],
             30
         );
 
         return $this->asSerializedJson([
             'token' => $token,
+        ], 201);
+    }
+
+    public function actionPrepareFile(): Response
+    {
+        $this->requirePostRequest();
+
+        $file = $_FILES['file'] ?? null;
+        if (!$file) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', ['File is required']);
+
+            throw new ApiException(400, $errors);
+        }
+
+        $token = CryptoHelper::getUniqueToken(14);
+        $suffix = CryptoHelper::getUniqueToken(5);
+
+        $zipPath = $file['tmp_name'];
+        $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$suffix;
+        if (!is_dir($unzipPath)) {
+            FileHelper::createDirectory($unzipPath, 0777, true);
+        }
+
+        $zip = new \ZipArchive();
+        $zip->open($zipPath);
+
+        try {
+            $zip->extractTo($unzipPath);
+        } catch (\ValueError) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', ['Failed to extract ZIP file']);
+
+            throw new ApiException(400, $errors);
+        }
+
+        $zip->close();
+
+        \Craft::$app->cache->set('freeform-import-file-'.$token, $unzipPath, 60 * 60);
+
+        $exporter = \Craft::$container->get(FileExportReader::class);
+        $exporter->setOptions(['path' => $unzipPath]);
+
+        return $this->asSerializedJson([
+            'token' => $token,
+            'options' => $exporter->collectDataPreview(),
         ], 201);
     }
 
@@ -84,18 +118,13 @@ class ImportController extends BaseApiController
             return;
         }
 
-        ['exporter' => $exporterClass, 'options' => $options, 'package' => $package] = $config;
+        ['exporter' => $exporterClass, 'options' => $options] = $config;
 
         /** @var ExporterInterface $exporter */
         $exporter = \Craft::$container->get($exporterClass);
-        $dataset = $exporter->collect(
-            $options['forms'] ?? [],
-            $options['notificationTemplates'] ?? [],
-            $options['integrations'] ?? [],
-            $options['formSubmissions'] ?? [],
-            $options['strategy'] ?? [],
-            $options['settings'] ?? false,
-        );
+        $exporter->setOptions($options);
+
+        $dataset = $exporter->collect();
 
         $sse->message('info', 'Starting import');
 
@@ -103,7 +132,6 @@ class ImportController extends BaseApiController
         $importer->import($dataset, $sse);
 
         $sse->message('info', 'Done');
-
         $sse->message('exit', 'done');
 
         exit;

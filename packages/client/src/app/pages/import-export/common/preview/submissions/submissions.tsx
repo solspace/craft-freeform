@@ -1,9 +1,10 @@
 import React from 'react';
 import { Checkbox } from '@components/elements/checkbox/checkbox';
+import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import type { Form, Submissions } from '../../../import/import.types';
+import type { Submissions } from '../../../import/import.types';
 import {
   BlockItem,
   Blocks,
@@ -16,20 +17,20 @@ import {
 
 type Props = {
   submissions: Submissions[];
-  forms: Form[];
   options: string[];
   onUpdate: (options: string[]) => void;
 };
 
 export const PreviewSubmissionsTemplates: React.FC<Props> = ({
   submissions,
-  forms,
   options,
   onUpdate,
 }) => {
   if (!Array.isArray(submissions) || !submissions.length) {
     return null;
   }
+
+  const { data: forms, isFetched } = useQueryFormsWithStats();
 
   return (
     <ListItem>
@@ -75,7 +76,8 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
               <Spacer $dash />
               <SubmissionIcon />
               <Label $light htmlFor={`submissions-${submission.formUid}`}>
-                {forms.find((form) => form.uid === submission.formUid).name}
+                {isFetched &&
+                  forms.find((form) => form.uid === submission.formUid)?.name}
                 {` (${submission.count})`}
               </Label>
             </Blocks>

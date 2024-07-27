@@ -4,7 +4,7 @@ type Callback = (event: MessageEvent) => void;
 type Listener = [string, Callback];
 type ListenerAttacher = (eventName: string, callback: Callback) => void;
 
-type ReturnType = {
+export type ProgressEvent = {
   progress: {
     active: boolean;
     displayProgress: boolean;
@@ -19,7 +19,7 @@ type ReturnType = {
   attachListener: ListenerAttacher;
 };
 
-export const useProgressEvent = (): ReturnType => {
+export const useProgressEvent = (): ProgressEvent => {
   const source = useRef<EventSource>();
   const [url, setUrl] = useState<string>();
 

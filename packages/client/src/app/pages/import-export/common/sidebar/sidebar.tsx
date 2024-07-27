@@ -1,5 +1,5 @@
 import React from 'react';
-import { useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { SidebarContainer } from '@components/layout/blocks/sidebar-container';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
@@ -17,6 +17,8 @@ type Heading = {
 };
 
 type Response = Array<Link & Heading>;
+
+const localLinks = ['forms', 'express-forms'];
 
 export const Sidebar: React.FC = () => {
   const { pathname: currentUrl } = useLocation();
@@ -52,15 +54,20 @@ export const Sidebar: React.FC = () => {
             }
 
             const url = item.url.replace(/^freeform/, '');
+            const isLocal = localLinks.some((keyword) => url.includes(keyword));
+            const label = translate(item.title);
 
             return (
               <li key={i}>
-                <a
-                  href={generateUrl(url)}
-                  className={classes(url === currentUrl && 'sel')}
-                >
-                  {translate(item.title)}
-                </a>
+                {isLocal && (
+                  <NavLink
+                    to={url}
+                    className={classes(url === currentUrl && 'sel')}
+                  >
+                    {label}
+                  </NavLink>
+                )}
+                {!isLocal && <a href={generateUrl(url)}>{label}</a>}
               </li>
             );
           })}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { ContentContainer } from '@components/layout/blocks/content-container';
+import { Field } from '@components/layout/blocks/field';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
@@ -9,16 +10,7 @@ import axios from 'axios';
 
 import { Preview } from '../../common/preview/preview';
 import { Progress } from '../../common/progress/progress';
-import {
-  useDoneAnimation,
-  useProgressAnimation,
-} from '../../common/progress/progress.animations';
 import { useProgressEvent } from '../../common/progress/progress.hooks';
-import {
-  Done,
-  DoneWrapper,
-  ProgressWrapper,
-} from '../../common/progress/progress.styles';
 import type { ImportOptions, ImportStrategy } from '../import.types';
 
 import { useExpressFormsDataQuery } from './express-forms.queries';
@@ -36,26 +28,13 @@ export const ImportExpressForms: React.FC = () => {
     settings: false,
   });
 
-  const {
-    triggerProgress,
-    clearProgress,
-    progress: {
-      active,
-      displayProgress,
-      errors,
-      info,
-      progress,
-      showDone,
-      total,
-    },
-  } = useProgressEvent();
+  const progressEvent = useProgressEvent();
+  const active = progressEvent.progress.active;
 
   const { data, isFetching } = useExpressFormsDataQuery();
-  const progressAnimation = useProgressAnimation(displayProgress);
-  const doneAnimation = useDoneAnimation(showDone);
 
   const onClick = async (): Promise<void> => {
-    clearProgress();
+    progressEvent.clearProgress();
 
     const { data } = await axios.post('/api/import/prepare', {
       exporter:
@@ -64,7 +43,7 @@ export const ImportExpressForms: React.FC = () => {
     });
 
     const url = generateUrl(`/api/import?token=${data.token}`);
-    triggerProgress(url);
+    progressEvent.triggerProgress(url);
   };
 
   if (isFetching) {
@@ -88,19 +67,14 @@ export const ImportExpressForms: React.FC = () => {
         url="import/express-forms"
       />
       {data && (
-        <div className="field">
-          <div className="heading">
-            <label htmlFor="">{translate('Select Data')}</label>
-          </div>
-          <div className="input">
-            <Preview
-              disabled={active}
-              data={data}
-              options={options}
-              onUpdate={(opts) => setOptions({ ...options, ...opts })}
-            />
-          </div>
-        </div>
+        <Field label={translate('Select Data')}>
+          <Preview
+            disabled={active}
+            data={data}
+            options={options}
+            onUpdate={(opts) => setOptions({ ...options, ...opts })}
+          />
+        </Field>
       )}
 
       <div
@@ -199,43 +173,11 @@ export const ImportExpressForms: React.FC = () => {
         </LoadingText>
       </button>
 
-      <ProgressWrapper style={progressAnimation}>
-        <Progress
-          width="60%"
-          show
-          value={progress[0]}
-          max={total[0]}
-          active={true}
-        >
-          {translate('Import Progress')}
-        </Progress>
-
-        <Progress
-          width="60%"
-          show
-          variant="secondary"
-          value={progress[1]}
-          max={total[1]}
-          active={true}
-        >
-          {info}
-        </Progress>
-      </ProgressWrapper>
-
-      {errors.length > 0 && (
-        <ul className="errors">
-          {errors.map((error, index) => (
-            <li key={index}>{error}</li>
-          ))}
-        </ul>
-      )}
-
-      <DoneWrapper style={doneAnimation}>
-        <Done>
-          <i className="fa-sharp fa-solid fa-check" />
-          <span>{translate('Import completed successfully!')}</span>
-        </Done>
-      </DoneWrapper>
+      <Progress
+        label={translate('Import')}
+        finishLabel={translate('Import completed successfully')}
+        event={progressEvent}
+      />
     </ContentContainer>
   );
 };

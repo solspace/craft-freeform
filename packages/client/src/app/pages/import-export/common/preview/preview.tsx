@@ -26,11 +26,11 @@ export const Preview: React.FC<Props> = ({
   onUpdate,
 }) => {
   const isAllSelected =
-    options.forms.length === data.forms.length &&
-    options.integrations.length === data.integrations.length &&
+    options.forms.length === data.forms?.length &&
+    options.integrations.length === data.integrations?.length &&
     options.notificationTemplates.length ===
-      data.notificationTemplates.length &&
-    options.formSubmissions.length === data.formSubmissions.length &&
+      data.notificationTemplates?.length &&
+    options.formSubmissions.length === data.formSubmissions?.length &&
     options.settings;
 
   const emptyOptions: ExportOptions = {
@@ -42,16 +42,14 @@ export const Preview: React.FC<Props> = ({
   };
 
   const filledOptions: ExportOptions = {
-    forms: Array.isArray(data.forms) && data.forms.map((form) => form.uid),
-    notificationTemplates:
-      Array.isArray(data.notificationTemplates) &&
-      data.notificationTemplates.map((template) => template.originalId),
-    integrations:
-      Array.isArray(data.integrations) &&
-      data.integrations.map((integration) => integration.uid),
-    formSubmissions:
-      Array.isArray(data.formSubmissions) &&
-      data.formSubmissions.map((submission) => submission.formUid),
+    forms: data.forms.map((form) => form.uid),
+    notificationTemplates: data.notificationTemplates.map(
+      (template) => template.originalId
+    ),
+    integrations: data.integrations.map((integration) => integration.uid),
+    formSubmissions: data.formSubmissions.map(
+      (submission) => submission.formUid
+    ),
     settings: true,
   };
 
@@ -89,7 +87,6 @@ export const Preview: React.FC<Props> = ({
 
           <PreviewSubmissionsTemplates
             submissions={data.formSubmissions}
-            forms={data.forms}
             options={options.formSubmissions}
             onUpdate={(formSubmissions) =>
               onUpdate({ ...options, formSubmissions })

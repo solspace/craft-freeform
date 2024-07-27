@@ -15,9 +15,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
-use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
-use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
@@ -37,7 +35,7 @@ use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
-class FreeformFormsExporter implements ExporterInterface
+class FreeformFormsExporter extends BaseExporter
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
@@ -85,27 +83,7 @@ class FreeformFormsExporter implements ExporterInterface
         return $preview;
     }
 
-    public function collect(
-        array $formIds,
-        array $notificationIds,
-        array $integrationIds,
-        array $formSubmissions,
-        array $strategy,
-        bool $settings,
-    ): FreeformDataset {
-        $dataset = new FreeformDataset();
-
-        $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
-        $dataset->setForms($this->collectForms($formIds));
-        $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
-        $dataset->setIntegrations($this->collectIntegrations($integrationIds));
-        $dataset->setSettings($this->collectSettings($settings));
-        $dataset->setStrategy(new ImportStrategy($strategy));
-
-        return $dataset;
-    }
-
-    private function collectForms(?array $ids = null): FormCollection
+    protected function collectForms(?array $ids = null): FormCollection
     {
         $collection = new FormCollection();
 
@@ -193,7 +171,7 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectIntegrations(?array $ids = null): IntegrationCollection
+    protected function collectIntegrations(?array $ids = null): IntegrationCollection
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
         $collection = new IntegrationCollection();
@@ -209,6 +187,7 @@ class FreeformFormsExporter implements ExporterInterface
             $exported->handle = $integration->handle;
             $exported->uid = $integration->uid;
             $exported->type = $integration->type;
+            $exported->class = $integration->class;
 
             $metadata = $integration->metadata;
 
@@ -235,7 +214,7 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectNotifications(?array $ids = null): NotificationTemplateCollection
+    protected function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
         $notifications = Freeform::getInstance()->notifications->getAllNotifications();
@@ -271,7 +250,7 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSubmissions(?array $ids = null): FormSubmissionCollection
+    protected function collectSubmissions(?array $ids = null): FormSubmissionCollection
     {
         $collection = new FormSubmissionCollection();
 
@@ -307,7 +286,7 @@ class FreeformFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSettings(bool $collect): ?Settings
+    protected function collectSettings(bool $collect): ?Settings
     {
         if (!$collect) {
             return null;

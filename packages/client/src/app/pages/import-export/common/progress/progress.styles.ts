@@ -58,7 +58,7 @@ const animation = keyframes`
   to { background-position: 0 0; }
 `;
 
-export const ProgressBar = styled.div<ProgressBarProps>`
+export const ProgressBarElement = styled.div<ProgressBarProps>`
   position: relative;
 
   width: 100%;

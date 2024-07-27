@@ -20,9 +20,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
-use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
-use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
@@ -47,10 +45,8 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField as EmailFieldNotification;
 
-class ExpressFormsExporter implements ExporterInterface
+class ExpressFormsExporter extends BaseExporter
 {
-    private array $notificationReference = [];
-
     public function __construct(private PropertyProvider $propertyProvider) {}
 
     public function collectDataPreview(): ImportPreview
@@ -59,6 +55,7 @@ class ExpressFormsExporter implements ExporterInterface
 
         $preview->forms = $this->collectForms();
         $preview->notificationTemplates = $this->collectNotifications();
+        $preview->integrations = $this->collectIntegrations();
 
         $submissions = (new Query())
             ->select(['COUNT(s.id)'])
@@ -80,26 +77,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $preview;
     }
 
-    public function collect(
-        array $formIds,
-        array $notificationIds,
-        array $integrationIds,
-        array $formSubmissions,
-        array $strategy,
-        bool $settings,
-    ): FreeformDataset {
-        $dataset = new FreeformDataset();
-
-        $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
-        $dataset->setForms($this->collectForms($formIds));
-        $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
-        $dataset->setSettings($this->collectSettings($settings));
-        $dataset->setStrategy(new ImportStrategy($strategy));
-
-        return $dataset;
-    }
-
-    private function collectForms(?array $ids = null): FormCollection
+    protected function collectForms(?array $ids = null): FormCollection
     {
         $colorGenerator = new RandomColorGenerator();
         $collection = new FormCollection();
@@ -252,7 +230,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectIntegrations(): IntegrationCollection
+    protected function collectIntegrations(?array $ids = null): IntegrationCollection
     {
         $collection = new IntegrationCollection();
 
@@ -272,7 +250,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectNotifications(?array $ids = null): NotificationTemplateCollection
+    protected function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
         $notifications = ExpressForms::getInstance()->emailNotifications->getNotifications();
@@ -308,7 +286,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSubmissions(?array $ids = null): FormSubmissionCollection
+    protected function collectSubmissions(?array $ids = null): FormSubmissionCollection
     {
         $collection = new FormSubmissionCollection();
 
@@ -344,7 +322,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSettings(bool $collect): ?Settings
+    protected function collectSettings(bool $collect): ?Settings
     {
         if (!$collect) {
             return null;

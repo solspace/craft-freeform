@@ -86,9 +86,10 @@ abstract class BaseApiController extends BaseController
         return $this->response;
     }
 
-    protected function asSerializedJson(mixed $content, ?int $statusCode = null): Response
+    protected function asSerializedJson(mixed $content, ?int $statusCode = null, ?array $context = null): Response
     {
-        $serialized = $this->getSerializer()->serialize($content, 'json', ['preserve_empty_objects' => true]);
+        $context ??= ['preserve_empty_objects' => true];
+        $serialized = $this->getSerializer()->serialize($content, 'json', $context);
 
         $this->response->format = Response::FORMAT_JSON;
         $this->response->content = $serialized;

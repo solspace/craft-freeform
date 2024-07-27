@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import { ContentContainer } from '@components/layout/blocks/content-container';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { Preview } from '@ff-client/app/pages/import-export/common/preview/preview';
 import { Progress } from '@ff-client/app/pages/import-export/common/progress/progress';
-import {
-  useDoneAnimation,
-  useProgressAnimation,
-} from '@ff-client/app/pages/import-export/common/progress/progress.animations';
 import { useProgressEvent } from '@ff-client/app/pages/import-export/common/progress/progress.hooks';
 import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
@@ -16,30 +13,18 @@ import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
-import {
-  Done,
-  DoneWrapper,
-  ProgressWrapper,
-} from '../../../common/progress/progress.styles';
 import type { ExportOptions } from '../../export.types';
 
 import { useFormsDataQuery, useFormsExportMutation } from './freeform.queries';
 
 export const ExportFreeform: React.FC = () => {
+  const progressEvent = useProgressEvent();
   const {
     attachListener,
     triggerProgress,
     clearProgress,
-    progress: {
-      active: progressActive,
-      showDone,
-      displayProgress,
-      errors,
-      info,
-      progress,
-      total,
-    },
-  } = useProgressEvent();
+    progress: { active: progressActive },
+  } = progressEvent;
 
   const { data, isFetching } = useFormsDataQuery();
   const { mutate, isLoading } = useFormsExportMutation({
@@ -95,9 +80,6 @@ export const ExportFreeform: React.FC = () => {
     mutate(options);
   };
 
-  const progressAnimation = useProgressAnimation(displayProgress);
-  const doneAnimation = useDoneAnimation(showDone);
-
   const isCurrentlyActive = isFetching || active || progressActive || isLoading;
 
   if (isFetching) {
@@ -106,6 +88,9 @@ export const ExportFreeform: React.FC = () => {
 
   return (
     <ContentContainer>
+      <Breadcrumb id="export" label="Export" url="export/forms" />
+      <Breadcrumb id="export-forms" label="Forms" url="export/forms" />
+
       {data && (
         <div className="field">
           <div className="heading">
@@ -160,43 +145,11 @@ export const ExportFreeform: React.FC = () => {
         </button>
       </div>
 
-      <ProgressWrapper style={progressAnimation}>
-        <Progress
-          width="60%"
-          show
-          value={progress[0]}
-          max={total[0]}
-          active={true}
-        >
-          {translate('Export Progress')}
-        </Progress>
-
-        <Progress
-          width="60%"
-          show
-          variant="secondary"
-          value={progress[1]}
-          max={total[1]}
-          active={true}
-        >
-          {info}
-        </Progress>
-      </ProgressWrapper>
-
-      {errors.length > 0 && (
-        <ul className="errors">
-          {errors.map((error, index) => (
-            <li key={index}>{error}</li>
-          ))}
-        </ul>
-      )}
-
-      <DoneWrapper style={doneAnimation}>
-        <Done>
-          <i className="fa-sharp fa-solid fa-check" />
-          <span>{translate('Exported successfully!')}</span>
-        </Done>
-      </DoneWrapper>
+      <Progress
+        label={translate('Export Progress')}
+        finishLabel={translate('Export completed successfully')}
+        event={progressEvent}
+      />
     </ContentContainer>
   );
 };

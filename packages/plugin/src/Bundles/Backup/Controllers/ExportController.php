@@ -21,7 +21,10 @@ class ExportController extends BaseApiController
     {
         $exporter = \Craft::$container->get(FreeformFormsExporter::class);
 
-        return $this->asSerializedJson($exporter->collectDataPreview());
+        return $this->asSerializedJson(
+            $exporter->collectDataPreview(),
+            context: ['preserve_empty_objects' => false],
+        );
     }
 
     public function actionExportInit(): Response
@@ -76,6 +79,7 @@ class ExportController extends BaseApiController
         App::maxPowerCaptain();
 
         $sse = new SSE();
+        $serializer = $this->getSerializer();
 
         $token = $this->request->get('token');
         $post = \Craft::$app->cache->get("freeform-export-{$token}");
@@ -89,7 +93,7 @@ class ExportController extends BaseApiController
         $password = $post['password'] ?? null;
 
         $exporter = \Craft::$container->get(FreeformFormsExporter::class);
-        $serializer = $this->getSerializer();
+        $exporter->setOptions($post);
 
         $formsByUid = [];
         foreach ($this->getFormsService()->getAllForms() as $form) {
@@ -98,14 +102,7 @@ class ExportController extends BaseApiController
 
         $sse->message('info', 'Collecting data');
 
-        $collection = $exporter->collect(
-            formIds: $post['forms'] ?? [],
-            notificationIds: $post['notificationTemplates'] ?? [],
-            integrationIds: $post['integrations'] ?? [],
-            formSubmissions: $post['formSubmissions'] ?? [],
-            strategy: $post['strategy'] ?? [],
-            settings: $post['settings'],
-        );
+        $collection = $exporter->collect();
 
         $this->announceTotals($sse, $collection);
 

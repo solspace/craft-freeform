@@ -20,6 +20,7 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
@@ -31,7 +32,7 @@ use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
     iconPath: __DIR__.'/Icons/textarea.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/textarea.ejs',
 )]
-class TextareaField extends AbstractField implements PlaceholderInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
+class TextareaField extends AbstractField implements PlaceholderInterface, TextInterface, DefaultValueInterface, EncryptionInterface, MaxLengthInterface
 {
     use DefaultTextValueTrait;
     use EncryptionTrait;

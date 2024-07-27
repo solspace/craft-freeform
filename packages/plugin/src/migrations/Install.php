@@ -38,7 +38,8 @@ class Install extends StreamlinedInstallMigration
                     'id',
                     ForeignKey::SET_NULL,
                     ForeignKey::CASCADE
-                ),
+                )
+                ->addField('dateArchived', $this->dateTime()->null()),
 
             (new Table('freeform_forms_sites'))
                 ->addField('id', $this->primaryKey())

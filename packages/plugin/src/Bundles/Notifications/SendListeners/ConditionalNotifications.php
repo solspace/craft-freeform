@@ -58,7 +58,7 @@ class ConditionalNotifications extends FeatureBundle
             return;
         }
 
-        $fields = $event->getFields();
+        $postedData = $event->getSubmission()->getFormFieldValues();
 
         foreach ($notifications as $notification) {
             $recipients = $notification->getRecipients();
@@ -81,7 +81,7 @@ class ConditionalNotifications extends FeatureBundle
             $matchesSome = false;
             $matchesAll = true;
             foreach ($conditions as $condition) {
-                $field = $fields->get($condition->getField());
+                $field = $form->get($condition->getField());
                 if (!$field) {
                     continue;
                 }
@@ -110,7 +110,8 @@ class ConditionalNotifications extends FeatureBundle
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
-                    'submissionId' => $event->getSubmission()->getId(),
+                    'submissionId' => $event->getSubmission()->id,
+                    'postedData' => $postedData,
                     'recipients' => $recipients,
                     'template' => $template,
                 ])

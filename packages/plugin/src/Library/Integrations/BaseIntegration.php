@@ -106,7 +106,7 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * @throws \Exception
      */
-    protected function processException(\Exception $exception, ?string $category = null): void
+    protected function processException(\Exception $exception, ?string $category = null, bool $throw = true): void
     {
         $message = $exception->getMessage();
         if ($exception instanceof RequestException) {
@@ -125,6 +125,8 @@ abstract class BaseIntegration implements IntegrationInterface
             )
         ;
 
-        throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception);
+        if ($throw) {
+            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception);
+        }
     }
 }

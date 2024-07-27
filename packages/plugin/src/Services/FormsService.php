@@ -20,6 +20,7 @@ use craft\helpers\Template;
 use craft\web\View;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
@@ -70,6 +71,41 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (!\array_key_exists($key, self::$allFormsCache)) {
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $sites);
+            if ($orderByName) {
+                $query->orderBy(['forms.order' => \SORT_ASC]);
+            }
+
+            $results = $query->all();
+
+            self::$allFormsCache[$key] = [];
+            foreach ($results as $result) {
+                try {
+                    $form = $this->createForm($result);
+
+                    self::$allFormsCache[$key][$form->getId()] = $form;
+                    self::$formsById[$form->getId()] = $form;
+                    self::$formsByHandle[$form->getHandle()] = $form;
+                } catch (InvalidFormTypeException) {
+                }
+            }
+        }
+
+        return self::$allFormsCache[$key];
+    }
+
+    public function getAllNonArchivedForms(bool $orderByName = false, null|array|string $sites = null): array
+    {
+        if ($sites && \is_array($sites)) {
+            sort($sites);
+        }
+
+        $key = null !== $sites ? md5(json_encode($sites)) : 'all';
+        if (!\array_key_exists($key, self::$allFormsCache)) {
+            $query = $this->getFormQuery();
+            $this->attachSitesToQuery($query, $sites);
+
+            $query->where(['forms.dateArchived' => null]);
+
             if ($orderByName) {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
@@ -445,21 +481,14 @@ class FormsService extends BaseService implements FormHandlerInterface
             return;
         }
 
-        static $pluginJsLoaded;
-        static $pluginCssLoaded;
+        $event->addScript($this->getSettingsService()->getPluginJsPath());
+        $event->addStylesheet($this->getSettingsService()->getPluginCssPath());
+    }
 
-        if (null === $pluginJsLoaded) {
-            $pluginJsLoaded = true;
-            $jsPath = $this->getSettingsService()->getPluginJsPath();
-
-            $event->addScript($jsPath);
-        }
-
-        if (null === $pluginCssLoaded) {
-            $pluginCssLoaded = true;
-            $cssPath = $this->getSettingsService()->getPluginCssPath();
-            $event->addStylesheet($cssPath);
-        }
+    public function collectScripts(CollectScriptsEvent $event): void
+    {
+        $event->addScript('freeform', $this->getSettingsService()->getPluginJsPath());
+        $event->addStylesheet('freeform', $this->getSettingsService()->getPluginCssPath());
     }
 
     public function shouldScrollToAnchor(Form $form): bool
@@ -585,6 +614,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                     'forms.dateCreated',
                     'forms.updatedByUserId',
                     'forms.dateUpdated',
+                    'forms.dateArchived',
                 ]
             )
             ->from(FormRecord::TABLE.' forms')

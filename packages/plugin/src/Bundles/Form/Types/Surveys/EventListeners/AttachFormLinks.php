@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Types\Surveys\EventListeners;
 
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Survey;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\Events\Forms\GenerateLinksEvent;
@@ -24,7 +25,7 @@ class AttachFormLinks extends FeatureBundle
 
                 $label = Freeform::t('Survey Results');
 
-                $event->add($label, '/surveys/'.$form->getHandle(), 'linkList', true);
+                $event->add($label, UrlHelper::cpUrl('freeform/surveys/'.$form->getHandle()), 'linkList', true);
             }
         );
     }

@@ -68,15 +68,11 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/settings/modules'));
+        $response = $client->get($this->getEndpoint('/settings/modules'));
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            return !empty($json);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json);
     }
 
     public function getAccountsServer(): ?string

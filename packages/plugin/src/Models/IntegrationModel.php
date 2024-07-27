@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class IntegrationModel extends Model
@@ -106,6 +107,11 @@ class IntegrationModel extends Model
         }
 
         if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+            $isEnvVariable = StringHelper::isEnvVariable($value);
+            if ($isEnvVariable) {
+                return $value;
+            }
+
             return \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
         }
 

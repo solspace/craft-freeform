@@ -48,7 +48,6 @@ export const ListSites: React.FC = () => {
                     current.handle === site.handle && 'sel'
                   )}
                   onClick={(event) => {
-                    console.log('site.handle', site.handle);
                     change(site.handle);
                     setOpen(false);
 

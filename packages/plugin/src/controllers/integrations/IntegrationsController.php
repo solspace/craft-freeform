@@ -4,6 +4,7 @@ namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
@@ -61,6 +62,11 @@ class IntegrationsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = IntegrationModel::create($type);
+
+        $serviceProvider = $this->request->get('serviceProvider');
+        if (null !== $serviceProvider) {
+            $model->class = $serviceProvider;
+        }
 
         return $this->renderEditForm($model);
     }
@@ -144,7 +150,12 @@ class IntegrationsController extends BaseController
 
             return $this->asJson(['success' => false]);
         } catch (\Exception $e) {
-            return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
+            $message = $e->getMessage();
+            if ($e instanceof BadResponseException) {
+                $message = (string) $e->getResponse()->getBody();
+            }
+
+            return $this->asJson(['success' => false, 'errors' => [$message]]);
         }
     }
 

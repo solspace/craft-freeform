@@ -2,17 +2,22 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
+import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import ArchiveIcon from '@ff-icons/actions/archive.svg';
 import CloneIcon from '@ff-icons/actions/clone.svg';
-import CrossIcon from '@ff-icons/actions/cross.svg';
+import CrossIcon from '@ff-icons/actions/delete.svg';
 import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
-import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
+import {
+  useArchiveFormMutation,
+  useCloneFormMutation,
+} from '../list.mutations';
 
 import {
   CardBody,
@@ -32,6 +37,7 @@ const randomSubmissions = (min: number, max: number): number =>
 type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
+  isExpressEdition?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -40,8 +46,12 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [100, 0] as unknown as number,
 };
 
-export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
-  const deleteMutation = useDeleteFormMutation();
+export const Card: React.FC<Props> = ({
+  form,
+  isDraggingInProgress,
+  isExpressEdition,
+}) => {
+  const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
@@ -55,12 +65,16 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
     uv: randomSubmissions(0, Math.random() > 0.9 ? 50 : 20), // 15% chance for peak day
   }));
 
-  const { id, name, settings } = form;
+  const { id, name, dateArchived, settings } = form;
   const { color, description } = settings.general;
 
-  const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
+  const isArchiving =
+    archiveMutation.isLoading && archiveMutation.context === id;
+  const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
   const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
-  const isDisabled = isDeleting || isCloning;
+  const isDisabled = isCloning || isArchiving;
+
+  const openDeleteFormModal = useDeleteFormModal({ form });
 
   const onNavigate = (): void => {
     queryClient.invalidateQueries(QKForms.single(Number(id)));
@@ -75,34 +89,42 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
       data-id={form.id}
       className={classes(
         isDisabled && 'disabled',
+        isSuccess && 'archived',
         isDraggingInProgress && 'dragging'
       )}
     >
       <Controls>
-        <Tooltip title={translate('Move')} {...tooltipProps}>
-          <ControlButton className="handle">
-            <MoveIcon />
-          </ControlButton>
-        </Tooltip>
-        <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              cloneMutation.mutate(id);
-            }}
-          >
-            <CloneIcon />
-          </ControlButton>
-        </Tooltip>
+        {!isExpressEdition && (
+          <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
+            <ControlButton className="handle">
+              <MoveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
+        {!isExpressEdition && (
+          <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
+            <ControlButton
+              onClick={() => {
+                cloneMutation.mutate(id);
+              }}
+            >
+              <CloneIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
+        {!isExpressEdition && !dateArchived && (
+          <Tooltip title={translate('Archive this Form')} {...tooltipProps}>
+            <ControlButton
+              onClick={() => {
+                archiveMutation.mutate(id);
+              }}
+            >
+              <ArchiveIcon />
+            </ControlButton>
+          </Tooltip>
+        )}
         <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
-          <ControlButton
-            onClick={() => {
-              if (
-                confirm(translate('Are you sure you want to delete this form?'))
-              ) {
-                deleteMutation.mutate(id);
-              }
-            }}
-          >
+          <ControlButton onClick={openDeleteFormModal}>
             <CrossIcon />
           </ControlButton>
         </Tooltip>

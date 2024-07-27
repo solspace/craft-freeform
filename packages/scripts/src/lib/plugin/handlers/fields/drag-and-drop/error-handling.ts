@@ -10,8 +10,6 @@ export const createErrorContainer = (freeform: Freeform): HTMLElement => {
   const container = document.createElement('div');
   container.innerText = '!';
   container.setAttribute('data-errors', '');
-  container.setAttribute('data-microtip-position', 'top');
-  container.setAttribute('role', 'tooltip');
   addDnDClass(container, 'preview-zone', 'file-preview', 'thumbnail', 'errors');
 
   const event = freeform._dispatchEvent(
@@ -47,4 +45,5 @@ export const addFieldErrors = (
 
   previewContainer.setAttribute('data-has-errors', '');
   errorContainer.setAttribute('aria-label', errors.join('; '));
+  errorContainer.setAttribute('title', errors.join('. '));
 };

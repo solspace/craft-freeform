@@ -15,6 +15,8 @@ namespace Solspace\Freeform\Variables;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
+use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
@@ -29,7 +31,9 @@ use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
+use yii\base\Event;
 use yii\db\Exception;
+use yii\web\NotFoundHttpException;
 
 class FreeformVariable
 {
@@ -121,6 +125,47 @@ class FreeformVariable
     public function loadFreeformScripts(): Markup
     {
         return $this->loadFreeformPlugin();
+    }
+
+    public function loadScripts(array $scripts = []): Markup
+    {
+        $event = new CollectScriptsEvent($scripts);
+        Event::trigger(Form::class, Form::EVENT_COLLECT_SCRIPTS, $event);
+
+        return new Markup($event->getHtml(), 'utf-8');
+    }
+
+    public function loadFormSpecificScripts(Form|string $form): Markup
+    {
+        if (!$form instanceof Form) {
+            $form = $this->getFormService()->getFormByHandleOrId($form);
+        }
+
+        if (!$form) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $event = new RenderTagEvent($form, collectScripts: true);
+
+        Event::trigger(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, $event);
+        Event::trigger(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, $event);
+        Event::trigger(Form::class, Form::EVENT_RENDER_BEFORE_CLOSING_TAG, $event);
+        Event::trigger(Form::class, Form::EVENT_RENDER_AFTER_CLOSING_TAG, $event);
+
+        $scripts = $event->getScripts();
+        $styles = $event->getStyles();
+
+        $output = '';
+
+        foreach ($scripts as $script) {
+            $output .= '<script type="text/javascript" src="'.$script.'"></script>'.\PHP_EOL;
+        }
+
+        foreach ($styles as $style) {
+            $output .= '<link rel="stylesheet" href="'.$style.'" />'.\PHP_EOL;
+        }
+
+        return Template::raw($output);
     }
 
     public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup

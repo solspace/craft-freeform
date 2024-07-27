@@ -125,6 +125,7 @@ class FormTransformer
             'settings' => $settings->toArray(),
             'ownership' => $this->getOwnership($form),
             'isNew' => $isNew,
+            'dateArchived' => $form->getDateArchived(),
         ];
     }
 

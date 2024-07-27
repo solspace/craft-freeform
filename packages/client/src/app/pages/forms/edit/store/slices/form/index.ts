@@ -21,6 +21,7 @@ const initialState: FormState = {
   isNew: true,
   settings: {},
   errors: {},
+  dateArchived: null,
 };
 
 export const formSlice = createSlice({

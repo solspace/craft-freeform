@@ -16,7 +16,6 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Properties\WebhookUrlGenerator;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Stripe as StripeAPI;
@@ -132,11 +131,7 @@ class Stripe extends PaymentGatewayIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $charges = $this->getStripeClient()->charges->all(['limit' => 1]);
-        } catch (\Exception $e) {
-            throw new IntegrationException($e->getMessage(), $e->getCode(), $e->getPrevious());
-        }
+        $charges = $this->getStripeClient()->charges->all(['limit' => 1]);
 
         return $charges instanceof StripeAPI\Collection;
     }

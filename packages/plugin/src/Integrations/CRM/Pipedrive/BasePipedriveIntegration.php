@@ -59,14 +59,10 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/users/me'));
-            $json = json_decode((string) $response->getBody(), false);
+        $response = $client->get($this->getEndpoint('/users/me'));
+        $json = json_decode((string) $response->getBody(), false);
 
-            return isset($json->success) && true === $json->success;
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return isset($json->success) && true === $json->success;
     }
 
     public function getAuthorizeUrl(): string

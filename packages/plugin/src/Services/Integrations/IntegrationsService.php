@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -284,7 +286,8 @@ class IntegrationsService extends BaseService
             }
 
             $value = $model->metadata[$property->handle] ?? null;
-            if ($value) {
+            $isEnvVariable = StringHelper::isEnvVariable($value);
+            if (!$isEnvVariable && $value) {
                 $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }
 
@@ -301,7 +304,10 @@ class IntegrationsService extends BaseService
             $handle = $property->handle;
             $value = $model->metadata[$handle] ?? null;
 
-            if ($value && $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+            $isEncrypted = $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED);
+            $isEnvVariable = StringHelper::isEnvVariable($value);
+
+            if ($value && $isEncrypted && !$isEnvVariable) {
                 $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
 
                 $model->metadata[$property->handle] = $value;
@@ -344,7 +350,16 @@ class IntegrationsService extends BaseService
             }
 
             if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                $isEnvVariable = StringHelper::isEnvVariable($value);
+                if ($isEnvVariable) {
+                    continue;
+                }
+
                 $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+            }
+
+            if ($property->transformer instanceof TransformerInterface) {
+                $value = $property->transformer->reverseTransform($value);
             }
 
             $model->metadata[$property->handle] = $value;
@@ -467,7 +482,7 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
-    public function processIntegrations(int $formId, int $submissionId, string $type): void
+    public function processIntegrationJob(int $formId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
 
@@ -476,18 +491,17 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $submission = $freeform->submissions->getSubmissionById($submissionId);
-        if (!$submission) {
-            return;
-        }
-
-        $form->valuesFromSubmission($submission);
+        $form->valuesFromArray($postedData);
 
         /** @var IntegrationInterface[] $integrations */
-        $integrations = $this->getForForm($form, $type);
+        $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->push($form, $client);
+
+            try {
+                $integration->push($form, $client);
+            } catch (IntegrationException $e) {
+            }
         }
     }
 

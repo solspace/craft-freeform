@@ -1,7 +1,9 @@
 import type { PropsWithChildren } from 'react';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
+import type { GenericValue } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import cloneDeep from 'lodash.clonedeep';
 
 import { Modal } from './modal';
 import { useAnimateModals, useAnimateOverlay } from './modal.animations';
@@ -9,7 +11,7 @@ import { ModalHub, ModalOverlay } from './modal.styles';
 import type { ModalType } from './modal.types';
 
 type ContextType = {
-  openModal: (modal: ModalType) => void;
+  openModal: (modal: ModalType, modalData?: GenericValue) => void;
   closeModal: () => void;
 };
 
@@ -21,13 +23,16 @@ const ModalContext = createContext<ContextType>({
 export const useModal = (): ContextType => useContext(ModalContext);
 
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  const [data, setData] = useState<GenericValue[]>([]);
   const [modals, setModals] = useState<ModalType[]>([]);
 
-  const openModal = (modal: ModalType): void => {
+  const openModal = (modal: ModalType, modalData?: GenericValue): void => {
+    setData([...data, modalData]);
     setModals([...modals, modal]);
   };
 
   const closeModal = (): void => {
+    setData(data.slice(0, -1));
     setModals(modals.slice(0, -1));
   };
 
@@ -53,7 +58,10 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
           >
             {transitions((style, ModalContent, _, index) => (
               <Modal key={index} closeModal={closeModal} style={style}>
-                <ModalContent closeModal={closeModal} />
+                <ModalContent
+                  closeModal={closeModal}
+                  data={cloneDeep(data[index])}
+                />
               </Modal>
             ))}
           </ModalOverlay>

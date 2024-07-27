@@ -13,19 +13,19 @@
 namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2PKCEInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, SalesforceIntegrationInterface, OAuth2PKCEInterface
+abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, SalesforceIntegrationInterface, OAuth2PKCEInterface, OAuth2IssuedAtMilliseconds
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;
@@ -66,15 +66,11 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/'));
+        $response = $client->get($this->getEndpoint('/'));
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            return !empty($json);
-        } catch (RequestException $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json);
     }
 
     public function getAuthorizeUrl(): string

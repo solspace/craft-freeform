@@ -48,7 +48,7 @@ class Slack extends WebhookIntegration
             $client = new Client();
             $client->post($this->getUrl(), ['json' => ['text' => $message]]);
         } catch (\Exception $e) {
-            $this->processException($e);
+            $this->processException($e, self::LOG_CATEGORY, false);
         }
     }
 }

@@ -33,6 +33,7 @@ export type Form = {
     [namespace: string]: SettingsNamespace;
   };
   ownership?: FormOwnership;
+  dateArchived: string | null;
 };
 
 export type ExtendedFormType = Form & {

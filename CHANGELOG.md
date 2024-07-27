@@ -1,5 +1,75 @@
 # Solspace Freeform Changelog
 
+## 5.5.4 - 2024-07-11
+
+### Added
+- Added `freeform.loadScripts()` template function for manually loading Freeform scripts (e.g. Freeform JS, reCAPTCHA, JS Test, etc).
+
+### Changed
+- Changed form deleting from a `DELETE` to `POST` request for better compatibility with server permissions.
+
+### Fixed
+- Fixed a bug where Webhooks were being triggered on submissions sent to the Spam Folder.
+- Fixed a bug where the CP Submissions chart was not showing for users with no settings access permissions.
+- Fixed a bug where integration field mapping wasn't always cleaning up correctly.
+- Fixed some Dutch translation language bugs.
+
+## 5.5.3 - 2024-07-04
+
+### Added
+- Added support for mapping URLs, email addresses, and phone numbers to the Craft **URL field type** for element integrations.
+- Added a `loadFormSpecificScripts` template function for manually loading additional form-specific scripts (e.g. reCAPTCHA, JS Test, etc).
+
+### Changed
+- Updated integrations to fail gracefully on the front end when a user submits the form. If there's a configuration issue or error for the integration, the form will continue to process for the user and log an error in the Freeform error log.
+- Updated integrations to no longer encrypt setting values configured with an ENV variable. Instead, the ENV variable will be stored in the database to continue working in multiple environments.
+
+### Fixed
+- Fixed a bug where email notification jobs would fail when the **Store Submission Data** setting was disabled for the form.
+
+## 5.5.2 - 2024-07-03
+
+### Changed
+- Improved field error validation on multi-page forms using Element integrations. If required element fields are not present on the current Freeform form page, their error validation will happen at the end of the form instead.
+- Improved integration error messages in the settings page.
+
+### Fixed
+- Fixed a bug where email notifications were not rendering all fields from all pages.
+- Fixed a bug where email notification jobs did not contain submission object data (if using that to render submission data).
+- Fixed a potential ordering issue when dragging fields between rows.
+
+## 5.5.1 - 2024-06-27
+
+### Changed
+- Updated the form deletion process to include a delete confirmation modal to prevent accidental deletion of forms.
+
+### Fixed
+- Fixed a bug that caused the Email Notification and Integration jobs to break when the **Store Submitted Data** setting was disabled.
+- Fixed a bug that intermittently prevented integrations using OAuth from working.
+- Fixed a bug where the Spam Blocking integrations page was not visible while admin changes were not allowed.
+- Fixed a bug where going to a previous page in multi-page forms would not retain any data entered on the current page.
+- Fixed a bug where the Move, Duplicate, and Archive form card buttons were displaying for the Express edition, which is not relevant.
+
+## 5.5.0 - 2024-06-26
+
+### Added
+- Added the ability to bulk insert options into option-based field types (Checkboxes, Dropdown, etc).
+- Added the ability to archive forms. Archived forms will continue to work and be accessible, but will no longer appear prominently on the Forms dashboard page.
+- Added file attachments to be included in the POST Forwarding feature.
+
+### Changed
+- Changed spam blocking to be integrations now. Previously, whenever `allowAdminChanges` was set to `false`, it was no longer possible for users to modify blocked keywords, emails and IP addresses. This has been rectified by moving them from the settings to integration types. Users can now create pre-built sets of spam blocks, share them across forms, and manage each individually per form.
+    - Removed Blocked Keywords, Emails, and IP Addresses from the Spam Protection settings area.
+    - Added new integration types `Keywords`, `Emails` and `IP Addresses`.
+    - Added a migration that migrates previous settings into new integrations and applies them to existing forms.
+- Updated the **File Drag & Drop** field type to use `title` attribute to display error information on files and removed the `microtip` library, as it was incompatible with a strict Content Security Policy that doesn't allow inline styles or inline scripts to be used.
+
+### Fixed
+- Fixed a bug where rearranging fields into different rows in the form builder many times could cause it to stop working correctly.
+- Fixed a bug that intermittently prevented integrations using OAuth from working. Added a buffer time for the refresh token check.
+- Fixed a bug where failed Webhook integrations would break forms upon submission. Errors are now just logged in the Freeform error log.
+- Fixed a bug where Date & Time field validation issues with native HTML types. A new setting has been added.
+
 ## 5.4.2 - 2024-06-21
 
 ### Changed

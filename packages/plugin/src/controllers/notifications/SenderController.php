@@ -59,6 +59,7 @@ class SenderController extends BaseController
             }
 
             $form = $submission->getForm();
+            $form->valuesFromSubmission($submission);
 
             $notification = Freeform::getInstance()
                 ->notifications
@@ -75,22 +76,9 @@ class SenderController extends BaseController
 
             $notification = NotificationTemplate::fromRecord($notification);
 
-            $fields = $form->getLayout()->getFields();
-            foreach ($fields as $field) {
-                $handle = $field->getHandle();
-                if (!$handle) {
-                    continue;
-                }
-
-                if (isset($submission[$handle])) {
-                    $field->setValue($submission[$handle]->getValue());
-                }
-            }
-
             $this->getMailerService()->sendEmail(
                 $form,
                 $recipients,
-                $fields,
                 $notification,
                 $submission
             );

@@ -46,6 +46,8 @@ class AdminNotifications extends FeatureBundle
             return;
         }
 
+        $postedData = $event->getSubmission()->getFormFieldValues();
+
         foreach ($notifications as $notification) {
             $recipients = $notification->getRecipients();
             if (!$recipients) {
@@ -60,7 +62,8 @@ class AdminNotifications extends FeatureBundle
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
-                    'submissionId' => $event->getSubmission()->getId(),
+                    'submissionId' => $event->getSubmission()->id,
+                    'postedData' => $postedData,
                     'recipients' => $recipients,
                     'template' => $template,
                 ])

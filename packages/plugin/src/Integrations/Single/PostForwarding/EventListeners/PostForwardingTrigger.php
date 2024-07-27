@@ -2,12 +2,14 @@
 
 namespace Solspace\Freeform\Integrations\Single\PostForwarding\EventListeners;
 
+use craft\elements\Asset;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\PostForwarding\PostForwardingEvent;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\PostForwarding\PostForwarding;
@@ -17,6 +19,13 @@ use yii\base\Event;
 
 class PostForwardingTrigger extends FeatureBundle
 {
+    private const VALID_OPTIONS = [
+        RequestOptions::MULTIPART,
+        RequestOptions::FORM_PARAMS,
+        RequestOptions::JSON,
+        RequestOptions::BODY,
+    ];
+
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
     ) {
@@ -48,13 +57,31 @@ class PostForwardingTrigger extends FeatureBundle
             return;
         }
 
+        $fields = $form->getLayout()->getFields();
+
         $payload = [];
-        foreach ($form->getLayout()->getFields() as $field) {
+        $files = [];
+
+        foreach ($fields as $field) {
             if (!$field->getHandle()) {
                 continue;
             }
 
-            $payload[$field->getHandle()] = $field->getValue();
+            if ($field instanceof FileUploadField && $integration->isSendFiles()) {
+                $assets = $field->getAssets()->all();
+
+                /** @var Asset $asset */
+                foreach ($assets as $asset) {
+                    $resource = $asset->getVolume()->getFileStream($asset->getPath());
+                    $files[] = [
+                        'name' => $field->getHandle(),
+                        'contents' => $resource,
+                        'filename' => $asset->getFilename(),
+                    ];
+                }
+            } else {
+                $payload[$field->getHandle()] = $field->getValue();
+            }
         }
 
         $csrfTokenName = \Craft::$app->config->general->csrfTokenName;
@@ -84,8 +111,20 @@ class PostForwardingTrigger extends FeatureBundle
         $options = $payloadEvent->getOptions();
         $payload = $payloadEvent->getPayload();
 
-        if (!array_intersect(array_keys($options), [RequestOptions::FORM_PARAMS, RequestOptions::JSON, RequestOptions::BODY])) {
-            $options[RequestOptions::FORM_PARAMS] = $payload;
+        $isOptionValid = array_intersect(array_keys($options), self::VALID_OPTIONS);
+        if (!$isOptionValid) {
+            if (empty($files) || !$integration->isSendFiles()) {
+                $options[RequestOptions::FORM_PARAMS] = $payload;
+            } else {
+                $options[RequestOptions::MULTIPART] = array_merge(
+                    $files,
+                    array_map(
+                        fn ($key, $value) => ['name' => $key, 'contents' => $value],
+                        array_keys($payload),
+                        array_values($payload),
+                    ),
+                );
+            }
         }
 
         $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::PAYLOAD_FORWARDING);

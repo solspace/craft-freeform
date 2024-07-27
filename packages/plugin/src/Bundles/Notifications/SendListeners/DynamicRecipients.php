@@ -46,10 +46,10 @@ class DynamicRecipients extends FeatureBundle
             return;
         }
 
-        $fields = $event->getFields();
+        $postedData = $event->getSubmission()->getFormFieldValues();
 
         foreach ($notifications as $notification) {
-            $field = $fields->get($notification->getField());
+            $field = $form->get($notification->getField());
             if (!$field) {
                 continue;
             }
@@ -80,7 +80,8 @@ class DynamicRecipients extends FeatureBundle
                 $this->queueHandler->executeNotificationJob(
                     new SendNotificationsJob([
                         'formId' => $form->getId(),
-                        'submissionId' => $event->getSubmission()->getId(),
+                        'submissionId' => $event->getSubmission()->id,
+                        'postedData' => $postedData,
                         'recipients' => $recipients,
                         'template' => $template,
                     ])

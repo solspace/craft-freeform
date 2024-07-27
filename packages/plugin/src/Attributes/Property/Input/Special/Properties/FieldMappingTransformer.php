@@ -17,6 +17,10 @@ class FieldMappingTransformer implements TransformerInterface
                     continue;
                 }
 
+                if (!isset($target['value'])) {
+                    continue;
+                }
+
                 $mapping->add($source, $target['type'], $target['value']);
             }
         }

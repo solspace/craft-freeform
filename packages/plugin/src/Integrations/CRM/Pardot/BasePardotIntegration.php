@@ -13,18 +13,18 @@
 namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, PardotIntegrationInterface
+abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, PardotIntegrationInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;
@@ -72,23 +72,19 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get(
-                $this->getPardotEndpoint(),
-                [
-                    'query' => [
-                        'limit' => 1,
-                        'format' => 'json',
-                    ],
+        $response = $client->get(
+            $this->getPardotEndpoint(),
+            [
+                'query' => [
+                    'limit' => 1,
+                    'format' => 'json',
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
-        } catch (RequestException $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
     }
 
     public function getAuthorizeUrl(): string

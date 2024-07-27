@@ -74,6 +74,7 @@ type BaseProperty<T, PT extends PropertyType> = {
   width?: number;
   disabled?: boolean;
   flags?: string[];
+  messages?: Message[];
   visible?: boolean;
   visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];
@@ -81,6 +82,11 @@ type BaseProperty<T, PT extends PropertyType> = {
   section?: string;
   tab?: string;
   group?: string;
+};
+
+export type Message = {
+  type: 'error' | 'warning' | 'info';
+  message: string;
 };
 
 export type AttributeTab = {
@@ -107,6 +113,7 @@ export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type HiddenProperty = BaseProperty<string, PropertyType.Hidden>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
   rows: number;
+  focus?: boolean;
 };
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {

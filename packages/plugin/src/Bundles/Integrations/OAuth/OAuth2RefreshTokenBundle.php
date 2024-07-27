@@ -11,13 +11,15 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class OAuth2RefreshTokenBundle extends FeatureBundle
 {
-    private const DEFAULT_TOKEN_DURATION = 3600;
+    private const DEFAULT_TOKEN_DURATION = 3600; // 1 hour
+    private const CHECK_BUFFER = 120;            // 2 minutes
 
     private static array $refreshedTokens = [];
 
@@ -44,7 +46,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
 
     public static function getPriority(): int
     {
-        return 1500;
+        return 500;
     }
 
     public function onFetchTokens(TokenPayloadEvent $event): void
@@ -65,7 +67,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
         }
 
         $integration->setRefreshToken($payload->refresh_token);
-        $integration->setIssuedAt(time());
+        $integration->setIssuedAt($payload->issued_at ?? time());
         $integration->setExpiresIn($payload->expires_in ?? self::DEFAULT_TOKEN_DURATION);
     }
 
@@ -87,7 +89,7 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
         }
 
         $integration->setAccessToken($payload->access_token);
-        $integration->setIssuedAt(time());
+        $integration->setIssuedAt($payload->issued_at ?? time());
         $integration->setExpiresIn($payload->expires_in ?? self::DEFAULT_TOKEN_DURATION);
     }
 
@@ -101,7 +103,11 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
         $issuedAt = $integration->getIssuedAt();
         $expiresIn = $integration->getExpiresIn();
 
-        if ($issuedAt + $expiresIn >= time()) {
+        if ($integration instanceof OAuth2IssuedAtMilliseconds) {
+            $issuedAt = (int) ($issuedAt / 1000);
+        }
+
+        if ($issuedAt + $expiresIn - self::CHECK_BUFFER > time()) {
             return;
         }
 

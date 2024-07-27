@@ -21,16 +21,16 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Utilities\SheetsHelper;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 
-abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, GoogleSheetsIntegrationInterface
+abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, GoogleSheetsIntegrationInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;
@@ -143,18 +143,14 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=';
-            $accessToken = $this->getAccessToken();
+        $url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=';
+        $accessToken = $this->getAccessToken();
 
-            $response = $client->get($url.$accessToken);
+        $response = $client->get($url.$accessToken);
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            return !empty($json);
-        } catch (\Exception $exception) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
-        }
+        return !empty($json);
     }
 
     public function getAuthorizeUrl(): string

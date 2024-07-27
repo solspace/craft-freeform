@@ -90,9 +90,16 @@ class StringHelper
      */
     public static function extractSeparatedValues(string $string): array
     {
-        $string = preg_replace('/[\s|,;]+/', '<|_|_|>', $string);
+        preg_match_all('/"([^"]+)"|\'([^\']+)\'|([^ \t\r\n,|;]+)/', $string, $matches);
 
-        $items = explode('<|_|_|>', $string);
+        // Flatten the matches array and filter out empty values
+        $items = [];
+        foreach ($matches[0] as $match) {
+            if (!empty($match)) {
+                $items[] = $match;
+            }
+        }
+
         $items = array_filter($items);
         $items = array_unique($items);
 
@@ -120,5 +127,14 @@ class StringHelper
     public static function isTwigValue($value): bool
     {
         return preg_match("/({{\\s.*\\s*}}\n?)/", $value);
+    }
+
+    public static function isEnvVariable(mixed $value): bool
+    {
+        if (!\is_string($value)) {
+            return false;
+        }
+
+        return (bool) preg_match('/^\$([A-Z0-9_]+)$/i', $value);
     }
 }

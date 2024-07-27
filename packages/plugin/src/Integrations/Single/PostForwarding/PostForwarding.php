@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Single\PostForwarding;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
+use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
@@ -36,6 +37,12 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     )]
     protected string $errorTrigger = '';
 
+    #[Boolean(
+        label: 'Include Uploaded Files',
+        instructions: 'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.',
+    )]
+    protected bool $sendFiles = false;
+
     public function getUrl(): string
     {
         return $this->getProcessedValue($this->url);
@@ -44,5 +51,10 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     public function getErrorTrigger(): string
     {
         return $this->getProcessedValue($this->errorTrigger);
+    }
+
+    public function isSendFiles(): bool
+    {
+        return $this->sendFiles;
     }
 }

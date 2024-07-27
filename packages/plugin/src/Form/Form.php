@@ -75,6 +75,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
     public const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
     public const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
+    public const EVENT_COLLECT_SCRIPTS = 'collect-scripts';
     public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     public const EVENT_SET_PROPERTIES = 'set-properties';
     public const EVENT_SUBMIT = 'submit';
@@ -125,6 +126,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private array|bool $disableFunctionality = false;
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
+    private bool $navigatingBack = false;
     private bool $formPosted = false;
     private bool $duplicate = false;
     private bool $graphqlPosted = false;
@@ -136,6 +138,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     private ?int $createdByUserId;
     private ?int $updatedByUserId;
 
+    private ?Carbon $dateArchived;
+
     private ?Submission $submission = null;
 
     public function __construct(
@@ -146,11 +150,13 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
 
-        $this->dateCreated = new Carbon($config['dateCreated']);
-        $this->dateUpdated = new Carbon($config['dateUpdated']);
+        $this->dateCreated = new Carbon($config['dateCreated'] ?? 'now');
+        $this->dateUpdated = new Carbon($config['dateUpdated'] ?? 'now');
 
         $this->createdByUserId = $config['createdByUserId'] ?? null;
         $this->updatedByUserId = $config['updatedByUserId'] ?? null;
+
+        $this->dateArchived = $config['dateArchived'] ?? null ? new Carbon($config['dateArchived']) : null;
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
@@ -219,7 +225,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public function getUid(): string
     {
-        return $this->uid;
+        return $this->uid ?? '';
     }
 
     public function getName(): string
@@ -251,6 +257,13 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     {
         return $this->getLayout()->getPages()->getByIndex(
             $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0)
+        );
+    }
+
+    public function getNextPage(): Page
+    {
+        return $this->layout->getPages()->getByIndex(
+            $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0) + 1
         );
     }
 
@@ -435,6 +448,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this;
     }
 
+    public function isNavigatingBack(): bool
+    {
+        return $this->navigatingBack;
+    }
+
+    public function setNavigatingBack(bool $navigatingBack): self
+    {
+        $this->navigatingBack = $navigatingBack;
+
+        return $this;
+    }
+
     public function isFormPosted(): bool
     {
         return $this->formPosted;
@@ -490,6 +515,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         }
 
         return User::findOne($this->updatedByUserId);
+    }
+
+    public function getDateArchived(): ?Carbon
+    {
+        return $this->dateArchived;
     }
 
     #[Ignore]
@@ -845,6 +875,21 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getSuccessMessage(): string
     {
         return $this->getSettings()->getBehavior()->getSuccessMessage();
+    }
+
+    public function valuesFromArray(array $values): void
+    {
+        foreach ($this->getLayout()->getFields() as $field) {
+            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+                continue;
+            }
+
+            if (!isset($values[$field->getHandle()])) {
+                continue;
+            }
+
+            $field->setValue($values[$field->getHandle()]);
+        }
     }
 
     public function valuesFromSubmission(Submission $submission): void

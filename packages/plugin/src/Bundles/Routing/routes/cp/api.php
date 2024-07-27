@@ -13,7 +13,9 @@ return [
     'freeform/api/forms' => 'freeform/api/forms',
     'freeform/api/forms/settings' => 'freeform/api/forms/settings/index',
     'freeform/api/forms/sort' => 'freeform/api/forms/sort',
+    'freeform/api/forms/delete' => 'freeform/api/forms/delete',
     'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
+    'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM MODAL
@@ -47,7 +49,7 @@ return [
     'freeform/api/types/options/predefined' => 'freeform/api/types/options/get-predefined-types',
 
     // GENERAL
-    'freeform/api/settings/get-submission-data' => 'freeform/api/settings/get-submission-data',
+    'freeform/api/submissions/get-submission-data' => 'freeform/api/submissions/get-submission-data',
     'freeform/api/modal/forms/options' => 'freeform/api/modal/options',
     'freeform/api/modal/forms' => 'freeform/api/forms/index',
 

@@ -83,6 +83,11 @@ class HoneypotBundle extends FeatureBundle
         $honeypotName = $integration->getInputName();
         $settings = $this->getSettingsService();
 
+        $settingsModel = $settings->getSettingsModel();
+        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if ($form->isGraphQLPosted()) {
             $arguments = $form->getGraphQLArguments();
 

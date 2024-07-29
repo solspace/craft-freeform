@@ -93,6 +93,11 @@ class JavascriptTestBundle extends FeatureBundle
         $jsTestInputName = $integration->getInputName();
         $settings = $this->getSettingsService();
 
+        $settingsModel = $settings->getSettingsModel();
+        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if ($form->isGraphQLPosted()) {
             return;
         }

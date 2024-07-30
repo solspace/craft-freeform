@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.5.5 - 2024-07-30
+
+### Changed
+- Refactored exception catching. Added a failsafe which performs a token refresh flow once if an access token returns an unauthorized response.
+
+### Fixed
+- Fixed a bug where the **Bypass All Spam Checks for Logged in Users** setting did not correctly bypass all spam checks for logged-in users when a form is cached.
+- Fixed a bug where moving fields around in the builder layout would sometimes not work correctly.
+- Fixed a bug where the **Surveys & Polls** link in form cards was broken.
+
 ## 5.5.4 - 2024-07-11
 
 ### Added

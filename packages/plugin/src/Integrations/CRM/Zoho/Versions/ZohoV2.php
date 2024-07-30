@@ -198,14 +198,12 @@ class ZohoV2 extends BaseZohoIntegration
         return $url.'/crm/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processLeads($form, $client);
         $this->processAccount($form, $client);
         $this->processContact($form, $client);
         $this->processDeals($form, $client);
-
-        return true;
     }
 
     protected function getStage(): ?string
@@ -229,24 +227,20 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/Leads'),
-                [
-                    'json' => [
-                        'data' => [$mapping],
-                    ],
+        $response = $client->post(
+            $this->getEndpoint('/Leads'),
+            [
+                'json' => [
+                    'data' => [$mapping],
                 ],
-            );
+            ],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            $this->processZohoResponseError($json);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->processZohoResponseError($json);
     }
 
     private function processAccount(Form $form, Client $client): void
@@ -260,30 +254,26 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/Accounts/upsert'),
-                [
-                    'json' => [
-                        'data' => [$mapping],
-                        'duplicate_check_fields' => ['Account_Name'],
-                    ],
+        $response = $client->post(
+            $this->getEndpoint('/Accounts/upsert'),
+            [
+                'json' => [
+                    'data' => [$mapping],
+                    'duplicate_check_fields' => ['Account_Name'],
                 ],
-            );
+            ],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            $this->processZohoResponseError($json);
+        $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0])) {
-                $data = $json['data'][0];
+        if (isset($json['data'][0])) {
+            $data = $json['data'][0];
 
-                $this->accountId = $data['details']['id'];
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->accountId = $data['details']['id'];
         }
     }
 
@@ -300,30 +290,26 @@ class ZohoV2 extends BaseZohoIntegration
 
         $mapping['Account_Name'] = ['id' => $this->accountId];
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/Contacts/upsert'),
-                [
-                    'json' => [
-                        'data' => [$mapping],
-                        'duplicate_check_fields' => ['Email'],
-                    ],
+        $response = $client->post(
+            $this->getEndpoint('/Contacts/upsert'),
+            [
+                'json' => [
+                    'data' => [$mapping],
+                    'duplicate_check_fields' => ['Email'],
                 ],
-            );
+            ],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
 
-            $json = json_decode((string) $response->getBody(), true);
+        $json = json_decode((string) $response->getBody(), true);
 
-            $this->processZohoResponseError($json);
+        $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0])) {
-                $data = $json['data'][0];
+        if (isset($json['data'][0])) {
+            $data = $json['data'][0];
 
-                $this->contactId = $data['details']['id'];
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $this->contactId = $data['details']['id'];
         }
     }
 
@@ -342,46 +328,41 @@ class ZohoV2 extends BaseZohoIntegration
         $mapping['Account_Name'] = ['id' => $this->accountId];
         $mapping['Contact_Name'] = ['id' => $this->contactId];
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/Deals'),
+        $response = $client->post(
+            $this->getEndpoint('/Deals'),
+            [
+                'json' => [
+                    'data' => [$mapping],
+                ],
+            ],
+        );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
+
+        $json = json_decode((string) $response->getBody(), true);
+        $this->processZohoResponseError($json);
+
+        if (isset($json['data'][0])) {
+            $data = $json['data'][0];
+
+            $this->dealId = $data['details']['id'];
+        }
+
+        if ($this->dealId && $this->contactId) {
+            $response = $client->put(
+                $this->getEndpoint('/Contacts/'.$this->contactId.'/Deals/'.$this->dealId),
                 [
                     'json' => [
-                        'data' => [$mapping],
+                        'data' => [
+                            ['Contact_Role' => $this->getDefaultContactRoleId()],
+                        ],
                     ],
                 ],
             );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
-
             $json = json_decode((string) $response->getBody(), true);
 
             $this->processZohoResponseError($json);
-
-            if (isset($json['data'][0])) {
-                $data = $json['data'][0];
-
-                $this->dealId = $data['details']['id'];
-            }
-
-            if ($this->dealId && $this->contactId) {
-                $response = $client->put(
-                    $this->getEndpoint('/Contacts/'.$this->contactId.'/Deals/'.$this->dealId),
-                    [
-                        'json' => [
-                            'data' => [
-                                ['Contact_Role' => $this->getDefaultContactRoleId()],
-                            ],
-                        ],
-                    ],
-                );
-
-                $json = json_decode((string) $response->getBody(), true);
-
-                $this->processZohoResponseError($json);
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

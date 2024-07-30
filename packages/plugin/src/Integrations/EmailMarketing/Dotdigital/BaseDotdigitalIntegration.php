@@ -113,12 +113,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     public function fetchFields(ListObject $list, string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/data-fields'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
-
+        $response = $client->get($this->getEndpoint('/data-fields'));
         $json = json_decode((string) $response->getBody());
 
         $fieldList = [];
@@ -146,12 +141,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     public function fetchLists(Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/address-books'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/address-books'));
         $json = json_decode((string) $response->getBody());
 
         $lists = [];

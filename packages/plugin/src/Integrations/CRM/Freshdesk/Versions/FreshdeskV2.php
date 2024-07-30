@@ -59,11 +59,9 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
         return $url.'/api/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processTickets($form, $client);
-
-        return true;
     }
 
     private function processTickets(Form $form, Client $client): void
@@ -165,15 +163,11 @@ class FreshdeskV2 extends BaseFreshdeskIntegration
             }
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/tickets'),
-                [$requestType => $values],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/tickets'),
+            [$requestType => $values],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_TICKET, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_TICKET, $response);
     }
 }

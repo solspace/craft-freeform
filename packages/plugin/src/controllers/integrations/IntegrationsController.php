@@ -8,14 +8,17 @@ use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use yii\base\Event;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -142,17 +145,36 @@ class IntegrationsController extends BaseController
             return $this->asJson(['success' => true]);
         }
 
+        $client = $this->clientProvider->getAuthorizedClient($integrationObject);
+
         try {
-            $client = $this->clientProvider->getAuthorizedClient($integrationObject);
             if ($integrationObject->checkConnection($client)) {
                 return $this->asJson(['success' => true]);
             }
 
             return $this->asJson(['success' => false]);
-        } catch (\Exception $e) {
-            $message = $e->getMessage();
-            if ($e instanceof BadResponseException) {
-                $message = (string) $e->getResponse()->getBody();
+        } catch (\Exception $exception) {
+            $event = new FailedRequestEvent($integrationObject, $exception);
+            Event::trigger(
+                IntegrationInterface::class,
+                IntegrationInterface::EVENT_ON_FAILED_REQUEST,
+                $event,
+            );
+
+            if ($event->isRetry()) {
+                $client = $this->clientProvider->getAuthorizedClient($integrationObject);
+
+                try {
+                    if ($integrationObject->checkConnection($client)) {
+                        return $this->asJson(['success' => true]);
+                    }
+                } catch (\Exception $exception) {
+                }
+            }
+
+            $message = $exception->getMessage();
+            if ($exception instanceof BadResponseException) {
+                $message = (string) $exception->getResponse()->getBody();
             }
 
             return $this->asJson(['success' => false, 'errors' => [$message]]);

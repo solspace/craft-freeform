@@ -113,12 +113,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
 
     public function fetchFields(string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/admin/ticket_fields'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/admin/ticket_fields'));
         $json = json_decode((string) $response->getBody(), false);
 
         if (!isset($json) || !$json) {

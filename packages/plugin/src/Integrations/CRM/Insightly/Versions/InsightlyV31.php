@@ -58,11 +58,9 @@ class InsightlyV31 extends BaseInsightlyIntegration
         return $url.'/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processLeads($form, $client);
-
-        return true;
     }
 
     private function processLeads(Form $form, Client $client): void
@@ -76,15 +74,11 @@ class InsightlyV31 extends BaseInsightlyIntegration
             return;
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/Leads'),
-                ['json' => $mapping],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/Leads'),
+            ['json' => $mapping],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
     }
 }

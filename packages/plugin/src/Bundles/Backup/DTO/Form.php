@@ -19,4 +19,10 @@ class Form
 
     public NotificationCollection $notifications;
     public PageCollection $pages;
+
+    public function __construct()
+    {
+        $this->notifications = new NotificationCollection();
+        $this->pages = new PageCollection();
+    }
 }

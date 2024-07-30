@@ -59,15 +59,17 @@ export type FormImportData = {
 
 export type ImportStrategy = 'replace' | 'skip';
 
+export type StrategyCollection = {
+  forms: ImportStrategy;
+  notifications: ImportStrategy;
+};
+
 export type ImportOptions = {
   forms: string[];
   formSubmissions: string[];
   notificationTemplates: Array<string | number>;
   integrations: string[];
-  strategy: {
-    forms: ImportStrategy;
-    notifications: ImportStrategy;
-  };
+  strategy: StrategyCollection;
   settings: boolean;
   password?: string;
 };

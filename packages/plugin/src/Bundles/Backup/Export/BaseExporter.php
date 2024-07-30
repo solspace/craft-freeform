@@ -45,6 +45,8 @@ abstract class BaseExporter implements ExporterInterface
         return $dataset;
     }
 
+    public function destruct(): void {}
+
     abstract protected function collectForms(?array $ids = null): FormCollection;
 
     abstract protected function collectIntegrations(?array $ids = null): IntegrationCollection;

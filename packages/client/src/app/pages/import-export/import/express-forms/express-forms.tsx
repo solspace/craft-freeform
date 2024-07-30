@@ -11,7 +11,9 @@ import axios from 'axios';
 import { Preview } from '../../common/preview/preview';
 import { Progress } from '../../common/progress/progress';
 import { useProgressEvent } from '../../common/progress/progress.hooks';
-import type { ImportOptions, ImportStrategy } from '../import.types';
+import { Strategy } from '../../common/strategy/strategy';
+import type { ImportOptions } from '../import.types';
+import type { StrategyCollection } from '../import.types';
 
 import { useExpressFormsDataQuery } from './express-forms.queries';
 
@@ -77,79 +79,17 @@ export const ImportExpressForms: React.FC = () => {
         </Field>
       )}
 
-      <div
-        className={classes(
-          'field',
-          active && 'disabled',
-          !data.forms.length && 'hidden'
-        )}
-      >
-        <div className="heading">
-          <label htmlFor="test">{translate('Existing Form Behavior')}</label>
-        </div>
-        <div className="instructions">
-          {translate(
-            'Choose the behavior Freeform should use if this site contains any forms that match the data in this import.'
-          )}
-        </div>
-        <div className="input">
-          <div className="select">
-            <select
-              value={options.strategy.forms}
-              onChange={(event) =>
-                setOptions((prev) => ({
-                  ...prev,
-                  strategy: {
-                    ...prev.strategy,
-                    forms: event.target.value as ImportStrategy,
-                  },
-                }))
-              }
-            >
-              <option value="replace">{translate('Replace')}</option>
-              <option value="skip">{translate('Skip')}</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <div
-        className={classes(
-          'field',
-          active && 'disabled',
-          !data.notificationTemplates.length && 'hidden'
-        )}
-      >
-        <div className="heading">
-          <label htmlFor="test">
-            {translate('Existing Notification Template Behavior')}
-          </label>
-        </div>
-        <div className="instructions">
-          {translate(
-            'Choose the behavior Freeform should use if this site contains any email notification templates that match the data in this import.'
-          )}
-        </div>
-        <div className="input">
-          <div className="select">
-            <select
-              value={options.strategy.notifications}
-              onChange={(event) =>
-                setOptions((prev) => ({
-                  ...prev,
-                  strategy: {
-                    ...prev.strategy,
-                    notifications: event.target.value as ImportStrategy,
-                  },
-                }))
-              }
-            >
-              <option value="replace">{translate('Replace')}</option>
-              <option value="skip">{translate('Skip')}</option>
-            </select>
-          </div>
-        </div>
-      </div>
+      <Strategy
+        data={data}
+        strategy={options.strategy}
+        disabled={active}
+        onUpdate={(strategy: StrategyCollection) =>
+          setOptions((prev) => ({
+            ...prev,
+            strategy,
+          }))
+        }
+      />
 
       <button
         className={classes(

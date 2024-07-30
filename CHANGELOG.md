@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.1.20 - 2024-07-30
+
+### Changed
+- Updated Diagnostics page to verify compatibility for Craft 4.10.x.
+- Updated the Website field validation to allow longer domain extensions.
+- Changed the `layoutJson` column in the `freeform_forms` database table to `longtext` to handle larger forms.
+
+### Fixed
+- Fixed a bug where the **Bypass All Spam Checks for Logged in Users** setting did not correctly bypass all spam checks for logged-in users when a form is cached.
+
 ## 4.1.19 - 2024-05-31
 
 ### Changed

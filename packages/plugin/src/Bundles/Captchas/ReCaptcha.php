@@ -125,10 +125,6 @@ class ReCaptcha extends FeatureBundle
             return;
         }
 
-        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm())) {
             $recaptchaKey = \Craft::parseEnv($this->getSettings()->recaptchaKey);
             $type = $this->getSettings()->recaptchaType;

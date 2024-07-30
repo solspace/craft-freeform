@@ -79,9 +79,16 @@ class HoneypotService extends BaseService
             return;
         }
 
+        $settings = $this->getSettingsService();
+        $settingsModel = $settings->getSettingsModel();
+
+        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return false;
+        }
+
         $form = $event->getForm();
         $isEnhanced = $this->isEnhanced();
-        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
+        $honeypotName = $settingsModel->customHoneypotName ?: Honeypot::NAME_PREFIX;
 
         if ($form->isGraphQLPosted()) {
             $postValues = $form->getGraphQLArguments();
@@ -122,8 +129,8 @@ class HoneypotService extends BaseService
             }
         }
 
-        if ($this->getSettingsService()->isSpamBehaviourDisplayErrors()) {
-            $errorMessage = $this->getSettingsService()->getCustomErrorMessage();
+        if ($settings->isSpamBehaviourDisplayErrors()) {
+            $errorMessage = $settings->getCustomErrorMessage();
             if (!$errorMessage) {
                 $errorMessage = 'Form honeypot is invalid';
             }

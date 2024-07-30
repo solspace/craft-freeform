@@ -39,16 +39,16 @@ class Slack extends WebhookIntegration
         ]);
 
         if (!$message) {
-            Freeform::getInstance()->logger->getLogger(FreeformLogger::WEBHOOKS_INTEGRATION)->warning('Slack integration has no message set');
+            Freeform::getInstance()
+                ->logger
+                ->getLogger(FreeformLogger::WEBHOOKS_INTEGRATION)
+                ->warning('Slack integration has no message set')
+            ;
 
             return;
         }
 
-        try {
-            $client = new Client();
-            $client->post($this->getUrl(), ['json' => ['text' => $message]]);
-        } catch (\Exception $e) {
-            $this->processException($e, self::LOG_CATEGORY, false);
-        }
+        $client = new Client();
+        $client->post($this->getUrl(), ['json' => ['text' => $message]]);
     }
 }

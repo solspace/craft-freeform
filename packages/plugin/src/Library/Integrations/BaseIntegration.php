@@ -13,13 +13,9 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
-use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 abstract class BaseIntegration implements IntegrationInterface
@@ -101,32 +97,5 @@ abstract class BaseIntegration implements IntegrationInterface
     protected function getProcessedValue(mixed $value): null|bool|string
     {
         return App::parseEnv($value);
-    }
-
-    /**
-     * @throws \Exception
-     */
-    protected function processException(\Exception $exception, ?string $category = null, bool $throw = true): void
-    {
-        $message = $exception->getMessage();
-        if ($exception instanceof RequestException) {
-            $message = (string) $exception->getResponse()->getBody();
-        }
-
-        Freeform::getInstance()
-            ->logger
-            ->getLogger(FreeformLogger::INTEGRATION)
-            ->error(
-                $category.': '.$message,
-                ['integration' => [
-                    'id' => $this->getId(),
-                    'handle' => $this->getHandle(),
-                ]],
-            )
-        ;
-
-        if ($throw) {
-            throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception);
-        }
     }
 }

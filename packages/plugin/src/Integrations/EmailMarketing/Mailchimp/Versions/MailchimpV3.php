@@ -244,20 +244,16 @@ class MailchimpV3 extends BaseMailchimpIntegration
             $isComplianceState = isset($json->title) && 'member in compliance state' === strtolower($json->title);
 
             if ($is400 && $isComplianceState) {
-                try {
-                    $memberData['status'] = 'pending';
+                $memberData['status'] = 'pending';
 
-                    $response = $client->put(
-                        $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash),
-                        ['json' => $memberData],
-                    );
+                $response = $client->put(
+                    $this->getEndpoint('/lists/'.$listId.'/members/'.$emailHash),
+                    ['json' => $memberData],
+                );
 
-                    $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-                } catch (RequestException $exception) {
-                    $this->processException($exception, self::LOG_CATEGORY);
-                }
+                $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
             } else {
-                $this->processException($exception, self::LOG_CATEGORY);
+                throw $exception;
             }
         }
 

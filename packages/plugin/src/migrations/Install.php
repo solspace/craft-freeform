@@ -22,7 +22,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('spamBlockCount', $this->integer()->unsigned()->notNull()->defaultValue(0))
                 ->addField('submissionTitleFormat', $this->string(255)->notNull())
                 ->addField('description', $this->text())
-                ->addField('layoutJson', $this->mediumText())
+                ->addField('layoutJson', $this->longText())
                 ->addField('metadata', $this->mediumText())
                 ->addField('returnUrl', $this->string(255))
                 ->addField('defaultStatus', $this->integer()->unsigned())

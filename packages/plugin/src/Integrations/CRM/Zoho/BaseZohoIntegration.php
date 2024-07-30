@@ -113,12 +113,7 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     public function fetchFields(string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/settings/fields?module='.$category.'s'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/settings/fields?module='.$category.'s'));
         $json = json_decode((string) $response->getBody());
 
         if (!isset($json->fields) || !$json->fields) {
@@ -188,10 +183,14 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
         $data = $response['data'][0];
 
         if ('error' === $data['status']) {
-            Freeform::getInstance()->logger->getLogger(FreeformLogger::CRM_INTEGRATION)->error(
-                self::LOG_CATEGORY.' '.$data['message'],
-                ['exception' => $data],
-            );
+            Freeform::getInstance()
+                ->logger
+                ->getLogger(FreeformLogger::CRM_INTEGRATION)
+                ->error(
+                    self::LOG_CATEGORY.' '.$data['message'],
+                    ['exception' => $data],
+                )
+            ;
 
             throw new IntegrationException($data['message']);
         }

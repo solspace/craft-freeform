@@ -237,14 +237,12 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         return $this->getInstanceUrl().'/services/data/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
         $this->processContacts($form, $client);
         $this->processOpportunities($form, $client);
-
-        return true;
     }
 
     public function getTaskSubject(): string
@@ -293,11 +291,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 try {
                     $dueDate = $this->getTaskDueDate() ?: '+2 days';
                     $dueDate = new Carbon($dueDate, 'UTC');
-                } catch (\Exception $exception) {
-                    $dueDate = new Carbon('+2 days', 'UTC');
-
-                    $this->processException($exception, self::LOG_CATEGORY);
+                } catch (\Exception) {
+                    $dueDate = new Carbon('+2 days');
                 }
+
                 $subject = $this->getTaskSubject() ?: 'New Followup';
 
                 $payload = [
@@ -311,16 +308,12 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     $payload['OwnerId'] = $contact->OwnerId;
                 }
 
-                try {
-                    $response = $client->post(
-                        $this->getEndpoint('/sobjects/Task'),
-                        ['json' => $payload],
-                    );
+                $response = $client->post(
+                    $this->getEndpoint('/sobjects/Task'),
+                    ['json' => $payload],
+                );
 
-                    return 201 === $response->getStatusCode();
-                } catch (\Exception $exception) {
-                    $this->processException($exception, self::LOG_CATEGORY);
-                }
+                return 201 === $response->getStatusCode();
             }
         }
 
@@ -344,21 +337,17 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
         $mapping = $this->triggerPushEvent(self::CATEGORY_LEAD, $mapping);
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/sobjects/Lead'),
-                [
-                    'headers' => [
-                        'Sforce-Auto-Assign' => $this->assignLeadOwner ? 'TRUE' : 'FALSE',
-                    ],
-                    'json' => $mapping,
-                ]
-            );
+        $response = $client->post(
+            $this->getEndpoint('/sobjects/Lead'),
+            [
+                'headers' => [
+                    'Sforce-Auto-Assign' => $this->assignLeadOwner ? 'TRUE' : 'FALSE',
+                ],
+                'json' => $mapping,
+            ]
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_LEAD, $response);
     }
 
     private function processAccounts(Form $form, Client $client): void
@@ -440,36 +429,32 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             );
         }
 
-        try {
-            if ($accountRecord) {
-                // We'll prepare appendable values
-                if ($this->appendAccountData) {
-                    $mapping = $this->appendValues($mapping, $accountRecord, $appendAccountFields);
-                }
-
-                $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
-                $response = $client->patch(
-                    $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id),
-                    ['json' => $mapping],
-                );
-
-                $this->accountId = $accountRecord->Id;
-            } else {
-                $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
-                $response = $client->post(
-                    $this->getEndpoint('/sobjects/Account'),
-                    ['json' => $mapping],
-                );
-
-                $json = json_decode((string) $response->getBody());
-
-                $this->accountId = $json->id;
+        if ($accountRecord) {
+            // We'll prepare appendable values
+            if ($this->appendAccountData) {
+                $mapping = $this->appendValues($mapping, $accountRecord, $appendAccountFields);
             }
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
+            $response = $client->patch(
+                $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id),
+                ['json' => $mapping],
+            );
+
+            $this->accountId = $accountRecord->Id;
+        } else {
+            $mapping = $this->triggerPushEvent(self::CATEGORY_ACCOUNT, $mapping);
+            $response = $client->post(
+                $this->getEndpoint('/sobjects/Account'),
+                ['json' => $mapping],
+            );
+
+            $json = json_decode((string) $response->getBody());
+
+            $this->accountId = $json->id;
         }
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_ACCOUNT, $response);
     }
 
     private function processContacts(Form $form, Client $client): void
@@ -528,28 +513,24 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             $mapping['AccountId'] = $this->accountId;
         }
 
-        try {
-            if ($contactRecord) {
-                // We'll prepare appendable values
-                if ($isAppendContactData) {
-                    $mapping = $this->appendValues($mapping, $contactRecord, $appendContactFields);
-                }
-
-                $response = $client->patch(
-                    $this->getEndpoint('/sobjects/Contact/'.$contactRecord->Id),
-                    ['json' => $mapping],
-                );
-            } else {
-                $response = $client->post(
-                    $this->getEndpoint('/sobjects/Contact'),
-                    ['json' => $mapping],
-                );
+        if ($contactRecord) {
+            // We'll prepare appendable values
+            if ($isAppendContactData) {
+                $mapping = $this->appendValues($mapping, $contactRecord, $appendContactFields);
             }
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $response = $client->patch(
+                $this->getEndpoint('/sobjects/Contact/'.$contactRecord->Id),
+                ['json' => $mapping],
+            );
+        } else {
+            $response = $client->post(
+                $this->getEndpoint('/sobjects/Contact'),
+                ['json' => $mapping],
+            );
         }
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
     }
 
     private function processOpportunities(Form $form, Client $client): void
@@ -569,22 +550,18 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             $closeDate = new Carbon();
         }
 
-        try {
-            $mapping['CloseDate'] = $closeDate->toIso8601ZuluString();
-            $mapping['StageName'] = $this->getStage();
-            if ($this->accountId) {
-                $mapping['AccountId'] = $this->accountId;
-            }
-
-            $response = $client->post(
-                $this->getEndpoint('/sobjects/Opportunity'),
-                ['json' => $mapping],
-            );
-
-            $this->triggerAfterResponseEvent(self::CATEGORY_OPPORTUNITY, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        $mapping['CloseDate'] = $closeDate->toIso8601ZuluString();
+        $mapping['StageName'] = $this->getStage();
+        if ($this->accountId) {
+            $mapping['AccountId'] = $this->accountId;
         }
+
+        $response = $client->post(
+            $this->getEndpoint('/sobjects/Opportunity'),
+            ['json' => $mapping],
+        );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_OPPORTUNITY, $response);
     }
 
     private function extractDomainFromEmail(string $email): ?string

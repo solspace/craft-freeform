@@ -5,10 +5,12 @@ namespace Solspace\Freeform\Integrations\Webhooks;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -58,7 +60,16 @@ class WebhooksBundle extends FeatureBundle
         /** @var WebhookIntegrationInterface[] $webhooks */
         $webhooks = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_WEBHOOKS);
         foreach ($webhooks as $webhook) {
-            $webhook->trigger($form);
+            try {
+                $webhook->trigger($form);
+            } catch (\Exception $exception) {
+                $event = new FailedRequestEvent($webhook, $exception);
+                Event::trigger(
+                    IntegrationInterface::class,
+                    IntegrationInterface::EVENT_ON_FAILED_REQUEST,
+                    $event
+                );
+            }
         }
     }
 }

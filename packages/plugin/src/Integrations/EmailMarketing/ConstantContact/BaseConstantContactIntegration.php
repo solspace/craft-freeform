@@ -41,12 +41,7 @@ abstract class BaseConstantContactIntegration extends EmailMarketingIntegration 
 
     public function fetchFields(ListObject $list, string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/contact_custom_fields'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
-
+        $response = $client->get($this->getEndpoint('/contact_custom_fields'));
         $json = json_decode((string) $response->getBody());
 
         if (!isset($json->custom_fields) || !$json->custom_fields) {
@@ -85,12 +80,7 @@ abstract class BaseConstantContactIntegration extends EmailMarketingIntegration 
 
     public function fetchLists(Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/contact_lists'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/contact_lists'));
         $json = json_decode((string) $response->getBody());
 
         $lists = [];

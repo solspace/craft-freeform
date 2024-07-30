@@ -2,12 +2,16 @@
 
 namespace Solspace\Freeform\Bundles\Integrations;
 
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
+use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class IntegrationsBundle extends FeatureBundle
@@ -18,6 +22,12 @@ class IntegrationsBundle extends FeatureBundle
             APIIntegrationInterface::class,
             APIIntegrationInterface::EVENT_PROCESS_VALUE,
             [$this, 'processValue']
+        );
+
+        Event::on(
+            IntegrationInterface::class,
+            IntegrationInterface::EVENT_ON_FAILED_REQUEST,
+            [$this, 'logException']
         );
 
         $path = \Craft::getAlias('@freeform/Integrations');
@@ -99,5 +109,32 @@ class IntegrationsBundle extends FeatureBundle
             default:
                 return (string) $value;
         }
+    }
+
+    public function logException(FailedRequestEvent $event): void
+    {
+        if ($event->isRetry() || !$event->isValid) {
+            return;
+        }
+
+        $integration = $event->getIntegration();
+        $exception = $event->getException();
+
+        $message = $exception->getMessage();
+        if ($exception instanceof RequestException) {
+            $message = (string) $exception->getResponse()->getBody();
+        }
+
+        $this->plugin()
+            ->logger
+            ->getLogger(FreeformLogger::INTEGRATION)
+            ->error(
+                $integration->getTypeDefinition()->name.': '.$message,
+                ['integration' => [
+                    'id' => $integration->getId(),
+                    'handle' => $integration->getHandle(),
+                ]],
+            )
+        ;
     }
 }

@@ -67,12 +67,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     public function fetchFields(ListObject $list, string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/fields?limit=999'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, $category);
-        }
-
+        $response = $client->get($this->getEndpoint('/fields?limit=999'));
         $json = json_decode((string) $response->getBody());
 
         $fieldList = [];
@@ -105,41 +100,34 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     public function fetchLists(Client $client): array
     {
-        try {
-            $lists = [];
+        $lists = [];
+        $offset = 0;
+        $limit = 100;
 
-            $offset = 0;
+        while (null !== $offset) {
+            $response = $client->get($this->getEndpoint('/lists?limit='.$limit.'&offset='.$offset.'&orders[name]=ASC'));
+            $json = json_decode((string) $response->getBody());
 
-            $limit = 100;
+            $offset += $limit;
 
-            while (null !== $offset) {
-                $response = $client->get($this->getEndpoint('/lists?limit='.$limit.'&offset='.$offset.'&orders[name]=ASC'));
+            $total = (int) $json->meta->total;
+            if ($total <= $offset) {
+                $offset = null;
+            }
 
-                $json = json_decode((string) $response->getBody());
-
-                $offset += $limit;
-
-                $total = (int) $json->meta->total;
-                if ($total <= $offset) {
-                    $offset = null;
-                }
-
-                if (isset($json->lists)) {
-                    foreach ($json->lists as $list) {
-                        if (isset($list->id, $list->name)) {
-                            $lists[] = new ListObject(
-                                $list->id,
-                                $list->name,
-                            );
-                        }
+            if (isset($json->lists)) {
+                foreach ($json->lists as $list) {
+                    if (isset($list->id, $list->name)) {
+                        $lists[] = new ListObject(
+                            $list->id,
+                            $list->name,
+                        );
                     }
                 }
             }
-
-            return $lists;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
+
+        return $lists;
     }
 
     protected function getApiUrl(): string
@@ -173,54 +161,46 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
             }
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/tags'),
-                [
-                    'json' => [
-                        'tag' => [
-                            'tag' => $name,
-                            'description' => '',
-                            'tagType' => 'contact',
-                        ],
+        $response = $client->post(
+            $this->getEndpoint('/tags'),
+            [
+                'json' => [
+                    'tag' => [
+                        'tag' => $name,
+                        'description' => '',
+                        'tagType' => 'contact',
                     ],
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
-            return $json->tag->id;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        return $json->tag->id;
     }
 
     private function fetchTags(Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/tags'));
+        $response = $client->get($this->getEndpoint('/tags'));
+
+        $json = json_decode((string) $response->getBody());
+
+        $tags = $json->tags;
+        $tagsTotal = $json->meta->total;
+        $tagsCount = \count($tags);
+        $offset = $tagsCount;
+
+        while ($tagsCount < $tagsTotal) {
+            $response = $client->get($this->getEndpoint('/tags?offset='.$offset));
 
             $json = json_decode((string) $response->getBody());
 
-            $tags = $json->tags;
-            $tagsTotal = $json->meta->total;
-            $tagsCount = \count($tags);
-            $offset = $tagsCount;
-
-            while ($tagsCount < $tagsTotal) {
-                $response = $client->get($this->getEndpoint('/tags?offset='.$offset));
-
-                $json = json_decode((string) $response->getBody());
-
-                $count = \count($json->tags);
-                $tagsCount += $count;
-                $tags = array_merge($tags, $json->tags);
-                $offset += $count;
-            }
-
-            return $tags;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+            $count = \count($json->tags);
+            $tagsCount += $count;
+            $tags = array_merge($tags, $json->tags);
+            $offset += $count;
         }
+
+        return $tags;
     }
 }

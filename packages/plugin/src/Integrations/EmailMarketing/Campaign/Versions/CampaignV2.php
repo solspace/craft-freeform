@@ -96,49 +96,45 @@ class CampaignV2 extends BaseCampaignIntegration
 
         $mapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
 
-        try {
-            if (method_exists(Campaign::$plugin->forms, 'createAndSubscribeContact')) {
-                Campaign::$plugin->forms->createAndSubscribeContact(
-                    $email,
-                    $mapping,
+        if (method_exists(Campaign::$plugin->forms, 'createAndSubscribeContact')) {
+            Campaign::$plugin->forms->createAndSubscribeContact(
+                $email,
+                $mapping,
+                $mailingListElement,
+                'Freeform',
+                $source,
+            );
+        } else {
+            $contact = Campaign::$plugin->contacts->getContactByEmail($email);
+            if (null === $contact) {
+                $contact = new ContactElement();
+                $contact->email = $email;
+            }
+
+            $contact->setFieldValues($mapping);
+
+            if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
+                $pendingContact = new PendingContactModel();
+                $pendingContact->pid = StringHelper::uniqueId('p');
+                $pendingContact->email = $email;
+                $pendingContact->mailingListId = $mailingListElement->id;
+                $pendingContact->source = $source;
+                $pendingContact->fieldData = $contact->getSerializedFieldValues();
+
+                if (Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
+                    Campaign::$plugin->forms->sendVerifySubscribeEmail(
+                        $pendingContact,
+                        $mailingListElement,
+                    );
+                }
+            } elseif (\Craft::$app->getElements()->saveElement($contact)) {
+                Campaign::$plugin->forms->subscribeContact(
+                    $contact,
                     $mailingListElement,
                     'Freeform',
                     $source,
                 );
-            } else {
-                $contact = Campaign::$plugin->contacts->getContactByEmail($email);
-                if (null === $contact) {
-                    $contact = new ContactElement();
-                    $contact->email = $email;
-                }
-
-                $contact->setFieldValues($mapping);
-
-                if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
-                    $pendingContact = new PendingContactModel();
-                    $pendingContact->pid = StringHelper::uniqueId('p');
-                    $pendingContact->email = $email;
-                    $pendingContact->mailingListId = $mailingListElement->id;
-                    $pendingContact->source = $source;
-                    $pendingContact->fieldData = $contact->getSerializedFieldValues();
-
-                    if (Campaign::$plugin->pendingContacts->savePendingContact($pendingContact)) {
-                        Campaign::$plugin->forms->sendVerifySubscribeEmail(
-                            $pendingContact,
-                            $mailingListElement,
-                        );
-                    }
-                } elseif (\Craft::$app->getElements()->saveElement($contact)) {
-                    Campaign::$plugin->forms->subscribeContact(
-                        $contact,
-                        $mailingListElement,
-                        'Freeform',
-                        $source,
-                    );
-                }
             }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

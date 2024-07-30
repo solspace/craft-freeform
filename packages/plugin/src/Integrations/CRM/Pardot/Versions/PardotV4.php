@@ -79,11 +79,9 @@ class PardotV4 extends BasePardotIntegration
         return 'https://pi.pardot.com/api';
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->processProspect($form, $client);
-
-        return true;
     }
 
     protected function getPardotEndpoint(string $object = 'prospect', string $action = 'query'): string
@@ -116,19 +114,14 @@ class PardotV4 extends BasePardotIntegration
             return;
         }
 
-        try {
-            $email = $mapping['email'];
+        $email = $mapping['email'];
+        unset($mapping['email']);
 
-            unset($mapping['email']);
+        $response = $client->post(
+            $this->getPardotEndpoint('prospect', 'create/email/'.$email),
+            ['query' => $mapping],
+        );
 
-            $response = $client->post(
-                $this->getPardotEndpoint('prospect', 'create/email/'.$email),
-                ['query' => $mapping],
-            );
-
-            $this->triggerAfterResponseEvent(self::CATEGORY_PROSPECT, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_PROSPECT, $response);
     }
 }

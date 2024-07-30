@@ -48,11 +48,6 @@ class Generic extends WebhookIntegration
         }
 
         $client = new Client();
-
-        try {
-            $client->post($this->getUrl(), ['json' => $json]);
-        } catch (\Exception $e) {
-            $this->processException($e, self::LOG_CATEGORY, false);
-        }
+        $client->post($this->getUrl(), ['json' => $json]);
     }
 }

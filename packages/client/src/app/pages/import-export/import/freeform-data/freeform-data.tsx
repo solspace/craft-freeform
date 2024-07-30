@@ -13,9 +13,15 @@ import axios from 'axios';
 import { Preview } from '../../common/preview/preview';
 import { Progress } from '../../common/progress/progress';
 import { useProgressEvent } from '../../common/progress/progress.hooks';
-import type { FormImportData, ImportOptions } from '../import.types';
+import { Strategy } from '../../common/strategy/strategy';
+import type {
+  FormImportData,
+  ImportOptions,
+  StrategyCollection,
+} from '../import.types';
 
 import { FileInput, FileWrapper } from './freeform-data.styles';
+import type { AvailableOptionResponse } from './freeform-data.types';
 
 export const ImportFreeformData: React.FC = () => {
   const [fileToken, setFileToken] = useState<string>();
@@ -48,12 +54,31 @@ export const ImportFreeformData: React.FC = () => {
       const formData = new FormData();
       formData.append('file', file);
 
-      const { data } = await axios.post('/api/import/file', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await axios.post<AvailableOptionResponse>(
+        '/api/import/file',
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
 
       setAvailableOptions(data.options);
       setFileToken(data.token);
+
+      if (data.options) {
+        setOptions((prev) => ({
+          ...prev,
+          forms: data.options.forms.map((form) => form.uid),
+          notificationTemplates: data.options.notificationTemplates.map(
+            (template) => template.originalId
+          ),
+          integrations: data.options.integrations.map(
+            (integration) => integration.uid
+          ),
+          formSubmissions: data.options.formSubmissions.map(
+            (submission) => submission.formUid
+          ),
+          settings: true,
+        }));
+      }
     } catch (error) {
       setErrors(error?.errors?.import?.file);
       console.error('Failed to upload file', error);
@@ -96,7 +121,10 @@ export const ImportFreeformData: React.FC = () => {
 
       {availableOptions && (
         <>
-          <Field label={translate('Select Data')}>
+          <Field
+            label={translate('Select Data')}
+            instructions={translate('Select which data you wish to import.')}
+          >
             <Preview
               disabled={false}
               data={availableOptions}
@@ -104,6 +132,18 @@ export const ImportFreeformData: React.FC = () => {
               onUpdate={(opts) => setOptions({ ...options, ...opts })}
             />
           </Field>
+
+          <Strategy
+            data={availableOptions}
+            strategy={options.strategy}
+            disabled={false}
+            onUpdate={(strategy: StrategyCollection) =>
+              setOptions((prev) => ({
+                ...prev,
+                strategy,
+              }))
+            }
+          />
 
           <Field>
             <button className="btn submit" type="button" onClick={onImport}>

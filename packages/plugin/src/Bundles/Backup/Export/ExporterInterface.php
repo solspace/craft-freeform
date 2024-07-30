@@ -13,5 +13,7 @@ interface ExporterInterface
 
     public function collect(): FreeformDataset;
 
+    public function destruct(): void;
+
     public function collectDataPreview(): ImportPreview;
 }

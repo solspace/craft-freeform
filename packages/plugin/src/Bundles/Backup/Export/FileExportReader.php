@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
 use craft\helpers\ArrayHelper;
+use craft\helpers\FileHelper as CraftFileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\FileLineProcessor;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
@@ -24,17 +25,25 @@ use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Models\Settings;
-use Solspace\Freeform\Services\FormsService;
 
 class FileExportReader extends BaseExporter
 {
     public function __construct(
         private PropertyProvider $propertyProvider,
         private IntegrationTypeProvider $integrationTypeProvider,
-        private FormsService $formsService,
     ) {}
+
+    public function destruct(): void
+    {
+        $path = $this->getPath();
+        if (file_exists($path) && is_dir($path)) {
+            CraftFileHelper::removeDirectory($path);
+        }
+    }
 
     public function collectDataPreview(): ImportPreview
     {
@@ -62,7 +71,7 @@ class FileExportReader extends BaseExporter
         $collection = new FormCollection();
 
         foreach ($this->readLineData('forms.jsonl') as $json) {
-            if (null !== $ids && \in_array($json['uid'], $ids)) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
 
@@ -118,7 +127,7 @@ class FileExportReader extends BaseExporter
         $collection = new IntegrationCollection();
 
         foreach ($this->readLineData('integrations.jsonl') as $json) {
-            if (null !== $ids && \in_array($json['uid'], $ids)) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
 
@@ -144,7 +153,7 @@ class FileExportReader extends BaseExporter
         $collection = new NotificationTemplateCollection();
 
         foreach ($this->readLineData('notifications.jsonl') as $json) {
-            if (null !== $ids && \in_array($json['originalId'], $ids)) {
+            if (null !== $ids && !\in_array($json['originalId'], $ids)) {
                 continue;
             }
 
@@ -178,23 +187,26 @@ class FileExportReader extends BaseExporter
     {
         $collection = new FormSubmissionCollection();
 
-        $forms = $this->formsService->getAllForms();
-        $forms = ArrayHelper::index($forms, 'uid');
+        $forms = Freeform::getInstance()->forms->getAllForms();
+        $formsByUid = ArrayHelper::index($forms, 'uid');
 
         foreach ($this->getSubmissionFiles() as $uid => $file) {
-            $form = $forms[$uid];
+            $form = $formsByUid[$uid] ?? null;
+            if (!$form) {
+                continue;
+            }
 
             $formSubmissions = new FormSubmissions();
             $formSubmissions->formUid = $uid;
             $formSubmissions->submissionBatchProcessor = new FileLineProcessor($file);
             $formSubmissions->setProcessor(
-                function (array $json) use ($form) {
+                function (array $json) {
                     $exported = new Submission();
                     $exported->title = $json['title'];
                     $exported->status = $json['status'];
 
-                    foreach ($form->getLayout()->getFields() as $field) {
-                        $exported->{$field->getHandle()} = $json[$field->getHandle()];
+                    foreach ($json['values'] as $key => $value) {
+                        $exported->{$key} = $value;
                     }
 
                     return $exported;
@@ -213,10 +225,16 @@ class FileExportReader extends BaseExporter
             return null;
         }
 
-        $content = $this->getFile('settings.json');
+        $content = $this->getFileContents('settings.json');
         $json = json_decode($content, true);
 
-        return new Settings($json);
+        $defaults = $json['defaults'];
+        unset($json['defaults']);
+
+        $settings = new Settings($json);
+        $settings->defaults = new Defaults($defaults);
+
+        return $settings;
     }
 
     /**
@@ -236,14 +254,26 @@ class FileExportReader extends BaseExporter
         return fopen($filePath, 'r');
     }
 
-    private function getPath(): string
+    private function getFileContents(string $name): string
     {
-        $path = $this->getOption('path');
-        if (!$path) {
-            throw new \Exception('Path is required');
+        $path = $this->getPath();
+
+        $filePath = $path.'/'.$name;
+        if (!file_exists($filePath)) {
+            throw new \Exception('File not found');
         }
 
-        return $path;
+        return file_get_contents($filePath);
+    }
+
+    private function getPath(): string
+    {
+        $token = $this->getOption('fileToken');
+        if (!$token) {
+            throw new \Exception('Token is not defined');
+        }
+
+        return \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
     }
 
     private function readLineData(string $file): \Generator

@@ -71,10 +71,9 @@ class ImportController extends BaseApiController
         }
 
         $token = CryptoHelper::getUniqueToken(14);
-        $suffix = CryptoHelper::getUniqueToken(5);
 
         $zipPath = $file['tmp_name'];
-        $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$suffix;
+        $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
         if (!is_dir($unzipPath)) {
             FileHelper::createDirectory($unzipPath, 0777, true);
         }
@@ -93,10 +92,8 @@ class ImportController extends BaseApiController
 
         $zip->close();
 
-        \Craft::$app->cache->set('freeform-import-file-'.$token, $unzipPath, 60 * 60);
-
         $exporter = \Craft::$container->get(FileExportReader::class);
-        $exporter->setOptions(['path' => $unzipPath]);
+        $exporter->setOptions(['fileToken' => $token]);
 
         return $this->asSerializedJson([
             'token' => $token,
@@ -130,6 +127,8 @@ class ImportController extends BaseApiController
 
         $importer = \Craft::$container->get(FreeformImporter::class);
         $importer->import($dataset, $sse);
+
+        $exporter->destruct();
 
         $sse->message('info', 'Done');
         $sse->message('exit', 'done');

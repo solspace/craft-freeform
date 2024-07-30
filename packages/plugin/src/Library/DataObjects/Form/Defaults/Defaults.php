@@ -5,8 +5,9 @@ namespace Solspace\Freeform\Library\DataObjects\Form\Defaults;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\CategoryInterface;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Notifications\Notifications;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Settings\Settings;
+use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 
-class Defaults implements \IteratorAggregate, \JsonSerializable
+class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalizerInterface
 {
     public bool $previewHtml = false;
     public bool $twigInHtml = false;
@@ -46,6 +47,11 @@ class Defaults implements \IteratorAggregate, \JsonSerializable
         }
 
         return new \ArrayIterator($categories);
+    }
+
+    public function normalize(): array
+    {
+        return $this->jsonSerialize();
     }
 
     public function jsonSerialize(): array

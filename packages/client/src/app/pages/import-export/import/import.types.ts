@@ -33,7 +33,10 @@ export type Form = {
 };
 
 export type Submissions = {
-  formUid: string;
+  form: {
+    uid: string;
+    name: string;
+  };
   count: number;
 };
 

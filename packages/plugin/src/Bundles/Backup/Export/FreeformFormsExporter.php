@@ -25,6 +25,9 @@ use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission as FFSubmission;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Form\Form as FreeformForm;
+use Solspace\Freeform\Form\Layout\Layout as FreeformLayout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -94,6 +97,9 @@ class FreeformFormsExporter extends BaseExporter
 
         $forms = $this->forms->getFormsFromQuery($query);
 
+        /**
+         * @var FreeformForm $form
+         */
         foreach ($forms as $index => $form) {
             /** @var FormFieldRecord[] $formFieldRecords */
             $formFieldRecords = FormFieldRecord::find()
@@ -128,41 +134,12 @@ class FreeformFormsExporter extends BaseExporter
             $exported->pages = new PageCollection();
 
             foreach ($form->getLayout()->getPages() as $page) {
-                $exportedLayout = new Layout();
-                $exportedLayout->uid = $page->getLayout()->getUid();
-                $exportedLayout->rows = new RowCollection();
-
                 $exportedPage = new Page();
                 $exportedPage->uid = $page->getUid();
-                $exportedPage->layout = $exportedLayout;
+                $exportedPage->layout = $this->compileLayout($page->getLayout(), $formFieldRecords);
                 $exportedPage->label = $page->getLabel();
 
                 $exported->pages->add($exportedPage);
-
-                foreach ($page->getRows() as $row) {
-                    $exportedRow = new Row();
-                    $exportedRow->uid = $row->getUid();
-                    $exportedRow->fields = new FieldCollection();
-
-                    foreach ($row->getFields() as $field) {
-                        $fieldRecord = $formFieldRecords[$field->getUid()] ?? null;
-                        if (null === $fieldRecord) {
-                            continue;
-                        }
-
-                        $exportedField = new Field();
-                        $exportedField->uid = $field->getUid();
-                        $exportedField->name = $field->getLabel();
-                        $exportedField->handle = $field->getHandle();
-                        $exportedField->type = $field::class;
-                        $exportedField->required = $field->isRequired();
-                        $exportedField->metadata = json_decode($fieldRecord->metadata, true);
-
-                        $exportedRow->fields->add($exportedField);
-                    }
-
-                    $exportedLayout->rows->add($exportedRow);
-                }
             }
 
             $collection->add($exported);
@@ -293,5 +270,43 @@ class FreeformFormsExporter extends BaseExporter
         }
 
         return Freeform::getInstance()->settings->getSettingsModel();
+    }
+
+    private function compileLayout(FreeformLayout $layout, array $fieldRecordCache): Layout
+    {
+        $exportedLayout = new Layout();
+        $exportedLayout->uid = $layout->getUid();
+        $exportedLayout->rows = new RowCollection();
+
+        foreach ($layout->getRows() as $row) {
+            $exportedRow = new Row();
+            $exportedRow->uid = $row->getUid();
+            $exportedRow->fields = new FieldCollection();
+
+            foreach ($row->getFields() as $field) {
+                $fieldRecord = $fieldRecordCache[$field->getUid()] ?? null;
+                if (null === $fieldRecord) {
+                    continue;
+                }
+
+                $exportedField = new Field();
+                $exportedField->uid = $field->getUid();
+                $exportedField->name = $field->getLabel();
+                $exportedField->handle = $field->getHandle();
+                $exportedField->type = $field::class;
+                $exportedField->required = $field->isRequired();
+                $exportedField->metadata = json_decode($fieldRecord->metadata, true);
+
+                if ($field instanceof GroupField) {
+                    $exportedField->layout = $this->compileLayout($field->getLayout(), $fieldRecordCache);
+                }
+
+                $exportedRow->fields->add($exportedField);
+            }
+
+            $exportedLayout->rows->add($exportedRow);
+        }
+
+        return $exportedLayout;
     }
 }

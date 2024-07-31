@@ -74,7 +74,7 @@ export const ImportFreeformData: React.FC = () => {
             (integration) => integration.uid
           ),
           formSubmissions: data.options.formSubmissions.map(
-            (submission) => submission.formUid
+            (submission) => submission.form.uid
           ),
           settings: true,
         }));
@@ -112,7 +112,7 @@ export const ImportFreeformData: React.FC = () => {
 
       <FileWrapper>
         <Label>{translate('Upload file')}</Label>
-        <FileInput type="file" onChange={onChange} />
+        <FileInput type="file" onChange={onChange} accept=".zip" />
         <Instructions>
           {translate('Accepts `.zip` files. Only upload files that you trust.')}
         </Instructions>

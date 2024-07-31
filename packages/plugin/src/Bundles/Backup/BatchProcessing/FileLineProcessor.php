@@ -25,6 +25,10 @@ class FileLineProcessor implements BatchProcessInterface
             }
         }
 
+        if (\count($batch)) {
+            yield $batch;
+        }
+
         fclose($file);
     }
 

@@ -3,11 +3,13 @@
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Bundles\Backup\DTO\Form as FormDTO;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
+use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -26,6 +28,7 @@ class FreeformImporter
 {
     private const BATCH_SIZE = 100;
 
+    private array $formsByUid = [];
     private array $notificationIdMap = [];
     private FreeformDataset $dataset;
     private SSE $sse;
@@ -108,6 +111,8 @@ class FreeformImporter
                 continue;
             }
 
+            $this->formsByUid[$form->uid] = $form;
+
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
 
             $fieldRecords = [];
@@ -129,10 +134,8 @@ class FreeformImporter
             }
 
             foreach ($form->pages as $pageIndex => $page) {
-                $layoutRecord = FormLayoutRecord::findOne(['uid' => $page->layout->uid]) ?? new FormLayoutRecord();
-                $layoutRecord->formId = $formRecord->id;
-                $layoutRecord->uid = $page->layout->uid;
-                $layoutRecord->save();
+                [$layoutRecord, $fieldRecordList] = $this->importLayout($page->layout, $formRecord);
+                $fieldRecords = array_merge($fieldRecords, $fieldRecordList);
 
                 $pageRecord = FormPageRecord::findOne(['uid' => $page->uid]) ?? new FormPageRecord();
                 $pageRecord->formId = $formRecord->id;
@@ -159,38 +162,6 @@ class FreeformImporter
                 ]);
 
                 $pageRecord->save();
-
-                foreach ($page->layout->rows as $rowIndex => $row) {
-                    $rowRecord = FormRowRecord::findOne(['uid' => $row->uid]) ?? new FormRowRecord();
-                    $rowRecord->uid = $row->uid;
-                    $rowRecord->formId = $formRecord->id;
-                    $rowRecord->layoutId = $layoutRecord->id;
-                    $rowRecord->order = $rowIndex;
-                    $rowRecord->save();
-
-                    foreach ($row->fields as $fieldIndex => $field) {
-                        $fieldRecord = FormFieldRecord::findOne(['uid' => $field->uid]) ?? new FormFieldRecord();
-                        $fieldRecord->uid = $field->uid;
-                        $fieldRecord->formId = $formRecord->id;
-                        $fieldRecord->rowId = $rowRecord->id;
-                        $fieldRecord->type = $field->type;
-                        $fieldRecord->order = $fieldIndex;
-                        $fieldRecord->metadata = json_encode(
-                            array_merge(
-                                [
-                                    'label' => $field->name,
-                                    'handle' => $field->handle,
-                                    'required' => $field->required,
-                                ],
-                                $field->metadata,
-                            )
-                        );
-
-                        $fieldRecord->save();
-
-                        $fieldRecords[] = $fieldRecord;
-                    }
-                }
             }
 
             $manager = new ContentManager($formInstance, $fieldRecords);
@@ -198,6 +169,56 @@ class FreeformImporter
 
             $this->sse->message('progress', 1);
         }
+    }
+
+    private function importLayout(Layout $layout, FormRecord $formRecord): array
+    {
+        $fieldRecords = [];
+
+        $layoutRecord = FormLayoutRecord::findOne(['uid' => $layout->uid]) ?? new FormLayoutRecord();
+        $layoutRecord->formId = $formRecord->id;
+        $layoutRecord->uid = $layout->uid;
+        $layoutRecord->save();
+
+        foreach ($layout->rows as $rowIndex => $row) {
+            $rowRecord = FormRowRecord::findOne(['uid' => $row->uid]) ?? new FormRowRecord();
+            $rowRecord->uid = $row->uid;
+            $rowRecord->formId = $formRecord->id;
+            $rowRecord->layoutId = $layoutRecord->id;
+            $rowRecord->order = $rowIndex;
+            $rowRecord->save();
+
+            foreach ($row->fields as $fieldIndex => $field) {
+                $fieldRecord = FormFieldRecord::findOne(['uid' => $field->uid]) ?? new FormFieldRecord();
+                $fieldRecord->uid = $field->uid;
+                $fieldRecord->formId = $formRecord->id;
+                $fieldRecord->rowId = $rowRecord->id;
+                $fieldRecord->type = $field->type;
+                $fieldRecord->order = $fieldIndex;
+                $metadata = array_merge(
+                    [
+                        'label' => $field->name,
+                        'handle' => $field->handle,
+                        'required' => $field->required,
+                    ],
+                    $field->metadata,
+                );
+
+                if (GroupField::class === $field->type) {
+                    [$subLayout, $fieldRecordList] = $this->importLayout($field->layout, $formRecord);
+                    $metadata['layout'] = $subLayout->uid;
+                    $fieldRecords = array_merge($fieldRecords, $fieldRecordList);
+                }
+
+                $fieldRecord->metadata = json_encode($metadata);
+
+                $fieldRecord->save();
+
+                $fieldRecords[] = $fieldRecord;
+            }
+        }
+
+        return [$layoutRecord, $fieldRecords];
     }
 
     private function importNotifications(): void
@@ -257,20 +278,22 @@ class FreeformImporter
         }
     }
 
-    private function getFormByUid(string $uid): ?Form
+    private function getFormByUid(string $uid): null|FormDTO|FormRecord
     {
         static $formsByUid;
 
         if (null === $formsByUid) {
-            $forms = Freeform::getInstance()->forms->getAllForms();
+            $formsByUid = true;
+            foreach (FormRecord::find()->all() as $form) {
+                if (isset($this->formsByUid[$form->uid])) {
+                    continue;
+                }
 
-            $formsByUid = [];
-            foreach ($forms as $form) {
-                $formsByUid[$form->getUid()] = $form;
+                $this->formsByUid[$form->uid] = $form;
             }
         }
 
-        return $formsByUid[$uid] ?? null;
+        return $this->formsByUid[$uid] ?? null;
     }
 
     private function importSubmissions(): void
@@ -287,7 +310,7 @@ class FreeformImporter
                 continue;
             }
 
-            $name = $form->getName();
+            $name = $form->name;
             $total = $batchProcessor->total();
 
             $this->sse->message('reset', $total);
@@ -307,7 +330,7 @@ class FreeformImporter
                 foreach ($rows as $row) {
                     $submissionDTO = $formSubmissions->getProcessor()($row);
 
-                    $imported = Submission::create($form);
+                    $imported = Submission::create($form->id);
                     $imported->title = $submissionDTO->title;
                     $imported->statusId = $defaultStatus;
                     $imported->setFormFieldValues($submissionDTO->getValues());

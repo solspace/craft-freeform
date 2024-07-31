@@ -41,6 +41,7 @@ use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\StatusModel;
+use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
 use yii\base\Event;
@@ -220,9 +221,17 @@ class Submission extends Element
         return $list;
     }
 
-    public static function create(Form $form): self
+    public static function create(Form|FormRecord|int $form): self
     {
-        $submission = new static(['formId' => $form->getId()]);
+        if ($form instanceof Form) {
+            $formId = $form->getId();
+        } elseif ($form instanceof FormRecord) {
+            $formId = $form->id;
+        } else {
+            $formId = (int) $form;
+        }
+
+        $submission = new static(['formId' => $formId]);
         $submission->generateToken();
         $submission->userId = \Craft::$app->user->getId() ?: null;
 

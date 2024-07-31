@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
-use craft\helpers\ArrayHelper;
 use craft\helpers\FileHelper as CraftFileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\FileLineProcessor;
@@ -11,7 +10,6 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
@@ -19,6 +17,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
+use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
@@ -53,10 +52,22 @@ class FileExportReader extends BaseExporter
         $preview->notificationTemplates = $this->collectNotifications();
         $preview->integrations = $this->collectIntegrations();
 
+        $uidToNameMap = [];
+        foreach (Freeform::getInstance()->forms->getAllForms() as $form) {
+            $uidToNameMap[$form->getUid()] = $form->getName();
+        }
+
+        foreach ($preview->forms as $form) {
+            $uidToNameMap[$form->uid] = $form->name;
+        }
+
         $submissions = [];
         foreach ($this->getSubmissionFiles() as $uid => $file) {
             $submissions[] = [
-                'formUid' => $uid,
+                'form' => [
+                    'uid' => $uid,
+                    'name' => $uidToNameMap[$uid],
+                ],
                 'count' => FileHelper::countLines($file),
             ];
         }
@@ -82,38 +93,24 @@ class FileExportReader extends BaseExporter
             $form->order = $json['order'];
             $form->settings = new FormSettings($json['settings'], $this->propertyProvider);
 
-            $form->pages = new PageCollection();
-            foreach ($json['pages'] as $pageJson) {
-                $layout = new Layout();
-                $layout->uid = $pageJson['layout']['uid'];
-                $layout->rows = new RowCollection();
+            foreach ($json['notifications'] as $notificationJson) {
+                $notification = new Notification();
+                $notification->id = $notificationJson['id'];
+                $notification->name = $notificationJson['name'];
+                $notification->type = $notificationJson['type'];
+                $notification->metadata = $notificationJson['metadata'];
+                $notification->idAttribute = 'template';
 
+                $form->notifications->add($notification);
+            }
+
+            foreach ($json['pages'] as $pageJson) {
                 $page = new Page();
                 $page->uid = $pageJson['uid'];
-                $page->layout = $layout;
+                $page->layout = $this->parseLayout($pageJson['layout']);
                 $page->label = $pageJson['label'];
 
                 $form->pages->add($page);
-
-                foreach ($pageJson['layout']['rows'] as $rowJson) {
-                    $row = new Row();
-                    $row->uid = $rowJson['uid'];
-                    $row->fields = new FieldCollection();
-
-                    foreach ($rowJson['fields'] as $fieldJson) {
-                        $field = new Field();
-                        $field->uid = $fieldJson['uid'];
-                        $field->name = $fieldJson['name'];
-                        $field->handle = $fieldJson['handle'];
-                        $field->type = $fieldJson['type'];
-                        $field->required = $fieldJson['required'];
-                        $field->metadata = $fieldJson['metadata'];
-
-                        $row->fields->add($field);
-                    }
-
-                    $layout->rows->add($row);
-                }
             }
 
             $collection->add($form);
@@ -188,7 +185,15 @@ class FileExportReader extends BaseExporter
         $collection = new FormSubmissionCollection();
 
         $forms = Freeform::getInstance()->forms->getAllForms();
-        $formsByUid = ArrayHelper::index($forms, 'uid');
+        $formsByUid = [];
+        foreach ($forms as $form) {
+            $formsByUid[$form->getUid()] = $form->getName();
+        }
+
+        $forms = $this->collectForms();
+        foreach ($forms as $form) {
+            $formsByUid[$form->uid] = $form->name;
+        }
 
         foreach ($this->getSubmissionFiles() as $uid => $file) {
             $form = $formsByUid[$uid] ?? null;
@@ -307,5 +312,39 @@ class FileExportReader extends BaseExporter
 
             yield $uid => $path.'/'.$file;
         }
+    }
+
+    private function parseLayout(array $layoutJson): Layout
+    {
+        $layout = new Layout();
+        $layout->uid = $layoutJson['uid'];
+        $layout->rows = new RowCollection();
+
+        foreach ($layoutJson['rows'] as $rowJson) {
+            $row = new Row();
+            $row->uid = $rowJson['uid'];
+            $row->fields = new FieldCollection();
+
+            foreach ($rowJson['fields'] as $fieldJson) {
+                $field = new Field();
+                $field->uid = $fieldJson['uid'];
+                $field->name = $fieldJson['name'];
+                $field->handle = $fieldJson['handle'];
+                $field->type = $fieldJson['type'];
+                $field->required = $fieldJson['required'];
+                $field->metadata = $fieldJson['metadata'];
+
+                $subLayout = $fieldJson['layout'] ?? null;
+                if ($subLayout) {
+                    $field->layout = $this->parseLayout($subLayout);
+                }
+
+                $row->fields->add($field);
+            }
+
+            $layout->rows->add($row);
+        }
+
+        return $layout;
     }
 }

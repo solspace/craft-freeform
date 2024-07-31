@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Backup\DTO;
 
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
 use Solspace\Freeform\Form\Settings\Settings;
 
 class Form
@@ -13,16 +14,16 @@ class Form
     public string $handle;
     public int $order;
 
-    public int $spamBlockCount;
-
     public Settings $settings;
 
     public NotificationCollection $notifications;
+    public RulesCollection $rules;
     public PageCollection $pages;
 
     public function __construct()
     {
         $this->notifications = new NotificationCollection();
+        $this->rules = new RulesCollection();
         $this->pages = new PageCollection();
     }
 }

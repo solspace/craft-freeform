@@ -1,6 +1,5 @@
 import React from 'react';
 import { Checkbox } from '@components/elements/checkbox/checkbox';
-import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -30,8 +29,6 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
     return null;
   }
 
-  const { data: forms, isFetched } = useQueryFormsWithStats();
-
   return (
     <ListItem>
       <Blocks>
@@ -42,7 +39,7 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
             onChange={() =>
               options.length === submissions.length
                 ? onUpdate([])
-                : onUpdate(submissions.map((submission) => submission.formUid))
+                : onUpdate(submissions.map((submission) => submission.form.uid))
             }
           />
         </BlockItem>
@@ -53,32 +50,30 @@ export const PreviewSubmissionsTemplates: React.FC<Props> = ({
       <ul>
         {submissions.map((submission) => (
           <ListItem
-            key={submission.formUid}
+            key={submission.form.uid}
             className={classes(
               'selectable',
-              options.includes(submission.formUid) && 'selected'
+              options.includes(submission.form.uid) && 'selected'
             )}
           >
             <Blocks>
               <BlockItem>
                 <Checkbox
-                  id={`submissions-${submission.formUid}`}
-                  checked={options.includes(submission.formUid)}
+                  id={`submissions-${submission.form.uid}`}
+                  checked={options.includes(submission.form.uid)}
                   onChange={() =>
                     onUpdate(
-                      options.includes(submission.formUid)
-                        ? options.filter((id) => id !== submission.formUid)
-                        : [...options, submission.formUid]
+                      options.includes(submission.form.uid)
+                        ? options.filter((id) => id !== submission.form.uid)
+                        : [...options, submission.form.uid]
                     )
                   }
                 />
               </BlockItem>
               <Spacer $dash />
               <SubmissionIcon />
-              <Label $light htmlFor={`submissions-${submission.formUid}`}>
-                {isFetched &&
-                  forms.find((form) => form.uid === submission.formUid)?.name}
-                {` (${submission.count})`}
+              <Label $light htmlFor={`submissions-${submission.form.uid}`}>
+                {submission.form.name} ({submission.count})
               </Label>
             </Blocks>
           </ListItem>

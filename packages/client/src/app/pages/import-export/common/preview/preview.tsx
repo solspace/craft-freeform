@@ -48,7 +48,7 @@ export const Preview: React.FC<Props> = ({
     ),
     integrations: data.integrations.map((integration) => integration.uid),
     formSubmissions: data.formSubmissions.map(
-      (submission) => submission.formUid
+      (submission) => submission.form.uid
     ),
     settings: true,
   };

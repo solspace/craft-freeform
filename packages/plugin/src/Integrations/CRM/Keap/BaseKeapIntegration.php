@@ -51,32 +51,19 @@ abstract class BaseKeapIntegration extends CRMIntegration implements OAuth2Conne
 
     public function fetchFields(string $category, Client $client): array
     {
-        $fieldList = [];
-
-        if (self::CATEGORY_CONTACT === $category) {
-            $fieldList = array_merge($fieldList, $this->fetchContactFields($category, $client));
-        }
-
         if (self::CATEGORY_TAG === $category) {
-            $fieldList[] = new FieldObject(
-                'tags',
-                'Tags',
-                FieldObject::TYPE_STRING,
-                $category,
-                false,
-            );
+            return [
+                new FieldObject(
+                    'tags',
+                    'Tags',
+                    FieldObject::TYPE_STRING,
+                    $category,
+                    false,
+                ),
+            ];
         }
 
-        return $fieldList;
-    }
-
-    protected function getApiUrl(): string
-    {
-        return 'https://api.infusionsoft.com/crm/rest';
-    }
-
-    private function fetchContactFields(string $category, Client $client): array
-    {
+        // Create Contact fields
         $response = $client->get($this->getEndpoint('/contacts/model'));
         $json = json_decode((string) $response->getBody(), false);
 
@@ -85,11 +72,6 @@ abstract class BaseKeapIntegration extends CRMIntegration implements OAuth2Conne
         }
 
         $fieldList = [];
-
-        // Default fields in Keap - we're namespacing them to make sure we can process the request properly
-        // Done this way to get around the way Infusionsoft's API handles built-in and 2-dimensional fields.
-        // The key is composed as such: <fieldType>:<fieldHandle>:<nestedPropertyOnFieldHandle>
-        // The field type gets stripped off; however, we need it to determine how to handle the field.
         $fieldList[] = new FieldObject('default:given_name', 'First Name', FieldObject::TYPE_STRING, $category, true);
         $fieldList[] = new FieldObject('default:middle_name', 'Middle Name', FieldObject::TYPE_STRING, $category, false);
         $fieldList[] = new FieldObject('default:family_name', 'Last Name', FieldObject::TYPE_STRING, $category, true);
@@ -159,5 +141,10 @@ abstract class BaseKeapIntegration extends CRMIntegration implements OAuth2Conne
         }
 
         return $fieldList;
+    }
+
+    protected function getApiUrl(): string
+    {
+        return 'https://api.infusionsoft.com/crm/rest';
     }
 }

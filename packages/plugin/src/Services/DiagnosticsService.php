@@ -14,7 +14,6 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
-use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;

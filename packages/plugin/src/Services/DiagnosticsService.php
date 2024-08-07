@@ -361,7 +361,7 @@ class DiagnosticsService extends BaseService
                     'Script Insert Location: <b>{{ value|capitalize }}</b>',
                     $this->getSummary()->statistics->settings->jsInsertLocation,
                     [
-                        new NoticeValidator(
+                        new SuggestionValidator(
                             fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value,
                             '',
                             'Please make sure you are adding Freeform’s scripts manually.'
@@ -419,7 +419,7 @@ class DiagnosticsService extends BaseService
                     'Formatting Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -432,7 +432,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Formatting Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),
@@ -440,7 +440,7 @@ class DiagnosticsService extends BaseService
                     'Email Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->emailTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -453,7 +453,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Email Notification Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),
@@ -465,7 +465,7 @@ class DiagnosticsService extends BaseService
                     'Success Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -478,7 +478,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Success Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),

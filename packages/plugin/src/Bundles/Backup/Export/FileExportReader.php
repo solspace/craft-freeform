@@ -14,6 +14,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RuleConditionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
+use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
@@ -101,12 +102,23 @@ class FileExportReader extends BaseExporter
                 $notification = new Notification();
                 $notification->id = $notificationJson['id'];
                 $notification->uid = $notificationJson['uid'];
+                $notification->enabled = $notificationJson['enabled'];
                 $notification->name = $notificationJson['name'];
                 $notification->type = $notificationJson['type'];
                 $notification->metadata = $notificationJson['metadata'];
                 $notification->idAttribute = 'template';
 
                 $form->notifications->add($notification);
+            }
+
+            foreach ($json['integrations'] as $formIntegrationJson) {
+                $formIntegration = new FormIntegration();
+                $formIntegration->uid = $formIntegrationJson['uid'];
+                $formIntegration->integrationUid = $formIntegrationJson['integrationUid'];
+                $formIntegration->enabled = $formIntegrationJson['enabled'];
+                $formIntegration->metadata = (object) $formIntegrationJson['metadata'];
+
+                $form->integrations->add($formIntegration);
             }
 
             foreach ($json['rules'] as $ruleJson) {
@@ -160,6 +172,7 @@ class FileExportReader extends BaseExporter
             $integration->class = $json['class'];
             $integration->name = $json['name'];
             $integration->handle = $json['handle'];
+            $integration->enabled = $json['enabled'];
             $integration->metadata = $json['metadata'];
 
             $type = $this->integrationTypeProvider->getTypeDefinition($integration->class);

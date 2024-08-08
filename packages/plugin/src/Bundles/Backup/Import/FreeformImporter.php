@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\DTO\Form as FormDTO;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
@@ -21,11 +22,13 @@ use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
@@ -33,6 +36,7 @@ use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
 use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\NotificationsService;
 
 class FreeformImporter
@@ -41,11 +45,14 @@ class FreeformImporter
 
     private array $formsByUid = [];
     private array $notificationTransferIdMap = [];
+    private array $integrationRecords = [];
     private FreeformDataset $dataset;
     private SSE $sse;
 
     public function __construct(
         private NotificationsService $notificationsService,
+        private PropertyProvider $propertyProvider,
+        private IntegrationsService $integrationsService,
         private FreeformSerializer $serializer,
     ) {}
 
@@ -58,6 +65,7 @@ class FreeformImporter
         $this->announceTotals();
 
         $this->importNotifications();
+        $this->importIntegrations();
         $this->importForms();
         $this->importSubmissions();
     }
@@ -131,11 +139,15 @@ class FreeformImporter
             $notificationRecords = [];
 
             foreach ($form->notifications as $notification) {
-                $notificationRecord = new FormNotificationRecord();
-                $notificationRecord->uid = $notification->uid;
+                $notificationRecord = FormNotificationRecord::findOne(['uid' => $notification->uid]);
+                if (!$notificationRecord) {
+                    $notificationRecord = new FormNotificationRecord();
+                    $notificationRecord->uid = $notification->uid;
+                }
+
                 $notificationRecord->formId = $formRecord->id;
                 $notificationRecord->class = $notification->type;
-                $notificationRecord->enabled = true;
+                $notificationRecord->enabled = $notification->enabled;
 
                 $metadata = $notification->metadata;
                 $metadata['name'] = $notification->name;
@@ -159,6 +171,25 @@ class FreeformImporter
                 $notificationRecord->save();
 
                 $notificationRecords[$notificationRecord->uid] = $notificationRecord;
+            }
+
+            foreach ($form->integrations as $integration) {
+                $integrationRecord = $this->integrationRecords[$integration->integrationUid] ?? null;
+                if (!$integrationRecord) {
+                    continue;
+                }
+
+                $formIntegration = FormIntegrationRecord::findOne(['uid' => $integration->uid]);
+                if (!$formIntegration) {
+                    $formIntegration = new FormIntegrationRecord();
+                    $formIntegration->uid = $integration->uid;
+                }
+
+                $formIntegration->formId = $formRecord->id;
+                $formIntegration->integrationId = $integrationRecord->id;
+                $formIntegration->enabled = $integration->enabled;
+                $formIntegration->metadata = json_encode($integration->metadata);
+                $formIntegration->save();
             }
 
             foreach ($form->pages as $pageIndex => $page) {
@@ -394,6 +425,61 @@ class FreeformImporter
 
             $this->notificationsService->save($record);
             $this->notificationTransferIdMap[$notification->id] = $record->id;
+
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importIntegrations(): void
+    {
+        $collection = $this->dataset->getIntegrations();
+        if (!$collection) {
+            return;
+        }
+
+        $strategy = $this->dataset->getStrategy()->integrations;
+
+        $this->sse->message('reset', $collection->count());
+
+        $this->integrationRecords = IntegrationRecord::find()->indexBy('uid')->all();
+        foreach ($collection as $integration) {
+            $this->sse->message('info', 'Importing Integration: '.$integration->name);
+
+            $record = $this->integrationRecords[$integration->uid] ?? null;
+            if ($record) {
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+            } else {
+                $record = new IntegrationRecord();
+            }
+
+            $metadata = $integration->metadata;
+            $properties = $this->propertyProvider->getEditableProperties($integration->class);
+            foreach ($properties as $property) {
+                if (!\array_key_exists($property->handle, $metadata)) {
+                    continue;
+                }
+
+                $value = $metadata[$property->handle];
+                $value = $this->integrationsService->processValueForSaving($property, $value);
+
+                $metadata[$property->handle] = $value;
+            }
+
+            $record->uid = $integration->uid;
+            $record->name = $integration->name;
+            $record->handle = $integration->handle;
+            $record->class = $integration->class;
+            $record->metadata = $metadata;
+            $record->type = $integration->type;
+            $record->enabled = $integration->enabled;
+
+            $record->save();
+
+            $this->integrationRecords[$integration->uid] = $record;
 
             $this->sse->message('progress', 1);
         }

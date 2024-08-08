@@ -10,5 +10,6 @@ class Integration
     public string $type;
     public string $class;
     public string $icon;
+    public bool $enabled;
     public array $metadata;
 }

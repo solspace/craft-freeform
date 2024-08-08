@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
+use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\ElementQueryProcessor;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
@@ -15,6 +16,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
+use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
@@ -39,7 +41,9 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
@@ -141,6 +145,7 @@ class FreeformFormsExporter extends BaseExporter
                 $exportNotification = new Notification();
                 $exportNotification->id = $notification->id;
                 $exportNotification->uid = $notification->uid;
+                $exportNotification->enabled = $notification->enabled;
                 $exportNotification->idAttribute = 'template';
                 $exportNotification->name = $metadata['name'] ?? 'Admin Notification';
                 $exportNotification->type = $notification->class;
@@ -149,8 +154,31 @@ class FreeformFormsExporter extends BaseExporter
                 $exported->notifications->add($exportNotification);
             }
 
-            $exported->pages = new PageCollection();
+            $integrationUids = (new Query())
+                ->from(IntegrationRecord::TABLE)
+                ->indexBy('id')
+                ->select('uid')
+                ->column()
+            ;
 
+            /** @var FormIntegrationRecord[] $formIntegrations */
+            $formIntegrations = FormIntegrationRecord::find()->where(['formId' => $form->getId()])->all();
+            foreach ($formIntegrations as $formIntegration) {
+                $integrationUid = $integrationUids[$formIntegration->integrationId] ?? null;
+                if (!$integrationUid) {
+                    continue;
+                }
+
+                $exportIntegration = new FormIntegration();
+                $exportIntegration->uid = $formIntegration->uid;
+                $exportIntegration->integrationUid = $integrationUid;
+                $exportIntegration->metadata = json_decode($formIntegration->metadata, false);
+                $exportIntegration->enabled = $formIntegration->enabled;
+
+                $exported->integrations->add($exportIntegration);
+            }
+
+            $exported->pages = new PageCollection();
             foreach ($form->getLayout()->getPages() as $page) {
                 if (null === $page->getUid()) {
                     continue;
@@ -187,6 +215,7 @@ class FreeformFormsExporter extends BaseExporter
             $exported->uid = $integration->uid;
             $exported->type = $integration->type;
             $exported->class = $integration->class;
+            $exported->enabled = $integration->enabled;
 
             $metadata = $integration->metadata;
 

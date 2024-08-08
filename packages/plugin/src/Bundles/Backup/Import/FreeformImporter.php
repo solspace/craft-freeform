@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
-use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Backup\DTO\Form as FormDTO;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
@@ -13,15 +12,27 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
+use Solspace\Freeform\Library\Rules\Types\ButtonRule;
+use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use Solspace\Freeform\Library\Rules\Types\NotificationRule;
+use Solspace\Freeform\Library\Rules\Types\PageRule;
+use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
+use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
+use Solspace\Freeform\Records\Rules\PageRuleRecord;
+use Solspace\Freeform\Records\Rules\RuleConditionRecord;
+use Solspace\Freeform\Records\Rules\RuleRecord;
+use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 use Solspace\Freeform\Services\NotificationsService;
 
 class FreeformImporter
@@ -29,7 +40,7 @@ class FreeformImporter
     private const BATCH_SIZE = 100;
 
     private array $formsByUid = [];
-    private array $notificationIdMap = [];
+    private array $notificationTransferIdMap = [];
     private FreeformDataset $dataset;
     private SSE $sse;
 
@@ -41,7 +52,7 @@ class FreeformImporter
     public function import(FreeformDataset $dataset, SSE $sse): void
     {
         $this->sse = $sse;
-        $this->notificationIdMap = [];
+        $this->notificationTransferIdMap = [];
         $this->dataset = $dataset;
 
         $this->announceTotals();
@@ -111,26 +122,43 @@ class FreeformImporter
                 continue;
             }
 
-            $this->formsByUid[$form->uid] = $form;
+            $this->formsByUid[$form->uid] = $formRecord;
 
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
 
             $fieldRecords = [];
+            $pageRecords = [];
+            $notificationRecords = [];
 
             foreach ($form->notifications as $notification) {
                 $notificationRecord = new FormNotificationRecord();
-                $notificationRecord->uid = StringHelper::UUID();
+                $notificationRecord->uid = $notification->uid;
                 $notificationRecord->formId = $formRecord->id;
                 $notificationRecord->class = $notification->type;
                 $notificationRecord->enabled = true;
 
                 $metadata = $notification->metadata;
                 $metadata['name'] = $notification->name;
-                $metadata['enabled'] = true;
-                $metadata[$notification->idAttribute] = $this->notificationIdMap[$notification->id] ?? null;
+                $metadata['enabled'] = $notification->enabled;
+
+                $oldTemplateId = $metadata[$notification->idAttribute];
+                $metadata[$notification->idAttribute] = $this->notificationTransferIdMap[$oldTemplateId] ?? null;
+
+                if (Dynamic::class === $notification->type) {
+                    $recipientMapping = [];
+
+                    foreach ($metadata['recipientMapping'] as $recipient) {
+                        $recipient['template'] = $this->notificationTransferIdMap[$recipient['template']] ?? null;
+                        $recipientMapping[] = $recipient;
+                    }
+
+                    $metadata['recipientMapping'] = $recipientMapping;
+                }
 
                 $notificationRecord->metadata = json_encode($metadata);
                 $notificationRecord->save();
+
+                $notificationRecords[$notificationRecord->uid] = $notificationRecord;
             }
 
             foreach ($form->pages as $pageIndex => $page) {
@@ -162,10 +190,96 @@ class FreeformImporter
                 ]);
 
                 $pageRecord->save();
+
+                $pageRecords[$pageRecord->uid] = $pageRecord;
             }
 
             $manager = new ContentManager($formInstance, $fieldRecords);
             $manager->performDatabaseColumnAlterations();
+
+            foreach ($form->rules as $rule) {
+                $ruleRecord = RuleRecord::findOne(['uid' => $rule->uid]);
+                if ($ruleRecord) {
+                    if ($isStrategySkip) {
+                        continue;
+                    }
+                    $ruleRecord->delete();
+                }
+
+                $ruleRecord = new RuleRecord();
+                $ruleRecord->uid = $rule->uid;
+                $ruleRecord->combinator = $rule->combinator;
+                $ruleRecord->save();
+
+                if (FieldRule::class === $rule->type) {
+                    $fieldRecord = $fieldRecords[$rule->metadata['fieldUid']] ?? null;
+                    if (!$fieldRecord) {
+                        continue;
+                    }
+
+                    $fieldRuleRecord = new FieldRuleRecord();
+                    $fieldRuleRecord->id = $ruleRecord->id;
+                    $fieldRuleRecord->fieldId = $fieldRecord->id;
+                    $fieldRuleRecord->display = $rule->metadata['display'];
+                    $fieldRuleRecord->save();
+                }
+
+                if (PageRule::class === $rule->type) {
+                    $pageRecord = $pageRecords[$rule->metadata['pageUid']] ?? null;
+                    if (!$pageRecord) {
+                        continue;
+                    }
+
+                    $pageRuleRecord = new PageRuleRecord();
+                    $pageRuleRecord->id = $ruleRecord->id;
+                    $pageRuleRecord->pageId = $pageRecord->id;
+                    $pageRuleRecord->save();
+                }
+
+                if (ButtonRule::class === $rule->type) {
+                    $pageRecord = $pageRecords[$rule->metadata['pageUid']] ?? null;
+                    if (!$pageRecord) {
+                        continue;
+                    }
+
+                    $buttonRuleRecord = new ButtonRuleRecord();
+                    $buttonRuleRecord->id = $ruleRecord->id;
+                    $buttonRuleRecord->pageId = $pageRecord->id;
+                    $buttonRuleRecord->button = $rule->metadata['button'];
+                    $buttonRuleRecord->display = $rule->metadata['display'];
+                    $buttonRuleRecord->save();
+                }
+
+                if (SubmitFormRule::class === $rule->type) {
+                    $submitFormRuleRecord = new SubmitFormRuleRecord();
+                    $submitFormRuleRecord->id = $ruleRecord->id;
+                    $submitFormRuleRecord->formId = $formRecord->id;
+                    $submitFormRuleRecord->save();
+                }
+
+                if (NotificationRule::class === $rule->type) {
+                    $notificationRecord = $notificationRecords[$rule->metadata['notificationUid']] ?? null;
+                    if (!$notificationRecord) {
+                        continue;
+                    }
+
+                    $notificationRuleRecord = new NotificationRuleRecord();
+                    $notificationRuleRecord->id = $ruleRecord->id;
+                    $notificationRuleRecord->notificationId = $notificationRecord->id;
+                    $notificationRuleRecord->send = $rule->metadata['send'] ?? true;
+                    $notificationRuleRecord->save();
+                }
+
+                foreach ($rule->conditions as $condition) {
+                    $conditionRecord = new RuleConditionRecord();
+                    $conditionRecord->uid = $condition->uid;
+                    $conditionRecord->ruleId = $ruleRecord->id;
+                    $conditionRecord->fieldId = FormFieldRecord::findOne(['uid' => $condition->fieldUid])->id;
+                    $conditionRecord->operator = $condition->operator;
+                    $conditionRecord->value = $condition->value;
+                    $conditionRecord->save();
+                }
+            }
 
             $this->sse->message('progress', 1);
         }
@@ -214,7 +328,7 @@ class FreeformImporter
 
                 $fieldRecord->save();
 
-                $fieldRecords[] = $fieldRecord;
+                $fieldRecords[$fieldRecord->uid] = $fieldRecord;
             }
         }
 
@@ -223,7 +337,7 @@ class FreeformImporter
 
     private function importNotifications(): void
     {
-        $this->notificationIdMap = [];
+        $this->notificationTransferIdMap = [];
 
         $collection = $this->dataset->getNotificationTemplates();
         if (!$collection) {
@@ -234,22 +348,29 @@ class FreeformImporter
 
         $this->sse->message('reset', $collection->count());
 
+        $existingNotifications = $this->notificationsService->getAllNotifications();
+        $notificationsByIdentificator = [];
+        foreach ($existingNotifications as $notification) {
+            $notificationsByIdentificator[$notification->uid ?? $notification->filepath] = $notification;
+        }
+
         foreach ($collection as $notification) {
             $this->sse->message('info', 'Importing notification: '.$notification->name);
 
-            try {
-                $record = $this->notificationsService->create($notification->name);
-            } catch (NotificationException) {
-                $record = $this->notificationsService->getNotificationById($notification->originalId);
-                if ($record) {
-                    $this->notificationIdMap[$notification->originalId] = $record->id;
-                }
-
+            $record = $notificationsByIdentificator[$notification->uid] ?? null;
+            if ($record) {
                 if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->notificationTransferIdMap[$notification->id] = $record->id;
                     $this->sse->message('progress', 1);
 
                     continue;
                 }
+            } else {
+                $record = $this->notificationsService->create($notification->name);
+            }
+
+            if (!$notification->isFile) {
+                $record->uid = $notification->uid;
             }
 
             $record->name = $notification->name;
@@ -272,7 +393,7 @@ class FreeformImporter
             $record->presetAssets = implode(', ', $notification->presetAssets ?? []);
 
             $this->notificationsService->save($record);
-            $this->notificationIdMap[$notification->originalId] = $record->id;
+            $this->notificationTransferIdMap[$notification->id] = $record->id;
 
             $this->sse->message('progress', 1);
         }

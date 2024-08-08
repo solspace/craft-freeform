@@ -30,7 +30,7 @@ export const useProgressEvent = (): ProgressEvent => {
   const [progress, setProgress] = useState<[number, number]>([0, 0]);
   const [total, setTotal] = useState<[number, number]>([0, 0]);
   const [info, setInfo] = useState<string>();
-  const [errors, setErrors] = useState<string[]>([]);
+  const [errors, setErrors] = useState<string[]>();
   const [listeners, setListeners] = useState<Array<Listener>>([]);
 
   const triggerProgress = (url?: string): void => {
@@ -39,6 +39,7 @@ export const useProgressEvent = (): ProgressEvent => {
 
   const clearProgress = (): void => {
     setUrl(undefined);
+    setErrors(undefined);
     setProgress([0, 0]);
     setTotal([0, 0]);
 
@@ -77,7 +78,10 @@ export const useProgressEvent = (): ProgressEvent => {
     });
 
     source.addEventListener('err', (event) => {
-      setErrors((prev) => [...prev, JSON.parse(event.data)]);
+      const message = event.data;
+      setErrors((prev) =>
+        prev === undefined ? [message] : [...prev, message]
+      );
     });
 
     source.addEventListener('reset', (event) => {

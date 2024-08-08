@@ -57,6 +57,11 @@ class ExpressFormsExporter extends BaseExporter
         $preview->notificationTemplates = $this->collectNotifications();
         $preview->integrations = $this->collectIntegrations();
 
+        $uidToNameMap = [];
+        foreach ($preview->forms as $form) {
+            $uidToNameMap[$form->uid] = $form->name;
+        }
+
         $submissions = (new Query())
             ->select(['COUNT(s.id)'])
             ->from(XFSubmission::TABLE.' s')
@@ -66,13 +71,18 @@ class ExpressFormsExporter extends BaseExporter
             ->column()
         ;
 
-        $submissions = array_map(
-            fn (int $count, string $formUid) => ['formUid' => $formUid, 'count' => (int) $count],
-            $submissions,
-            array_keys($submissions),
-        );
+        $formSubmissions = [];
+        foreach ($submissions as $uid => $count) {
+            $formSubmissions[] = [
+                'form' => [
+                    'uid' => $uid,
+                    'name' => $uidToNameMap[$uid],
+                ],
+                'count' => $count,
+            ];
+        }
 
-        $preview->formSubmissions = $submissions;
+        $preview->formSubmissions = $formSubmissions;
 
         return $preview;
     }
@@ -261,7 +271,7 @@ class ExpressFormsExporter extends BaseExporter
             }
 
             $exported = new NotificationTemplate();
-            $exported->originalId = $notification->fileName;
+            $exported->uid = $notification->fileName;
             $exported->name = $notification->name;
             $exported->handle = CraftStringHelper::toCamelCase($notification->name);
             $exported->description = $notification->getDescription() ?? null;

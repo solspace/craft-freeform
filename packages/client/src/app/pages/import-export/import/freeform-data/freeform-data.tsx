@@ -68,7 +68,7 @@ export const ImportFreeformData: React.FC = () => {
           ...prev,
           forms: data.options.forms.map((form) => form.uid),
           notificationTemplates: data.options.notificationTemplates.map(
-            (template) => template.originalId
+            (template) => template.uid
           ),
           integrations: data.options.integrations.map(
             (integration) => integration.uid

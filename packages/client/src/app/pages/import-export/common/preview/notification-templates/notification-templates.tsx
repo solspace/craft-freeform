@@ -39,7 +39,7 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
             onChange={() =>
               options.length === templates.length
                 ? onUpdate([])
-                : onUpdate(templates.map((template) => template.originalId))
+                : onUpdate(templates.map((template) => template.uid))
             }
           />
         </BlockItem>
@@ -52,35 +52,30 @@ export const PreviewNotificationTemplates: React.FC<Props> = ({
       <ul>
         {templates.map((template) => (
           <ListItem
-            key={template.originalId}
+            key={template.uid}
             className={classes(
               'selectable',
-              options.includes(template.originalId) && 'selected'
+              options.includes(template.uid) && 'selected'
             )}
           >
             <Blocks>
               <BlockItem>
                 <Checkbox
-                  id={`notification-template-${template.originalId}`}
-                  checked={options.includes(template.originalId)}
+                  id={`notification-template-${template.uid}`}
+                  checked={options.includes(template.uid)}
                   onChange={() =>
                     onUpdate(
-                      options.includes(template.originalId)
-                        ? options.filter((id) => id !== template.originalId)
-                        : [...options, template.originalId]
+                      options.includes(template.uid)
+                        ? options.filter((id) => id !== template.uid)
+                        : [...options, template.uid]
                     )
                   }
                 />
               </BlockItem>
               <Spacer $dash />
               <NotificationIcon />
-              <Label
-                $light
-                htmlFor={`notification-template-${template.originalId}`}
-              >
-                {typeof template.originalId === 'string'
-                  ? template.originalId
-                  : template.name}
+              <Label $light htmlFor={`notification-template-${template.uid}`}>
+                {template.name}
               </Label>
             </Blocks>
           </ListItem>

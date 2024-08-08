@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
@@ -22,8 +23,11 @@ use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
+use Solspace\Freeform\Bundles\Backup\DTO\Rule;
+use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
+use Solspace\Freeform\Bundles\Rules\RuleProvider;
 use Solspace\Freeform\Elements\Submission as FFSubmission;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Form as FreeformForm;
@@ -32,6 +36,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\FormRecord;
@@ -43,6 +48,7 @@ class FreeformFormsExporter extends BaseExporter
     public function __construct(
         private NotificationsProvider $notificationsProvider,
         private PropertyProvider $propertyProvider,
+        private RuleProvider $ruleProvider,
         private FormsService $forms,
         private IntegrationsService $integrations,
     ) {}
@@ -53,6 +59,11 @@ class FreeformFormsExporter extends BaseExporter
 
         $preview->forms = $this->collectForms();
         $preview->notificationTemplates = $this->collectNotifications();
+
+        $uidToNameMap = [];
+        foreach ($preview->forms as $form) {
+            $uidToNameMap[$form->uid] = $form->name;
+        }
 
         $integrations = $this->integrations->getAllIntegrations();
         $preview->integrations = new IntegrationCollection();
@@ -75,13 +86,18 @@ class FreeformFormsExporter extends BaseExporter
             ->column()
         ;
 
-        $submissions = array_map(
-            fn (int $count, string $formUid) => ['formUid' => $formUid, 'count' => (int) $count],
-            $submissions,
-            array_keys($submissions),
-        );
+        $formSubmissions = [];
+        foreach ($submissions as $uid => $count) {
+            $formSubmissions[] = [
+                'form' => [
+                    'uid' => $uid,
+                    'name' => $uidToNameMap[$uid],
+                ],
+                'count' => $count,
+            ];
+        }
 
-        $preview->formSubmissions = $submissions;
+        $preview->formSubmissions = $formSubmissions;
 
         return $preview;
     }
@@ -115,6 +131,7 @@ class FreeformFormsExporter extends BaseExporter
             $exported->order = $index;
             $exported->settings = $form->getSettings();
 
+            $exported->rules = $this->collectRules($form);
             $exported->notifications = new NotificationCollection();
 
             $notifications = $this->notificationsProvider->getRecordsByForm($form);
@@ -123,6 +140,7 @@ class FreeformFormsExporter extends BaseExporter
 
                 $exportNotification = new Notification();
                 $exportNotification->id = $notification->id;
+                $exportNotification->uid = $notification->uid;
                 $exportNotification->idAttribute = 'template';
                 $exportNotification->name = $metadata['name'] ?? 'Admin Notification';
                 $exportNotification->type = $notification->class;
@@ -134,6 +152,10 @@ class FreeformFormsExporter extends BaseExporter
             $exported->pages = new PageCollection();
 
             foreach ($form->getLayout()->getPages() as $page) {
+                if (null === $page->getUid()) {
+                    continue;
+                }
+
                 $exportedPage = new Page();
                 $exportedPage->uid = $page->getUid();
                 $exportedPage->layout = $this->compileLayout($page->getLayout(), $formFieldRecords);
@@ -197,12 +219,16 @@ class FreeformFormsExporter extends BaseExporter
         $notifications = Freeform::getInstance()->notifications->getAllNotifications();
 
         foreach ($notifications as $notification) {
-            if (null !== $ids && !\in_array($notification->id, $ids, true)) {
+            $uid = $notification->uid ?? $notification->filepath;
+            if (null !== $ids && !\in_array($uid, $ids, true)) {
                 continue;
             }
 
             $exported = new NotificationTemplate();
-            $exported->originalId = $notification->id;
+            $exported->uid = $uid;
+            $exported->id = $notification->id;
+            $exported->isFile = (bool) $notification->filepath;
+
             $exported->name = $notification->name;
             $exported->handle = $notification->handle;
             $exported->description = $notification->description;
@@ -270,6 +296,89 @@ class FreeformFormsExporter extends BaseExporter
         }
 
         return Freeform::getInstance()->settings->getSettingsModel();
+    }
+
+    private function collectRules(FreeformForm $form): RulesCollection
+    {
+        $collection = new RulesCollection();
+
+        $fieldRules = $this->ruleProvider->getFieldRules($form);
+        foreach ($fieldRules as $rule) {
+            $collection->add(
+                $this->compileRule(
+                    $rule,
+                    [
+                        'fieldUid' => $rule->getFieldUid(),
+                        'display' => $rule->getDisplay(),
+                    ]
+                )
+            );
+        }
+
+        $pageRules = $this->ruleProvider->getPageRules($form);
+        foreach ($pageRules as $rule) {
+            $collection->add(
+                $this->compileRule(
+                    $rule,
+                    ['pageUid' => $rule->getPageUid()]
+                )
+            );
+        }
+
+        $buttonRules = $this->ruleProvider->getButtonRules($form);
+        foreach ($buttonRules as $rule) {
+            $collection->add(
+                $this->compileRule(
+                    $rule,
+                    [
+                        'pageUid' => $rule->getPageUid(),
+                        'display' => $rule->getDisplay(),
+                        'button' => $rule->getButton(),
+                    ]
+                )
+            );
+        }
+
+        $rule = $this->ruleProvider->getSubmitFormRule($form);
+        if ($rule) {
+            $collection->add($this->compileRule($rule));
+        }
+
+        $notificationRules = $this->ruleProvider->getNotificationRules($form);
+        foreach ($notificationRules as $rule) {
+            $collection->add(
+                $this->compileRule(
+                    $rule,
+                    [
+                        'notificationUid' => $rule->getNotification()->getUid(),
+                        'send' => $rule->isSend(),
+                    ]
+                )
+            );
+        }
+
+        return $collection;
+    }
+
+    private function compileRule(RuleInterface $rule, array $metadata = []): Rule
+    {
+        $exported = new Rule();
+        $exported->uid = $rule->getUid();
+        $exported->type = $rule::class;
+        $exported->combinator = $rule->getCombinator();
+        $exported->metadata = $metadata;
+
+        foreach ($rule->getConditions() as $condition) {
+            $exportedCondition = new RuleCondition();
+            $exportedCondition->uid = $condition->getUid();
+            $exportedCondition->fieldUid = $condition->getFieldUid();
+            $exportedCondition->value = $condition->getValue();
+            $exportedCondition->operator = $condition->getOperator();
+
+            $exported->conditions->add($exportedCondition);
+        }
+
+        return $exported;
     }
 
     private function compileLayout(FreeformLayout $layout, array $fieldRecordCache): Layout

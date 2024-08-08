@@ -4,7 +4,10 @@ namespace Solspace\Freeform\Bundles\Backup\DTO;
 
 class NotificationTemplate
 {
-    public null|int|string $originalId = null;
+    public null|int|string $uid = null;
+    public null|int|string $id = null;
+    public bool $isFile = false;
+
     public string $name;
     public string $handle;
     public ?string $description = null;

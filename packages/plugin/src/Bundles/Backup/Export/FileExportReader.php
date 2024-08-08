@@ -11,6 +11,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\RuleConditionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
@@ -21,6 +22,8 @@ use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
+use Solspace\Freeform\Bundles\Backup\DTO\Rule;
+use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
@@ -28,6 +31,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Models\Settings;
+use yii\web\NotFoundHttpException;
 
 class FileExportReader extends BaseExporter
 {
@@ -96,12 +100,34 @@ class FileExportReader extends BaseExporter
             foreach ($json['notifications'] as $notificationJson) {
                 $notification = new Notification();
                 $notification->id = $notificationJson['id'];
+                $notification->uid = $notificationJson['uid'];
                 $notification->name = $notificationJson['name'];
                 $notification->type = $notificationJson['type'];
                 $notification->metadata = $notificationJson['metadata'];
                 $notification->idAttribute = 'template';
 
                 $form->notifications->add($notification);
+            }
+
+            foreach ($json['rules'] as $ruleJson) {
+                $rule = new Rule();
+                $rule->uid = $ruleJson['uid'];
+                $rule->type = $ruleJson['type'];
+                $rule->combinator = $ruleJson['combinator'];
+                $rule->metadata = $ruleJson['metadata'];
+                $rule->conditions = new RuleConditionCollection();
+
+                foreach ($ruleJson['conditions'] as $conditionJson) {
+                    $condition = new RuleCondition();
+                    $condition->uid = $conditionJson['uid'];
+                    $condition->fieldUid = $conditionJson['fieldUid'];
+                    $condition->operator = $conditionJson['operator'];
+                    $condition->value = $conditionJson['value'];
+
+                    $rule->conditions->add($condition);
+                }
+
+                $form->rules->add($rule);
             }
 
             foreach ($json['pages'] as $pageJson) {
@@ -150,12 +176,15 @@ class FileExportReader extends BaseExporter
         $collection = new NotificationTemplateCollection();
 
         foreach ($this->readLineData('notifications.jsonl') as $json) {
-            if (null !== $ids && !\in_array($json['originalId'], $ids)) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
                 continue;
             }
 
             $template = new NotificationTemplate();
-            $template->originalId = $json['originalId'];
+            $template->uid = $json['uid'];
+            $template->id = $json['id'];
+            $template->isFile = $json['isFile'];
+
             $template->name = $json['name'];
             $template->handle = $json['handle'];
             $template->description = $json['description'];
@@ -196,6 +225,10 @@ class FileExportReader extends BaseExporter
         }
 
         foreach ($this->getSubmissionFiles() as $uid => $file) {
+            if (null !== $ids && !\in_array($uid, $ids)) {
+                continue;
+            }
+
             $form = $formsByUid[$uid] ?? null;
             if (!$form) {
                 continue;
@@ -299,7 +332,12 @@ class FileExportReader extends BaseExporter
     private function getSubmissionFiles(): \Generator
     {
         $path = $this->getPath();
-        $files = scandir($path);
+
+        try {
+            $files = scandir($path);
+        } catch (\Exception) {
+            throw new NotFoundHttpException('Import File no longer exists.');
+        }
 
         foreach ($files as $file) {
             if (!str_starts_with($file, 'submissions-')) {

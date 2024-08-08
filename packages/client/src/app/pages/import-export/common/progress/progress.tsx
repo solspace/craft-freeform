@@ -49,7 +49,7 @@ export const Progress: React.FC<PropsWithChildren<Props>> = ({
         </ProgressBar>
       </ProgressWrapper>
 
-      {errors.length > 0 && (
+      {errors?.length > 0 && (
         <ul className="errors">
           {errors.map((error, index) => (
             <li key={index}>{error}</li>
@@ -57,12 +57,14 @@ export const Progress: React.FC<PropsWithChildren<Props>> = ({
         </ul>
       )}
 
-      <DoneWrapper style={doneAnimation}>
-        <Done>
-          <i className="fa-sharp fa-solid fa-check" />
-          <span>{finishLabel}</span>
-        </Done>
-      </DoneWrapper>
+      {!errors?.length && (
+        <DoneWrapper style={doneAnimation}>
+          <Done>
+            <i className="fa-sharp fa-solid fa-check" />
+            <span>{finishLabel}</span>
+          </Done>
+        </DoneWrapper>
+      )}
     </div>
   );
 };

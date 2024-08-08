@@ -24,6 +24,8 @@ class NotificationTemplate implements IdentificatorInterface
     public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     private int|string $id;
+    private string $uid;
+
     private string $name;
     private string $handle;
     private ?string $description = null;
@@ -49,6 +51,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template = new self();
 
         $template->id = $record->id ?? $record->filepath;
+        $template->uid = $record->uid ?? $record->filepath;
         $template->handle = $record->handle;
         $template->name = $record->name;
         $template->description = $record->description;
@@ -75,6 +78,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template->templateData = file_get_contents($filePath);
         $template->handle = pathinfo($filePath, \PATHINFO_FILENAME);
         $template->id = $template->handle;
+        $template->uid = $template->handle;
 
         $name = $template->getMetadata('templateName');
         if (!$name) {

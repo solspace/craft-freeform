@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
 use craft\helpers\App;
+use JetBrains\PhpStorm\NoReturn;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
 use Solspace\Freeform\Bundles\Backup\Export\FreeformFormsExporter;
@@ -74,6 +75,7 @@ class ExportController extends BaseApiController
         return $response;
     }
 
+    #[NoReturn]
     public function actionExport(): void
     {
         App::maxPowerCaptain();

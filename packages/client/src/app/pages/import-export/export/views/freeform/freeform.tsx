@@ -69,7 +69,7 @@ export const ExportFreeform: React.FC = () => {
         ...prev,
         forms: data.forms.map((form) => form.uid),
         notificationTemplates: data.notificationTemplates.map(
-          (template) => template.originalId
+          (template) => template.uid
         ),
       }));
     }

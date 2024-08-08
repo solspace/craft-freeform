@@ -44,7 +44,7 @@ export const Preview: React.FC<Props> = ({
   const filledOptions: ExportOptions = {
     forms: data.forms.map((form) => form.uid),
     notificationTemplates: data.notificationTemplates.map(
-      (template) => template.originalId
+      (template) => template.uid
     ),
     integrations: data.integrations.map((integration) => integration.uid),
     formSubmissions: data.formSubmissions.map(

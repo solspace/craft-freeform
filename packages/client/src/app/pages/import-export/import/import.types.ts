@@ -41,7 +41,8 @@ export type Submissions = {
 };
 
 export type NotificationTemplate = {
-  originalId: number | string;
+  uid: number | string;
+  id: number | string;
   name: string;
   description: string;
 };

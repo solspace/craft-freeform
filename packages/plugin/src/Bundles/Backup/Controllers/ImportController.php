@@ -95,10 +95,14 @@ class ImportController extends BaseApiController
         $exporter = \Craft::$container->get(FileExportReader::class);
         $exporter->setOptions(['fileToken' => $token]);
 
-        return $this->asSerializedJson([
-            'token' => $token,
-            'options' => $exporter->collectDataPreview(),
-        ], 201);
+        return $this->asSerializedJson(
+            [
+                'token' => $token,
+                'options' => $exporter->collectDataPreview(),
+            ],
+            201,
+            ['preserve_empty_objects' => false]
+        );
     }
 
     public function actionImport(): void
@@ -110,6 +114,7 @@ class ImportController extends BaseApiController
         $config = \Craft::$app->cache->get("freeform-import-{$token}");
 
         if (!$config) {
+            $sse->message('err', 'Invalid or Expired token');
             $sse->message('exit', 'Invalid token');
 
             return;
@@ -121,12 +126,24 @@ class ImportController extends BaseApiController
         $exporter = \Craft::$container->get($exporterClass);
         $exporter->setOptions($options);
 
-        $dataset = $exporter->collect();
+        try {
+            $dataset = $exporter->collect();
+        } catch (\Throwable $e) {
+            $sse->message('err', $e->getMessage());
+            $sse->message('exit', 'done');
+
+            return;
+        }
 
         $sse->message('info', 'Starting import');
 
-        $importer = \Craft::$container->get(FreeformImporter::class);
-        $importer->import($dataset, $sse);
+        try {
+            $importer = \Craft::$container->get(FreeformImporter::class);
+            $importer->import($dataset, $sse);
+        } catch (\Throwable $e) {
+            $sse->message('err', $e->getMessage());
+            $sse->message('exit', 'done');
+        }
 
         $exporter->destruct();
 

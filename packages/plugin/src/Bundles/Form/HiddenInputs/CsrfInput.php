@@ -24,11 +24,13 @@ class CsrfInput extends FeatureBundle
 
     public function attachInput(RenderTagEvent $event)
     {
+        $this->setNoCacheHeaders();
         $event->addChunk(Html::csrfInput());
     }
 
     public function attachToJson(OutputAsJsonEvent $event)
     {
+        $this->setNoCacheHeaders();
         $name = \Craft::$app->getConfig()->getGeneral()->csrfTokenName;
         $token = \Craft::$app->request->csrfToken;
 
@@ -36,5 +38,18 @@ class CsrfInput extends FeatureBundle
             'name' => $name,
             'token' => $token,
         ]);
+    }
+
+    /**
+     * Craft 5.2.6/4.10.5+ does this for us, but doesn't hurt to do it manually here for prior versions.
+     */
+    private function setNoCacheHeaders(): void
+    {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        // Prevent response from being cached with token
+        \Craft::$app->getResponse()->setNoCacheHeaders();
     }
 }

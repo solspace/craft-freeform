@@ -215,6 +215,11 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->renderFormHtmlInCpViews;
     }
 
+    public function getQueuePriority(): ?int
+    {
+        return $this->getSettingsModel()->queuePriority;
+    }
+
     public function getSettingsModel(): Settings
     {
         if (null === self::$settingsModel) {

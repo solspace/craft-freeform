@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Jobs;
 
+use craft\helpers\Queue;
 use Solspace\Freeform\Services\SettingsService;
 
 class FreeformQueueHandler
@@ -25,7 +26,7 @@ class FreeformQueueHandler
         $queue = \Craft::$app->getQueue();
 
         if ($this->settingsService->isNotificationQueueEnabled()) {
-            $queue->push($job);
+            Queue::push($job, $this->settingsService->getQueuePriority());
         } else {
             $job->execute($queue);
         }
@@ -36,7 +37,7 @@ class FreeformQueueHandler
         $queue = \Craft::$app->getQueue();
 
         if ($this->settingsService->isIntegrationQueueEnabled()) {
-            $queue->push($job);
+            Queue::push($job, $this->settingsService->getQueuePriority());
         } else {
             $job->execute($queue);
         }

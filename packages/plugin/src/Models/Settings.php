@@ -259,6 +259,8 @@ class Settings extends Model
     /** @var bool */
     public $bypassSpamCheckOnLoggedInUsers;
 
+    public ?int $queuePriority = null;
+
     public array $hiddenFieldTypes = [];
 
     public array $surveys = [];

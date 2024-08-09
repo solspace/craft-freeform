@@ -18,6 +18,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
+use craft\helpers\Queue;
 use craft\services\Fields;
 use craft\services\Search;
 use craft\services\Sites;
@@ -608,19 +609,20 @@ class Freeform extends Plugin
             return;
         }
 
+        $queuePriority = $this->settings->getQueuePriority();
         $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
         if ($assetAge > 0) {
-            \Craft::$app->queue->push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));
+            Queue::push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]), $queuePriority);
         }
 
         $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
         if ($submissionAge > 0) {
-            \Craft::$app->queue->push(new PurgeSubmissionsJob(['age' => $submissionAge]));
+            Queue::push(new PurgeSubmissionsJob(['age' => $submissionAge]), $queuePriority);
         }
 
         $spamAge = $this->settings->getPurgableSpamAgeInDays();
         if ($spamAge > 0) {
-            \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
+            Queue::push(new PurgeSpamJob(['age' => $spamAge]), $queuePriority);
         }
     }
 

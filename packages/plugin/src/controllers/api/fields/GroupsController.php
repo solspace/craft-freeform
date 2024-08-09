@@ -57,10 +57,11 @@ class GroupsController extends BaseApiController
             ],
         ];
 
+        $flattenedAssignedTypes = [];
+
         if ($freeform->isPro()) {
             $hiddenFieldTypes = [];
             $grouped = [];
-            $flattenedAssignedTypes = [];
 
             foreach ($groups as $group) {
                 $decodedTypes = JsonHelper::decode($group['types'], true);
@@ -109,6 +110,16 @@ class GroupsController extends BaseApiController
             ];
         }, $groups);
 
+        foreach ($filteredGroups as $group) {
+            $flattenedAssignedTypes = array_merge($flattenedAssignedTypes, $group->types);
+        }
+
+        $unassignedTypes = array_diff(
+            $types,
+            $flattenedAssignedTypes,
+        );
+
+        $response->types = array_values([...$unassignedTypes]);
         $response->groups['grouped'] = array_values(
             array_filter(
                 $filteredGroups,

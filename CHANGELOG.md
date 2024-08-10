@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.5.6 - 2024-08-10
+
+### Added
+- Added Keap CRM integration.
+- Add a `queuePriority` setting to set the Craft queue priority of Freeform jobs.
+- Verified support for Craft 5.3.x.
+
+### Fixed
+- Fixed issues with permissions when using the Craft Team edition.
+- Fixed a bug where custom field types were not showing in the Express edition.
+- Fixed some minor styling issues on the diagnostics page.
+
 ## 5.5.5 - 2024-07-30
 
 ### Changed

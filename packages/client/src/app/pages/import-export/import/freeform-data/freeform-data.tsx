@@ -1,5 +1,5 @@
 import type { ChangeEventHandler } from 'react';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { Instructions, Label } from '@components/form-controls/control.styles';
 import { FormErrorList } from '@components/form-controls/error-list';
@@ -27,6 +27,8 @@ export const ImportFreeformData: React.FC = () => {
   const [fileToken, setFileToken] = useState<string>();
   const [availableOptions, setAvailableOptions] = useState<FormImportData>();
   const [errors, setErrors] = useState<string[]>();
+  const password = useRef<string>(undefined);
+
   const [options, setOptions] = useState<ImportOptions>({
     forms: [],
     formSubmissions: [],
@@ -50,14 +52,20 @@ export const ImportFreeformData: React.FC = () => {
       return;
     }
 
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
+    const formData = new FormData();
+    formData.append('file', file);
 
+    if (password.current) {
+      formData.append('password', password.current);
+    }
+
+    try {
       const { data } = await axios.post<AvailableOptionResponse>(
         '/api/import/file',
         formData,
-        { headers: { 'Content-Type': 'multipart/form-data' } }
+        {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }
       );
 
       setAvailableOptions(data.options);
@@ -81,7 +89,17 @@ export const ImportFreeformData: React.FC = () => {
       }
     } catch (error) {
       setErrors(error?.errors?.import?.file);
-      console.error('Failed to upload file', error);
+
+      if (error.status === 403) {
+        password.current = undefined;
+        const userPassword = prompt(translate('Enter password'));
+        if (!userPassword) {
+          return;
+        }
+
+        password.current = userPassword;
+        onChange(event);
+      }
     }
   };
 

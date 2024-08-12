@@ -63,6 +63,7 @@ class FreeformFormsExporter extends BaseExporter
 
         $preview->forms = $this->collectForms();
         $preview->notificationTemplates = $this->collectNotifications();
+        $preview->settings = (bool) $this->collectSettings(true);
 
         $uidToNameMap = [];
         foreach ($preview->forms as $form) {

@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
-use craft\helpers\FileHelper as CraftFileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\FileLineProcessor;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
@@ -41,14 +40,6 @@ class FileExportReader extends BaseExporter
         private IntegrationTypeProvider $integrationTypeProvider,
     ) {}
 
-    public function destruct(): void
-    {
-        $path = $this->getPath();
-        if (file_exists($path) && is_dir($path)) {
-            CraftFileHelper::removeDirectory($path);
-        }
-    }
-
     public function collectDataPreview(): ImportPreview
     {
         $preview = new ImportPreview();
@@ -56,6 +47,7 @@ class FileExportReader extends BaseExporter
         $preview->forms = $this->collectForms();
         $preview->notificationTemplates = $this->collectNotifications();
         $preview->integrations = $this->collectIntegrations();
+        $preview->settings = (bool) $this->collectSettings(true);
 
         $uidToNameMap = [];
         foreach (Freeform::getInstance()->forms->getAllForms() as $form) {
@@ -276,7 +268,12 @@ class FileExportReader extends BaseExporter
             return null;
         }
 
-        $content = $this->getFileContents('settings.json');
+        try {
+            $content = $this->getFileContents('settings.json');
+        } catch (\Exception) {
+            return null;
+        }
+
         $json = json_decode($content, true);
 
         $defaults = $json['defaults'];

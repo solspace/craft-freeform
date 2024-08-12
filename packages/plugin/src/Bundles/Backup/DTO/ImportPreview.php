@@ -12,4 +12,5 @@ class ImportPreview
     public NotificationTemplateCollection $notificationTemplates;
     public IntegrationCollection $integrations;
     public array $formSubmissions = [];
+    public bool $settings = false;
 }

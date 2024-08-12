@@ -93,10 +93,12 @@ export const Preview: React.FC<Props> = ({
             }
           />
 
-          <PreviewSettings
-            value={options.settings}
-            onUpdate={(settings) => onUpdate({ ...options, settings })}
-          />
+          {data.settings && (
+            <PreviewSettings
+              value={options.settings}
+              onUpdate={(settings) => onUpdate({ ...options, settings })}
+            />
+          )}
         </ul>
       </FileList>
     </PreviewWrapper>

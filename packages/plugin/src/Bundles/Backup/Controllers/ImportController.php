@@ -71,6 +71,7 @@ class ImportController extends BaseApiController
         }
 
         $token = CryptoHelper::getUniqueToken(14);
+        $password = $this->request->post('password');
 
         $zipPath = $file['tmp_name'];
         $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
@@ -81,6 +82,10 @@ class ImportController extends BaseApiController
         $zip = new \ZipArchive();
         $zip->open($zipPath);
 
+        if ($password) {
+            $zip->setPassword($password);
+        }
+
         try {
             $zip->extractTo($unzipPath);
         } catch (\ValueError) {
@@ -88,6 +93,13 @@ class ImportController extends BaseApiController
             $errors->add('import', 'file', ['Failed to extract ZIP file']);
 
             throw new ApiException(400, $errors);
+        }
+
+        if (\ZipArchive::ER_OK !== $zip->status) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', [$zip->getStatusString()]);
+
+            throw new ApiException(403, $errors);
         }
 
         $zip->close();

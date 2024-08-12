@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import { ContentContainer } from '@components/layout/blocks/content-container';
+import { Field } from '@components/layout/blocks/field';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { Preview } from '@ff-client/app/pages/import-export/common/preview/preview';
 import { Progress } from '@ff-client/app/pages/import-export/common/progress/progress';
@@ -92,19 +93,19 @@ export const ExportFreeform: React.FC = () => {
       <Breadcrumb id="export-forms" label="Forms" url="export/forms" />
 
       {data && (
-        <div className="field">
-          <div className="heading">
-            <label htmlFor="">{translate('Select Data')}</label>
-          </div>
-          <div className="input">
-            <Preview
-              disabled={false}
-              data={data}
-              options={options}
-              onUpdate={(options) => setOptions(options)}
-            />
-          </div>
-        </div>
+        <Field
+          label={translate('Select Data to Export')}
+          instructions={translate(
+            "You can choose which data to export. If you don't export a form for which you have submissions, the submissions will not be imported."
+          )}
+        >
+          <Preview
+            disabled={false}
+            data={data}
+            options={options}
+            onUpdate={(options) => setOptions(options)}
+          />
+        </Field>
       )}
 
       <String
@@ -130,6 +131,7 @@ export const ExportFreeform: React.FC = () => {
               !options.notificationTemplates.length &&
               !options.integrations.length &&
               !options.formSubmissions.length &&
+              !options.settings &&
               'disabled'
           )}
           disabled={isCurrentlyActive}

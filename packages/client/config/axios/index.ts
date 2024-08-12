@@ -54,9 +54,7 @@ axios.interceptors.response.use(null, (error) => {
   }
 
   if (error.response?.data?.errors) {
-    return Promise.reject(
-      new APIError(error.message, error.response.data.errors)
-    );
+    return Promise.reject(new APIError(error));
   }
 
   return Promise.reject(error);

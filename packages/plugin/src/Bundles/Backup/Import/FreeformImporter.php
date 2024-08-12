@@ -64,6 +64,7 @@ class FreeformImporter
 
         $this->announceTotals();
 
+        $this->importSettings();
         $this->importNotifications();
         $this->importIntegrations();
         $this->importForms();
@@ -547,6 +548,31 @@ class FreeformImporter
                     $this->sse->message('progress', 1);
                 }
             }
+        }
+    }
+
+    private function importSettings(): void
+    {
+        $settings = $this->dataset->getSettings();
+        if (!$settings) {
+            return;
+        }
+
+        $data = $settings->toArray();
+
+        $freeform = Freeform::getInstance();
+        $freeform->setSettings($data);
+        $freeform->getSettings()->prepareFolderStructure();
+
+        \Craft::$app->plugins->savePluginSettings($freeform, $data);
+
+        $projectConfig = \Craft::$app->projectConfig;
+        $projectConfig->processConfigChanges('plugins.'.$freeform->id);
+        $projectConfig->writeYamlFiles();
+
+        $errors = $freeform->getSettings()->getErrorSummary(true);
+        if ($errors) {
+            $this->sse->message('err', implode('; ', $errors));
         }
     }
 }

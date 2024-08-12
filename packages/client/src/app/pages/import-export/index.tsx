@@ -10,7 +10,7 @@ import { ImportExportWrapper } from './index.styles';
 
 export const ImportExport: React.FC = () => {
   const { pathname } = useLocation();
-  useSidebarSelect(5);
+  useSidebarSelect(4);
   useQueryFormsWithStats();
 
   let title: string;

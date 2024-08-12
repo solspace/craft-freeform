@@ -58,7 +58,7 @@ export type FormImportData = {
   formSubmissions: Submissions[];
   notificationTemplates: NotificationTemplate[];
   integrations: Integration[];
-  settings: string[];
+  settings: boolean;
 };
 
 export type ImportStrategy = 'replace' | 'skip';

@@ -6,7 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { useEditorAnimations } from '@components/form-controls/preview/previewable-component.animations';
-import SpinnerIcon from '@components/loaders/loading-text/spinner.svg';
+import SpinnerIcon from '@components/loaders/spinner.svg';
 import { useEscapeStack } from '@ff-client/contexts/escape/escape.context';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';

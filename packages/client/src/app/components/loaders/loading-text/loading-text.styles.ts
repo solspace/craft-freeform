@@ -8,7 +8,8 @@ export const LoadingTextWrapper = styled.span`
     width: 1.5em;
     height: 1.5em;
 
-    padding-right: 5px;
+    padding-top: 5px;
+    padding-right: 10px;
 
     fill: currentColor;
   }

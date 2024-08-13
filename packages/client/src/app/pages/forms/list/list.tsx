@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
@@ -29,18 +30,10 @@ export const List: React.FC = () => {
   const formLimit = config.limits.forms;
   const formCount = data?.length || 1;
 
-  const archivedForms =
-    !isFetching &&
-    data &&
-    data.filter(({ dateArchived }) => dateArchived !== null);
-
-  const forms =
-    !isFetching &&
-    data &&
-    data.filter(({ dateArchived }) => dateArchived === null);
+  const forms = data?.filter(({ dateArchived }) => !dateArchived);
+  const archivedForms = data?.filter(({ dateArchived }) => !!dateArchived);
 
   const isEmpty = !isFetching && forms && !forms.length;
-
   const isExpressEdition = config.editions.is(Edition.Express);
 
   const gridRef = useRef<HTMLUListElement>(null);
@@ -73,7 +66,11 @@ export const List: React.FC = () => {
   return (
     <>
       <Header>
-        <Title>{translate('Forms')}</Title>
+        <Title>
+          <LoadingText spinner loading={isFetching}>
+            {translate('Forms')}
+          </LoadingText>
+        </Title>
 
         <ListSites />
 

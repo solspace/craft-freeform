@@ -30,22 +30,8 @@ class StatusModel extends Model implements \JsonSerializable
     public ?int $id = null;
     public string $name = '';
     public string $handle = '';
-    public string $color = '#27AE60';
+    public string $color = 'gray';
     public int $sortOrder = 0;
-
-    private static array $hexMap = [
-        'green' => '#27AE60',
-        'orange' => '#F2842D',
-        'red' => '#D0021B',
-        'yellow' => '#F1C40E',
-        'pink' => '#FF50F2',
-        'purple' => '#9B59B6',
-        'blue' => '#0D99F2',
-        'turquoise' => '#2CE0BD',
-        'light' => '#CCD1D6',
-        'grey' => '#98A3AE',
-        'black' => '#32475E',
-    ];
 
     public function __toString()
     {
@@ -66,7 +52,7 @@ class StatusModel extends Model implements \JsonSerializable
 
     public function getColorHex(): string
     {
-        return self::$hexMap[$this->color] ?? '#FFFFFF';
+        return $this->color;
     }
 
     public function safeAttributes(): array

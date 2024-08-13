@@ -4,17 +4,6 @@
 {% set selectedSubnavItem = 'submissions' %}
 {% set elementType = 'Solspace\\Freeform\\Elements\\Submission' %}
 
-{% css %}
-
-    {% for status in statuses %}
-        .status.{{ status.name }} {
-            border: 1px solid  rgba(0, 0, 0, 0.20) !important;
-            background-color: {{ status.colorHex }};
-        }
-    {% endfor %}
-
-{% endcss %}
-
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "Submissions"|t("freeform"), url: url("freeform/submissions") },

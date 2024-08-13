@@ -30,16 +30,25 @@ class StatusRecord extends ActiveRecord
     public static function getAllowedColors(): array
     {
         return [
-            'green',
-            'blue',
-            'yellow',
-            'orange',
             'red',
-            'pink',
+            'orange',
+            'amber',
+            'yellow',
+            'lime',
+            'green',
+            'emerald',
+            'teal',
+            'cyan',
+            'sky',
+            'blue',
+            'indigo',
+            'violet',
             'purple',
-            'turquoise',
-            'light',
-            'grey',
+            'fuchsia',
+            'pink',
+            'rose',
+            'white',
+            'gray',
             'black',
         ];
     }

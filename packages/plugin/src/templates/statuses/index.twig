@@ -37,7 +37,7 @@
             {% for status in statuses %}
                 <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
+                        <span class="color-indicator {{ status.color }}"></span>
                         {% if currentUser.can("freeform-settingsAccess") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
                                 {{ status.name }}

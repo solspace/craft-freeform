@@ -8,10 +8,10 @@ use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
+use craft\enums\Color;
 use craft\events\RegisterElementActionsEvent;
 use craft\helpers\Cp;
 use craft\helpers\Db;
-use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
@@ -24,7 +24,6 @@ use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
-use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
@@ -210,14 +209,16 @@ class Submission extends Element
 
     public static function statuses(): array
     {
-        $statuses = Freeform::getInstance()->statuses->getAllStatuses();
+        $statuses = [];
 
-        $list = [];
-        foreach ($statuses as $status) {
-            $list[$status->handle] = ['label' => $status->name, 'color' => $status->color];
+        foreach (Freeform::getInstance()->statuses->getAllStatuses() as $status) {
+            $statuses[$status->handle] = [
+                'label' => $status->name,
+                'color' => self::getCraftColor($status->color),
+            ];
         }
 
-        return $list;
+        return $statuses;
     }
 
     public static function create(Form $form): self
@@ -823,13 +824,13 @@ class Submission extends Element
     protected function attributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
-            return $this->getStatusModel()->name;
+            return Cp::componentStatusLabelHtml($this);
         }
 
         if ('userId' === $attribute) {
             $user = $this->getAuthor();
 
-            return $user ? Cp::elementChipHtml($user) : '';
+            return $user ? Cp::elementHtml($user) : '';
         }
 
         if ('spamReasons' === $attribute) {
@@ -876,6 +877,116 @@ class Submission extends Element
     protected function getNotesService(): NotesService
     {
         return Freeform::getInstance()->notes;
+    }
+
+    private static function getCraftColor(string $statusColor): Color
+    {
+        switch ($statusColor) {
+            case 'red':
+                $color = Color::Red;
+
+                break;
+
+            case 'orange':
+                $color = Color::Orange;
+
+                break;
+
+            case 'amber':
+                $color = Color::Amber;
+
+                break;
+
+            case 'rose':
+                $color = Color::Rose;
+
+                break;
+
+            case 'pink':
+                $color = Color::Pink;
+
+                break;
+
+            case 'lime':
+                $color = Color::Lime;
+
+                break;
+
+            case 'emerald':
+                $color = Color::Emerald;
+
+                break;
+
+            case 'teal':
+                $color = Color::Teal;
+
+                break;
+
+            case 'green':
+                $color = Color::Green;
+
+                break;
+
+            case 'yellow':
+                $color = Color::Yellow;
+
+                break;
+
+            case 'violet':
+                $color = Color::Violet;
+
+                break;
+
+            case 'indigo':
+                $color = Color::Indigo;
+
+                break;
+
+            case 'fuchsia':
+                $color = Color::Fuchsia;
+
+                break;
+
+            case 'purple':
+                $color = Color::Purple;
+
+                break;
+
+            case 'cyan':
+                $color = Color::Cyan;
+
+                break;
+
+            case 'sky':
+                $color = Color::Sky;
+
+                break;
+
+            case 'blue':
+                $color = Color::Blue;
+
+                break;
+
+            case 'gray':
+                $color = Color::Gray;
+
+                break;
+
+            case 'white':
+                $color = Color::White;
+
+                break;
+
+            case 'black':
+                $color = Color::Black;
+
+                break;
+
+            default:
+                $color = Color::Gray;
+        }
+
+        return $color;
     }
 
     private function generateToken(): void

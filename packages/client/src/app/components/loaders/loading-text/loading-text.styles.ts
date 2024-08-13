@@ -2,15 +2,9 @@ import { animated } from 'react-spring';
 import styled, { keyframes } from 'styled-components';
 
 export const LoadingTextWrapper = styled.span`
-  display: inline-flex;
+  display: flex;
 
   svg {
-    width: 1.5em;
-    height: 1.5em;
-
-    padding-top: 5px;
-    padding-right: 10px;
-
     fill: currentColor;
   }
 `;
@@ -40,6 +34,15 @@ export const LoadingTextContainer = styled(TextBlock)``;
 export const SpinnerContainer = styled(animated.span)`
   overflow: hidden;
   transform-origin: center right;
+
+  align-self: center;
+  width: 20px;
+  height: 16px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
 `;
 
 export const DotContainer = styled(animated.span)`

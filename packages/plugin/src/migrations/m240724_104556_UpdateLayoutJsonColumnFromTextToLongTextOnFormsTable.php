@@ -14,7 +14,7 @@ class m240724_104556_UpdateLayoutJsonColumnFromTextToLongTextOnFormsTable extend
         if ($this->db->getIsPgsql()) {
             // Manually construct the SQL for Postgres
             // (see https://github.com/yiisoft/yii2/issues/12077)
-            $this->execute('ALTER TABLE {{%freeform_forms}} ALTER COLUMN [[layoutJson]] TYPE LONGTEXT');
+            $this->execute('ALTER TABLE {{%freeform_forms}} ALTER COLUMN [[layoutJson]] TYPE TEXT');
         } else {
             $this->alterColumn('{{%freeform_forms}}', 'layoutJson', $this->longText());
         }

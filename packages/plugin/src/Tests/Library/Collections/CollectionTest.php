@@ -14,14 +14,14 @@ class CollectionTest extends TestCase
 {
     public function testChecksForImplementation()
     {
-        $collection = new class() extends Collection {
+        $collection = new class extends Collection {
             protected static function supports(): array
             {
                 return [\JsonSerializable::class, \ArrayAccess::class];
             }
         };
 
-        $first = new class() implements \JsonSerializable {
+        $first = new class implements \JsonSerializable {
             public string $test = 'test';
 
             public function jsonSerialize(): array
@@ -32,7 +32,7 @@ class CollectionTest extends TestCase
 
         $collection->add($first);
 
-        $second = new class() implements \ArrayAccess {
+        $second = new class implements \ArrayAccess {
             public function offsetExists(mixed $offset): bool
             {
                 return true;
@@ -55,11 +55,11 @@ class CollectionTest extends TestCase
 
     public function testThrowsOnInvalidType()
     {
-        $object = new class() {
+        $object = new class {
             public string $test = 'test';
         };
 
-        $collection = new class() extends Collection {
+        $collection = new class extends Collection {
             protected static function supports(): array
             {
                 return [\JsonSerializable::class];
@@ -74,7 +74,7 @@ class CollectionTest extends TestCase
 
     public function testFiltersOutItemsReturnsNewCollection()
     {
-        $collection = new class() extends Collection {};
+        $collection = new class extends Collection {};
 
         for ($i = 1; $i <= 10; ++$i) {
             $collection->add($i);

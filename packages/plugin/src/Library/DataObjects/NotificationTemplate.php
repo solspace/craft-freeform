@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 
 class NotificationTemplate implements IdentificatorInterface
 {
-    public const METADATA_PATTERN = '/{#\\s*__KEY__:\\s*(.*)#}/';
+    public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     private int|string $id;
     private string $name;
@@ -236,7 +236,7 @@ class NotificationTemplate implements IdentificatorInterface
             [$_, $value] = $matches;
             $value = trim($value);
         } elseif ($required) {
-            throw new EmailTemplateException(sprintf("Email template does not contain '%s'", $key));
+            throw new EmailTemplateException(\sprintf("Email template does not contain '%s'", $key));
         }
 
         return $value;

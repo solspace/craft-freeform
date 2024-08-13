@@ -28,9 +28,9 @@ class FileHelperTest extends TestCase
         return [
             ['/path/to/file', true],
             ['path/to/file', false],
-            ['C:\\path\\to\\file', true],
+            ['C:\path\to\file', true],
             ['D:/path/to/file', true],
-            ['ZD:\\path\\to\\file', true],
+            ['ZD:\path\to\file', true],
             ['//path/to/file', true],
         ];
     }

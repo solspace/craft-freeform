@@ -45,7 +45,7 @@ class RoutesComponent extends AbstractJsonComponent
 
                 $urlParts[0] = $demoFolder.$urlParts[0];
 
-                $pattern = '/(\\/?)(.*)/';
+                $pattern = '/(\/?)(.*)/';
                 $template = preg_replace($pattern, "$1{$demoFolder}$2", $route->template, 1);
 
                 // Compile the URI parts into a regex pattern

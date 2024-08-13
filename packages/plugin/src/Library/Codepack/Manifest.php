@@ -91,7 +91,7 @@ class Manifest
 
         if (!$fs->exists($manifestPath)) {
             throw new ManifestNotPresentException(
-                sprintf('Manifest file is not present in %s', $manifestPath)
+                \sprintf('Manifest file is not present in %s', $manifestPath)
             );
         }
 
@@ -102,13 +102,13 @@ class Manifest
             if (\in_array($property, self::$requiredProperties, true)) {
                 if (!isset($data[$property])) {
                     throw new ManifestException(
-                        sprintf('Mandatory "%s" property not defined in manifest.json', $property)
+                        \sprintf('Mandatory "%s" property not defined in manifest.json', $property)
                     );
                 }
 
                 if (empty($data[$property])) {
                     throw new ManifestException(
-                        sprintf('Mandatory "%s" property is empty in manifest.json', $property)
+                        \sprintf('Mandatory "%s" property is empty in manifest.json', $property)
                     );
                 }
             }

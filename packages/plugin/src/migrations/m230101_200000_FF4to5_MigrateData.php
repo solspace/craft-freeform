@@ -495,7 +495,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         switch ($target) {
             case 'numbers':
                 return [
-                    'typeClass' => 'Solspace\\Freeform\\Fields\\Properties\\Options\\Predefined\\Types\\Numbers\\Numbers',
+                    'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers',
                     'properties' => [
                         'step' => 1,
                         'first' => $configuration->start ?? 0,
@@ -613,7 +613,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             case 'states_territories':
             default:
                 return [
-                    'typeClass' => 'Solspace\\Freeform\\Fields\\Properties\\Options\\Predefined\\Types\\States\\States',
+                    'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States',
                     'properties' => [
                         'value' => $configuration->valueType ?? 'abbreviated',
                         'label' => $configuration->listType ?? 'full',

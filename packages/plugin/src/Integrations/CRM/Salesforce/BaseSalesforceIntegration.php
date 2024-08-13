@@ -171,7 +171,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected function query(Client $client, string $query, array $params = []): array
     {
         $params = array_map([$this, 'soqlEscape'], $params);
-        $query = sprintf($query, ...$params);
+        $query = \sprintf($query, ...$params);
 
         $response = $client->get(
             $this->getEndpoint('/query'),

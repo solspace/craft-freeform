@@ -261,7 +261,7 @@ class ExportProfilesService extends Component
 
     public function export(ExportInterface $exporter, Form $form)
     {
-        $fileName = sprintf(
+        $fileName = \sprintf(
             '%s submissions %s.%s',
             $form->getName(),
             date('Y-m-d H:i', time()),

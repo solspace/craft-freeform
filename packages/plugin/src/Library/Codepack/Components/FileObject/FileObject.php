@@ -38,7 +38,7 @@ abstract class FileObject
 
         if (!$realPath) {
             throw new FileNotFoundException(
-                sprintf('Path points to nothing: "%s"', $path)
+                \sprintf('Path points to nothing: "%s"', $path)
             );
         }
 

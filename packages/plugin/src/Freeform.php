@@ -399,9 +399,9 @@ class Freeform extends Plugin
     private function initControllerMap(): void
     {
         if (\Craft::$app->request->isConsoleRequest) {
-            $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
+            $this->controllerNamespace = 'Solspace\Freeform\Commands';
         } else {
-            $this->controllerNamespace = 'Solspace\\Freeform\\controllers';
+            $this->controllerNamespace = 'Solspace\Freeform\controllers';
         }
     }
 

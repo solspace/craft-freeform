@@ -43,8 +43,8 @@ class m230824_111101_ChangeMailingListsToEmailMarketing extends Migration
                 [
                     'type' => 'email-marketing',
                     'class' => str_replace(
-                        'Solspace\\Freeform\\Integrations\\MailingLists\\',
-                        'Solspace\\Freeform\\Integrations\\EmailMarketing\\',
+                        'Solspace\Freeform\Integrations\MailingLists\\',
+                        'Solspace\Freeform\Integrations\EmailMarketing\\',
                         $integration['class']
                     ),
                 ],
@@ -86,8 +86,8 @@ class m230824_111101_ChangeMailingListsToEmailMarketing extends Migration
                 [
                     'type' => 'mailing-lists',
                     'class' => str_replace(
-                        'Solspace\\Freeform\\Integrations\\EmailMarketing\\',
-                        'Solspace\\Freeform\\Integrations\\MailingLists\\',
+                        'Solspace\Freeform\Integrations\EmailMarketing\\',
+                        'Solspace\Freeform\Integrations\MailingLists\\',
                         $integration['class']
                     ),
                 ],

@@ -455,7 +455,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
                 break;
         }
 
-        return sprintf(
+        return \sprintf(
             '%s%s%s%s%s',
             $first,
             $this->getDateSeparator(),

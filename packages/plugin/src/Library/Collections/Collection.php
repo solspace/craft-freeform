@@ -115,7 +115,7 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
         }
 
         throw new \InvalidArgumentException(
-            sprintf(
+            \sprintf(
                 'Invalid item type "%s". Valid implementations are: %s',
                 $object::class,
                 implode(', ', static::supports())

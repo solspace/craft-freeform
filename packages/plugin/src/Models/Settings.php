@@ -633,7 +633,7 @@ class Settings extends Model
      */
     private function isFolderAbsolute($path): bool
     {
-        return preg_match('/^(?:\/|\\\\|\w\:\\\\).*$/', $path);
+        return preg_match('/^(?:\/|\\\|\w\:\\\).*$/', $path);
     }
 
     private function getTemplatesInDirectory(?string $templateDirectoryPath = null): array

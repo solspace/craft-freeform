@@ -37,7 +37,7 @@ class m240405_151009_MigrateEntryIntegrations extends Migration
                 } else {
                     $sectionId = $entryType->sectionId;
 
-                    $metadata['sectionEntry'] = sprintf('%s:%s', $sectionId, $entryTypeId);
+                    $metadata['sectionEntry'] = \sprintf('%s:%s', $sectionId, $entryTypeId);
                     unset($metadata['entryTypeId']);
                 }
 
@@ -71,7 +71,7 @@ class m240405_151009_MigrateEntryIntegrations extends Migration
                 } else {
                     $sectionId = $entryType->sectionId;
 
-                    $metadata['sectionEntry'] = sprintf('%s:%s', $sectionId, $entryTypeId);
+                    $metadata['sectionEntry'] = \sprintf('%s:%s', $sectionId, $entryTypeId);
                     unset($metadata['entryTypeId']);
                 }
 

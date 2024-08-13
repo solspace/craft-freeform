@@ -31,7 +31,7 @@ class FileHelper
         }
 
         $hasDirSeparator = \DIRECTORY_SEPARATOR === $path[0];
-        $matchesDriveLetter = preg_match('~\A[A-Z]+:(?![^/\\\\])~i', $path) > 0;
+        $matchesDriveLetter = preg_match('~\A[A-Z]+:(?![^/\\\])~i', $path) > 0;
 
         return $hasDirSeparator || $matchesDriveLetter;
     }

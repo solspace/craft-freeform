@@ -63,7 +63,7 @@ class FileExportReader extends BaseExporter
             $submissions[] = [
                 'form' => [
                     'uid' => $uid,
-                    'name' => $uidToNameMap[$uid],
+                    'name' => $uidToNameMap[$uid] ?? Freeform::t("Unknown, won't be imported."),
                 ],
                 'count' => FileHelper::countLines($file),
             ];

@@ -56,6 +56,7 @@ class FreeformConfig implements \JsonSerializable
                         'id' => $site->id,
                         'name' => $site->name,
                         'handle' => $site->handle,
+                        'primary' => $site->primary,
                     ],
                     $sites,
                 ),

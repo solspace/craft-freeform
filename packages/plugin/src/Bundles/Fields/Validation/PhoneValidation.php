@@ -43,7 +43,7 @@ class PhoneValidation extends FeatureBundle
             return;
         }
 
-        $compiledPattern = preg_replace('/([\[\](){}$+_\-+])/', '\\\\$1', $pattern);
+        $compiledPattern = preg_replace('/([\[\](){}$+_\-+])/', '\\\$1', $pattern);
         preg_match_all('/(0+)/', $compiledPattern, $matches);
 
         if (isset($matches[1])) {

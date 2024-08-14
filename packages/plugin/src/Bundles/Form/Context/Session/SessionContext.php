@@ -81,7 +81,7 @@ class SessionContext
         $value = $form->getProperties()->get(Form::HASH_KEY);
 
         $event->addChunk(
-            sprintf(
+            \sprintf(
                 '<input type="hidden" name="%s" value="%s" />',
                 self::KEY_HASH,
                 $value

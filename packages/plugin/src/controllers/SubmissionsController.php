@@ -130,7 +130,7 @@ class SubmissionsController extends BaseController
         }
 
         $exporter = new ExportCsv($form, $data, $this->getExportProfileService()->getExportSettings());
-        $fileName = sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
+        $fileName = \sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }

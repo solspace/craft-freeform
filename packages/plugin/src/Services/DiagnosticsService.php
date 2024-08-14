@@ -117,7 +117,7 @@ class DiagnosticsService extends BaseService
             ),
             new DiagnosticItem(
                 'OS: <b>{{ value }}</b>',
-                sprintf('%s %s', \PHP_OS, php_uname('r')),
+                \sprintf('%s %s', \PHP_OS, php_uname('r')),
             ),
             new DiagnosticItem(
                 'Dev Mode: <b>{{ value.devmode == 1 ? "On" : "Off" }}</b> / Allow Admin Changes: <b>{{ value.allowadmin == 1 ? "Yes" : "No" }}</b>',

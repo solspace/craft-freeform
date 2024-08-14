@@ -632,13 +632,13 @@ class FormsService extends BaseService implements FormHandlerInterface
             $reflection = new \ReflectionClass($type);
         } catch (\ReflectionException) {
             throw new InvalidFormTypeException(
-                sprintf('Unregistered form type used: "%s"', $type)
+                \sprintf('Unregistered form type used: "%s"', $type)
             );
         }
 
         if (!$reflection->isSubclassOf(Form::class)) {
             throw new InvalidFormTypeException(
-                sprintf('Unregistered form type used: "%s"', $type)
+                \sprintf('Unregistered form type used: "%s"', $type)
             );
         }
 

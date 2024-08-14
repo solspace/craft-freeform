@@ -73,7 +73,7 @@ class StringHelperTest extends TestCase
         $this->assertSame(
             $expected,
             $result,
-            sprintf("Failed to extract separated values from \"%s\"\nGot %s", $input, json_encode($result, \JSON_PRETTY_PRINT))
+            \sprintf("Failed to extract separated values from \"%s\"\nGot %s", $input, json_encode($result, \JSON_PRETTY_PRINT))
         );
     }
 

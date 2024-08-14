@@ -56,7 +56,7 @@ class ComparisonHelperTest extends TestCase
         $this->assertSame(
             $expectedResult,
             $result,
-            sprintf(
+            \sprintf(
                 'Pattern "%s" returns "%s" for "%s". Expected: "%s"',
                 $pattern,
                 $result ? 'true' : 'false',
@@ -96,7 +96,7 @@ class ComparisonHelperTest extends TestCase
         $this->assertSame(
             $expectedResult,
             $result,
-            sprintf(
+            \sprintf(
                 'Pattern "%s" returns "%s" for "%s". Expected: "%s"',
                 $pattern,
                 $result ? 'true' : 'false',

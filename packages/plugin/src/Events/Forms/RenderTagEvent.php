@@ -202,7 +202,7 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
         };
 
         if (Settings::SCRIPT_INSERT_LOCATION_FORM === $insertLocation) {
-            return $this->addChunk(sprintf($tag, $chunk));
+            return $this->addChunk(\sprintf($tag, $chunk));
         }
 
         $inserter($chunk, array_merge(['position' => $position], $attributes));

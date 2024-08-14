@@ -156,6 +156,6 @@ class LinearItem implements \JsonSerializable
 
     private function getColor(array $color): string
     {
-        return sprintf('rgba(%s,1)', implode(',', $color));
+        return \sprintf('rgba(%s,1)', implode(',', $color));
     }
 }

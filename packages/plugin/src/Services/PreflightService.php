@@ -28,7 +28,7 @@ class PreflightService extends BaseService
             ),
             new DiagnosticItem(
                 'Pardot',
-                $this->getIntegrationCount('Solspace\\Freeform\\Integrations\\CRM\\Pardot'),
+                $this->getIntegrationCount('Solspace\Freeform\Integrations\CRM\Pardot'),
                 [
                     new WarningValidator(
                         $isEmpty,

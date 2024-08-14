@@ -96,7 +96,7 @@ class ForeignKey
 
         if (!\in_array($handler, self::$handlers, true)) {
             throw new DatabaseException(
-                sprintf(
+                \sprintf(
                     'Cannot set "%s" as onDelete or onUpdate. Use one of these instead: "%s"',
                     $handler,
                     implode('", "', self::$handlers)

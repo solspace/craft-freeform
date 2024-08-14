@@ -90,7 +90,7 @@ class PropertyProviderTest extends TestCase
             $actualValue = $editableProperties->get($handle)->{$key};
 
             try {
-                $message = sprintf(
+                $message = \sprintf(
                     "Property `%s` has a mismatched `%s` value of `%s` (expected '%s')",
                     $handle,
                     $key,

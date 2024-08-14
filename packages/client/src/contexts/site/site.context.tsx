@@ -29,9 +29,13 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [current, setCurrent] = React.useState<Site>(
-    config.sites.list.find((site) => site.id === config.sites.current)
-  );
+  const [current, setCurrent] = React.useState<Site>(() => {
+    const currentSite = config.sites.list.find(
+      (site) => site.id === config.sites.current
+    );
+
+    return currentSite || config.sites.list.find((site) => site.primary);
+  });
 
   useEffect(() => {
     const links = document.querySelectorAll('#nav a[href*="site="]');
@@ -40,7 +44,7 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
       if (href) {
         link.setAttribute(
           'href',
-          href.replace(/([?&])site=[^&]+/, `$1site=${current?.handle}`)
+          href.replace(/([?&])site=[^&]+/, `$1site=${current?.handle || ''}`)
         );
       }
     });

@@ -41,15 +41,15 @@ class m230301_124411_MoveMailingListIntegrationClasses extends Migration
 
     private function getMap(): array
     {
-        $pref = 'Solspace\\Freeform\\Integrations\\MailingLists\\';
+        $pref = 'Solspace\Freeform\Integrations\MailingLists\\';
 
         return [
-            "{$pref}ActiveCampaign" => $pref.'ActiveCampaign\\ActiveCampaign',
-            "{$pref}Campaign" => $pref.'Campaign\\Campaign',
-            "{$pref}CampaignMonitor" => $pref.'CampaignMonitor\\CampaignMonitor',
-            "{$pref}ConstantContact3" => $pref.'ConstantContact\\ConstantContact3',
-            "{$pref}Dotmailer" => $pref.'Dotmailer\\Dotmailer',
-            "{$pref}MailChimp" => $pref.'MailChimp\\MailChimp',
+            "{$pref}ActiveCampaign" => $pref.'ActiveCampaign\ActiveCampaign',
+            "{$pref}Campaign" => $pref.'Campaign\Campaign',
+            "{$pref}CampaignMonitor" => $pref.'CampaignMonitor\CampaignMonitor',
+            "{$pref}ConstantContact3" => $pref.'ConstantContact\ConstantContact3',
+            "{$pref}Dotmailer" => $pref.'Dotmailer\Dotmailer',
+            "{$pref}MailChimp" => $pref.'MailChimp\MailChimp',
         ];
     }
 }

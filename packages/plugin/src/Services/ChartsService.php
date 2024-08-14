@@ -190,8 +190,8 @@ class ChartsService extends BaseService
 
             $labels[] = $forms[$formId]->name;
             $data[] = $count;
-            $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
-            $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));
+            $backgroundColors[] = \sprintf('rgba(%s,0.8)', implode(',', $color));
+            $hoverBackgroundColors[] = \sprintf('rgba(%s,1)', implode(',', $color));
         }
 
         foreach ($formIds as $formId) {
@@ -203,8 +203,8 @@ class ChartsService extends BaseService
 
             $labels[] = $forms[$formId]->getName();
             $data[] = 0;
-            $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
-            $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));
+            $backgroundColors[] = \sprintf('rgba(%s,0.8)', implode(',', $color));
+            $hoverBackgroundColors[] = \sprintf('rgba(%s,1)', implode(',', $color));
         }
 
         return (new RadialChartData())

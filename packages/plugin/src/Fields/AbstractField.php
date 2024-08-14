@@ -469,7 +469,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     public function getIdAttribute(): string
     {
-        $attribute = sprintf('form-input-%s', $this->getHandle());
+        $attribute = \sprintf('form-input-%s', $this->getHandle());
 
         if ($this->parameters->id) {
             $attribute = $this->parameters->id;

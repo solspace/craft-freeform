@@ -44,7 +44,7 @@ class AssetsFileComponent extends AbstractFileComponent
     {
         if (!file_exists($newFilePath)) {
             throw new FileNotFoundException(
-                sprintf('Could not find file: %s', $newFilePath)
+                \sprintf('Could not find file: %s', $newFilePath)
             );
         }
 

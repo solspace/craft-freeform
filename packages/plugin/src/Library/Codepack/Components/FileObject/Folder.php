@@ -67,7 +67,7 @@ class Folder extends FileObject implements \Iterator
 
             if (!file_exists($targetFolderPath)) {
                 throw new FileObjectException(
-                    sprintf(
+                    \sprintf(
                         'Permissions denied. Could not create a folder in "%s".<br>Check how to solve this problem <a href="%s">here</a>',
                         $targetFolderPath,
                         Freeform::PERMISSIONS_HELP_LINK

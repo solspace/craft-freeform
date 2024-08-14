@@ -295,21 +295,21 @@ class Freeform extends Plugin
         $status = StatusRecord::create();
         $status->name = 'Pending';
         $status->handle = 'pending';
-        $status->color = 'light';
+        $status->color = 'orange';
         $status->sortOrder = 1;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Open';
         $status->handle = 'open';
-        $status->color = 'green';
+        $status->color = 'teal';
         $status->sortOrder = 2;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Closed';
         $status->handle = 'closed';
-        $status->color = 'grey';
+        $status->color = 'red';
         $status->sortOrder = 3;
         $status->save();
 

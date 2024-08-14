@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.21 - 2024-08-14
+
+### Fixed
+- Fixed a bug where the `layoutJson` column change migration in 4.1.20 would fail on PostgreSQL.
+
 ## 4.1.20 - 2024-07-30
 
 ### Changed

@@ -87,7 +87,11 @@
             </a>
             <div class="menu">
                 <ul class="padded">
-                    {% for color in ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
+                    {% set colors = ['red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald', 'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple', 'fuchsia', 'pink', 'rose', 'white', 'gray', 'black'] %}
+                    {% if craft.app.version < '5.0.0' %}
+                        {% set colors = ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+                    {% endif %}
+                    {% for color in colors %}
                         <li>
                             <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
                                 <span class="status {{ color }}"></span>

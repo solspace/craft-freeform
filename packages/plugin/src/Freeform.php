@@ -292,24 +292,26 @@ class Freeform extends Plugin
      */
     public function afterInstall(): void
     {
+        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
+
         $status = StatusRecord::create();
         $status->name = 'Pending';
         $status->handle = 'pending';
-        $status->color = 'orange';
+        $status->color = $isCraft5 ? 'orange' : 'light';
         $status->sortOrder = 1;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Open';
         $status->handle = 'open';
-        $status->color = 'teal';
+        $status->color = $isCraft5 ? 'teal' : 'green';
         $status->sortOrder = 2;
         $status->save();
 
         $status = StatusRecord::create();
         $status->name = 'Closed';
         $status->handle = 'closed';
-        $status->color = 'red';
+        $status->color = $isCraft5 ? 'red' : 'grey';
         $status->sortOrder = 3;
         $status->save();
 

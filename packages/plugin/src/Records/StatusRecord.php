@@ -29,26 +29,43 @@ class StatusRecord extends ActiveRecord
 
     public static function getAllowedColors(): array
     {
+        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
+        if ($isCraft5) {
+            return [
+                'red',
+                'orange',
+                'amber',
+                'yellow',
+                'lime',
+                'green',
+                'emerald',
+                'teal',
+                'cyan',
+                'sky',
+                'blue',
+                'indigo',
+                'violet',
+                'purple',
+                'fuchsia',
+                'pink',
+                'rose',
+                'white',
+                'gray',
+                'black',
+            ];
+        }
+
         return [
-            'red',
-            'orange',
-            'amber',
-            'yellow',
-            'lime',
             'green',
-            'emerald',
-            'teal',
-            'cyan',
-            'sky',
             'blue',
-            'indigo',
-            'violet',
-            'purple',
-            'fuchsia',
+            'yellow',
+            'orange',
+            'red',
             'pink',
-            'rose',
-            'white',
-            'gray',
+            'purple',
+            'turquoise',
+            'light',
+            'grey',
             'black',
         ];
     }

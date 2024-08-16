@@ -8,9 +8,8 @@ use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
-use craft\enums\Color;
 use craft\events\RegisterElementActionsEvent;
-use craft\helpers\Cp;
+use craft\helpers\Cp as CraftCp;
 use craft\helpers\Db;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
@@ -35,6 +34,8 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\ColorHelper;
+use Solspace\Freeform\Library\Helpers\Cp;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -216,7 +217,7 @@ class Submission extends Element
         foreach (Freeform::getInstance()->statuses->getAllStatuses() as $status) {
             $statuses[$status->handle] = [
                 'label' => $status->name,
-                'color' => self::getCraftColor($status->color),
+                'color' => ColorHelper::getCraftColor($status->color),
             ];
         }
 
@@ -832,7 +833,7 @@ class Submission extends Element
         if ('userId' === $attribute) {
             $user = $this->getAuthor();
 
-            return $user ? Cp::elementHtml($user) : '';
+            return $user ? CraftCp::elementHtml($user) : '';
         }
 
         if ('spamReasons' === $attribute) {
@@ -879,116 +880,6 @@ class Submission extends Element
     protected function getNotesService(): NotesService
     {
         return Freeform::getInstance()->notes;
-    }
-
-    private static function getCraftColor(string $statusColor): Color
-    {
-        switch ($statusColor) {
-            case 'red':
-                $color = Color::Red;
-
-                break;
-
-            case 'orange':
-                $color = Color::Orange;
-
-                break;
-
-            case 'amber':
-                $color = Color::Amber;
-
-                break;
-
-            case 'rose':
-                $color = Color::Rose;
-
-                break;
-
-            case 'pink':
-                $color = Color::Pink;
-
-                break;
-
-            case 'lime':
-                $color = Color::Lime;
-
-                break;
-
-            case 'emerald':
-                $color = Color::Emerald;
-
-                break;
-
-            case 'teal':
-                $color = Color::Teal;
-
-                break;
-
-            case 'green':
-                $color = Color::Green;
-
-                break;
-
-            case 'yellow':
-                $color = Color::Yellow;
-
-                break;
-
-            case 'violet':
-                $color = Color::Violet;
-
-                break;
-
-            case 'indigo':
-                $color = Color::Indigo;
-
-                break;
-
-            case 'fuchsia':
-                $color = Color::Fuchsia;
-
-                break;
-
-            case 'purple':
-                $color = Color::Purple;
-
-                break;
-
-            case 'cyan':
-                $color = Color::Cyan;
-
-                break;
-
-            case 'sky':
-                $color = Color::Sky;
-
-                break;
-
-            case 'blue':
-                $color = Color::Blue;
-
-                break;
-
-            case 'gray':
-                $color = Color::Gray;
-
-                break;
-
-            case 'white':
-                $color = Color::White;
-
-                break;
-
-            case 'black':
-                $color = Color::Black;
-
-                break;
-
-            default:
-                $color = Color::Gray;
-        }
-
-        return $color;
     }
 
     private function generateToken(): void

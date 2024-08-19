@@ -1,6 +1,33 @@
 {% extends "freeform/_layouts/settings" %}
 {% hook "freeform.prepareCpTemplate" %}
 
+{% if craft.app.version >= '5.0.0' %}
+    {% css %}
+        .color-indicator.status {
+            &.red { background-color: #dc2626 !important; }
+            &.orange { background-color: #fb923c !important; }
+            &.amber { background-color: #f59e0b !important; }
+            &.rose { background-color: #f43f5e !important; }
+            &.pink { background-color: #ec4899 !important; }
+            &.lime { background-color: #84cc16 !important; }
+            &.emerald { background-color: #10b981 !important; }
+            &.teal { background-color: #11a697 !important; }
+            &.green { background-color: #16a34a !important; }
+            &.yellow { background-color: #eab308 !important; }
+            &.violet { background-color: #8b5cf6 !important; }
+            &.indigo { background-color: #6366f1 !important; }
+            &.fuchsia { background-color: #d946ef !important; }
+            &.purple { background-color: #a855f7 !important; }
+            &.cyan { background-color: #06b6d4 !important; }
+            &.sky { background-color: #0ea5e9 !important; }
+            &.blue { background-color: #2563eb !important; }
+            &.gray { background-color: #606d7b !important; }
+            &.white { background-color: #ffffff !important; }
+            &.black { background-color: #000000 !important; }
+        }
+    {% endcss %}
+{% endif %}
+
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },
     { label: "Settings"|t("freeform"), url: url("freeform/settings") },
@@ -37,7 +64,11 @@
             {% for status in statuses %}
                 <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
+                        {% if craft.app.version < '5.0.0' %}
+                            <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
+                        {% else %}
+                            <span class="color-indicator status {{ status.color }}"></span>
+                        {% endif %}
                         {% if currentUser.can("freeform-settingsAccess") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
                                 {{ status.name }}

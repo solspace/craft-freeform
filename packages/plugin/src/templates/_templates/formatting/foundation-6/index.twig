@@ -1,13 +1,17 @@
-{# Pull in CSS and field rendering #}
-<style>
-{% include "freeform/_templates/formatting/foundation-6/_main.css" %}
-</style>
+{# CSS overrides #}
+{% set cssPath = view.assetManager.publishedUrl('@freeform-formatting-templates/foundation-6/_main.css', true) %}
+{% do view.registerCssFile(cssPath) %}
+
+{# JS overrides #}
+{% set jsPath = view.assetManager.publishedUrl('@freeform-formatting-templates/foundation-6/_main.js', true) %}
+{% do view.registerJsFile(jsPath) %}
+
 {% import "freeform/_templates/formatting/foundation-6/_row.twig" as rowMacro %}
 
 {# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
-        form: { class: "freeform-form" },
+        form: { class: "freeform-form", "data-freeform-foundation": true },
         row: { class: "grid-x grid-margin-x" },
         success: { class: "callout success" },
         errors: { class: "callout alert" },
@@ -55,11 +59,6 @@
         },
     },
 }) }}
-
-{# Pull in JS overrides #}
-<script>
-{% include "freeform/_templates/formatting/foundation-6/_main.js" %}
-</script>
 
 {# Success and error message handling for non-AJAX forms #}
 {% if not form.settings.ajax %}

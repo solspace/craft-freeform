@@ -223,6 +223,7 @@ class Freeform extends Plugin
         \Yii::setAlias('@freeform-resources', '@freeform/Resources');
         \Yii::setAlias('@freeform-scripts', '@freeform-resources/js/scripts');
         \Yii::setAlias('@freeform-styles', '@freeform-resources/css');
+        \Yii::setAlias('@freeform-formatting-templates', '@freeform/templates/_templates/formatting');
 
         // TODO: refactor these into separate bundles
         $this->initControllerMap();

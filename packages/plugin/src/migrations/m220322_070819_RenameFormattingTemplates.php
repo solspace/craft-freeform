@@ -12,8 +12,8 @@ use Solspace\Freeform\Freeform;
 class m220322_070819_RenameFormattingTemplates extends Migration
 {
     private static array $renameMap = [
-        'flexbox.html' => 'flexbox.twig',
-        'grid.html' => 'grid.twig',
+        'flexbox.html' => 'flexbox/index.twig',
+        'grid.html' => 'grid/index.twig',
         'bootstrap.html' => 'bootstrap-5/index.twig',
         'bootstrap-4.html' => 'bootstrap-5/index.twig',
         'bootstrap-5.html' => 'bootstrap-5/index.twig',

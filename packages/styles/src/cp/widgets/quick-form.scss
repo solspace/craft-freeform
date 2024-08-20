@@ -1,0 +1,246 @@
+$white: var(--white);
+$red: red;
+$textColor: var(--text-color);
+$gray: #aba7a7;
+$darkRed: #721c24;
+$backgroundPrimary: var(--primary-color);
+$backgroundSecondary: var(--white);
+
+@keyframes freeform-processing {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}
+
+.freeform-widget-quick-form {
+  button[type=submit] {
+    background-color: $backgroundPrimary !important;
+    --ui-control-active-color: var(--white);
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    color: $white !important;
+    font-weight: 500;
+    cursor: pointer;
+    height: var(--ui-control-height);
+    appearance: none;
+    align-items: center;
+    border: none;
+    border-radius: var(--ui-control-border-radius);
+    box-sizing: border-box;
+    display: inline-flex;
+    font-size: inherit;
+    justify-content: center;
+    padding: 7px 14px;
+    position: relative;
+    text-align: center;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .freeform-pages {
+    padding: 0;
+    margin: 0 0 10px;
+    list-style: none;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    li {
+      float: left;
+      margin: 0 10px 0 0;
+    }
+  }
+
+  .freeform-row {
+    display: block;
+    margin: 0 -15px;
+
+    &:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .freeform-column {
+      display: block;
+      padding: 10px 15px;
+      float: left;
+      box-sizing: border-box;
+
+      &:after {
+        content: "";
+        display: table;
+        clear: both;
+      }
+
+      > .freeform-row {
+        &:first-child {
+          margin-top: -10px;
+        }
+      }
+
+      label {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .input-group-one-line {
+        label {
+          display: inline-block;
+          padding-right: 10px;
+        }
+      }
+
+      .freeform-label {
+        font-weight: bold;
+      }
+
+      .freeform-label.freeform-required {
+        &:after {
+          content: "*";
+          margin-left: 5px;
+          color: $red;
+        }
+      }
+
+      .freeform-input {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+        background-clip: padding-box;
+        border: 1px solid rgba(96, 125, 159, .25);
+        border-radius: 3px;
+        min-height: 2.125rem;
+        background-color: $backgroundSecondary;
+        color: $textColor;
+        font-size: 14px;
+        line-height: 20px;
+        padding: 6px 9px;
+      }
+
+      .freeform-input[type=checkbox] {
+        width: auto;
+        display: inline;
+        margin: 0;
+        min-height: auto;
+        margin-right: 5px;
+      }
+
+      .freeform-input[type=radio] {
+        width: auto;
+        display: inline;
+        margin: 0;
+        min-height: auto;
+        margin-right: 5px;
+      }
+
+      .freeform-input.StripeElement {
+        padding: 4px 2px;
+        border: 1px solid #ccc;
+        height: 36px;
+      }
+
+      .freeform-input-only-label {
+        font-weight: normal;
+
+        > .freeform-input {
+          display: inline-block;
+          width: auto;
+          margin-right: 5px;
+        }
+      }
+
+      .freeform-errors {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0;
+
+        > li {
+          color: $red;
+        }
+      }
+
+      .freeform-instructions {
+        margin: 0 0 5px;
+        font-size: 13px;
+        color: $gray;
+      }
+    }
+
+    .freeform-column-1 {
+      width: 8.3333333333%;
+    }
+
+    .freeform-column-2 {
+      width: 16.6666666667%;
+    }
+
+    .freeform-column-3 {
+      width: 25%;
+    }
+
+    .freeform-column-4 {
+      width: 33.3333333333%;
+    }
+
+    .freeform-column-5 {
+      width: 41.6666666667%;
+    }
+
+    .freeform-column-6 {
+      width: 50%;
+    }
+
+    .freeform-column-7 {
+      width: 58.3333333333%;
+    }
+
+    .freeform-column-8 {
+      width: 66.6666666667%;
+    }
+
+    .freeform-column-9 {
+      width: 75%;
+    }
+
+    .freeform-column-10 {
+      width: 83.3333333333%;
+    }
+
+    .freeform-column-11 {
+      width: 91.6666666667%;
+    }
+
+    .freeform-column-12 {
+      width: 100%;
+    }
+  }
+
+  .freeform-group {
+    .freeform-label {
+      font-weight: bold;
+    }
+
+    width: 100%;
+    padding: 0 15px;
+  }
+
+  .freeform-form-errors {
+    padding: 15px;
+    border: 1px solid #f5c6cb;
+    background: #f8d7da;
+    border-radius: 5px;
+    color: $darkRed;
+
+    > p {
+      margin: 0;
+    }
+  }
+}

@@ -1,27 +1,36 @@
 {# CSS overrides #}
-{% set cssPath = view.assetManager.publishedUrl('@freeform-formatting-templates/basic-dark/_main.css', true) %}
+{% set cssPath = view.assetManager.publishedUrl('@freeform-formatting-templates/flexbox/_main.css', true) %}
 {% do view.registerCssFile(cssPath) %}
 
 {# JS overrides #}
-{% set jsPath = view.assetManager.publishedUrl('@freeform-formatting-templates/basic-dark/_main.js', true) %}
+{% set jsPath = view.assetManager.publishedUrl('@freeform-formatting-templates/flexbox/_main.js', true) %}
 {% do view.registerJsFile(jsPath) %}
 
-{% import "freeform/_templates/formatting/basic-dark/_row.twig" as rowMacro %}
 
 {# Render the opening form tag #}
 {{ form.renderTag({
     attributes: {
-        form: { class: "freeform-form", "data-freeform-basic-dark": true },
+        form: { class: "freeform-form", "data-freeform-flexbox": true },
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success" },
         errors: { class: "freeform-form-errors" },
-        novalidate: true,
+    },
+    buttons: {
+        attributes: {
+            container: { class: "freeform-button-container" },
+            column: { class: "freeform-button-column" },
+            buttonWrapper: { class: "freeform-button-wrapper" },
+            submit: { class: "freeform-button-submit" },
+            back: { class: "freeform-button-back" },
+            save: { class: "freeform-button-save" },
+        },
     },
     fields: {
         "@global": {
             attributes: {
+                container: { class: "freeform-column" },
                 input: {
-                    class: ["freeform-input"]
+                    class: "freeform-input",
                 },
                 label: { class: "freeform-label" },
                 instructions: { class: "freeform-instructions" },
@@ -31,7 +40,7 @@
         ":required": {
             attributes: {
                 label: { "+class": "freeform-required" },
-            }
+            },
         },
         ":errors": {
             attributes: {
@@ -48,7 +57,7 @@
                 input: { "-class": "freeform-input" },
             },
         }
-    }
+    },
 }) }}
 
 {# Success and error message handling for non-AJAX forms #}
@@ -88,8 +97,39 @@
     </ul>
 {% endif %}
 
+{# Build form rows and fields #}
+{% macro renderRows(form, rows) %}
+    {% for row in rows %}
+        {% set width = (12 / (row|length)) %}
+        <div{{ form.attributes.row|raw }}>
+            {% for field in row %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: { class: [
+                            "freeform-column-" ~ width,
+                            "freeform-fieldtype-" ~ field.type,
+                        ]},
+                    },
+                }) %}
+                {% if field.type == "group" %}
+                    <div class="freeform-group">
+                        <label{{ field.attributes.label }}>
+                            {{ field.label }}
+                        </label>
+                        <div>
+                            {{ _self.renderRows(form, field.layout) }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ field.render }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
 {# Display form field rows and columns #}
-{{ rowMacro.render(form.rows, form) }}
+{{ _self.renderRows(form, form.rows) }}
 
 {# Render the closing form tag #}
 {{ form.renderClosingTag }}

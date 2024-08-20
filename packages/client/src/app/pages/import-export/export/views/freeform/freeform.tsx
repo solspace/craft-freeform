@@ -90,13 +90,13 @@ export const ExportFreeform: React.FC = () => {
   return (
     <ContentContainer>
       <Breadcrumb id="export" label="Export" url="export/forms" />
-      <Breadcrumb id="export-forms" label="Forms" url="export/forms" />
+      <Breadcrumb id="export-forms" label="Freeform Data" url="export/forms" />
 
       {data && (
         <Field
           label={translate('Select Data to Export')}
           instructions={translate(
-            "You can choose which data to export. If you don't export a form for which you have submissions, the submissions will not be imported."
+            "Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included."
           )}
         >
           <Preview
@@ -113,9 +113,9 @@ export const ExportFreeform: React.FC = () => {
         updateValue={(password) => setOptions({ ...options, password })}
         property={{
           handle: 'password',
-          label: 'Password Protect exported file',
+          label: 'Password-protect the Export File (optional)',
           instructions:
-            'Enter a password if you wish to password protect your zip file.',
+            'Enter a password if you want to protect your zip file with a password.',
           type: PropertyType.String,
           placeholder: 'Enter a password',
         }}
@@ -138,7 +138,7 @@ export const ExportFreeform: React.FC = () => {
           onClick={onClick}
         >
           <LoadingText
-            loadingText={translate('Exporting')}
+            loadingText={translate('Exporting...')}
             loading={isCurrentlyActive}
             spinner
           >
@@ -149,7 +149,7 @@ export const ExportFreeform: React.FC = () => {
 
       <Progress
         label={translate('Export Progress')}
-        finishLabel={translate('Export completed successfully')}
+        finishLabel={translate('Export completed successfully!')}
         event={progressEvent}
       />
     </ContentContainer>

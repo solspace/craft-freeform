@@ -126,10 +126,10 @@ export const ImportFreeformData: React.FC = () => {
   return (
     <ContentContainer>
       <Breadcrumb id="import" label="Import" url="import/forms" />
-      <Breadcrumb id="import-forms" label="Forms" url="import/forms" />
+      <Breadcrumb id="import-forms" label="Freeform Data" url="import/forms" />
 
       <FileWrapper>
-        <Label>{translate('Upload file')}</Label>
+        <Label>{translate('Upload a Freeform Export zip file')}</Label>
         <FileInput type="file" onChange={onChange} accept=".zip" />
         <Instructions>
           {translate('Accepts `.zip` files. Only upload files that you trust.')}
@@ -141,7 +141,7 @@ export const ImportFreeformData: React.FC = () => {
         <>
           <Field
             label={translate('Select Data')}
-            instructions={translate('Select which data you wish to import.')}
+            instructions={translate('Please select the data you want to import.')}
           >
             <Preview
               disabled={false}
@@ -166,7 +166,7 @@ export const ImportFreeformData: React.FC = () => {
           <Field>
             <button className="btn submit" type="button" onClick={onImport}>
               <LoadingText
-                loadingText={translate('Processing')}
+                loadingText={translate('Processing...')}
                 loading={false}
                 spinner
               >
@@ -177,7 +177,7 @@ export const ImportFreeformData: React.FC = () => {
 
           <Progress
             label={translate('Import')}
-            finishLabel={translate('Import completed successfully')}
+            finishLabel={translate('Import completed successfully!')}
             event={progressEvent}
           />
         </>

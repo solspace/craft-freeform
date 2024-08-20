@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.5.7 - 2024-08-14
+
+### Changed
+- Updated Webhooks to improve the inclusion of file metadata.
+- Updated the Stripe dependency versions to include `v14` and `v15`.
+- Changed Freeform so it does not set `noCache` headers on every request. Includes support for Craft's `asyncCsrfInputs` feature.
+
+### Fixed
+- Fixed a bug where the `site` parameter would lose track of the active site on nav links in the control panel when using the multi-site feature. For this to work correctly, you must enable the **Site Filtering for Forms and Submissions** setting.
+- Fixed a bug where Freeform scripts were being attached to non-Freeform forms.
+
 ## 5.5.6 - 2024-08-10
 
 ### Added
@@ -853,6 +864,21 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.21 - 2024-08-14
+
+### Fixed
+- Fixed a bug where the `layoutJson` column change migration in 4.1.20 would fail on PostgreSQL.
+
+## 4.1.20 - 2024-07-30
+
+### Changed
+- Updated Diagnostics page to verify compatibility for Craft 4.10.x.
+- Updated the Website field validation to allow longer domain extensions.
+- Changed the `layoutJson` column in the `freeform_forms` database table to `longtext` to handle larger forms.
+
+### Fixed
+- Fixed a bug where the **Bypass All Spam Checks for Logged in Users** setting did not correctly bypass all spam checks for logged-in users when a form is cached.
 
 ## 4.1.19 - 2024-05-31
 

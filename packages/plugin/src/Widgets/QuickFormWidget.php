@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Widgets;
 use craft\base\Widget;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Resources\Bundles\Widgets\QuickForm\QuickFormBundle;
 
 class QuickFormWidget extends Widget implements ExtraWidgetInterface
 {
@@ -66,18 +67,18 @@ class QuickFormWidget extends Widget implements ExtraWidgetInterface
         }
 
         $form = $freeform->forms->getFormById($this->formId);
-        $formCss = $freeform->forms->getFormattingTemplateCss('flexbox');
 
         $successMessage = 'Form submitted successfully';
         if ($this->successMessage) {
             $successMessage = $this->successMessage;
         }
 
+        \Craft::$app->view->registerAssetBundle(QuickFormBundle::class);
+
         return \Craft::$app->view->renderTemplate(
             'freeform/_widgets/quick-form/body',
             [
                 'form' => $form,
-                'formCss' => $formCss,
                 'successMessage' => Freeform::t($successMessage),
             ]
         );

@@ -405,10 +405,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         //      $templatePath,
         $output = \Craft::$app->view->renderString(
             file_get_contents($templatePath),
-            [
-                'form' => $form,
-                'formCss' => $this->getFormattingTemplateCss($templateName),
-            ],
+            ['form' => $form],
             $templateMode,
         );
 
@@ -526,17 +523,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return array_shift($templateList) ?? 'flexbox.html';
-    }
-
-    public function getFormattingTemplateCss(string $templateName): string
-    {
-        $fileName = pathinfo($templateName, \PATHINFO_FILENAME);
-        $cssFilePath = \Yii::getAlias('@freeform').'/Resources/css/front-end/formatting-templates/'.$fileName.'.css';
-        if (file_exists($cssFilePath)) {
-            return file_get_contents($cssFilePath);
-        }
-
-        return '';
     }
 
     public function getReturnUrl(Form $form): ?string

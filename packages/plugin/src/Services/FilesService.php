@@ -478,6 +478,36 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return $urls;
     }
 
+    public function getAssetMetadataFromIds(array $ids): array
+    {
+        $metadata = [];
+        foreach ($ids as $id) {
+            if ($id && is_numeric($id)) {
+                $asset = \Craft::$app->assets->getAssetById($id);
+                if ($asset) {
+                    $data = [
+                        'id' => $asset->id,
+                        'filename' => $asset->filename,
+                        'url' => $asset->getUrl(),
+                        'size' => $asset->size,
+                        'kind' => $asset->kind,
+                    ];
+
+                    if ('image' === $asset->kind) {
+                        $data['dimensions'] = [
+                            'width' => $asset->width,
+                            'height' => $asset->height,
+                        ];
+                    }
+
+                    $metadata[] = $data;
+                }
+            }
+        }
+
+        return $metadata;
+    }
+
     /**
      * Get a key-value list of asset sources, indexed by ID.
      */

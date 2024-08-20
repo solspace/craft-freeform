@@ -119,7 +119,7 @@ class ExpressFormsExporter extends BaseExporter
             $general->color = $form['color'] ?? $colorGenerator->generateValue($form);
             $general->defaultStatus = $defaultStatus;
             $general->storeData = (bool) $form['saveSubmissions'] ?? true;
-            $general->formattingTemplate = 'flexbox.twig';
+            $general->formattingTemplate = 'flexbox/index.twig';
 
             $behavior = $exported->settings->getBehavior();
             $behavior->ajax = true;

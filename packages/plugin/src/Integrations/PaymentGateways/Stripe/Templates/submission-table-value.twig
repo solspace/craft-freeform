@@ -6,37 +6,41 @@
         justify-content: start;
         align-items: center;
         gap: 10px;
-
         white-space: nowrap;
-
+    
         .stripe-amount {
             font-weight: bold;
             font-size: 1.2em;
         }
-
+    
         .stripe-status {
-            width: 10px;
-            height: 10px;
-
+            height: .75rem;
+            width: .75rem;
+            flex-shrink: 0;
             border-radius: 50%;
-
-            background-color: #dc3545;
-
+            background-color: var(--disabled-color);
+        
             &.succeeded {
-                background-color: #28a745;
+                background-color: var(--enabled-color);
             }
         }
-
+    
         .payment-method {
-
+        
             .icon {
                 grid-area: icon;
                 width: 40px;
+            
+                img {
+                    border-radius: 5px;
+                    box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+                }
             }
-
+            
             &.card {
                 display: flex;
                 align-items: center;
+                padding: var(--s);
                 gap: 5px;
 
                 .brand {
@@ -46,9 +50,9 @@
 
                 .card-number {
                     grid-area: card-number;
-
-                    font-size: 0.8em;
+                    font-size: 0.9em;
                     font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+                    margin-left: 5px;
 
                     &:before {
                         content: "•••• ";
@@ -69,7 +73,7 @@
         </a>
     </div>
     {% if paymentMethod %}
-        <div class="payment-method {{ paymentMethod.type }}">
+        <div class="payment-method card">
 
             {% if paymentMethod.type == "card" %}
 
@@ -93,7 +97,11 @@
                 </div>
 
             {% else %}
-                {{ paymentMethod.type|capitalize|t('freeform') }}
+
+                <div class="brand">
+                    {{ paymentMethod.type|capitalize|t('freeform') }}
+                </div>
+
             {% endif %}
 
         </div>

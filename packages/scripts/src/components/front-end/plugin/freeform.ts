@@ -818,7 +818,7 @@ forms.forEach((form) => {
 });
 
 const recursiveFreeformAttachment = (node: HTMLFormElement) => {
-  if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
+  if (node.nodeName === 'FORM' && node.dataset?.freeform !== undefined) {
     new Freeform(node);
   }
 

@@ -1,10 +1,6 @@
 {%- set demoArea = craft.app.request.segment(2) -%}
 {%- set pageTemplate = craft.app.request.segment(3)|default('basic-light') -%}
-{%- if pageTemplate in (["grid", "flexbox"]) -%}
-    {%- set pageTemplateFile = pageTemplate ~ '.twig' -%}
-{%- else -%}
-    {%- set pageTemplateFile = pageTemplate ~ '/index.twig' -%}
-{% endif %}
+{%- set pageTemplateFile = pageTemplate ~ '/index.twig' -%}
 {%- if demoArea == "templates" -%}
     {%- set formHandle = craft.app.request.segment(4) -%}
 {%- elseif demoArea in ["submissions", "custom"] -%}

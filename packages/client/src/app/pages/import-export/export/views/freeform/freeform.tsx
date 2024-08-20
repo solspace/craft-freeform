@@ -84,7 +84,7 @@ export const ExportFreeform: React.FC = () => {
   const isCurrentlyActive = isFetching || active || progressActive || isLoading;
 
   if (isFetching) {
-    return <ContentContainer>{translate('Loading')}</ContentContainer>;
+    return <ContentContainer>{translate('Loading...')}</ContentContainer>;
   }
 
   return (

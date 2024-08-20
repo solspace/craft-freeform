@@ -49,7 +49,7 @@ export const ImportExpressForms: React.FC = () => {
   };
 
   if (isFetching) {
-    return <ContentContainer>{translate('Loading')}</ContentContainer>;
+    return <ContentContainer>{translate('Loading...')}</ContentContainer>;
   }
 
   if (

@@ -21,7 +21,11 @@ export const ImportExpressForms: React.FC = () => {
   const [options, setOptions] = useState<ImportOptions>({
     forms: [],
     formSubmissions: [],
-    notificationTemplates: [],
+    templates: {
+      notification: [],
+      formatting: [],
+      success: [],
+    },
     integrations: [],
     strategy: {
       forms: 'skip',
@@ -54,7 +58,9 @@ export const ImportExpressForms: React.FC = () => {
 
   if (
     !data.forms.length &&
-    !data.notificationTemplates.length &&
+    !data.templates.notification.length &&
+    !data.templates.formatting.length &&
+    !data.templates.success.length &&
     !data.formSubmissions.length
   ) {
     return <ContentContainer>{translate('No data found')}</ContentContainer>;
@@ -97,7 +103,9 @@ export const ImportExpressForms: React.FC = () => {
           'submit',
           active && 'disabled',
           !options.forms.length &&
-            !options.notificationTemplates.length &&
+            !options.templates.notification.length &&
+            !options.templates.formatting.length &&
+            !options.templates.success.length &&
             !options.formSubmissions.length &&
             'disabled'
         )}

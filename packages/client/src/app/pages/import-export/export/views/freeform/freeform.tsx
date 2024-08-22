@@ -39,7 +39,11 @@ export const ExportFreeform: React.FC = () => {
   const [options, setOptions] = useState<ExportOptions>({
     forms: [],
     formSubmissions: [],
-    notificationTemplates: [],
+    templates: {
+      notification: [],
+      formatting: [],
+      success: [],
+    },
     integrations: [],
     settings: false,
     password: '',
@@ -64,18 +68,6 @@ export const ExportFreeform: React.FC = () => {
     });
   }, []);
 
-  useEffect(() => {
-    if (data) {
-      setOptions((prev) => ({
-        ...prev,
-        forms: data.forms.map((form) => form.uid),
-        notificationTemplates: data.notificationTemplates.map(
-          (template) => template.uid
-        ),
-      }));
-    }
-  }, [data]);
-
   const onClick = (): void => {
     clearProgress();
     mutate(options);
@@ -96,7 +88,7 @@ export const ExportFreeform: React.FC = () => {
         <Field
           label={translate('Select Data to Export')}
           instructions={translate(
-            "Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included."
+            'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.'
           )}
         >
           <Preview
@@ -128,7 +120,9 @@ export const ExportFreeform: React.FC = () => {
             'submit',
             isCurrentlyActive && 'disabled',
             !options.forms.length &&
-              !options.notificationTemplates.length &&
+              !options.templates.notification.length &&
+              !options.templates.formatting.length &&
+              !options.templates.success.length &&
               !options.integrations.length &&
               !options.formSubmissions.length &&
               !options.settings &&

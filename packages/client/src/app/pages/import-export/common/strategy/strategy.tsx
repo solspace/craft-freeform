@@ -54,7 +54,7 @@ export const Strategy: React.FC<Props> = ({
         )}
         className={classes(
           disabled && 'disabled',
-          !data.notificationTemplates.length && 'hidden'
+          !data.templates.notification.length && 'hidden'
         )}
       >
         <div className="select">

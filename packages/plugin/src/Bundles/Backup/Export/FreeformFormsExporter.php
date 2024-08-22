@@ -10,10 +10,12 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
@@ -22,12 +24,13 @@ use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
-use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Rule;
 use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Bundles\Rules\RuleProvider;
 use Solspace\Freeform\Elements\Submission as FFSubmission;
@@ -35,6 +38,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Form as FreeformForm;
 use Solspace\Freeform\Form\Layout\Layout as FreeformLayout;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -62,8 +66,12 @@ class FreeformFormsExporter extends BaseExporter
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
-        $preview->notificationTemplates = $this->collectNotifications();
         $preview->settings = (bool) $this->collectSettings(true);
+        $preview->templates = (new TemplateCollection())
+            ->setNotification($this->collectNotifications())
+            ->setFormatting($this->collectFormattingTemplates())
+            ->setSuccess($this->collectSuccessTemplates())
+        ;
 
         $uidToNameMap = [];
         foreach ($preview->forms as $form) {
@@ -283,6 +291,22 @@ class FreeformFormsExporter extends BaseExporter
         return $collection;
     }
 
+    protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return $this->collectFileTemplates(
+            Freeform::getInstance()->settings->getCustomFormTemplates(),
+            $ids,
+        );
+    }
+
+    protected function collectSuccessTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return $this->collectFileTemplates(
+            Freeform::getInstance()->settings->getSuccessTemplates(),
+            $ids,
+        );
+    }
+
     protected function collectSubmissions(?array $ids = null): FormSubmissionCollection
     {
         $collection = new FormSubmissionCollection();
@@ -447,5 +471,26 @@ class FreeformFormsExporter extends BaseExporter
         }
 
         return $exportedLayout;
+    }
+
+    private function collectFileTemplates(array $templates, ?array $ids = null): FileTemplateCollection
+    {
+        $collection = new FileTemplateCollection();
+
+        /** @var FormTemplate $template */
+        foreach ($templates as $template) {
+            if (null !== $ids && !\in_array($template->getFileName(), $ids, true)) {
+                continue;
+            }
+
+            $fileTemplate = new FileTemplate();
+            $fileTemplate->name = $template->getName();
+            $fileTemplate->fileName = $template->getFileName();
+            $fileTemplate->path = $template->getFilePath();
+
+            $collection->add($fileTemplate);
+        }
+
+        return $collection;
     }
 }

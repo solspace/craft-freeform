@@ -2,7 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Import;
 
+use craft\helpers\FileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Form as FormDTO;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
@@ -20,6 +22,7 @@ use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -66,6 +69,8 @@ class FreeformImporter
 
         $this->importSettings();
         $this->importNotifications();
+        $this->importFormattingTemplates();
+        $this->importSuccessTemplates();
         $this->importIntegrations();
         $this->importForms();
         $this->importSubmissions();
@@ -75,14 +80,14 @@ class FreeformImporter
     {
         $dataset = $this->dataset;
 
-        $notificationTemplates = $dataset->getNotificationTemplates();
+        $templates = $dataset->getTemplates();
         $forms = $dataset->getForms();
         $submissions = $dataset->getFormSubmissions();
 
         $this->sse->message(
             'total',
             array_sum([
-                $notificationTemplates->count(),
+                $templates->count(),
                 $forms->count(),
                 $submissions->getTotals(),
             ])
@@ -371,7 +376,7 @@ class FreeformImporter
     {
         $this->notificationTransferIdMap = [];
 
-        $collection = $this->dataset->getNotificationTemplates();
+        $collection = $this->dataset->getTemplates()?->getNotification();
         if (!$collection) {
             return;
         }
@@ -398,7 +403,12 @@ class FreeformImporter
                     continue;
                 }
             } else {
-                $record = $this->notificationsService->create($notification->name);
+                $record = $this->notificationsService->createOfType(
+                    $notification->name,
+                    $notification->isFile ?
+                        Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES :
+                        Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE,
+                );
             }
 
             if (!$notification->isFile) {
@@ -429,6 +439,24 @@ class FreeformImporter
 
             $this->sse->message('progress', 1);
         }
+    }
+
+    private function importFormattingTemplates(): void
+    {
+        $this->importFileTemplates(
+            'Formatting',
+            $this->dataset->getTemplates()?->getFormatting(),
+            Freeform::getInstance()->settings->getFormTemplateDirectory(),
+        );
+    }
+
+    private function importSuccessTemplates(): void
+    {
+        $this->importFileTemplates(
+            'Success',
+            $this->dataset->getTemplates()?->getSuccess(),
+            Freeform::getInstance()->settings->getSuccessTemplateDirectory(),
+        );
     }
 
     private function importIntegrations(): void
@@ -573,6 +601,43 @@ class FreeformImporter
         $errors = $freeform->getSettings()->getErrorSummary(true);
         if ($errors) {
             $this->sse->message('err', implode('; ', $errors));
+        }
+    }
+
+    private function importFileTemplates(
+        string $type,
+        ?FileTemplateCollection $collection,
+        ?string $templateDirectory,
+    ): void {
+        if (!$collection) {
+            return;
+        }
+
+        $this->sse->message('reset', $collection->count());
+        $this->sse->message('info', "Importing templates: {$type}");
+
+        if (!$templateDirectory) {
+            $this->sse->message('err', "{$type} Template directory not found");
+            $this->sse->message('progress', $collection->count());
+
+            return;
+        }
+
+        foreach ($collection as $template) {
+            $path = $template->path;
+            $fileName = $template->fileName;
+
+            if (preg_match('/\/index\.(twig|html)$/i', $fileName)) {
+                $dir = \dirname($path);
+                $dirName = basename($dir);
+                FileHelper::copyDirectory($dir, $templateDirectory.'/'.$dirName);
+            } else {
+                $newPath = $templateDirectory.'/'.$fileName;
+
+                copy($path, $newPath);
+            }
+
+            $this->sse->message('progress', 1);
         }
     }
 }

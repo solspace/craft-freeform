@@ -1,8 +1,8 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Backup\Collections;
+namespace Solspace\Freeform\Bundles\Backup\Collections\Templates;
 
-use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Library\Collections\Collection;
 
 /**

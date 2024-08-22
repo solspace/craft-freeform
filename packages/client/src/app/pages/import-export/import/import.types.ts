@@ -47,16 +47,28 @@ export type NotificationTemplate = {
   description: string;
 };
 
+export type FileTemplate = {
+  filePath: string;
+  fileName: string;
+  name: string;
+};
+
 export type Integration = {
   uid: string;
   name: string;
   icon: string;
 };
 
+export type TemplateCollection = {
+  notification: NotificationTemplate[];
+  formatting: FileTemplate[];
+  success: FileTemplate[];
+};
+
 export type FormImportData = {
   forms: Form[];
   formSubmissions: Submissions[];
-  notificationTemplates: NotificationTemplate[];
+  templates: TemplateCollection;
   integrations: Integration[];
   settings: boolean;
 };
@@ -68,10 +80,16 @@ export type StrategyCollection = {
   notifications: ImportStrategy;
 };
 
+export type TemplateValues = {
+  notification: Array<string | number>;
+  formatting: string[];
+  success: string[];
+};
+
 export type ImportOptions = {
   forms: string[];
   formSubmissions: string[];
-  notificationTemplates: Array<string | number>;
+  templates: TemplateValues;
   integrations: string[];
   strategy: StrategyCollection;
   settings: boolean;

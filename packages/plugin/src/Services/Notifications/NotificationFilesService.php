@@ -77,14 +77,15 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         if (null === $templateDirectory) {
             throw new NotificationException(
                 Freeform::t('Email Template directory not set'),
-                NotificationException::NO_EMAIL_DIR
+                NotificationException::NO_EMAIL_DIR,
             );
         }
 
         $templatePath = $templateDirectory.'/'.$templateName.$extension;
         if (file_exists($templatePath)) {
             throw new NotificationException(
-                Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension])
+                Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension]),
+                NotificationException::EXISTS,
             );
         }
 
@@ -93,7 +94,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         } catch (\Exception) {
             throw new NotificationException(
                 'Could not get email template content. Please contact Solspace.',
-                NotificationException::NO_CONTENT
+                NotificationException::NO_CONTENT,
             );
         }
 

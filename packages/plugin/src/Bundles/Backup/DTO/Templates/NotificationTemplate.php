@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Backup\DTO;
+namespace Solspace\Freeform\Bundles\Backup\DTO\Templates;
 
 class NotificationTemplate
 {

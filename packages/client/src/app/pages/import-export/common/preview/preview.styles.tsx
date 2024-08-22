@@ -122,6 +122,14 @@ export const NotificationIcon: React.FC = () => {
   return <Icon className="fa-light fa-envelope" />;
 };
 
+export const FormattingIcon: React.FC = () => {
+  return <Icon className="fa-light fa-file-code" />;
+};
+
+export const SuccessIcon: React.FC = () => {
+  return <Icon className="fa-light fa-file-check" />;
+};
+
 export const IntegrationIcon: React.FC = () => {
   return <Icon className="fa-duotone fa-gear-complex-code" />;
 };

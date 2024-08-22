@@ -7,9 +7,9 @@ import type { FormImportData } from '../../import/import.types';
 
 import { PreviewForms } from './forms/forms';
 import { PreviewIntegrations } from './integrations/integrations';
-import { PreviewNotificationTemplates } from './notification-templates/notification-templates';
 import { PreviewSettings } from './settings/settings';
 import { PreviewSubmissionsTemplates } from './submissions/submissions';
+import { PreviewTemplates } from './templates/templates';
 import { FileList, PreviewWrapper, SelectAll } from './preview.styles';
 
 type Props = {
@@ -28,14 +28,20 @@ export const Preview: React.FC<Props> = ({
   const isAllSelected =
     options.forms.length === data.forms?.length &&
     options.integrations.length === data.integrations?.length &&
-    options.notificationTemplates.length ===
-      data.notificationTemplates?.length &&
+    options.templates.notification.length ===
+      data.templates.notification?.length &&
+    options.templates.formatting.length === data.templates.formatting?.length &&
+    options.templates.success.length === data.templates.success?.length &&
     options.formSubmissions.length === data.formSubmissions?.length &&
     options.settings;
 
   const emptyOptions: ExportOptions = {
     forms: [],
-    notificationTemplates: [],
+    templates: {
+      notification: [],
+      formatting: [],
+      success: [],
+    },
     integrations: [],
     formSubmissions: [],
     settings: false,
@@ -43,9 +49,13 @@ export const Preview: React.FC<Props> = ({
 
   const filledOptions: ExportOptions = {
     forms: data.forms.map((form) => form.uid),
-    notificationTemplates: data.notificationTemplates.map(
-      (template) => template.uid
-    ),
+    templates: {
+      notification: data.templates.notification.map((template) => template.uid),
+      formatting: data.templates.formatting.map(
+        (template) => template.fileName
+      ),
+      success: data.templates.success.map((template) => template.fileName),
+    },
     integrations: data.integrations.map((integration) => integration.uid),
     formSubmissions: data.formSubmissions.map(
       (submission) => submission.form.uid
@@ -71,12 +81,10 @@ export const Preview: React.FC<Props> = ({
             onUpdate={(forms) => onUpdate({ ...options, forms })}
           />
 
-          <PreviewNotificationTemplates
-            templates={data.notificationTemplates}
-            options={options.notificationTemplates}
-            onUpdate={(notificationTemplates) =>
-              onUpdate({ ...options, notificationTemplates })
-            }
+          <PreviewTemplates
+            templates={data.templates}
+            options={options.templates}
+            onUpdate={(templates) => onUpdate({ ...options, templates })}
           />
 
           <PreviewIntegrations

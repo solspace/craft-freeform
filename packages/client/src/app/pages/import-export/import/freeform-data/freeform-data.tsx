@@ -32,7 +32,11 @@ export const ImportFreeformData: React.FC = () => {
   const [options, setOptions] = useState<ImportOptions>({
     forms: [],
     formSubmissions: [],
-    notificationTemplates: [],
+    templates: {
+      notification: [],
+      formatting: [],
+      success: [],
+    },
     integrations: [],
     strategy: {
       forms: 'skip',
@@ -75,9 +79,17 @@ export const ImportFreeformData: React.FC = () => {
         setOptions((prev) => ({
           ...prev,
           forms: data.options.forms.map((form) => form.uid),
-          notificationTemplates: data.options.notificationTemplates.map(
-            (template) => template.uid
-          ),
+          templates: {
+            notification: data.options.templates.notification.map(
+              (template) => template.uid
+            ),
+            formatting: data.options.templates.formatting.map(
+              (template) => template.fileName
+            ),
+            success: data.options.templates.success.map(
+              (template) => template.fileName
+            ),
+          },
           integrations: data.options.integrations.map(
             (integration) => integration.uid
           ),
@@ -141,7 +153,9 @@ export const ImportFreeformData: React.FC = () => {
         <>
           <Field
             label={translate('Select Data')}
-            instructions={translate('Please select the data you want to import.')}
+            instructions={translate(
+              'Please select the data you want to import.'
+            )}
           >
             <Preview
               disabled={false}

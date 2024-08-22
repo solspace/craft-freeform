@@ -142,6 +142,14 @@ class NotificationsService extends BaseService
         return $this->getDatabaseService()->save($record);
     }
 
+    public function createOfType(string $name, ?string $type = null): NotificationTemplateRecord
+    {
+        return match ($type) {
+            Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES => $this->getFilesService()->create($name),
+            default => $this->getDatabaseService()->create($name),
+        };
+    }
+
     public function create(string $name): NotificationTemplateRecord
     {
         $defaultStorage = $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault();

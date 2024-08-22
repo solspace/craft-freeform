@@ -14,9 +14,11 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
@@ -24,10 +26,10 @@ use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
-use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
@@ -54,9 +56,13 @@ class ExpressFormsExporter extends BaseExporter
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
-        $preview->notificationTemplates = $this->collectNotifications();
         $preview->integrations = $this->collectIntegrations();
         $preview->settings = (bool) $this->collectSettings(true);
+        $preview->templates = (new TemplateCollection())
+            ->setNotification($this->collectNotifications())
+            ->setFormatting($this->collectFormattingTemplates())
+            ->setSuccess($this->collectSuccessTemplates())
+        ;
 
         $uidToNameMap = [];
         foreach ($preview->forms as $form) {
@@ -295,6 +301,16 @@ class ExpressFormsExporter extends BaseExporter
         }
 
         return $collection;
+    }
+
+    protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return new FileTemplateCollection();
+    }
+
+    protected function collectSuccessTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return new FileTemplateCollection();
     }
 
     protected function collectSubmissions(?array $ids = null): FormSubmissionCollection

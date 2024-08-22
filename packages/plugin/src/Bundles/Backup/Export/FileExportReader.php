@@ -8,9 +8,11 @@ use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RuleConditionCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
@@ -19,12 +21,13 @@ use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
-use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Rule;
 use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
@@ -45,9 +48,13 @@ class FileExportReader extends BaseExporter
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
-        $preview->notificationTemplates = $this->collectNotifications();
         $preview->integrations = $this->collectIntegrations();
         $preview->settings = (bool) $this->collectSettings(true);
+        $preview->templates = (new TemplateCollection())
+            ->setNotification($this->collectNotifications())
+            ->setFormatting($this->collectFormattingTemplates())
+            ->setSuccess($this->collectSuccessTemplates())
+        ;
 
         $uidToNameMap = [];
         foreach (Freeform::getInstance()->forms->getAllForms() as $form) {
@@ -212,6 +219,16 @@ class FileExportReader extends BaseExporter
         }
 
         return $collection;
+    }
+
+    protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return $this->collectFileTemplates('formatting', $ids);
+    }
+
+    protected function collectSuccessTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return $this->collectFileTemplates('success', $ids);
     }
 
     protected function collectSubmissions(?array $ids = null): FormSubmissionCollection
@@ -394,5 +411,27 @@ class FileExportReader extends BaseExporter
         }
 
         return $layout;
+    }
+
+    private function collectFileTemplates(string $type, ?array $ids = null): FileTemplateCollection
+    {
+        $collection = new FileTemplateCollection();
+
+        $root = $this->getPath()."/templates/{$type}/";
+
+        foreach ($this->readLineData("{$type}-templates.jsonl") as $json) {
+            if (null !== $ids && !\in_array($json['fileName'], $ids)) {
+                continue;
+            }
+
+            $fileTemplate = new FileTemplate();
+            $fileTemplate->name = $json['name'];
+            $fileTemplate->fileName = $json['fileName'];
+            $fileTemplate->path = $root.$json['fileName'];
+
+            $collection->add($fileTemplate);
+        }
+
+        return $collection;
     }
 }

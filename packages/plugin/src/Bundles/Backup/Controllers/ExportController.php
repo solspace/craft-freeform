@@ -110,7 +110,9 @@ class ExportController extends BaseApiController
 
         $chunks = array_filter([
             'forms.jsonl' => $collection->getForms(),
-            'notifications.jsonl' => $collection->getNotificationTemplates(),
+            'notifications.jsonl' => $collection->getTemplates()->getNotification(),
+            'formatting-templates.jsonl' => $collection->getTemplates()->getFormatting(),
+            'success-templates.jsonl' => $collection->getTemplates()->getSuccess(),
             'integrations.jsonl' => $collection->getIntegrations(),
             'settings.json' => $collection->getSettings(),
         ]);
@@ -190,6 +192,49 @@ class ExportController extends BaseApiController
             }
         }
 
+        $formattingTemplates = $collection->getTemplates()->getFormatting();
+        $successTemplates = $collection->getTemplates()->getSuccess();
+
+        if ($formattingTemplates->count() || $successTemplates->count()) {
+            $zip->addEmptyDir('templates');
+        }
+
+        if ($formattingTemplates->count() > 0) {
+            $zip->addEmptyDir('templates/formatting');
+
+            foreach ($formattingTemplates as $template) {
+                $filePath = $template->path;
+                if (!preg_match('/\/index\.(twig|html)$/', $template->fileName)) {
+                    $zip->addFile(
+                        $template->path,
+                        'templates/formatting/'.$template->fileName
+                    );
+                } else {
+                    $folderPath = \dirname($filePath);
+                    $templateFolder = basename($folderPath);
+                    $this->addFolderToZip($zip, $folderPath, 'templates/formatting/'.$templateFolder);
+                }
+            }
+        }
+
+        if ($successTemplates->count() > 0) {
+            $zip->addEmptyDir('templates/success');
+
+            foreach ($successTemplates as $template) {
+                $filePath = $template->path;
+                if (!preg_match('/\/index\.(twig|html)$/', $template->fileName)) {
+                    $zip->addFile(
+                        $template->path,
+                        'templates/success/'.$template->fileName
+                    );
+                } else {
+                    $folderPath = \dirname($filePath);
+                    $templateFolder = basename($folderPath);
+                    $this->addFolderToZip($zip, $folderPath, 'templates/success/'.$templateFolder);
+                }
+            }
+        }
+
         $zip->close();
 
         $token = CryptoHelper::getUniqueToken(14);
@@ -214,17 +259,56 @@ class ExportController extends BaseApiController
 
     private function announceTotals(SSE $sse, FreeformDataset $dataset): void
     {
-        $notificationTemplates = $dataset->getNotificationTemplates();
+        $templates = $dataset->getTemplates();
         $forms = $dataset->getForms();
         $submissions = $dataset->getFormSubmissions();
 
         $sse->message(
             'total',
             array_sum([
-                $notificationTemplates->count(),
+                $templates->count(),
                 $forms->count(),
                 $submissions->getTotals(),
             ])
         );
+    }
+
+    private function addFolderToZip($zip, string $folderPath, string $prefix = ''): bool
+    {
+        $folderPath = rtrim($folderPath, '/\\').\DIRECTORY_SEPARATOR;
+        $prefix = rtrim($prefix, '/\\').'/';
+
+        // Open the directory
+        $dir = opendir($folderPath);
+        if (!$dir) {
+            return false;
+        }
+
+        // Loop through the directory
+        while (($file = readdir($dir)) !== false) {
+            // Skip "." and ".."
+            if ('.' == $file || '..' == $file) {
+                continue;
+            }
+
+            // Full path to the file/directory
+            $fullPath = $folderPath.$file;
+
+            // Path in the ZIP file
+            $localPath = $prefix.$file;
+
+            // If it's a directory, add it recursively
+            if (is_dir($fullPath)) {
+                $zip->addEmptyDir($localPath);
+                $this->addFolderToZip($zip, $fullPath, $localPath);
+            } else {
+                // If it's a file, add it to the ZIP archive
+                $zip->addFile($fullPath, $localPath);
+            }
+        }
+
+        closedir($dir);
+
+        return true;
     }
 }

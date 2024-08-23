@@ -74,31 +74,6 @@ export const ImportFreeformData: React.FC = () => {
 
       setAvailableOptions(data.options);
       setFileToken(data.token);
-
-      if (data.options) {
-        setOptions((prev) => ({
-          ...prev,
-          forms: data.options.forms.map((form) => form.uid),
-          templates: {
-            notification: data.options.templates.notification.map(
-              (template) => template.uid
-            ),
-            formatting: data.options.templates.formatting.map(
-              (template) => template.fileName
-            ),
-            success: data.options.templates.success.map(
-              (template) => template.fileName
-            ),
-          },
-          integrations: data.options.integrations.map(
-            (integration) => integration.uid
-          ),
-          formSubmissions: data.options.formSubmissions.map(
-            (submission) => submission.form.uid
-          ),
-          settings: true,
-        }));
-      }
     } catch (error) {
       setErrors(error?.errors?.import?.file);
 

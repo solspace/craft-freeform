@@ -41,16 +41,16 @@ export const Strategy: React.FC<Props> = ({
               })
             }
           >
-            <option value="replace">{translate('Replace')}</option>
             <option value="skip">{translate('Skip')}</option>
+            <option value="replace">{translate('Replace')}</option>
           </select>
         </div>
       </Field>
 
       <Field
-        label={translate('Existing Notification Template Behavior')}
+        label={translate('Existing Template Behavior')}
         instructions={translate(
-          'Choose the behavior Freeform should use if this site contains any email notification templates that match the data in this import.'
+          'Choose the behavior Freeform should use if this site contains any email notification, formatting or success templates that match the data in this import.'
         )}
         className={classes(
           disabled && 'disabled',
@@ -67,8 +67,8 @@ export const Strategy: React.FC<Props> = ({
               })
             }
           >
-            <option value="replace">{translate('Replace')}</option>
             <option value="skip">{translate('Skip')}</option>
+            <option value="replace">{translate('Replace')}</option>
           </select>
         </div>
       </Field>

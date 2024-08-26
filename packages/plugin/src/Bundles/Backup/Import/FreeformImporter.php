@@ -30,6 +30,7 @@ use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
@@ -143,6 +144,52 @@ class FreeformImporter
             $fieldRecords = [];
             $pageRecords = [];
             $notificationRecords = [];
+
+            $sites = \Craft::$app->getSites()->getAllSites();
+            $formSites = $form->sites;
+            if (!$formSites) {
+                foreach ($sites as $site) {
+                    $formSiteRecord = new FormSiteRecord();
+                    $formSiteRecord->formId = $formRecord->id;
+                    $formSiteRecord->siteId = $site->id;
+                    $formSiteRecord->save();
+                }
+            } else {
+                // Convert form site IDs to new IDs
+                $formSiteIds = $form->settings->getGeneral()->sites;
+                $updatedSiteIds = array_map(
+                    function (int $oldSiteId) use ($formSites) {
+                        $oldSite = $formSites->get($oldSiteId);
+                        if (!$oldSite) {
+                            return null;
+                        }
+
+                        $newSite = \Craft::$app->getSites()->getSiteByHandle($oldSite->handle);
+
+                        return (string) $newSite?->id;
+                    },
+                    $formSiteIds
+                );
+
+                $form->settings->getGeneral()->sites = array_filter($updatedSiteIds);
+                $formRecord->metadata = $this->serializer->serialize($form->settings, 'json');
+                $formRecord->save();
+
+                foreach ($formSites as $formSite) {
+                    $site = \Craft::$app->sites->getSiteByHandle($formSite->handle);
+                    if (!$site) {
+                        continue;
+                    }
+
+                    $formSiteRecord = FormSiteRecord::findOne(['formId' => $formRecord->id, 'siteId' => $site->id]);
+                    if (!$formSiteRecord) {
+                        $formSiteRecord = new FormSiteRecord();
+                        $formSiteRecord->formId = $formRecord->id;
+                        $formSiteRecord->siteId = $site->id;
+                        $formSiteRecord->save();
+                    }
+                }
+            }
 
             foreach ($form->notifications as $notification) {
                 $notificationRecord = FormNotificationRecord::findOne(['uid' => $notification->uid]);
@@ -609,7 +656,7 @@ class FreeformImporter
         ?FileTemplateCollection $collection,
         ?string $templateDirectory,
     ): void {
-        if (!$collection) {
+        if (!$collection || !$collection->count()) {
             return;
         }
 

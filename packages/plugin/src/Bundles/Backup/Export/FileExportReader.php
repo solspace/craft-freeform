@@ -10,6 +10,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RuleConditionCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\SitesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Rule;
 use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
+use Solspace\Freeform\Bundles\Backup\DTO\Site;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
@@ -96,6 +98,18 @@ class FileExportReader extends BaseExporter
             $form->handle = $json['handle'];
             $form->order = $json['order'];
             $form->settings = new FormSettings($json['settings'], $this->propertyProvider);
+
+            $importedSites = $json['sites'] ?? [];
+            if (!empty($importedSites)) {
+                $form->sites = new SitesCollection();
+                foreach ($importedSites as $siteJson) {
+                    $importedSite = new Site();
+                    $importedSite->id = $siteJson['id'];
+                    $importedSite->handle = $siteJson['handle'];
+
+                    $form->sites->add($importedSite, $importedSite->id);
+                }
+            }
 
             foreach ($json['notifications'] as $notificationJson) {
                 $notification = new Notification();

@@ -13,6 +13,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\SitesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
@@ -28,6 +29,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Rule;
 use Solspace\Freeform\Bundles\Backup\DTO\RuleCondition;
+use Solspace\Freeform\Bundles\Backup\DTO\Site;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
@@ -46,6 +48,7 @@ use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -143,6 +146,22 @@ class FreeformFormsExporter extends BaseExporter
             $exported->handle = $form->getHandle();
             $exported->order = $index;
             $exported->settings = $form->getSettings();
+
+            $isSitesEnabled = Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
+
+            if ($isSitesEnabled) {
+                $exported->sites = new SitesCollection();
+
+                /** @var FormSiteRecord[] $siteRecords */
+                $siteRecords = FormSiteRecord::find()->where(['formId' => $form->getId()])->all();
+                foreach ($siteRecords as $siteRecord) {
+                    $exportedSite = new Site();
+                    $exportedSite->id = $siteRecord->getSite()->id;
+                    $exportedSite->handle = $siteRecord->getSite()->handle;
+
+                    $exported->sites->add($exportedSite, $exportedSite->id);
+                }
+            }
 
             $exported->rules = $this->collectRules($form);
             $exported->notifications = new NotificationCollection();

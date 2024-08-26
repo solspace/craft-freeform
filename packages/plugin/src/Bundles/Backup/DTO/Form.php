@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormIntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\SitesCollection;
 use Solspace\Freeform\Form\Settings\Settings;
 
 class Form
@@ -21,6 +22,8 @@ class Form
     public FormIntegrationCollection $integrations;
     public RulesCollection $rules;
     public PageCollection $pages;
+
+    public ?SitesCollection $sites = null;
 
     public function __construct()
     {

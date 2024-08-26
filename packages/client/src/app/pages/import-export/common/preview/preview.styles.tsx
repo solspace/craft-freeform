@@ -1,4 +1,5 @@
 import React from 'react';
+import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 const chunkWidth = 22;
@@ -15,10 +16,13 @@ export const PreviewWrapper = styled.div`
 
 export const SelectAll = styled.a`
   cursor: pointer;
+  display: block;
+
+  color: ${colors.link} !important;
+  margin-bottom: 10px;
 
   &:hover {
     cursor: pointer;
-    text-decoration: underline !important;
   }
 `;
 

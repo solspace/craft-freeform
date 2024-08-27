@@ -59,11 +59,11 @@ export const Strategy: React.FC<Props> = ({
       >
         <div className="select">
           <select
-            value={strategy.notifications}
+            value={strategy.templates}
             onChange={(event) =>
               onUpdate({
                 ...strategy,
-                notifications: event.target.value as ImportStrategy,
+                templates: event.target.value as ImportStrategy,
               })
             }
           >

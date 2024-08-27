@@ -30,6 +30,10 @@ export const FileTemplates: React.FC<Props> = ({
 }) => {
   const handle = kebabCase(groupTitle);
 
+  if (!templates.length) {
+    return null;
+  }
+
   return (
     <>
       <Blocks>
@@ -62,7 +66,7 @@ export const FileTemplates: React.FC<Props> = ({
             <Blocks>
               <BlockItem>
                 <Checkbox
-                  id={`file-template-${template.filePath}`}
+                  id={`file-template-${handle}-${template.fileName}`}
                   checked={values.includes(template.fileName)}
                   onChange={() =>
                     onUpdate(
@@ -77,7 +81,10 @@ export const FileTemplates: React.FC<Props> = ({
               </BlockItem>
               <Spacer $dash $width={2} />
               {icon}
-              <Label $light htmlFor={`file-template-${template.filePath}`}>
+              <Label
+                $light
+                htmlFor={`file-template-${handle}-${template.fileName}`}
+              >
                 {template.name}
               </Label>
             </Blocks>

@@ -8,13 +8,13 @@ class ImportStrategy
     public const TYPE_SKIP = 'skip';
 
     public string $forms;
-    public string $notifications;
+    public string $templates;
     public string $integrations;
 
     public function __construct(array $strategy = [])
     {
         $this->forms = $strategy['forms'] ?? self::TYPE_REPLACE;
-        $this->notifications = $strategy['notifications'] ?? self::TYPE_REPLACE;
+        $this->templates = $strategy['templates'] ?? self::TYPE_REPLACE;
         $this->integrations = $strategy['integrations'] ?? self::TYPE_REPLACE;
     }
 }

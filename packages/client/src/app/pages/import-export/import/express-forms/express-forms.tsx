@@ -29,7 +29,7 @@ export const ImportExpressForms: React.FC = () => {
     integrations: [],
     strategy: {
       forms: 'skip',
-      notifications: 'skip',
+      templates: 'skip',
     },
     settings: false,
   });

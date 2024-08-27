@@ -19,7 +19,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         $settings = Freeform::getInstance()->settings->getSettingsModel();
         foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
             try {
-                $model = NotificationTemplateRecord::createFromTemplate($filePath);
+                $model = NotificationTemplateRecord::createFromTemplate($filePath, false);
 
                 $notifications[$model->filepath] = $model;
             } catch (EmailTemplateException $exception) {
@@ -42,13 +42,13 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         return $notifications;
     }
 
-    public function getById(mixed $id): ?NotificationTemplateRecord
+    public function getById(mixed $id, bool $failOnError = true): ?NotificationTemplateRecord
     {
         $settings = Freeform::getInstance()->settings->getSettingsModel();
         foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
             if ($id === $name) {
                 try {
-                    return NotificationTemplateRecord::createFromTemplate($filePath);
+                    return NotificationTemplateRecord::createFromTemplate($filePath, $failOnError);
                 } catch (EmailTemplateException $exception) {
                     \Craft::$app->session->setError(
                         Freeform::t(

@@ -77,7 +77,7 @@ export type ImportStrategy = 'replace' | 'skip';
 
 export type StrategyCollection = {
   forms: ImportStrategy;
-  notifications: ImportStrategy;
+  templates: ImportStrategy;
 };
 
 export type TemplateValues = {

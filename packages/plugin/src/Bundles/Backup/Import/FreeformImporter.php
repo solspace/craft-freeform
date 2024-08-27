@@ -428,7 +428,7 @@ class FreeformImporter
             return;
         }
 
-        $strategy = $this->dataset->getStrategy()->notifications;
+        $strategy = $this->dataset->getStrategy()->templates;
 
         $this->sse->message('reset', $collection->count());
 
@@ -660,6 +660,8 @@ class FreeformImporter
             return;
         }
 
+        $strategy = $this->dataset->getStrategy()->templates;
+
         $this->sse->message('reset', $collection->count());
         $this->sse->message('info', "Importing templates: {$type}");
 
@@ -673,6 +675,14 @@ class FreeformImporter
         foreach ($collection as $template) {
             $path = $template->path;
             $fileName = $template->fileName;
+
+            if (ImportStrategy::TYPE_SKIP === $strategy) {
+                if (file_exists($templateDirectory.'/'.$fileName)) {
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+            }
 
             if (preg_match('/\/index\.(twig|html)$/i', $fileName)) {
                 $dir = \dirname($path);

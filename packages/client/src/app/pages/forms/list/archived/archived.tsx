@@ -8,10 +8,9 @@ import { ArchivedItems, Button, Wrapper } from './archived.styles';
 
 type Props = {
   data: FormWithStats[];
-  isProEdition?: boolean;
 };
 
-export const Archived: React.FC<Props> = ({ data, isProEdition = false }) => {
+export const Archived: React.FC<Props> = ({ data }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = (): void => setIsVisible(!isVisible);
 
@@ -29,13 +28,7 @@ export const Archived: React.FC<Props> = ({ data, isProEdition = false }) => {
       {isVisible && (
         <ArchivedItems>
           {data &&
-            data.map((form) => (
-              <ArchivedItem
-                isProEdition={isProEdition}
-                key={form.id}
-                form={form}
-              />
-            ))}
+            data.map((form) => <ArchivedItem key={form.id} form={form} />)}
         </ArchivedItems>
       )}
     </Wrapper>

@@ -19,16 +19,15 @@ import {
 
 type Props = {
   form: FormWithStats;
-  isProEdition?: boolean;
 };
 
-export const ArchivedItem: React.FC<Props> = ({ form, isProEdition }) => {
+export const ArchivedItem: React.FC<Props> = ({ form }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { id, name, links, dateArchived } = form;
 
-  const archiveMutation = useArchiveFormMutation(isProEdition);
+  const archiveMutation = useArchiveFormMutation();
   const isDisabled =
     archiveMutation.isLoading && archiveMutation.context === id;
   const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;

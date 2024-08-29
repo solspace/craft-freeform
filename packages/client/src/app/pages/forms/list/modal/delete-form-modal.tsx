@@ -28,7 +28,7 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const isProEdition = config.editions.isAtLeast(Edition.Pro);
-  const deleteFormGroupsMutation = useDeleteFormGroupsMutation(true);
+  const deleteFormGroupsMutation = useDeleteFormGroupsMutation();
 
   const queryClient = useQueryClient();
   const { getCurrentHandleWithFallback } = useSiteContext();

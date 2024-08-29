@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { QKForms } from '@ff-client/queries/forms';
@@ -39,7 +40,6 @@ type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
   isExpressEdition?: boolean;
-  isProEdition?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -52,10 +52,10 @@ export const Card: React.FC<Props> = ({
   form,
   isDraggingInProgress,
   isExpressEdition,
-  isProEdition,
 }) => {
-  const archiveMutation = useArchiveFormMutation(isProEdition);
-  const cloneMutation = useCloneFormMutation(isProEdition);
+  const isProEdition = config.editions.is(Edition.Pro);
+  const archiveMutation = useArchiveFormMutation();
+  const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();

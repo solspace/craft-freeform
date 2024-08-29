@@ -28,7 +28,6 @@ class GroupsController extends BaseApiController
         $this->requirePostRequest();
         $id = $this->request->post('id');
         $site = $this->request->post('site');
-        $isDeleteFromAllSites = $this->request->post('isDeleteFromAllSites');
 
         if (!$id || !$site) {
             throw new NotFoundHttpException('No form ID or site provided');
@@ -56,34 +55,17 @@ class GroupsController extends BaseApiController
             return $groupRecord->save();
         };
 
-        if ($isDeleteFromAllSites) {
-            $allGroupRecords = FormGroupsRecord::find()->all();
+        $allGroupRecords = FormGroupsRecord::find()->all();
 
-            foreach ($allGroupRecords as $groupRecord) {
-                if (!$removeFormIdFromGroups($groupRecord, $id)) {
-                    throw new Exception('Failed to save the updated form group record for site: '.$groupRecord->site);
-                }
-            }
-        } else {
-            $groupRecord = FormGroupsRecord::findOne(['site' => $site]);
-
-            if ($groupRecord) {
-                if (!$removeFormIdFromGroups($groupRecord, $id)) {
-                    throw new Exception('Failed to save the updated form group record');
-                }
+        foreach ($allGroupRecords as $groupRecord) {
+            if (!$removeFormIdFromGroups($groupRecord, $id)) {
+                throw new Exception('Failed to save the updated form group record for site: '.$groupRecord->site);
             }
         }
 
         return $this->asEmptyResponse(204);
     }
 
-    /**
-     * Handles the POST request to create or update a form group.
-     *
-     * @param null|int|string $id optional ID for the group (not used in this example)
-     *
-     * @throws Exception|NotFoundHttpException
-     */
     protected function post(null|int|string $id = null): null|array|object
     {
         $site = $this->request->post('site');

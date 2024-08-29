@@ -1,5 +1,5 @@
 import { useModal } from '@components/modals/modal.context';
-import type { FormWithStats } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 
 import { DeleteFormModal } from './delete-form-modal';
 

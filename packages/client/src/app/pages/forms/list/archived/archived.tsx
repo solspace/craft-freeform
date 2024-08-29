@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import type { FormWithStats } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
 import { ArchivedItem } from '../archived-item/archived-item';
@@ -8,9 +8,10 @@ import { ArchivedItems, Button, Wrapper } from './archived.styles';
 
 type Props = {
   data: FormWithStats[];
+  isProEdition?: boolean;
 };
 
-export const Archived: React.FC<Props> = ({ data }) => {
+export const Archived: React.FC<Props> = ({ data, isProEdition = false }) => {
   const [isVisible, setIsVisible] = useState(false);
   const toggleVisibility = (): void => setIsVisible(!isVisible);
 
@@ -28,7 +29,13 @@ export const Archived: React.FC<Props> = ({ data }) => {
       {isVisible && (
         <ArchivedItems>
           {data &&
-            data.map((form) => <ArchivedItem key={form.id} form={form} />)}
+            data.map((form) => (
+              <ArchivedItem
+                isProEdition={isProEdition}
+                key={form.id}
+                form={form}
+              />
+            ))}
         </ArchivedItems>
       )}
     </Wrapper>

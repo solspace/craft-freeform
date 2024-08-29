@@ -4,7 +4,8 @@ import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
+import { QKForms } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import ArchiveIcon from '@ff-icons/actions/archive.svg';
@@ -38,6 +39,7 @@ type Props = {
   form: FormWithStats;
   isDraggingInProgress?: boolean;
   isExpressEdition?: boolean;
+  isProEdition?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -50,9 +52,10 @@ export const Card: React.FC<Props> = ({
   form,
   isDraggingInProgress,
   isExpressEdition,
+  isProEdition,
 }) => {
-  const archiveMutation = useArchiveFormMutation();
-  const cloneMutation = useCloneFormMutation();
+  const archiveMutation = useArchiveFormMutation(isProEdition);
+  const cloneMutation = useCloneFormMutation(isProEdition);
 
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -94,7 +97,7 @@ export const Card: React.FC<Props> = ({
       )}
     >
       <Controls>
-        {!isExpressEdition && (
+        {!isExpressEdition && !isProEdition && (
           <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
             <ControlButton className="handle">
               <MoveIcon />

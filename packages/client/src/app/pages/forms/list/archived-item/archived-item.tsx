@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import type { FormWithStats } from '@ff-client/queries/forms';
 import { QKForms } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
@@ -19,15 +19,16 @@ import {
 
 type Props = {
   form: FormWithStats;
+  isProEdition?: boolean;
 };
 
-export const ArchivedItem: React.FC<Props> = ({ form }) => {
+export const ArchivedItem: React.FC<Props> = ({ form, isProEdition }) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const { id, name, links, dateArchived } = form;
 
-  const archiveMutation = useArchiveFormMutation();
+  const archiveMutation = useArchiveFormMutation(isProEdition);
   const isDisabled =
     archiveMutation.isLoading && archiveMutation.context === id;
   const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;

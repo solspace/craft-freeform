@@ -18,6 +18,10 @@ return [
     'freeform/api/forms/<id:\d+>/archive' => 'freeform/api/forms/archive',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
+    // FORM GROUPS
+    'freeform/api/groups' => 'freeform/api/groups',
+    'freeform/api/groups/delete' => 'freeform/api/groups/delete',
+
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
 

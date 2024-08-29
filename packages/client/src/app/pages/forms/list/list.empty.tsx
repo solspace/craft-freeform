@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormWithStats } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
 import { Card } from './card/card';

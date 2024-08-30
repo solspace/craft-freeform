@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
+use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
@@ -357,6 +358,12 @@ class SubmissionsController extends BaseController
                         $post[$handle] = array_merge($post[$handle], $response->getAssetIds());
                     } else {
                         $post[$handle] = $response->getAssetIds();
+                    }
+
+                    $assetIds = $post[$handle];
+                    $records = UnfinalizedFileRecord::findAll(['assetId' => $assetIds]);
+                    foreach ($records as $record) {
+                        $record->delete();
                     }
                 }
             }

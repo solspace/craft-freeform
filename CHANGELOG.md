@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.5.8 - 2024-08-30
+
+### Fixed
+- Fixed a bug where some headers were missing in the Pardot integration authorization request.
+
 ## 5.5.7 - 2024-08-14
 
 ### Changed

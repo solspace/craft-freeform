@@ -18,10 +18,12 @@ use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
+use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 
 class m230101_200000_FF4to5_MigrateData extends Migration
 {
@@ -37,6 +39,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     private array $pageMap = [];
     private array $fieldMap = [];
+    private array $submitFieldMap = [];
 
     private array $globalFieldData = [];
 
@@ -118,6 +121,10 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         $props = $properties->{$fieldHash};
 
                         if (\in_array($props->type, self::IGNORED_FIELD_TYPES)) {
+                            if ('submit' === $props->type) {
+                                $this->submitFieldMap[] = $fieldHash;
+                            }
+
                             continue;
                         }
 
@@ -733,12 +740,14 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             return;
         }
 
-        foreach ($rules->list as $data) {
+        foreach ($rules->list as $pageHandle => $data) {
             $ruleRecord = null;
+            $submitRulesAdded = false;
 
             foreach ($data->fieldRules as $fieldRule) {
+                $isSubmitFieldRule = \in_array($fieldRule->hash, $this->submitFieldMap, true);
                 $targetFieldRecord = $this->fieldMap[$fieldRule->hash] ?? null;
-                if (!$targetFieldRecord) {
+                if (!$targetFieldRecord && !$isSubmitFieldRule) {
                     continue;
                 }
 
@@ -748,19 +757,51 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 ]);
                 $ruleRecord->save();
 
-                $fieldRuleRecord = new FieldRuleRecord([
-                    'id' => $ruleRecord->id,
-                    'fieldId' => $targetFieldRecord->id,
-                    'display' => $fieldRule->show ? 'show' : 'hide',
-                ]);
-                $fieldRuleRecord->save();
+                if ($isSubmitFieldRule) {
+                    if ($submitRulesAdded) {
+                        continue;
+                    }
+
+                    $submitButtonRuleRecord = new ButtonRuleRecord([
+                        'id' => $ruleRecord->id,
+                        'pageId' => $this->pageMap[$pageHandle]->id,
+                        'button' => 'submit',
+                        'display' => $fieldRule->show ? 'show' : 'hide',
+                    ]);
+                    $submitButtonRuleRecord->save();
+
+                    $backRuleRecord = new RuleRecord([
+                        'uid' => StringHelper::UUID(),
+                        'combinator' => $fieldRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                    ]);
+                    $backRuleRecord->save();
+                    $backButtonRuleRecord = new ButtonRuleRecord([
+                        'id' => $backRuleRecord->id,
+                        'pageId' => $this->pageMap[$pageHandle]->id,
+                        'button' => 'back',
+                        'display' => $fieldRule->show ? 'show' : 'hide',
+                    ]);
+                    $backButtonRuleRecord->save();
+
+                    $this->processCriteria($backRuleRecord->id, $fieldRule->criteria);
+
+                    $submitRulesAdded = true;
+                } else {
+                    $fieldRuleRecord = new FieldRuleRecord([
+                        'id' => $ruleRecord->id,
+                        'fieldId' => $targetFieldRecord->id,
+                        'display' => $fieldRule->show ? 'show' : 'hide',
+                    ]);
+                    $fieldRuleRecord->save();
+                }
 
                 $this->processCriteria($ruleRecord->id, $fieldRule->criteria);
             }
 
             foreach ($data->gotoRules as $pageRule) {
+                $isSubmitRule = '-999' === $pageRule->targetPageHash;
                 $targetPageRecord = $this->pageMap[$pageRule->targetPageHash] ?? null;
-                if (!$targetPageRecord) {
+                if (!$targetPageRecord && !$isSubmitRule) {
                     continue;
                 }
 
@@ -770,11 +811,19 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 ]);
                 $ruleRecord->save();
 
-                $pageRuleRecord = new PageRuleRecord([
-                    'id' => $ruleRecord->id,
-                    'pageId' => $targetPageRecord->id,
-                ]);
-                $pageRuleRecord->save();
+                if ($isSubmitRule) {
+                    $submitRuleRecord = new SubmitFormRuleRecord([
+                        'id' => $ruleRecord->id,
+                        'formId' => $formId,
+                    ]);
+                    $submitRuleRecord->save();
+                } else {
+                    $pageRuleRecord = new PageRuleRecord([
+                        'id' => $ruleRecord->id,
+                        'pageId' => $targetPageRecord->id,
+                    ]);
+                    $pageRuleRecord->save();
+                }
 
                 $this->processCriteria($ruleRecord->id, $pageRule->criteria);
             }
@@ -789,11 +838,20 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 continue;
             }
 
+            $equals = $criteria->equals;
+            $value = $criteria->value;
+
+            if (empty($value)) {
+                $operator = $equals ? Condition::TYPE_IS_EMPTY : Condition::TYPE_IS_NOT_EMPTY;
+            } else {
+                $operator = $equals ? Condition::TYPE_EQUALS : Condition::TYPE_NOT_EQUALS;
+            }
+
             $conditionRecord = new RuleConditionRecord([
                 'ruleId' => $ruleId,
                 'fieldId' => $conditionField->id,
-                'operator' => $criteria->equals ? Condition::TYPE_EQUALS : Condition::TYPE_NOT_EQUALS,
-                'value' => $criteria->value,
+                'operator' => $operator,
+                'value' => $value,
             ]);
             $conditionRecord->save();
         }

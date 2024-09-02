@@ -908,7 +908,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
                 switch ($props->type) {
                     case 'submit':
-                        $metadata['submit'] = $props->labelNext;
+                        $metadata['submitLabel'] = $props->labelNext;
                         $metadata['back'] = !$props->disablePrev;
                         $metadata['backLabel'] = $props->labelPrev;
 

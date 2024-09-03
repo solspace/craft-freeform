@@ -16,12 +16,12 @@ use craft\db\ActiveRecord;
 
 /**
  * @property int    $id
- * @property string $siteId
- * @property string $label
+ * @property string $formId
+ * @property string $groupId
  */
-class FormGroupsRecord extends ActiveRecord
+class FormGroupsEntriesRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_form_groups}}';
+    public const TABLE = '{{%freeform_form_groups_entries}}';
 
     /**
      * Returns the name of the associated database table.

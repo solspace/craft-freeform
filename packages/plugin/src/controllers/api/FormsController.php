@@ -10,9 +10,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
-use Solspace\Freeform\Records\FormGroupsRecord;
 use Solspace\Freeform\Records\FormRecord;
-use yii\db\Exception;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -56,9 +54,8 @@ class FormsController extends BaseApiController
     {
         $freeform = Freeform::getInstance();
         $this->requireFormPermission($id);
-        $site = $this->request->post('site');
 
-        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
@@ -79,15 +76,7 @@ class FormsController extends BaseApiController
         ;
 
         if ($freeform->isPro()) {
-            if ($site) {
-                $groupRecord = FormGroupsRecord::findOne(['site' => $site]);
-
-                if ($groupRecord) {
-                    if (!$this->removeFormIdFromGroups($groupRecord, $id)) {
-                        throw new Exception('Failed to save the updated form group record');
-                    }
-                }
-            }
+            $freeform->groups->deleteById($id);
         }
 
         $this->response->statusCode = 204;
@@ -125,6 +114,7 @@ class FormsController extends BaseApiController
 
     public function actionDelete(): Response
     {
+        $freeform = Freeform::getInstance();
         $this->requirePostRequest();
         $id = (int) \Craft::$app->request->post('id');
         if (!$id) {
@@ -135,6 +125,10 @@ class FormsController extends BaseApiController
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
 
         $this->getFormsService()->deleteById($id);
+
+        if ($freeform->isPro()) {
+            $freeform->groups->deleteById($id);
+        }
 
         return $this->asEmptyResponse(204);
     }
@@ -177,29 +171,6 @@ class FormsController extends BaseApiController
         $this->response->statusCode = $event->getStatus() ?? 204;
 
         return $event->getResponseData();
-    }
-
-    private function removeFormIdFromGroups($groupRecord, int $id): bool
-    {
-        $groups = json_decode($groupRecord->groups, true);
-
-        foreach ($groups as &$group) {
-            if (isset($group['formIds'])) {
-                $initialCount = \count($group['formIds']);
-                $group['formIds'] = array_filter(
-                    $group['formIds'],
-                    fn ($formId) => $formId !== $id
-                );
-
-                if (\count($group['formIds']) < $initialCount) {
-                    $groupRecord->groups = json_encode($groups);
-
-                    return $groupRecord->save();
-                }
-            }
-        }
-
-        return true;
     }
 
     private function requireFormPermission(int $id, string $permission = Freeform::PERMISSION_FORMS_MANAGE): void

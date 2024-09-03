@@ -23,7 +23,7 @@ export const useFormGroupsOperations = (
   setState: StateSetter<FormWithGroup>,
   formGroupsListRefs: React.MutableRefObject<FormGroupsListRefs>
 ): GroupOperations => {
-  const { getCurrentHandleWithFallback } = useSiteContext();
+  const { getCurrentHandleWithFallback, current } = useSiteContext();
 
   const addGroup = useCallback(() => {
     setState((prevState) => ({
@@ -33,7 +33,6 @@ export const useFormGroupsOperations = (
         site: prevState.formGroups?.site
           ? prevState.formGroups.site
           : getCurrentHandleWithFallback(),
-        uid: prevState.formGroups?.uid ? prevState.formGroups.uid : v4(),
         groups: [
           ...(prevState.formGroups?.groups || []),
           {
@@ -89,8 +88,8 @@ export const useFormGroupsOperations = (
       .filter(Boolean) as GroupItem[];
 
     return {
+      siteId: initialState.formGroups?.siteId || current?.id,
       site: initialState.formGroups?.site || getCurrentHandleWithFallback(),
-      uid: initialState.formGroups?.uid || v4(),
       groups: sortedGroups,
     };
   }, [formGroupsListRefs, initialState, getCurrentHandleWithFallback]);

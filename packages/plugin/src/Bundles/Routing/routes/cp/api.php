@@ -20,7 +20,6 @@ return [
 
     // FORM GROUPS
     'freeform/api/groups' => 'freeform/api/groups',
-    'freeform/api/groups/delete' => 'freeform/api/groups/delete',
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',

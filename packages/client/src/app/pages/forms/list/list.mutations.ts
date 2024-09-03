@@ -5,32 +5,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 
-export const useDeleteFormGroupsMutation = (): UseMutationResult<
-  unknown,
-  Error,
-  number,
-  number
-> => {
-  const queryClient = useQueryClient();
-  const { getCurrentHandleWithFallback } = useSiteContext();
-
-  return useMutation(
-    (id) =>
-      axios.post(`/api/groups/delete`, {
-        id,
-        site: getCurrentHandleWithFallback(),
-      }),
-    {
-      onMutate: (id) => id,
-      onSuccess: () => {
-        queryClient.invalidateQueries(
-          QKGroups.all(getCurrentHandleWithFallback())
-        );
-      },
-    }
-  );
-};
-
 export const useArchiveFormMutation = (): UseMutationResult<
   unknown,
   Error,

@@ -7,16 +7,13 @@ import {
   ModalHeader,
 } from '@components/modals/modal.styles';
 import type { ModalContainerProps } from '@components/modals/modal.types';
-import config, { Edition } from '@config/freeform/freeform.config';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import { QKForms } from '@ff-client/queries/forms';
+import { QKGroups } from '@ff-client/queries/form-groups';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-
-import { useDeleteFormGroupsMutation } from '../list.mutations';
 
 import { FormWrapper } from './form-modal.styles';
 
@@ -27,8 +24,6 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   const [enabled, setEnabled] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
-  const isProEdition = config.editions.isAtLeast(Edition.Pro);
-  const deleteFormGroupsMutation = useDeleteFormGroupsMutation();
 
   const queryClient = useQueryClient();
   const { getCurrentHandleWithFallback } = useSiteContext();
@@ -60,13 +55,9 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
     try {
       await axios.post(`/api/forms/delete`, { id: data?.form.id });
 
-      if (isProEdition) {
-        await deleteFormGroupsMutation.mutateAsync(data?.form.id);
-      } else {
-        await queryClient.invalidateQueries(
-          QKForms.all(getCurrentHandleWithFallback())
-        );
-      }
+      await queryClient.invalidateQueries(
+        QKGroups.all(getCurrentHandleWithFallback())
+      );
 
       setInputValue('');
       setEnabled(false);

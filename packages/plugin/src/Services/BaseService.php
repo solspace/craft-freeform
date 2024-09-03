@@ -14,6 +14,11 @@ class BaseService extends Component
         return Freeform::getInstance()->forms;
     }
 
+    protected function getGroupsService(): GroupsService
+    {
+        return Freeform::getInstance()->groups;
+    }
+
     protected function getFormLayoutsService(): LayoutsService
     {
         return Freeform::getInstance()->formLayouts;

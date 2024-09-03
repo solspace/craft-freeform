@@ -6,89 +6,119 @@ use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
-use yii\db\Exception;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
+use Solspace\Freeform\Services\GroupsService;
 
 class GroupsController extends BaseApiController
 {
+    private GroupsService $groupsService;
+
     public function __construct(
         $id,
         $module,
         $config,
         private FormTransformer $formTransformer,
+        GroupsService $groupsService
     ) {
+        $this->groupsService = $groupsService;
         parent::__construct($id, $module, $config);
-    }
-
-    public function actionDelete(): Response
-    {
-        $this->requirePostRequest();
-        $id = $this->request->post('id');
-        $site = $this->request->post('site');
-
-        if (!$id || !$site) {
-            throw new NotFoundHttpException('No form ID or site provided');
-        }
-
-        $removeFormIdFromGroups = function ($groupRecord, $formId) {
-            $groups = json_decode($groupRecord->groups, true);
-
-            foreach ($groups as &$group) {
-                if (isset($group['formIds'])) {
-                    $initialCount = \count($group['formIds']);
-                    $group['formIds'] = array_filter(
-                        $group['formIds'],
-                        fn ($formId) => $formId !== $formId
-                    );
-
-                    if (\count($group['formIds']) < $initialCount) {
-                        break;
-                    }
-                }
-            }
-
-            $groupRecord->groups = json_encode($groups);
-
-            return $groupRecord->save();
-        };
-
-        $allGroupRecords = FormGroupsRecord::find()->all();
-
-        foreach ($allGroupRecords as $groupRecord) {
-            if (!$removeFormIdFromGroups($groupRecord, $id)) {
-                throw new Exception('Failed to save the updated form group record for site: '.$groupRecord->site);
-            }
-        }
-
-        return $this->asEmptyResponse(204);
     }
 
     protected function post(null|int|string $id = null): null|array|object
     {
-        $site = $this->request->post('site');
         $groups = $this->request->post('groups');
-        $uid = $this->request->post('uid');
+        $siteId = $this->request->post('siteId');
 
-        if (!$site) {
-            throw new NotFoundHttpException('Site not found');
-        }
+        $transaction = \Craft::$app->db->beginTransaction();
 
-        $groupRecord = FormGroupsRecord::findOne(['site' => $site]);
+        try {
+            if (empty($groups)) {
+                $groupIds = FormGroupsRecord::find()
+                    ->select('id')
+                    ->where(['siteId' => $siteId])
+                    ->column()
+                ;
 
-        if ($groupRecord) {
-            $groupRecord->groups = json_encode($groups);
-        } else {
-            $groupRecord = new FormGroupsRecord();
-            $groupRecord->uid = $uid;
-            $groupRecord->site = $site;
-            $groupRecord->groups = json_encode($groups);
-        }
+                if (!empty($groupIds)) {
+                    FormGroupsEntriesRecord::deleteAll(['groupId' => $groupIds]);
+                }
 
-        if (!$groupRecord->save()) {
-            throw new Exception('Failed to save the form group record');
+                FormGroupsRecord::deleteAll(['siteId' => $siteId]);
+
+                $transaction->commit();
+
+                return null;
+            }
+
+            $processedGroupIds = [];
+            $processedFormEntryIds = [];
+
+            foreach ($groups as $order => $group) {
+                $groupRecord = FormGroupsRecord::findOne([
+                    'uid' => $group['uid'],
+                    'siteId' => $siteId,
+                ]);
+
+                if (!$groupRecord) {
+                    $groupRecord = new FormGroupsRecord();
+                }
+
+                $groupRecord->uid = $group['uid'] ?? null;
+                $groupRecord->siteId = $siteId;
+                $groupRecord->label = $group['label'] ?? '';
+                $groupRecord->order = $order;
+
+                if (!$groupRecord->save()) {
+                    throw new \Exception('Failed to save the form group record');
+                }
+
+                $processedGroupIds[] = $groupRecord->id;
+
+                foreach ($group['formIds'] as $formOrder => $formId) {
+                    $groupEntryRecord = FormGroupsEntriesRecord::findOne(['groupId' => $groupRecord->id, 'formId' => $formId]);
+
+                    if (!$groupEntryRecord) {
+                        $groupEntryRecord = new FormGroupsEntriesRecord();
+                    }
+
+                    $groupEntryRecord->groupId = $groupRecord->id;
+                    $groupEntryRecord->formId = $formId;
+                    $groupEntryRecord->order = $formOrder;
+
+                    if (!$groupEntryRecord->save()) {
+                        throw new \Exception('Failed to save the form group entry');
+                    }
+
+                    $processedFormEntryIds[] = $groupEntryRecord->id;
+                }
+            }
+
+            if (!empty($processedGroupIds)) {
+                FormGroupsRecord::deleteAll([
+                    'and',
+                    ['siteId' => $siteId],
+                    ['not in', 'id', $processedGroupIds],
+                ]);
+            }
+
+            if (!empty($processedFormEntryIds)) {
+                FormGroupsEntriesRecord::deleteAll([
+                    'and',
+                    ['groupId' => $processedGroupIds],
+                    ['not in', 'id', $processedFormEntryIds],
+                ]);
+            }
+
+            // Commit the transaction
+            $transaction->commit();
+        } catch (\Exception $e) {
+            // Rollback the transaction in case of an error
+            if (null !== $transaction) {
+                $transaction->rollBack();
+            }
+
+            throw $e;
         }
 
         return null;
@@ -98,7 +128,9 @@ class GroupsController extends BaseApiController
     {
         $freeform = Freeform::getInstance();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
-        $site = SitesHelper::getCurrentCpPageSiteHandle();
+        $params = $this->request->getQueryParams();
+        $site = $params['siteHandle'] ?? null;
+        $siteId = $params['siteId'] ?? null;
 
         $allForms = $this->formTransformer->transformList(
             array_values(
@@ -127,51 +159,47 @@ class GroupsController extends BaseApiController
         ];
 
         if ($freeform->isPro()) {
-            $groupRecord = FormGroupsRecord::find()
-                ->where(['site' => $site])
-                ->one()
-            ;
+            $groupRecords = $this->groupsService->getAllGroupsBySiteId($siteId);
 
-            $forms = array_values(
+            $formGroups = ['groups' => []];
+            $formIdsInGroups = [];
+
+            foreach ($groupRecords as $groupRecord) {
+                $groupFormsEntries = FormGroupsEntriesRecord::find()
+                    ->where(['groupId' => $groupRecord['id']])
+                    ->orderBy(['order' => \SORT_ASC])
+                    ->all()
+                ;
+
+                $formIds = array_map(fn ($entry) => $entry->formId, $groupFormsEntries);
+                $formIdsInGroups = array_merge($formIdsInGroups, $formIds);
+
+                $groupedForms = array_values(
+                    array_filter(
+                        $forms,
+                        fn ($form) => \in_array($form->id, $formIds)
+                    )
+                );
+
+                $groupItem = [
+                    'uid' => $groupRecord['uid'],
+                    'label' => $groupRecord['label'],
+                    'formIds' => $formIds,
+                    'forms' => $groupedForms,
+                ];
+
+                $formGroups['groups'][] = $groupItem;
+            }
+
+            $remainingForms = array_values(
                 array_filter(
                     $forms,
-                    fn ($form) => null === $form->dateArchived
+                    fn ($form) => !\in_array($form->id, $formIdsInGroups)
                 )
             );
 
-            if ($groupRecord) {
-                $groupData = json_decode($groupRecord->groups, true);
-
-                $formIdMap = [];
-                foreach ($forms as $form) {
-                    $formIdMap[$form->id] = $form;
-                }
-
-                $groupDataWithForms = [];
-                $remainingForms = $formIdMap;
-
-                foreach ($groupData as $group) {
-                    $groupFormIds = $group['formIds'] ?? [];
-                    $groupFormObjects = [];
-
-                    foreach ($groupFormIds as $formId) {
-                        if (isset($formIdMap[$formId])) {
-                            $groupFormObjects[] = $formIdMap[$formId];
-                            unset($remainingForms[$formId]);
-                        }
-                    }
-
-                    $group['forms'] = $groupFormObjects;
-                    $groupDataWithForms[] = $group;
-                }
-
-                $response->formGroups = (object) [
-                    'uid' => $groupRecord->uid,
-                    'site' => $groupRecord->site,
-                    'groups' => $groupDataWithForms,
-                ];
-                $response->forms = array_values($remainingForms);
-            }
+            $response->forms = $remainingForms;
+            $response->formGroups = $formGroups;
         }
 
         return $response;

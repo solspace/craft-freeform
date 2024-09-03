@@ -8,8 +8,8 @@ export type GroupItem = {
 };
 
 export type FormGroup = {
-  uid: string;
-  site: string;
+  siteId?: number | string;
+  site?: string;
   groups: GroupItem[];
 };
 

@@ -80,6 +80,7 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
+use Solspace\Freeform\Services\GroupsService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -116,6 +117,7 @@ use yii\db\Query;
  * @property CrmService                 $crm
  * @property FilesService               $files
  * @property FormsService               $forms
+ * @property GroupsService              $groups
  * @property FieldsService              $fields
  * @property LayoutsService             $formLayouts
  * @property MailerService              $mailer
@@ -413,6 +415,7 @@ class Freeform extends Plugin
                 'charts' => ChartsService::class,
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
+                'groups' => GroupsService::class,
                 'field' => FieldsService::class,
                 'fields' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,

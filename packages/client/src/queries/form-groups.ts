@@ -22,7 +22,7 @@ export const useFetchFormGroups: FetchFormGroupsQuery = () => {
     () =>
       axios
         .get<FormWithGroup>(`/api/groups`, {
-          params: { site: current?.handle },
+          params: { siteHandle: current?.handle, siteId: current?.id },
         })
         .then((res) => res.data)
   );

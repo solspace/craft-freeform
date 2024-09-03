@@ -8,20 +8,20 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
-use Solspace\Freeform\Services\GroupsService;
+use Solspace\Freeform\Services\FormGroupsService;
 
-class GroupsController extends BaseApiController
+class FormGroupsController extends BaseApiController
 {
-    private GroupsService $groupsService;
+    private FormGroupsService $formGroupsService;
 
     public function __construct(
         $id,
         $module,
         $config,
         private FormTransformer $formTransformer,
-        GroupsService $groupsService
+        FormGroupsService $formGroupsService
     ) {
-        $this->groupsService = $groupsService;
+        $this->formGroupsService = $formGroupsService;
         parent::__construct($id, $module, $config);
     }
 
@@ -110,10 +110,8 @@ class GroupsController extends BaseApiController
                 ]);
             }
 
-            // Commit the transaction
             $transaction->commit();
         } catch (\Exception $e) {
-            // Rollback the transaction in case of an error
             if (null !== $transaction) {
                 $transaction->rollBack();
             }
@@ -159,7 +157,7 @@ class GroupsController extends BaseApiController
         ];
 
         if ($freeform->isPro()) {
-            $groupRecords = $this->groupsService->getAllGroupsBySiteId($siteId);
+            $groupRecords = $this->formGroupsService->getAllFormGroupsBySiteId($siteId);
 
             $formGroups = ['groups' => []];
             $formIdsInGroups = [];

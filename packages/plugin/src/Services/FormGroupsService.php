@@ -6,9 +6,9 @@ use craft\db\Query;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
 
-class GroupsService extends BaseService
+class FormGroupsService extends BaseService
 {
-    public function getAllGroupsBySiteId(int $siteId): array
+    public function getAllFormGroupsBySiteId(int $siteId): array
     {
         $query = $this->getGroupQuery();
         $query->where(['groups.siteId' => $siteId])

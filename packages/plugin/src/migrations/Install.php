@@ -385,20 +385,20 @@ class Install extends StreamlinedInstallMigration
                 ->addField('chartType', $this->string(200)->notNull())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_form_groups'))
+            (new Table('freeform_forms_groups'))
                 ->addField('id', $this->primaryKey())
                 ->addField('siteId', $this->integer()->notNull())
                 ->addField('label', $this->string())
                 ->addField('order', $this->integer()->notNull())
                 ->addForeignKey('siteId', 'sites', 'id', ForeignKey::CASCADE),
 
-            (new Table('freeform_form_groups_entries'))
+            (new Table('freeform_forms_groups_entries'))
                 ->addField('id', $this->primaryKey())
                 ->addField('groupId', $this->integer()->notNull())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('order', $this->integer()->notNull())
-                ->addForeignKey('groupId', 'freeform_form_groups', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('formId', 'freeform_form', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('groupId', 'freeform_forms_groups', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
         ];
     }
 
@@ -424,9 +424,6 @@ class Install extends StreamlinedInstallMigration
         $this->addForeignKey(null, '{{%freeform_rules_buttons}}', ['pageId'], '{{%freeform_forms_pages}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_rules_conditions}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE, ForeignKey::CASCADE);
         $this->addForeignKey(null, '{{%freeform_survey_preferences}}', ['fieldId'], '{{%freeform_forms_fields}}', ['id'], ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_form_groups}}', ['siteId'], '{{%sites}}', ['id'], ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_form_groups_entries}}', ['groupId'], '{{%freeform_form_groups}}', ['id'], ForeignKey::CASCADE);
-        $this->addForeignKey(null, '{{%freeform_form_groups_entries}}', ['formId'], '{{%freeform_forms}}', ['id'], ForeignKey::CASCADE);
 
         return parent::afterInstall();
     }

@@ -76,7 +76,7 @@ class FormsController extends BaseApiController
         ;
 
         if ($freeform->isPro()) {
-            $freeform->groups->deleteById($id);
+            $freeform->formGroups->deleteById($id);
         }
 
         $this->response->statusCode = 204;
@@ -127,7 +127,7 @@ class FormsController extends BaseApiController
         $this->getFormsService()->deleteById($id);
 
         if ($freeform->isPro()) {
-            $freeform->groups->deleteById($id);
+            $freeform->formGroups->deleteById($id);
         }
 
         return $this->asEmptyResponse(204);

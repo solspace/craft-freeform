@@ -35,6 +35,6 @@ export const useFormGroupsMutation = (
   };
 
   return useMutation<AxiosResponse, APIError, FormGroup>((data: FormGroup) => {
-    return axios.post<FormGroup>('/api/groups', data);
+    return axios.post<FormGroup>('/api/form-groups', data);
   }, options);
 };

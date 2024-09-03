@@ -21,7 +21,7 @@ use craft\db\ActiveRecord;
  */
 class FormGroupsRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_form_groups}}';
+    public const TABLE = '{{%freeform_forms_groups}}';
 
     /**
      * Returns the name of the associated database table.

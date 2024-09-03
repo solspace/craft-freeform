@@ -21,7 +21,7 @@ export const useFetchFormGroups: FetchFormGroupsQuery = () => {
     QKGroups.all(getCurrentHandleWithFallback()),
     () =>
       axios
-        .get<FormWithGroup>(`/api/groups`, {
+        .get<FormWithGroup>(`/api/form-groups`, {
           params: { siteHandle: current?.handle, siteId: current?.id },
         })
         .then((res) => res.data)

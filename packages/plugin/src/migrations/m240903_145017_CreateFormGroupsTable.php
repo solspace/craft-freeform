@@ -6,14 +6,14 @@ use craft\db\Migration;
 use Solspace\Freeform\Library\Migrations\ForeignKey;
 
 /**
- * m240902_155107_CreateFormGroupsTable migration.
+ * m240903_145017_CreateFormGroupsTable migration.
  */
-class m240902_155107_CreateFormGroupsTable extends Migration
+class m240903_145017_CreateFormGroupsTable extends Migration
 {
     public function safeUp(): bool
     {
         $this->createTable(
-            '{{%freeform_form_groups}}',
+            '{{%freeform_forms_groups}}',
             [
                 'id' => $this->primaryKey(),
                 'siteId' => $this->integer()->notNull(),
@@ -27,7 +27,7 @@ class m240902_155107_CreateFormGroupsTable extends Migration
 
         $this->addForeignKey(
             null,
-            '{{%freeform_form_groups}}',
+            '{{%freeform_forms_groups}}',
             'siteId',
             '{{%sites}}',
             'id',
@@ -39,7 +39,7 @@ class m240902_155107_CreateFormGroupsTable extends Migration
 
     public function safeDown(): bool
     {
-        echo "m240902_155107_CreateFormGroupsTable cannot be reverted.\n";
+        echo "m240903_145017_CreateFormGroupsTable cannot be reverted.\n";
 
         return false;
     }

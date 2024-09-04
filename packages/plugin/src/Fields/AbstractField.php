@@ -20,6 +20,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
@@ -47,6 +48,7 @@ use yii\base\Event;
  */
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
+    #[Translatable]
     #[Section(
         handle: 'general',
         label: 'General',
@@ -81,6 +83,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[Validators\ReservedWord]
     protected string $handle = '';
 
+    #[Translatable]
     #[Section('general')]
     #[Input\TextArea(
         instructions: 'Field specific user instructions',

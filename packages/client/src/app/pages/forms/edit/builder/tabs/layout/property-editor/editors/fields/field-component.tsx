@@ -5,6 +5,7 @@ import { useAppDispatch } from '@editor/store';
 import { useValueUpdateGenerator } from '@editor/store/hooks/value-update-generator';
 import { type Field, fieldActions } from '@editor/store/slices/layout/fields';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Property } from '@ff-client/types/properties';
 
@@ -21,6 +22,7 @@ export const FieldComponent: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
+  const { isPrimary, current: currentSite } = useSiteContext();
 
   const fieldState = useSelector(fieldSelectors.one(field.uid));
   const context = {
@@ -32,6 +34,10 @@ export const FieldComponent: React.FC<Props> = ({
     type.properties,
     context,
     (handle, value) => {
+      if (!isPrimary) {
+        console.log('Translating for ', currentSite.handle, handle, value);
+      }
+
       dispatch(
         fieldActions.edit({
           uid: field.uid,

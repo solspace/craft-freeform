@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useState,
 } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import config from '@config/freeform/freeform.config';
@@ -13,12 +14,14 @@ const DEFAULT_HANDLE = 'default';
 
 type ContextType = {
   current?: Site;
+  isPrimary: boolean;
   list?: Site[];
   change: (site: number | string) => void;
   getCurrentHandleWithFallback: () => string;
 };
 
 const SiteContext = createContext<ContextType>({
+  isPrimary: false,
   change: () => void {},
   getCurrentHandleWithFallback: () => '',
 });
@@ -29,7 +32,8 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [current, setCurrent] = React.useState<Site>(() => {
+  const [isPrimary, setIsPrimary] = useState<boolean>(true);
+  const [current, setCurrent] = useState<Site>(() => {
     const currentSite = config.sites.list.find(
       (site) => site.id === config.sites.current
     );
@@ -55,6 +59,7 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
       const foundSite = config.sites.list.find((s) => s.handle === site);
       if (foundSite) {
         setCurrent(foundSite);
+        setIsPrimary(foundSite.primary);
 
         const params = new URLSearchParams(location.search);
         params.set('site', foundSite.handle);
@@ -69,6 +74,7 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <SiteContext.Provider
       value={{
         current,
+        isPrimary,
         list: config.sites.list,
         change,
         getCurrentHandleWithFallback: () =>

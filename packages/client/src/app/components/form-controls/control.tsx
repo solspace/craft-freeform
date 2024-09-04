@@ -22,14 +22,27 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   property,
   errors,
 }) => {
-  const { label, handle, required, instructions, width, disabled } = property;
+  const {
+    label,
+    handle,
+    required,
+    instructions,
+    width,
+    disabled,
+    translatable,
+  } = property;
 
   return (
     <ControlWrapper
       className={classes(!!errors && 'errors', disabled && 'disabled')}
       $width={width}
     >
-      <FormLabel label={label} handle={handle} required={required} />
+      <FormLabel
+        label={label}
+        handle={handle}
+        required={required}
+        translatable={translatable}
+      />
       <FormInstructions instructions={instructions} />
       <FormField>{children}</FormField>
       <FormErrorList errors={errors} />

@@ -44,7 +44,7 @@ class PardotTokenListener extends FeatureBundle
             return;
         }
 
-        $event->add('scope', 'refresh_token api');
+        $event->add('scope', 'refresh_token api pardot_api');
     }
 
     public function onAfterAuthorize(TokenPayloadEvent $event): void

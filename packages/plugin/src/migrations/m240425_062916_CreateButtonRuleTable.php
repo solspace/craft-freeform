@@ -12,6 +12,10 @@ class m240425_062916_CreateButtonRuleTable extends Migration
 {
     public function safeUp(): bool
     {
+        if ($this->db->tableExists('{{%freeform_rules_buttons}}')) {
+            return true;
+        }
+
         $this->createTable(
             '{{%freeform_rules_buttons}}',
             [

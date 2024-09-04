@@ -43,10 +43,6 @@ export const Field: React.FC<Props> = ({ field }) => {
   );
 
   const hasRule = useSelector(fieldRuleSelectors.hasRule(field.uid));
-  const hasPageRule = useSelector(pageRuleSelectors.hasFieldInRule(field.uid));
-  const hasButtonRule = useSelector(
-    buttonRuleSelectors.hasFieldInRule(field.uid)
-  );
 
   const isSubmitFormRuleOpen = location.pathname.endsWith('/rules/submit');
   const isInCondition = useSelector(
@@ -82,7 +78,7 @@ export const Field: React.FC<Props> = ({ field }) => {
       className={classes(
         type?.type === 'group' && 'group',
         currentField && 'active',
-        (hasRule || hasPageRule || hasButtonRule) && 'has-rule',
+        hasRule && 'has-rule',
         isInCondition && 'is-in-condition',
         isInActiveCondition && 'is-in-condition-active',
         !canEdit && 'read-only',

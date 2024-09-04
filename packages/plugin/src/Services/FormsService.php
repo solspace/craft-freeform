@@ -71,7 +71,10 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (!\array_key_exists($key, self::$allFormsCache)) {
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $sites);
+
             if ($orderByName) {
+                $query->orderBy(['forms.name' => \SORT_ASC]);
+            } else {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 
@@ -107,6 +110,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             $query->where(['forms.dateArchived' => null]);
 
             if ($orderByName) {
+                $query->orderBy(['forms.name' => \SORT_ASC]);
+            } else {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 

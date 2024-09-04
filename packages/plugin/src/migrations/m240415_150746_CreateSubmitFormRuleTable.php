@@ -9,6 +9,10 @@ class m240415_150746_CreateSubmitFormRuleTable extends Migration
 {
     public function safeUp(): bool
     {
+        if ($this->db->tableExists('{{%freeform_rules_submit_form}}')) {
+            return true;
+        }
+
         $this->createTable(
             '{{%freeform_rules_submit_form}}',
             [

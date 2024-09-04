@@ -25,12 +25,14 @@ export const FormsFields: React.FC = () => {
     return <ErrorBlock>{error.message}</ErrorBlock>;
   }
 
-  if (!data.length) {
+  if (!data || !data.length) {
     return null;
   }
 
   const forms = data.filter((form) => form.uid !== uid);
-  if (!forms.length) {
+  const hasFields = forms.some((form) => form.fields.length > 0);
+
+  if (!forms.length || !hasFields) {
     return null;
   }
 

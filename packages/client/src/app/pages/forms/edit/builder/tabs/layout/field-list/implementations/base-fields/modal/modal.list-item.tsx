@@ -3,7 +3,7 @@ import { useHover } from '@ff-client/hooks/use-hover';
 import { useFieldType } from '@ff-client/queries/field-types';
 import CrossIcon from '@ff-icons/actions/delete.svg';
 
-import { Icon, Name, Remove, Wrapper } from './model.list-item.styles';
+import { Icon, Name, Remove, Wrapper } from './modal.list-item.styles';
 
 type Props = {
   typeClass: string;

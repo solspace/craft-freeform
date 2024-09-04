@@ -19,7 +19,7 @@ return [
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM GROUPS
-    'freeform/api/form-groups' => 'freeform/api/form-groups',
+    'freeform/api/forms/groups' => 'freeform/api/form-groups',
 
     // FORM MODAL
     'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',

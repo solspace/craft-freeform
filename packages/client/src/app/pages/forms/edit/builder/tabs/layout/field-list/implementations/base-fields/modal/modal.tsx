@@ -18,6 +18,8 @@ import translate from '@ff-client/utils/translations';
 import CrossIcon from '@ff-icons/actions/delete.svg';
 import MoveIcon from '@ff-icons/actions/move.svg';
 
+import { FieldItem } from './modal.list-item';
+import { useGroupOperations } from './modal.operations';
 import {
   CloseAndMoveWrapper,
   ColorCircle,
@@ -34,8 +36,6 @@ import {
   UHField,
   UHFieldWrapper,
 } from './modal.styles';
-import { FieldItem } from './model.list-item';
-import { useGroupOperations } from './model.operations';
 import {
   initializeGroupedSortable,
   initializeSortable,

@@ -1,5 +1,30 @@
 # Solspace Freeform Changelog
 
+## 5.5.9 - 2024-09-04
+
+### Added
+- Added support for migrating Submit button labels in the Freeform 4.x migration.
+- Added support for migrating conditional rules on Submit buttons in the Freeform 4.x migration.
+- Verified support for Craft 5.4.x.
+
+### Changed
+- Various updates to Dutch translations.
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted
+- Fixed a bug where the Forms element field type was not alphabetically ordering the list of forms.
+- Fixed a bug where some types of conditional rules on fields were not migrating properly in the Freeform 4.x migration.
+- Fixed a bug where the Constant Contact integration was not implementing the refresh token interface.
+- Fixed a bug where the Pardot integration was missing the `pardot_api` scope.
+
+### Security
+- Updated the `phpoffice/phpspreadsheet` dependency to correct an XSS vulnerability.
+
+## 5.5.8 - 2024-08-30
+
+### Fixed
+- Fixed a bug where some headers were missing in the Pardot integration authorization request.
+
 ## 5.5.7 - 2024-08-14
 
 ### Changed

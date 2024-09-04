@@ -182,6 +182,8 @@ class Freeform extends Plugin
 
     public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
+    public string $schemaVersion = '';
+
     public bool $hasCpSettings = true;
 
     /**
@@ -286,6 +288,17 @@ class Freeform extends Plugin
         }
 
         return $helper;
+    }
+
+    public function beforeInstall(): void
+    {
+        parent::beforeInstall();
+
+        $projectConfig = \Craft::$app->getProjectConfig();
+        $composerPluginInfo = \Craft::$app->getPlugins()->getComposerPluginInfo('freeform');
+        $schemaVersion = $projectConfig->get('plugins.freeform.extra.schemaVersion') ?? $composerPluginInfo['schemaVersion'];
+
+        $this->schemaVersion ??= $schemaVersion;
     }
 
     /**

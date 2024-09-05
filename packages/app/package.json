@@ -22,7 +22,7 @@
   "license": "MIT",
   "dependencies": {
     "@types/react-color": "^3.0.6",
-    "axios": "^0.21.0",
+    "axios": "^1.7.7",
     "browserslist": "^4.17.0",
     "lodash.camelcase": "^4.3.0",
     "lodash.kebabcase": "^4.1.1",

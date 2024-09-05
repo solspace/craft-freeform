@@ -26,14 +26,14 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 
     #[Text(
         label: 'URL',
-        instructions: 'Enter the URL where the POST request should be sent.',
+        instructions: 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',
         placeholder: 'https://example.com',
     )]
     protected string $url = '';
 
     #[TextArea(
         label: 'Error Trigger',
-        instructions: "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'.",
+        instructions: "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger.",
     )]
     protected string $errorTrigger = '';
 

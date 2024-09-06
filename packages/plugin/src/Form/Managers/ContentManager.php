@@ -56,17 +56,15 @@ class ContentManager
         $db->createCommand()
             ->createTable(
                 $tableName,
-                ['id' => $schema->createColumnSchemaBuilder(Schema::TYPE_INTEGER)]
+                [
+                    'id' => $schema
+                        ->createColumnSchemaBuilder(Schema::TYPE_INTEGER)
+                        ->notNull()
+                        ->append('PRIMARY KEY'),
+                ]
             )
             ->execute()
         ;
-
-        if (!$db->getIsPgsql()) {
-            $db->createCommand()
-                ->addPrimaryKey('PK', $tableName, ['id'])
-                ->execute()
-            ;
-        }
 
         $db->createCommand()
             ->addForeignKey(

@@ -114,8 +114,8 @@ export const handleFileUpload = (
     .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
       headers: { 'content-type': 'multipart/form-data' },
       cancelToken: token,
-      onUploadProgress: (progress: ProgressEvent) => {
-        const { total, loaded } = progress;
+      onUploadProgress: (progressEvent) => {
+        const { total, loaded } = progressEvent;
         const percent = Math.ceil(loaded / (total / 100));
 
         dispatchCustomEvent(EVENT_DND_ON_UPLOAD_PROGRESS, { total, loaded, percent }, container);

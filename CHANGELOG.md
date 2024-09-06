@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 4.1.22 - 2024-09-06
+
+### Added
+- Verified support for Craft 5.4.x.
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted.
+- Fixed a bug where an error could occur when creating new forms on some MySQL installs.
+
+### Security
+- Updated `axios` dependencies to address potential security vulnerabilities.
+
 ## 4.1.21 - 2024-08-14
 
 ### Fixed

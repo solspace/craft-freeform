@@ -631,7 +631,7 @@ class DiagnosticsService extends BaseService
         $integrations = (new Query())
             ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class', 'integrations.metadata'])
             ->from(FormIntegrationRecord::TABLE.' fi')
-            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
+            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.[[integrationId]]')
             ->where(['fi.enabled' => true])
             ->all()
         ;

@@ -93,12 +93,21 @@ abstract class BaseCampaignIntegration extends EmailMarketingIntegration impleme
 
     public function fetchLists(Client $client): array
     {
+        $orderBy = ['elements_sites.slug' => 'ASC'];
+
+        $hasContentTitle = \Craft::$app->db->columnExists('{{%content}}', 'title');
+        if ($hasContentTitle) {
+            $orderBy['content.title'] = 'ASC';
+        }
+
+        $hasElementsTitle = \Craft::$app->db->columnExists('{{%elements_sites}}', 'title');
+        if ($hasElementsTitle) {
+            $orderBy['elements_sites.title'] = 'ASC';
+        }
+
         $mailingLists = MailingListElement::find()
             ->site('*')
-            ->orderBy([
-                'elements_sites.slug' => 'ASC',
-                'content.title' => 'ASC',
-            ])
+            ->orderBy($orderBy)
             ->all()
         ;
 

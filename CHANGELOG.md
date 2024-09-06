@@ -1,9 +1,11 @@
 # Solspace Freeform Changelog
 
-## 5.5.10 - Unreleased
+## 5.5.10 - 2024-09-06
 
 ### Fixed
+- Fixed a compatibility issue with Campaign 3.x on Craft 5.x.
 - Fixed a bug where an error could occur when creating new forms on some MySQL installs.
+- Fixed a bug where the Diagnostics page could error on integration reporting if using PostgreSQL.
 
 ## 5.5.9 - 2024-09-04
 

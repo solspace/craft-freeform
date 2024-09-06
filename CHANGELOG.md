@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.5.10 - Unreleased
+
+### Fixed
+- Fixed a bug where an error could occur when creating new forms on some MySQL installs.
+
 ## 5.5.9 - 2024-09-04
 
 ### Added

@@ -275,6 +275,16 @@ class SubmissionsController extends Controller
             }
 
             $submission = Submission::create($form);
+            $submission->title = \Craft::$app->view->renderString(
+                $form->getSettings()->getGeneral()->submissionTitle,
+                array_merge(
+                    $values,
+                    [
+                        'dateCreated' => $dateCreated,
+                        'form' => $form,
+                    ]
+                )
+            );
             $submission->userId = $this->authorId;
             $submission->isSpam = $this->spam;
             $submission->statusId = $faker->randomElement($statuses);

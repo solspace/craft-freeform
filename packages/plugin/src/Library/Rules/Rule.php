@@ -12,7 +12,7 @@ class Rule implements RuleInterface, IdentificatorInterface
         private int $id,
         private string $uid,
         private string $combinator,
-        private ConditionCollection $conditions
+        private ConditionCollection $conditions,
     ) {}
 
     #[Ignore]

@@ -3,6 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { EmptyBlock } from '@components/empty-block/empty-block';
+import { HeaderContainer } from '@components/layout/blocks/header-container';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import classes from '@ff-client/utils/classes';
@@ -41,19 +42,17 @@ export const LimitedUsers: React.FC = () => {
         url="settings/limited-users"
       />
 
-      <div id="header-container">
-        <header id="header" style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <div id="page-title" className="flex">
-            <h1 className="screen-title">{translate('Limited Users')}</h1>
-          </div>
-
-          {isPro && (
+      <HeaderContainer
+        extra={
+          isPro && (
             <Link to="new" className="btn submit add icon">
               {translate('New Group')}
             </Link>
-          )}
-        </header>
-      </div>
+          )
+        }
+      >
+        {translate('Limited Users')}
+      </HeaderContainer>
 
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar />

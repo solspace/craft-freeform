@@ -10,6 +10,17 @@ use Solspace\Freeform\Library\Collections\Collection;
  */
 class FormCollection extends Collection
 {
+    public function getByUid(mixed $key, mixed $defaultValue = null): mixed
+    {
+        foreach ($this->items as $form) {
+            if ($form->uid === $key) {
+                return $form;
+            }
+        }
+
+        return null;
+    }
+
     protected static function supports(): array
     {
         return [Form::class];

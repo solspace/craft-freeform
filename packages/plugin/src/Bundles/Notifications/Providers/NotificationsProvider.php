@@ -26,13 +26,20 @@ class NotificationsProvider
 {
     public function __construct(private PropertyProvider $propertyProvider) {}
 
-    public function getByForm(?Form $form = null): array
+    /**
+     * @return FormNotificationRecord[]
+     */
+    public function getRecordsByForm(?Form $form = null): array
     {
-        /** @var FormNotificationRecord[] $records */
-        $records = FormNotificationRecord::find()
-            ->where(['formId' => $form?->getId() ?? null])
+        return FormNotificationRecord::find()
+            ->where(['formId' => $form?->getId()])
             ->all()
         ;
+    }
+
+    public function getByForm(?Form $form = null): array
+    {
+        $records = $this->getRecordsByForm($form);
 
         $notifications = [];
         foreach ($records as $record) {

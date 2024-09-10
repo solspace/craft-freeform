@@ -30,7 +30,7 @@ class StatusModel extends Model implements \JsonSerializable
     public ?int $id = null;
     public string $name = '';
     public string $handle = '';
-    public string $color = '#27AE60';
+    public string $color = '';
     public int $sortOrder = 0;
 
     private static array $hexMap = [

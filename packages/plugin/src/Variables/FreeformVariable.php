@@ -66,6 +66,11 @@ class FreeformVariable
         return $forms ?: [];
     }
 
+    public function plugin(): Freeform
+    {
+        return Freeform::getInstance();
+    }
+
     public function submissionCount(Form $form): int
     {
         return Freeform::getInstance()->submissions->getSubmissionCount([$form->getId()]);

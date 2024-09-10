@@ -1,4 +1,4 @@
-var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+var form = document.querySelector('[data-freeform-basic-dark]');
 if (form) {
     form.addEventListener("freeform-stripe-appearance", function (event) {
         event.elementOptions.appearance = Object.assign(

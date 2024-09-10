@@ -20,7 +20,7 @@ class ExportService extends BaseService
     {
         $navigation = [
             // ======= EXPORT =========
-            ['heading' => 'Export'],
+            ['heading' => Freeform::t('Export')],
             [
                 'title' => Freeform::t('Profiles'),
                 'url' => 'freeform/export/profiles',
@@ -33,7 +33,7 @@ class ExportService extends BaseService
                 'title' => Freeform::t('Freeform'),
                 'url' => 'freeform/export/forms',
             ],
-            ['heading' => 'Import'],
+            ['heading' => Freeform::t('Import')],
             [
                 'title' => Freeform::t('Freeform'),
                 'url' => 'freeform/import/forms',

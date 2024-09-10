@@ -415,9 +415,9 @@ return [
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Post doorsturen',
     'URL' => 'URL',
-    'Enter the URL where the POST request should be sent.' => 'Voer de URL in waar het POST-verzoek naartoe moet worden verzonden.',
+    'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Voer de URL in waar het POST-verzoek naartoe moet worden verzonden. Je kunt Twig-variabelen voor `form` en `submission` gebruiken om de URL te verwerken.',
     'Error Trigger' => 'Fouttrigger',
-    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'." => "Geef een trefwoord of woordgroep op waar Freeform in de uitvoer van de externe POST-URL naar moet kijken om te weten of en wanneer er een fout is om te loggen, bijvoorbeeld 'fout' of 'er is een fout opgetreden'.",
+    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Geef een trefwoord of woordgroep op waar Freeform in de uitvoer van de externe POST-URL naar moet kijken om te weten of en wanneer er een fout is om te loggen, bijvoorbeeld 'fout' of 'er is een fout opgetreden'. Je kunt Twig-variabelen voor `form` en `submission` gebruiken om de fouttrigger te verwerken.",
 
     // Form Builder // Integrations // Elements
     'Users' => 'Gebruikers',
@@ -709,6 +709,19 @@ return [
     'Email Subject' => 'E-mailonderwerp',
     'Email Message' => 'E-mailbericht',
     'The text content of the email notification.' => 'De tekstinhoud van de e-mailmelding.',
+
+    // Import / Export // Freeform Data
+    'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
+    'Import Freeform Data (beta)' => 'Freeform-gegevens importeren (bèta)',
+    'Select Data to Export' => 'Selecteer gegevens om te exporteren',
+    'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Kies welke Freeform-gegevens u in de export wilt opnemen. Als u inzendingen exporteert zonder het bijbehorende formulier, worden de inzendingen niet meegenomen.',
+    'Password-protect the Export File (optional)' => 'Beveilig het exportbestand met een wachtwoord (optioneel)',
+    'Enter a password if you want to protect your zip file with a password.' => 'Voer een wachtwoord in als u uw zip-bestand met een wachtwoord wilt beveiligen.',
+    'Enter a password' => 'Voer een wachtwoord in',
+    'Begin Export' => 'Begin met exporteren',
+    'Upload a Freeform Export zip file' => 'Upload een Freeform Export zip-bestand',
+    'Accepts `.zip` files. Only upload files that you trust.' => 'Accepteert `.zip`-bestanden. Upload alleen bestanden die je vertrouwt.',
+    'Please select the data you want to import.' => 'Selecteer de gegevens die u wilt importeren.',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importeren uit Express Forms',

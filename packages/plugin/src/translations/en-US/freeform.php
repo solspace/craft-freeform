@@ -416,9 +416,9 @@ return [
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Post Forwarding',
     'URL' => 'URL',
-    'Enter the URL where the POST request should be sent.' => 'Enter the URL where the POST request should be sent.',
+    'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',
     'Error Trigger' => 'Error Trigger',
-    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'." => "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'.",
+    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger.",
 
     // Form Builder // Integrations // Elements
     'Users' => 'Users',

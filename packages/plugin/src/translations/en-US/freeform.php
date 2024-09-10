@@ -261,7 +261,6 @@ return [
     'Type' => 'Type',
     'Site ID' => 'Site ID',
     'Section' => 'Section',
-    'Asset Source' => 'Asset Source',
     'Group' => 'Group',
     'Option Label' => 'Option Label',
     'Option Value' => 'Option Value',
@@ -710,6 +709,19 @@ return [
     'Email Subject' => 'Email Subject',
     'Email Message' => 'Email Message',
     'The text content of the email notification.' => 'The text content of the email notification.',
+
+    // Import / Export // Freeform Data
+    'Export Freeform Data (beta)' => 'Export Freeform Data (beta)',
+    'Import Freeform Data (beta)' => 'Import Freeform Data (beta)',
+    'Select Data to Export' => 'Select Data to Export',
+    'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.',
+    'Password-protect the Export File (optional)' => 'Password-protect the Export File (optional)',
+    'Enter a password if you want to protect your zip file with a password.' => 'Enter a password if you want to protect your zip file with a password.',
+    'Enter a password' => 'Enter a password',
+    'Begin Export' => 'Begin Export',
+    'Upload a Freeform Export zip file' => 'Upload a Freeform Export zip file',
+    'Accepts `.zip` files. Only upload files that you trust.' => 'Accepts `.zip` files. Only upload files that you trust.',
+    'Please select the data you want to import.' => 'Please select the data you want to import.',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Import from Express Forms',

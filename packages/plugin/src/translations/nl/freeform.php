@@ -710,6 +710,19 @@ return [
     'Email Message' => 'E-mailbericht',
     'The text content of the email notification.' => 'De tekstinhoud van de e-mailmelding.',
 
+    // Import / Export // Freeform Data
+    'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
+    'Import Freeform Data (beta)' => 'Freeform-gegevens importeren (bèta)',
+    'Select Data to Export' => 'Selecteer gegevens om te exporteren',
+    'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Kies welke Freeform-gegevens u in de export wilt opnemen. Als u inzendingen exporteert zonder het bijbehorende formulier, worden de inzendingen niet meegenomen.',
+    'Password-protect the Export File (optional)' => 'Beveilig het exportbestand met een wachtwoord (optioneel)',
+    'Enter a password if you want to protect your zip file with a password.' => 'Voer een wachtwoord in als u uw zip-bestand met een wachtwoord wilt beveiligen.',
+    'Enter a password' => 'Voer een wachtwoord in',
+    'Begin Export' => 'Begin met exporteren',
+    'Upload a Freeform Export zip file' => 'Upload een Freeform Export zip-bestand',
+    'Accepts `.zip` files. Only upload files that you trust.' => 'Accepteert `.zip`-bestanden. Upload alleen bestanden die je vertrouwt.',
+    'Please select the data you want to import.' => 'Selecteer de gegevens die u wilt importeren.',
+
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importeren uit Express Forms',
     'Import' => 'Importeren',

@@ -15,9 +15,10 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import '../config';
 
 import { Form, Forms } from './app/pages/forms';
-import { Import } from './app/pages/import/import';
-import { ImportExpressForms } from './app/pages/import/views/express-forms/express-forms';
-import { ImportFreeformData } from './app/pages/import/views/freeform-data/freeform-data';
+import { ImportExport } from './app/pages/import-export';
+import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
+import { ImportExpressForms } from './app/pages/import-export/import/express-forms/express-forms';
+import { ImportFreeformData } from './app/pages/import-export/import/freeform-data/freeform-data';
 import { LimitedUsers } from './app/pages/limited-users/limited-users';
 import { LimitedUsersDetail } from './app/pages/limited-users/limited-users.detail';
 import { SurveyResults } from './app/pages/surveys/results/results';
@@ -69,12 +70,15 @@ root.render(
                         element={<SurveyResults />}
                       />
                       <Route path="welcome" element={<Welcome />} />
-                      <Route path="import" element={<Import />}>
-                        <Route path="data" element={<ImportFreeformData />} />
+                      <Route path="import" element={<ImportExport />}>
+                        <Route path="forms" element={<ImportFreeformData />} />
                         <Route
                           path="express-forms"
                           element={<ImportExpressForms />}
                         />
+                      </Route>
+                      <Route path="export" element={<ImportExport />}>
+                        <Route path="forms" element={<ExportFreeform />} />
                       </Route>
                       <Route path="settings/limited-users">
                         <Route path=":id" element={<LimitedUsersDetail />} />

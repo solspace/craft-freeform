@@ -24,7 +24,7 @@ class NotificationRule extends Rule
 
     public function isSend(): bool
     {
-        return $this->send;
+        return $this->send ?? true;
     }
 
     public function setSend(bool $send): self

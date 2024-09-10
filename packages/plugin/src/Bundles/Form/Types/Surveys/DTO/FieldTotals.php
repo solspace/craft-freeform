@@ -116,7 +116,7 @@ class FieldTotals implements \IteratorAggregate, \Countable, \ArrayAccess, \Json
         ];
     }
 
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         return $this->breakdown->getIterator();
     }
@@ -126,7 +126,7 @@ class FieldTotals implements \IteratorAggregate, \Countable, \ArrayAccess, \Json
         return $this->breakdown->offsetExists($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->breakdown->offsetGet($offset);
     }

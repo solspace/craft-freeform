@@ -10,4 +10,5 @@ class Field
     public string $type;
     public bool $required = false;
     public array $metadata = [];
+    public ?Layout $layout = null;
 }

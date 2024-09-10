@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
@@ -9,6 +10,7 @@ import { QKForms } from '@ff-client/queries/forms';
 import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { generateUrl } from '@ff-client/utils/urls';
 import ArchiveIcon from '@ff-icons/actions/archive.svg';
 import CloneIcon from '@ff-icons/actions/clone.svg';
 import CrossIcon from '@ff-icons/actions/delete.svg';
@@ -79,9 +81,13 @@ export const Card: React.FC<Props> = ({
 
   const openDeleteFormModal = useDeleteFormModal({ form });
 
-  const onNavigate = (): void => {
-    queryClient.invalidateQueries(QKForms.single(Number(id)));
-    navigate(`${id}`);
+  const onNavigate: MouseEventHandler<HTMLHeadingElement> = (event): void => {
+    if (event.metaKey || event.ctrlKey || event.button === 1) {
+      window.open(generateUrl(`forms/${id}`), '_blank');
+    } else {
+      queryClient.invalidateQueries(QKForms.single(Number(id)));
+      navigate(`${id}`);
+    }
   };
 
   const hasTitleLink = form.links.filter(({ type }) => type === 'title').length;
@@ -137,7 +143,11 @@ export const Card: React.FC<Props> = ({
         {isTitleOverflowing ? (
           <Tooltip title={name} {...tooltipProps}>
             {hasTitleLink ? (
-              <TitleLink ref={titleRef} onClick={onNavigate}>
+              <TitleLink
+                ref={titleRef}
+                onClick={onNavigate}
+                onAuxClick={onNavigate}
+              >
                 {name}
               </TitleLink>
             ) : (
@@ -145,7 +155,11 @@ export const Card: React.FC<Props> = ({
             )}
           </Tooltip>
         ) : hasTitleLink ? (
-          <TitleLink ref={titleRef} onClick={onNavigate}>
+          <TitleLink
+            ref={titleRef}
+            onClick={onNavigate}
+            onAuxClick={onNavigate}
+          >
             {name}
           </TitleLink>
         ) : (

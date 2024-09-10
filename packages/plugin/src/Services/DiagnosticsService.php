@@ -62,7 +62,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum Craft version Freeform supports is 4.0.0 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '5.4.0', '<'),
+                        fn ($value) => version_compare($value['version'], '5.5.0', '<'),
                         'Potential Craft Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),
@@ -631,7 +631,7 @@ class DiagnosticsService extends BaseService
         $integrations = (new Query())
             ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class', 'integrations.metadata'])
             ->from(FormIntegrationRecord::TABLE.' fi')
-            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
+            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.[[integrationId]]')
             ->where(['fi.enabled' => true])
             ->all()
         ;

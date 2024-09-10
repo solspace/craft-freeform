@@ -31,4 +31,14 @@ class Submission implements CustomNormalizerInterface
     {
         return $this->values;
     }
+
+    #[Ignore]
+    public function toArray(): array
+    {
+        return [
+            'title' => $this->title,
+            'status' => $this->status,
+            'values' => $this->values,
+        ];
+    }
 }

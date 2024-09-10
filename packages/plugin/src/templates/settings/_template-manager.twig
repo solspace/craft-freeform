@@ -9,6 +9,24 @@
 
 {% set title = "Template Manager"|t("freeform") %}
 
+{% macro listFiles(folder, files) %}
+
+    <ul class="directory-structure">
+        <li class="dir">
+            <span>{{ folder }}</span>
+            <ul>
+                {% for file in files %}
+                    <li class="file">
+                        <label>{{ file.name }}</label>
+                        <small style="font-family: monospace; color: #afa5a5;">{{ file.fileName }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </li>
+    </ul>
+
+{% endmacro %}
+
 {% block content %}
 
     <input type="hidden" name="action" value="freeform/settings/save-settings">
@@ -45,27 +63,16 @@
 
     {% if settings.absoluteFormTemplateDirectory %}
 
-        {% set templateFiles = craft.freeform.settings.listTemplatesInFormTemplateDirectory() %}
-
-
         <div id="components-wrapper">
             <div>
                 <button type="button" class="btn submit small icon add add-sample-template" id="add-formatting-template">
                     {{ "Add Sample"|t('freeform') }}
                 </button>
 
-                <ul class="directory-structure">
-                    <li class="dir">
-                        <span>{{ settings.formTemplateDirectory }}</span>
-                        <ul>
-                            {% for file in templateFiles %}
-                                <li class="file">
-                                    <span>{{ file }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
+                {{ _self.listFiles(
+                    settings.formTemplateDirectory,
+                    freeform.plugin.settings.customFormTemplates
+                ) }}
             </div>
         </div>
     {% endif %}
@@ -165,13 +172,14 @@
         }) }}
 
         {% if settings.absoluteEmailTemplateDirectory %}
-            {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
             <div id="components-wrapper">
                 <div style="margin: 0;">
                     <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
                         {{ "Add Sample"|t('freeform') }}
                     </button>
+
+                    {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
                     <ul class="directory-structure">
                         <li class="dir">
@@ -262,26 +270,16 @@
 
     {% if settings.absoluteSuccessTemplateDirectory %}
 
-        {% set templateFiles = craft.freeform.settings.listTemplatesInSuccessTemplateDirectory() %}
-
         <div id="components-wrapper">
             <div>
                 <button type="button" class="btn submit small icon add add-sample-template" id="add-success-template">
                     {{ "Add Sample"|t('freeform') }}
                 </button>
 
-                <ul class="directory-structure">
-                    <li class="dir">
-                        <span>{{ settings.successTemplateDirectory }}</span>
-                        <ul>
-                            {% for file in templateFiles %}
-                                <li class="file">
-                                    <span>{{ file }}</span>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                </ul>
+                {{ _self.listFiles(
+                    settings.successTemplateDirectory,
+                    freeform.plugin.settings.successTemplates
+                ) }}
             </div>
         </div>
     {% endif %}
@@ -308,7 +306,7 @@
                     } else {
                         for (var i = 0; i < response.errors.length; i++ ) {
                             var message = response.errors[i];
-                            Craft.cp.displayNotification("error", message);
+                            Craft.cp.displayError(message);
                         }
                     }
                 }
@@ -335,7 +333,7 @@
                     } else {
                         for (var i = 0; i < response.errors.length; i++ ) {
                             var message = response.errors[i];
-                            Craft.cp.displayNotification("error", message);
+                            Craft.cp.displayError(message);
                         }
                     }
                 }
@@ -362,7 +360,7 @@
                     } else {
                         for (var i = 0; i < response.errors.length; i++ ) {
                             var message = response.errors[i];
-                            Craft.cp.displayNotification("error", message);ō
+                            Craft.cp.displayError(message);
                         }
                     }
                 }

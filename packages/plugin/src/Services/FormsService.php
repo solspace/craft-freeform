@@ -71,7 +71,10 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (!\array_key_exists($key, self::$allFormsCache)) {
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $sites);
+
             if ($orderByName) {
+                $query->orderBy(['forms.name' => \SORT_ASC]);
+            } else {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 
@@ -107,6 +110,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             $query->where(['forms.dateArchived' => null]);
 
             if ($orderByName) {
+                $query->orderBy(['forms.name' => \SORT_ASC]);
+            } else {
                 $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 
@@ -405,10 +410,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         //      $templatePath,
         $output = \Craft::$app->view->renderString(
             file_get_contents($templatePath),
-            [
-                'form' => $form,
-                'formCss' => $this->getFormattingTemplateCss($templateName),
-            ],
+            ['form' => $form],
             $templateMode,
         );
 
@@ -528,17 +530,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return array_shift($templateList) ?? 'flexbox.html';
     }
 
-    public function getFormattingTemplateCss(string $templateName): string
-    {
-        $fileName = pathinfo($templateName, \PATHINFO_FILENAME);
-        $cssFilePath = \Yii::getAlias('@freeform').'/Resources/css/front-end/formatting-templates/'.$fileName.'.css';
-        if (file_exists($cssFilePath)) {
-            return file_get_contents($cssFilePath);
-        }
-
-        return '';
-    }
-
     public function getReturnUrl(Form $form): ?string
     {
         $submission = $form->getSubmission();
@@ -579,26 +570,32 @@ class FormsService extends BaseService implements FormHandlerInterface
         return null;
     }
 
-    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    public function getFormsFromQuery(Query $query): array
     {
-        if (null === $sites) {
-            return;
-        }
-
-        if (\is_string($sites)) {
-            $sites = [$sites];
-        }
-
-        $sites = array_filter($sites);
-
+        $baseQuery = $this->getFormQuery();
         $query
-            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
-            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
-            ->andWhere(['in', 'sites.[[handle]]', $sites])
+            ->select($baseQuery->select)
+            ->from($baseQuery->from)
         ;
+
+        $results = $query->all();
+
+        $forms = [];
+        foreach ($results as $result) {
+            try {
+                $form = $this->createForm($result);
+
+                $forms[] = $form;
+                self::$formsById[$form->getId()] = $form;
+                self::$formsByHandle[$form->getHandle()] = $form;
+            } catch (InvalidFormTypeException) {
+            }
+        }
+
+        return $forms;
     }
 
-    private function getFormQuery(): Query
+    public function getFormQuery(): Query
     {
         return (new Query())
             ->select(
@@ -619,6 +616,25 @@ class FormsService extends BaseService implements FormHandlerInterface
             )
             ->from(FormRecord::TABLE.' forms')
             ->orderBy(['forms.order' => \SORT_ASC, 'forms.name' => \SORT_ASC])
+        ;
+    }
+
+    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    {
+        if (null === $sites) {
+            return;
+        }
+
+        if (\is_string($sites)) {
+            $sites = [$sites];
+        }
+
+        $sites = array_filter($sites);
+
+        $query
+            ->innerJoin(FormSiteRecord::TABLE.' fs', 'fs.[[formId]] = forms.[[id]]')
+            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = fs.[[siteId]]')
+            ->andWhere(['in', 'sites.[[handle]]', $sites])
         ;
     }
 

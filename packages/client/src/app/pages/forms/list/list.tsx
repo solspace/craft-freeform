@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useFetchFormGroups } from '@ff-client/queries/form-groups';
 import classes from '@ff-client/utils/classes';
@@ -75,7 +76,11 @@ export const List: React.FC = () => {
   return (
     <>
       <Header>
-        <Title>{translate('Forms')}</Title>
+        <Title>
+          <LoadingText spinner loading={isFetching}>
+            {translate('Forms')}
+          </LoadingText>
+        </Title>
 
         <ListSites />
 

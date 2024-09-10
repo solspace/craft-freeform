@@ -1,4 +1,4 @@
-var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+var form = document.querySelector('[data-freeform-foundation]');
 if (form) {
     // Styling for AJAX responses
     form.addEventListener("freeform-ready", function (event) {

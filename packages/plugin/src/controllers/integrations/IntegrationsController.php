@@ -145,7 +145,11 @@ class IntegrationsController extends BaseController
             return $this->asJson(['success' => true]);
         }
 
-        $client = $this->clientProvider->getAuthorizedClient($integrationObject);
+        try {
+            $client = $this->clientProvider->getAuthorizedClient($integrationObject);
+        } catch (\Exception $exception) {
+            return $this->asJson(['success' => false, 'errors' => [$exception->getMessage()]]);
+        }
 
         try {
             if ($integrationObject->checkConnection($client)) {

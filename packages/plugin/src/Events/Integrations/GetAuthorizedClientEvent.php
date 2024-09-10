@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use craft\helpers\ArrayHelper;
 use GuzzleHttp\HandlerStack;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -35,7 +36,7 @@ class GetAuthorizedClientEvent extends ArrayableEvent
 
     public function addConfig(array $config): self
     {
-        $this->config = array_merge($this->config, $config);
+        $this->config = ArrayHelper::merge($this->config, $config);
 
         return $this;
     }

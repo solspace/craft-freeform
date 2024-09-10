@@ -8,5 +8,8 @@ class Integration
     public string $name;
     public string $handle;
     public string $type;
+    public string $class;
+    public string $icon;
+    public bool $enabled;
     public array $metadata;
 }

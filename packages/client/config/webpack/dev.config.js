@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
@@ -7,6 +8,14 @@ const baseConfig = require('./base.config.js');
 
 const createStyledComponentsTransformer =
   require('typescript-plugin-styled-components').default;
+
+let serverOptions;
+if (fs.existsSync(path.resolve(__dirname, 'certs/key.pem'))) {
+  serverOptions = {
+    key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
+    cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
+  };
+}
 
 module.exports = merge(baseConfig, {
   mode: 'development',
@@ -24,6 +33,7 @@ module.exports = merge(baseConfig, {
     hot: true,
     server: {
       type: 'https',
+      options: serverOptions,
     },
     client: {
       webSocketURL: 'https://127.0.0.1:8080/ws',

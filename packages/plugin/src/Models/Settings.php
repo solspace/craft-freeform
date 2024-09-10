@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -355,6 +356,25 @@ class Settings extends Model
         unset($config['defaults']);
 
         parent::__construct($config);
+    }
+
+    public function prepareFolderStructure(): void
+    {
+        $templatesPath = \Craft::$app->path->getSiteTemplatesPath();
+        $formattingPath = FileHelper::absolutePath($this->formTemplateDirectory, $templatesPath);
+        if (!is_dir($formattingPath)) {
+            FileHelper::createDirectory($formattingPath, 0777);
+        }
+
+        $emailTemplatesPath = FileHelper::absolutePath($this->emailTemplateDirectory, $templatesPath);
+        if (!is_dir($emailTemplatesPath)) {
+            FileHelper::createDirectory($emailTemplatesPath, 0777);
+        }
+
+        $successTemplatesPath = FileHelper::absolutePath($this->successTemplateDirectory, $templatesPath);
+        if (!is_dir($successTemplatesPath)) {
+            FileHelper::createDirectory($successTemplatesPath, 0777);
+        }
     }
 
     public function setAttributes($values, $safeOnly = true): void

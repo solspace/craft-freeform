@@ -1,6 +1,6 @@
 import { useModal } from '@components/modals/modal.context';
 
-import { EditGroupModal } from './edit-group-modal';
+import { EditGroupModal } from '../modal.group.edit';
 
 type EditGroupModal = () => () => void;
 

@@ -48,6 +48,7 @@ export type ExtendedFormType = Form & {
 export type FormWithStats = Form & {
   links: Array<{
     label: string;
+    handle: string;
     url: string;
     type: string;
     count: number;

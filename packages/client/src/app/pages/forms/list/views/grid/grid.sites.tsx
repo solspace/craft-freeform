@@ -3,10 +3,11 @@ import config from '@config/freeform/freeform.config';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import classes from '@ff-client/utils/classes';
 
-import { ButtonWrapper, PopupMenu } from './list.sites.styles';
-import { Button } from './list.styles';
+import { Button } from '../../list-view.styles';
 
-export const ListSites: React.FC = () => {
+import { ButtonWrapper, PopupMenu } from './grid.sites.styles';
+
+export const GridSites: React.FC = () => {
   const [open, setOpen] = useState(false);
   const { current, list, change } = useSiteContext();
 

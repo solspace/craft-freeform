@@ -7,7 +7,7 @@ import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 
-import { useArchiveFormMutation } from '../list.mutations';
+import { useArchiveFormMutation } from '../grid.mutations';
 
 import {
   Item,
@@ -15,7 +15,7 @@ import {
   ItemMeta,
   ItemTitle,
   ItemTitleLink,
-} from './archived-item.styles';
+} from './archived.item.styles';
 
 type Props = {
   form: FormWithStats;

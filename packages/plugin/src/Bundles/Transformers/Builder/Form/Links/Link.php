@@ -6,6 +6,7 @@ class Link
 {
     public function __construct(
         private string $label,
+        private string $handle,
         private string $url,
         private string $type,
         private int $count,
@@ -15,6 +16,11 @@ class Link
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    public function getHandle(): string
+    {
+        return $this->handle;
     }
 
     public function getUrl(): string

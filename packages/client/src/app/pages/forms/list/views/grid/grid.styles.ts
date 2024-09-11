@@ -19,26 +19,6 @@ export const Cards = styled.ul`
   gap: ${spacings.lg};
 `;
 
-export const Header = styled.header`
-  display: grid;
-  grid-template-areas: 'title sites button';
-  grid-template-columns: min-content 1fr auto;
-  justify-content: space-between;
-  align-items: center;
-  gap: ${spacings.md};
-`;
-
-export const Title = styled.h1`
-  grid-area: title;
-
-  padding: ${spacings.sm} 0;
-  margin: 0;
-
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 34px;
-`;
-
 export const GroupWrap = styled.div``;
 
 export const GroupTitle = styled.h2`
@@ -54,10 +34,6 @@ export const ArchivedAndGroupWrapper = styled.div`
     justify-content: flex-end;
     margin-left: auto;
   }
-`;
-
-export const Button = styled.button`
-  grid-area: button;
 `;
 
 export const GroupsButton = styled.button`

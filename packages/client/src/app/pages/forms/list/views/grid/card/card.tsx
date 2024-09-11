@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import config, { Edition } from '@config/freeform/freeform.config';
-import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
+import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { QKForms } from '@ff-client/queries/forms';
 import type { FormWithStats } from '@ff-client/types/forms';
@@ -21,7 +21,7 @@ import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
-} from '../list.mutations';
+} from '../grid.mutations';
 
 import {
   CardBody,

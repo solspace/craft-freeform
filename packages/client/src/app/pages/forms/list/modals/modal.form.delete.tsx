@@ -15,7 +15,7 @@ import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { FormWrapper } from './form-modal.styles';
+import { FormWrapper } from './modal.form.styles';
 
 export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   data,

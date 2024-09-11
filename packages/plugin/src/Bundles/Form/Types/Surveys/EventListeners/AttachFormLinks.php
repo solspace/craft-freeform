@@ -25,7 +25,13 @@ class AttachFormLinks extends FeatureBundle
 
                 $label = Freeform::t('Survey Results');
 
-                $event->add($label, UrlHelper::cpUrl('freeform/surveys/'.$form->getHandle()), 'linkList', true);
+                $event->add(
+                    $label,
+                    'survey',
+                    UrlHelper::cpUrl('freeform/surveys/'.$form->getHandle()),
+                    'linkList',
+                    true,
+                );
             }
         );
     }

@@ -30,7 +30,7 @@ import {
   ManagerWrapper,
   UnassignedGroup,
   UnassignedGroupWrapper,
-} from './group-modal.styles';
+} from './modal.group.styles';
 import { FormItem } from './modal.list-item';
 import { useFormGroupsOperations } from './modal.list-item.operations';
 import { useFormGroupsMutation } from './modal.list-item.queries';

@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
-import { ArchivedItem } from '../archived-item/archived-item';
-
+import { ArchivedItem } from './archived.item';
 import { ArchivedItems, Button, Wrapper } from './archived.styles';
 
 type Props = {

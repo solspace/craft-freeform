@@ -2,10 +2,11 @@ import React from 'react';
 import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
+import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
+
 import { Card } from './card/card';
-import { useCreateFormModal } from './modal/use-create-form-modal';
-import { chartDataset } from './list.empty.datasets';
-import { MutedWrapper } from './list.empty.styles';
+import { chartDataset } from './grid.empty.datasets';
+import { MutedWrapper } from './grid.empty.styles';
 
 const color = '#e0e0e0';
 const generateFormData = (
@@ -35,7 +36,7 @@ const generateFormData = (
   dateArchived: null,
 });
 
-export const EmptyList: React.FC = () => {
+export const GridEmpty: React.FC = () => {
   const openCreateFormModal = useCreateFormModal();
 
   return (

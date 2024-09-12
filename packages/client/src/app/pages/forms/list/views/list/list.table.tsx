@@ -2,17 +2,19 @@ import React from 'react';
 import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
+import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
+
 import { ListTableRow } from './list.table.row';
+import { ListTableRowLoading } from './list.table.row.loading';
 import { Table } from './list.table.styles';
 
 type Props = {
-  forms: FormWithStats[];
+  forms: FormWithStats[] | undefined;
+  isFetching?: boolean;
 };
 
-export const ListTable: React.FC<Props> = ({ forms }) => {
-  if (!forms) {
-    return null;
-  }
+export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
+  const openCreateFormModal = useCreateFormModal();
 
   return (
     <Table className="table data">
@@ -28,11 +30,37 @@ export const ListTable: React.FC<Props> = ({ forms }) => {
         </tr>
       </thead>
       <tbody>
+        {isFetching && forms === undefined && (
+          <>
+            <ListTableRowLoading />
+            <ListTableRowLoading />
+            <ListTableRowLoading />
+            <ListTableRowLoading />
+          </>
+        )}
+
+        {!isFetching && !forms?.length && (
+          <tr>
+            <td colSpan={7}>
+              <p>
+                {translate(
+                  `You don't have any forms yet. Create your first form now...`
+                )}
+              </p>
+
+              <button
+                className="btn submit add icon"
+                onClick={openCreateFormModal}
+              >
+                {translate('New Form')}
+              </button>
+            </td>
+          </tr>
+        )}
+
         {forms
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map((form) => (
-            <ListTableRow key={form.id} form={form} />
-          ))}
+          ?.sort((a, b) => a.name.localeCompare(b.name))
+          ?.map((form) => <ListTableRow key={form.id} form={form} />)}
       </tbody>
     </Table>
   );

@@ -1,25 +1,23 @@
 import React, { useEffect } from 'react';
 import config, { Edition } from '@config/freeform/freeform.config';
-import { useFetchFormGroups } from '@ff-client/queries/form-groups';
+import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
 import { Notices } from '../../notices/notices';
 import { Archived } from '../grid/archived/archived';
 import { ArchivedAndGroupWrapper, ContentContainer } from '../grid/grid.styles';
 
-import { ListEmpty } from './list.empty';
 import { Wrapper } from './list.styles';
 import { ListTable } from './list.table';
 
 export const FormList: React.FC = () => {
-  const { data, isFetching } = useFetchFormGroups();
+  const { data, isFetching } = useQueryFormsWithStats();
+  const isAtLeastLite = config.editions.isAtLeast(Edition.Lite);
 
-  const isForms = data?.forms.length > 0;
-  const isGroups = data?.formGroups?.groups.some(
-    (group) => group.forms.length > 0
+  const forms = data?.filter(({ dateArchived }) => dateArchived === null);
+  const archivedForms = data?.filter(
+    ({ dateArchived }) => dateArchived !== null
   );
-  const isEmpty = !isFetching && !isForms && !isGroups;
-  const isExpressEdition = config.editions.is(Edition.Express);
 
   useEffect(() => {
     document.title = translate('Forms');
@@ -31,14 +29,13 @@ export const FormList: React.FC = () => {
         <Notices />
 
         <Wrapper>
-          {!isEmpty && <ListTable forms={data?.forms} />}
-          {isEmpty && <ListEmpty />}
+          <ListTable forms={forms} isFetching={isFetching} />
 
-          <ArchivedAndGroupWrapper>
-            {!isExpressEdition && data?.archivedForms && (
-              <Archived data={data.archivedForms} />
-            )}
-          </ArchivedAndGroupWrapper>
+          {isAtLeastLite && (
+            <ArchivedAndGroupWrapper>
+              <Archived data={archivedForms} />
+            </ArchivedAndGroupWrapper>
+          )}
         </Wrapper>
       </div>
     </ContentContainer>

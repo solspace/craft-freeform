@@ -7,6 +7,7 @@ import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { BreadcrumbProvider } from '@components/breadcrumbs/breadcrumbs.context';
 import { CpNavigation } from '@components/cp-navigation/cp-navigation';
 import { ZIndexContextProvider } from '@components/form-controls/context/z-index.context';
+import { ModalProvider } from '@components/modals/modal.context';
 import { queryClient } from '@config/react-query';
 import { PortalProvider } from '@editor/builder/contexts/portal.context';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -55,37 +56,42 @@ root.render(
             <EscapeStackProvider>
               <BreadcrumbProvider>
                 <PortalProvider>
-                  <Breadcrumb id="root" label="Freeform" url="/forms" />
-                  <ManualStyles />
-                  <ReactQueryDevtools />
-                  <CpNavigation />
-                  <Routes>
-                    <Route path="/" element={<App />}>
-                      <Route path="forms">
-                        <Route path=":formId/*" element={<Form />} />
-                        <Route index element={<Forms />} />
-                      </Route>
-                      <Route
-                        path="/surveys/:handle"
-                        element={<SurveyResults />}
-                      />
-                      <Route path="welcome" element={<Welcome />} />
-                      <Route path="import" element={<ImportExport />}>
-                        <Route path="forms" element={<ImportFreeformData />} />
+                  <ModalProvider>
+                    <Breadcrumb id="root" label="Freeform" url="/forms" />
+                    <ManualStyles />
+                    <ReactQueryDevtools />
+                    <CpNavigation />
+                    <Routes>
+                      <Route path="/" element={<App />}>
+                        <Route path="forms">
+                          <Route path=":formId/*" element={<Form />} />
+                          <Route index element={<Forms />} />
+                        </Route>
                         <Route
-                          path="express-forms"
-                          element={<ImportExpressForms />}
+                          path="/surveys/:handle"
+                          element={<SurveyResults />}
                         />
+                        <Route path="welcome" element={<Welcome />} />
+                        <Route path="import" element={<ImportExport />}>
+                          <Route
+                            path="forms"
+                            element={<ImportFreeformData />}
+                          />
+                          <Route
+                            path="express-forms"
+                            element={<ImportExpressForms />}
+                          />
+                        </Route>
+                        <Route path="export" element={<ImportExport />}>
+                          <Route path="forms" element={<ExportFreeform />} />
+                        </Route>
+                        <Route path="settings/limited-users">
+                          <Route path=":id" element={<LimitedUsersDetail />} />
+                          <Route index element={<LimitedUsers />} />
+                        </Route>
                       </Route>
-                      <Route path="export" element={<ImportExport />}>
-                        <Route path="forms" element={<ExportFreeform />} />
-                      </Route>
-                      <Route path="settings/limited-users">
-                        <Route path=":id" element={<LimitedUsersDetail />} />
-                        <Route index element={<LimitedUsers />} />
-                      </Route>
-                    </Route>
-                  </Routes>
+                    </Routes>
+                  </ModalProvider>
                 </PortalProvider>
               </BreadcrumbProvider>
             </EscapeStackProvider>

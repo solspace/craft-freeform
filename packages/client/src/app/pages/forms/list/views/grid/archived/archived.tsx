@@ -11,23 +11,20 @@ type Props = {
 
 export const Archived: React.FC<Props> = ({ data }) => {
   const [isVisible, setIsVisible] = useState(false);
-  const toggleVisibility = (): void => setIsVisible(!isVisible);
-
-  const isEmpty = (data && !data.length) ?? true;
-
-  if (isEmpty) {
+  if (!data?.length) {
     return null;
   }
 
   return (
     <Wrapper>
-      <Button onClick={toggleVisibility}>
+      <Button onClick={() => setIsVisible(!isVisible)}>
         {translate(isVisible ? 'Hide archived forms' : 'Show archived forms')}
       </Button>
       {isVisible && (
         <ArchivedItems>
-          {data &&
-            data.map((form) => <ArchivedItem key={form.id} form={form} />)}
+          {data.map((form) => (
+            <ArchivedItem key={form.id} form={form} />
+          ))}
         </ArchivedItems>
       )}
     </Wrapper>

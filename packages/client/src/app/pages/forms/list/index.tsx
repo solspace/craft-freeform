@@ -1,14 +1,11 @@
 import React from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { ModalProvider } from '@components/modals/modal.context';
 import { useLocalStorage } from '@ff-client/hooks/ts-hooks/use-local-storage';
 import {
   fetchFieldPropertySections,
   fetchFieldTypes,
   QKFieldTypes,
 } from '@ff-client/queries/field-types';
-import { useFetchFormGroups } from '@ff-client/queries/form-groups';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
@@ -26,6 +23,9 @@ enum View {
 
 export const ListProvider: React.FC = () => {
   const queryClient = useQueryClient();
+  const openCreateFormModal = useCreateFormModal();
+
+  const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
 
   queryClient.prefetchQuery(QKFieldTypes.all, fetchFieldTypes);
   queryClient.prefetchQuery(
@@ -33,21 +33,12 @@ export const ListProvider: React.FC = () => {
     fetchFieldPropertySections
   );
 
-  const openCreateFormModal = useCreateFormModal();
-  const { isFetching } = useFetchFormGroups();
-
-  const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
-
   return (
-    <ModalProvider>
+    <>
       <Breadcrumb id="form-list" label="Forms" url="/forms" />
 
       <Header>
-        <Title>
-          <LoadingText spinner loading={isFetching}>
-            {translate('Forms')}
-          </LoadingText>
-        </Title>
+        <Title>{translate('Forms')}</Title>
 
         <GridSites />
 
@@ -76,6 +67,6 @@ export const ListProvider: React.FC = () => {
 
       {view === View.List && <FormList />}
       {view === View.Grid && <FormGrid />}
-    </ModalProvider>
+    </>
   );
 };

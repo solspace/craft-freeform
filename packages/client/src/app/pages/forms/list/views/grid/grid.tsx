@@ -78,9 +78,10 @@ export const FormGrid: React.FC = () => {
             <CardWrapper>
               {isProEdition &&
                 data?.formGroups &&
-                data.formGroups.groups.map((group) =>
+                data.formGroups.groups.map((group, index) =>
                   group.forms.length ? (
                     <GroupWrap key={group.uid}>
+                      {index !== 0 && <hr />}
                       <GroupTitle>{group.label}</GroupTitle>
                       <Cards>
                         {group.forms.map((form) => (
@@ -96,6 +97,7 @@ export const FormGrid: React.FC = () => {
                 )}
               {!isEmpty && isForms && (
                 <GroupWrap>
+                  {isGroups && <hr />}
                   {isGroups && <GroupTitle>Other</GroupTitle>}
 
                   <Cards
@@ -135,7 +137,7 @@ export const FormGrid: React.FC = () => {
                 onClick={openEditGroupModal}
               >
                 <EditIcon />
-                {translate('Form Groups')}
+                {translate('Manage Form Groups')}
               </GroupsButton>
             )}
           </ArchivedAndGroupWrapper>

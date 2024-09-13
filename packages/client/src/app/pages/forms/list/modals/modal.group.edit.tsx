@@ -78,7 +78,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
   return (
     <ModalContainer style={{ maxWidth: '60%' }}>
       <ModalHeader>
-        <h1>{translate('Group Manager')}</h1>
+        <h1>{translate('Form Group Manager')}</h1>
       </ModalHeader>
 
       <ManagerWrapper>

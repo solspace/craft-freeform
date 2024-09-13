@@ -19,7 +19,11 @@ export const Cards = styled.ul`
   gap: ${spacings.lg};
 `;
 
-export const GroupWrap = styled.div``;
+export const GroupWrap = styled.div`
+  hr {
+    margin: 10px -25px;
+  }
+`;
 
 export const GroupTitle = styled.h2`
   margin-bottom: 10px;

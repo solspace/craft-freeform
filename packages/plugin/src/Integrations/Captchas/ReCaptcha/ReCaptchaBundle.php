@@ -10,6 +10,7 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Captchas\CaptchasBundle;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
 class ReCaptchaBundle extends FeatureBundle
@@ -114,6 +115,11 @@ class ReCaptchaBundle extends FeatureBundle
             return;
         }
 
+        $settingsModel = $this->getSettingsService()->getSettingsModel();
+        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $form = $event->getForm();
         if (!$form->isLastPage()) {
             return;
@@ -147,5 +153,10 @@ class ReCaptchaBundle extends FeatureBundle
         }
 
         return $this->formIntegrationsProvider->getFirstForForm($form, ReCaptcha::class);
+    }
+
+    private function getSettingsService(): SettingsService
+    {
+        return $this->plugin()->settings;
     }
 }

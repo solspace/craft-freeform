@@ -23,7 +23,7 @@ class PageCollection implements \IteratorAggregate, \Countable
     public function setCurrent(int $index): int
     {
         if (!\array_key_exists($index, $this->pages)) {
-            throw new FreeformException(sprintf('Could not set "%s" as the current page', $index));
+            throw new FreeformException(\sprintf('Could not set "%s" as the current page', $index));
         }
 
         $this->currentIndex = $index;

@@ -132,14 +132,12 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         return $url.'/api/'.self::API_VERSION;
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->setProps($form);
         $this->processAccount($client);
         $this->processContact($client);
         $this->processDeal($client);
-
-        return true;
     }
 
     private function setProps(Form $form): void
@@ -235,23 +233,19 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             }
         } catch (\Exception $exception) {
             if (422 === $exception->getCode()) {
-                try {
-                    $response = $client->get($this->getEndpoint('/accounts'));
+                $response = $client->get($this->getEndpoint('/accounts'));
 
-                    $json = json_decode($response->getBody(), false);
+                $json = json_decode($response->getBody(), false);
 
-                    foreach ($json->accounts as $account) {
-                        if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
-                            $this->accountId = $account->id;
+                foreach ($json->accounts as $account) {
+                    if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
+                        $this->accountId = $account->id;
 
-                            break;
-                        }
+                        break;
                     }
-                } catch (\Exception $exception) {
-                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             } else {
-                $this->processException($exception, self::LOG_CATEGORY);
+                throw $exception;
             }
         }
     }
@@ -266,81 +260,73 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             return;
         }
 
-        try {
-            $listId = null;
-            if (isset($this->contact['listId'])) {
-                $listId = $this->contact['listId'];
+        $listId = null;
+        if (isset($this->contact['listId'])) {
+            $listId = $this->contact['listId'];
 
-                unset($this->contact['listId']);
-            }
+            unset($this->contact['listId']);
+        }
 
-            $response = $client->post(
-                $this->getEndpoint('/contact/sync'),
+        $response = $client->post(
+            $this->getEndpoint('/contact/sync'),
+            [
+                'json' => [
+                    'contact' => $this->contact,
+                ],
+            ],
+        );
+
+        $json = json_decode($response->getBody(), false);
+
+        if (isset($json->contact)) {
+            $this->contactId = $json->contact->id;
+        }
+
+        if ($this->accountId) {
+            $this->contact['contact'] = $this->contactId;
+            $this->contact['account'] = $this->accountId;
+
+            $client->post(
+                $this->getEndpoint('/accountContacts'),
                 [
                     'json' => [
-                        'contact' => $this->contact,
+                        'accountContact' => $this->contact,
                     ],
                 ],
             );
+        }
 
-            $json = json_decode($response->getBody(), false);
+        foreach ($this->contactProps as $prop) {
+            $prop['contact'] = (string) $this->contactId;
 
-            if (isset($json->contact)) {
-                $this->contactId = $json->contact->id;
-            }
-
-            if ($this->accountId) {
-                $this->contact['contact'] = $this->contactId;
-                $this->contact['account'] = $this->accountId;
-
-                $client->post(
-                    $this->getEndpoint('/accountContacts'),
-                    [
-                        'json' => [
-                            'accountContact' => $this->contact,
-                        ],
+            $client->post(
+                $this->getEndpoint('/fieldValues'),
+                [
+                    'json' => [
+                        'fieldValue' => $prop,
                     ],
-                );
-            }
-
-            foreach ($this->contactProps as $prop) {
-                $prop['contact'] = (string) $this->contactId;
-
-                $client->post(
-                    $this->getEndpoint('/fieldValues'),
-                    [
-                        'json' => [
-                            'fieldValue' => $prop,
-                        ],
-                    ],
-                );
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+                ],
+            );
         }
 
         if ((!$this->contactId && !$listId) || !$listId) {
             return;
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/contactLists'),
-                [
-                    'json' => [
-                        'contactList' => [
-                            'list' => $listId,
-                            'contact' => $this->contactId,
-                            'status' => 1,
-                        ],
+        $response = $client->post(
+            $this->getEndpoint('/contactLists'),
+            [
+                'json' => [
+                    'contactList' => [
+                        'list' => $listId,
+                        'contact' => $this->contactId,
+                        'status' => 1,
                     ],
-                ]
-            );
+                ],
+            ]
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
     }
 
     private function processDeal(Client $client): void
@@ -372,38 +358,34 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             $this->deal['contact'] = (string) $this->contactId;
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/deals'),
-                [
-                    'json' => [
-                        'deal' => $this->deal,
-                    ],
+        $response = $client->post(
+            $this->getEndpoint('/deals'),
+            [
+                'json' => [
+                    'deal' => $this->deal,
                 ],
-            );
+            ],
+        );
 
-            $json = json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
-            if (isset($json->deal)) {
-                $dealId = $json->deal->id;
+        if (isset($json->deal)) {
+            $dealId = $json->deal->id;
 
-                foreach ($this->dealProps as $prop) {
-                    $prop['dealId'] = $dealId;
+            foreach ($this->dealProps as $prop) {
+                $prop['dealId'] = $dealId;
 
-                    $response = $client->post(
-                        $this->getEndpoint('/dealCustomFieldData'),
-                        [
-                            'json' => [
-                                'dealCustomFieldDatum' => $prop,
-                            ],
+                $response = $client->post(
+                    $this->getEndpoint('/dealCustomFieldData'),
+                    [
+                        'json' => [
+                            'dealCustomFieldDatum' => $prop,
                         ],
-                    );
+                    ],
+                );
 
-                    $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
-                }
+                $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
             }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

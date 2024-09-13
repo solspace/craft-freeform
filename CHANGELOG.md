@@ -1,5 +1,84 @@
 # Solspace Freeform Changelog
 
+## 5.5.10 - 2024-09-06
+
+### Fixed
+- Fixed a compatibility issue with Campaign 3.x on Craft 5.x.
+- Fixed a bug where an error could occur when creating new forms on some MySQL installs.
+- Fixed a bug where the Diagnostics page could error on integration reporting if using PostgreSQL.
+
+## 5.5.9 - 2024-09-04
+
+### Added
+- Added support for migrating Submit button labels in the Freeform 4.x migration.
+- Added support for migrating conditional rules on Submit buttons in the Freeform 4.x migration.
+- Verified support for Craft 5.4.x.
+
+### Changed
+- Various updates to Dutch translations.
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted
+- Fixed a bug where the Forms element field type was not alphabetically ordering the list of forms.
+- Fixed a bug where some types of conditional rules on fields were not migrating properly in the Freeform 4.x migration.
+- Fixed a bug where the Constant Contact integration was not implementing the refresh token interface.
+- Fixed a bug where the Pardot integration was missing the `pardot_api` scope.
+
+### Security
+- Updated the `phpoffice/phpspreadsheet` dependency to correct an XSS vulnerability.
+
+## 5.5.8 - 2024-08-30
+
+### Fixed
+- Fixed a bug where some headers were missing in the Pardot integration authorization request.
+
+## 5.5.7 - 2024-08-14
+
+### Changed
+- Updated Webhooks to improve the inclusion of file metadata.
+- Updated the Stripe dependency versions to include `v14` and `v15`.
+- Changed Freeform so it does not set `noCache` headers on every request. Includes support for Craft's `asyncCsrfInputs` feature.
+
+### Fixed
+- Fixed a bug where the `site` parameter would lose track of the active site on nav links in the control panel when using the multi-site feature. For this to work correctly, you must enable the **Site Filtering for Forms and Submissions** setting.
+- Fixed a bug where Freeform scripts were being attached to non-Freeform forms.
+
+## 5.5.6 - 2024-08-10
+
+### Added
+- Added Keap CRM integration.
+- Add a `queuePriority` setting to set the Craft queue priority of Freeform jobs.
+- Verified support for Craft 5.3.x.
+
+### Fixed
+- Fixed issues with permissions when using the Craft Team edition.
+- Fixed a bug where custom field types were not showing in the Express edition.
+- Fixed some minor styling issues on the diagnostics page.
+
+## 5.5.5 - 2024-07-30
+
+### Changed
+- Refactored exception catching. Added a failsafe which performs a token refresh flow once if an access token returns an unauthorized response.
+
+### Fixed
+- Fixed a bug where the **Bypass All Spam Checks for Logged in Users** setting did not correctly bypass all spam checks for logged-in users when a form is cached.
+- Fixed a bug where moving fields around in the builder layout would sometimes not work correctly.
+- Fixed a bug where the **Surveys & Polls** link in form cards was broken.
+
+## 5.5.4 - 2024-07-11
+
+### Added
+- Added `freeform.loadScripts()` template function for manually loading Freeform scripts (e.g. Freeform JS, reCAPTCHA, JS Test, etc).
+
+### Changed
+- Changed form deleting from a `DELETE` to `POST` request for better compatibility with server permissions.
+
+### Fixed
+- Fixed a bug where Webhooks were being triggered on submissions sent to the Spam Folder.
+- Fixed a bug where the CP Submissions chart was not showing for users with no settings access permissions.
+- Fixed a bug where integration field mapping wasn't always cleaning up correctly.
+- Fixed some Dutch translation language bugs.
+
 ## 5.5.3 - 2024-07-04
 
 ### Added
@@ -817,6 +896,21 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.21 - 2024-08-14
+
+### Fixed
+- Fixed a bug where the `layoutJson` column change migration in 4.1.20 would fail on PostgreSQL.
+
+## 4.1.20 - 2024-07-30
+
+### Changed
+- Updated Diagnostics page to verify compatibility for Craft 4.10.x.
+- Updated the Website field validation to allow longer domain extensions.
+- Changed the `layoutJson` column in the `freeform_forms` database table to `longtext` to handle larger forms.
+
+### Fixed
+- Fixed a bug where the **Bypass All Spam Checks for Logged in Users** setting did not correctly bypass all spam checks for logged-in users when a form is cached.
 
 ## 4.1.19 - 2024-05-31
 

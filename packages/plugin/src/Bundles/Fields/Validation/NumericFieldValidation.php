@@ -11,7 +11,7 @@ use yii\base\Event;
 
 class NumericFieldValidation extends FeatureBundle
 {
-    private const PATTERN = '/^-?\\d*((?:\\.|,)\\d+)?$/';
+    private const PATTERN = '/^-?\d*((?:\.|,)\d+)?$/';
 
     public function __construct()
     {
@@ -68,7 +68,7 @@ class NumericFieldValidation extends FeatureBundle
         }
 
         $numericValue = str_replace(',', '.', $value);
-        $numericValue = preg_replace('/[^0-9\\-\\.]/', '', $numericValue);
+        $numericValue = preg_replace('/[^0-9\-\.]/', '', $numericValue);
         if ('' === $numericValue) {
             return;
         }

@@ -73,6 +73,15 @@
 
     {% endif %}
 
+    {{ forms.textField({
+        label: "Queue Job Priority"|t('freeform'),
+        instructions: "Set the queue job priority for background Freeform tasks to determine if they should run with a different priority compared to other jobs. Jobs with a lower priority are executed first."|t('freeform'),
+        name: "settings[queuePriority]",
+        value: settings.queuePriority,
+        errors: settings.errors("queuePriority"),
+        placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
+    }) }}
+
     <hr>
 
     <h2>{{ "Element Field Type"|t('freeform') }}</h2>

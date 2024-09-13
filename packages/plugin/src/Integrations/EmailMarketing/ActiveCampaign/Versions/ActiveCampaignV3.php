@@ -106,89 +106,85 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
 
         $mapping['email'] = $email;
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/contact/sync'),
-                [
-                    'json' => [
-                        'contact' => $mapping,
+        $response = $client->post(
+            $this->getEndpoint('/contact/sync'),
+            [
+                'json' => [
+                    'contact' => $mapping,
+                ],
+            ],
+        );
+
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACTS, $response);
+
+        $json = json_decode((string) $response->getBody());
+
+        $contactId = $json->contact->id;
+
+        unset($mapping['firstName'], $mapping['lastName'], $mapping['phone']);
+
+        $response = $client->post(
+            $this->getEndpoint('/contactLists'),
+            [
+                'json' => [
+                    'contactList' => [
+                        'status' => 1,
+                        'list' => $listId,
+                        'contact' => $contactId,
                     ],
                 ],
-            );
+            ],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACTS, $response);
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_LISTS, $response);
 
-            $json = json_decode((string) $response->getBody());
+        foreach ($mapping as $key => $value) {
+            if (!is_numeric($key)) {
+                continue;
+            }
 
-            $contactId = $json->contact->id;
+            $fieldId = (string) $key;
 
-            unset($mapping['firstName'], $mapping['lastName'], $mapping['phone']);
+            if (\is_array($value)) {
+                $value = '||'.implode('||', $value).'||';
+            }
 
             $response = $client->post(
-                $this->getEndpoint('/contactLists'),
+                $this->getEndpoint('/fieldValues'),
                 [
                     'json' => [
-                        'contactList' => [
-                            'status' => 1,
-                            'list' => $listId,
+                        'fieldValue' => [
+                            'value' => $value,
+                            'field' => $fieldId,
                             'contact' => $contactId,
                         ],
                     ],
                 ],
             );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_LISTS, $response);
+            $this->triggerAfterResponseEvent(self::CATEGORY_FIELD_VALUES, $response);
+        }
 
-            foreach ($mapping as $key => $value) {
-                if (!is_numeric($key)) {
-                    continue;
-                }
+        if ($contactId && $tags) {
+            foreach ($tags as $tag) {
+                $tagId = $this->getTagId($client, $tag);
 
-                $fieldId = (string) $key;
-
-                if (\is_array($value)) {
-                    $value = '||'.implode('||', $value).'||';
-                }
-
-                $response = $client->post(
-                    $this->getEndpoint('/fieldValues'),
-                    [
-                        'json' => [
-                            'fieldValue' => [
-                                'value' => $value,
-                                'field' => $fieldId,
-                                'contact' => $contactId,
-                            ],
-                        ],
-                    ],
-                );
-
-                $this->triggerAfterResponseEvent(self::CATEGORY_FIELD_VALUES, $response);
-            }
-
-            if ($contactId && $tags) {
-                foreach ($tags as $tag) {
-                    $tagId = $this->getTagId($client, $tag);
-
-                    if ($tagId) {
-                        $response = $client->post(
-                            $this->getEndpoint('/contactTags'),
-                            [
-                                'json' => [
-                                    'contactTag' => [
-                                        'tag' => $tagId,
-                                        'contact' => $contactId,
-                                    ],
+                if ($tagId) {
+                    $response = $client->post(
+                        $this->getEndpoint('/contactTags'),
+                        [
+                            'json' => [
+                                'contactTag' => [
+                                    'tag' => $tagId,
+                                    'contact' => $contactId,
                                 ],
                             ],
-                        );
+                        ],
+                    );
 
-                        $this->triggerAfterResponseEvent(self::CATEGORY_TAGS, $response);
-                    }
+                    $this->triggerAfterResponseEvent(self::CATEGORY_TAGS, $response);
                 }
             }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

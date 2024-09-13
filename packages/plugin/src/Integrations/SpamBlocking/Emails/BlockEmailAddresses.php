@@ -91,7 +91,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                     } else {
                         $form->markAsSpam(
                             SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                            sprintf(
+                            \sprintf(
                                 'Email field "%s" contains a blocked email address "%s"',
                                 $field->getHandle(),
                                 $email

@@ -127,12 +127,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     {
         $record = $this->getRecord($category);
 
-        try {
-            $response = $client->get($this->getEndpoint('/properties/'.$record));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/properties/'.$record));
         $json = json_decode((string) $response->getBody());
         if (empty($json)) {
             throw new IntegrationException('Could not fetch fields for '.$category);
@@ -183,15 +178,13 @@ class HubSpotV3 extends BaseHubSpotIntegration
         return 'https://api.hubapi.com/contacts/v1';
     }
 
-    public function push(Form $form, Client $client): bool
+    public function push(Form $form, Client $client): void
     {
         $this->pushContacts($form, $client);
         $this->pushCompanies($form, $client);
         $this->pushDeals($form, $client);
 
         $this->createAssociations($form, $client);
-
-        return true;
     }
 
     private function pushContacts(Form $form, Client $client): void
@@ -240,36 +233,31 @@ class HubSpotV3 extends BaseHubSpotIntegration
             $contactId = $contact->id;
         }
 
-        try {
-            if ($contactId) {
-                if ($this->getAppendContactData()) {
-                    $mapping = $this->appendValues(
-                        self::CATEGORY_CONTACT,
-                        $mapping,
-                        (array) $contact->properties
-                    );
-                }
-
-                $response = $client->patch(
-                    $this->getEndpoint('/objects/contacts/'.$contactId),
-                    ['json' => ['properties' => $mapping]],
+        if ($contactId) {
+            if ($this->getAppendContactData()) {
+                $mapping = $this->appendValues(
+                    self::CATEGORY_CONTACT,
+                    $mapping,
+                    (array) $contact->properties
                 );
-            } else {
-                [$response, $data] = $this->getJsonResponse(
-                    $client->post(
-                        $this->getEndpoint('/objects/contacts'),
-                        ['json' => ['properties' => $mapping]],
-                    )
-                );
-
-                $contactId = $data->id;
             }
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::CATEGORY_CONTACT);
+            $response = $client->patch(
+                $this->getEndpoint('/objects/contacts/'.$contactId),
+                ['json' => ['properties' => $mapping]],
+            );
+        } else {
+            [$response, $data] = $this->getJsonResponse(
+                $client->post(
+                    $this->getEndpoint('/objects/contacts'),
+                    ['json' => ['properties' => $mapping]],
+                )
+            );
+
+            $contactId = $data->id;
         }
 
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
         $this->contactId = $contactId;
     }
 
@@ -312,41 +300,36 @@ class HubSpotV3 extends BaseHubSpotIntegration
             $this->getMappedProps($this->companyMapping)
         );
 
-        try {
-            if ($company) {
-                $companyId = $company->id;
+        if ($company) {
+            $companyId = $company->id;
 
-                // Prevent the customer from updating company name if it's an existing company
-                unset($mapping['name']);
+            // Prevent the customer from updating company name if it's an existing company
+            unset($mapping['name']);
 
-                if ($this->getAppendCompanyData()) {
-                    $mapping = $this->appendValues(
-                        self::CATEGORY_COMPANY,
-                        $mapping,
-                        (array) $company->properties
-                    );
-                }
-
-                $response = $client->patch(
-                    $this->getEndpoint('/objects/companies/'.$companyId),
-                    ['json' => ['properties' => $mapping]],
+            if ($this->getAppendCompanyData()) {
+                $mapping = $this->appendValues(
+                    self::CATEGORY_COMPANY,
+                    $mapping,
+                    (array) $company->properties
                 );
-            } else {
-                [$response, $data] = $this->getJsonResponse(
-                    $client->post(
-                        $this->getEndpoint('/objects/companies'),
-                        ['json' => ['properties' => $mapping]],
-                    )
-                );
-
-                $companyId = $data->id;
             }
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_COMPANY, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::CATEGORY_COMPANY);
+            $response = $client->patch(
+                $this->getEndpoint('/objects/companies/'.$companyId),
+                ['json' => ['properties' => $mapping]],
+            );
+        } else {
+            [$response, $data] = $this->getJsonResponse(
+                $client->post(
+                    $this->getEndpoint('/objects/companies'),
+                    ['json' => ['properties' => $mapping]],
+                )
+            );
+
+            $companyId = $data->id;
         }
 
+        $this->triggerAfterResponseEvent(self::CATEGORY_COMPANY, $response);
         $this->companyId = $companyId;
     }
 
@@ -361,20 +344,15 @@ class HubSpotV3 extends BaseHubSpotIntegration
             return;
         }
 
-        try {
-            [$response, $data] = $this->getJsonResponse(
-                $client->post(
-                    $this->getEndpoint('/objects/deals'),
-                    ['json' => ['properties' => $properties]],
-                )
-            );
+        [$response, $data] = $this->getJsonResponse(
+            $client->post(
+                $this->getEndpoint('/objects/deals'),
+                ['json' => ['properties' => $properties]],
+            )
+        );
 
-            $this->dealId = $data->id;
-
-            $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::CATEGORY_DEAL);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_DEAL, $response);
+        $this->dealId = $data->id;
     }
 
     private function createAssociations(Form $form, Client $client): void
@@ -475,25 +453,21 @@ class HubSpotV3 extends BaseHubSpotIntegration
             return null;
         }
 
-        try {
-            [, $data] = $this->getJsonResponse(
-                $client->post(
-                    $this->getEndpoint("/objects/{$record}/search"),
-                    [
-                        'json' => [
-                            'properties' => $properties,
-                            'filterGroups' => [['filters' => $filters]],
-                            'limit' => 1,
-                        ],
+        [, $data] = $this->getJsonResponse(
+            $client->post(
+                $this->getEndpoint("/objects/{$record}/search"),
+                [
+                    'json' => [
+                        'properties' => $properties,
+                        'filterGroups' => [['filters' => $filters]],
+                        'limit' => 1,
                     ],
-                )
-            );
+                ],
+            )
+        );
 
-            if ($data->total > 0) {
-                return $data->results[0];
-            }
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::CATEGORY_CONTACT);
+        if ($data->total > 0) {
+            return $data->results[0];
         }
 
         return null;

@@ -97,12 +97,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     public function fetchFields(string $category, Client $client): array
     {
-        try {
-            $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
         $json = json_decode((string) $response->getBody());
 
         if (!isset($json->fields) || !$json->fields) {
@@ -175,30 +170,24 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     protected function query(Client $client, string $query, array $params = []): array
     {
-        try {
-            $params = array_map([$this, 'soqlEscape'], $params);
+        $params = array_map([$this, 'soqlEscape'], $params);
+        $query = \sprintf($query, ...$params);
 
-            $query = sprintf($query, ...$params);
+        $response = $client->get(
+            $this->getEndpoint('/query'),
+            [
+                'query' => [
+                    'q' => $query,
+                ],
+            ]
+        );
 
-            $response = $client->get(
-                $this->getEndpoint('/query'),
-                [
-                    'query' => [
-                        'q' => $query,
-                    ],
-                ]
-            );
-
-            $result = json_decode($response->getBody());
-
-            if (0 === $result->totalSize || !$result->done) {
-                return [];
-            }
-
-            return $result->records;
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
+        $result = json_decode($response->getBody());
+        if (0 === $result->totalSize || !$result->done) {
+            return [];
         }
+
+        return $result->records;
     }
 
     protected function querySingle(Client $client, string $query, array $params = []): mixed

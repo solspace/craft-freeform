@@ -41,18 +41,13 @@ class Generic extends WebhookIntegration
         foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             $value = $field->getValue();
             if ($field instanceof FileUploadField) {
-                $value = Freeform::getInstance()->files->getAssetUrlsFromIds($value);
+                $value = Freeform::getInstance()->files->getAssetMetadataFromIds($value);
             }
 
             $json[$field->getHandle()] = $value;
         }
 
         $client = new Client();
-
-        try {
-            $client->post($this->getUrl(), ['json' => $json]);
-        } catch (\Exception $e) {
-            $this->processException($e, self::LOG_CATEGORY, false);
-        }
+        $client->post($this->getUrl(), ['json' => $json]);
     }
 }

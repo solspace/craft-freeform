@@ -62,7 +62,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
             } else {
                 $form->markAsSpam(
                     SpamReason::TYPE_BLOCKED_IP,
-                    sprintf(
+                    \sprintf(
                         'Form submitted by a blocked IP "%s"',
                         $remoteIp
                     )

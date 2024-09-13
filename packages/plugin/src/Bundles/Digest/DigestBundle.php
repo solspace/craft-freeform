@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Digest;
 
 use Carbon\Carbon;
+use craft\helpers\Queue;
 use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\SendDigestJob;
@@ -46,6 +47,6 @@ class DigestBundle extends FeatureBundle
         }
 
         $job = new SendDigestJob(new Carbon('now'));
-        \Craft::$app->getQueue()->push($job);
+        Queue::push($job, $settings->getQueuePriority());
     }
 }

@@ -93,15 +93,11 @@ class DotdigitalV2 extends BaseDotdigitalIntegration
             ];
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/address-books/'.$listId.'/contacts'),
-                ['json' => $contactData],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/address-books/'.$listId.'/contacts'),
+            ['json' => $contactData],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_DATA, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_DATA, $response);
     }
 }

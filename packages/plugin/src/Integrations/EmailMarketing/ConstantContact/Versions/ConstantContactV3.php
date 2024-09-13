@@ -127,24 +127,20 @@ class ConstantContactV3 extends BaseConstantContactIntegration
             $contactData['street_address']['kind'] = 'home';
         }
 
-        try {
-            $contactData = array_merge(
-                [
-                    'email_address' => $email,
-                    'create_source' => 'Contact',
-                    'list_memberships' => [$listId],
-                ],
-                $contactData,
-            );
+        $contactData = array_merge(
+            [
+                'email_address' => $email,
+                'create_source' => 'Contact',
+                'list_memberships' => [$listId],
+            ],
+            $contactData,
+        );
 
-            $response = $client->post(
-                $this->getEndpoint('/contacts/sign_up_form'),
-                ['json' => $contactData],
-            );
+        $response = $client->post(
+            $this->getEndpoint('/contacts/sign_up_form'),
+            ['json' => $contactData],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_CUSTOM, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT_CUSTOM, $response);
     }
 }

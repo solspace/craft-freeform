@@ -33,7 +33,7 @@ abstract class BaseConfiguration
                 }
 
                 throw new ConfigurationException(
-                    sprintf(
+                    \sprintf(
                         'Configuration property "%s" does not exist. Available properties are: "%s"',
                         $key,
                         implode(', ', $availableProperties)

@@ -65,7 +65,7 @@ class IntegrationModel extends Model
         $className = $this->class;
 
         if (!class_exists($className)) {
-            throw new IntegrationNotFoundException(sprintf('"%s" class does not exist', $className));
+            throw new IntegrationNotFoundException(\sprintf('"%s" class does not exist', $className));
         }
 
         $typeProvider = \Craft::$container->get(IntegrationTypeProvider::class);

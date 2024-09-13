@@ -18,6 +18,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
+use craft\helpers\Queue;
 use craft\services\Fields;
 use craft\services\Search;
 use craft\services\Sites;
@@ -181,6 +182,8 @@ class Freeform extends Plugin
 
     public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
+    public string $schemaVersion = '';
+
     public bool $hasCpSettings = true;
 
     /**
@@ -284,6 +287,17 @@ class Freeform extends Plugin
         }
 
         return $helper;
+    }
+
+    public function beforeInstall(): void
+    {
+        parent::beforeInstall();
+
+        $projectConfig = \Craft::$app->getProjectConfig();
+        $composerPluginInfo = \Craft::$app->getPlugins()->getComposerPluginInfo('freeform');
+        $schemaVersion = $projectConfig->get('plugins.freeform.extra.schemaVersion') ?? $composerPluginInfo['schemaVersion'];
+
+        $this->schemaVersion ??= $schemaVersion;
     }
 
     /**
@@ -398,9 +412,9 @@ class Freeform extends Plugin
     private function initControllerMap(): void
     {
         if (\Craft::$app->request->isConsoleRequest) {
-            $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
+            $this->controllerNamespace = 'Solspace\Freeform\Commands';
         } else {
-            $this->controllerNamespace = 'Solspace\\Freeform\\controllers';
+            $this->controllerNamespace = 'Solspace\Freeform\controllers';
         }
     }
 
@@ -608,19 +622,20 @@ class Freeform extends Plugin
             return;
         }
 
+        $queuePriority = $this->settings->getQueuePriority();
         $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
         if ($assetAge > 0) {
-            \Craft::$app->queue->push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));
+            Queue::push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]), $queuePriority);
         }
 
         $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
         if ($submissionAge > 0) {
-            \Craft::$app->queue->push(new PurgeSubmissionsJob(['age' => $submissionAge]));
+            Queue::push(new PurgeSubmissionsJob(['age' => $submissionAge]), $queuePriority);
         }
 
         $spamAge = $this->settings->getPurgableSpamAgeInDays();
         if ($spamAge > 0) {
-            \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
+            Queue::push(new PurgeSpamJob(['age' => $spamAge]), $queuePriority);
         }
     }
 

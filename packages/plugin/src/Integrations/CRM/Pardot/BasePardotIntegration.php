@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\Pardot;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -40,12 +41,13 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     protected string $instanceUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Validators\Required]
     #[Input\Text(
         label: 'Business Unit ID',
         instructions: 'Enter your Pardot business unit ID here',
         order: 1,
     )]
-    protected ?string $businessUnitId = null;
+    protected string $businessUnitId = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
@@ -198,12 +200,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     private function getCustomFields(Client $client, string $category): array
     {
-        try {
-            $response = $client->get($this->getPardotEndpoint('customField'));
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
-
+        $response = $client->get($this->getPardotEndpoint('customField'));
         $json = json_decode((string) $response->getBody());
 
         if (!$json || !isset($json->result)) {

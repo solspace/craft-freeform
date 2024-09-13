@@ -230,9 +230,9 @@ class m190501_124050_MergingEditionsMigration extends Migration
 
         foreach ($rows as $row) {
             $class = $newClass = $row['class'];
-            if (preg_match('#Solspace\\\\Freeform(Pro|Payments)\\\\Integrations#', $class)) {
+            if (preg_match('#Solspace\\\Freeform(Pro|Payments)\\\Integrations#', $class)) {
                 $newClass = preg_replace(
-                    '#(\\\\Freeform)(Pro|Payments)\\\\Integrations#',
+                    '#(\\\Freeform)(Pro|Payments)\\\Integrations#',
                     '$1\Integrations',
                     $class
                 );

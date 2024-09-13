@@ -24,16 +24,24 @@ export const rowsSlice = createSlice({
     ) => {
       const { layoutUid, uid, order } = action.payload;
 
-      const rows = state
-        .filter((row) => row.layoutUid === layoutUid)
-        .sort((a, b) => a.order - b.order);
-
-      const highestOrder = rows.length;
-
-      const insertIndex =
-        order !== undefined
-          ? rows.findIndex((row) => row.order === order)
-          : highestOrder;
+      let insertIndex: number;
+      if (order !== undefined) {
+        insertIndex = state.findIndex(
+          (row) => row.layoutUid === layoutUid && row.order === order
+        );
+      } else {
+        insertIndex = state.reduce((maxIndex, row, currentIndex) => {
+          if (
+            row.layoutUid === layoutUid &&
+            row.order > state[maxIndex]?.order
+          ) {
+            return currentIndex;
+          } else {
+            return maxIndex;
+          }
+        }, -1);
+        insertIndex = insertIndex === -1 ? state.length : insertIndex;
+      }
 
       state.splice(insertIndex, 0, {
         uid,
@@ -42,17 +50,24 @@ export const rowsSlice = createSlice({
       });
 
       // Reset order
-      state.forEach((row, index) => {
-        row.order = index;
-      });
+      state
+        .filter((row) => row.layoutUid === layoutUid)
+        .forEach((row, index) => {
+          row.order = index;
+        });
     },
     remove: (state, action: PayloadAction<string>) => {
       const index = state.findIndex((row) => row.uid === action.payload);
+      const layoutUid = state.find(
+        (row) => row.uid === action.payload
+      ).layoutUid;
 
       state.splice(index, 1);
-      state.forEach((row, index) => {
-        row.order = index;
-      });
+      state
+        .filter((row) => row.layoutUid === layoutUid)
+        .forEach((row, index) => {
+          row.order = index;
+        });
     },
     swap: (state, action: PayloadAction<SwapPayload>) => {
       const current = state.find(

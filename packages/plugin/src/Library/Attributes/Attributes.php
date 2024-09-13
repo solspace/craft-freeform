@@ -46,7 +46,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
                 'object' => implode(
                     ' ',
                     array_map(
-                        fn ($value, $key) => sprintf('%s:%s', $value, $key),
+                        fn ($value, $key) => \sprintf('%s:%s', $value, $key),
                         array_keys((array) $value),
                         (array) $value
                     )

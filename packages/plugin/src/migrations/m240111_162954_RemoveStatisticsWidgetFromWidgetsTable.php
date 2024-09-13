@@ -12,7 +12,7 @@ class m240111_162954_RemoveStatisticsWidgetFromWidgetsTable extends Migration
 {
     public function safeUp(): bool
     {
-        Widget::deleteAll(['type' => 'Solspace\\Freeform\\Widgets\\StatisticsWidget']);
+        Widget::deleteAll(['type' => 'Solspace\Freeform\Widgets\StatisticsWidget']);
 
         return true;
     }

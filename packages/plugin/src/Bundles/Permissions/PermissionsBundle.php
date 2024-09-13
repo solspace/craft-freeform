@@ -23,7 +23,7 @@ class PermissionsBundle extends FeatureBundle
 
     public function loadPermissions(RegisterUserPermissionsEvent $event): void
     {
-        if (\Craft::$app->getEdition() < \Craft::Pro) {
+        if (\Craft::Solo === \Craft::$app->getEdition()) {
             return;
         }
 

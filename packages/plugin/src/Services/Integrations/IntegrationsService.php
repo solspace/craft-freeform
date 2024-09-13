@@ -18,16 +18,17 @@ use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
+use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\PushableInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -47,7 +48,6 @@ class IntegrationsService extends BaseService
         $config,
         protected IntegrationClientProvider $clientProvider,
         private PropertyProvider $propertyProvider,
-        private FreeformQueueHandler $queueHandler,
     ) {
         parent::__construct($config);
     }
@@ -493,14 +493,37 @@ class IntegrationsService extends BaseService
 
         $form->valuesFromArray($postedData);
 
-        /** @var IntegrationInterface[] $integrations */
+        /** @var IntegrationInterface[]|PushableInterface $integrations */
         $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
+            if (!$integration instanceof PushableInterface) {
+                continue;
+            }
+
             $client = $this->clientProvider->getAuthorizedClient($integration);
 
             try {
                 $integration->push($form, $client);
-            } catch (IntegrationException $e) {
+            } catch (\Exception $exception) {
+                $event = new FailedRequestEvent($integration, $exception);
+                Event::trigger(
+                    IntegrationInterface::class,
+                    IntegrationInterface::EVENT_ON_FAILED_REQUEST,
+                    $event,
+                );
+
+                if (!$event->isValid) {
+                    continue;
+                }
+
+                if ($event->isRetry()) {
+                    $client = $this->clientProvider->getAuthorizedClient($integration);
+
+                    try {
+                        $integration->push($form, $client);
+                    } catch (\Exception) {
+                    }
+                }
             }
         }
     }

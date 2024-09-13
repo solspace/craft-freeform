@@ -161,6 +161,78 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
             ForeignKey::CASCADE
         );
 
+        // ------------------------------------------------------------------
+
+        $this->createTable(
+            '{{%freeform_rules_submit_form}}',
+            [
+                'id' => $this->integer()->notNull(),
+                'formId' => $this->integer()->notNull(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]
+        );
+
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_submit_form}}', 'id');
+        }
+
+        $this->addForeignKey(
+            null,
+            '{{%freeform_rules_submit_form}}',
+            'id',
+            '{{%freeform_rules}}',
+            'id',
+            ForeignKey::CASCADE
+        );
+
+        $this->addForeignKey(
+            null,
+            '{{%freeform_rules_submit_form}}',
+            'formId',
+            '{{%freeform_forms}}',
+            'id',
+            ForeignKey::CASCADE
+        );
+
+        // ------------------------------------------------------------------
+
+        $this->createTable(
+            '{{%freeform_rules_buttons}}',
+            [
+                'id' => $this->integer()->notNull(),
+                'pageId' => $this->integer()->notNull(),
+                'button' => $this->string(10)->notNull(),
+                'display' => $this->string(10)->notNull(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]
+        );
+
+        if ($this->db->getIsMysql()) {
+            $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_buttons}}', 'id');
+        }
+
+        $this->addForeignKey(
+            null,
+            '{{%freeform_rules_buttons}}',
+            'id',
+            '{{%freeform_rules}}',
+            'id',
+            ForeignKey::CASCADE
+        );
+
+        $this->addForeignKey(
+            null,
+            '{{%freeform_rules_buttons}}',
+            'pageId',
+            '{{%freeform_forms_pages}}',
+            'id',
+            ForeignKey::CASCADE,
+        );
+
         return true;
     }
 

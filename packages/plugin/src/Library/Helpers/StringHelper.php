@@ -52,7 +52,7 @@ class StringHelper
      */
     public static function humanize(string $string): string
     {
-        return strtolower(trim(preg_replace(['/([A-Z])/', '/[_\\s]+/'], ['_$1', ' '], $string)));
+        return strtolower(trim(preg_replace(['/([A-Z])/', '/[_\s]+/'], ['_$1', ' '], $string)));
     }
 
     /**

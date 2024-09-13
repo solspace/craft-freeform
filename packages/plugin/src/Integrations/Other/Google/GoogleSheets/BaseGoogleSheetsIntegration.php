@@ -28,9 +28,10 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\PushableInterface;
 use Solspace\Freeform\Library\Integrations\Types\Other\GoogleSheetsIntegrationInterface;
 
-abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, GoogleSheetsIntegrationInterface
+abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, GoogleSheetsIntegrationInterface, PushableInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;

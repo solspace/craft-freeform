@@ -3,9 +3,8 @@
 namespace Solspace\Freeform\Commands;
 
 use craft\console\Controller;
+use craft\helpers\Queue;
 use craft\queue\jobs\ResaveElements;
-use craft\queue\Queue;
-use craft\services\Elements;
 use Faker\Factory;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Commands\Fix\TitleFixMigration;
@@ -341,12 +340,13 @@ class SubmissionsController extends Controller
         $criteria = $this->collectCriteria();
 
         if ($this->queue) {
-            \Craft::$app->queue->push(
+            Queue::push(
                 new ResaveElements([
                     'elementType' => $elementType,
                     'criteria' => $criteria,
                     'updateSearchIndex' => $this->updateSearchIndex,
-                ])
+                ]),
+                Freeform::getInstance()->settings->getQueuePriority()
             );
 
             $this->stdout($elementType::pluralDisplayName().' queued to be resaved.'.\PHP_EOL);

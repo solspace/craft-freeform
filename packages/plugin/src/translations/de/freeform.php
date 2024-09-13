@@ -186,6 +186,9 @@ return [
     'Use Queue for Integrations' => 'Verwenden Sie die Warteschlange für Integrationen',
     "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users." => 'Nutzen Sie das Warteschlangensystem von Craft, um Integrationen auszulösen (CRM und E-Mail-Marketing). Wenn Sie dies aktivieren, wird die Einreichungsverarbeitung für Ihre Benutzer beschleunigt.',
     "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>" => "Dies hängt entweder vom routinemäßigen Datenverkehr zu Ihrem Craft-Kontrollfeld oder von der Implementierung einer ordnungsgemäßen Warteschlangenverarbeitungsmethode ab, die nicht darauf angewiesen ist, dass jemand Ihr Kontrollfeld besucht. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Weitere Informationen</a>",
+    'Queue Job Priority' => 'Jobpriorität in der Warteschlange',
+    'Set the queue job priority for background Freeform tasks to determine if they should run with a different priority compared to other jobs. Jobs with a lower priority are executed first.' => 'Legen Sie die Warteschlangen-Jobpriorität für Hintergrund-Freeform-Aufgaben fest, um zu bestimmen, ob sie mit einer anderen Priorität als andere Jobs ausgeführt werden sollen. Jobs mit niedrigerer Priorität werden zuerst ausgeführt.',
+    'Leave empty to use the Craft default of 1024.' => 'Leer lassen, um den Craft-Standardwert 1024 zu verwenden.',
 
     // Statuses controller
     'Create a new status' => 'Neuen Status erstellen',

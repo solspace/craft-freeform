@@ -122,25 +122,21 @@ class CampaignMonitorV33 extends BaseCampaignMonitorIntegration
             }
         }
 
-        try {
-            $response = $client->post(
-                $this->getEndpoint('/subscribers/'.$listId.'.json'),
-                [
-                    'json' => [
-                        'EmailAddress' => $email,
-                        'Name' => $mapping['Name'] ?? '',
-                        'CustomFields' => $customFields,
-                        'Resubscribe' => true,
-                        'RestartSubscriptionBasedAutoresponders' => true,
-                        'ConsentToTrack' => 'Yes',
-                        'ConsentToSendSms' => 'Yes',
-                    ],
+        $response = $client->post(
+            $this->getEndpoint('/subscribers/'.$listId.'.json'),
+            [
+                'json' => [
+                    'EmailAddress' => $email,
+                    'Name' => $mapping['Name'] ?? '',
+                    'CustomFields' => $customFields,
+                    'Resubscribe' => true,
+                    'RestartSubscriptionBasedAutoresponders' => true,
+                    'ConsentToTrack' => 'Yes',
+                    'ConsentToSendSms' => 'Yes',
                 ],
-            );
+            ],
+        );
 
-            $this->triggerAfterResponseEvent(self::CATEGORY_CUSTOM, $response);
-        } catch (\Exception $exception) {
-            $this->processException($exception, self::LOG_CATEGORY);
-        }
+        $this->triggerAfterResponseEvent(self::CATEGORY_CUSTOM, $response);
     }
 }

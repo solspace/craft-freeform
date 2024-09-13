@@ -14,7 +14,6 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
-use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
@@ -63,7 +62,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum Craft version Freeform supports is 4.0.0 or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '5.3.0', '<'),
+                        fn ($value) => version_compare($value['version'], '5.5.0', '<'),
                         'Potential Craft Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
                     ),
@@ -118,7 +117,7 @@ class DiagnosticsService extends BaseService
             ),
             new DiagnosticItem(
                 'OS: <b>{{ value }}</b>',
-                sprintf('%s %s', \PHP_OS, php_uname('r')),
+                \sprintf('%s %s', \PHP_OS, php_uname('r')),
             ),
             new DiagnosticItem(
                 'Dev Mode: <b>{{ value.devmode == 1 ? "On" : "Off" }}</b> / Allow Admin Changes: <b>{{ value.allowadmin == 1 ? "Yes" : "No" }}</b>',
@@ -361,7 +360,7 @@ class DiagnosticsService extends BaseService
                     'Script Insert Location: <b>{{ value|capitalize }}</b>',
                     $this->getSummary()->statistics->settings->jsInsertLocation,
                     [
-                        new NoticeValidator(
+                        new SuggestionValidator(
                             fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value,
                             '',
                             'Please make sure you are adding Freeform’s scripts manually.'
@@ -419,7 +418,7 @@ class DiagnosticsService extends BaseService
                     'Formatting Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -432,7 +431,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Formatting Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),
@@ -440,7 +439,7 @@ class DiagnosticsService extends BaseService
                     'Email Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->emailTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -453,7 +452,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Email Notification Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),
@@ -465,7 +464,7 @@ class DiagnosticsService extends BaseService
                     'Success Templates Directory Path: <b>{{ value ? value : "Not set" }}</b>',
                     $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
                     [
-                        new NoticeValidator(
+                        new WarningValidator(
                             function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
@@ -478,7 +477,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             },
                             '',
-                            'Success Templates Directory Path: Not set correctly'
+                            'This directory path is not set correctly.'
                         ),
                     ]
                 ),
@@ -632,7 +631,7 @@ class DiagnosticsService extends BaseService
         $integrations = (new Query())
             ->select(['fi.id', 'fi.integrationId', 'fi.formId', 'integrations.class', 'integrations.metadata'])
             ->from(FormIntegrationRecord::TABLE.' fi')
-            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.integrationId')
+            ->innerJoin(IntegrationRecord::TABLE.' integrations', 'integrations.id = fi.[[integrationId]]')
             ->where(['fi.enabled' => true])
             ->all()
         ;

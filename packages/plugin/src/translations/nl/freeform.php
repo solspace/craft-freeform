@@ -15,6 +15,8 @@ return [
     // Form Builder // Form Cards
     'Submissions' => 'Inzendingen',
     'Spam' => 'Spam',
+    '{count} Submissions' => '{count} Inzendingen',
+    '{count} Spam' => '{count} Spam',
     'Survey Results' => 'Resultaten van de Enquête',
     'Move this Form Card' => 'Verplaats deze formulierkaart',
     'Duplicate this Form' => 'Dupliceer dit formulier',
@@ -29,6 +31,12 @@ return [
     'Show archived forms' => 'Toon gearchiveerde formulieren',
     'Hide archived forms' => 'Gearchiveerde formulieren verbergen',
     'archived' => 'gearchiveerde',
+    'Manage Form Groups' => 'Beheer Formuliergroepen',
+    'Form Group Manager' => 'Formulier Groepsmanager',
+    'Display as cards' => 'Weergeven als kaarten',
+    'Display as list' => 'Toon als lijst',
+    'Chart' => 'Grafiek',
+    'Manage' => 'Beheren',
 
     // Form Builder // Universal
     'Forms' => 'Formulieren',

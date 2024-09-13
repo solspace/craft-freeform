@@ -15,6 +15,8 @@ return [
     // Form Builder // Form Cards
     'Submissions' => 'Submissions',
     'Spam' => 'Spam',
+    '{count} Submissions' => '{count} Submissions',
+    '{count} Spam' => '{count} Spam',
     'Survey Results' => 'Survey Results',
     'Move this Form Card' => 'Move this Form Card',
     'Duplicate this Form' => 'Duplicate this Form',
@@ -29,6 +31,12 @@ return [
     'Show archived forms' => 'Show archived forms',
     'Hide archived forms' => 'Hide archived forms',
     'archived' => 'archived',
+    'Manage Form Groups' => 'Manage Form Groups',
+    'Form Group Manager' => 'Form Group Manager',
+    'Display as cards' => 'Display as cards',
+    'Display as list' => 'Display as list',
+    'Chart' => 'Chart',
+    'Manage' => 'Manage',
 
     // Form Builder // Universal
     'Forms' => 'Forms',

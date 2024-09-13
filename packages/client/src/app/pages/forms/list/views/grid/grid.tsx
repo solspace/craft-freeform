@@ -98,7 +98,7 @@ export const FormGrid: React.FC = () => {
               {!isEmpty && isForms && (
                 <GroupWrap>
                   {isGroups && <hr />}
-                  {isGroups && <GroupTitle>Other</GroupTitle>}
+                  {isGroups && <GroupTitle>{translate('Other')}</GroupTitle>}
 
                   <Cards
                     ref={gridRef}

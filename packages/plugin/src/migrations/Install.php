@@ -384,6 +384,21 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fieldId', $this->integer()->notNull())
                 ->addField('chartType', $this->string(200)->notNull())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_groups'))
+                ->addField('id', $this->primaryKey())
+                ->addField('siteId', $this->integer()->notNull())
+                ->addField('label', $this->string())
+                ->addField('order', $this->integer()->notNull())
+                ->addForeignKey('siteId', 'sites', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_groups_entries'))
+                ->addField('id', $this->primaryKey())
+                ->addField('groupId', $this->integer()->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('order', $this->integer()->notNull())
+                ->addForeignKey('groupId', 'freeform_forms_groups', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
         ];
     }
 

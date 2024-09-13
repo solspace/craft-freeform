@@ -15,9 +15,9 @@ import type { GenericValue } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import axios from 'axios';
 
-import { FormModalLoading } from './form-modal.loading';
-import { useFetchFormModalType } from './form-modal.queries';
-import { FormWrapper } from './form-modal.styles';
+import { FormModalLoading } from './modal.form.loading';
+import { useFetchFormModalType } from './modal.form.queries';
+import { FormWrapper } from './modal.form.styles';
 
 export const CreateFormModal: React.FC<ModalContainerProps> = ({
   closeModal,

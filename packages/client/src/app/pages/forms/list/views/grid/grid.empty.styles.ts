@@ -2,7 +2,7 @@ import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 import { CardWrapper, LinkList, Subtitle, Title } from './card/card.styles';
-import { Cards } from './list.styles';
+import { Cards } from './grid.styles';
 
 export const MutedWrapper = styled(Cards)`
   position: relative;

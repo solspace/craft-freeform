@@ -9,13 +9,14 @@ import {
 import type { ModalContainerProps } from '@components/modals/modal.types';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import { QKGroups } from '@ff-client/queries/form-groups';
 import { QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import { FormWrapper } from './form-modal.styles';
+import { FormWrapper } from './modal.form.styles';
 
 export const DeleteFormModal: React.FC<ModalContainerProps> = ({
   data,
@@ -54,7 +55,9 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
 
     try {
       await axios.post(`/api/forms/delete`, { id: data?.form.id });
-
+      await queryClient.invalidateQueries(
+        QKGroups.all(getCurrentHandleWithFallback())
+      );
       await queryClient.invalidateQueries(
         QKForms.all(getCurrentHandleWithFallback())
       );

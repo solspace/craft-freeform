@@ -3,9 +3,11 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
-import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modal/use-delete-form-modal';
+import config, { Edition } from '@config/freeform/freeform.config';
+import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
+import { QKForms } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
@@ -19,7 +21,7 @@ import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
-} from '../list.mutations';
+} from '../grid.mutations';
 
 import {
   CardBody,
@@ -53,6 +55,7 @@ export const Card: React.FC<Props> = ({
   isDraggingInProgress,
   isExpressEdition,
 }) => {
+  const isProEdition = config.editions.is(Edition.Pro);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
 
@@ -100,7 +103,7 @@ export const Card: React.FC<Props> = ({
       )}
     >
       <Controls>
-        {!isExpressEdition && (
+        {!isExpressEdition && !isProEdition && (
           <Tooltip title={translate('Move this Form Card')} {...tooltipProps}>
             <ControlButton className="handle">
               <MoveIcon />

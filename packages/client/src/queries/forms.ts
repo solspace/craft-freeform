@@ -3,8 +3,8 @@ import { formActions } from '@editor/store/slices/form';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import type {
   ExtendedFormType,
-  Form,
   FormSettingNamespace,
+  FormWithStats,
 } from '@ff-client/types/forms';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
@@ -16,21 +16,6 @@ export const QKForms = {
   all: (site: string) => [...QKForms.base, site] as const,
   single: (id: number) => [...QKForms.base, id] as const,
   settings: () => [...QKForms.base, 'settings'] as const,
-};
-
-export type FormWithStats = Form & {
-  links: Array<{
-    label: string;
-    url: string;
-    type: string;
-    count: number;
-    internal: boolean;
-  }>;
-  chartData: Array<{ uv: number }>;
-  counters: {
-    submissions: number;
-    spam: number;
-  };
 };
 
 export const useQueryFormsWithStats = (): UseQueryResult<

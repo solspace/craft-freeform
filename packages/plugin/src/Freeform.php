@@ -78,6 +78,7 @@ use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
+use Solspace\Freeform\Services\FormGroupsService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\Integrations\CrmService;
@@ -116,6 +117,7 @@ use yii\db\Query;
  * @property CrmService                 $crm
  * @property FilesService               $files
  * @property FormsService               $forms
+ * @property FormGroupsService          $formGroups
  * @property FieldsService              $fields
  * @property LayoutsService             $formLayouts
  * @property MailerService              $mailer
@@ -429,6 +431,7 @@ class Freeform extends Plugin
                 'charts' => ChartsService::class,
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
+                'formGroups' => FormGroupsService::class,
                 'field' => FieldsService::class,
                 'fields' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,

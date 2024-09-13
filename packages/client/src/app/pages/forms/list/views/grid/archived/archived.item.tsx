@@ -1,13 +1,13 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import type { FormWithStats } from '@ff-client/queries/forms';
 import { QKForms } from '@ff-client/queries/forms';
+import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 
-import { useArchiveFormMutation } from '../list.mutations';
+import { useArchiveFormMutation } from '../grid.mutations';
 
 import {
   Item,
@@ -15,7 +15,7 @@ import {
   ItemMeta,
   ItemTitle,
   ItemTitleLink,
-} from './archived-item.styles';
+} from './archived.item.styles';
 
 type Props = {
   form: FormWithStats;

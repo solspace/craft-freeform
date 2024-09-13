@@ -7,12 +7,6 @@ export const Wrapper = styled.div`
   gap: ${spacings.lg};
 `;
 
-export const Cards = styled.ul`
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: ${spacings.lg};
-`;
-
 export const Header = styled.header`
   display: grid;
   grid-template-areas: 'title sites button';
@@ -31,13 +25,4 @@ export const Title = styled.h1`
   font-size: 18px;
   font-weight: 700;
   line-height: 34px;
-`;
-
-export const Button = styled.button`
-  grid-area: button;
-`;
-
-export const ContentContainer = styled.div`
-  width: 100%;
-  max-width: 100%;
 `;

@@ -42,10 +42,10 @@ export const Remove = styled.div`
 `;
 
 export const PaddedFooter = styled.div<{ $color: string }>`
-  margin-top: -3px;
+  margin-top: 0;
   background-color: ${({ $color }) => $color};
   opacity: 0.3;
-  height: 5px;
+  height: 2px;
   font-size: 1px;
   line-height: 1px;
   overflow: hidden;

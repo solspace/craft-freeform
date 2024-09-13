@@ -1,4 +1,5 @@
-import { QKGroups } from '@ff-client/queries/groups';
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
+import { QKGroups } from '@ff-client/queries/form-groups';
 import type { APIError } from '@ff-client/types/api';
 import type { UpdateFormGroup } from '@ff-client/types/form-groups';
 import type {
@@ -18,6 +19,7 @@ export const useFormGroupsMutation = (
   options: UseMutationOptions<unknown, APIError, UpdateFormGroup> = {}
 ): FormGroupsMutationResult => {
   const queryClient = useQueryClient();
+  const { getCurrentHandleWithFallback } = useSiteContext();
 
   const originalOnSuccess = options?.onSuccess;
   options.onSuccess = (
@@ -26,7 +28,7 @@ export const useFormGroupsMutation = (
     context: unknown
   ) => {
     originalOnSuccess && originalOnSuccess(data, variables, context);
-    queryClient.invalidateQueries(QKGroups.all);
+    queryClient.invalidateQueries(QKGroups.all(getCurrentHandleWithFallback()));
   };
 
   return useMutation<unknown, APIError, UpdateFormGroup>(

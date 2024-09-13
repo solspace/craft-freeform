@@ -178,6 +178,11 @@ class HubSpotV3 extends BaseHubSpotIntegration
         return 'https://api.hubapi.com/crm/v3';
     }
 
+    public function getContactApiUrl(): string
+    {
+        return 'https://api.hubapi.com/contacts/v1';
+    }
+
     public function push(Form $form, Client $client): bool
     {
         $this->pushContacts($form, $client);
@@ -205,31 +210,38 @@ class HubSpotV3 extends BaseHubSpotIntegration
         }
 
         $email = $this->getEmailFieldValue($mapping);
+
+        $contactId = null;
         $contact = $this->searchForObject(
             $client,
             $this->getRecord(self::CATEGORY_CONTACT),
             ['email' => $email],
             $this->getMappedProps($this->contactMapping)
         );
-        
-        //	Didn't find by email. Let's try to find by the hubspot user token which is set in a cookie by the Hubspot JS tracking code on front end pages. Some websites may not have this JS tracking code.
-        if (! $contact && ! empty($_COOKIE['hubspotutk'])) {
-			$base		= 'https://api.hubapi.com/contacts/v1';
-			$endpoint	= $base . '/contact/utk/' . $_COOKIE['hubspotutk'] . '/profile';
-			
-			try {			
-				$response	= $client->get($endpoint);
-				$json		= json_decode((string) $response->getBody(), false);
-				$contactId	= $json->vid;
-			} catch (\Exception $exception) {
-				$this->processException($exception, self::CATEGORY_CONTACT);
-			}
+
+        if (!$contact) {
+            $contactCookie = $_COOKIE['hubspotutk'] ?? null;
+            if ($contactCookie) {
+                $endpoint = \sprintf(
+                    '%s/contact/utk/%s/profile',
+                    $this->getContactApiUrl(),
+                    $contactCookie
+                );
+
+                try {
+                    $response = $client->get($endpoint);
+                    $json = json_decode((string) $response->getBody());
+                    $contactId = $json->vid ?? null;
+                } catch (\Exception $exception) {
+                    $this->processException($exception, self::CATEGORY_CONTACT);
+                }
+            }
+        } else {
+            $contactId = $contact->id;
         }
 
         try {
-            if ($contact || $contactId) {
-                $contactId = (isset($contactId)) ? $contactId: $contact->id;
-
+            if ($contactId) {
                 if ($this->getAppendContactData()) {
                     $mapping = $this->appendValues(
                         self::CATEGORY_CONTACT,

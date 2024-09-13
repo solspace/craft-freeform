@@ -1,40 +1,46 @@
 import { QKGroups } from '@ff-client/queries/groups';
 import type { APIError } from '@ff-client/types/api';
-import type { FormGroup } from '@ff-client/types/form-groups';
+import type { UpdateFormGroup } from '@ff-client/types/form-groups';
 import type {
   UseMutationOptions,
   UseMutationResult,
 } from '@tanstack/react-query';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
 type FormGroupsMutationResult = UseMutationResult<
-  AxiosResponse<FormGroup>,
+  unknown,
   APIError,
-  FormGroup
+  UpdateFormGroup
 >;
 
 export const useFormGroupsMutation = (
-  options: UseMutationOptions<
-    AxiosResponse<FormGroup>,
-    APIError,
-    FormGroup
-  > = {}
+  options: UseMutationOptions<unknown, APIError, UpdateFormGroup> = {}
 ): FormGroupsMutationResult => {
   const queryClient = useQueryClient();
 
   const originalOnSuccess = options?.onSuccess;
   options.onSuccess = (
-    data: AxiosResponse<FormGroup>,
-    variables: FormGroup,
+    data: unknown,
+    variables: UpdateFormGroup,
     context: unknown
   ) => {
     originalOnSuccess && originalOnSuccess(data, variables, context);
     queryClient.invalidateQueries(QKGroups.all);
   };
 
-  return useMutation<AxiosResponse, APIError, FormGroup>((data: FormGroup) => {
-    return axios.post<FormGroup>('/api/forms/groups', data);
-  }, options);
+  return useMutation<unknown, APIError, UpdateFormGroup>(
+    async (data: UpdateFormGroup) => {
+      const { orderedFormIds, ...formGroupsData } = data;
+
+      await axios.post('/api/forms/groups', formGroupsData);
+
+      if (orderedFormIds && orderedFormIds.length > 0) {
+        await axios.post('/api/forms/sort', {
+          orderedFormIds: orderedFormIds,
+        });
+      }
+    },
+    options
+  );
 };

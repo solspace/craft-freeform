@@ -22,7 +22,7 @@ export const initializeSortable = (
       unassigned: {
         group: { name: 'shared', put: putCondition },
         animation: 150,
-        sort: false,
+        sort: true,
       },
       groupWrapper: {
         handle: '.handle',

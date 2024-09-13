@@ -33,10 +33,6 @@ export const Name = styled.h2`
   margin-bottom: 0;
 `;
 
-export const ID = styled.span`
-  font-size: 14px;
-`;
-
 export const Remove = styled.div`
   color: ${colors.gray500};
   margin-right: ${spacings.xs};
@@ -45,7 +41,7 @@ export const Remove = styled.div`
   top: 7px;
 `;
 
-export const PaddedChartFooter = styled.div<{ $color: string }>`
+export const PaddedFooter = styled.div<{ $color: string }>`
   margin-top: -3px;
   background-color: ${({ $color }) => $color};
   opacity: 0.3;

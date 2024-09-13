@@ -6,6 +6,7 @@ use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\FormGroupsEntriesRecord;
 use Solspace\Freeform\Records\FormGroupsRecord;
 use Solspace\Freeform\Services\FormGroupsService;
@@ -127,8 +128,9 @@ class FormGroupsController extends BaseApiController
         $freeform = Freeform::getInstance();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
         $params = $this->request->getQueryParams();
-        $site = $params['siteHandle'] ?? null;
-        $siteId = $params['siteId'] ?? null;
+        $sitesEnabled = $freeform->settings->getSettingsModel()->sitesEnabled;
+        $site = $sitesEnabled ? $params['siteHandle'] : SitesHelper::getCurrentCpPageSiteHandle();
+        $siteId = $params['siteId'];
 
         $allForms = $this->formTransformer->transformList(
             array_values(

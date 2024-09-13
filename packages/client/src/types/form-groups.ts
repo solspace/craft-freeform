@@ -19,6 +19,17 @@ export type FormWithGroup = {
   archivedForms?: FormWithStats[];
 };
 
+export type UpdateFormGroup = {
+  siteId: number | string;
+  site: string;
+  groups: {
+    uid: string;
+    label: string;
+    formIds: number[];
+  }[];
+  orderedFormIds: number[];
+};
+
 export interface FormGroupsListRefs {
   unassigned?: HTMLDivElement | null;
   [key: string]: HTMLDivElement | undefined;

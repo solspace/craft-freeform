@@ -2,10 +2,9 @@ import type { Dispatch, SetStateAction } from 'react';
 import { useCallback } from 'react';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import type {
-  FormGroup,
   FormGroupsListRefs,
   FormWithGroup,
-  GroupItem,
+  UpdateFormGroup,
 } from '@ff-client/types/form-groups';
 import Sortable from 'sortablejs';
 import { v4 } from 'uuid';
@@ -15,7 +14,7 @@ type StateSetter<T> = Dispatch<SetStateAction<T>>;
 type GroupOperations = {
   addGroup: () => void;
   updateGroupInfo: (property: 'label', value: string, groupUid: string) => void;
-  syncFormGroupsRefs: () => FormGroup;
+  syncFormGroupsRefs: () => UpdateFormGroup;
 };
 
 export const useFormGroupsOperations = (
@@ -60,7 +59,7 @@ export const useFormGroupsOperations = (
     [setState]
   );
 
-  const syncFormGroupsRefs = useCallback((): FormGroup => {
+  const syncFormGroupsRefs = useCallback((): UpdateFormGroup => {
     const groupUIDs = Sortable.get(
       formGroupsListRefs.current.groupWrapper
     ).toArray();
@@ -85,12 +84,26 @@ export const useFormGroupsOperations = (
 
         return null;
       })
-      .filter(Boolean) as GroupItem[];
+      .filter(Boolean) as { uid: string; label: string; formIds: number[] }[];
+
+    const unassignedElement = formGroupsListRefs.current?.unassigned;
+    const unassignedSortableInstance = unassignedElement
+      ? Sortable.get(unassignedElement)
+      : null;
+    const unassignedFormIds = unassignedSortableInstance
+      ? unassignedSortableInstance.toArray().map(Number)
+      : [];
+
+    const orderedFormIds = [
+      ...sortedGroups.flatMap((group) => group.formIds),
+      ...unassignedFormIds,
+    ];
 
     return {
       siteId: initialState.formGroups?.siteId || current?.id,
       site: initialState.formGroups?.site || getCurrentHandleWithFallback(),
       groups: sortedGroups,
+      orderedFormIds,
     };
   }, [formGroupsListRefs, initialState, getCurrentHandleWithFallback]);
 

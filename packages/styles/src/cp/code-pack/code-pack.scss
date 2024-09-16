@@ -26,7 +26,7 @@ ul.directory-structure {
   @extend %gradient-bg;
 
   ul {
-    margin-left: 20px;
+    margin: 2px 0 0 20px;
   }
 
   li:before {
@@ -45,10 +45,21 @@ ul.directory-structure {
   }
 
   li.file {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 3px;
+
+    padding: 2px 0;
     font-weight: normal;
 
     &:before {
       content: 'templates';
+    }
+
+    > small {
+      flex: 1;
+      text-align: right;
     }
   }
 

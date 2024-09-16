@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
+use craft\enums\Color;
+
 class ColorHelper
 {
     /**
@@ -43,5 +45,38 @@ class ColorHelper
             hexdec(substr($hash, 2, 2)), // g
             hexdec(substr($hash, 4, 2)), // b
         ];
+    }
+
+    public static function getCraftColor(string $statusColor): Color|string
+    {
+        $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
+
+        if ($isCraft5) {
+            return match ($statusColor) {
+                'red' => Color::Red,
+                'orange' => Color::Orange,
+                'amber' => Color::Amber,
+                'rose' => Color::Rose,
+                'pink' => Color::Pink,
+                'lime' => Color::Lime,
+                'emerald' => Color::Emerald,
+                'teal' => Color::Teal,
+                'green' => Color::Green,
+                'yellow' => Color::Yellow,
+                'violet' => Color::Violet,
+                'indigo' => Color::Indigo,
+                'fuchsia' => Color::Fuchsia,
+                'purple' => Color::Purple,
+                'cyan' => Color::Cyan,
+                'sky' => Color::Sky,
+                'blue' => Color::Blue,
+                'gray' => Color::Gray,
+                'white' => Color::White,
+                'black' => Color::Black,
+                default => Color::Gray,
+            };
+        }
+
+        return $statusColor;
     }
 }

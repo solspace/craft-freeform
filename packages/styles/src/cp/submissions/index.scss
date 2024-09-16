@@ -43,3 +43,281 @@
     background-color: #33404d !important;
   }
 }
+
+.ff-status-label {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--xs);
+  height: 1.375rem;
+  justify-content: center;
+  padding: 0 var(--s);
+  position: relative;
+
+  &::before {
+    border-radius: .6875rem;
+    bottom: 0;
+    content: '';
+    display: block;
+    left: 0;
+    opacity: .15;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    top: 0;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .ff-status {
+    background-clip: border-box;
+    border-radius: 100%;
+    box-sizing: border-box;
+    display: inline-block;
+    flex: 0 0 auto;
+    height: .75rem;
+    position: relative;
+    width: .75rem;
+
+    &.disabled {
+      box-shadow: none !important;
+    }
+  }
+
+  .ff-status-label-text {
+    font-size: 11px;
+    font-weight: 500;
+    position: relative;
+    text-transform: uppercase;
+  }
+
+  &.red {
+    &::before,
+    .ff-status {
+      background-color: var(--red-600);
+    }
+
+    .ff-status-label-text {
+      color: var(--red-900);
+    }
+  }
+
+  &.orange {
+    &::before,
+    .ff-status {
+      background-color: var(--orange-400);
+    }
+
+    .ff-status-label-text {
+      color: var(--orange-900);
+    }
+  }
+
+  &.amber {
+    &::before,
+    .ff-status {
+      background-color: var(--amber-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--amber-900);
+    }
+  }
+
+  &.rose {
+    &::before,
+    .ff-status {
+      background-color: var(--rose-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--rose-900);
+    }
+  }
+
+  &.pink {
+    &::before,
+    .ff-status {
+      background-color: var(--pink-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--pink-900);
+    }
+  }
+
+  &.lime {
+    &::before,
+    .ff-status {
+      background-color: var(--lime-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--lime-900);
+    }
+  }
+
+  &.emerald {
+    &::before,
+    .ff-status {
+      background-color: var(--emerald-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--emerald-900);
+    }
+  }
+
+  &.teal {
+    &::before,
+    .ff-status {
+      background-color: var(--teal-550);
+    }
+
+    .ff-status-label-text {
+      color: var(--teal-900);
+    }
+  }
+
+  &.green {
+    &::before,
+    .ff-status {
+      background-color: var(--green-600);
+    }
+
+    .ff-status-label-text {
+      color: var(--green-900);
+    }
+  }
+
+  &.yellow {
+    &::before,
+    .ff-status {
+      background-color: var(--yellow-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--yellow-900);
+    }
+  }
+
+  &.violet {
+    &::before,
+    .ff-status {
+      background-color: var(--violet-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--violet-900);
+    }
+  }
+
+  &.indigo {
+    &::before,
+    .ff-status {
+      background-color: var(--indigo-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--indigo-900);
+    }
+  }
+
+  &.fuchsia {
+    &::before,
+    .ff-status {
+      background-color: var(--fuchsia-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--fuchsia-900);
+    }
+  }
+
+  &.purple {
+    &::before,
+    .ff-status {
+      background-color: var(--purple-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--purple-900);
+    }
+  }
+
+  &.cyan {
+    &::before,
+    .ff-status {
+      background-color: var(--cyan-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--cyan-900);
+    }
+  }
+
+  &.sky {
+    &::before,
+    .ff-status {
+      background-color: var(--sky-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--sky-900);
+    }
+  }
+
+  &.blue {
+    &::before,
+    .ff-status {
+      background-color: var(--blue-600);
+    }
+
+    .ff-status-label-text {
+      color: var(--blue-900);
+    }
+  }
+
+  &.gray {
+    &::before,
+    .ff-status {
+      background-color: var(--gray-500);
+    }
+
+    .ff-status-label-text {
+      color: var(--gray-900);
+    }
+  }
+
+  &.white {
+    &::before {
+      opacity: 1;
+      border: 1px solid var(--black);
+      background-color: var(--white);
+    }
+
+    .ff-status {
+      background-color: var(--black);
+    }
+
+    .ff-status-label-text {
+      color: var(--black);
+    }
+  }
+
+  &.black {
+    &::before {
+      opacity: 1;
+      background-color: var(--black);
+    }
+
+    .ff-status {
+      background-color: var(--white);
+    }
+
+    .ff-status-label-text {
+      color: var(--white);
+    }
+  }
+}

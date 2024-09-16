@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\Collections;
 /**
  * @template T
  */
-abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countable
+abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countable, \JsonSerializable
 {
     /** @var T[] */
     protected array $items;
@@ -94,6 +94,11 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     public function count(): int
     {
         return \count($this->items);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->items;
     }
 
     protected static function supports(): array

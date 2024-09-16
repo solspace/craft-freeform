@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Tests\Library\Serialization;
 
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Library\Collections\Collection;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
@@ -15,6 +16,33 @@ use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
  */
 class FreeformSerializerTest extends TestCase
 {
+    public function testCollectionToArray()
+    {
+        $serializer = new FreeformSerializer();
+        $collection = new TestCollection();
+        $collection->add('1')->add(2)->add('three');
+
+        $output = $serializer->serialize($collection, 'json');
+
+        $this->assertSame(
+            '["1",2,"three"]',
+            $output
+        );
+    }
+
+    public function testEmptyCollectionToArray()
+    {
+        $serializer = new FreeformSerializer();
+        $collection = new TestCollection();
+
+        $output = $serializer->serialize($collection, 'json', ['preserve_empty_objects' => false]);
+
+        $this->assertSame(
+            '[]',
+            $output
+        );
+    }
+
     public function testToArrayCustomNormalizer()
     {
         $serializer = new FreeformSerializer();
@@ -97,3 +125,5 @@ class TestToIdentifier implements IdentificatorInterface
         return $this->id;
     }
 }
+
+class TestCollection extends Collection {}

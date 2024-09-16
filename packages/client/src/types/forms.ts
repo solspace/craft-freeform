@@ -45,6 +45,22 @@ export type ExtendedFormType = Form & {
   };
 };
 
+export type FormWithStats = Form & {
+  links: Array<{
+    label: string;
+    handle: string;
+    url: string;
+    type: string;
+    count: number;
+    internal: boolean;
+  }>;
+  chartData: Array<{ uv: number }>;
+  counters: {
+    submissions: number;
+    spam: number;
+  };
+};
+
 export type FormSettingNamespace = {
   label: string;
   handle: string;

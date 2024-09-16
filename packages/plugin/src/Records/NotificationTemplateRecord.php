@@ -76,9 +76,9 @@ class NotificationTemplateRecord extends ActiveRecord
         return $record;
     }
 
-    public static function createFromTemplate(string $filePath): self
+    public static function createFromTemplate(string $filePath, bool $failOnError = true): self
     {
-        $template = NotificationTemplate::fromFile($filePath);
+        $template = NotificationTemplate::fromFile($filePath, $failOnError);
 
         if (\is_string($template->isIncludeAttachments())) {
             $includeAttachments = 'true' === strtolower($template->isIncludeAttachments()) || '1' === $template->isIncludeAttachments();

@@ -62,7 +62,7 @@ class FilesController extends AbstractNotificationsController
             throw new ForbiddenHttpException(Freeform::t('Editing file based notifications is prohibited'));
         }
 
-        $record = $this->getService()->getById($id);
+        $record = $this->getService()->getById($id, false);
 
         if (!$record) {
             throw new HttpException(

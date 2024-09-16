@@ -31,11 +31,31 @@ class FormsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-    public function actionArchive(int $id): Response
+    public function actionClone(int $id): Response
     {
         $this->requireFormPermission($id);
 
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+
+        if (!$this->formDuplicator->clone($id)) {
+            throw new FreeformException('Could not duplicate form');
+        }
+
+        $this->response->statusCode = 204;
+        $this->response->format = Response::FORMAT_RAW;
+        $this->response->content = '';
+
+        return $this->response;
+    }
+
+    public function actionArchive(int $id): Response
+    {
+        $freeform = Freeform::getInstance();
+        $this->requireFormPermission($id);
+
+        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
             throw new ForbiddenHttpException('User is not permitted to perform this action');
         }
 
@@ -55,23 +75,8 @@ class FormsController extends BaseApiController
             ->execute()
         ;
 
-        $this->response->statusCode = 204;
-        $this->response->format = Response::FORMAT_RAW;
-        $this->response->content = '';
-
-        return $this->response;
-    }
-
-    public function actionClone(int $id): Response
-    {
-        $this->requireFormPermission($id);
-
-        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
-            throw new ForbiddenHttpException('User is not permitted to perform this action');
-        }
-
-        if (!$this->formDuplicator->clone($id)) {
-            throw new FreeformException('Could not duplicate form');
+        if ($freeform->isPro()) {
+            $freeform->formGroups->deleteById($id);
         }
 
         $this->response->statusCode = 204;
@@ -109,6 +114,7 @@ class FormsController extends BaseApiController
 
     public function actionDelete(): Response
     {
+        $freeform = Freeform::getInstance();
         $this->requirePostRequest();
         $id = (int) \Craft::$app->request->post('id');
         if (!$id) {
@@ -119,6 +125,10 @@ class FormsController extends BaseApiController
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_DELETE);
 
         $this->getFormsService()->deleteById($id);
+
+        if ($freeform->isPro()) {
+            $freeform->formGroups->deleteById($id);
+        }
 
         return $this->asEmptyResponse(204);
     }

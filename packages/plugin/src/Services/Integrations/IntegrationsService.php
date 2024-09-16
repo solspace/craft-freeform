@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
@@ -321,8 +322,6 @@ class IntegrationsService extends BaseService
 
     public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration): void
     {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
         $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
         $reflection = new \ReflectionClass($model->class);
         foreach ($editableProperties as $property) {
@@ -349,21 +348,32 @@ class IntegrationsService extends BaseService
                 continue;
             }
 
-            if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
-                $isEnvVariable = StringHelper::isEnvVariable($value);
-                if ($isEnvVariable) {
-                    continue;
-                }
-
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
-            }
-
-            if ($property->transformer instanceof TransformerInterface) {
-                $value = $property->transformer->reverseTransform($value);
-            }
+            $value = $this->processValueForSaving($property, $value);
 
             $model->metadata[$property->handle] = $value;
         }
+    }
+
+    public function processValueForSaving(Property $property, mixed $value): mixed
+    {
+        static $securityKey;
+
+        if (null === $securityKey) {
+            $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+        }
+
+        if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+            $isEnvVariable = StringHelper::isEnvVariable($value);
+            if (!$isEnvVariable) {
+                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+            }
+        }
+
+        if ($property->transformer instanceof TransformerInterface) {
+            $value = $property->transformer->reverseTransform($value);
+        }
+
+        return $value;
     }
 
     public function getFirstForForm(

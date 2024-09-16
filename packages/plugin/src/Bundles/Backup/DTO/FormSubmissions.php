@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Backup\BatchProcessing\BatchProcessInterface;
 class FormSubmissions
 {
     public string $formUid;
+
     public BatchProcessInterface $submissionBatchProcessor;
 
     /** @var callable */

@@ -14,6 +14,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\PostForwarding\PostForwarding;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
@@ -28,6 +29,7 @@ class PostForwardingTrigger extends FeatureBundle
 
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
+        private IsolatedTwig $isolatedTwig,
     ) {
         Event::on(
             Form::class,
@@ -51,7 +53,9 @@ class PostForwardingTrigger extends FeatureBundle
         }
 
         $url = $integration->getUrl();
+        $url = $this->isolatedTwig->render($url, ['form' => $form, 'submission' => $submission]);
         $triggerPhrase = $integration->getErrorTrigger();
+        $triggerPhrase = $this->isolatedTwig->render($triggerPhrase, ['form' => $form, 'submission' => $submission]);
 
         if (!$url) {
             return;

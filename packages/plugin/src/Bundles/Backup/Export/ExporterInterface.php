@@ -7,12 +7,13 @@ use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 
 interface ExporterInterface
 {
-    public function collectDataPreview(): ImportPreview;
+    public function setOptions(array $options): void;
 
-    public function collect(
-        array $formIds,
-        array $notificationIds,
-        array $formSubmissions,
-        array $strategy,
-    ): FreeformDataset;
+    public function getOption(string $key): mixed;
+
+    public function collect(): FreeformDataset;
+
+    public function destruct(): void;
+
+    public function collectDataPreview(): ImportPreview;
 }

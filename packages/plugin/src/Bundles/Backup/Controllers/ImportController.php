@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Bundles\Backup\Controllers;
 
 use craft\helpers\App;
+use craft\helpers\FileHelper;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
+use Solspace\Freeform\Bundles\Backup\Export\FileExportReader;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
@@ -20,19 +22,7 @@ class ImportController extends BaseApiController
         $exporter = \Craft::$container->get(ExpressFormsExporter::class);
         $data = $exporter->collectDataPreview();
 
-        return $this->asSerializedJson($data);
-    }
-
-    public function actionFreeform(): Response
-    {
-        if ($this->request->isPost) {
-            return $this->asEmptyResponse(201);
-        }
-
-        return $this->renderTemplate(
-            'freeform-backup/import-freeform',
-            [],
-        );
+        return $this->asSerializedJson($data, context: ['preserve_empty_objects' => false]);
     }
 
     public function actionPrepareImport(): Response
@@ -44,7 +34,6 @@ class ImportController extends BaseApiController
 
         $exporter = $request->post('exporter');
         $options = $request->post('options', []);
-        $package = $request->post('package');
 
         $errors = new ErrorCollection();
         if (!$exporter) {
@@ -60,7 +49,6 @@ class ImportController extends BaseApiController
             [
                 'exporter' => $exporter,
                 'options' => $options,
-                'package' => $package,
             ],
             30
         );
@@ -68,6 +56,65 @@ class ImportController extends BaseApiController
         return $this->asSerializedJson([
             'token' => $token,
         ], 201);
+    }
+
+    public function actionPrepareFile(): Response
+    {
+        $this->requirePostRequest();
+
+        $file = $_FILES['file'] ?? null;
+        if (!$file) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', ['File is required']);
+
+            throw new ApiException(400, $errors);
+        }
+
+        $token = CryptoHelper::getUniqueToken(14);
+        $password = $this->request->post('password');
+
+        $zipPath = $file['tmp_name'];
+        $unzipPath = \Craft::$app->path->getTempPath().'/freeform-import-'.$token;
+        if (!is_dir($unzipPath)) {
+            FileHelper::createDirectory($unzipPath, 0777, true);
+        }
+
+        $zip = new \ZipArchive();
+        $zip->open($zipPath);
+
+        if ($password) {
+            $zip->setPassword($password);
+        }
+
+        try {
+            $zip->extractTo($unzipPath);
+        } catch (\ValueError) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', ['Failed to extract ZIP file']);
+
+            throw new ApiException(400, $errors);
+        }
+
+        if (\ZipArchive::ER_OK !== $zip->status) {
+            $errors = new ErrorCollection();
+            $errors->add('import', 'file', [$zip->getStatusString()]);
+
+            throw new ApiException(403, $errors);
+        }
+
+        $zip->close();
+
+        $exporter = \Craft::$container->get(FileExportReader::class);
+        $exporter->setOptions(['fileToken' => $token]);
+
+        return $this->asSerializedJson(
+            [
+                'token' => $token,
+                'options' => $exporter->collectDataPreview(),
+            ],
+            201,
+            ['preserve_empty_objects' => false]
+        );
     }
 
     public function actionImport(): void
@@ -79,29 +126,40 @@ class ImportController extends BaseApiController
         $config = \Craft::$app->cache->get("freeform-import-{$token}");
 
         if (!$config) {
+            $sse->message('err', 'Invalid or Expired token');
             $sse->message('exit', 'Invalid token');
 
             return;
         }
 
-        ['exporter' => $exporterClass, 'options' => $options, 'package' => $package] = $config;
+        ['exporter' => $exporterClass, 'options' => $options] = $config;
 
         /** @var ExporterInterface $exporter */
         $exporter = \Craft::$container->get($exporterClass);
-        $dataset = $exporter->collect(
-            $options['forms'] ?? [],
-            $options['notificationTemplates'] ?? [],
-            $options['formSubmissions'] ?? [],
-            $options['strategy'] ?? [],
-        );
+        $exporter->setOptions($options);
+
+        try {
+            $dataset = $exporter->collect();
+        } catch (\Throwable $e) {
+            $sse->message('err', $e->getMessage());
+            $sse->message('exit', 'done');
+
+            return;
+        }
 
         $sse->message('info', 'Starting import');
 
-        $importer = \Craft::$container->get(FreeformImporter::class);
-        $importer->import($dataset, $sse);
+        try {
+            $importer = \Craft::$container->get(FreeformImporter::class);
+            $importer->import($dataset, $sse);
+        } catch (\Throwable $e) {
+            $sse->message('err', $e->getMessage());
+            $sse->message('exit', 'done');
+        }
+
+        $exporter->destruct();
 
         $sse->message('info', 'Done');
-
         $sse->message('exit', 'done');
 
         exit;

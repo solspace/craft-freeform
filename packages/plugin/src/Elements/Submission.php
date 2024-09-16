@@ -9,7 +9,7 @@ use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
 use craft\events\RegisterElementActionsEvent;
-use craft\helpers\Cp;
+use craft\helpers\Cp as CraftCp;
 use craft\helpers\Db;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
@@ -34,6 +34,8 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\ColorHelper;
+use Solspace\Freeform\Library\Helpers\Cp;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
@@ -41,6 +43,7 @@ use Solspace\Freeform\Library\Helpers\SearchHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Models\StatusModel;
+use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
 use yii\base\Event;
@@ -210,19 +213,29 @@ class Submission extends Element
 
     public static function statuses(): array
     {
-        $statuses = Freeform::getInstance()->statuses->getAllStatuses();
+        $statuses = [];
 
-        $list = [];
-        foreach ($statuses as $status) {
-            $list[$status->handle] = ['label' => $status->name, 'color' => $status->color];
+        foreach (Freeform::getInstance()->statuses->getAllStatuses() as $status) {
+            $statuses[$status->handle] = [
+                'label' => $status->name,
+                'color' => ColorHelper::getCraftColor($status->color),
+            ];
         }
 
-        return $list;
+        return $statuses;
     }
 
-    public static function create(Form $form): self
+    public static function create(Form|FormRecord|int $form): self
     {
-        $submission = new static(['formId' => $form->getId()]);
+        if ($form instanceof Form) {
+            $formId = $form->getId();
+        } elseif ($form instanceof FormRecord) {
+            $formId = $form->id;
+        } else {
+            $formId = (int) $form;
+        }
+
+        $submission = new static(['formId' => $formId]);
         $submission->generateToken();
         $submission->userId = \Craft::$app->user->getId() ?: null;
 
@@ -823,13 +836,13 @@ class Submission extends Element
     protected function attributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
-            return $this->getStatusModel()->name;
+            return Cp::componentStatusLabelHtml($this);
         }
 
         if ('userId' === $attribute) {
             $user = $this->getAuthor();
 
-            return $user ? Cp::elementChipHtml($user) : '';
+            return $user ? CraftCp::elementHtml($user) : '';
         }
 
         if ('spamReasons' === $attribute) {

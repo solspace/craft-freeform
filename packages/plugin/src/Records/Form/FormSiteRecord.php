@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Records\Form;
 
 use craft\db\ActiveRecord;
+use craft\models\Site;
 use Solspace\Freeform\Records\FormRecord;
 
 /**
@@ -65,6 +66,11 @@ class FormSiteRecord extends ActiveRecord
 
         $form->metadata = json_encode($metadata);
         $form->save();
+    }
+
+    public function getSite(): ?Site
+    {
+        return \Craft::$app->sites->getSiteById($this->siteId);
     }
 
     public function rules(): array

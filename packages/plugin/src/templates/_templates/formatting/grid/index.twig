@@ -1,0 +1,135 @@
+{# CSS overrides #}
+{% set cssPath = view.assetManager.publishedUrl('@freeform-formatting-templates/grid/_main.css', true) %}
+{% do view.registerCssFile(cssPath) %}
+
+{# JS overrides #}
+{% set jsPath = view.assetManager.publishedUrl('@freeform-formatting-templates/grid/_main.js', true) %}
+{% do view.registerJsFile(jsPath) %}
+
+
+{# Render the opening form tag #}
+{{ form.renderTag({
+    attributes: {
+        form: { class: "freeform-form", "data-freeform-grid": true },
+        row: { class: "freeform-row" },
+        success: { class: "freeform-form-success" },
+        errors: { class: "freeform-form-errors" },
+    },
+    buttons: {
+        attributes: {
+            container: { class: "freeform-button-container" },
+            column: { class: "freeform-button-column" },
+            buttonWrapper: { class: "freeform-button-wrapper" },
+            submit: { class: "freeform-button-submit" },
+            back: { class: "freeform-button-back" },
+            save: { class: "freeform-button-save" },
+        },
+    },
+    fields: {
+        "@global": {
+            attributes: {
+                container: { class: "freeform-column" },
+                input: {
+                    class: "freeform-input",
+                },
+                label: { class: "freeform-label" },
+                instructions: { class: "freeform-instructions" },
+                error: { class: "freeform-errors" },
+            },
+        },
+        ":required": {
+            attributes: {
+                label: { "+class": "freeform-required" },
+            },
+        },
+        ":errors": {
+            attributes: {
+                input: { "+class": "is-invalid has-validation" },
+            },
+        },
+        "@group": {
+            attributes: {
+                label: { "+class": "group-label" },
+            },
+        },
+        "@signature": {
+            attributes: {
+                input: { "-class": "freeform-input" },
+            },
+        }
+    },
+}) }}
+
+{# Success and error message handling for non-AJAX forms #}
+{% if not form.settings.ajax %}
+    {% if form.submittedSuccessfully %}
+        <div{{ form.attributes.success|raw }}>
+            <p>{{ form.settings.successMessage | t('freeform') }}</p>
+        </div>
+    {% endif %}
+    {% if form.hasErrors %}
+        <div{{ form.attributes.errors|raw }}>
+            <p>{{ form.settings.errorMessage | t('freeform') }}</p>
+
+            {% if form.errors|length %}
+                <ul>
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endif %}
+
+{# Render page tabs if multi-page #}
+{% if form.pages|length > 1 %}
+    <ul class="freeform-pages">
+        {% for page in form.pages %}
+            <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+                {% if form.currentPage.index == page.index %}
+                    <b>{{ page.label }}</b>
+                {% else %}
+                    {{ page.label }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{# Build form rows and fields #}
+{% macro renderRows(form, rows) %}
+    {% for row in rows %}
+        {% set width = (12 / (row|length)) %}
+        <div{{ form.attributes.row|raw }}>
+            {% for field in row %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: { class: [
+                            "freeform-column-" ~ width,
+                            "freeform-fieldtype-" ~ field.type,
+                        ]},
+                    },
+                }) %}
+                {% if field.type == "group" %}
+                    <div class="freeform-group">
+                        <label{{ field.attributes.label }}>
+                            {{ field.label }}
+                        </label>
+                        <div>
+                            {{ _self.renderRows(form, field.layout) }}
+                        </div>
+                    </div>
+                {% else %}
+                    {{ field.render }}
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
+{# Display form field rows and columns #}
+{{ _self.renderRows(form, form.rows) }}
+
+{# Render the closing form tag #}
+{{ form.renderClosingTag }}

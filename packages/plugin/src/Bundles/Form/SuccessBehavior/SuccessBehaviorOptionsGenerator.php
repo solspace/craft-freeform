@@ -16,14 +16,14 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
 
         $collection->add(
             BehaviorSettings::SUCCESS_BEHAVIOR_RELOAD,
-            'Reload form with a Success banner above'
+            \Craft::t('freeform', 'Reload form with a Success banner above')
         );
 
         $this->addSuccessTemplateOption($collection);
 
         $collection->add(
             BehaviorSettings::SUCCESS_BEHAVIOR_REDIRECT_RETURN_URL,
-            'Return the Submitter to the following URL'
+            \Craft::t('freeform', 'Return the Submitter to the following URL')
         );
 
         return $collection;
@@ -38,7 +38,7 @@ class SuccessBehaviorOptionsGenerator implements OptionsGeneratorInterface
 
         $optionCollection->add(
             BehaviorSettings::SUCCESS_BEHAVIOR_LOAD_SUCCESS_TEMPLATE,
-            'Replace form with a Success message'
+            \Craft::t('freeform', 'Replace form with a Success message')
         );
     }
 }

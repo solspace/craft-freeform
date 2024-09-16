@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Form;
 
 use Carbon\Carbon;
+use craft\db\Query;
 use craft\elements\User;
 use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
@@ -55,6 +56,8 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
@@ -299,6 +302,29 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function isAjaxEnabled(): bool
     {
         return $this->getSettings()->getBehavior()->ajax;
+    }
+
+    public function isIntegrationEnabled(string $integrationHandle): ?bool
+    {
+        static $integrationStateMap = [];
+
+        if (!isset($integrationStateMap[$this->getId()])) {
+            $integrationStateMap[$this->getId()] = (new Query())
+                ->select('fi.[[enabled]]')
+                ->from(FormIntegrationRecord::TABLE.' fi')
+                ->innerJoin(IntegrationRecord::TABLE.' i', 'fi.[[integrationId]] = i.[[id]]')
+                ->indexBy('i.handle')
+                ->where(['fi.[[formId]]' => $this->getId()])
+                ->column()
+            ;
+        }
+
+        $result = $integrationStateMap[$this->getId()][$integrationHandle] ?? null;
+        if (null !== $result) {
+            return (bool) $result;
+        }
+
+        return null;
     }
 
     public function isCaptchaEnabled(): bool

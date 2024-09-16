@@ -19,6 +19,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\StringHelper;
+use Solspace\Freeform\Library\Templates\TemplateLocator;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -409,38 +410,13 @@ class SettingsService extends BaseService
 
     private function getTemplatesIn(?string $path): array
     {
-        if (!$path || !is_dir($path)) {
+        if (!$path) {
             return [];
         }
 
-        $templates = [];
+        $locator = \Craft::$container->get(TemplateLocator::class);
 
-        $fileIterator = (new Finder())
-            ->files()
-            ->in($path)
-            ->sortByName()
-            ->name('index.twig')
-            ->name('index.html')
-        ;
-
-        foreach ($fileIterator as $file) {
-            $templates[] = new FormTemplate($file->getRealPath(), $path);
-        }
-
-        $rootFiles = (new Finder())
-            ->files()
-            ->in($path)
-            ->depth(0)
-            ->sortByName()
-            ->name('*.twig')
-            ->name('*.html')
-        ;
-
-        foreach ($rootFiles as $file) {
-            $templates[] = new FormTemplate($file->getRealPath(), $path);
-        }
-
-        return $templates;
+        return $locator->locate($path);
     }
 
     private function getRecipientCollection(string $emails): RecipientCollection

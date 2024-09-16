@@ -58,7 +58,7 @@ class FormDuplicator
         $this->clonePages($form);
         $this->cloneRows($form);
         $this->cloneFields($form);
-        $this->cloneSites($form);
+        $this->cloneSites($id, $form);
 
         $form = $this->formsService->getFormById($form->id);
 
@@ -187,9 +187,13 @@ class FormDuplicator
         }
     }
 
-    private function cloneSites(FormRecord $form): void
+    private function cloneSites(int $originalId, FormRecord $form): void
     {
-        $siteIds = FormSiteRecord::find(['formId' => $form->id])->select('siteId')->column();
+        $siteIds = FormSiteRecord::find()
+            ->select('siteId')
+            ->where(['formId' => $originalId])
+            ->column()
+        ;
 
         foreach ($siteIds as $siteId) {
             $siteRecord = new FormSiteRecord();

@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import React from 'react';
 
+import SpinnerIcon from '../spinner.svg';
+
 import {
   useDotAnimation,
   useReverseTextAnimation,
@@ -19,7 +21,6 @@ import {
   SpinnerContainer,
   TextContainer,
 } from './loading-text.styles';
-import SpinnerIcon from './spinner.svg';
 
 type Props = ComponentPropsWithRef<'div'> & {
   loadingText?: string;

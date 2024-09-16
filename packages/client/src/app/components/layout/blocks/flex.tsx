@@ -6,3 +6,8 @@ export const FlexColumn = styled.div`
   flex-direction: column;
   gap: ${spacings.sm};
 `;
+
+export const FlexRow = styled.div`
+  display: flex;
+  gap: ${spacings.sm};
+`;

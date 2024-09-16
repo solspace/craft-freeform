@@ -7,7 +7,6 @@ use yii\db\ActiveQuery;
 
 /**
  * @property int       $id
- * @property int       $ruleId
  * @property int       $fieldId
  * @property string    $display
  * @property \DateTime $dateCreated

@@ -15,6 +15,9 @@ Maps data to the following endpoints:
 - **Contacts**
 - **Companies**
 
+### Tracking
+Automatically supports the **[HubSpot tracking code](https://knowledge.hubspot.com/reports/install-the-hubspot-tracking-code)** if present.
+
 ### Fields
 Maps data to the following field types (of text/number string type only):
 

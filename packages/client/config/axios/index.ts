@@ -34,7 +34,14 @@ axios.interceptors.request.use((config) => {
     }
 
     if (global.Craft !== undefined) {
-      config.data[Craft.csrfTokenName] = Craft.csrfTokenValue;
+      if (config.data instanceof FormData) {
+        config.data.append(
+          global.Craft.csrfTokenName,
+          global.Craft.csrfTokenValue
+        );
+      } else {
+        config.data[Craft.csrfTokenName] = Craft.csrfTokenValue;
+      }
     }
   }
 
@@ -47,9 +54,7 @@ axios.interceptors.response.use(null, (error) => {
   }
 
   if (error.response?.data?.errors) {
-    return Promise.reject(
-      new APIError(error.message, error.response.data.errors)
-    );
+    return Promise.reject(new APIError(error));
   }
 
   return Promise.reject(error);

@@ -44,6 +44,7 @@ export const colors = {
   hairline: 'rgba(51,64,77,.1)',
   inputBorder: 'rgba(96,125,159,0.25)',
   barelyVisible: 'rgb(154 165 177 / 75%)',
+  link: '#1f5fea',
 
   elements: {
     dropdown: '#dfe5ec',

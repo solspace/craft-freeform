@@ -12,7 +12,7 @@ export const useSpinnerAnimation = (
   instant: boolean
 ): SpringValues<{ width: number; opacity: number }> =>
   useSpring({
-    width: loading ? 21 : 0,
+    width: loading ? 20 : 0,
     opacity: loading ? 1 : 0,
     immediate: instant,
     config,

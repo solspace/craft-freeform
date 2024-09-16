@@ -1,4 +1,3 @@
-import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const CheckboxElement = styled.input`
@@ -33,14 +32,10 @@ export const CheckboxElement = styled.input`
 
     position: absolute;
     top: -1px;
-
-    transform: scale(0);
-    //transform-origin: bottom left;
+    left: 1px;
 
     font-family: Craft;
-    //box-shadow: inset 1em 1em ${colors.black};
-    //clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-
+    transform: scale(0);
     transition: 80ms transform ease-in-out;
   }
 

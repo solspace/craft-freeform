@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Serialization;
 
 use Doctrine\Common\Annotations\AnnotationReader;
+use Solspace\Freeform\Library\Serialization\Encoders\JsonlEncoder;
 use Solspace\Freeform\Library\Serialization\Normalizers\CarbonNormalizer;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizer;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
@@ -23,7 +24,7 @@ class FreeformSerializer extends Serializer
         $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);
         $propertyAccessor = new PropertyAccessor();
 
-        $encoders = ['json' => new JsonEncoder()];
+        $encoders = ['json' => new JsonEncoder(), new JsonlEncoder()];
         $normalizers = [
             new IdentificationNormalizer(),
             new CustomNormalizer(),

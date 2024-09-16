@@ -173,6 +173,11 @@ class HubSpotV3 extends BaseHubSpotIntegration
         return 'https://api.hubapi.com/crm/v3';
     }
 
+    public function getContactApiUrl(): string
+    {
+        return 'https://api.hubapi.com/contacts/v1';
+    }
+
     public function push(Form $form, Client $client): void
     {
         $this->pushContacts($form, $client);
@@ -198,6 +203,8 @@ class HubSpotV3 extends BaseHubSpotIntegration
         }
 
         $email = $this->getEmailFieldValue($mapping);
+
+        $contactId = null;
         $contact = $this->searchForObject(
             $client,
             $this->getRecord(self::CATEGORY_CONTACT),
@@ -205,9 +212,28 @@ class HubSpotV3 extends BaseHubSpotIntegration
             $this->getMappedProps($this->contactMapping)
         );
 
-        if ($contact) {
-            $contactId = $contact->id;
+        if (!$contact) {
+            $contactCookie = $_COOKIE['hubspotutk'] ?? null;
+            if ($contactCookie) {
+                $endpoint = \sprintf(
+                    '%s/contact/utk/%s/profile',
+                    $this->getContactApiUrl(),
+                    $contactCookie
+                );
 
+                try {
+                    $response = $client->get($endpoint);
+                    $json = json_decode((string) $response->getBody());
+                    $contactId = $json->vid ?? null;
+                } catch (\Exception $exception) {
+                    $this->processException($exception, self::CATEGORY_CONTACT);
+                }
+            }
+        } else {
+            $contactId = $contact->id;
+        }
+
+        if ($contactId) {
             if ($this->getAppendContactData()) {
                 $mapping = $this->appendValues(
                     self::CATEGORY_CONTACT,

@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonA
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -35,6 +36,7 @@ class PageButtons
         label: 'General',
         icon: __DIR__.'/SectionIcons/button.svg',
     )]
+    #[Limitation('layout.buttons')]
     #[Input\Special\PageButtonLayout(
         label: 'Button Layout',
         layouts: [
@@ -91,15 +93,18 @@ class PageButtons
         label: 'Save',
         icon: __DIR__.'/SectionIcons/save.svg',
     )]
+    #[Limitation('layout.buttons')]
     #[Input\Boolean('Enable Save Button')]
     private bool $save = false;
 
     #[Section('save')]
+    #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[Input\Text('Label', placeholder: 'Save')]
     private string $saveLabel = 'Save';
 
     #[Section('save')]
+    #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[Input\Text(
         label: 'Redirect URL',
@@ -109,6 +114,7 @@ class PageButtons
     private string $saveRedirectUrl = '';
 
     #[Section('save')]
+    #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
@@ -120,6 +126,7 @@ class PageButtons
     private ?FieldInterface $emailField = null;
 
     #[Section('save')]
+    #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[Input\NotificationTemplate(
@@ -134,6 +141,7 @@ class PageButtons
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
+    #[Limitation('layout.buttons')]
     #[ValueTransformer(PageButtonAttributesTransformer::class)]
     #[Input\Attributes(
         tabs: [

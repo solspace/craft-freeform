@@ -45,7 +45,7 @@ class FormPersistence extends FeatureBundle
             if ($totalForms >= 1) {
                 $event->addErrorsToResponse(
                     'form',
-                    ['name' => [Freeform::t('Freeform Express only allows one form')]]
+                    ['name' => [Freeform::t('The Express edition only allows for one form. Please consider upgrading to the Lite or Pro edition for unlimited forms if you need more.')]]
                 );
 
                 return;

@@ -52,7 +52,9 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
 
   const sectionBlocks: React.ReactElement[] = [];
   data.sections.forEach(({ handle, label, icon }) => {
-    const properties = data.properties.filter(sectionFilter(handle));
+    const properties = data.properties
+      .filter(sectionFilter(handle))
+      .filter((property) => property.visible);
     if (!properties.length) {
       return;
     }

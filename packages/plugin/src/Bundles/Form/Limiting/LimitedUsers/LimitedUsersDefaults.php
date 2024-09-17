@@ -84,6 +84,7 @@ class LimitedUsersDefaults
                             new Boolean('encrypted', 'Encrypt Field Data'),
                             new Boolean('types', 'Field Type Switcher'),
                         ]),
+                    new Boolean('buttons', 'Advanced Settings on Submit Buttons', true),
                     // (new Group('options', 'Field Option Sources'))
                     //     ->setChildren([
                     //         new Boolean('custom', 'Custom Options', true),

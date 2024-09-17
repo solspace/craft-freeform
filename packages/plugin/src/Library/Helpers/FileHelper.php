@@ -35,4 +35,28 @@ class FileHelper
 
         return $hasDirSeparator || $matchesDriveLetter;
     }
+
+    public static function countLines(string $path): int
+    {
+        if (!file_exists($path)) {
+            throw new \InvalidArgumentException('File does not exist');
+        }
+
+        $lineCount = 0;
+        $handle = fopen($path, 'r');
+        if (!$handle) {
+            throw new \RuntimeException('Could not open file');
+        }
+
+        while (!feof($handle)) {
+            $line = fgets($handle);
+            if (false !== $line) {
+                ++$lineCount;
+            }
+        }
+
+        fclose($handle);
+
+        return $lineCount;
+    }
 }

@@ -220,7 +220,7 @@ class SettingsController extends BaseController
         );
     }
 
-    public function actionSaveSettings(): bool|Response
+    public function actionSaveSettings()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -243,8 +243,6 @@ class SettingsController extends BaseController
         \Craft::$app->session->setError(
             implode("\n", FreeformStringHelper::flattenArrayValues($errors))
         );
-
-        return true;
     }
 
     public function actionProvideSetting(): Response

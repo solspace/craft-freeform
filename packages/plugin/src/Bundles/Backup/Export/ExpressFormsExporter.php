@@ -14,22 +14,22 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
-use Solspace\Freeform\Bundles\Backup\Collections\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
-use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
-use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
-use Solspace\Freeform\Bundles\Backup\DTO\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
@@ -47,10 +47,8 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField as EmailFieldNotification;
 
-class ExpressFormsExporter implements ExporterInterface
+class ExpressFormsExporter extends BaseExporter
 {
-    private array $notificationReference = [];
-
     public function __construct(private PropertyProvider $propertyProvider) {}
 
     public function collectDataPreview(): ImportPreview
@@ -58,7 +56,18 @@ class ExpressFormsExporter implements ExporterInterface
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
-        $preview->notificationTemplates = $this->collectNotifications();
+        $preview->integrations = $this->collectIntegrations();
+        $preview->settings = (bool) $this->collectSettings(true);
+        $preview->templates = (new TemplateCollection())
+            ->setNotification($this->collectNotifications())
+            ->setFormatting($this->collectFormattingTemplates())
+            ->setSuccess($this->collectSuccessTemplates())
+        ;
+
+        $uidToNameMap = [];
+        foreach ($preview->forms as $form) {
+            $uidToNameMap[$form->uid] = $form->name;
+        }
 
         $submissions = (new Query())
             ->select(['COUNT(s.id)'])
@@ -69,35 +78,23 @@ class ExpressFormsExporter implements ExporterInterface
             ->column()
         ;
 
-        $submissions = array_map(
-            fn (int $count, string $formUid) => ['formUid' => $formUid, 'count' => (int) $count],
-            $submissions,
-            array_keys($submissions),
-        );
+        $formSubmissions = [];
+        foreach ($submissions as $uid => $count) {
+            $formSubmissions[] = [
+                'form' => [
+                    'uid' => $uid,
+                    'name' => $uidToNameMap[$uid],
+                ],
+                'count' => $count,
+            ];
+        }
 
-        $preview->formSubmissions = $submissions;
+        $preview->formSubmissions = $formSubmissions;
 
         return $preview;
     }
 
-    public function collect(
-        array $formIds,
-        array $notificationIds,
-        array $formSubmissions,
-        array $strategy,
-    ): FreeformDataset {
-        $dataset = new FreeformDataset();
-
-        $dataset->setNotificationTemplates($this->collectNotifications($notificationIds));
-        $dataset->setForms($this->collectForms($formIds));
-        $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
-        $dataset->setSettings($this->collectSettings());
-        $dataset->setStrategy(new ImportStrategy($strategy));
-
-        return $dataset;
-    }
-
-    private function collectForms(?array $ids = null): FormCollection
+    protected function collectForms(?array $ids = null): FormCollection
     {
         $colorGenerator = new RandomColorGenerator();
         $collection = new FormCollection();
@@ -128,7 +125,7 @@ class ExpressFormsExporter implements ExporterInterface
             $general->color = $form['color'] ?? $colorGenerator->generateValue($form);
             $general->defaultStatus = $defaultStatus;
             $general->storeData = (bool) $form['saveSubmissions'] ?? true;
-            $general->formattingTemplate = 'flexbox.twig';
+            $general->formattingTemplate = 'flexbox/index.twig';
 
             $behavior = $exported->settings->getBehavior();
             $behavior->ajax = true;
@@ -250,7 +247,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectIntegrations(): IntegrationCollection
+    protected function collectIntegrations(?array $ids = null): IntegrationCollection
     {
         $collection = new IntegrationCollection();
 
@@ -270,7 +267,7 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectNotifications(?array $ids = null): NotificationTemplateCollection
+    protected function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
         $notifications = ExpressForms::getInstance()->emailNotifications->getNotifications();
@@ -281,7 +278,7 @@ class ExpressFormsExporter implements ExporterInterface
             }
 
             $exported = new NotificationTemplate();
-            $exported->originalId = $notification->fileName;
+            $exported->uid = $notification->fileName;
             $exported->name = $notification->name;
             $exported->handle = CraftStringHelper::toCamelCase($notification->name);
             $exported->description = $notification->getDescription() ?? null;
@@ -306,7 +303,17 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSubmissions(?array $ids = null): FormSubmissionCollection
+    protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return new FileTemplateCollection();
+    }
+
+    protected function collectSuccessTemplates(?array $ids = null): FileTemplateCollection
+    {
+        return new FileTemplateCollection();
+    }
+
+    protected function collectSubmissions(?array $ids = null): FormSubmissionCollection
     {
         $collection = new FormSubmissionCollection();
 
@@ -342,8 +349,12 @@ class ExpressFormsExporter implements ExporterInterface
         return $collection;
     }
 
-    private function collectSettings(): Settings
+    protected function collectSettings(bool $collect): ?Settings
     {
+        if (!$collect) {
+            return null;
+        }
+
         $settings = ExpressForms::getInstance()->settings->getSettingsModel();
 
         $exported = new Settings();

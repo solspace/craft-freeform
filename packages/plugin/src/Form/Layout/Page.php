@@ -62,6 +62,11 @@ class Page implements \IteratorAggregate
         return $this->index;
     }
 
+    public function getLayout(): Layout
+    {
+        return $this->layout;
+    }
+
     public function getRows(): RowCollection
     {
         return $this->layout->getRows();

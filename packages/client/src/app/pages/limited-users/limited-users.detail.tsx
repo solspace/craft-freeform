@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import Textarea from '@components/form-controls/control-types/textarea/textarea';
+import { HeaderContainer } from '@components/layout/blocks/header-container';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config from '@config/freeform/freeform.config';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
@@ -87,12 +88,8 @@ export const LimitedUsersDetail: React.FC = () => {
         url={`settings/limited-users/${id}`}
       />
 
-      <div id="header-container">
-        <header id="header" style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <div id="page-title" className="flex">
-            <h1 className="screen-title">{translate('Limited Users')}</h1>
-          </div>
-
+      <HeaderContainer
+        extra={
           <button
             className="btn submit"
             onClick={() =>
@@ -117,8 +114,10 @@ export const LimitedUsersDetail: React.FC = () => {
               {translate('Save')}
             </LoadingText>
           </button>
-        </header>
-      </div>
+        }
+      >
+        {translate('Limited Users')}
+      </HeaderContainer>
 
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar />

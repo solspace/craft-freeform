@@ -62,7 +62,7 @@ class FormTotals implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonS
         ];
     }
 
-    public function getIterator(): iterable
+    public function getIterator(): \Traversable
     {
         return $this->fieldTotals->getIterator();
     }
@@ -72,7 +72,7 @@ class FormTotals implements \IteratorAggregate, \Countable, \ArrayAccess, \JsonS
         return $this->fieldTotals->offsetExists($offset);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->fieldTotals->offsetGet($offset);
     }

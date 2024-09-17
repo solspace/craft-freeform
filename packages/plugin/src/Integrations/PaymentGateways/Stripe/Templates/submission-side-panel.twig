@@ -29,11 +29,11 @@
             font-weight: bold;
 
             &.succeeded {
-                color: #28a745;
+                color: var(--enabled-color);
             }
 
             &.failed {
-                color: #dc3545;
+                color: var(--disabled-color);
             }
         }
 
@@ -49,9 +49,15 @@
                 grid-template-areas: 'icon brand' 'card-number card-number';
                 column-gap: 10px;
                 row-gap: 5px;
+                padding: var(--s) !important;
 
                 .icon {
                     grid-area: icon;
+
+                    img {
+                        border-radius: 5px;
+                        box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+                    }
                 }
 
                 .brand {
@@ -103,7 +109,7 @@
     </div>
     <div class="data">
         <h5 class="heading">{{ "Method"|t('freeform') }}</h5>
-        <div class="value payment-method {{ paymentMethod.type }}">
+        <div class="value payment-method card">
 
             {% if paymentMethod.type == "card" %}
 
@@ -127,7 +133,9 @@
 
             {% else %}
 
-                {{ paymentMethod.type|capitalize|t('freeform') }}
+                <div class="brand">
+                    {{ paymentMethod.type|capitalize|t('freeform') }}
+                </div>
 
             {% endif %}
 

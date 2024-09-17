@@ -13,15 +13,14 @@ class SSE
         $response->format = Response::FORMAT_RAW;
         $response->stream = true;
 
-        if (ob_get_level()) {
+        while (ob_get_level() > 0) {
             @ob_end_clean();
         }
-
-        ini_set('output_buffering', 0);
 
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
         header('Connection: keep-alive');
+        header('X-Accel-Buffering: no');
     }
 
     public function message(string $event, mixed $message): void

@@ -160,7 +160,7 @@
         {{ forms.lightswitchField({
             label: "Automatically Purge Submission Data"|t('freeform'),
             instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
-            warning: "Enabling this and saving this settings page will result in purging feature beginning, and cannot be undone (it may not happen immediately, and may take a couple hours before the next process runs).",
+            warning: "Enabling this and saving this settings page will result in purging feature beginning, and cannot be undone (it may not happen immediately, and may take a couple hours before the next process runs)."|t('freeform'),
             name: "purge-toggle",
             on: settings.purgableSubmissionAgeInDays,
             toggle: "purge",

@@ -24,6 +24,8 @@ class NotificationTemplate implements IdentificatorInterface
     public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     private int|string $id;
+    private string $uid;
+
     private string $name;
     private string $handle;
     private ?string $description = null;
@@ -49,6 +51,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template = new self();
 
         $template->id = $record->id ?? $record->filepath;
+        $template->uid = $record->uid ?? $record->filepath;
         $template->handle = $record->handle;
         $template->name = $record->name;
         $template->description = $record->description;
@@ -68,13 +71,14 @@ class NotificationTemplate implements IdentificatorInterface
         return $template;
     }
 
-    public static function fromFile(string $filePath): self
+    public static function fromFile(string $filePath, bool $failOnError = true): self
     {
         $template = new self();
 
         $template->templateData = file_get_contents($filePath);
         $template->handle = pathinfo($filePath, \PATHINFO_FILENAME);
         $template->id = $template->handle;
+        $template->uid = $template->handle;
 
         $name = $template->getMetadata('templateName');
         if (!$name) {
@@ -84,13 +88,13 @@ class NotificationTemplate implements IdentificatorInterface
         $template->name = $name;
 
         $template->description = $template->getMetadata('description');
-        $template->fromEmail = $template->getMetadata('fromEmail', true);
-        $template->fromName = $template->getMetadata('fromName', true);
+        $template->fromEmail = $template->getMetadata('fromEmail', $failOnError) || '';
+        $template->fromName = $template->getMetadata('fromName', $failOnError) || '';
         $template->cc = $template->getMetadata('cc');
         $template->bcc = $template->getMetadata('bcc');
         $template->replyToName = $template->getMetadata('replyToName');
         $template->replyToEmail = $template->getMetadata('replyToEmail');
-        $template->subject = $template->getMetadata('subject', true);
+        $template->subject = $template->getMetadata('subject', $failOnError) || '';
 
         $body = $text = $template->templateData;
 

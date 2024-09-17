@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -10,8 +11,10 @@ use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
@@ -23,6 +26,8 @@ use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 class RuleProvider
 {
     private static array $fieldRuleCache = [];
+
+    public function __construct(private NotificationsProvider $notificationsProvider) {}
 
     public function getFormRules(?Form $form): array
     {
@@ -159,6 +164,46 @@ class RuleProvider
         }
 
         return null;
+    }
+
+    /**
+     * @return NotificationRule[]
+     */
+    public function getNotificationRules(Form $form): array
+    {
+        $rules = NotificationRuleRecord::getExistingRules($form->getId());
+        $notifications = $this->notificationsProvider->getByFormAndClass(
+            $form,
+            Conditional::class,
+        );
+
+        $array = [];
+        foreach ($rules as $uid => $notificationRule) {
+            $ruleRecord = $notificationRule->getRule()->one();
+            $rule = new NotificationRule(
+                $notificationRule->id,
+                $uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
+
+            $rule->setSend($notificationRule->send);
+
+            $notificationInstance = null;
+            foreach ($notifications as $notification) {
+                if ($notification->getId() === $notificationRule->notificationId) {
+                    $notificationInstance = $notification;
+
+                    break;
+                }
+            }
+
+            $rule->setNotification($notificationInstance);
+
+            $array[] = $rule;
+        }
+
+        return $array;
     }
 
     public function getFormNotificationRules(?Form $form): array

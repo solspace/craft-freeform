@@ -1,5 +1,26 @@
 # Solspace Freeform Changelog
 
+## 5.6.0 - 2024-09-17
+
+### Added
+- Added a utility for granularly exporting and importing Freeform data (beta), including forms, submissions, templates, integrations, and Freeform settings.
+- Added the ability to organize form cards into groups on the Forms dashboard page.
+- Added the ability to switch the Forms dashboard page from Cards to a List table view.
+- Added the ability to check in Twig to see if an integration is enabled for a form. Use `{% if form.isIntegrationEnabled("integrationHandle") %}`.
+- Added template-level overrides for POST Forwarding, allowing for Twig in the POST Forwarding URL and error phrase.
+- Added the ability to hide advanced settings for Submit buttons with the Limited Users feature.
+- Added compatibility of Hubspot tracking code to the Hubspot CRM integration.
+- Added French translation. Thanks @scandella!
+- Added German translation.
+
+### Changed
+- Updated all sample formatting templates to load all scripts and styles via URLs to aid with strict content security policies. Added a migration for the Grid and Flexbox formatting template names in forms and the demo templates.
+- Updated Status column styling to match Craft 5 for CP submissions/spam indexes.
+
+### Fixed
+- Fixed various issues with missing translation strings.
+- Fixed style issues on Payment cards in the CP submissions index.
+
 ## 5.5.10 - 2024-09-06
 
 ### Fixed

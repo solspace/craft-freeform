@@ -44,7 +44,7 @@ export const Remove = styled.div`
 export const PaddedFooter = styled.div<{ $color: string }>`
   margin-top: 0;
   background-color: ${({ $color }) => $color};
-  opacity: 0.3;
+  opacity: 1;
   height: 2px;
   font-size: 1px;
   line-height: 1px;

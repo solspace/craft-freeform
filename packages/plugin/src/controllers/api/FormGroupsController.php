@@ -125,12 +125,17 @@ class FormGroupsController extends BaseApiController
 
     protected function get(): array|object
     {
-        $freeform = Freeform::getInstance();
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
-        $params = $this->request->getQueryParams();
+
+        $freeform = Freeform::getInstance();
+        $currentSite = \Craft::$app->sites->getCurrentSite();
         $sitesEnabled = $freeform->settings->getSettingsModel()->sitesEnabled;
-        $site = $sitesEnabled ? $params['siteHandle'] : SitesHelper::getCurrentCpPageSiteHandle();
-        $siteId = $params['siteId'];
+
+        $params = $this->request->getQueryParams();
+        $siteHandle = $params['siteHandle'] ?? $currentSite->handle;
+        $siteId = $params['siteId'] ?? $currentSite->id;
+
+        $site = $sitesEnabled ? $siteHandle : SitesHelper::getCurrentCpPageSiteHandle();
 
         $allForms = $this->formTransformer->transformList(
             array_values(

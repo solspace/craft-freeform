@@ -91,11 +91,11 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
         </ResponsiveContainer>
       </td>
       <td>
-        <a href={submissionLink.url}>{submissionLink.count}</a>
+        {!!submissionLink && (
+          <a href={submissionLink.url}>{submissionLink.count}</a>
+        )}
       </td>
-      <td>
-        <a href={spamLink.url}>{spamLink.count}</a>
-      </td>
+      <td>{!!spamLink && <a href={spamLink.url}>{spamLink.count}</a>}</td>
       <td>
         <FlexRow>
           {isLiteAndUp && (

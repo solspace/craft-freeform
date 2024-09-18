@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.6.1 - 2024-09-18
+
+### Fixed
+- Fixed a bug where file-based email notification templates were not being read correctly.
+
 ## 5.6.0 - 2024-09-17
 
 ### Added

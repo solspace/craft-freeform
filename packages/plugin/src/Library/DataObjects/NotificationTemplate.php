@@ -88,13 +88,13 @@ class NotificationTemplate implements IdentificatorInterface
         $template->name = $name;
 
         $template->description = $template->getMetadata('description');
-        $template->fromEmail = $template->getMetadata('fromEmail', $failOnError) || '';
-        $template->fromName = $template->getMetadata('fromName', $failOnError) || '';
+        $template->fromEmail = $template->getMetadata('fromEmail', $failOnError) ?? '';
+        $template->fromName = $template->getMetadata('fromName', $failOnError) ?? '';
         $template->cc = $template->getMetadata('cc');
         $template->bcc = $template->getMetadata('bcc');
         $template->replyToName = $template->getMetadata('replyToName');
         $template->replyToEmail = $template->getMetadata('replyToEmail');
-        $template->subject = $template->getMetadata('subject', $failOnError) || '';
+        $template->subject = $template->getMetadata('subject', $failOnError) ?? '';
 
         $body = $text = $template->templateData;
 

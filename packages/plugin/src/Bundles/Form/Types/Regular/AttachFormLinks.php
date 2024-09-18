@@ -70,7 +70,7 @@ class AttachFormLinks extends FeatureBundle
                     $event->add(
                         $submissions,
                         'submissions',
-                        UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()),
+                        $canManageSubmissions ? UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()) : null,
                         'linkList',
                         $submissionCount,
                     );
@@ -78,7 +78,7 @@ class AttachFormLinks extends FeatureBundle
                     $event->add(
                         $spam,
                         'spam',
-                        UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()),
+                        $canManageSubmissions ? UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()) : null,
                         'linkList',
                         $spamCount,
                     );

@@ -66,23 +66,21 @@ class AttachFormLinks extends FeatureBundle
                     );
                 }
 
-                if ($canReadSubmissions || $canManageSubmissions) {
-                    $event->add(
-                        $submissions,
-                        'submissions',
-                        $canManageSubmissions ? UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()) : null,
-                        'linkList',
-                        $submissionCount,
-                    );
+                $event->add(
+                    $submissions,
+                    'submissions',
+                    $canManageSubmissions ? UrlHelper::cpUrl('freeform/submissions?source=form:'.$form->getId()) : null,
+                    'linkList',
+                    $submissionCount,
+                );
 
-                    $event->add(
-                        $spam,
-                        'spam',
-                        $canManageSubmissions ? UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()) : null,
-                        'linkList',
-                        $spamCount,
-                    );
-                }
+                $event->add(
+                    $spam,
+                    'spam',
+                    $canManageSubmissions ? UrlHelper::cpUrl('freeform/spam?source=form:'.$form->getId()) : null,
+                    'linkList',
+                    $spamCount,
+                );
             }
         );
     }

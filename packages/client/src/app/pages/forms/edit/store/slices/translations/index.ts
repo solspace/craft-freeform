@@ -21,9 +21,17 @@ export const translationSlice = createSlice({
         };
       }
 
+      if (state[siteId][type] === undefined) {
+        state[siteId][type] = {};
+      }
+
+      if (state[siteId][type][namespace] === undefined) {
+        state[siteId][type][namespace] = {};
+      }
+
       state[siteId][type][namespace][handle] = value;
     },
-    init: (state, action: PayloadAction<TranslationState>) => {
+    init: (_, action: PayloadAction<TranslationState>) => {
       return action.payload;
     },
   },

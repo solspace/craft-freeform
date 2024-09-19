@@ -37,6 +37,14 @@ export type Form = {
 };
 
 export type ExtendedFormType = Form & {
+  translations: Record<
+    number,
+    {
+      fields: Record<string, string>;
+      form: Record<string, string>;
+      buttons: Record<string, string>;
+    }
+  >;
   layout: {
     fields: Field[];
     pages: Page[];

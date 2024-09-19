@@ -407,12 +407,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     public function getLabel(): string
     {
-        return $this->translate($this->label);
+        return $this->translate('label', $this->label);
     }
 
     public function getInstructions(): string
     {
-        return $this->translate($this->instructions);
+        return $this->translate('instructions', $this->instructions);
     }
 
     public function isRequired(): bool
@@ -702,9 +702,19 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * An alias method for translator.
      */
-    protected function translate(?string $string = null, array $variables = []): string
+    // protected function translate(?string $string = null, array $variables = []): string
+    protected function translate(?string $handle, ?string $defaultValue = null): string
     {
-        return null === $string ? '' : Freeform::t($string, $variables);
+        return Freeform::getInstance()->translations->getFieldTranslation(
+            $this,
+            $handle,
+            $defaultValue
+        );
+    }
+
+    protected function translateOption(?string $handle, ?string $defaultValue = null)
+    {
+        return 'translated option: '.$handle;
     }
 
     protected function renderRaw(string $output): Markup

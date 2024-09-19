@@ -32,7 +32,6 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const [isPrimary, setIsPrimary] = useState<boolean>(true);
   const [current, setCurrent] = useState<Site>(() => {
     const currentSite = config.sites.list.find(
       (site) => site.id === config.sites.current
@@ -40,6 +39,7 @@ export const SiteProvider: React.FC<PropsWithChildren> = ({ children }) => {
 
     return currentSite || config.sites.list.find((site) => site.primary);
   });
+  const [isPrimary, setIsPrimary] = useState<boolean>(current.primary);
 
   useEffect(() => {
     const links = document.querySelectorAll('#nav a[href*="site="]');

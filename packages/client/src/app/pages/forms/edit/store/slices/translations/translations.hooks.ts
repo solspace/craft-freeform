@@ -9,10 +9,11 @@ import { translationSelectors } from './translations.selectors';
 import { translationActions } from '.';
 
 type UseTranslations = {
-  has: (handle: string) => boolean;
-  get: (handle: string, value: string) => string;
-  update: (handle: string, value: string) => void;
-  remove: (handle: string) => void;
+  hasTranslation: (handle: string) => boolean;
+  getTranslation: (handle: string, value: string) => string;
+  updateTranslation: (handle: string, value: string) => void;
+  removeTranslation: (handle: string) => void;
+  willTranslate: () => boolean;
 };
 
 function useTranslations(field: Field): UseTranslations;
@@ -36,12 +37,13 @@ function useTranslations(target: Field | Form | PageButton): UseTranslations {
     // ================
     //       HAS
     // ================
-    has: (handle) => !!translationNamespace?.[handle],
+    hasTranslation: (handle) => !!translationNamespace?.[handle],
+    willTranslate: () => !isPrimary,
 
     // ================
     //       GET
     // ================
-    get: (handle, value) => {
+    getTranslation: (handle, value) => {
       if (isPrimary) {
         return value;
       }
@@ -56,16 +58,20 @@ function useTranslations(target: Field | Form | PageButton): UseTranslations {
     // ================
     //      UPDATE
     // ================
-    update: (handle, value) => {
+    updateTranslation: (handle, value) => {
       if (isPrimary) {
         return;
       }
 
+      const siteId = current.id;
+      const type = isField ? 'fields' : isForm ? 'form' : 'buttons';
+      const namespace = isField || isForm ? target.uid : target.handle;
+
       dispatch(
         translationActions.update({
-          siteId: current.id,
-          type: isField ? 'fields' : isForm ? 'form' : 'buttons',
-          namespace: isField ? target.uid : isForm ? target.uid : target.handle,
+          siteId,
+          type,
+          namespace,
           handle,
           value,
         })
@@ -75,7 +81,7 @@ function useTranslations(target: Field | Form | PageButton): UseTranslations {
     // ================
     //      REMOVE
     // ================
-    remove: () => {},
+    removeTranslation: () => {},
   };
 }
 

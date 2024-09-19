@@ -14,7 +14,7 @@ class FormTranslationRecord extends ActiveRecord
 {
     public static function tableName(): string
     {
-        return '{{%freeform_form_translations}}';
+        return '{{%freeform_forms_translations}}';
     }
 
     public function rules(): array

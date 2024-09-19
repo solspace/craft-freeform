@@ -1,10 +1,8 @@
 import React from 'react';
 import { ButtonGroup } from '@components/elements/button-group/button-group';
-import {
-  ControlWrapper,
-  Label,
-} from '@components/form-controls/control.styles';
+import { ControlWrapper } from '@components/form-controls/control.styles';
 import { FormErrorList } from '@components/form-controls/error-list';
+import { Label } from '@components/form-controls/label.styles';
 import type { ControlType } from '@components/form-controls/types';
 import { useFieldOptions } from '@components/options/use-field-options';
 import config, { Edition } from '@config/freeform/freeform.config';

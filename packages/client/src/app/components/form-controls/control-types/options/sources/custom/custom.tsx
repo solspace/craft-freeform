@@ -1,5 +1,5 @@
 import React from 'react';
-import { Label } from '@components/form-controls/control.styles';
+import { Label } from '@components/form-controls/label.styles';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import translate from '@ff-client/utils/translations';
 

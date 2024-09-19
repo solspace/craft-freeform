@@ -146,6 +146,11 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->id;
     }
 
+    public function getUid(): string
+    {
+        return $this->uid;
+    }
+
     public function getNormalizeIdentificator(): null|int|string
     {
         return $this->getId();

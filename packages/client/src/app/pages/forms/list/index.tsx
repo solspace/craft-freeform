@@ -54,7 +54,7 @@ export const ListProvider: React.FC = () => {
           <button
             type="button"
             className={classes('btn', View.Grid === view && 'active')}
-            data-icon="element-cards"
+            data-icon="grid"
             title={translate('Display as cards')}
             onClick={() => setView(View.Grid)}
           />

@@ -33,7 +33,7 @@ class GenerateLinksEvent extends Event
     public function add(
         string $label,
         string $handle,
-        string $url,
+        ?string $url,
         string $type,
         int $count = 1,
         bool $isInternal = false,

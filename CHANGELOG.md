@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.6.2 - 2024-09-20
+
+### Fixed
+- Fixed a bug where the Export Freeform data utility was not loading correctly in Craft 4.
+- Fixed a bug where email notification templates could not be assigned to forms in the form builder for some users.
+- Fixed a bug where the form "Cards" icon was not showing in the button on the form dashboard page.
+- Fixed a bug where form submission and spam counters were not displaying in the dashboard for users and groups without read or manage permissions.
+- Fixed a bug where links to modify forms in the List view of the dashboard did not account for user and group permissions.
+
 ## 5.6.1 - 2024-09-18
 
 ### Fixed

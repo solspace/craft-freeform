@@ -39,6 +39,7 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
   const { id, name, handle, settings, dateArchived } = form;
   const color = settings.general.color;
 
+  const hasTitleLink = form.links.some(({ type }) => type === 'title');
   const submissionLink = form.links.find(
     (link) => link.handle === 'submissions'
   );
@@ -47,9 +48,12 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
   return (
     <tr>
       <td>
-        <Link to={`${id}`}>
-          <Truncate size={250}>{name}</Truncate>
-        </Link>
+        {hasTitleLink && (
+          <Link to={`${id}`}>
+            <Truncate size={250}>{name}</Truncate>
+          </Link>
+        )}
+        {!hasTitleLink && <Truncate size={250}>{name}</Truncate>}
       </td>
       <td>
         <code>

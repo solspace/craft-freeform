@@ -7,7 +7,7 @@ class Link
     public function __construct(
         private string $label,
         private string $handle,
-        private string $url,
+        private ?string $url,
         private string $type,
         private int $count,
         private bool $internal = false,
@@ -23,7 +23,7 @@ class Link
         return $this->handle;
     }
 
-    public function getUrl(): string
+    public function getUrl(): ?string
     {
         return $this->url;
     }

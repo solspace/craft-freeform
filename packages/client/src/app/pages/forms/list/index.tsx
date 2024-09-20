@@ -1,5 +1,6 @@
 import React from 'react';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
+import config from '@config/freeform/freeform.config';
 import { useLocalStorage } from '@ff-client/hooks/ts-hooks/use-local-storage';
 import {
   fetchFieldPropertySections,
@@ -26,6 +27,7 @@ export const ListProvider: React.FC = () => {
   const openCreateFormModal = useCreateFormModal();
 
   const [view, setView] = useLocalStorage('forms-list-view', View.Grid);
+  const isCraft5 = config.metadata.craft.is5;
 
   queryClient.prefetchQuery(QKFieldTypes.all, fetchFieldTypes);
   queryClient.prefetchQuery(
@@ -54,7 +56,7 @@ export const ListProvider: React.FC = () => {
           <button
             type="button"
             className={classes('btn', View.Grid === view && 'active')}
-            data-icon="element-cards"
+            data-icon={classes(isCraft5 ? 'element-cards' : 'grid')}
             title={translate('Display as cards')}
             onClick={() => setView(View.Grid)}
           />

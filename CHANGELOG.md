@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.38 - 2024-09-25
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted.
+
 ## 3.13.37 - 2024-05-08
 
 ### Fixed

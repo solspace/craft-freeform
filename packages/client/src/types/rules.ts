@@ -20,7 +20,8 @@ type OperatorTypeKeys =
   | 'numeric'
   | 'string'
   | 'negative'
-  | 'noValue';
+  | 'noValue'
+  | 'multiple';
 type OperatorTypes = {
   [key in OperatorTypeKeys]: Operator[];
 };
@@ -28,6 +29,7 @@ type OperatorTypes = {
 export const operatorTypes: OperatorTypes = {
   boolean: [Operator.Equals, Operator.NotEquals],
   noValue: [Operator.IsEmpty, Operator.IsNotEmpty],
+  multiple: [Operator.IsOneOf, Operator.IsNotOneOf],
   numeric: [
     Operator.Equals,
     Operator.NotEquals,

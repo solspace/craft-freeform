@@ -9,10 +9,10 @@
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
 {% set crumbs = crumbs|default([
-    { label: craft.freeform.name, url: url('freeform') },
-    { label: "Forms"|t("freeform"), url: url('freeform/forms') },
-    { label: submission.form.name, url: url('freeform/forms/' ~ submission.getForm().id) },
-    { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
+	{ label: craft.freeform.name, url: url('freeform') },
+	{ label: "Forms"|t("freeform"), url: url('freeform/forms') },
+	{ label: submission.form.name, url: url('freeform/forms/' ~ submission.getForm().id) },
+	{ label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ]) %}
 
 {% block actionButton %}
@@ -22,7 +22,12 @@
 		<div class="btn submit menubtn"></div>
 		<div class="menu">
 			<ul>
-				<li><a class="formsubmit"data-redirect="{{ continueEditingUrl|hash }}">{{ "Save and continue editing"|t('app') }}<span class="shortcut">⌘S</span></a></li>
+				<li>
+					<a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+						{{ "Save and continue editing"|t('app') }}
+						<span class="shortcut">⌘S</span>
+					</a>
+				</li>
 			</ul>
 		</div>
 	</div>
@@ -32,17 +37,19 @@
 	{{ parent() }}
 
 	enctype="multipart/form-data"
-	    data-id="{{ form.anchor }}"
-	    data-freeform
+	data-id="{{ form.anchor }}"
+	data-freeform
 
 {% endblock %}
 
 {% block body %}
 	{{ parent() }}
 
-	<form method="post" id="asset_download" style="height: 0; width: 0; position: absolute; left: -99999px;">
-		<input type="hidden" name="action" value="assets/download-asset"/>
-		<input type="hidden" name="assetId" value=""/>
+	<form method="post"
+		  id="asset_download"
+		  style="height: 0; width: 0; position: absolute; left: -99999px;">
+		<input type="hidden" name="action" value="assets/download-asset" />
+		<input type="hidden" name="assetId" value="" />
 		{{ csrfInput() }}
 	</form>
 {% endblock %}
@@ -61,21 +68,21 @@
 					{% set fieldHandle = field.handle %}
 
 					{% if not (field.getType() == "calculation" and field.canRender()) %}
-					<div class="fields-row">
-						<div class="fields-column">
-							{% set options = {
-                                label: field.label,
-                                name: fieldHandle,
-                                id: fieldHandle,
-                                value: submission[fieldHandle],
-                                required: field.required,
-                                errors: submission.errors(fieldHandle),
-                                first: loop.index0 == 0,
-                            } %}
+						<div class="fields-row">
+							<div class="fields-column">
+								{% set options = {
+									label: field.label,
+									name: fieldHandle,
+									id: fieldHandle,
+									value: submission[fieldHandle],
+									required: field.required,
+									errors: submission.errors(fieldHandle),
+									first: loop.index0 == 0,
+								} %}
 
-							{{ forms.textField(options) }}
+								{{ forms.textField(options) }}
+							</div>
 						</div>
-					</div>
 					{% endif %}
 				{% endfor %}
 
@@ -90,10 +97,10 @@
 
 	<script>
 		function removeAsset(element) {
-if (confirm('Are you sure?')) {
-$(element).parents(".element:first").remove();
-}
-}
+			if (confirm('Are you sure?')) {
+				$(element).parents(".element:first").remove();
+			}
+		}
 	</script>
 
 	{{ form.renderClosingTag(false) }}
@@ -105,67 +112,70 @@ $(element).parents(".element:first").remove();
 	<div id="settings" class="meta">
 
 		{{ forms.textField({
-            label: "Title"|t('app'),
-            id: 'title',
-            name: 'title',
-            value: submission.title,
-            placeholder: "Enter title"|t('freeform'),
-            errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
-        }) }}
+			label: "Title"|t('app'),
+			id: 'title',
+			name: 'title',
+			value: submission.title,
+			placeholder: "Enter title"|t('freeform'),
+			errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
+		}) }}
 
 		{{ forms.elementSelectField({
-            status: submission.getAttributeStatus('userId'),
-            label: "Author"|t('app'),
-            id: 'author',
-            name: 'author',
-            elementType: 'craft\\elements\\User',
-            selectionLabel: "Choose"|t('app'),
-            limit: 1,
-            elements: (submission.author ? [submission.author])
-        }) }}
+			status: submission.getAttributeStatus('userId'),
+			label: "Author"|t('app'),
+			id: 'author',
+			name: 'author',
+			elementType: 'craft\\elements\\User',
+			selectionLabel: "Choose"|t('app'),
+			limit: 1,
+			elements: (submission.author ? [submission.author])
+		}) }}
 
 		{% set statusField %}
-		<div>
-			{% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
+			<div>
+				{% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
 
-			<a id="status-menu-btn" class="btn menubtn" href="#">
-				<span class="status {{ selectedStatus.color }}"></span>
-				{{ selectedStatus.name|t('freeform')|title }}
-			</a>
-			<div class="menu" id="status-menu-select">
-				<ul class="padded">
-					{% for status in statuses %}
-						<li>
-							<a {% if selectedStatus.color == status.color %} class="sel" {% endif %} data-id="{{ status.id }}" data-name="{{ status.name }}" data-color="{{ status.color }}" href="#">
-								<span class="status {{ status.color }}"></span>
-								{{ status.name|t('freeform')|title }}
-							</a>
-						</li>
-					{% endfor %}
-				</ul>
+				<a id="status-menu-btn" class="btn menubtn" href="#">
+					<span class="status {{ selectedStatus.color }}"></span>
+					{{ selectedStatus.name|t('freeform')|title }}
+				</a>
+				<div class="menu" id="status-menu-select">
+					<ul class="padded">
+						{% for status in statuses %}
+							<li>
+								<a {% if selectedStatus.color == status.color %}class="sel"{% endif %}
+								   data-id="{{ status.id }}"
+								   data-name="{{ status.name }}"
+								   data-color="{{ status.color }}"
+								   href="#">
+									<span class="status {{ status.color }}"></span>
+									{{ status.name|t('freeform')|title }}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
 			</div>
-		</div>
 		{% endset %}
 
 		{{ forms.field({
-            label: 'Status'|t('app'),
-        }, statusField) }}
+			label: 'Status'|t('app'),
+		}, statusField) }}
 
 		{{ forms.hidden({
-            id: "statusId",
-            name: "statusId",
-            value: submission.statusId,
-            errors: [],
-            required: true
-        }) }}
+			id: "statusId",
+			name: "statusId",
+			value: submission.statusId,
+			errors: [],
+			required: true
+		}) }}
 
 		<div class="field">
 			<div class="heading">
 				<label>{{ 'Form'|t('freeform') }}</label>
 			</div>
 			<div class="input ltr">
-				<span class="status green" style="background: {{ form.color }};"></span>
-				<a href="{{ url('freeform/submissions/&source=form%3A' ~ form.id) }}">{{ form.name }}</a>
+				<span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/submissions/&source=form%3A' ~ form.id) }}">{{ form.name }}</a>
 			</div>
 		</div>
 
@@ -176,11 +186,13 @@ $(element).parents(".element:first").remove();
 			<label for="freeform-submission-note" class="h6">{{ 'Notes about your changes'|t('app') }}</label>
 		</div>
 		<div class="input">
-			<textarea class="text nicetext notes fullwidth freeform-submission-note" id="freeform-submission-note" name="freeform-submission-note" spellcheck="false" style="min-height: 100px;">
-				{% if note %}
-					{{ note }}
-				{% endif %}
-			</textarea>
+            <textarea
+					class="text nicetext notes fullwidth freeform-submission-note"
+					id="freeform-submission-note"
+					name="freeform-submission-note"
+					spellcheck="false"
+					style="min-height: 100px;"
+			>{% if note %}{{ note }}{% endif %}</textarea>
 		</div>
 	</div>
 
@@ -188,8 +200,7 @@ $(element).parents(".element:first").remove();
 
 		<fieldset>
 			<legend class="h6">
-				{{ 'Spam Reasons'|t('freeform') }}
-				({{ submission.spamReasons|length }})
+				{{ 'Spam Reasons'|t('freeform') }} ({{ submission.spamReasons|length }})
 			</legend>
 			<ul class="spam-reasons">
 				{% for reason in submission.spamReasons %}
@@ -216,13 +227,11 @@ $(element).parents(".element:first").remove();
 			</div>
 			<div class="data">
 				<h5 class="heading">{{ "Created at"|t('app') }}</h5>
-				<div class="value">{{ submission.dateCreated|date('short') }}
-					{{ submission.dateCreated|time('short') }}</div>
+				<div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
 			</div>
 			<div class="data">
 				<h5 class="heading">{{ "Updated at"|t('app') }}</h5>
-				<div class="value">{{ submission.dateUpdated|date('short') }}
-					{{ submission.dateUpdated|time('short') }}</div>
+				<div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
 			</div>
 		</div>
 

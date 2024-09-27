@@ -50,10 +50,14 @@ class Calculation implements FreeformHandler {
       const doCalculations = () => {
         const allVariablesHaveValues = Object.values(variables).every((value) => value !== '');
 
-        if (!allVariablesHaveValues) return;
+        if (!allVariablesHaveValues) {
+          return;
+        }
 
         const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
-        if (!(picker instanceof HTMLInputElement)) return;
+        if (!(picker instanceof HTMLInputElement)) {
+          return;
+        }
 
         const formattedResult = decimalCount ? result.toFixed(decimalCount) : result;
 
@@ -82,7 +86,9 @@ class Calculation implements FreeformHandler {
           `input[name="${variable}"], select[name="${variable}"]`
         );
 
-        if (inputElements.length === 0) return;
+        if (inputElements.length === 0) {
+          return;
+        }
 
         const element = inputElements[0] as HTMLInputElement | HTMLSelectElement;
 

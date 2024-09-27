@@ -64,7 +64,15 @@ class CalculationFieldValidation extends FeatureBundle
             }
 
             if ($valueOrdination != $result) {
-                $field->addError(Freeform::t('Incorrectly calculated value'));
+                $errorMessage = Freeform::t('Incorrectly calculated value');
+
+                if (!$canRender) {
+                    $form->addError($errorMessage);
+
+                    return;
+                }
+
+                $field->addError($errorMessage);
             }
 
             if (!$canRender) {

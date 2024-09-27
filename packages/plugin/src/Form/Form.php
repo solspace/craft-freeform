@@ -35,8 +35,6 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Fields\Implementations\HiddenField;
-use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Form\Bags\PropertyBag;
@@ -670,20 +668,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
         $output .= '<form'.$this->getAttributes().$this->getAttributes()->getForm().'>'.\PHP_EOL;
-
-        $fields = $this->getCurrentPage()->getFields();
-        $hiddenFields = $fields->getList(HiddenField::class);
-        $calculationFields = $fields->getList(CalculationField::class);
-
-        foreach ($hiddenFields as $field) {
-            $output .= $field->renderInput();
-        }
-
-        foreach ($calculationFields as $field) {
-            if (!$field->canRender()) {
-                $output .= $field->renderInput();
-            }
-        }
 
         $afterTag = new RenderTagEvent($this);
         Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $afterTag);

@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.6.3 - 2024-09-27
+
+### Added
+- Added a new Stripe `EVENT_AFTER_UPDATE_PAYMENT_METADATA` event that allows additional metadata to be attached to a payment intent when a submission is created.
+
+### Fixed
+- Fixed a bug where custom fields were not showing for mapping in the Pipedrive CRM integration.
+- Fixed a bug where mapping a field handle of `name` to a Stripe integration will prevent the Stripe field from loading in the front end.
+
 ## 5.6.2 - 2024-09-20
 
 ### Fixed

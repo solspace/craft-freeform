@@ -41,6 +41,7 @@ Maps data to the following field types:
 - Click on the **Create an App** button at the top right and choose _Create Private App_.
 - In the _Basic Info_ page, enter a unique app name and paste the Freeform OAuth URL in the **Callback URL** field.
 - In the _OAuth & Access Scopes_ page, enable the following:
+    - **Search for all data**
     - **Deals**
         - **Full Access**
     - **Contacts**

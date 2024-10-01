@@ -60,6 +60,7 @@ class NotificationsProvider
             ->where([
                 'formId' => $form->getId(),
                 'class' => $class,
+                'enabled' => true,
             ])
             ->all()
         ;

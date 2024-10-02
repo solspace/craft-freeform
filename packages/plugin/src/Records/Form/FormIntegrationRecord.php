@@ -41,4 +41,14 @@ class FormIntegrationRecord extends ActiveRecord
             [['formId', 'integrationId'], 'required'],
         ];
     }
+
+    public function safeAttributes(): array
+    {
+        return [
+            'formId',
+            'integrationId',
+            'enabled',
+            'metadata',
+        ];
+    }
 }

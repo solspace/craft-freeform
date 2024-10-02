@@ -36,4 +36,14 @@ class RuleConditionRecord extends ActiveRecord
             [['ruleId', 'fieldId', 'operator'], 'required'],
         ];
     }
+
+    public function safeAttributes(): array
+    {
+        return [
+            'ruleId',
+            'fieldId',
+            'operator',
+            'value',
+        ];
+    }
 }

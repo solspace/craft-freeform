@@ -3,10 +3,16 @@
 namespace Solspace\Freeform\Bundles\Persistence\Duplication;
 
 use craft\helpers\StringHelper;
+use Solspace\Freeform\Attributes\Property\Input\Field;
+use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMapping;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
@@ -15,6 +21,14 @@ use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
+use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
+use Solspace\Freeform\Records\Rules\PageRuleRecord;
+use Solspace\Freeform\Records\Rules\RuleConditionRecord;
+use Solspace\Freeform\Records\Rules\RuleRecord;
+use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\ActiveRecord;
 
@@ -41,8 +55,12 @@ class FormDuplicator
     /** @var FormIntegrationRecord[] */
     private array $integrations;
 
+    private array $fieldUidMap = [];
+    private array $pageUidMap = [];
+
     public function __construct(
         private FormsService $formsService,
+        private PropertyProvider $propertyProvider,
     ) {}
 
     public function clone(int $id): bool
@@ -59,6 +77,9 @@ class FormDuplicator
         $this->cloneRows($form);
         $this->cloneFields($form);
         $this->cloneSites($id, $form);
+        $this->cloneNotifications($id, $form);
+        $this->cloneRules($id, $form);
+        $this->cloneIntegrations($id, $form);
 
         $form = $this->formsService->getFormById($form->id);
 
@@ -139,6 +160,7 @@ class FormDuplicator
             }
 
             $this->pages[$id] = $clone;
+            $this->pageUidMap[$page->uid] = $clone->uid;
         }
     }
 
@@ -184,22 +206,150 @@ class FormDuplicator
             }
 
             $this->fields[$id] = $clone;
+            $this->fieldUidMap[$field->uid] = $clone->uid;
         }
     }
 
     private function cloneSites(int $originalId, FormRecord $form): void
     {
-        $siteIds = FormSiteRecord::find()
-            ->select('siteId')
-            ->where(['formId' => $originalId])
-            ->column()
-        ;
+        $siteIds = FormSiteRecord::find()->select('siteId')->where(['formId' => $originalId])->column();
 
         foreach ($siteIds as $siteId) {
             $siteRecord = new FormSiteRecord();
             $siteRecord->formId = $form->id;
             $siteRecord->siteId = $siteId;
             $siteRecord->save();
+        }
+    }
+
+    private function cloneNotifications(int $originalId, FormRecord $form): void
+    {
+        $records = FormNotificationRecord::findAll(['formId' => $originalId]);
+        foreach ($records as $record) {
+            $clone = new FormNotificationRecord();
+            $clone->setAttributes($record->getAttributes());
+            $clone->formId = $form->id;
+            $clone->uid = StringHelper::UUID();
+            $clone->save();
+
+            $metadata = json_decode($clone->metadata);
+
+            switch ($clone->class) {
+                case Conditional::class:
+                    /** @var NotificationRuleRecord $rule */
+                    $rule = NotificationRuleRecord::find()
+                        ->innerJoin(
+                            RuleRecord::TABLE.' r',
+                            'r.[[id]] = '.NotificationRuleRecord::TABLE.'.[[id]]'
+                        )
+                        ->where(['r.[[uid]]' => $metadata->rule])->one()
+                    ;
+
+                    if ($rule) {
+                        $ruleClone = new NotificationRuleRecord();
+                        $ruleClone->setAttributes($rule->getAttributes());
+                        $ruleClone->notificationId = $clone->id;
+
+                        $this->buildRuleClone($rule, $ruleClone);
+
+                        $metadata->rule = $ruleClone->uid;
+                    }
+
+                    break;
+
+                case Dynamic::class:
+                case EmailField::class:
+                    $metadata->field = $this->fieldUidMap[$metadata->field];
+
+                    break;
+            }
+
+            $clone->metadata = json_encode($metadata);
+            $clone->save();
+        }
+    }
+
+    private function cloneRules(int $originalId, FormRecord $form): void
+    {
+        $records = PageRuleRecord::findAll(['pageId' => array_keys($this->pages)]);
+        foreach ($records as $rule) {
+            $ruleClone = new PageRuleRecord();
+            $ruleClone->pageId = $this->pages[$rule->pageId]->id;
+
+            $this->buildRuleClone($rule, $ruleClone);
+        }
+
+        $records = FieldRuleRecord::findAll(['fieldId' => array_keys($this->fields)]);
+        foreach ($records as $rule) {
+            $ruleClone = new FieldRuleRecord();
+            $ruleClone->fieldId = $this->fields[$rule->fieldId]->id;
+            $ruleClone->display = $rule->display;
+
+            $this->buildRuleClone($rule, $ruleClone);
+        }
+
+        $records = ButtonRuleRecord::findAll(['pageId' => array_keys($this->pages)]);
+        foreach ($records as $rule) {
+            $ruleClone = new ButtonRuleRecord();
+            $ruleClone->pageId = $this->pages[$rule->pageId]->id;
+            $ruleClone->button = $rule->button;
+            $ruleClone->display = $rule->display;
+
+            $this->buildRuleClone($rule, $ruleClone);
+        }
+
+        $rule = SubmitFormRuleRecord::findOne(['formId' => $originalId]);
+        if ($rule) {
+            $ruleClone = new SubmitFormRuleRecord();
+            $ruleClone->formId = $form->id;
+
+            $this->buildRuleClone($rule, $ruleClone);
+        }
+    }
+
+    private function cloneIntegrations(int $originalId, FormRecord $form): void
+    {
+        $integrationClassMap = IntegrationRecord::find()
+            ->select(['class'])
+            ->indexBy('id')
+            ->column()
+        ;
+
+        $records = FormIntegrationRecord::findAll(['formId' => $originalId]);
+        foreach ($records as $record) {
+            $clone = new FormIntegrationRecord();
+            $clone->setAttributes($record->getAttributes());
+            $clone->formId = $form->id;
+            $clone->uid = StringHelper::UUID();
+
+            $metadata = json_decode($clone->metadata);
+
+            $className = $integrationClassMap[$record->integrationId];
+            $properties = $this->propertyProvider->getEditableProperties($className);
+
+            foreach ($properties as $property) {
+                $handle = $property->handle;
+                if (!$handle || !isset($metadata->{$handle})) {
+                    continue;
+                }
+
+                if ($property instanceof FieldMapping) {
+                    foreach ($metadata->{$handle} as $key => $value) {
+                        if ('relation' !== $value->type) {
+                            continue;
+                        }
+
+                        $metadata->{$handle}->{$key}->value = $this->fieldUidMap[$value->value];
+                    }
+                }
+
+                if ($property instanceof Field && $metadata->{$handle}) {
+                    $metadata->{$handle} = $this->fieldUidMap[$metadata->{$handle}];
+                }
+            }
+
+            $clone->metadata = json_encode($metadata);
+            $clone->save();
         }
     }
 
@@ -222,5 +372,35 @@ class FormDuplicator
             ->indexBy($indexBy)
             ->all()
         ;
+    }
+
+    private function buildRuleClone(RuleRecord $original, RuleRecord $clone): RuleRecord
+    {
+        $baseRuleClone = new RuleRecord();
+        $baseRuleClone->setAttributes($original->getRule()->one()->getAttributes());
+        $baseRuleClone->uid = StringHelper::UUID();
+        $baseRuleClone->save();
+
+        $clone->id = $baseRuleClone->id;
+        $clone->uid = StringHelper::UUID();
+        $clone->save();
+
+        $this->cloneConditions($original->id, $clone->id);
+
+        return $clone;
+    }
+
+    private function cloneConditions(int $oldId, int $newId): void
+    {
+        $conditions = RuleConditionRecord::findAll(['ruleId' => $oldId]);
+        foreach ($conditions as $condition) {
+            $conditionClone = new RuleConditionRecord();
+            $conditionClone->ruleId = $newId;
+            $conditionClone->fieldId = $this->fields[$condition->fieldId]->id;
+            $conditionClone->value = $condition->value;
+            $conditionClone->operator = $condition->operator;
+            $conditionClone->uid = StringHelper::UUID();
+            $conditionClone->save();
+        }
     }
 }

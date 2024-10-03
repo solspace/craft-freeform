@@ -43,7 +43,7 @@ class RegexField extends TextField implements ExtraFieldInterface
 
     public function getMessage(): string
     {
-        return $this->message;
+        return $this->message ?: 'Value is not valid';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

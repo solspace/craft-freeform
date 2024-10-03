@@ -39,6 +39,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
+use Solspace\Freeform\Services\Form\TranslationsService;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
 use yii\base\Event;
@@ -699,20 +700,18 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return '';
     }
 
-    /**
-     * An alias method for translator.
-     */
-    // protected function translate(?string $string = null, array $variables = []): string
     protected function translate(?string $handle, ?string $defaultValue = null): string
     {
-        return Freeform::getInstance()->translations->getFieldTranslation(
-            $this,
+        return Freeform::getInstance()->translations->getTranslation(
+            $this->getForm(),
+            TranslationsService::TYPE_FIELDS,
+            $this->getUid(),
             $handle,
             $defaultValue
         );
     }
 
-    protected function translateOption(?string $handle, ?string $defaultValue = null)
+    protected function translateOption(?string $handle, ?string $defaultValue = null): string
     {
         return 'translated option: '.$handle;
     }

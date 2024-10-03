@@ -1,87 +1,164 @@
-import type { PageButton } from '@editor/builder/types/layout';
+import { useCallback } from 'react';
+import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch, useAppSelector } from '@editor/store';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
-import type { Form } from '@ff-client/types/forms';
+import { useFieldTypeSearch } from '@ff-client/queries/field-types';
+import { useQueryFormSettings } from '@ff-client/queries/forms';
+import { useFetchPageButtonType } from '@ff-client/queries/page-types';
+import type { SettingsNamespace } from '@ff-client/types/forms';
 
 import type { Field } from '../layout/fields';
 
 import { translationSelectors } from './translations.selectors';
+import type { TranslationType } from './translations.types';
 import { translationActions } from '.';
 
+type HasTranslation = (handle: string) => boolean;
+type GetTranslation = (handle: string, value: string) => string;
+type UpdateTranslation = (handle: string, value: string) => void;
+type RemoveTranslation = (handle: string) => void;
+type WillTranslate = (handle: string) => boolean;
+
 type UseTranslations = {
-  hasTranslation: (handle: string) => boolean;
-  getTranslation: (handle: string, value: string) => string;
-  updateTranslation: (handle: string, value: string) => void;
-  removeTranslation: (handle: string) => void;
-  willTranslate: () => boolean;
+  hasTranslation: HasTranslation;
+  getTranslation: GetTranslation;
+  updateTranslation: UpdateTranslation;
+  removeTranslation: RemoveTranslation;
+  willTranslate: WillTranslate;
 };
 
 function useTranslations(field: Field): UseTranslations;
-function useTranslations(form: Form): UseTranslations;
-function useTranslations(button: PageButton): UseTranslations;
-function useTranslations(target: Field | Form | PageButton): UseTranslations {
+function useTranslations(form: SettingsNamespace): UseTranslations;
+function useTranslations(page: Page): UseTranslations;
+function useTranslations(
+  target: Field | SettingsNamespace | Page
+): UseTranslations {
   const dispatch = useAppDispatch();
   const { current, isPrimary } = useSiteContext();
+  const searchType = useFieldTypeSearch();
 
-  const isField = 'properties' in target;
-  const isForm = 'settings' in target;
+  const { data: pageButtonType } = useFetchPageButtonType();
+  const { data: formSettings } = useQueryFormSettings();
+
+  const isField = target && 'typeClass' in target;
+  const isForm = target && 'type' in target && target.type === 'settings';
+
+  const siteId = current.id;
+  const namespace = isForm ? target.namespace : target?.uid;
+  const type: TranslationType = isField ? 'fields' : isForm ? 'form' : 'pages';
 
   const translationNamespace = useAppSelector(
-    translationSelectors.namespace.fields(
-      current.id,
-      isField || isForm ? target.uid : target.handle
-    )
+    translationSelectors.namespace(current.id, target)
   );
 
+  // ================
+  //       HAS
+  // ================
+  const hasTranslation: HasTranslation = useCallback(
+    (handle) => target && translationNamespace?.[handle] !== undefined,
+    [translationNamespace]
+  );
+
+  const willTranslate: WillTranslate = useCallback(
+    (handle) => {
+      if (!target) {
+        return false;
+      }
+
+      if (isPrimary) {
+        return false;
+      }
+
+      if (isField) {
+        const type = searchType(target.typeClass);
+        if (!type) {
+          return false;
+        }
+
+        return type.properties.find((prop) => prop.handle === handle)
+          ?.translatable;
+      }
+
+      if (isForm) {
+        const setting = formSettings?.find(
+          (setting) => setting.handle === namespace
+        );
+        if (!setting) {
+          return false;
+        }
+
+        return setting.properties.find((prop) => prop.handle === handle)
+          ?.translatable;
+      }
+
+      if (handle === 'label') {
+        return true;
+      }
+
+      return pageButtonType?.properties?.find((prop) => prop.handle === handle)
+        ?.translatable;
+    },
+    [isField, isForm, isPrimary, searchType, target]
+  );
+
+  // ================
+  //       GET
+  // ================
+  const getTranslation: GetTranslation = (handle, value) => {
+    if (!willTranslate(handle)) {
+      return value;
+    }
+
+    if (!hasTranslation(handle)) {
+      return value;
+    }
+
+    return translationNamespace[handle];
+  };
+
+  // ================
+  //      UPDATE
+  // ================
+  const updateTranslation: UpdateTranslation = (handle, value) => {
+    if (!willTranslate(handle)) {
+      return;
+    }
+
+    dispatch(
+      translationActions.update({
+        siteId,
+        type,
+        namespace,
+        handle,
+        value,
+      })
+    );
+  };
+
+  // ================
+  //      REMOVE
+  // ================
+  const removeTranslation: RemoveTranslation = (handle) => {
+    if (!willTranslate(handle)) {
+      return;
+    }
+
+    dispatch(
+      translationActions.remove({
+        siteId,
+        type,
+        namespace,
+        handle,
+      })
+    );
+  };
+
   return {
-    // ================
-    //       HAS
-    // ================
-    hasTranslation: (handle) => !!translationNamespace?.[handle],
-    willTranslate: () => !isPrimary,
-
-    // ================
-    //       GET
-    // ================
-    getTranslation: (handle, value) => {
-      if (isPrimary) {
-        return value;
-      }
-
-      if (!translationNamespace) {
-        return value;
-      }
-
-      return translationNamespace[handle] || value;
-    },
-
-    // ================
-    //      UPDATE
-    // ================
-    updateTranslation: (handle, value) => {
-      if (isPrimary) {
-        return;
-      }
-
-      const siteId = current.id;
-      const type = isField ? 'fields' : isForm ? 'form' : 'buttons';
-      const namespace = isField || isForm ? target.uid : target.handle;
-
-      dispatch(
-        translationActions.update({
-          siteId,
-          type,
-          namespace,
-          handle,
-          value,
-        })
-      );
-    },
-
-    // ================
-    //      REMOVE
-    // ================
-    removeTranslation: () => {},
+    hasTranslation,
+    willTranslate,
+    getTranslation,
+    updateTranslation,
+    removeTranslation,
   };
 }
 

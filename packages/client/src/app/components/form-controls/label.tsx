@@ -1,7 +1,7 @@
 import React from 'react';
-import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import TranslateIcon from '@ff-icons/translate.icon.svg';
 
 import {
   Label,
@@ -9,13 +9,14 @@ import {
   RequiredStar,
   TranslateIconWrapper,
 } from './label.styles';
-import TranslateIcon from './translate.icon.svg';
 
 type Props = {
   label: string;
   handle: string;
   required?: boolean;
   translatable?: boolean;
+  hasTranslation?: boolean;
+  removeTranslation?: () => void;
 };
 
 const FormLabel: React.FC<Props> = ({
@@ -23,9 +24,9 @@ const FormLabel: React.FC<Props> = ({
   handle,
   required,
   translatable,
+  hasTranslation,
+  removeTranslation,
 }) => {
-  const { current: currentSite } = useSiteContext();
-
   if (!label) {
     return null;
   }
@@ -36,7 +37,17 @@ const FormLabel: React.FC<Props> = ({
       {required && <RequiredStar />}
       {translatable && (
         <TranslateIconWrapper
-          className={classes(currentSite?.primary && 'primary')}
+          className={classes(hasTranslation && 'active')}
+          onClick={() => {
+            if (
+              hasTranslation &&
+              confirm(
+                translate('Are you sure you want to remove the translation?')
+              )
+            ) {
+              removeTranslation && removeTranslation();
+            }
+          }}
         >
           <TranslateIcon />
         </TranslateIconWrapper>

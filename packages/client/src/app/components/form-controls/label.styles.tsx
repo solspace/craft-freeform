@@ -28,12 +28,11 @@ export const RequiredStar = styled.span`
 `;
 
 const iconSize = 18;
-
 export const TranslateIconWrapper = styled.span`
-  fill: ${colors.blue500};
+  fill: ${colors.gray500};
 
-  &.primary {
-    fill: ${colors.gray500};
+  &.active {
+    fill: ${colors.blue500};
   }
 
   svg {

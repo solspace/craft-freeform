@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Services\Form;
 
-use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -12,15 +10,12 @@ use Solspace\Freeform\Services\BaseService;
 
 class TranslationsService extends BaseService
 {
+    public const TYPE_FIELDS = 'fields';
+    public const TYPE_PAGES = 'pages';
+    public const TYPE_FORM = 'form';
+
     private array $translationCache = [];
     private ?bool $sitesEnabled = null;
-
-    public function __construct(
-        $config = [],
-        private ?PropertyProvider $propertyProvider = null,
-    ) {
-        parent::__construct($config);
-    }
 
     public function isTranslationsEnabled(Form $form): bool
     {
@@ -31,9 +26,8 @@ class TranslationsService extends BaseService
         return $this->sitesEnabled;
     }
 
-    public function getFieldTranslation(FieldInterface $field, string $handle, string $defaultValue)
+    public function getTranslation(Form $form, string $type, string $namespace, string $handle, string $defaultValue): string
     {
-        $form = $field->getForm();
         if (!$this->isTranslationsEnabled($form)) {
             return $defaultValue;
         }
@@ -41,7 +35,7 @@ class TranslationsService extends BaseService
         $siteId = \Craft::$app->sites->getCurrentSite()->id;
         $translationTable = $this->getFormTranslations($form);
 
-        $translation = $translationTable[$siteId]['fields'][$field->getUid()][$handle] ?? null;
+        $translation = $translationTable[$siteId][$type][$namespace][$handle] ?? null;
         if (null === $translation) {
             return Freeform::t($defaultValue);
         }

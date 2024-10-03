@@ -36,7 +36,7 @@ export const FieldComponent: React.FC<Props> = ({
     context,
     (handle, value) => {
       updateTranslation(handle, value);
-      if (!willTranslate()) {
+      if (!willTranslate(handle)) {
         dispatch(
           fieldActions.edit({
             uid: field.uid,
@@ -51,13 +51,15 @@ export const FieldComponent: React.FC<Props> = ({
   const value = field.properties?.[property.handle];
 
   return (
-    <FormComponent
-      autoFocus={autoFocus}
-      value={getTranslation(property.handle, value)}
-      property={property}
-      updateValue={generateUpdateHandler(property)}
-      errors={field.errors?.[property.handle]}
-      context={field}
-    />
+    <>
+      <FormComponent
+        autoFocus={autoFocus}
+        value={getTranslation(property.handle, value)}
+        property={property}
+        updateValue={generateUpdateHandler(property)}
+        errors={field.errors?.[property.handle]}
+        context={field}
+      />
+    </>
   );
 };

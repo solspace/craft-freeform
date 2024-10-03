@@ -6,6 +6,7 @@ import {
 } from '@components/form-controls/control.styles';
 import FormInstructions from '@components/form-controls/instructions';
 import FormLabel from '@components/form-controls/label';
+import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
 import type { Property } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
@@ -15,13 +16,18 @@ import { FormMessageList } from './message-list';
 type Props = {
   property: Property;
   errors?: string[];
+  context?: unknown;
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({
   children,
   property,
   errors,
+  context,
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { hasTranslation, removeTranslation } = useTranslations(context as any);
+
   const {
     label,
     handle,
@@ -42,6 +48,8 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
         handle={handle}
         required={required}
         translatable={translatable}
+        hasTranslation={hasTranslation(handle)}
+        removeTranslation={() => removeTranslation(handle)}
       />
       <FormInstructions instructions={instructions} />
       <FormField>{children}</FormField>

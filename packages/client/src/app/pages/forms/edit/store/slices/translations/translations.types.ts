@@ -1,17 +1,27 @@
-export type TranslationType = 'fields' | 'form' | 'buttons';
+export type TranslationType = 'fields' | 'form' | 'pages';
 
 export type TranslationItems = Record<string, string>;
 export type TranslationSet = Record<string, TranslationItems>;
 
-export type TranslationState = Record<
-  number,
-  Record<TranslationType, TranslationSet>
->;
+export type TranslationState = {
+  [siteId: string]: {
+    [type in TranslationType]: {
+      [namespace: string]: TranslationItems;
+    };
+  };
+};
 
 export type UpdateProps = {
   siteId: number;
-  type: 'fields' | 'form' | 'buttons';
+  type: TranslationType;
   namespace: string;
   handle: string;
   value: string;
+};
+
+export type RemoveProps = {
+  siteId: number;
+  type: TranslationType;
+  namespace: string;
+  handle: string;
 };

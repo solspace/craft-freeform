@@ -9,6 +9,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
@@ -34,6 +35,7 @@ class GeneralSettings extends SettingsNamespace
     private const SECTION_GENERAL = 'general';
     private const SECTION_DATA_STORAGE = 'data-storage';
 
+    #[Translatable]
     #[Section(
         self::SECTION_GENERAL,
         label: 'General',
@@ -115,6 +117,7 @@ class GeneralSettings extends SettingsNamespace
     )]
     public ?string $formattingTemplate = null;
 
+    #[Translatable]
     #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(
         label: 'Form Description',

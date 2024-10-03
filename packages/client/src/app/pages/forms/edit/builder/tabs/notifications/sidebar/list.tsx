@@ -11,6 +11,8 @@ import {
   useQueryNotificationTypes,
 } from '@ff-client/queries/notifications';
 
+import { useLastTab } from '../../tabs.hooks';
+
 import { NotificationItem } from './items/item';
 import { ScrollableList } from './list.styles';
 
@@ -18,19 +20,27 @@ export const List: React.FC = () => {
   const limitations = config.limitations;
   const { formId, uid } = useParams();
   const navigate = useNavigate();
+  const { lastTab, setLastTab } = useLastTab('notifications');
 
   const { data: notificationTypes, isFetching } = useQueryNotificationTypes();
   useQueryFormNotifications(formId ? Number(formId) : undefined);
   const notifications = useSelector(notificationSelectors.all);
 
   useEffect(() => {
-    if (!uid && notificationTypes && notifications) {
+    if (lastTab) {
+      navigate(lastTab);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!uid && !lastTab && notificationTypes && notifications) {
       const first = notifications.find(Boolean);
       if (first) {
+        setLastTab(first.uid);
         navigate(first.uid);
       }
     }
-  }, [uid, notificationTypes, notifications]);
+  }, [uid, notificationTypes, notifications, lastTab]);
 
   if (!notificationTypes && isFetching) {
     return (

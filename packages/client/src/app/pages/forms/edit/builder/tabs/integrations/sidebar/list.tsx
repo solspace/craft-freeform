@@ -6,6 +6,8 @@ import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import type { IntegrationCategory } from '@ff-client/types/integrations';
 import translate from '@ff-client/utils/translations';
 
+import { useLastTab } from '../../tabs.hooks';
+
 import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';
 import { Wrapper } from './list.styles';
@@ -21,10 +23,19 @@ export const List: React.FC = () => {
   // Due to issues with react-query race conditions, we need to force a re-render
   useForceUpdate();
 
+  const { lastTab, setLastTab } = useLastTab('integrations');
+
   useEffect(() => {
-    if (!id && data) {
+    if (lastTab) {
+      navigate(lastTab);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!id && !lastTab && data) {
       const first = data.find(Boolean);
       if (first) {
+        setLastTab(`${first.id}/${first.handle}`);
         navigate(`${first.id}/${first.handle}`);
       }
     }

@@ -32,6 +32,7 @@ export const TranslateIconWrapper = styled.span`
   fill: ${colors.gray500};
 
   &.active {
+    cursor: pointer;
     fill: ${colors.blue500};
   }
 

@@ -38,6 +38,7 @@ const FormLabel: React.FC<Props> = ({
       {translatable && (
         <TranslateIconWrapper
           className={classes(hasTranslation && 'active')}
+          title={hasTranslation ? translate('Remove translation') : undefined}
           onClick={() => {
             if (
               hasTranslation &&

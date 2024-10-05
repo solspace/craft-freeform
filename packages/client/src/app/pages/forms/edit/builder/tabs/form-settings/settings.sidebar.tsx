@@ -12,6 +12,8 @@ import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
 
+import { useLastTab } from '../tabs.hooks';
+
 import {
   SectionIcon,
   SectionLink,
@@ -21,6 +23,7 @@ import {
 export const SettingsSidebar: React.FC = () => {
   const limitations = config.limitations;
   const navigate = useNavigate();
+  const { setLastTab } = useLastTab('settings');
   const { sectionHandle } = useParams();
 
   const formErrors = useSelector(formSelectors.errors);
@@ -66,7 +69,10 @@ export const SettingsSidebar: React.FC = () => {
             .map((section) => (
               <SectionLink
                 key={section.handle}
-                onClick={() => navigate(`${section.handle}`)}
+                onClick={() => {
+                  setLastTab(section.handle);
+                  navigate(`${section.handle}`);
+                }}
                 className={classes(
                   sectionHandle === section.handle && 'active',
                   sectionsWithErrors.includes(section.handle) && 'errors'

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Notifications\Export;
 
 use Carbon\Carbon;
 use craft\helpers\Db;
+use craft\helpers\StringHelper;
 use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -72,6 +73,7 @@ class ExportNotifications extends FeatureBundle
 
             $record = NotificationTemplateRecord::create();
             $record->id = 0;
+            $record->uid = StringHelper::UUID();
             $record->name = 'Export Notification';
             $record->handle = 'export-notification';
             $record->fromName = \Craft::$app->projectConfig->get('email.fromName');

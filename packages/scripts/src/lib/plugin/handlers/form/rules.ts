@@ -251,10 +251,16 @@ class RuleHandler implements FreeformHandler {
           return currentValue?.length > 0;
 
         case Operator.IsOneOf:
-          return currentValue.some((value) => value === condition.value);
-
         case Operator.IsNotOneOf:
-          return !currentValue.some((value) => value === condition.value);
+          const checkPositive = condition.operator === Operator.IsOneOf;
+          const parsedValue = (condition.value ? JSON.parse(condition.value) : []).map((v: string) => v.toLowerCase());
+          const hasCommonValues = currentValue.some((value) => parsedValue.includes(value.toLowerCase()));
+
+          if (parsedValue.length === 0) {
+            return checkPositive ? currentValue.length !== 0 : currentValue.length === 0;
+          }
+
+          return checkPositive ? hasCommonValues : !hasCommonValues;
 
         default:
           return false;
@@ -299,10 +305,16 @@ class RuleHandler implements FreeformHandler {
         return currentValue?.length > 0;
 
       case Operator.IsOneOf:
-        return currentValue === condition.value;
-
       case Operator.IsNotOneOf:
-        return currentValue !== condition.value;
+        const checkPositive = condition.operator === Operator.IsOneOf;
+        const parsedValue = (condition.value ? JSON.parse(condition.value) : []).map((v: string) => v.toLowerCase());
+        const containsValue = parsedValue.includes(currentValue.toLowerCase());
+
+        if (parsedValue.length === 0) {
+          return checkPositive ? currentValue.length === 0 : currentValue.length !== 0;
+        }
+
+        return checkPositive ? containsValue : !containsValue;
 
       default:
         return false;

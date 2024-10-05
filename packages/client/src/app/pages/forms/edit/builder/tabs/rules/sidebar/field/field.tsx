@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import config from '@config/freeform/freeform.config';
+import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
 import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields';
 import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
@@ -31,6 +32,7 @@ export const Field: React.FC<Props> = ({ field }) => {
   const { uid: activeFieldUid, button: activeButton } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
+  const { setLastTab } = useLastTab('rules');
 
   const type = useFieldType(field?.typeClass);
   const currentField = activeFieldUid === field.uid;
@@ -72,7 +74,9 @@ export const Field: React.FC<Props> = ({ field }) => {
       onClick={(event) => {
         event.stopPropagation();
         if (canEdit) {
-          navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`);
+          const tab = activeFieldUid === field.uid ? '' : `field/${field.uid}`;
+          setLastTab(tab);
+          navigate(tab);
         }
       }}
       className={classes(

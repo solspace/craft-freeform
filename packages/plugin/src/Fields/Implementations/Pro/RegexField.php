@@ -24,6 +24,7 @@ class RegexField extends TextField implements ExtraFieldInterface
     #[Input\TextArea(
         label: 'Error Message',
         instructions: "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found.",
+        value: 'Value is not valid',
     )]
     protected string $message = '';
 
@@ -42,7 +43,7 @@ class RegexField extends TextField implements ExtraFieldInterface
 
     public function getMessage(): string
     {
-        return $this->message;
+        return $this->message ?: 'Value is not valid';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

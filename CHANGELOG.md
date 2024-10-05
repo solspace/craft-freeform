@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.6.3 - 2024-09-27
+
+### Added
+- Added a new Stripe `EVENT_AFTER_UPDATE_PAYMENT_METADATA` event that allows additional metadata to be attached to a payment intent when a submission is created.
+
+### Fixed
+- Fixed a bug where custom fields were not showing for mapping in the Pipedrive CRM integration.
+- Fixed a bug where mapping a field handle of `name` to a Stripe integration will prevent the Stripe field from loading in the front end.
+
 ## 5.6.2 - 2024-09-20
 
 ### Fixed
@@ -932,6 +941,18 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.22 - 2024-09-06
+
+### Added
+- Verified support for Craft 5.4.x.
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted.
+- Fixed a bug where an error could occur when creating new forms on some MySQL installs.
+
+### Security
+- Updated `axios` dependencies to address potential security vulnerabilities.
+
 ## 4.1.21 - 2024-08-14
 
 ### Fixed
@@ -1442,6 +1463,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.38 - 2024-09-25
+
+### Fixed
+- Fixed a bug where uploading assets to submissions in the control panel would incorrectly mark them as unfinalized assets to be deleted.
 
 ## 3.13.37 - 2024-05-08
 

@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services;
 
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\PaymentGateways\Events\UpdateMetadataEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Records\SavedFormRecord;
 use Solspace\Freeform\Services\SubmissionsService;
 use Stripe\PaymentIntent;
+use yii\base\Event;
 
 class StripeCallbackService
 {
@@ -102,6 +104,9 @@ class StripeCallbackService
             $submissionMetadata = [
                 'submission' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
             ];
+
+            $event = new UpdateMetadataEvent($form, $integration, $submissionMetadata);
+            Event::trigger(Stripe::class, Stripe::EVENT_AFTER_UPDATE_PAYMENT_METADATA, $event);
 
             if ($paymentIntent?->invoice?->subscription) {
                 $stripe->subscriptions->update(

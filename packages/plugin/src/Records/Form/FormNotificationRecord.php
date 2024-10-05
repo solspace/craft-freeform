@@ -40,4 +40,14 @@ class FormNotificationRecord extends ActiveRecord
             [['formId', 'class', 'uid'], 'required'],
         ];
     }
+
+    public function safeAttributes(): array
+    {
+        return [
+            'class',
+            'formId',
+            'enabled',
+            'metadata',
+        ];
+    }
 }

@@ -20,12 +20,13 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2IssuedAtMilliseconds;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2PKCEInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, PardotIntegrationInterface
+abstract class BasePardotIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, OAuth2IssuedAtMilliseconds, OAuth2PKCEInterface, PardotIntegrationInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;

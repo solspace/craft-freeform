@@ -32,4 +32,9 @@ class RuleRecord extends ActiveRecord
             [['combinator'], 'required'],
         ];
     }
+
+    public function safeAttributes(): array
+    {
+        return ['combinator'];
+    }
 }

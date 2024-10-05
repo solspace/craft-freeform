@@ -63,4 +63,12 @@ class NotificationRuleRecord extends RuleRecord
             [['notificationId'], 'required'],
         ];
     }
+
+    public function safeAttributes(): array
+    {
+        return [
+            'notificationId',
+            'send',
+        ];
+    }
 }

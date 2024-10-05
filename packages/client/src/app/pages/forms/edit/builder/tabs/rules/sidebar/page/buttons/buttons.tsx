@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import config from '@config/freeform/freeform.config';
 import { getButtonGroups } from '@editor/builder/tabs/layout/field-layout/page/page-buttons/page-buttons.operations';
+import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
 import type { Page, PageButton } from '@editor/builder/types/layout';
 import { buttonRuleSelectors } from '@editor/store/slices/rules/buttons/buttons.selectors';
 import type { PageButtonType } from '@ff-client/types/rules';
@@ -27,6 +28,7 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
   const canEdit = config.limitations.can('rules.tab.buttons');
   const { uid, button: currentButton } = useParams();
   const navigate = useNavigate();
+  const { setLastTab } = useLastTab('rules');
 
   const currentPage = uid === page.uid && handle === currentButton;
   const hasRule = useSelector(
@@ -45,9 +47,11 @@ const ButtonItem: React.FC<ButtonItemProps> = ({
         currentPage && 'active',
         hasRule && 'has-rule'
       )}
-      onClick={() =>
-        navigate(currentPage ? '' : `page/${page.uid}/buttons/${handle}`)
-      }
+      onClick={() => {
+        const tab = currentPage ? '' : `page/${page.uid}/buttons/${handle}`;
+        setLastTab(tab);
+        navigate(tab);
+      }}
     >
       {translate(label)}
     </Button>

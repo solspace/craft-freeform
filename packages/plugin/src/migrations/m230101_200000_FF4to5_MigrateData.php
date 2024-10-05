@@ -317,7 +317,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'useScript' => $data->useScript ?? null,
             // Regex
             'pattern' => $data->pattern ?? null,
-            'message' => $data->message ?? null,
+            'message' => $data->message ?? 'Value is not valid',
             // Phone
             'useJsMask' => $data->useScript ?? null,
             // Number

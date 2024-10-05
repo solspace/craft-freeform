@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
 import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import type { Integration as IntegrationType } from '@ff-client/types/integrations';
 import classes from '@ff-client/utils/classes';
@@ -14,6 +15,7 @@ export const Integration: React.FC<IntegrationType> = ({
   handle,
   icon,
 }) => {
+  const { setLastTab } = useLastTab('integrations');
   const integration = useSelector(integrationSelectors.one(id));
   if (!integration) {
     return null;
@@ -22,6 +24,7 @@ export const Integration: React.FC<IntegrationType> = ({
   return (
     <Wrapper>
       <NavLink
+        onClick={() => setLastTab(`${id}/${handle}`)}
         to={`${id}/${handle}`}
         className={classes(!integration.enabled && 'inactive')}
       >

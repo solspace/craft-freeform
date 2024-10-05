@@ -8,7 +8,6 @@ export const useCreateFormModal: CreateFormModal = () => {
   const { openModal } = useModal();
 
   return (): void => {
-    console.log(openModal);
     openModal(CreateFormModal);
   };
 };

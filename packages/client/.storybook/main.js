@@ -11,23 +11,27 @@ function getAbsolutePath(value) {
 /** @type { import('@storybook/react-webpack5').StorybookConfig } */
 const config = {
   stories: ['../src/**/*.mdx', '../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+
   addons: [
     getAbsolutePath('@storybook/addon-links'),
     getAbsolutePath('@storybook/addon-essentials'),
     getAbsolutePath('@storybook/addon-onboarding'),
     getAbsolutePath('@storybook/addon-interactions'),
-    getAbsolutePath('@storybook/addon-mdx-gfm'),
+    getAbsolutePath('@storybook/addon-webpack5-compiler-swc'),
+    getAbsolutePath('@chromatic-com/storybook'),
   ],
+
   framework: {
     name: getAbsolutePath('@storybook/react-webpack5'),
     options: {
-      builder: {
-        useSWC: true,
-      },
+      builder: {},
     },
   },
-  docs: {
-    autodocs: 'tag',
+
+  docs: {},
+
+  typescript: {
+    reactDocgen: 'react-docgen-typescript',
   },
 };
 export default config;

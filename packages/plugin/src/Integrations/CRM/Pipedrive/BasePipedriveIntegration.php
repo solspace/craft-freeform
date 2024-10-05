@@ -98,26 +98,9 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
 
         $requiredFields = ['name', 'title'];
 
-        $allowedFields = [
-            'name',
-            'phone',
-            'email',
-            'title',
-            'value',
-            'currency',
-            'stage_id',
-            'status',
-            'probability',
-            'note',
-        ];
-
         $fieldList = [];
 
         foreach ($json->data as $field) {
-            if (!\in_array($field->key, $allowedFields, true)) {
-                continue;
-            }
-
             $type = match ($field->field_type) {
                 'varchar', 'varchar_auto', 'text', 'date', 'enum', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
                 'int', 'double', 'monetary', 'user', 'org', 'people' => FieldObject::TYPE_NUMERIC,

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import config from '@config/freeform/freeform.config';
+import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
 import type { Page as PageType } from '@editor/builder/types/layout';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import classes from '@ff-client/utils/classes';
@@ -26,6 +27,7 @@ export const Page: React.FC<Props> = ({ page }) => {
   const canEdit = config.limitations.can('rules.tab.pages');
   const { uid: activePageUid, button } = useParams();
   const navigate = useNavigate();
+  const { setLastTab } = useLastTab('rules');
 
   const hasRule = useSelector(pageRuleSelectors.hasRule(page.uid));
 
@@ -35,7 +37,13 @@ export const Page: React.FC<Props> = ({ page }) => {
   return (
     <PageWrapper>
       <PageButton
-        onClick={() => canEdit && navigate(currentPage ? '' : `page/${uid}`)}
+        onClick={() => {
+          if (canEdit) {
+            const tab = currentPage ? '' : `page/${uid}`;
+            setLastTab(tab);
+            navigate(tab);
+          }
+        }}
         className={classes(
           currentPage && 'active',
           hasRule && 'has-rule',

@@ -83,7 +83,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
       // Listen for changes to the amount, interval and interval count fields
       amountFields.forEach((handle) => {
-        (form[handle] as HTMLInputElement)?.addEventListener('change', () => {
+        (form.elements.namedItem(handle) as HTMLInputElement)?.addEventListener('change', () => {
           workers.push(handle);
 
           form.freeform.disableSubmit('stripe.working');
@@ -154,7 +154,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
         });
       } else {
         fieldMapping.forEach(({ source, target }) => {
-          (form[target] as HTMLInputElement)?.addEventListener('change', listener(source));
+          (form.elements.namedItem(target) as HTMLInputElement)?.addEventListener('change', listener(source));
         });
       }
 
@@ -168,7 +168,6 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
       });
     })
     .catch((error) => {
-      elementMap.delete(field);
       field.innerHTML = 'Could not load payment element.';
 
       const errors: Record<string, string[]> = {};

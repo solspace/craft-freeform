@@ -50,6 +50,13 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     )]
     protected string $calculations = self::DEFAULT_CALCULATIONS;
 
+    #[Input\Integer(
+        instructions: 'The number of decimal places allowed.',
+        placeholder: 'Leave blank for empty / no rounding',
+        min: 0,
+    )]
+    protected ?int $decimalCount = 0;
+
     #[Input\Select(
         options: [
             self::INPUT_TYPE_REGULAR => 'Regular Text Input',
@@ -67,6 +74,11 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     public function getCalculations(): string
     {
         return $this->calculations;
+    }
+
+    public function getDecimalCount(): int
+    {
+        return $this->decimalCount ?? 0;
     }
 
     public function getValue(): mixed
@@ -100,6 +112,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
             ->setIfEmpty('type', $this->getHtmlInputType())
             ->setIfEmpty('value', $this->getValue())
             ->replace('data-calculations', $this->getCalculations())
+            ->replace('data-decimal', $this->getDecimalCount())
             ->replace('readonly', true)
         ;
 

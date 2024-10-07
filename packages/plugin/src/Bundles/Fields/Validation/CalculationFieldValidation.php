@@ -33,6 +33,7 @@ class CalculationFieldValidation extends FeatureBundle
         $form = $event->getForm();
         $valueOrdination = $this->valueOrdination($field->getValue());
         $calculationLogic = $field->getCalculations();
+        $decimalCount = $field->getDecimalCount();
         $canRender = $field->canRender();
 
         preg_match_all(self::GET_VARIABLES_PATTERN, $calculationLogic, $matches);
@@ -58,9 +59,18 @@ class CalculationFieldValidation extends FeatureBundle
 
         try {
             $result = $expressionLanguage->evaluate($calculationLogic, $variablesWithValue);
+            if ($decimalCount) {
+                $result = number_format($result, $decimalCount);
+            }
 
-            if ($canRender && $valueOrdination != $result) {
-                $field->addError(Freeform::t('Incorrectly calculated value'));
+            if ($valueOrdination != $result) {
+                $errorMessage = Freeform::t('Incorrectly calculated value');
+
+                if ($canRender) {
+                    $field->addError($errorMessage);
+                } else {
+                    $form->addError($errorMessage);
+                }
             }
 
             if (!$canRender) {

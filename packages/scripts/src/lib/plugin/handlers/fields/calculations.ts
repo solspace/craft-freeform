@@ -32,11 +32,13 @@ class Calculation implements FreeformHandler {
 
     pickers.forEach((picker) => {
       const calculations = picker.getAttribute('data-calculations');
+      const decimal = picker.getAttribute('data-decimal');
 
       const getVariablesPattern = /field:([a-zA-Z0-9_]+)/g;
 
-      // Get calculation logic
+      // Get calculation logic & decimal count
       const calculationsLogic = calculations.replace(getVariablesPattern, (_, variable) => variable);
+      const decimalCount = Number(decimal);
 
       // Get variables
       const variables: Record<string, string | number | boolean> = {};
@@ -53,28 +55,30 @@ class Calculation implements FreeformHandler {
         }
 
         const result = this.expressionLanguage.evaluate(calculationsLogic, variables);
-
         if (!(picker instanceof HTMLInputElement)) {
           return;
         }
 
-        if (picker.type !== 'hidden') {
-          picker.value = result;
+        const formattedResult = decimalCount ? result.toFixed(decimalCount) : result;
+
+        const updatePickerValue = (value: string | number) => {
+          picker.value = value.toString();
           picker.dispatchEvent(new Event('change'));
+        };
+
+        if (picker.type !== 'hidden') {
+          updatePickerValue(formattedResult);
           return;
         }
 
         const wrapper = picker.parentElement;
         const pTag = wrapper.querySelector('.freeform-calculation-plain-field');
 
-        if (!pTag) {
-          return;
+        if (pTag) {
+          pTag.textContent = formattedResult;
         }
 
-        picker.value = result;
-        pTag.textContent = result;
-
-        picker.dispatchEvent(new Event('change'));
+        updatePickerValue(formattedResult);
       };
 
       Object.keys(variables).forEach((variable) => {
@@ -82,7 +86,9 @@ class Calculation implements FreeformHandler {
           `input[name="${variable}"], select[name="${variable}"]`
         );
 
-        if (inputElements.length === 0) return;
+        if (inputElements.length === 0) {
+          return;
+        }
 
         const element = inputElements[0] as HTMLInputElement | HTMLSelectElement;
 

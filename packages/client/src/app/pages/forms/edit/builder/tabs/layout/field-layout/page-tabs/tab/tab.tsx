@@ -87,8 +87,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
 
   const persistInputChanges = (): void => {
     const newLabel = inputRef.current.value || page.label;
-    updateTranslation('label', newLabel);
-    if (!willTranslate('label')) {
+    if (!updateTranslation('label', newLabel)) {
       dispatch(
         pageActions.updateLabel({
           uid: page.uid,

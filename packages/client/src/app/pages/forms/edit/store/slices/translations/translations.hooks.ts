@@ -6,6 +6,7 @@ import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import { useFetchPageButtonType } from '@ff-client/queries/page-types';
 import type { SettingsNamespace } from '@ff-client/types/forms';
+import type { GenericValue, Property } from '@ff-client/types/properties';
 
 import type { Field } from '../layout/fields';
 
@@ -14,8 +15,8 @@ import type { TranslationType } from './translations.types';
 import { translationActions } from '.';
 
 type HasTranslation = (handle: string) => boolean;
-type GetTranslation = (handle: string, value: string) => string;
-type UpdateTranslation = (handle: string, value: string) => void;
+type GetTranslation = (handle: string, value: GenericValue) => string;
+type UpdateTranslation = (handle: string, value: GenericValue) => boolean;
 type RemoveTranslation = (handle: string) => void;
 type WillTranslate = (handle: string) => boolean;
 
@@ -51,6 +52,34 @@ function useTranslations(
     translationSelectors.namespace(current.id, target)
   );
 
+  const findProperty = useCallback(
+    (handle: string): Property => {
+      if (isField) {
+        const type = searchType(target.typeClass);
+        if (!type) {
+          return undefined;
+        }
+
+        return type.properties.find((prop) => prop.handle === handle);
+      }
+
+      if (isForm) {
+        const setting = formSettings?.find(
+          (setting) => setting.handle === namespace
+        );
+
+        if (!setting) {
+          return undefined;
+        }
+
+        return setting.properties.find((prop) => prop.handle === handle);
+      }
+
+      return pageButtonType?.properties?.find((prop) => prop.handle === handle);
+    },
+    [isField, isForm, searchType, pageButtonType]
+  );
+
   // ================
   //       HAS
   // ================
@@ -69,36 +98,18 @@ function useTranslations(
         return false;
       }
 
-      if (isField) {
-        const type = searchType(target.typeClass);
-        if (!type) {
-          return false;
+      const property = findProperty(handle);
+      if (property === undefined) {
+        if (handle === 'label') {
+          return true;
         }
 
-        return type.properties.find((prop) => prop.handle === handle)
-          ?.translatable;
+        return false;
       }
 
-      if (isForm) {
-        const setting = formSettings?.find(
-          (setting) => setting.handle === namespace
-        );
-        if (!setting) {
-          return false;
-        }
-
-        return setting.properties.find((prop) => prop.handle === handle)
-          ?.translatable;
-      }
-
-      if (handle === 'label') {
-        return true;
-      }
-
-      return pageButtonType?.properties?.find((prop) => prop.handle === handle)
-        ?.translatable;
+      return property.translatable;
     },
-    [isField, isForm, isPrimary, searchType, target]
+    [isPrimary, target]
   );
 
   // ================
@@ -121,7 +132,7 @@ function useTranslations(
   // ================
   const updateTranslation: UpdateTranslation = (handle, value) => {
     if (!willTranslate(handle)) {
-      return;
+      return false;
     }
 
     dispatch(
@@ -133,6 +144,8 @@ function useTranslations(
         value,
       })
     );
+
+    return true;
   };
 
   // ================

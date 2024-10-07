@@ -55,7 +55,7 @@ class TranslationPersistence extends FeatureBundle
             $fieldTranslations = $translations->fields ?? [];
             foreach ($fieldTranslations as $uid => $fieldTranslation) {
                 if (!$event->getFieldRecord($uid)) {
-                    unset($fieldTranslations[$uid]);
+                    unset($fieldTranslations->{$uid});
                 }
             }
 

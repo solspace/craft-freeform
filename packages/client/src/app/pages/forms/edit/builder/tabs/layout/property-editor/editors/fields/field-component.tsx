@@ -22,8 +22,7 @@ export const FieldComponent: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
-  const { willTranslate, getTranslation, updateTranslation } =
-    useTranslations(field);
+  const { getTranslation, updateTranslation } = useTranslations(field);
 
   const fieldState = useSelector(fieldSelectors.one(field.uid));
   const context = {
@@ -35,8 +34,7 @@ export const FieldComponent: React.FC<Props> = ({
     type.properties,
     context,
     (handle, value) => {
-      updateTranslation(handle, value);
-      if (!willTranslate(handle)) {
+      if (!updateTranslation(handle, value)) {
         dispatch(
           fieldActions.edit({
             uid: field.uid,

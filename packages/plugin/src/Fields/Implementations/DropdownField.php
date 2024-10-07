@@ -16,6 +16,7 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
@@ -32,6 +33,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
     #[Input\Hidden]
     protected string $defaultValue = '';
 
+    #[Translatable]
     #[ValueTransformer(OptionsTransformer::class)]
     #[Input\Options(
         label: 'Options Editor',

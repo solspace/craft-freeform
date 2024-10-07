@@ -34,8 +34,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
     namespace,
   };
 
-  const { getTranslation, willTranslate, updateTranslation } =
-    useTranslations(context);
+  const { getTranslation, updateTranslation } = useTranslations(context);
 
   const value = getTranslation(property.handle, context[property.handle]);
 
@@ -43,8 +42,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
     properties,
     context,
     (handle, value) => {
-      updateTranslation(handle, value);
-      if (!willTranslate(handle)) {
+      if (!updateTranslation(handle, value)) {
         dispatch(
           formActions.modifySettings({
             namespace,

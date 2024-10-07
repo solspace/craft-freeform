@@ -14,14 +14,12 @@ type Props = {
 
 export const PageComponent: React.FC<Props> = ({ property, page }) => {
   const dispatch = useAppDispatch();
-  const { willTranslate, getTranslation, updateTranslation } =
-    useTranslations(page);
+  const { getTranslation, updateTranslation } = useTranslations(page);
 
   const handle = property.handle;
 
   const updateValue: ControlTypes.UpdateValue<GenericValue> = (value) => {
-    updateTranslation(handle, value);
-    if (!willTranslate(handle)) {
+    if (!updateTranslation(handle, value)) {
       dispatch(pageActions.editButtons({ uid: page.uid, key: handle, value }));
     }
   };

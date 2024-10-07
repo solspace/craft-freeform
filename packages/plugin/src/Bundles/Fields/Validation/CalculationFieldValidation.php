@@ -59,7 +59,7 @@ class CalculationFieldValidation extends FeatureBundle
 
         try {
             $result = $expressionLanguage->evaluate($calculationLogic, $variablesWithValue);
-            if ($decimalCount) {
+            if ($decimalCount && $decimalCount >= 0) {
                 $result = number_format($result, $decimalCount);
             }
 

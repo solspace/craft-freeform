@@ -38,7 +38,7 @@ class Calculation implements FreeformHandler {
 
       // Get calculation logic & decimal count
       const calculationsLogic = calculations.replace(getVariablesPattern, (_, variable) => variable);
-      const decimalCount = Number(decimal);
+      const decimalCount = decimal ?? Number(decimal);
 
       // Get variables
       const variables: Record<string, string | number | boolean> = {};

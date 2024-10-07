@@ -1,5 +1,23 @@
 # Solspace Freeform Changelog
 
+## 5.6.4 - 2024-10-07
+
+### Added
+- Added support for _Is One Of_ and _Is Not One Of_ rule types for conditional rules, allowing you to perform advanced conditional checks on multi-option field types.
+- Added a _Decimal Count_ setting to the Calculation field type for the ability to automatically round result values.
+- Added support for PKCE (Proof Key for Code Exchange) in the Pardot integration.
+
+### Changed
+- Improved the form builder to remember the last opened items for the Notifications, Rules and Integrations tabs.
+- Updated the French translation.
+
+### Fixed
+- Fixed a bug where Export Notifications were not working.
+- Fixed a bug where disabling email notifications inside the form builder would not disable them.
+- Fixed a bug where duplicating a form would exclude email notifications, conditional rules and integrations.
+- Fixed a bug where a default error message was not set for the Regex field type.
+- Fixed a bug where the Freeform 4.x migration was not migrating or setting a default error message for Regex fields.
+
 ## 5.6.3 - 2024-09-27
 
 ### Added

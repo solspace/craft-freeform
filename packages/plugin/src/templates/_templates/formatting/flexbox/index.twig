@@ -6,6 +6,7 @@
 {% set jsPath = view.assetManager.publishedUrl('@freeform-formatting-templates/flexbox/_main.js', true) %}
 {% do view.registerJsFile(jsPath) %}
 
+{% import "freeform/_templates/formatting/flexbox/_row.twig" as rowMacro %}
 
 {# Render the opening form tag #}
 {{ form.renderTag({
@@ -14,6 +15,7 @@
         row: { class: "freeform-row" },
         success: { class: "freeform-form-success" },
         errors: { class: "freeform-form-errors" },
+        novalidate: true,
     },
     buttons: {
         attributes: {
@@ -30,7 +32,7 @@
             attributes: {
                 container: { class: "freeform-column" },
                 input: {
-                    class: "freeform-input",
+                    class: ["freeform-input"],
                 },
                 label: { class: "freeform-label" },
                 instructions: { class: "freeform-instructions" },
@@ -97,39 +99,8 @@
     </ul>
 {% endif %}
 
-{# Build form rows and fields #}
-{% macro renderRows(form, rows) %}
-    {% for row in rows %}
-        {% set width = (12 / (row|length)) %}
-        <div{{ form.attributes.row|raw }}>
-            {% for field in row %}
-                {% do field.setParameters({
-                    attributes: {
-                        container: { class: [
-                            "freeform-column-" ~ width,
-                            "freeform-fieldtype-" ~ field.type,
-                        ]},
-                    },
-                }) %}
-                {% if field.type == "group" %}
-                    <div class="freeform-group">
-                        <label{{ field.attributes.label }}>
-                            {{ field.label }}
-                        </label>
-                        <div>
-                            {{ _self.renderRows(form, field.layout) }}
-                        </div>
-                    </div>
-                {% else %}
-                    {{ field.render }}
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endfor %}
-{% endmacro %}
-
 {# Display form field rows and columns #}
-{{ _self.renderRows(form, form.rows) }}
+{{ rowMacro.render(form.rows, form) }}
 
 {# Render the closing form tag #}
 {{ form.renderClosingTag }}

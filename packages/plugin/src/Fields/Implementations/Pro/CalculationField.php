@@ -55,7 +55,7 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         placeholder: 'Leave blank for empty / no rounding',
         min: 0,
     )]
-    protected ?int $decimalCount = 0;
+    protected ?int $decimalCount = null;
 
     #[Input\Select(
         options: [
@@ -76,9 +76,9 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
         return $this->calculations;
     }
 
-    public function getDecimalCount(): int
+    public function getDecimalCount(): ?int
     {
-        return $this->decimalCount ?? 0;
+        return $this->decimalCount ?? null;
     }
 
     public function getValue(): mixed

@@ -122,7 +122,7 @@ class StripeCallbackService
                 $stripe->paymentIntents->update(
                     $paymentIntent->id,
                     [
-                        'receipt_email' => $paymentIntent->customer->email,
+                        'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
                         'metadata' => array_merge(
                             $paymentIntent->metadata->toArray(),
                             $submissionMetadata,

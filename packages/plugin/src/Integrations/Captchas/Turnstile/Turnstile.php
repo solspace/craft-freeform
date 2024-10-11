@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Captchas\Turnstile;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
@@ -15,6 +16,8 @@ use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 
+#[Edition(Edition::PRO)]
+#[Edition(Edition::LITE)]
 #[Type(
     name: 'Turnstile',
     type: Type::TYPE_CAPTCHAS,
@@ -157,7 +160,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
         if (self::BEHAVIOR_DISPLAY_ERROR === $behavior) {
             $form->addError($this->getErrorMessage());
         } elseif (self::BEHAVIOR_SEND_TO_SPAM === $behavior) {
-            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'Turnstyle - '.implode(', ', $errors));
+            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'Turnstile - '.implode(', ', $errors));
         }
     }
 

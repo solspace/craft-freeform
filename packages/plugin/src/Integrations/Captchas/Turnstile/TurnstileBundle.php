@@ -75,7 +75,7 @@ class TurnstileBundle extends FeatureBundle
             ->setIfEmpty('data-size', $integration->getSize())
             ->setIfEmpty('data-lazy-load', $integration->isTriggerOnInteract())
             ->setIfEmpty('data-action', $integration->getAction())
-            ->setIfEmpty('data-locale', $locale)
+            ->setIfEmpty('data-language', $locale)
         ;
 
         $event->addChunk(

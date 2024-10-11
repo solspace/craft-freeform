@@ -157,7 +157,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
         if (self::BEHAVIOR_DISPLAY_ERROR === $behavior) {
             $form->addError($this->getErrorMessage());
         } elseif (self::BEHAVIOR_SEND_TO_SPAM === $behavior) {
-            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'reCAPTCHA - '.implode(', ', $errors));
+            $form->markAsSpam(SpamReason::TYPE_CAPTCHA, 'Turnstyle - '.implode(', ', $errors));
         }
     }
 

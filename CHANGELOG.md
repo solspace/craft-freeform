@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.6.5 - 2024-10-11
+
+### Added
+- Added support for _Cloudflare Turnstile_ spam protection captcha.
+
+### Changed
+- Updated the sample Grid and Flexbox formatting templates to allow for compatibility between Group fields and Conditional Rules.
+
+### Fixed
+- Fixed a bug where the _Decimal Count_ setting for the Calculation field type was not seeing `0` as a valid value.
+- Fixed a bug where the Freeform 4.x migration was converting status colors to `gray` instead of `grey` while in Craft 4.x.
+- Fixed a bug where the **Send Success Email from Stripe to Submitter** setting was not respected and Stripe would continue sending email receipts.
+- Fixed a bug where using the List view on the forms dashboard could trigger an error for some customers.
+
 ## 5.6.4 - 2024-10-07
 
 ### Added

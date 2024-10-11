@@ -70,7 +70,7 @@ class Cp extends CraftCp
         ]);
     }
 
-    public static function statusIndicatorHtml(string $status, array $attributes = []): ?string
+    public static function statusIndicatorHtml(string $status, ?array $attributes = []): ?string
     {
         $attributes += [
             'color' => null,

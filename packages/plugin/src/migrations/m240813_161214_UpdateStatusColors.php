@@ -28,7 +28,7 @@ class m240813_161214_UpdateStatusColors extends Migration
             if ('light' === $color || 'grey' === $color || 'turquoise' === $color) {
                 $this->update(
                     '{{%freeform_statuses}}',
-                    ['color' => 'gray'],
+                    ['color' => 'grey'],
                     ['id' => $id],
                     [],
                     false

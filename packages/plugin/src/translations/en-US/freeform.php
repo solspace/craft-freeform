@@ -410,6 +410,8 @@ return [
     'ends with' => 'ends with',
     'is empty' => 'is empty',
     'is not empty' => 'is not empty',
+    'is one of' => 'is one of',
+    'is not one of' => 'is not one of',
     'Add a condition' => 'Add a condition',
 
     // Form Builder // Integrations

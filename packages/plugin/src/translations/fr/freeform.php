@@ -410,6 +410,8 @@ return [
     'ends with' => 'se termine par',
     'is empty' => 'est vide',
     'is not empty' => 'n’est pas vide',
+    'is one of' => 'est l’un des',
+    'is not one of' => 'n’est pas l’un des',
     'Add a condition' => 'Ajouter une condition',
 
     // Form Builder // Integrations

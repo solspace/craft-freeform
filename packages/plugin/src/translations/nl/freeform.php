@@ -410,6 +410,8 @@ return [
     'ends with' => 'eindigt met',
     'is empty' => 'is leeg',
     'is not empty' => 'is niet leeg',
+    'is one of' => 'is een van',
+    'is not one of' => 'is niet een van',
     'Add a condition' => 'Voeg een voorwaarde toe',
 
     // Form Builder // Integrations

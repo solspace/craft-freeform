@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
+use Solspace\Freeform\Integrations\Captchas\Turnstile\Turnstile;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -49,6 +50,7 @@ class CaptchasBundle extends FeatureBundle
     {
         $event->addType(ReCaptcha::class);
         $event->addType(hCaptcha::class);
+        $event->addType(Turnstile::class);
     }
 
     public function processOptions(SetPropertiesEvent $event): void

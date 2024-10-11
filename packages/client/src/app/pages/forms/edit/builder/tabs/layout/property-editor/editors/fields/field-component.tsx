@@ -22,7 +22,8 @@ export const FieldComponent: React.FC<Props> = ({
 }) => {
   const dispatch = useAppDispatch();
   const type = useFieldType(field.typeClass);
-  const { getTranslation, updateTranslation } = useTranslations(field);
+  const { getTranslation, updateTranslation, canUseTranslationValue } =
+    useTranslations(field);
 
   const fieldState = useSelector(fieldSelectors.one(field.uid));
   const context = {
@@ -47,12 +48,15 @@ export const FieldComponent: React.FC<Props> = ({
   );
 
   const value = field.properties?.[property.handle];
+  const translationEnabledValue = getTranslation(property.handle, value);
 
   return (
     <>
       <FormComponent
         autoFocus={autoFocus}
-        value={getTranslation(property.handle, value)}
+        value={
+          canUseTranslationValue(property) ? translationEnabledValue : value
+        }
         property={property}
         updateValue={generateUpdateHandler(property)}
         errors={field.errors?.[property.handle]}

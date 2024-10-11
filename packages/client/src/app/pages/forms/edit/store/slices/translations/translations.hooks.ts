@@ -1,4 +1,6 @@
 import { useCallback } from 'react';
+import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
+import type { OptionTranslations } from '@components/form-controls/control-types/options/sources/translations/translations.types';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch, useAppSelector } from '@editor/store';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
@@ -6,7 +8,12 @@ import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import { useFetchPageButtonType } from '@ff-client/queries/page-types';
 import type { SettingsNamespace } from '@ff-client/types/forms';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import {
+  type GenericValue,
+  type Property,
+  PropertyType,
+} from '@ff-client/types/properties';
+import cloneDeep from 'lodash.clonedeep';
 
 import type { Field } from '../layout/fields';
 
@@ -15,17 +22,26 @@ import type { TranslationType } from './translations.types';
 import { translationActions } from '.';
 
 type HasTranslation = (handle: string) => boolean;
-type GetTranslation = (handle: string, value: GenericValue) => string;
+type GetTranslation = <T = string>(handle: string, value: GenericValue) => T;
+type GetOptionTranslations = (
+  handle: string,
+  value: OptionsConfiguration
+) => OptionsConfiguration;
 type UpdateTranslation = (handle: string, value: GenericValue) => boolean;
 type RemoveTranslation = (handle: string) => void;
 type WillTranslate = (handle: string) => boolean;
+type CanUseTranslation = (property: Property) => boolean;
+
+const excludedTranslationPropertyTypes = [PropertyType.Options];
 
 type UseTranslations = {
   hasTranslation: HasTranslation;
   getTranslation: GetTranslation;
+  getOptionTranslations: GetOptionTranslations;
   updateTranslation: UpdateTranslation;
   removeTranslation: RemoveTranslation;
   willTranslate: WillTranslate;
+  canUseTranslationValue: CanUseTranslation;
 };
 
 function useTranslations(field: Field): UseTranslations;
@@ -127,6 +143,38 @@ function useTranslations(
     return translationNamespace[handle];
   };
 
+  const getOptionTranslations: GetTranslation = (handle, value) => {
+    if (!willTranslate(handle)) {
+      return value;
+    }
+
+    if (!hasTranslation(handle)) {
+      return value;
+    }
+
+    const translatedValue: OptionsConfiguration = cloneDeep(value);
+    const translation: OptionTranslations = translationNamespace[handle];
+
+    if (translatedValue.source === 'custom' && translation.options) {
+      translatedValue.options = translatedValue.options.map((option) => {
+        const translatedOption = translation.options.find(
+          (opt) => opt.value === option.value
+        );
+
+        if (translatedOption) {
+          return {
+            ...option,
+            label: translatedOption.label,
+          };
+        }
+
+        return option;
+      });
+    }
+
+    return translatedValue;
+  };
+
   // ================
   //      UPDATE
   // ================
@@ -166,12 +214,21 @@ function useTranslations(
     );
   };
 
+  const canUseTranslationValue: CanUseTranslation = (property) => {
+    return (
+      property.translatable &&
+      excludedTranslationPropertyTypes.includes(property.type) === false
+    );
+  };
+
   return {
     hasTranslation,
     willTranslate,
     getTranslation,
+    getOptionTranslations,
     updateTranslation,
     removeTranslation,
+    canUseTranslationValue,
   };
 }
 

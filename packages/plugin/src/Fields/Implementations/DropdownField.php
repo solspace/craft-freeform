@@ -67,7 +67,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             $isChecked = $option->getValue() == $this->getValue();
 
             $output .= '<option value="'.$option->getValue().'"'.($isChecked ? ' selected' : '').'>';
-            $output .= $this->translateOption($option->getValue(), $option->getLabel());
+            $output .= $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
             $output .= '</option>';
         }
         $output .= '</select>';

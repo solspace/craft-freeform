@@ -26,8 +26,13 @@ class TranslationsService extends BaseService
         return $this->sitesEnabled;
     }
 
-    public function getTranslation(Form $form, string $type, string $namespace, string $handle, string $defaultValue): string
-    {
+    public function getTranslation(
+        Form $form,
+        string $type,
+        string $namespace,
+        string $handle,
+        string $defaultValue
+    ): array|string {
         if (!$this->isTranslationsEnabled($form)) {
             return $defaultValue;
         }

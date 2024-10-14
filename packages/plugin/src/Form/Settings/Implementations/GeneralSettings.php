@@ -95,12 +95,21 @@ class GeneralSettings extends SettingsNamespace
     public array $sites = [];
 
     #[Section(self::SECTION_GENERAL)]
+    #[VisibilityFilter('Boolean(context.config.sites.enabled)')]
+    #[Input\Boolean(
+        label: 'Enable Translations',
+        instructions: 'Enable translations for this form.',
+        order: 5,
+    )]
+    public bool $translations = false;
+
+    #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.submissionTitle')]
     #[Validators\Required]
     #[DefaultValue('settings.general.submissionTitle')]
     #[Input\Text(
         instructions: 'How the titles of submissions should be auto-generated for this form.',
-        order: 4,
+        order: 6,
     )]
     public ?string $submissionTitle = null;
 
@@ -112,7 +121,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\Select(
         label: 'Formatting Template',
         instructions: 'Select a formatting template to be used when rendering this form.',
-        order: 5,
+        order: 7,
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate = null;
@@ -122,7 +131,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\Textarea(
         label: 'Form Description',
         instructions: 'Enter a description or notes for this form.',
-        order: 6,
+        order: 8,
     )]
     public string $description = '';
 
@@ -131,7 +140,7 @@ class GeneralSettings extends SettingsNamespace
     #[Input\ColorPicker(
         label: 'Form Color',
         instructions: 'Choose a color for this form (generally used in the control panel).',
-        order: 7,
+        order: 9,
     )]
     public string $color = '';
 

@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
 import type { OptionTranslations } from '@components/form-controls/control-types/options/sources/translations/translations.types';
 import type { Page } from '@editor/builder/types/layout';
@@ -15,6 +16,7 @@ import {
 } from '@ff-client/types/properties';
 import cloneDeep from 'lodash.clonedeep';
 
+import { formSelectors } from '../form/form.selectors';
 import type { Field } from '../layout/fields';
 
 import { translationSelectors } from './translations.selectors';
@@ -40,6 +42,7 @@ type UseTranslations = {
   getOptionTranslations: GetOptionTranslations;
   updateTranslation: UpdateTranslation;
   removeTranslation: RemoveTranslation;
+  isTranslationsEnabled: boolean;
   willTranslate: WillTranslate;
   canUseTranslationValue: CanUseTranslation;
 };
@@ -53,6 +56,9 @@ function useTranslations(
   const dispatch = useAppDispatch();
   const { current, isPrimary } = useSiteContext();
   const searchType = useFieldTypeSearch();
+  const { translations: isTranslationsEnabled = false } = useSelector(
+    formSelectors.settings.one('general')
+  );
 
   const { data: pageButtonType } = useFetchPageButtonType();
   const { data: formSettings } = useQueryFormSettings();
@@ -106,6 +112,10 @@ function useTranslations(
 
   const willTranslate: WillTranslate = useCallback(
     (handle) => {
+      if (!isTranslationsEnabled) {
+        return false;
+      }
+
       if (!target) {
         return false;
       }
@@ -235,6 +245,7 @@ function useTranslations(
     updateTranslation,
     removeTranslation,
     canUseTranslationValue,
+    isTranslationsEnabled,
   };
 }
 

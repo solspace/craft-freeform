@@ -25,8 +25,9 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   errors,
   context,
 }) => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const { hasTranslation, removeTranslation } = useTranslations(context as any);
+  const { hasTranslation, removeTranslation, isTranslationsEnabled } =
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    useTranslations(context as any);
 
   const {
     label,
@@ -47,7 +48,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
         label={label}
         handle={handle}
         required={required}
-        translatable={translatable}
+        translatable={isTranslationsEnabled && translatable}
         hasTranslation={hasTranslation(handle)}
         removeTranslation={() => removeTranslation(handle)}
       />

@@ -23,6 +23,10 @@ class TranslationsService extends BaseService
             $this->sitesEnabled = $this->getSettingsService()->getSettingsModel()->sitesEnabled;
         }
 
+        if (!$form->getSettings()->getGeneral()->translations) {
+            return false;
+        }
+
         return $this->sitesEnabled;
     }
 

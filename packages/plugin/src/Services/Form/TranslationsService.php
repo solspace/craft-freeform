@@ -66,7 +66,7 @@ class TranslationsService extends BaseService
 
             $translations = [];
             foreach ($find as $found) {
-                $translations[$found->siteId] = json_decode($found->translations, true);
+                $translations[$found->siteId] = $this->decodeTranslations($found->translations);
             }
 
             $this->translationCache[$form->getId()] = $translations;
@@ -93,5 +93,19 @@ class TranslationsService extends BaseService
             $record->translations = JsonHelper::encode($translation);
             $record->save();
         }
+    }
+
+    private function decodeTranslations(string $translations): array
+    {
+        $decoded = json_decode($translations, true);
+        foreach ($decoded as $type => $typeTranslations) {
+            foreach ($typeTranslations as $namespace => $namespaceTranslations) {
+                if (empty($namespaceTranslations)) {
+                    unset($decoded[$type][$namespace]);
+                }
+            }
+        }
+
+        return $decoded;
     }
 }

@@ -25,7 +25,7 @@ export const translationSlice = createSlice({
         };
       }
 
-      if (Array.isArray(state[siteId][type]) && !state[siteId][type].length) {
+      if (!state[siteId][type] || typeof state[siteId][type] !== 'object') {
         state[siteId][type] = {};
       }
 
@@ -33,7 +33,7 @@ export const translationSlice = createSlice({
         state[siteId][type] = {};
       }
 
-      if (state[siteId][type][namespace] === undefined) {
+      if (!state[siteId][type][namespace]) {
         state[siteId][type][namespace] = {};
       }
 

@@ -12,6 +12,7 @@ import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
 import type { Property } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
+import cloneDeep from 'lodash.clonedeep';
 
 import type { Option, OptionsConfiguration } from '../../options.types';
 
@@ -35,12 +36,6 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
   const translation = getTranslation<OptionTranslations>(property.handle, {});
   const optionTranslations: Option[] = translation.options || [];
 
-  const keyLabelMap = options.map(({ label, value }) => ({
-    value,
-    label:
-      optionTranslations.find((opt) => opt.value === value)?.label || label,
-  }));
-
   const refs = useRef([]);
   refs.current = options.map(
     (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>()
@@ -54,7 +49,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
       <TableContainer>
         <TabularOptions>
           <tbody>
-            {keyLabelMap.map((option, index) => (
+            {options.map((option, index) => (
               <Row key={index}>
                 <Cell style={{ width: 200 }}>
                   <OriginalValuePreview className="code" title={option.value}>
@@ -65,38 +60,37 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                 <Cell>
                   <Input
                     type="text"
-                    value={option.label}
+                    value={
+                      optionTranslations.find(
+                        (opt) => opt.value === option.value
+                      )?.label || option.label
+                    }
                     placeholder={translate('Label')}
                     autoFocus={activeCell === `${index}:0`}
                     ref={(element) => setCellRef(element, index, 0)}
                     onFocus={() => setActiveCell(index, 0)}
                     onKeyDown={keyPressHandler()}
-                    onChange={
-                      (event) => {
-                        updateTranslation(property.handle, {
-                          ...translation,
-                          options: [
-                            ...optionTranslations.slice(0, index),
-                            {
-                              value: option.value,
-                              label: event.target.value,
-                            },
-                            ...optionTranslations.slice(index + 1),
-                          ],
+                    onChange={(event) => {
+                      const updatedOptions = cloneDeep(optionTranslations);
+                      const translationIndex = updatedOptions.findIndex(
+                        (opt) => opt.value === option.value
+                      );
+
+                      if (translationIndex === -1) {
+                        updatedOptions.push({
+                          value: option.value,
+                          label: event.target.value,
                         });
+                      } else {
+                        updatedOptions[translationIndex].label =
+                          event.target.value;
                       }
-                      // updateValue(
-                      //   updateOption(
-                      //     index,
-                      //     {
-                      //       ...option,
-                      //       label: event.target.value,
-                      //       value: event.target.value,
-                      //     },
-                      //     value
-                      //   )
-                      // )
-                    }
+
+                      updateTranslation(property.handle, {
+                        ...translation,
+                        options: updatedOptions,
+                      });
+                    }}
                   />
                 </Cell>
               </Row>

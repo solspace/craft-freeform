@@ -131,49 +131,55 @@ function useTranslations(
   // ================
   //       GET
   // ================
-  const getTranslation: GetTranslation = (handle, value) => {
-    if (!willTranslate(handle)) {
-      return value;
-    }
+  const getTranslation: GetTranslation = useCallback(
+    (handle, value) => {
+      if (!willTranslate(handle)) {
+        return value;
+      }
 
-    if (!hasTranslation(handle)) {
-      return value;
-    }
+      if (!hasTranslation(handle)) {
+        return value;
+      }
 
-    return translationNamespace[handle];
-  };
+      return translationNamespace[handle];
+    },
+    [translationNamespace]
+  );
 
-  const getOptionTranslations: GetTranslation = (handle, value) => {
-    if (!willTranslate(handle)) {
-      return value;
-    }
+  const getOptionTranslations: GetTranslation = useCallback(
+    (handle, value) => {
+      if (!willTranslate(handle)) {
+        return value;
+      }
 
-    if (!hasTranslation(handle)) {
-      return value;
-    }
+      if (!hasTranslation(handle)) {
+        return value;
+      }
 
-    const translatedValue: OptionsConfiguration = cloneDeep(value);
-    const translation: OptionTranslations = translationNamespace[handle];
+      const translatedValue: OptionsConfiguration = cloneDeep(value);
+      const translation: OptionTranslations = translationNamespace[handle];
 
-    if (translatedValue.source === 'custom' && translation.options) {
-      translatedValue.options = translatedValue.options.map((option) => {
-        const translatedOption = translation.options.find(
-          (opt) => opt.value === option.value
-        );
+      if (translatedValue.source === 'custom' && translation.options) {
+        translatedValue.options = translatedValue.options.map((option) => {
+          const translatedOption = translation.options.find(
+            (opt) => opt.value === option.value
+          );
 
-        if (translatedOption) {
-          return {
-            ...option,
-            label: translatedOption.label,
-          };
-        }
+          if (translatedOption) {
+            return {
+              ...option,
+              label: translatedOption.label,
+            };
+          }
 
-        return option;
-      });
-    }
+          return option;
+        });
+      }
 
-    return translatedValue;
-  };
+      return translatedValue;
+    },
+    [translationNamespace]
+  );
 
   // ================
   //      UPDATE

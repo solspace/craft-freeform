@@ -29,6 +29,15 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 
     public ?NotificationTemplate $template = null;
 
+    public ?int $siteId = null;
+
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+
+        $this->siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+    }
+
     public function execute($queue): void
     {
         if (!$this->recipients) {
@@ -38,6 +47,14 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         if (!$this->template) {
             return;
         }
+
+        $originalSiteId = \Craft::$app->getSites()->getCurrentSite()->id;
+
+        $sites = \Craft::$app->getSites();
+        $sites->setCurrentSite($this->siteId);
+
+        // Set the application language to the site's primary language
+        \Craft::$app->language = $sites->getCurrentSite()->language;
 
         $freeform = Freeform::getInstance();
 
@@ -56,6 +73,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             $this->template,
             $submission,
         );
+
+        $sites->setCurrentSite($originalSiteId);
+        \Craft::$app->language = $sites->getCurrentSite()->language;
     }
 
     protected function defaultDescription(): ?string

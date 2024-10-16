@@ -232,10 +232,14 @@ class FreeformVariable
         return $this->siteTemplatesDirectories;
     }
 
-    public function payments(int|Submission $submission, ?string $paymentFieldHandle = null): null|array|PaymentModel
+    public function payments(int|Submission|SubmissionQuery $submission, ?string $paymentFieldHandle = null): null|array|PaymentModel
     {
         if (is_numeric($submission)) {
             $submission = Freeform::getInstance()->submissions->getSubmissionById($submission);
+        }
+
+        if ($submission instanceof SubmissionQuery) {
+            $submission = $submission->one();
         }
 
         if (!$submission) {

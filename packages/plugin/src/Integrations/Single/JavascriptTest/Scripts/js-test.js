@@ -1,6 +1,11 @@
-var form = document.querySelector('form[data-id="{{ id }}"]');
 var jsTest = function (event) {
-  event.form.querySelector('[data-ff-check] + input[name]').value = '';
+  var form = event.form;
+  var input = form.querySelector('[data-ff-check] + input[name]');
+  if (!input) {
+    return;
+  }
+
+  input.value = '';
 }
 
 document.addEventListener('freeform-ready', jsTest);

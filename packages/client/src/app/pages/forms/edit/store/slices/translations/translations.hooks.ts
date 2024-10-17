@@ -56,9 +56,8 @@ function useTranslations(
   const dispatch = useAppDispatch();
   const { current, isPrimary } = useSiteContext();
   const searchType = useFieldTypeSearch();
-  const { translations: isTranslationsEnabled = false } = useSelector(
-    formSelectors.settings.one('general')
-  );
+  const generalSettings = useSelector(formSelectors.settings.one('general'));
+  const isTranslationsEnabled = generalSettings?.translations;
 
   const { data: pageButtonType } = useFetchPageButtonType();
   const { data: formSettings } = useQueryFormSettings();

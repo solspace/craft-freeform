@@ -10,7 +10,7 @@ import type { TranslationType } from './translations.types';
 export const translationSelectors = {
   namespace: (siteId: number, target: Field | SettingsNamespace | Page) =>
     createSelector(
-      (state: RootState) => state.translations[siteId],
+      (state: RootState) => state.translations?.[siteId],
       (translations) => {
         if (!target) {
           return undefined;

@@ -15,6 +15,9 @@ class m240819_104209_AddTranslationTable extends Migration
                 'formId' => $this->integer()->notNull(),
                 'siteId' => $this->integer()->notNull(),
                 'translations' => $this->longText()->notNull(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
             ]
         );
 

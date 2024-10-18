@@ -42,11 +42,10 @@ Consider using an **Environment Variable** for these settings instead. Then, sto
 - Configure the webhook:
     - Copy the **Webhook URL** field value in Freeform (e.g. `http://my-precio.us/freeform/payment-webhooks/stripe?id=1`) and paste it into the **Endpoint URL** setting.
     - For the **Listen to** setting, choose **Events on your account**.
-    - Click on the **Select events** button under the **Select events to listen to** setting. Add the following 4 events Freeform requires:
-        - `customer.subscription.created`
-        - `customer.subscription.deleted`
-        - `invoice.payment_failed`
-        - `invoice.payment_succeeded`
+    - Click on the **Select events** button under the **Select events to listen to** setting. Add the following 3 events Freeform requires:
+        - `payment_intent.succeeded`
+        - `payment_intent.payment_failed`
+        - `payment_intent.canceled`
     - Click the **Add endpoint** button to save it.
 - On the next page inside Stripe account, click on the newly created endpoint URL.
 - At the top of the next page, you'll see an item called **Signing secret**.

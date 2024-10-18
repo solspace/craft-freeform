@@ -6,7 +6,8 @@ use craft\base\Model;
 
 class PaymentModel extends Model
 {
-    public int $amount = 0;
+    public ?int $id = null;
+    public float $amount = 0;
     public string $currency = '';
     public string $status = '';
     public ?string $errorMessage = null;
@@ -16,4 +17,5 @@ class PaymentModel extends Model
     public ?string $planName = null;
     public ?string $interval = null;
     public ?string $frequency = null;
+    public ?string $resourceId = null;
 }

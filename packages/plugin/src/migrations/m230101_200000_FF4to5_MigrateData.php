@@ -338,6 +338,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     private function processFieldExceptions(\stdClass $data): array
     {
+        $targetFieldHash = $data->targetFieldHash ?? '';
+
         return match ($data->type) {
             'select', 'checkbox_group', 'radio_group', 'multiple_select' => $this->processOptions($data),
             'opinion_scale' => $this->processOpinionScale($data),
@@ -349,7 +351,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 'minMaxValues' => [$data->minValue ?? null, $data->maxValue ?? null],
             ],
             'confirmation' => [
-                'targetField' => $this->fieldMap[$data->targetFieldHash]?->uid ?? null,
+                'targetField' => isset($this->fieldMap[$targetFieldHash]) ? $this->fieldMap[$targetFieldHash]->uid : null,
             ],
             'mailing_list' => [
                 'checkedByDefault' => (bool) ($data->value ?? false),

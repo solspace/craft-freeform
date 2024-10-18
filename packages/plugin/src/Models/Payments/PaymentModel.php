@@ -17,4 +17,5 @@ class PaymentModel extends Model
     public ?string $planName = null;
     public ?string $interval = null;
     public ?string $frequency = null;
+    public ?string $resourceId = null;
 }

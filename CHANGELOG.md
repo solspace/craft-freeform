@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.6.6 - 2024-10-18
+
+### Fixed
+- Fixed a bug where the Javascript Test was not checking for the presence of the input before updating its value.
+- Fixed a bug where email notification jobs did not consider the site ID used when submitting the form.
+- Fixed a bug where Invisible fields could not have their values overridden at the template level.
+- Fixed a bug where Stripe `payments.amount` only showed whole numbers.
+- Fixed a bug where Stripe `payments.id` and `payments.resourceId` were not available to use.
+- Fixed a bug where the GTM integration would fail if another script also uses the `form` global variable.
+- Fixed a bug where the Freeform 4.x migration was missing a check for `targetFieldHash` before using it.
+
 ## 5.6.5 - 2024-10-11
 
 ### Added

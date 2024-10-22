@@ -49,7 +49,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Leads',
-        instructions: 'Should map to the Leads endpoint.',
+        instructions: 'Map submission data to create Leads in Salesforce.',
         order: 4,
     )]
     protected bool $mapLeads = false;
@@ -58,8 +58,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
-        label: 'Link Files To Leads',
-        instructions: 'Enabling this will link any uploaded files to the created lead.',
+        label: 'Attach Uploaded Files to Leads',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Lead.',
         order: 5,
     )]
     protected bool $filesForLeads = false;
@@ -69,7 +69,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
         label: 'Assign Lead Owner',
-        instructions: 'Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules.',
+        instructions: 'Assign a lead owner based on lead owner assignment rules in Salesforce.',
         order: 6,
     )]
     protected bool $assignLeadOwner = false;
@@ -79,7 +79,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
         label: 'Convert Leads to Contact Tasks for Returning Customers',
-        instructions: 'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
+        instructions: 'If a Salesforce Contact with the same email exists, create a new Task for that Contact instead of a new Lead.',
         order: 7,
     )]
     protected bool $convertLeadsToTasks = false;
@@ -89,7 +89,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
-        instructions: "Enter the text you'd like to have set for new Task subjects.",
+        instructions: "Enter the text you would like to have set for new Task subjects.",
         order: 8,
     )]
     protected string $taskSubject = '';
@@ -109,7 +109,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields.',
         order: 10,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
@@ -124,7 +124,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Opportunities',
-        instructions: 'Should map to the Opportunities endpoint.',
+        instructions: 'Map submission data to create Opportunities in Salesforce.',
         order: 11,
     )]
     protected bool $mapOpportunities = false;
@@ -133,8 +133,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Input\Boolean(
-        label: 'Link Files To Opportunities',
-        instructions: 'Enabling this will link any uploaded files to the created opportunity.',
+        label: 'Attach Uploaded Files to Opportunities',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Opportunity.',
         order: 12,
     )]
     protected bool $filesForOpportunities = false;
@@ -165,7 +165,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields.',
         order: 15,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_OPPORTUNITY,
         parameterFields: ['id' => 'id'],
@@ -180,7 +180,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Accounts',
-        instructions: 'Should map to the Accounts endpoint.',
+        instructions: 'Map submission data to create Accounts in Salesforce.',
         order: 16,
     )]
     protected bool $mapAccounts = false;
@@ -189,8 +189,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Boolean(
-        label: 'Link Files To Accounts',
-        instructions: 'Enabling this will link any uploaded files to the created account.',
+        label: 'Attach Uploaded Files to Accounts',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Account.',
         order: 17,
     )]
     protected bool $filesForAccounts = false;
@@ -199,8 +199,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Boolean(
-        label: 'Append checkbox group field values on Account update',
-        instructions: 'If an Account already exists in Salesforce, enabling this will append additional checkbox group field values to the Account inside Salesforce, instead of overwriting the options.',
+        label: 'Append Checkboxes field values on Account update',
+        instructions: 'If an Account already exists in Salesforce, enabling this option will add additional Checkboxes field values to the Account in Salesforce instead of replacing the existing options.',
         order: 18,
     )]
     protected bool $appendAccountData = false;
@@ -210,7 +210,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Contact fields.',
         order: 19,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
@@ -225,7 +225,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Map to Contacts',
-        instructions: 'Should map to the Contacts endpoint.',
+        instructions: 'Map submission data to create Contacts in Salesforce.',
         order: 20,
     )]
     protected bool $mapContacts = false;
@@ -234,8 +234,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
-        label: 'Link Files To Contacts',
-        instructions: 'Enabling this will link any uploaded files to the created contact.',
+        label: 'Attach Uploaded Files to Contacts',
+        instructions: 'Send any uploaded files to Salesforce and relate them to the created Contact.',
         order: 21,
     )]
     protected bool $filesForContacts = false;
@@ -244,8 +244,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
-        label: 'Check Contact email address and Account website when checking for duplicates',
-        instructions: 'By default, Freeform will check against Contact first name, last name and email address, as well as and Account name. If enabled, Freeform will instead check against Contact email address only and Account website. If no website is mapped, Freeform will gather the website domain from the Contact email address mapped.',
+        label: 'Check Contact email address and Account website when checking for Duplicates',
+        instructions: "By default, Freeform checks the Contact's first name, last name, email address, and Account name. If enabled, it will check only the Contact's email address and the Account's website. If no website is provided, Freeform will use the domain from the Contact's email address.",
         order: 22,
     )]
     protected bool $duplicateCheck = false;
@@ -254,8 +254,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
-        label: 'Append checkbox group field values on Contact update',
-        instructions: 'If a Contact already exists in Salesforce, enabling this will append additional checkbox group field values to the Contact inside Salesforce, instead of overwriting the options.',
+        label: 'Append Checkboxes field values on Contact update',
+        instructions: 'If a Contact already exists in Salesforce, enabling this option will add additional Checkboxes field values to the Contact in Salesforce instead of replacing the existing options.',
         order: 23,
     )]
     protected bool $appendContactData = false;
@@ -265,7 +265,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',
+        instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Contact fields.',
         order: 24,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],

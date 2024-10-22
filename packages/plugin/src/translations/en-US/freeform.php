@@ -1195,7 +1195,6 @@ return [
     "Enter a relative textual date string for the Due Date of the newly created Task (e.g. '2 days')." => "Enter a relative textual date string for the Due Date of the newly created Task (e.g. '2 days').",
     'Lead Mapping' => 'Lead Mapping',
     'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields.' => 'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields.',
-    
     'Map to Opportunities' => 'Map to Opportunities',
     'Map submission data to create Opportunities in Salesforce.' => 'Map submission data to create Opportunities in Salesforce.',
     'Attach Uploaded Files to Opportunities' => 'Attach Uploaded Files to Opportunities',
@@ -1206,7 +1205,6 @@ return [
     "Enter the Stage Name the newly created Opportunity should be assigned to (e.g. 'Prospecting')." => "Enter the Stage Name the newly created Opportunity should be assigned to (e.g. 'Prospecting').",
     'Opportunity Mapping' => 'Opportunity Mapping',
     'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields.' => 'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields.',
-
     'Map to Accounts' => 'Map to Accounts',
     'Map submission data to create Accounts in Salesforce.' => 'Map submission data to create Accounts in Salesforce.',
     'Attach Uploaded Files to Accounts' => 'Attach Uploaded Files to Accounts',
@@ -1215,7 +1213,6 @@ return [
     'If an Account already exists in Salesforce, enabling this option will add additional Checkboxes field values to the Account in Salesforce instead of replacing the existing options.' => 'If an Account already exists in Salesforce, enabling this option will add additional Checkboxes field values to the Account in Salesforce instead of replacing the existing options.',
     'Account Mapping' => 'Account Mapping',
     'Select the Freeform fields to be mapped to the applicable Salesforce Account fields.' => 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields.',
-
     'Map to Contacts' => 'Map to Contacts',
     'Map submission data to create Contacts in Salesforce.' => 'Map submission data to create Contacts in Salesforce.',
     'Attach Uploaded Files to Contacts' => 'Attach Uploaded Files to Contacts',

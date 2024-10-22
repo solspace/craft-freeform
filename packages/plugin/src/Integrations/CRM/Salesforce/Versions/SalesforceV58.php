@@ -89,7 +89,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
-        instructions: "Enter the text you would like to have set for new Task subjects.",
+        instructions: 'Enter the text you would like to have set for new Task subjects.',
         order: 8,
     )]
     protected string $taskSubject = '';

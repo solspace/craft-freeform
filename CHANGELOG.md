@@ -1,5 +1,41 @@
 # Solspace Freeform Changelog
 
+## 5.6.7 - 2024-10-23
+
+### Added
+- Added support for sending file uploads to Salesforce objects.
+- Added complete translations for the Salesforce integration.
+
+### Fixed
+- Fixed a bug where the CP Submissions index would error when displaying File Upload and File Upload Drag & Drop fields.
+- Fixed a bug where Hidden and Invisible fields were not included in Freeform Data exports.
+- Fixed a bug where the `dateCreated`, `dateUpdated` and `uid` columns were missing when persisting rule conditions on a PostgreSQL install.
+
+## 5.6.6 - 2024-10-18
+
+### Fixed
+- Fixed a bug where the Javascript Test was not checking for the presence of the input before updating its value.
+- Fixed a bug where email notification jobs did not consider the site ID used when submitting the form.
+- Fixed a bug where Invisible fields could not have their values overridden at the template level.
+- Fixed a bug where Stripe `payments.amount` only showed whole numbers.
+- Fixed a bug where Stripe `payments.id` and `payments.resourceId` were not available to use.
+- Fixed a bug where the GTM integration would fail if another script also uses the `form` global variable.
+- Fixed a bug where the Freeform 4.x migration was missing a check for `targetFieldHash` before using it.
+
+## 5.6.5 - 2024-10-11
+
+### Added
+- Added support for _Cloudflare Turnstile_ spam protection captcha.
+
+### Changed
+- Updated the sample Grid and Flexbox formatting templates to allow for compatibility between Group fields and Conditional Rules.
+
+### Fixed
+- Fixed a bug where the _Decimal Count_ setting for the Calculation field type was not seeing `0` as a valid value.
+- Fixed a bug where the Freeform 4.x migration was converting status colors to `gray` instead of `grey` while in Craft 4.x.
+- Fixed a bug where the **Send Success Email from Stripe to Submitter** setting was not respected and Stripe would continue sending email receipts.
+- Fixed a bug where using the List view on the forms dashboard could trigger an error for some customers.
+
 ## 5.6.4 - 2024-10-07
 
 ### Added

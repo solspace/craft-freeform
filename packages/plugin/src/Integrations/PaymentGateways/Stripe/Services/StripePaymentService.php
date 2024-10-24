@@ -20,6 +20,8 @@ class StripePaymentService
         $details = $method->details;
 
         $model = new PaymentModel();
+        $model->id = $record->id;
+        $model->resourceId = $record->resourceId;
         $model->amount = $record->amount / 100;
         $model->currency = strtoupper($record->currency);
         $model->status = $record->status;

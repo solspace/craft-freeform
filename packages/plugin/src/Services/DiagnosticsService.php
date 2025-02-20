@@ -177,6 +177,35 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Execution Time').': <b>{{ value }}</b>',
+                \ini_get('max_execution_time'),
+                []
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Input Time').': <b>{{ value }}</b>',
+                \ini_get('max_input_time'),
+                []
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Input Vars').': <b>{{ value }}</b>',
+                \ini_get('max_input_vars'),
+                []
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max File Upload Size').': <b>{{ value }}</b>',
+                \ini_get('upload_max_filesize'),
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Post Size').': <b>{{ value }}</b>',
+                \ini_get('post_max_size'),
+                []
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Output Buffering').': <b>{{ value }}</b>',
+                \ini_get('output_buffering'),
+                []
+            ),
+            new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span>'.Freeform::t('PHP Sessions'),
                 \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
                 [
@@ -237,6 +266,10 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Async CSRF Inputs'),
                 \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs,
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max File Upload Size').': <b>'.self::convertBytesToMB(\Craft::$app->getConfig()->getGeneral()->maxUploadFileSize).'M</b>',
+                \Craft::$app->getConfig()->getGeneral()->maxUploadFileSize,
             ),
             new DiagnosticItem(
                 '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Craft Email configuration').': <b>{{ value.transport }}</b></span>',
@@ -746,6 +779,11 @@ class DiagnosticsService extends BaseService
         }
 
         return $diagnosticItems;
+    }
+
+    private static function convertBytesToMB(int|string $size): float
+    {
+        return round((int) $size / (1024 * 1024), 2);
     }
 
     private function getEmailSettings(): array

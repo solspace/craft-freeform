@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<ruleset name="Freeform">
+    <description>PHPCompatibility ruleset for Freeform</description>
+    <config name="extensions" value="php"/>
+    <config name="testVersion" value="8.0-"/>
+    <file>./packages/plugin</file>
+    <rule ref="PHPCompatibility"/>
+</ruleset>

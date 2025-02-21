@@ -68,7 +68,7 @@ class ExportXml extends AbstractSubmissionExport
                                     }
 
                                     if ($columnValue) {
-                                        $xml->text(htmlspecialchars($columnValue));
+                                        $xml->text(htmlspecialchars($columnValue, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
                                     }
 
                                     $xml->endElement(); // column
@@ -79,13 +79,13 @@ class ExportXml extends AbstractSubmissionExport
                         } elseif (\is_array($value)) {
                             foreach ($value as $item) {
                                 $xml->startElement('item');
-                                $xml->text(htmlspecialchars($item));
+                                $xml->text(htmlspecialchars($item, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
                                 $xml->endElement(); // item
                             }
                         }
                     } else {
                         $xml->writeAttribute('label', $label);
-                        $xml->text(htmlspecialchars($value));
+                        $xml->text(htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401));
                     }
 
                     $xml->endElement(); // $handle
@@ -124,7 +124,10 @@ class ExportXml extends AbstractSubmissionExport
                                 $rowNode = $node->addChild('row');
 
                                 foreach ($tableRow as $index => $columnValue) {
-                                    $columnNode = $rowNode->addChild('column', htmlspecialchars($columnValue));
+                                    $columnNode = $rowNode->addChild(
+                                        'column',
+                                        htmlspecialchars($columnValue, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
+                                    );
 
                                     $label = $layout[$index]->label ?? null;
                                     if ($label) {
@@ -134,13 +137,16 @@ class ExportXml extends AbstractSubmissionExport
                             }
                         } elseif (\is_array($value)) {
                             foreach ($value as $item) {
-                                $node->addChild('item', htmlspecialchars($item));
+                                $node->addChild(
+                                    'item',
+                                    htmlspecialchars($item, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
+                                );
                             }
                         }
                     } else {
                         $node = $submission->addChild(
                             $column->getHandle(),
-                            htmlspecialchars($column->getValue())
+                            htmlspecialchars($column->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
                         );
                     }
 

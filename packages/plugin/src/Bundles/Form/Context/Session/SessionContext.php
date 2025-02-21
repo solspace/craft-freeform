@@ -266,7 +266,7 @@ class SessionContext
         }
 
         $hash = RequestHelper::post(self::KEY_HASH, '');
-        $hash = htmlspecialchars($hash);
+        $hash = htmlspecialchars($hash, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
         $parts = explode('-', $hash);
         if (3 === \count($parts)) {

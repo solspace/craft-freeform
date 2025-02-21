@@ -1,0 +1,3 @@
+<?php
+
+class HubSpotV1 {}

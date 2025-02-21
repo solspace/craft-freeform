@@ -380,7 +380,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 ->set(($isRequired ? '+' : '-').'class', 'freeform-required')
             ;
 
-            $output .= '<th'.$thAttributes.'>'.htmlentities($label).'</th>';
+            $output .= '<th'.$thAttributes.'>'.htmlentities($label, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401).'</th>';
         }
         $output .= '<th>&nbsp;</th></tr>';
         $output .= '</thead>';
@@ -395,7 +395,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $type = $column->type;
                 $defaultValue = $column->value;
                 $value = $row[$index] ?? $defaultValue;
-                $value = htmlentities($value);
+                $value = htmlentities($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
                 $output .= '<td'.$columnAttributes.'>';
 

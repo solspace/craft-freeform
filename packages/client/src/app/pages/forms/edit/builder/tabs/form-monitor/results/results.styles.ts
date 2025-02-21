@@ -94,7 +94,7 @@ export const TooltipStatus = styled.div<{ $status: string }>`
       ? colors.teal700
       : $status === 'failed'
         ? colors.red700
-        : colors.yellow700};
+        : colors.gray700};
   margin-bottom: ${spacings.xs};
 `;
 
@@ -227,16 +227,16 @@ export const StatusBadgeStyled = styled.div`
   font-size: 12px;
   font-weight: 500;
   color: ${colors.white};
-  background-color: ${colors.teal500};
+  background-color: ${colors.green600};
   text-transform: uppercase;
   letter-spacing: 0.5px;
 
   &.status-pending {
-    background-color: ${colors.yellow400};
+    background-color: ${colors.gray700};
   }
 
   &.status-failed {
-    background-color: ${colors.red500};
+    background-color: ${colors.red600};
   }
 `;
 

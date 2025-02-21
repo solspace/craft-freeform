@@ -136,4 +136,5 @@ export const colors = {
   teal700: 'var(--teal-700)', //#147d64
   teal800: 'var(--teal-800)', //#0c6b58
   teal900: 'var(--teal-900)', //#014d40
+  green600: 'var(--green-600)', //#16a34a
 };

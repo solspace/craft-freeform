@@ -134,7 +134,7 @@ export const List: React.FC = () => {
 
             <StatRow>
               <StatHeader>
-                <StatLabel $type="pending">{translate('Pending')}</StatLabel>
+                <StatLabel $type="pending">{translate('Processing')}</StatLabel>
                 <StatValue>
                   {stats.percentage.pending}% ({stats.pending})
                 </StatValue>

@@ -35,17 +35,17 @@ export const StatsChart: React.FC<{
           {
             name: 'Success',
             value: stats?.percentage?.success || 0,
-            color: colors.teal500,
+            color: colors.green600,
           },
           {
             name: 'Failed',
             value: stats?.percentage?.failed || 0,
-            color: colors.red500,
+            color: colors.red600,
           },
           {
-            name: 'Pending',
+            name: 'Processing',
             value: stats?.percentage?.pending || 0,
-            color: colors.yellow400,
+            color: colors.gray700,
           },
         ];
 
@@ -105,23 +105,23 @@ export const StatsChart: React.FC<{
       </div>
 
       <Legend>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.teal500}>
+        <LegendItem color={total === 0 ? colors.gray300 : colors.green600}>
           {total === 0
             ? translate('Not monitored')
             : `${stats?.percentage?.success || 0}%`}{' '}
           {total === 0 ? '' : translate('Success')}
         </LegendItem>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.red500}>
+        <LegendItem color={total === 0 ? colors.gray300 : colors.red600}>
           {total === 0
             ? translate('Not monitored')
             : `${stats?.percentage?.failed || 0}%`}{' '}
           {total === 0 ? '' : translate('Failed')}
         </LegendItem>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.yellow400}>
+        <LegendItem color={total === 0 ? colors.gray300 : colors.gray700}>
           {total === 0
             ? translate('Not monitored')
             : `${stats?.percentage?.pending || 0}%`}{' '}
-          {total === 0 ? '' : translate('Pending')}
+          {total === 0 ? '' : translate('Processing')}
         </LegendItem>
       </Legend>
     </StatsChartContainer>

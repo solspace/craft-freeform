@@ -119,10 +119,10 @@ export const FMResults: React.FC = () => {
     date: test.dateAttempted,
     color:
       test.status === 'success'
-        ? colors.teal500
+        ? colors.green600
         : test.status === 'failed'
-          ? colors.red500
-          : colors.yellow400,
+          ? colors.red600
+          : colors.gray700,
   }));
 
   const handlePageChange = (page: number): void => {
@@ -142,12 +142,12 @@ export const FMResults: React.FC = () => {
             )}
           </ChartDescription>
           <ChartLegend>
-            <LegendItem color={colors.teal500}>
+            <LegendItem color={colors.green600}>
               {translate('Success')}
             </LegendItem>
-            <LegendItem color={colors.red500}>{translate('Failed')}</LegendItem>
-            <LegendItem color={colors.yellow400}>
-              {translate('Pending')}
+            <LegendItem color={colors.red600}>{translate('Failed')}</LegendItem>
+            <LegendItem color={colors.gray700}>
+              {translate('Processing')}
             </LegendItem>
           </ChartLegend>
           <ResponsiveContainer width="100%" height={100}>
@@ -165,7 +165,7 @@ export const FMResults: React.FC = () => {
               />
               <YAxis hide />
               <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="value" fill={colors.teal500}>
+              <Bar dataKey="value" fill={colors.green600}>
                 {chartData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}

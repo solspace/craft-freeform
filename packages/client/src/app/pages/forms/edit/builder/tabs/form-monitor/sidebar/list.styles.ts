@@ -74,15 +74,15 @@ export const MostRecentTests = styled.div`
     }
 
     &.status-success {
-      color: ${colors.teal500};
+      color: ${colors.green600};
     }
 
     &.status-failed {
-      color: ${colors.red500};
+      color: ${colors.red600};
     }
 
     &.status-pending {
-      color: ${colors.yellow700};
+      color: ${colors.gray700};
     }
 
     small {
@@ -99,15 +99,15 @@ export const MostRecentTests = styled.div`
         font-size: 12px;
 
         &.status-success {
-          color: ${colors.teal500};
+          color: ${colors.green600};
         }
 
         &.status-failed {
-          color: ${colors.red500};
+          color: ${colors.red600};
         }
 
         &.status-pending {
-          color: ${colors.yellow700};
+          color: ${colors.gray700};
         }
       }
     }
@@ -135,7 +135,7 @@ export const StatLabel = styled.div<{
       ? colors.teal700
       : $type === 'failed'
         ? colors.red700
-        : colors.yellow700};
+        : colors.gray700};
   font-weight: 500;
 `;
 
@@ -159,9 +159,9 @@ export const Progress = styled.div<{
   width: ${({ $percentage }) => $percentage}%;
   background: ${({ $type }) =>
     $type === 'success'
-      ? colors.teal500
+      ? colors.green600
       : $type === 'failed'
-        ? colors.red500
-        : colors.yellow400};
+        ? colors.red600
+        : colors.gray700};
   transition: width 0.3s ease;
 `;

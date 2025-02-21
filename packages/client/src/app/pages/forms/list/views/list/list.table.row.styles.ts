@@ -8,7 +8,6 @@ export const MonitorStatus = styled.span`
   font-size: 11px;
   line-height: 1.2;
   font-weight: 500;
-  color: ${colors.gray700};
 `;
 
 export const StatsChartContainer = styled.div`
@@ -29,12 +28,12 @@ export const LineIndicator = styled.div`
   border-radius: 3px;
   background: linear-gradient(
     to right,
-    ${colors.teal500} 0%,
-    ${colors.teal500} var(--success),
-    ${colors.red500} var(--success),
-    ${colors.red500} var(--failed),
-    ${colors.yellow400} var(--failed),
-    ${colors.yellow400} var(--pending),
+    ${colors.green600} 0%,
+    ${colors.green600} var(--success),
+    ${colors.red600} var(--success),
+    ${colors.red600} var(--failed),
+    ${colors.gray700} var(--failed),
+    ${colors.gray700} var(--pending),
     ${colors.gray300} var(--pending),
     ${colors.gray300} 100%
   );

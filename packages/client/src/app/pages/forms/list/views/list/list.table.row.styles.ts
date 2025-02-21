@@ -21,3 +21,32 @@ export const MonitorStatus = styled.span<{ $type: 'active' | 'inactive' }>`
           background-color: ${colors.gray100};
         `}
 `;
+
+export const StatsChartContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+`;
+
+export const LineWrapper = styled.div`
+  position: relative;
+  padding-bottom: 24px;
+`;
+
+export const LineIndicator = styled.div`
+  width: 70%;
+  height: 6px;
+  border-radius: 3px;
+  background: linear-gradient(
+    to right,
+    ${colors.teal500} 0%,
+    ${colors.teal500} var(--success),
+    ${colors.red500} var(--success),
+    ${colors.red500} var(--failed),
+    ${colors.yellow400} var(--failed),
+    ${colors.yellow400} var(--pending),
+    ${colors.gray300} var(--pending),
+    ${colors.gray300} 100%
+  );
+`;

@@ -24,7 +24,11 @@ import {
   useCloneFormMutation,
 } from '../grid/grid.mutations';
 
-import { MonitorStatus } from './list.table.row.styles';
+import {
+  LineIndicator,
+  MonitorStatus,
+  StatsChartContainer,
+} from './list.table.row.styles';
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
   position: 'top',
@@ -59,6 +63,42 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
   const spamLink = form.links.find((link) => link.handle === 'spam');
 
   const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
+
+  const renderStatsChart = (): JSX.Element | null => {
+    if (!formMonitor?.enabled) return null;
+
+    const total = formMonitor.stats?.total || 0;
+    if (total === 0) {
+      return (
+        <StatsChartContainer>
+          <MonitorStatus $type="inactive">
+            {translate('Not monitored')}
+          </MonitorStatus>
+        </StatsChartContainer>
+      );
+    }
+
+    const success = formMonitor.stats?.percentage?.success || 0;
+    const failed = formMonitor.stats?.percentage?.failed || 0;
+    const pending = formMonitor.stats?.percentage?.pending || 0;
+
+    return (
+      <StatsChartContainer>
+        <LineIndicator
+          style={
+            {
+              '--success': `${success}%`,
+              '--failed': `${success + failed}%`,
+              '--pending': `${success + failed + pending}%`,
+            } as React.CSSProperties
+          }
+        />
+        <MonitorStatus $type="active">
+          {`${translate('Uptime')}: ${success}% | ${translate('Failed')}: ${failed}%`}
+        </MonitorStatus>
+      </StatsChartContainer>
+    );
+  };
 
   return (
     <tr>
@@ -112,15 +152,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
       {hasFormMonitor && (
         <td>
           {formMonitor?.enabled && formMonitorLink && (
-            <NavLink to={formMonitorLink.url}>
-              <MonitorStatus
-                $type={formMonitor.stats.total > 0 ? 'active' : 'inactive'}
-              >
-                {formMonitor.stats.total > 0
-                  ? `${translate('Uptime')}: ${formMonitor.stats.percentage.success}%`
-                  : translate('Not monitored')}
-              </MonitorStatus>
-            </NavLink>
+            <NavLink to={formMonitorLink.url}>{renderStatsChart()}</NavLink>
           )}
         </td>
       )}

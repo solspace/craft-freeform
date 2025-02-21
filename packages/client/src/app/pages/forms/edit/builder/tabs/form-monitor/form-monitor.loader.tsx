@@ -8,7 +8,6 @@ const LoaderContainer = styled.div`
   flex-direction: column;
   gap: ${spacings.md};
   padding: ${spacings.md};
-  background: ${colors.white};
   width: 100%;
 `;
 
@@ -26,6 +25,7 @@ const HeaderLoader = styled.div`
 
 const DetailsLoaderContainer = styled(LoaderContainer)`
   padding: ${spacings.xl};
+  background: ${colors.white};
 `;
 
 const ChartLoaderContainer = styled.div`

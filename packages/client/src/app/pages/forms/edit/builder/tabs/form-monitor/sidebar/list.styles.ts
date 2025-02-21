@@ -4,7 +4,7 @@ import styled from 'styled-components';
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
+  gap: ${spacings.xl};
   padding: ${spacings.md};
 
   h3 {
@@ -15,8 +15,8 @@ export const Wrapper = styled.div`
 
 export const ChartContainer = styled.div`
   border-radius: ${borderRadius.md};
-  padding: ${spacings.md};
   margin-bottom: ${spacings.md};
+  margin-top: ${spacings.lg};
 `;
 
 export const ChartDescription = styled.p`
@@ -34,17 +34,77 @@ export const NoResults = styled.div`
 `;
 
 export const TotalCount = styled.div`
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
   color: ${colors.gray800};
   margin-bottom: ${spacings.sm};
-  text-align: center;
 `;
 
 export const StatContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.md};
+
+  h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: ${colors.gray800};
+    margin-bottom: 0;
+  }
+`;
+
+export const MostRecentTests = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.md};
+
+  .status-success,
+  .status-failed,
+  .status-pending {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 24px;
+    font-weight: 600;
+
+    .status-main {
+      display: flex;
+      align-items: center;
+      gap: ${spacings.sm};
+      margin-bottom: 12px;
+    }
+
+    &.status-success {
+      color: ${colors.teal500};
+    }
+
+    &.status-failed {
+      color: ${colors.red500};
+    }
+
+    &.status-pending {
+      color: ${colors.yellow700};
+    }
+
+    small {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: ${colors.gray500};
+      font-size: 12px;
+      font-weight: 300;
+      margin-top: 4px;
+
+      .status-text {
+        font-weight: 600;
+        color: ${({ className }) =>
+          className?.includes('status-success')
+            ? colors.teal500
+            : className?.includes('status-failed')
+              ? colors.red500
+              : colors.yellow700};
+      }
+    }
+  }
 `;
 
 export const StatRow = styled.div`

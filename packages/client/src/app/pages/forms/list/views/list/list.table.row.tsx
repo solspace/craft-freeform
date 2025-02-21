@@ -94,7 +94,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
           }
         />
         <MonitorStatus $type="active">
-          {`${translate('Uptime')}: ${success}% | ${translate('Failed')}: ${failed}%`}
+          {`${translate('Uptime')}: ${success}%`}
         </MonitorStatus>
       </StatsChartContainer>
     );

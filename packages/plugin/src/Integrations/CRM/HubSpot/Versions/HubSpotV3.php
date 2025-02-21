@@ -132,6 +132,13 @@ class HubSpotV3 extends BaseHubSpotIntegration
     {
         $record = $this->getRecord($category);
 
+        $js = '{invalid';
+        if (json_validate($js)) {
+            echo 'Valid JSON';
+        } else {
+            echo 'Invalid JSON';
+        }
+
         $response = $client->get($this->getEndpoint('/properties/'.$record));
         $json = json_decode((string) $response->getBody());
         if (empty($json)) {

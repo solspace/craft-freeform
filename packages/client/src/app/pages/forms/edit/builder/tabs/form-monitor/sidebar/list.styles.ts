@@ -96,12 +96,19 @@ export const MostRecentTests = styled.div`
 
       .status-text {
         font-weight: 600;
-        color: ${({ className }) =>
-          className?.includes('status-success')
-            ? colors.teal500
-            : className?.includes('status-failed')
-              ? colors.red500
-              : colors.yellow700};
+        font-size: 12px;
+
+        &.status-success {
+          color: ${colors.teal500};
+        }
+
+        &.status-failed {
+          color: ${colors.red500};
+        }
+
+        &.status-pending {
+          color: ${colors.yellow700};
+        }
       }
     }
   }

@@ -71,9 +71,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
     if (total === 0) {
       return (
         <StatsChartContainer>
-          <MonitorStatus $type="inactive">
-            {translate('Not monitored')}
-          </MonitorStatus>
+          <MonitorStatus>{translate('Not monitored')}</MonitorStatus>
         </StatsChartContainer>
       );
     }
@@ -93,9 +91,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
             } as React.CSSProperties
           }
         />
-        <MonitorStatus $type="active">
-          {`${translate('Uptime')}: ${success}%`}
-        </MonitorStatus>
+        <MonitorStatus>{`${translate('Uptime')}: ${success}%`}</MonitorStatus>
       </StatsChartContainer>
     );
   };

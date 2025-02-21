@@ -70,28 +70,29 @@ export const List: React.FC = () => {
               </div>
               {translate(getStatusText(lastTestStatus))}
             </div>
-            {lastTestStatus === 'pending' && previousTest && (
-              <small>
-                {translate('Previous Test')}:{' '}
-                <span className="icon">
-                  {previousTest.status === 'success' && (
-                    <SuccessIcon width={16} height={16} />
-                  )}
-                  {previousTest.status === 'failed' && (
-                    <FailedIcon width={16} height={16} />
-                  )}
-                  {previousTest.status === 'pending' && (
-                    <LoadingIcon width={16} height={16} />
-                  )}
-                </span>{' '}
-                <span className="status-text">
-                  {translate(
-                    previousTest.status.charAt(0).toUpperCase() +
-                      previousTest.status.slice(1)
-                  )}
-                </span>
-              </small>
-            )}
+            {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
+              previousTest && (
+                <small>
+                  {translate('Previous Test')}:{' '}
+                  <span className="icon">
+                    {previousTest.status === 'success' && (
+                      <SuccessIcon width={16} height={16} />
+                    )}
+                    {previousTest.status === 'failed' && (
+                      <FailedIcon width={16} height={16} />
+                    )}
+                    {previousTest.status === 'pending' && (
+                      <LoadingIcon width={16} height={16} />
+                    )}
+                  </span>{' '}
+                  <span className={`status-text status-${previousTest.status}`}>
+                    {translate(
+                      previousTest.status.charAt(0).toUpperCase() +
+                        previousTest.status.slice(1)
+                    )}
+                  </span>
+                </small>
+              )}
           </div>
         </MostRecentTests>
 

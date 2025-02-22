@@ -52,49 +52,53 @@ export const List: React.FC = () => {
   return (
     <Sidebar>
       <Wrapper>
-        <MostRecentTests>
-          <h3>{translate('Most Recent Test')}</h3>
-          {lastTest?.dateAttempted}
-          <div className={`status-${lastTestStatus}`}>
-            <div className="status-main">
-              <div className="icon">
-                {lastTestStatus === 'success' && (
-                  <SuccessIcon width={48} height={48} />
-                )}
-                {lastTestStatus === 'failed' && (
-                  <FailedIcon width={48} height={48} />
-                )}
-                {lastTestStatus === 'pending' && (
-                  <LoadingIcon width={48} height={48} />
-                )}
+        {lastTest && (
+          <MostRecentTests>
+            <h3>{translate('Most Recent Test')}</h3>
+            {lastTest?.dateAttempted}
+            <div className={`status-${lastTestStatus}`}>
+              <div className="status-main">
+                <div className="icon">
+                  {lastTestStatus === 'success' && (
+                    <SuccessIcon width={48} height={48} />
+                  )}
+                  {lastTestStatus === 'failed' && (
+                    <FailedIcon width={48} height={48} />
+                  )}
+                  {lastTestStatus === 'pending' && (
+                    <LoadingIcon width={48} height={48} />
+                  )}
+                </div>
+                {translate(getStatusText(lastTestStatus))}
               </div>
-              {translate(getStatusText(lastTestStatus))}
+              {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
+                previousTest && (
+                  <small>
+                    {translate('Previous Test')}:{' '}
+                    <span className="icon">
+                      {previousTest.status === 'success' && (
+                        <SuccessIcon width={16} height={16} />
+                      )}
+                      {previousTest.status === 'failed' && (
+                        <FailedIcon width={16} height={16} />
+                      )}
+                      {previousTest.status === 'pending' && (
+                        <LoadingIcon width={16} height={16} />
+                      )}
+                    </span>{' '}
+                    <span
+                      className={`status-text status-${previousTest.status}`}
+                    >
+                      {translate(
+                        previousTest.status.charAt(0).toUpperCase() +
+                          previousTest.status.slice(1)
+                      )}
+                    </span>
+                  </small>
+                )}
             </div>
-            {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
-              previousTest && (
-                <small>
-                  {translate('Previous Test')}:{' '}
-                  <span className="icon">
-                    {previousTest.status === 'success' && (
-                      <SuccessIcon width={16} height={16} />
-                    )}
-                    {previousTest.status === 'failed' && (
-                      <FailedIcon width={16} height={16} />
-                    )}
-                    {previousTest.status === 'pending' && (
-                      <LoadingIcon width={16} height={16} />
-                    )}
-                  </span>{' '}
-                  <span className={`status-text status-${previousTest.status}`}>
-                    {translate(
-                      previousTest.status.charAt(0).toUpperCase() +
-                        previousTest.status.slice(1)
-                    )}
-                  </span>
-                </small>
-              )}
-          </div>
-        </MostRecentTests>
+          </MostRecentTests>
+        )}
 
         <ChartContainer>
           <StatContainer>

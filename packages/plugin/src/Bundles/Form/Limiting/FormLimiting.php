@@ -134,8 +134,8 @@ class FormLimiting extends FeatureBundle
         }
 
         // Builds an SQL query that checks existing email field values against submitted email field values
-        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com')
-        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
+        // E.g. sc.`email_field` IN ('foo@example.com', 'bar@example.com')
+        // E.g. sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
         $emailFieldQuery = [];
         $emailFieldValues = '('.implode(', ', $emailFieldValues).')';
         foreach ($emailFields as $emailField) {
@@ -154,7 +154,10 @@ class FormLimiting extends FeatureBundle
                 "{$elements} e",
                 'e.[[id]] = s.[[id]]'
             )
-            ->innerJoin("{$submissionsContents} sc", 'sc.[[id]] = s.[[id]]')
+            ->innerJoin(
+                "{$submissionsContents} sc",
+                'sc.[[id]] = s.[[id]]'
+            )
             ->where([
                 's.[[isSpam]]' => false,
                 's.[[formId]]' => $form->getId(),
@@ -198,12 +201,12 @@ class FormLimiting extends FeatureBundle
 
         $submissions = Submission::TABLE;
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $event->getForm()->getId(),
-                'ip' => $request->getUserIP(),
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $event->getForm()->getId(),
+                's.[[ip]]' => $request->getUserIP(),
             ])
             ->limit(1)
         ;
@@ -211,8 +214,8 @@ class FormLimiting extends FeatureBundle
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Element::tableName();
             $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             );
         }
 
@@ -240,17 +243,17 @@ class FormLimiting extends FeatureBundle
         $submissions = Submission::TABLE;
 
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $form->getId(),
-                'userId' => $userId,
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $form->getId(),
+                's.[[userId]]' => $userId,
             ])
             ->limit(1)
             ->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             )
         ;
 
@@ -272,12 +275,12 @@ class FormLimiting extends FeatureBundle
 
         $submissions = Submission::TABLE;
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $event->getForm()->getId(),
-                'userId' => $userId,
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $event->getForm()->getId(),
+                's.[[userId]]' => $userId,
             ])
             ->limit(1)
         ;
@@ -285,8 +288,8 @@ class FormLimiting extends FeatureBundle
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Element::tableName();
             $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             );
         }
 

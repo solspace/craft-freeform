@@ -674,7 +674,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
                 $error = implode(', ', $error);
             }
 
-            $output .= '<li>'.htmlentities($error).'</li>';
+            $output .= '<li>'.htmlentities($error, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401).'</li>';
         }
 
         $output .= '</ul>';

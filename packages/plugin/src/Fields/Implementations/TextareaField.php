@@ -77,7 +77,7 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
         ;
 
         return '<textarea'.$attributes.'>'
-            .htmlentities($this->getValue())
+            .htmlentities($this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
             .'</textarea>';
     }
 

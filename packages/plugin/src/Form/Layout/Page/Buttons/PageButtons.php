@@ -293,7 +293,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getSubmitLabel())
+                Freeform::t($this->getSubmitLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );
@@ -320,7 +321,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getBackLabel())
+                Freeform::t($this->getBackLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );
@@ -346,7 +348,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getSaveLabel())
+                Freeform::t($this->getSaveLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );

@@ -82,7 +82,7 @@ class ExportCsv extends AbstractSubmissionExport implements StringValueExportInt
 
     protected function writeToFile($resource, array $values): void
     {
-        fputcsv($resource, $values);
+        fputcsv($resource, $values, escape: '\\');
     }
 
     private function extractTableRow(int $rowIndex, array $tableValues, TableField $field): array

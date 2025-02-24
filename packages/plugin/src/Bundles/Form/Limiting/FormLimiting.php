@@ -12,6 +12,7 @@ use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -105,7 +106,7 @@ class FormLimiting extends FeatureBundle
             ->from("{$formFields} ff")
             ->where([
                 'ff.[[formId]]' => $form->getId(),
-                'ff.[[type]]' => 'Solspace\Freeform\Fields\Implementations\EmailField',
+                'ff.[[type]]' => EmailField::class,
             ])
             ->all()
         ;

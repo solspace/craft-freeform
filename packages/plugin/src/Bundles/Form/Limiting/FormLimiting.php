@@ -16,6 +16,7 @@ use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\base\Event;
 
@@ -98,11 +99,13 @@ class FormLimiting extends FeatureBundle
 
         $form = $event->getForm();
 
+        $key = EncryptionHelper::getKey($form->getUid());
+
         // Get all email fields on the form
         $formFields = FormFieldRecord::TABLE;
 
         $emailFields = (new Query())
-            ->select('ff.[[metadata]]')
+            ->select('ff.[[id]], ff.[[metadata]]')
             ->from("{$formFields} ff")
             ->where([
                 'ff.[[formId]]' => $form->getId(),
@@ -111,8 +114,9 @@ class FormLimiting extends FeatureBundle
             ->all()
         ;
 
-        // Get all email field values
-        $emailFieldValues = [];
+        $emailFieldIds = [];
+        $emailFieldHandles = [];
+        $emailFieldIsEncrypted = [];
         foreach ($emailFields as $emailField) {
             if (empty($emailField['metadata'])) {
                 continue;
@@ -123,8 +127,23 @@ class FormLimiting extends FeatureBundle
                 continue;
             }
 
-            $value = $request->post($metadata->handle);
+            $emailFieldIds[] = $emailField['id'];
+            $emailFieldHandles[] = $metadata->handle;
+
+            if (isset($metadata->encrypted)) {
+                $emailFieldIsEncrypted[] = $metadata->encrypted;
+            }
+        }
+
+        // Get all email field values
+        $emailFieldValues = [];
+        foreach ($emailFieldHandles as $index => $emailFieldHandle) {
+            $value = $request->post($emailFieldHandle);
             if (!empty($value)) {
+                if ($emailFieldIsEncrypted[$index]) {
+                    $value = EncryptionHelper::encrypt($key, $value);
+                }
+
                 $emailFieldValues[] = '"'.$value.'"';
             }
         }
@@ -139,8 +158,8 @@ class FormLimiting extends FeatureBundle
         // E.g. sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
         $emailFieldQuery = [];
         $emailFieldValues = '('.implode(', ', $emailFieldValues).')';
-        foreach ($emailFields as $emailField) {
-            $emailFieldQuery[] = 'sc.[['.Submission::getFieldColumnName($emailField).']] IN '.$emailFieldValues;
+        foreach ($emailFieldHandles as $index => $emailFieldHandle) {
+            $emailFieldQuery[] = 'sc.[['.Submission::generateFieldColumnName($emailFieldIds[$index], $emailFieldHandle).']] IN '.$emailFieldValues;
         }
         $emailFieldQuery = implode(' OR ', $emailFieldQuery);
 

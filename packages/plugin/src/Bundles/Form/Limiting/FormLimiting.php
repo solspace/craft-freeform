@@ -12,10 +12,10 @@ use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
@@ -98,12 +98,31 @@ class FormLimiting extends FeatureBundle
         $form = $event->getForm();
 
         // Get all email fields on the form
-        $emailFields = $form->getLayout()->getFields(EmailField::class);
+        $formFields = FormFieldRecord::TABLE;
+
+        $emailFields = (new Query())
+            ->select('ff.[[metadata]]')
+            ->from("{$formFields} ff")
+            ->where([
+                'ff.[[formId]]' => $form->getId(),
+                'ff.[[type]]' => 'Solspace\Freeform\Fields\Implementations\EmailField',
+            ])
+            ->all()
+        ;
 
         // Get all email field values
         $emailFieldValues = [];
         foreach ($emailFields as $emailField) {
-            $value = $request->post($emailField->getHandle());
+            if (empty($emailField['metadata'])) {
+                continue;
+            }
+
+            $metadata = json_decode($emailField['metadata']);
+            if (!$metadata || empty($metadata->handle)) {
+                continue;
+            }
+
+            $value = $request->post($metadata->handle);
             if (!empty($value)) {
                 $emailFieldValues[] = '"'.$value.'"';
             }

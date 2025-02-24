@@ -43,10 +43,10 @@ class FreeformVariable
     /**
      * @param int|string $handleOrId
      */
-    public function form($handleOrId, ?array $properties = null): ?Form
+    public function form($handleOrId, ?array $properties = null, ?string $uniqueId = null): ?Form
     {
         $site = SitesHelper::getFrontendSiteHandle();
-        $form = $this->getFormService()->getFormByHandleOrId($handleOrId, $site);
+        $form = $this->getFormService()->getFormByHandleOrId($handleOrId, $site, $uniqueId);
         if (!$form) {
             return null;
         }

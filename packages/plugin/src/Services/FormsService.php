@@ -206,18 +206,23 @@ class FormsService extends BaseService implements FormHandlerInterface
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
-    public function getFormById(int $id, bool $refresh = false, ?string $site = null): ?Form
+    public function getFormById(int $id, bool $refresh = false, ?string $site = null, ?string $uniqueId = null): ?Form
     {
-        if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$id]))) {
+        $key = $id.$uniqueId;
+        if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$key]))) {
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $site);
             $query->where(['forms.id' => $id]);
 
             $result = $query->one();
             if (!$result) {
-                self::$formsById[$id] = null;
+                self::$formsById[$key] = null;
 
                 return null;
+            }
+
+            if ($uniqueId) {
+                $result['uniqueId'] = $uniqueId;
             }
 
             try {
@@ -226,25 +231,30 @@ class FormsService extends BaseService implements FormHandlerInterface
                 $form = null;
             }
 
-            self::$formsByHandle[$form->getHandle()] = $form;
-            self::$formsById[$id] = $form;
+            self::$formsByHandle[$form->getHandle().$uniqueId] = $form;
+            self::$formsById[$key] = $form;
         }
 
-        return self::$formsById[$id];
+        return self::$formsById[$key];
     }
 
-    public function getFormByHandle(string $handle, ?string $site = null): ?Form
+    public function getFormByHandle(string $handle, ?string $site = null, ?string $uniqueId = null): ?Form
     {
-        if (null === self::$formsByHandle || !isset(self::$formsByHandle[$handle])) {
+        $key = $handle.$uniqueId;
+        if (null === self::$formsByHandle || !isset(self::$formsByHandle[$key])) {
             $query = $this->getFormQuery();
             $this->attachSitesToQuery($query, $site);
             $query->andWhere(['forms.handle' => $handle]);
 
             $result = $query->one();
             if (!$result) {
-                self::$formsByHandle[$handle] = null;
+                self::$formsByHandle[$key] = null;
 
                 return null;
+            }
+
+            if ($uniqueId) {
+                $result['uniqueId'] = $uniqueId;
             }
 
             try {
@@ -253,20 +263,20 @@ class FormsService extends BaseService implements FormHandlerInterface
                 $form = null;
             }
 
-            self::$formsById[$form->getId()] = $form;
-            self::$formsByHandle[$handle] = $form;
+            self::$formsById[$form->getId().$uniqueId] = $form;
+            self::$formsByHandle[$key] = $form;
         }
 
-        return self::$formsByHandle[$handle];
+        return self::$formsByHandle[$key];
     }
 
-    public function getFormByHandleOrId(int|string $handleOrId, ?string $site = null): ?Form
+    public function getFormByHandleOrId(int|string $handleOrId, ?string $site = null, ?string $uniqueId = null): ?Form
     {
         if (is_numeric($handleOrId)) {
-            return $this->getFormById($handleOrId, site: $site);
+            return $this->getFormById($handleOrId, site: $site, uniqueId: $uniqueId);
         }
 
-        return $this->getFormByHandle($handleOrId, $site);
+        return $this->getFormByHandle($handleOrId, $site, $uniqueId);
     }
 
     /**

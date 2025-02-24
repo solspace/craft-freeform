@@ -38,7 +38,8 @@ class LayoutsService extends BaseService
 
     public function getLayout(Form $form): FormLayout
     {
-        if (!isset($this->formLayouts[$form->getId()])) {
+        $key = $form->getId().$form->getUniqueId();
+        if (!isset($this->formLayouts[$key])) {
             $formLayout = new FormLayout();
 
             $pages = $this->getPages($form);
@@ -81,10 +82,10 @@ class LayoutsService extends BaseService
                 );
             }
 
-            $this->formLayouts[$form->getId()] = $formLayout;
+            $this->formLayouts[$key] = $formLayout;
         }
 
-        return $this->formLayouts[$form->getId()];
+        return $this->formLayouts[$key];
     }
 
     public function getPages(Form $form): array

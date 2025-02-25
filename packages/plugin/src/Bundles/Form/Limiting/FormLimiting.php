@@ -158,7 +158,7 @@ class FormLimiting extends FeatureBundle
         $submissionsContents = Submission::getContentTableName($form);
 
         $submissions = (new Query())
-            ->select(implode(', ', $emailFieldColumnNames))
+            ->select($emailFieldColumnNames)
             ->from("{$submissions} s")
             ->innerJoin(
                 "{$elements} e",
@@ -173,14 +173,18 @@ class FormLimiting extends FeatureBundle
                 's.[[formId]]' => $form->getId(),
                 'e.[[dateDeleted]]' => null,
             ])
-            ->all()
         ;
+
+        // If no submissions for the form, bail
+        if (0 === $submissions->count()) {
+            return;
+        }
 
         $encryptionKey = EncryptionHelper::getKey($form->getUid());
 
         $submissionEmailValues = [];
 
-        foreach ($submissions as $submission) {
+        foreach ($submissions->all() as $submission) {
             $emailFieldColumnValue = reset($submission) ?? '';
             if (!$emailFieldColumnValue) {
                 continue;

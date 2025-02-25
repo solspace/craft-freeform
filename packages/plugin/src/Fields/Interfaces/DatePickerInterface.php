@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface DatetimeInterface
+interface DatePickerInterface
 {
     public function isUseDatepicker(): bool;
 }

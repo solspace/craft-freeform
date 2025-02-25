@@ -24,7 +24,7 @@ class ReturnUrlInput extends FeatureBundle
         if ($bag->get('returnUrl')) {
             $name = Form::RETURN_URI_KEY;
             $value = $this->getHashedUrl($bag->get('returnUrl'));
-            $value = htmlspecialchars($value);
+            $value = htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
             $event->addChunk('<input type="hidden" name="'.$name.'" value="'.$value.'" />');
         }

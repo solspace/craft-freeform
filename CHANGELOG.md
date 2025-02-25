@@ -1,5 +1,41 @@
 # Solspace Freeform Changelog
 
+## 5.9.13 - 2025-02-24
+
+### Added
+- Added various PHP Info values to the Diagnostics page to help with troubleshooting.
+
+### Fixed
+- Fixed a bug where the Digest email notification could fail to send.
+- Fixed a bug where the Freeform 4 migration's conditional rules script wasn't catching some scenarios.
+- Fixed a bug where Freeform could error about `HubSpotV1` not existing in rare circumstances.
+- Fixed a bug where limiting forms by checking for a duplicate Email Address could cause the form to break in some cases.
+
+## 5.9.12 - 2025-02-19
+
+### Added
+- Added the ability to hide the _Fields from other Forms_ area in the form builder for Limited Users.
+
+### Changed
+- Updated error logging for Conditional Rules to include more context.
+
+### Fixed
+- Fixed a bug where error logging used `json_validate`, which is unsupported in PHP versions lower than 8.3 in Craft 4.
+- Fixed a bug with a spacing issue for the submit buttons in the Limited Users settings pages.
+- Fixed a bug where a stray _Save_ button appeared on the Diagnostics page.
+
+## 5.9.11 - 2025-02-17
+
+### Added
+- Added `freeform/freeform/convert-handles` console command to convert all form and field handles to _camelCase_ or _under_scores_.
+
+### Fixed
+- Fixed a bug where the Express Forms migration utility included PDF templates and Settings as options.
+- Fixed a bug where the Freeform Form Data export was not working with prefixed tables.
+- Fixed a bug where the Form Data importer would error when no template folders were defined.
+- Fixed a bug where exports of submission data would include file IDs instead of file URLs for File Upload and File Drag & Drop fields.
+- Fixed a bug where a `Call to a member function getValue() on string` error could occur in rare cases when attempting to edit a form submission on the front end.
+
 ## 5.9.10 - 2025-02-13
 
 ### Added

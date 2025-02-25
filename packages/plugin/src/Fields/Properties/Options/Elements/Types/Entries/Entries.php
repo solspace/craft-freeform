@@ -59,7 +59,7 @@ class Entries extends BaseOptionProvider
 
     #[Input\DynamicSelect(
         label: 'Order By',
-        source: 'api/elements/entries/fields',
+        source: 'api/elements/entries/fields?target=orderBy',
     )]
     private string $orderBy = 'id';
 

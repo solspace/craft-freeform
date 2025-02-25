@@ -491,6 +491,8 @@ return [
     'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.' => 'Lorsqu’activé, les nouveaux utilisateurs seront automatiquement activés lors de leur création. Sinon, ils seront mis en attente.',
     'Send Activation Email' => 'Envoyer un e-mail d’activation',
     'Users will receive a Craft email with activation details if this is enabled.' => 'Les utilisateurs recevront un e-mail Craft avec les détails d’activation si cette option est activée.',
+    'Take Over Inactive Accounts' => 'Reprendre les comptes inactifs',
+    'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.' => 'Si cette fonctionnalité est activée et que l’e-mail soumis appartient à un utilisateur "Inactif" sur ce site, la nouvelle inscription prendra en charge ce compte. Nous vous recommandons fortement de désactiver le paramètre "Activer les utilisateurs" lorsque vous utilisez cette fonctionnalité.',
     'User Group' => 'Groupe d’utilisateurs',
     'Select the user group to assign the user to.' => 'Sélectionnez le groupe d’utilisateurs auquel affecter l’utilisateur.',
     'Entries' => 'Entrées',

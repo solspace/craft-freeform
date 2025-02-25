@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.9.14 - 2025-02-25
+
+### Added
+- Added the ability to order Entry element-populated fields by _Structure_, _Post Date_, _Date Created_, and _Date Updated_.
+- Added a setting to allow the takeover of _Inactive_ user accounts upon user registration with the Freeform User element integration.
+
+### Fixed
+- Fixed a bug where Stripe Payment Intent processing would crash when using some services like WeChat Pay, Alipay, Amazon Pay.
+
 ## 5.9.13 - 2025-02-24
 
 ### Added

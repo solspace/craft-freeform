@@ -142,7 +142,7 @@
                                 {% endif %}
                             </div>
                             <div class="brand">
-                                {{ paymentMethod.details.brand|capitalize|t('freeform') }}
+                                {{ paymentMethod.details.brand|replace('_', ' ')|title|t('freeform') }}
                             </div>
                             <div class="card-number">
                                 {{ paymentMethod.details.last4 }}
@@ -154,13 +154,13 @@
                                 <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="payment-icon">
                             </div>
                             <div class="brand">
-                                {{ paymentMethod.type|capitalize|t('freeform') }}
+                                {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
                             </div>
 
                         {% else %}
 
                             <div class="brand">
-                                {{ paymentMethod.type|capitalize|t('freeform') }}
+                                {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
                             </div>
 
                         {% endif %}

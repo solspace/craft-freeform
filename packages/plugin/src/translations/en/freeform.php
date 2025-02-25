@@ -491,6 +491,8 @@ return [
     'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.' => 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     'Send Activation Email' => 'Send Activation Email',
     'Users will receive a Craft email with activation details if this is enabled.' => 'Users will receive a Craft email with activation details if this is enabled.',
+    'Take Over Inactive Accounts' => 'Take Over Inactive Accounts',
+    'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.' => 'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.',
     'User Group' => 'User Group',
     'Select the user group to assign the user to.' => 'Select the user group to assign the user to.',
     'Entries' => 'Entries',

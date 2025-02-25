@@ -23,18 +23,14 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 )]
 class User extends ElementIntegration
 {
-    #[Input\Boolean(
-        label: 'Register Inactive Users',
-        instructions: 'This will register inactive users.',
-    )]
-    protected bool $registerInactiveUsers = false;
-
+    #[VisibilityFilter('enabled')]
     #[Input\Boolean(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
     protected bool $active = true;
 
+    #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!values.active')]
     #[Input\Boolean(
         label: 'Send Activation Email',
@@ -42,6 +38,14 @@ class User extends ElementIntegration
     )]
     protected bool $sendActivation = false;
 
+    #[VisibilityFilter('enabled')]
+    #[Input\Boolean(
+        label: 'Take Over Inactive Accounts',
+        instructions: 'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.',
+    )]
+    protected bool $registerInactiveUsers = false;
+
+    #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Checkboxes(
         label: 'User Group',
@@ -50,11 +54,13 @@ class User extends ElementIntegration
     )]
     protected array $userGroupIds = [];
 
+    #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/attributes/mapping')]
     protected ?FieldMapping $attributeMapping = null;
 
+    #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(source: 'api/elements/users/fields/mapping')]

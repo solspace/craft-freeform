@@ -24,6 +24,12 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 class User extends ElementIntegration
 {
     #[Input\Boolean(
+        label: 'Register Inactive Users',
+        instructions: 'This will register inactive users.',
+    )]
+    protected bool $registerInactiveUsers = false;
+
+    #[Input\Boolean(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
@@ -75,6 +81,11 @@ class User extends ElementIntegration
         return $this->fieldMapping;
     }
 
+    public function isRegisterInactiveUsers(): bool
+    {
+        return $this->registerInactiveUsers;
+    }
+
     public function isActive(): bool
     {
         return $this->active;
@@ -97,10 +108,26 @@ class User extends ElementIntegration
 
         $canEdit = !$isGuest && ($isOwnAccount || $isAdmin || $canEditUsers);
 
+        $user = null;
         if ($element instanceof CraftUser && $canEdit && !$currentUser->getIsGuest()) {
             $user = $element;
             self::$existingUserCache[$user->id] = $user;
-        } else {
+        }
+
+        if ($this->isRegisterInactiveUsers()) {
+            // Find any inactive members with this email
+            $isEmailMapped = $this->attributeMapping->isSourceMapped('email');
+            if ($isEmailMapped) {
+                $email = $this->getMappedValue('email', $form, $this->attributeMapping);
+                $user = CraftUser::find()
+                    ->email($email)
+                    ->status(CraftUser::STATUS_INACTIVE)
+                    ->one()
+                ;
+            }
+        }
+
+        if (!$user) {
             $user = new CraftUser();
             $user->pending = !$this->active;
         }
@@ -147,7 +174,11 @@ class User extends ElementIntegration
             }
         }
 
-        if (!$this->active && $this->sendActivation && CraftUser::STATUS_PENDING === $element->status) {
+        $isDisabled = !$this->active;
+        $isSendActivation = $this->sendActivation;
+        $isInPendingState = \in_array($element->status, [CraftUser::STATUS_PENDING, CraftUser::STATUS_INACTIVE], true);
+
+        if ($isDisabled && $isSendActivation && $isInPendingState) {
             try {
                 \Craft::$app->getUsers()->sendActivationEmail($element);
             } catch (\Throwable $e) {

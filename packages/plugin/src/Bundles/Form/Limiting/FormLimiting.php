@@ -34,7 +34,6 @@ class FormLimiting extends FeatureBundle
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleDuplicateCheck']);
-        Event::on(Form::class, Form::EVENT_RENDER_AFTER_CLOSING_TAG, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleDuplicateCheck']);
     }
@@ -99,14 +98,14 @@ class FormLimiting extends FeatureBundle
 
         $form = $event->getForm();
 
-        $key = EncryptionHelper::getKey($form->getUid());
+        $emailFieldIds = [];
+        $emailFieldHandles = [];
 
-        // Get all email fields on the form
-        $formFields = FormFieldRecord::TABLE;
-
+        // Get all email fields for the form
+        $formFieldsTable = FormFieldRecord::TABLE;
         $emailFields = (new Query())
             ->select('ff.[[id]], ff.[[metadata]]')
-            ->from("{$formFields} ff")
+            ->from("{$formFieldsTable} ff")
             ->where([
                 'ff.[[formId]]' => $form->getId(),
                 'ff.[[type]]' => EmailField::class,
@@ -114,9 +113,6 @@ class FormLimiting extends FeatureBundle
             ->all()
         ;
 
-        $emailFieldIds = [];
-        $emailFieldHandles = [];
-        $emailFieldIsEncrypted = [];
         foreach ($emailFields as $emailField) {
             if (empty($emailField['metadata'])) {
                 continue;
@@ -129,46 +125,40 @@ class FormLimiting extends FeatureBundle
 
             $emailFieldIds[] = $emailField['id'];
             $emailFieldHandles[] = $metadata->handle;
-
-            if (isset($metadata->encrypted)) {
-                $emailFieldIsEncrypted[] = $metadata->encrypted;
-            }
         }
 
-        // Get all email field values
-        $emailFieldValues = [];
-        foreach ($emailFieldHandles as $index => $emailFieldHandle) {
-            $value = $request->post($emailFieldHandle);
-            if (!empty($value)) {
-                if ($emailFieldIsEncrypted[$index]) {
-                    $value = EncryptionHelper::encrypt($key, $value);
-                }
-
-                $emailFieldValues[] = '"'.$value.'"';
-            }
-        }
-
-        // If no email field values, bail
-        if (empty($emailFieldValues)) {
+        // If no email field IDs or handles, bail
+        if (empty($emailFieldIds) || empty($emailFieldHandles)) {
             return;
         }
 
-        // Builds an SQL query that checks existing email field values against submitted email field values
-        // E.g. sc.`email_field` IN ('foo@example.com', 'bar@example.com')
-        // E.g. sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
-        $emailFieldQuery = [];
-        $emailFieldValues = '('.implode(', ', $emailFieldValues).')';
-        foreach ($emailFieldHandles as $index => $emailFieldHandle) {
-            $emailFieldQuery[] = 'sc.[['.Submission::generateFieldColumnName($emailFieldIds[$index], $emailFieldHandle).']] IN '.$emailFieldValues;
+        // Get all posted email values from request
+        $postedEmailValues = [];
+        foreach ($emailFieldHandles as $emailFieldHandle) {
+            $value = $request->post($emailFieldHandle);
+            if (!empty($value)) {
+                $postedEmailValues[] = $value;
+            }
         }
-        $emailFieldQuery = implode(' OR ', $emailFieldQuery);
 
+        // If no posted email values, bail
+        if (empty($postedEmailValues)) {
+            return;
+        }
+
+        // Build up our select clause to grab all email field column values from the submissions table
+        $emailFieldColumnNames = [];
+        foreach ($emailFields as $index => $emailField) {
+            $emailFieldColumnNames[] = 'sc.[['.Submission::generateFieldColumnName($emailFieldIds[$index], $emailFieldHandles[$index]).']]';
+        }
+
+        // Get all submissions for form
         $elements = Table::ELEMENTS;
         $submissions = Submission::TABLE;
         $submissionsContents = Submission::getContentTableName($form);
 
-        $query = (new Query())
-            ->select(['s.[[id]]'])
+        $submissions = (new Query())
+            ->select(implode(', ', $emailFieldColumnNames))
             ->from("{$submissions} s")
             ->innerJoin(
                 "{$elements} e",
@@ -183,13 +173,29 @@ class FormLimiting extends FeatureBundle
                 's.[[formId]]' => $form->getId(),
                 'e.[[dateDeleted]]' => null,
             ])
-            ->andWhere($emailFieldQuery)
-            ->limit(1)
+            ->all()
         ;
 
-        $isPosted = (bool) $query->scalar();
+        $encryptionKey = EncryptionHelper::getKey($form->getUid());
 
-        if ($isPosted) {
+        $submissionEmailValues = [];
+
+        foreach ($submissions as $submission) {
+            $emailFieldColumnValue = reset($submission) ?? '';
+            if (!$emailFieldColumnValue) {
+                continue;
+            }
+
+            if (str_starts_with($emailFieldColumnValue, 'encrypted:')) {
+                $emailFieldColumnValue = EncryptionHelper::decrypt($encryptionKey, $emailFieldColumnValue);
+            }
+
+            $submissionEmailValues[] = $emailFieldColumnValue;
+        }
+
+        $submissionEmailValues = array_values(array_unique($submissionEmailValues));
+
+        if (!empty(array_intersect($postedEmailValues, $submissionEmailValues))) {
             $this->addMessage($event);
         }
     }

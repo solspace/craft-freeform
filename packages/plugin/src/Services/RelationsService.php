@@ -12,7 +12,7 @@ class RelationsService extends BaseService
     /**
      * @throws \Throwable
      */
-    public function relate(SubmitEvent $event)
+    public function relate(SubmitEvent $event): void
     {
         if (!Freeform::getInstance()->isPro()) {
             return;
@@ -20,7 +20,7 @@ class RelationsService extends BaseService
 
         $form = $event->getForm();
         $relationships = $form->getRelations()->getRelationships();
-        $submission = $event->getElement();
+        $submission = $form->getSubmission();
 
         if (empty($relationships) || !$submission || !$submission->id) {
             return;
@@ -53,7 +53,13 @@ class RelationsService extends BaseService
 
                 $existingRelations[] = $submission->id;
 
-                \Craft::$app->relations->saveRelations($field, $element, $existingRelations);
+                $isCraft5 = version_compare(\Craft::$app->getVersion(), '5', '>=');
+                if ($isCraft5) {
+                    $element->setFieldValue($fieldHandle, $existingRelations);
+                    \Craft::$app->elements->saveElement($element);
+                } else {
+                    \Craft::$app->relations->saveRelations($field, $element, $existingRelations);
+                }
             }
         }
     }

@@ -182,25 +182,26 @@ class FormLimiting extends FeatureBundle
 
         $encryptionKey = EncryptionHelper::getKey($form->getUid());
 
-        $submissionEmailValues = [];
+        $submissionEmailFieldColumns = $submissions->all();
 
-        foreach ($submissions->all() as $submission) {
-            $emailFieldColumnValue = reset($submission) ?? '';
-            if (!$emailFieldColumnValue) {
-                continue;
+        foreach ($submissionEmailFieldColumns as $submissionEmailFieldColumn) {
+            foreach ($submissionEmailFieldColumn as $submissionEmailFieldValue) {
+                if (empty($submissionEmailFieldValue)) {
+                    continue;
+                }
+
+                // Decrypt if needed
+                if (str_starts_with($submissionEmailFieldValue, 'encrypted:')) {
+                    $submissionEmailFieldValue = EncryptionHelper::decrypt($encryptionKey, $submissionEmailFieldValue);
+                }
+
+                // Check against posted values
+                if (\in_array($submissionEmailFieldValue, $postedEmailValues, true)) {
+                    $this->addMessage($event);
+
+                    break 2; // Exit both inner loops
+                }
             }
-
-            if (str_starts_with($emailFieldColumnValue, 'encrypted:')) {
-                $emailFieldColumnValue = EncryptionHelper::decrypt($encryptionKey, $emailFieldColumnValue);
-            }
-
-            $submissionEmailValues[] = $emailFieldColumnValue;
-        }
-
-        $submissionEmailValues = array_values(array_unique($submissionEmailValues));
-
-        if (!empty(array_intersect($postedEmailValues, $submissionEmailValues))) {
-            $this->addMessage($event);
         }
     }
 

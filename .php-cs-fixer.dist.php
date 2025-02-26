@@ -2,6 +2,12 @@
 
 $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__.'/packages/plugin')
+    ->filter(
+        // Ignore _bootstrap.php files
+        static function (\SplFileInfo $file) {
+            return !preg_match('/_bootstrap\.php$/', $file->getRealPath());
+        }
+    )
 ;
 
 return (new PhpCsFixer\Config())

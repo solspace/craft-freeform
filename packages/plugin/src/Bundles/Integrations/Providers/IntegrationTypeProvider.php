@@ -15,7 +15,12 @@ class IntegrationTypeProvider
     public function getTypeDefinition(string $integrationClass): ?Type
     {
         if (!isset(self::$types[$integrationClass])) {
-            $reflectionClass = new \ReflectionClass($integrationClass);
+            try {
+                $reflectionClass = new \ReflectionClass($integrationClass);
+            } catch (\ReflectionException) {
+                return null;
+            }
+
             if (!$reflectionClass->implementsInterface(IntegrationInterface::class)) {
                 return null;
             }

@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 use Solspace\Freeform\Library\Integrations\SingletonIntegrationInterface;
@@ -24,6 +25,7 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 
     public const EVENT_POST_FORWARDING = 'post-forwarding';
 
+    #[VisibilityFilter('enabled')]
     #[Text(
         label: 'URL',
         instructions: 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',
@@ -31,12 +33,14 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     )]
     protected string $url = '';
 
+    #[VisibilityFilter('enabled')]
     #[TextArea(
         label: 'Error Trigger',
         instructions: "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger.",
     )]
     protected string $errorTrigger = '';
 
+    #[VisibilityFilter('enabled')]
     #[Boolean(
         label: 'Include Uploaded Files',
         instructions: 'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.',

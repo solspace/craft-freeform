@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.9.14 - 2025-02-25
+
+### Added
+- Added the ability to order Entry element-populated fields by _Structure_, _Post Date_, _Date Created_, and _Date Updated_.
+- Added a setting to allow the takeover of _Inactive_ user accounts upon user registration with the Freeform User element integration.
+
+### Fixed
+- Fixed a bug where Stripe Payment Intent processing would crash when using some services like WeChat Pay, Alipay, Amazon Pay.
+
+## 5.9.13 - 2025-02-24
+
+### Added
+- Added various PHP Info values to the Diagnostics page to help with troubleshooting.
+
+### Fixed
+- Fixed a bug where the Digest email notification could fail to send.
+- Fixed a bug where the Freeform 4 migration's conditional rules script wasn't catching some scenarios.
+- Fixed a bug where Freeform could error about `HubSpotV1` not existing in rare circumstances.
+- Fixed a bug where limiting forms by checking for a duplicate Email Address could cause the form to break in some cases.
+
 ## 5.9.12 - 2025-02-19
 
 ### Added

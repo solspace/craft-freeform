@@ -84,6 +84,15 @@ class EntryController extends BaseApiController
 
         $request = \Craft::$app->getRequest();
 
+        if ('orderBy' === $request->get('target')) {
+            $collection
+                ->add('lft', 'Structure')
+                ->add('postDate', 'Post Date')
+                ->add('dateCreated', 'Date Created')
+                ->add('dateUpdated', 'Date Updated')
+            ;
+        }
+
         $sectionId = $request->get('sectionId');
         if (!$sectionId) {
             return $this->asSerializedJson($collection);

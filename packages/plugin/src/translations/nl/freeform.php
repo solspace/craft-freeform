@@ -1174,6 +1174,7 @@ return [
     'Dev Mode' => 'Dev-modus',
     'Allow Admin Changes' => 'Sta beheerderswijzigingen toe',
     'Async CSRF Inputs' => 'Asynchrone CSRF-invoer',
+    'Run Queue Automatically' => 'Wachtrij automatisch uitvoeren',
     'Memory Limit' => 'Geheugenlimiet',
     'Craft Email configuration' => 'Craft e-mailconfiguratie',
     'Max Execution Time' => 'Max. uitvoeringstijd',

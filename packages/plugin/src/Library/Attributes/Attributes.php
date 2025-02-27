@@ -128,6 +128,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
                 $value
             );
             $value = array_filter($value);
+            $value = array_unique($value);
             $value = StringHelper::implodeRecursively(' ', $value);
         }
 
@@ -166,6 +167,11 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
             default:
                 if (\array_key_exists($key, $this->attributes) && !\is_bool($value)) {
                     $this->attributes[$key] = trim($this->attributes[$key].' '.$value);
+                    $values = explode(' ', $this->attributes[$key]);
+                    $values = array_filter($values);
+                    $values = array_unique($values);
+                    $values = array_map('trim', $values);
+                    $this->attributes[$key] = implode(' ', $values);
                 } else {
                     $this->attributes[$key] = $value;
                 }

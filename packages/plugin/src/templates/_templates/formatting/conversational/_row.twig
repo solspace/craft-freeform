@@ -12,7 +12,12 @@
 
         {% set questionId = loop.index %}
         {% set questionTotal = loop.length %}
-        <div id="q{{ questionId }}" class="freeform-page" {{ form.attributes.row|raw }}>
+
+        {% set attributes = form.attributes.row %}
+        {% do attributes.replace('id', 'q'~questionId) %}
+        {% do attributes.replace('class', 'freeform-page') %}
+
+        {% tag attributes.tag with attributes.toHtmlTagArray %}
             <div class="freeform-question">
             {% for field in row %}
 
@@ -42,7 +47,7 @@
                     {% endif %}
                 </div>
             </div>
-        </div>
+        {% endtag %}
 
     {% endfor %}
 

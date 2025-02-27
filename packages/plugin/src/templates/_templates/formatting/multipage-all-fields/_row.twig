@@ -10,7 +10,14 @@
 
     {% for page in form.pages %}
 
-        <div class="freeform-page{% if form.currentPage.index == page.index %} freeform-page-active{% endif %}">
+        {% set attributes = form.attributes.row.clone %}
+        {% do attributes.replace('class', 'freeform-page') %}
+        {% if form.currentPage.index == page.index %}
+            {% do attributes.append('class', 'freeform-page-active') %}
+        {% endif %}
+
+        {% tag attributes.tag with attributes.toHtmlTagArray %}
+
             <h3 id="heading-{{ page.index + 1 }}">
                 {{ page.index + 1 }}. {{ page.label }}
             </h3>
@@ -86,7 +93,7 @@
 
             {% endif %}
 
-        </div>
+        {% endtag %}
 
     {% endfor %}
 

@@ -268,6 +268,17 @@ class DiagnosticsService extends BaseService
                 \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs,
             ),
             new DiagnosticItem(
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Run Queue Automatically'),
+                \Craft::$app->getConfig()->getGeneral()->runQueueAutomatically,
+                [
+                    new SuggestionValidator(
+                        fn ($value) => $value,
+                        '',
+                        'Freeform relies on the Craft Queue to work when using the Queue for processing Email Notifications and/or Integrations.'
+                    ),
+                ]
+            ),
+            new DiagnosticItem(
                 '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max File Upload Size').': <b>'.self::convertBytesToMB(\Craft::$app->getConfig()->getGeneral()->maxUploadFileSize).'M</b>',
                 \Craft::$app->getConfig()->getGeneral()->maxUploadFileSize,
             ),

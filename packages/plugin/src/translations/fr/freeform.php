@@ -1174,6 +1174,7 @@ return [
     'Dev Mode' => 'Mode développeur',
     'Allow Admin Changes' => 'Autoriser les modifications administratives',
     'Async CSRF Inputs' => 'Entrées CSRF asynchrones',
+    'Run Queue Automatically' => 'Exécuter la file d’attente automatiquement',
     'Memory Limit' => 'Limite de mémoire',
     'Craft Email configuration' => 'Configuration des emails Craft',
     'Max Execution Time' => 'Temps d’exécution maximum',

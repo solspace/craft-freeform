@@ -30,6 +30,8 @@ class PropertyProviderTest extends TestCase
         $mockContainer = $this->createMock(Container::class);
         $mockContainer->method('get')->willReturn(new TestTransformer());
 
+        \Craft::$container = $mockContainer;
+
         $mockImplementationProvider = $this->createMock(ImplementationProvider::class);
 
         $mockDefaultsProvider = $this->createMock(DefaultsProvider::class);
@@ -45,7 +47,6 @@ class PropertyProviderTest extends TestCase
         $this->provider = $this
             ->getMockBuilder(PropertyProvider::class)
             ->setConstructorArgs([
-                $mockContainer,
                 $mockImplementationProvider,
                 $mockDefaultsProvider,
                 $mockLimitationChecker,

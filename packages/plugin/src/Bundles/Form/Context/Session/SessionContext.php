@@ -25,6 +25,7 @@ use yii\base\Event;
 class SessionContext
 {
     public const KEY_HASH = 'formHash';
+    public const KEY_UNIQUE_ID = 'freeform-unique-id';
 
     /** @var FormContextStorageInterface */
     private $storage;
@@ -218,6 +219,16 @@ class SessionContext
         }
 
         return HashHelper::decode($formHash, \Craft::$app->getConfig()->getGeneral()->securityKey);
+    }
+
+    public static function getPostedFormUniqueId(): ?string
+    {
+        $request = \Craft::$app->getRequest();
+        if ($request->isConsoleRequest) {
+            return null;
+        }
+
+        return $request->post(self::KEY_UNIQUE_ID);
     }
 
     public static function isPagePosted(Form $form, int $pageIndex): bool

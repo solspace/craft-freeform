@@ -176,7 +176,7 @@ class PayloadStorage implements FormContextStorageInterface
         return self::$encryptedPayloadCache[$cacheKey];
     }
 
-    private function getKey(Form $form)
+    private function getKey(Form $form): string
     {
         $key = $this->secret ?: \Craft::$app->getConfig()->getGeneral()->securityKey;
         $key .= $form->getUid();

@@ -12,7 +12,7 @@ import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
@@ -48,26 +48,7 @@ export const Tabs: React.FC = () => {
   const { data: formSettingsData } = useQueryFormSettings();
 
   const triggerSave = (): void => void dispatch(save());
-  const saveOnCmdS = (event: KeyboardEvent): boolean | void => {
-    if (event.key === 's') {
-      const isMac = window.navigator.platform.match(/Mac/);
-      if (isMac && !event.metaKey) {
-        return;
-      }
-
-      if (!isMac && !event.ctrlKey) {
-        return;
-      }
-
-      event.preventDefault();
-
-      triggerSave();
-
-      return false;
-    }
-  };
-
-  useOnKeypress({ callback: saveOnCmdS, type: 'keydown' });
+  useSaveShortcut(triggerSave);
 
   return (
     <TabWrapper>

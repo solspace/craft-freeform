@@ -1,5 +1,28 @@
 # Solspace Freeform Changelog
 
+## 5.9.15 - 2025-02-27
+
+### Added
+- Added an overload for forms to create an entirely separate instance with its own configurations that can be overridden. This will help with the issue of form attributes duplicating in some cases.
+- Added check for `runQueueAutomatically` to the Diagnostics page to help with troubleshooting.
+
+### Fixed
+- Fixed a bug where form attributes could duplicate when loading the same form more than once in the same template.
+- Fixed a bug where the Stripe _Link_ and _US Bank Account_ icons were not present in the control panel.
+- Fixed a bug where the duplicate email address check was not working correctly with encrypted fields.
+- Fixed a bug where relating Freeform submissions to elements was not working in Craft 5.
+- Fixed a bug where Freeform was using `\yii\di\Container` as a constructor dependency.
+- Fixed a bug where the bundle loader could crash if a cached class was found in the class map.
+
+## 5.9.14 - 2025-02-25
+
+### Added
+- Added the ability to order Entry element-populated fields by _Structure_, _Post Date_, _Date Created_, and _Date Updated_.
+- Added a setting to allow the takeover of _Inactive_ user accounts upon user registration with the Freeform User element integration.
+
+### Fixed
+- Fixed a bug where Stripe Payment Intent processing would crash when using some services like WeChat Pay, Alipay, Amazon Pay.
+
 ## 5.9.13 - 2025-02-24
 
 ### Added

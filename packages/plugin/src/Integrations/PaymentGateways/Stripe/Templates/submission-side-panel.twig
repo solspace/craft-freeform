@@ -135,13 +135,13 @@
                     <img src="{{ paymentMethodIcon }}" alt="Payment Method Icon" class="payment-icon">
                 </div>
                 <div class="brand">
-                    {{ paymentMethod.type|capitalize|t('freeform') }}
+                    {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
                 </div>
 
             {% else %}
 
                 <div class="brand">
-                    {{ paymentMethod.type|capitalize|t('freeform') }}
+                    {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
                 </div>
 
             {% endif %}

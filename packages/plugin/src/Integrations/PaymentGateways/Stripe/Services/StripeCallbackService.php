@@ -104,7 +104,20 @@ class StripeCallbackService
             }
 
             $metadata['type'] = $paymentMethod->type;
-            $metadata['details'] = $paymentMethod->{$paymentMethod->type}->toArray();
+
+            $details = $paymentMethod->{$paymentMethod->type};
+            if (\is_object($details)) {
+                $metadata['details'] = $details->toArray();
+            } elseif (\is_array($details)) {
+                $metadata['details'] = $details;
+            } else {
+                try {
+                    $metadata['details'] = json_decode($details, true);
+                } catch (\Exception $e) {
+                    $logger->error('Failed to decode payment method details', ['details' => $details]);
+                    $metadata['details'] = [];
+                }
+            }
 
             $logger->debug('Payment method found', ['paymentMethod' => $paymentMethod->id]);
         }

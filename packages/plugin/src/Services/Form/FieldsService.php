@@ -96,8 +96,9 @@ class FieldsService extends BaseService
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
-        if (isset($this->fieldCache[$record->id])) {
-            return $this->fieldCache[$record->id];
+        $key = $record->id.$form->getUniqueId();
+        if (isset($this->fieldCache[$key])) {
+            return $this->fieldCache[$key];
         }
 
         $type = $record->type;
@@ -122,7 +123,7 @@ class FieldsService extends BaseService
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
 
-        $this->fieldCache[$record->id] = $field;
+        $this->fieldCache[$key] = $field;
 
         Event::trigger(
             FieldInterface::class,

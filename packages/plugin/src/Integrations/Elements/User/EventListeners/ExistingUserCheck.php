@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Elements\User\EventListeners;
 
 use craft\elements\User as CraftUser;
+use craft\helpers\Db;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ValidateEvent;
 use Solspace\Freeform\Integrations\Elements\User\User;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -32,23 +33,30 @@ class ExistingUserCheck extends FeatureBundle
             return;
         }
 
-        if ($element->id) {
-            return;
-        }
-
         $mapping = $integration->getAttributeMapping();
         $isEmailMapped = $mapping->isSourceMapped('email');
         $isUsernameMapped = $mapping->isSourceMapped('username');
 
-        $userService = \Craft::$app->getUsers();
-        if ($isUsernameMapped && $userService->getUserByUsernameOrEmail($element->username)) {
-            $element->addError('username', \Craft::t('app', 'Username already exists.'));
+        if ($isUsernameMapped) {
+            $usernameSearch = CraftUser::find()->username(Db::escapeParam($element->username));
+            if ($element->id) {
+                $usernameSearch->id('!= '.$element->id);
+            }
 
-            return;
+            if ($usernameSearch->exists()) {
+                $element->addError('username', \Craft::t('app', 'Username already exists.'));
+            }
         }
 
-        if ($isEmailMapped && $userService->getUserByUsernameOrEmail($element->email)) {
-            $element->addError('email', \Craft::t('app', 'Email is in use already.'));
+        if ($isEmailMapped) {
+            $emailSearch = CraftUser::find()->email(Db::escapeParam($element->email));
+            if ($element->id) {
+                $emailSearch->id('!= '.$element->id);
+            }
+
+            if ($emailSearch->exists()) {
+                $element->addError('email', \Craft::t('app', 'Email is in use already.'));
+            }
         }
     }
 }

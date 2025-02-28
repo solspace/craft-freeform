@@ -142,6 +142,7 @@ class PageButtons
     #[Input\Select(
         label: 'Email Notification Template',
         instructions: 'Select an email notification template.',
+        emptyOption: 'Select a template...',
         options: TemplateOptions::class,
     )]
     private ?NotificationTemplate $notificationTemplate = null;

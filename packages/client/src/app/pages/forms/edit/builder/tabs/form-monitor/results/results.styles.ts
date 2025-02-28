@@ -4,12 +4,10 @@ import styled from 'styled-components';
 
 export const ResultsWrapper = styled.div`
   flex: 1;
-
   background: ${colors.white};
   padding: ${spacings.xl};
   overflow-y: auto;
   width: calc(100% - 300px);
-
   ${scrollBar};
 
   div[class^='ControlWrapper-'] {
@@ -22,9 +20,9 @@ export const ResultsWrapper = styled.div`
     }
   }
 
-  h2 {
-    margin: 0;
-    font-size: 1.5em;
+  h3 {
+    font-size: 1.3em;
+    margin-bottom: 0;
   }
 `;
 
@@ -38,8 +36,7 @@ export const NoResults = styled.div`
 `;
 
 export const StatsContainer = styled.div`
-  padding: ${spacings.md};
-  border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
+  padding: ${spacings.sm};
 `;
 
 export const ChartContainer = styled.div`
@@ -47,91 +44,24 @@ export const ChartContainer = styled.div`
   border-radius: 4px;
 `;
 
-export const ChartDescription = styled.p`
+export const TestDescription = styled.p`
   color: ${colors.gray600};
   font-size: 0.9em;
   margin-bottom: ${spacings.md};
+  margin-top: 0;
 `;
 
-export const ChartLegend = styled.div`
-  display: flex;
-  gap: ${spacings.md};
-  margin-bottom: ${spacings.md};
-`;
-
-export const LegendItem = styled.div<{ color: string }>`
-  display: flex;
-  align-items: center;
-  font-size: 0.9em;
-  color: ${colors.gray700};
-
-  &:before {
-    content: '';
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    margin-right: ${spacings.xs};
-    background: ${({ color }) => color};
-    border-radius: 2px;
-  }
-`;
-
-export const TooltipContainer = styled.div`
-  background: ${colors.white};
-  border: 1px solid ${colors.gray200};
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-`;
-
-export const TooltipContent = styled.div`
-  padding: ${spacings.sm} ${spacings.md};
-`;
-
-export const TooltipStatus = styled.div<{ $status: string }>`
-  font-weight: 500;
-  color: ${({ $status }) =>
-    $status === 'success'
-      ? colors.teal700
-      : $status === 'failed'
-        ? colors.red700
-        : colors.gray700};
-  margin-bottom: ${spacings.xs};
-`;
-
-export const TooltipDate = styled.div`
-  font-size: 0.9em;
-  color: ${colors.gray600};
-`;
-
-export const TestList = styled.div`
+export const TableTestList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.md};
+  padding: ${spacings.sm};
 `;
 
-export const TestItem = styled.div`
+export const TableHeader = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: ${spacings.md};
-  background: ${colors.white};
-  border-radius: 4px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-`;
-
-export const TestInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: ${spacings.md};
-`;
-
-export const TestStatus = styled.div`
-  text-transform: capitalize;
-`;
-
-export const TestDate = styled.div`
-  color: ${colors.gray600};
-  font-size: 0.9em;
+  flex-direction: column;
+  gap: ${spacings.sm};
+  margin-bottom: ${spacings.lg};
 `;
 
 export const PaginationContainer = styled.div`
@@ -221,25 +151,6 @@ export const CodeBlock = styled.div`
   }
 `;
 
-export const StatusBadgeStyled = styled.div`
-  padding: ${spacings.xs} ${spacings.sm};
-  border-radius: ${borderRadius.sm};
-  font-size: 12px;
-  font-weight: 500;
-  color: ${colors.white};
-  background-color: ${colors.green600};
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-
-  &.status-pending {
-    background-color: ${colors.gray700};
-  }
-
-  &.status-failed {
-    background-color: ${colors.red600};
-  }
-`;
-
 export const TestTableStyled = styled.table`
   width: 100%;
   border-collapse: separate;
@@ -266,27 +177,117 @@ export const TestTableStyled = styled.table`
   tbody {
     td {
       padding: ${spacings.md} ${spacings.lg};
-      border-bottom: 1px solid ${colors.gray100};
       vertical-align: middle;
 
       &.no-break {
         white-space: nowrap;
       }
-    }
 
-    tr:last-child td {
-      border-bottom: none;
+      &.code {
+        font-family: monospace;
+        font-size: 12px;
+      }
+
+      .view-screenshot-btn {
+        padding: 0;
+        background: none;
+        color: ${colors.blue500};
+        border: none;
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+
+        &:hover {
+          color: ${colors.blue600};
+          text-decoration: underline;
+        }
+      }
     }
 
     tr:hover {
       background: ${colors.gray050};
     }
   }
+`;
 
-  .status-col {
-    display: flex;
-    gap: ${spacings.sm};
-    align-items: center;
-    padding: ${spacings.lg};
+export const DotsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 12px);
+  gap: 12px;
+  min-height: 60px;
+  align-items: center;
+  width: 100%;
+  margin: ${spacings.md} 0;
+
+  @media (min-width: 1830px) {
+    grid-template-columns: repeat(50, 1fr);
+    gap: 8px;
+  }
+`;
+
+export const TestDot = styled.div<{
+  $status: 'success' | 'failed' | 'pending';
+}>`
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: ${({ $status }) =>
+    $status === 'success'
+      ? colors.green600
+      : $status === 'failed'
+        ? colors.red600
+        : colors.gray700};
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: scale(1.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+export const TestTooltip = styled.div`
+  overflow: hidden;
+  min-width: 160px;
+`;
+
+export const TestTooltipHeader = styled.div`
+  padding: ${spacings.xs} ${spacings.md};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TestTooltipContent = styled.div`
+  font-size: 12px;
+  line-height: 1.4;
+  color: ${colors.gray800};
+  padding: ${spacings.xs} ${spacings.md};
+
+  div {
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
+
+    &.test-id {
+      font-weight: 500;
+      color: ${colors.gray900};
+    }
+
+    &.test-date {
+      color: ${colors.gray600};
+      font-size: 11px;
+      padding-bottom: ${spacings.xs};
+    }
+
+    &.test-response {
+      padding-top: ${spacings.xs};
+      border-top: 1px solid ${colors.gray200};
+      color: ${colors.gray700};
+      font-size: 11px;
+    }
   }
 `;

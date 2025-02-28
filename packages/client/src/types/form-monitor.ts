@@ -32,4 +32,9 @@ export interface FormTestsResponse {
     offset: number;
   };
   stats: TestStats;
+  enabled: boolean;
+  url: string;
+  fmFormStats?: {
+    enabled: boolean;
+  };
 }

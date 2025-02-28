@@ -56,7 +56,7 @@ class RemoveIntegrationListener extends FeatureBundle
                     $client = $this->clientProvider->getAuthorizedClient($integration);
 
                     try {
-                        $integration->deleteManifest($client, $form);
+                        $integration->disableManifest($client, $form);
                     } catch (BadRequestHttpException $exception) {
                         $this->loggerService
                             ->getLogger('Form Monitor')

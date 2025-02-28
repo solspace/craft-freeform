@@ -1,28 +1,19 @@
 import React from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { useFMFormTestsQuery } from '@ff-client/queries/form-monitor';
-import { colors } from '@ff-client/styles/variables';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
+import { Tooltip } from 'react-tippy';
+import type { FormTestsResponse } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from 'recharts';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
 import { FormMonitorDetailsLoader } from '../form-monitor.loader';
 import { ScreenshotModal } from '../form-monitor.screenshot.modal';
+import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
   ChartContainer,
-  ChartDescription,
-  ChartLegend,
   CodeBlock,
-  LegendItem,
+  DotsContainer,
   NoResults,
   PageButton,
   PageInfo,
@@ -30,77 +21,44 @@ import {
   PaginationNav,
   ResultsWrapper,
   StatsContainer,
-  StatusBadgeStyled,
+  TableHeader,
+  TableTestList,
+  TestDescription,
+  TestDot,
   TestTableStyled,
-  TooltipContainer,
-  TooltipContent,
-  TooltipDate,
-  TooltipStatus,
+  TestTooltip,
+  TestTooltipContent,
+  TestTooltipHeader,
 } from './results.styles';
 
-interface TooltipProps {
-  active?: boolean;
-  payload?: Array<{
-    payload: {
-      id: number;
-      date: string;
-      formId: number;
-      status: string;
-      color: string;
-    };
-  }>;
-}
-
-const CustomTooltip = ({
-  active,
-  payload,
-}: TooltipProps): JSX.Element | null => {
-  if (!active || !payload?.length) return null;
-
-  const data = payload[0].payload;
-  return (
-    <TooltipContainer>
-      <TooltipContent>
-        <TooltipStatus $status={data.status}>
-          Test #{data.id}
-          <br />
-          {data.date}
-          <br />
-          <div style={{ color: data.color, textTransform: 'capitalize' }}>
-            {data.status}
-          </div>
-        </TooltipStatus>
-        <TooltipDate>{data.date}</TooltipDate>
-      </TooltipContent>
-    </TooltipContainer>
-  );
+type FormMonitorContext = {
+  formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
 };
 
 export const FMResults: React.FC = () => {
-  const { formId } = useParams();
+  const { formTestsQuery } = useOutletContext<FormMonitorContext>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const ITEMS_PER_PAGE = 100;
   const currentPage = Number(searchParams.get('page')) || 1;
-  const offset = currentPage > 0 ? (currentPage - 1) * ITEMS_PER_PAGE : 0;
   const [selectedScreenshot, setSelectedScreenshot] = React.useState<{
     url: string;
     testId: number;
   } | null>(null);
 
-  const {
-    data: formTests,
-    isLoading,
-    isFetching,
-  } = useFMFormTestsQuery(Number(formId), {
-    limit: ITEMS_PER_PAGE,
-    offset,
-  });
+  const { data: formTests, isLoading, isFetching } = formTestsQuery;
 
   if (isLoading || isFetching) {
     return <FormMonitorDetailsLoader />;
   }
 
-  if (!formTests) return null;
+  if (!formTests || !formTests.tests) {
+    return (
+      <ResultsWrapper>
+        <NoResults>
+          <p>{translate('No test results available.')}</p>
+        </NoResults>
+      </ResultsWrapper>
+    );
+  }
 
   if (formTests.tests.length === 0) {
     return (
@@ -112,123 +70,132 @@ export const FMResults: React.FC = () => {
     );
   }
 
-  const chartData = formTests.tests.map((test) => ({
-    id: test.id,
-    value: 1,
-    status: test.status,
-    date: test.dateAttempted,
-    color:
-      test.status === 'success'
-        ? colors.green600
-        : test.status === 'failed'
-          ? colors.red600
-          : colors.gray700,
-  }));
+  // Get the last 50 tests
+  const last50Tests = formTests.tests.slice(0, 50);
+  const failedTestsCount = last50Tests.filter(
+    (test) => test.status === 'failed'
+  ).length;
 
   const handlePageChange = (page: number): void => {
     setSearchParams({ page: String(page) });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const pagination = formTests.pagination || {
+    total: 0,
+    limit: 100,
+    offset: 0,
+    totalPages: 1,
+  };
+
   return (
     <ResultsWrapper>
       <StatsContainer>
         <ChartContainer>
-          <ChartDescription>
+          <h3>{translate('Last 50 Tests')}</h3>
+          <TestDescription>
             {translate(
-              'Each bar represents a single test, with color indicating the status. ' +
-                'Hover over any bar to see detailed information. ' +
-                'The most recent tests are shown on the right.'
+              `In the most recent 50 tests, a total of ${failedTestsCount} tests have failed for this form.`
             )}
-          </ChartDescription>
-          <ChartLegend>
-            <LegendItem color={colors.green600}>
-              {translate('Success')}
-            </LegendItem>
-            <LegendItem color={colors.red600}>{translate('Failed')}</LegendItem>
-            <LegendItem color={colors.gray700}>
-              {translate('Processing')}
-            </LegendItem>
-          </ChartLegend>
-          <ResponsiveContainer width="100%" height={100}>
-            <BarChart
-              data={chartData}
-              margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              barGap={0}
-              barSize={8}
-            >
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="id"
-                label={{ value: 'Test #', position: 'bottom' }}
-                tick={false}
-              />
-              <YAxis hide />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar dataKey="value" fill={colors.green600}>
-                {chartData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          </TestDescription>
+          <DotsContainer>
+            {last50Tests.map((test) => (
+              <Tooltip
+                key={test.id}
+                html={
+                  <TestTooltip>
+                    <TestTooltipHeader>
+                      <StatusIndicator $status={test.status} $size="sm">
+                        <StatusDot $size="md" />
+                        {translate(test.status.toUpperCase())}
+                      </StatusIndicator>
+                    </TestTooltipHeader>
+                    <TestTooltipContent>
+                      <div className="test-id">Test #{test.id}</div>
+                      <div className="test-date">{test.dateAttempted}</div>
+                      {test.response && (
+                        <div className="test-response">{test.response}</div>
+                      )}
+                    </TestTooltipContent>
+                  </TestTooltip>
+                }
+                theme="light"
+                animation="fade"
+                arrow={true}
+                duration={200}
+                position="right"
+                size="small"
+                interactive
+                interactiveBorder={0}
+              >
+                <TestDot $status={test.status} />
+              </Tooltip>
+            ))}
+          </DotsContainer>
         </ChartContainer>
       </StatsContainer>
 
-      <TestTableStyled>
-        <thead>
-          <tr>
-            <th>{translate('Test ID')}</th>
-            <th>{translate('Date')}</th>
-            <th>{translate('Status')}</th>
-            <th>{translate('Response')}</th>
-            <th>{translate('Screenshot')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {formTests.tests.map((test) => {
-            const dateString = test.dateCompleted || test.dateAttempted;
-            return (
-              <tr key={test.id}>
-                <td className="no-break">#{test.id}</td>
-                <td className="no-break" title={dateString}>
-                  {dateString}
-                </td>
-                <td className="no-break">
-                  <div className="status-col">
-                    <StatusBadgeStyled className={`status-${test.status}`}>
-                      {test.responseCode}
-                    </StatusBadgeStyled>
-                    <div>{test.status}</div>
-                  </div>
-                </td>
-                <td className="code" title={test.response}>
-                  {!!test.response && <CodeBlock>{test.response}</CodeBlock>}
-                </td>
-                <td>
-                  {test.screenshot && (
-                    <img
-                      src={test.screenshot}
-                      alt={`Test #${test.id} screenshot`}
-                      width={100}
-                      height="auto"
-                      onClick={() =>
-                        setSelectedScreenshot({
-                          url: test.screenshot!,
-                          testId: test.id,
-                        })
-                      }
-                      style={{ cursor: 'pointer' }}
-                    />
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </TestTableStyled>
+      <TableTestList>
+        <TableHeader>
+          <h3>{translate('Detailed Results')}</h3>
+          <TestDescription>
+            {translate(
+              `A total of ${formTests.stats?.total || 0} tests have been conducted for this form.`
+            )}
+          </TestDescription>
+        </TableHeader>
 
-      {formTests.pagination.total > ITEMS_PER_PAGE && (
+        <TestTableStyled>
+          <thead>
+            <tr>
+              <th>{translate('Test ID')}</th>
+              <th>{translate('Date')}</th>
+              <th>{translate('Status')}</th>
+              <th>{translate('Response')}</th>
+              <th>{translate('Screenshot')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {formTests.tests.map((test) => {
+              const dateString = test.dateCompleted || test.dateAttempted;
+              return (
+                <tr key={test.id}>
+                  <td className="no-break">#{test.id}</td>
+                  <td className="no-break" title={dateString}>
+                    {dateString}
+                  </td>
+                  <td className="no-break">
+                    <StatusIndicator $status={test.status} $size="sm">
+                      <StatusDot $size="lg" />
+                      {translate(test.status.toUpperCase())}
+                    </StatusIndicator>
+                  </td>
+                  <td className="code" title={test.response}>
+                    {!!test.response && <CodeBlock>{test.response}</CodeBlock>}
+                  </td>
+                  <td>
+                    {test.screenshot && test.status !== 'success' && (
+                      <button
+                        onClick={() =>
+                          setSelectedScreenshot({
+                            url: test.screenshot!,
+                            testId: test.id,
+                          })
+                        }
+                        className="view-screenshot-btn"
+                      >
+                        {translate('View Screenshot')}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </TestTableStyled>
+      </TableTestList>
+
+      {pagination.total > 100 && (
         <PaginationContainer>
           <PaginationNav aria-label="test results pagination">
             <PageButton
@@ -240,17 +207,14 @@ export const FMResults: React.FC = () => {
             <PageButton
               className="next-page"
               onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === formTests.pagination.totalPages}
+              disabled={currentPage === pagination.totalPages}
               title={translate('Next Page')}
             />
           </PaginationNav>
           <PageInfo>
-            {translate('Showing')} {formTests.pagination.offset + 1}-
-            {Math.min(
-              formTests.pagination.offset + formTests.pagination.limit,
-              formTests.pagination.total
-            )}{' '}
-            {translate('of')} {formTests.pagination.total} {translate('tests')}
+            {translate('Showing')} {pagination.offset + 1}-
+            {Math.min(pagination.offset + pagination.limit, pagination.total)}{' '}
+            {translate('of')} {pagination.total} {translate('tests')}
           </PageInfo>
         </PaginationContainer>
       )}

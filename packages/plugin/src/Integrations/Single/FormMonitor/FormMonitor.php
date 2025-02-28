@@ -155,6 +155,9 @@ class FormMonitor extends APIIntegration
             }
         }
 
+        $data['enabled'] = $this->isEnabled();
+        $data['url'] = $this->getTestUrl();
+
         return $data;
     }
 
@@ -173,6 +176,7 @@ class FormMonitor extends APIIntegration
             'url' => $this->getTestUrl(),
             'email' => $this->getEmail(),
             'manifest' => $transformer->transform($form),
+            'enabled' => $this->isEnabled(),
         ];
 
         $client->put($endpoint, ['json' => $payload]);
@@ -183,6 +187,12 @@ class FormMonitor extends APIIntegration
         $endpoint = $this->getEndpoint('forms/'.$form->getId());
 
         $client->delete($endpoint);
+    }
+
+    public function disableManifest(Client $client, Form $form): void
+    {
+        $endpoint = $this->getEndpoint('forms/'.$form->getId().'/disable');
+        $client->put($endpoint);
     }
 
     protected function getProcessableFields(string $category): array

@@ -1,16 +1,26 @@
 import React from 'react';
-import { useParams } from 'react-router-dom';
 import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
-import { useFMFormTestsQuery } from '@ff-client/queries/form-monitor';
+import type {
+  FormTest,
+  FormTestsResponse,
+} from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
 import FailedIcon from '@ff-icons/actions/failed.svg';
 import LoadingIcon from '@ff-icons/actions/loading.svg';
 import SuccessIcon from '@ff-icons/actions/success.svg';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
 
 import { FormMonitorLoader } from '../form-monitor.loader';
+import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
   ChartContainer,
+  ConfigItem,
+  ConfigLabel,
+  ConfigurationSection,
+  ConfigWrapper,
+  MonitoredUrl,
   MostRecentTests,
   Progress,
   ProgressBar,
@@ -30,9 +40,157 @@ const getStatusText = (status: string): string => {
   return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
-export const List: React.FC = () => {
-  const { formId } = useParams();
-  const { data: formTests, isLoading } = useFMFormTestsQuery(Number(formId));
+type Configuration = {
+  integrationStatus: 'enabled' | 'disabled';
+  serviceStatus: 'active' | 'inactive';
+  monitoredUrl: string;
+};
+
+const ConfigurationPanel: React.FC<{ configuration: Configuration }> = ({
+  configuration,
+}) => (
+  <ConfigurationSection>
+    <h3>{translate('Configuration')}</h3>
+    <ConfigWrapper>
+      <ConfigItem>
+        <ConfigLabel>{translate('Integration Status')}</ConfigLabel>
+        <StatusIndicator
+          $size="sm"
+          $status={
+            configuration.integrationStatus === 'enabled'
+              ? 'success'
+              : 'disabled'
+          }
+        >
+          <StatusDot $size="md" />
+          {translate(
+            configuration.integrationStatus === 'enabled'
+              ? 'ENABLED'
+              : 'DISABLED'
+          )}
+        </StatusIndicator>
+      </ConfigItem>
+
+      <ConfigItem>
+        <ConfigLabel>{translate('Service Status')}</ConfigLabel>
+        <StatusIndicator
+          $size="sm"
+          $status={
+            configuration.serviceStatus === 'active'
+              ? 'active'
+              : configuration.serviceStatus === 'inactive'
+                ? 'inactive'
+                : 'disabled'
+          }
+        >
+          <StatusDot $size="md" />
+          {translate(
+            configuration.serviceStatus === 'active'
+              ? 'ACTIVE'
+              : configuration.serviceStatus === 'inactive'
+                ? 'INACTIVE'
+                : 'DISABLED'
+          )}
+        </StatusIndicator>
+      </ConfigItem>
+
+      {configuration?.monitoredUrl && (
+        <ConfigItem $isColumn>
+          <ConfigLabel>{translate('Monitored URL')}</ConfigLabel>
+          <MonitoredUrl>{configuration.monitoredUrl}</MonitoredUrl>
+        </ConfigItem>
+      )}
+    </ConfigWrapper>
+  </ConfigurationSection>
+);
+
+const TestStatusIcon: React.FC<{ status: string; size?: number }> = ({
+  status,
+  size = 48,
+}) => {
+  switch (status) {
+    case 'success':
+      return <SuccessIcon width={size} height={size} />;
+    case 'failed':
+      return <FailedIcon width={size} height={size} />;
+    default:
+      return <LoadingIcon width={size} height={size} />;
+  }
+};
+
+const RecentTestPanel: React.FC<{
+  lastTest?: FormTest;
+  previousTest?: FormTest;
+}> = ({ lastTest, previousTest }) => {
+  const lastTestStatus = lastTest?.status;
+
+  if (!lastTestStatus) {
+    return null;
+  }
+
+  return (
+    <MostRecentTests>
+      <h3>{translate('Most Recent Test')}</h3>
+      {lastTest?.dateAttempted}
+      <div className={`status-${lastTestStatus}`}>
+        <div className="status-main">
+          <div className="icon">
+            <TestStatusIcon status={lastTestStatus} />
+          </div>
+          {translate(getStatusText(lastTestStatus))}
+        </div>
+        {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
+          previousTest && (
+            <small>
+              {translate('Previous Test')}:
+              <span className="icon">
+                <TestStatusIcon status={previousTest.status} size={16} />
+              </span>{' '}
+              <span className={`status-text status-${previousTest.status}`}>
+                {translate(getStatusText(previousTest.status))}
+              </span>
+            </small>
+          )}
+      </div>
+    </MostRecentTests>
+  );
+};
+
+const StatsPanel: React.FC<{ stats: FormTestsResponse['stats'] }> = ({
+  stats,
+}) => (
+  <ChartContainer>
+    <StatContainer>
+      <h3>{translate('Last 30 Days')}</h3>
+      <TotalCount>
+        {translate('Total Tests')}: {stats?.total || 0}
+      </TotalCount>
+      {(['success', 'failed', 'pending'] as const).map((type) => (
+        <StatRow key={type}>
+          <StatHeader>
+            <StatLabel $type={type}>{translate(getStatusText(type))}</StatLabel>
+            <StatValue>
+              {stats?.percentage?.[type] || 0}% ({stats?.[type] || 0})
+            </StatValue>
+          </StatHeader>
+          <ProgressBar>
+            <Progress
+              $type={type}
+              $percentage={stats?.percentage?.[type] || 0}
+            />
+          </ProgressBar>
+        </StatRow>
+      ))}
+    </StatContainer>
+  </ChartContainer>
+);
+
+type ListProps = {
+  formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
+};
+
+export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
+  const { data: formTests, isLoading } = formTestsQuery;
 
   if (isLoading) {
     return (
@@ -42,116 +200,38 @@ export const List: React.FC = () => {
     );
   }
 
-  if (!formTests) return null;
+  const configuration = {
+    integrationStatus: formTests?.enabled ? 'enabled' : 'disabled',
+    serviceStatus: formTests?.fmFormStats?.enabled ? 'active' : 'inactive',
+    monitoredUrl: formTests?.url || '',
+  } as const;
 
-  const { stats } = formTests;
-  const lastTest = formTests?.tests[0];
-  const previousTest = formTests?.tests[1];
-  const lastTestStatus = lastTest?.status;
+  const lastTest = formTests?.tests?.[0];
+  const previousTest = formTests?.tests?.[1];
 
   return (
     <Sidebar>
       <Wrapper>
-        {lastTest && (
-          <MostRecentTests>
-            <h3>{translate('Most Recent Test')}</h3>
-            {lastTest?.dateAttempted}
-            <div className={`status-${lastTestStatus}`}>
-              <div className="status-main">
-                <div className="icon">
-                  {lastTestStatus === 'success' && (
-                    <SuccessIcon width={48} height={48} />
-                  )}
-                  {lastTestStatus === 'failed' && (
-                    <FailedIcon width={48} height={48} />
-                  )}
-                  {lastTestStatus === 'pending' && (
-                    <LoadingIcon width={48} height={48} />
-                  )}
-                </div>
-                {translate(getStatusText(lastTestStatus))}
-              </div>
-              {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
-                previousTest && (
-                  <small>
-                    {translate('Previous Test')}:{' '}
-                    <span className="icon">
-                      {previousTest.status === 'success' && (
-                        <SuccessIcon width={16} height={16} />
-                      )}
-                      {previousTest.status === 'failed' && (
-                        <FailedIcon width={16} height={16} />
-                      )}
-                      {previousTest.status === 'pending' && (
-                        <LoadingIcon width={16} height={16} />
-                      )}
-                    </span>{' '}
-                    <span
-                      className={`status-text status-${previousTest.status}`}
-                    >
-                      {translate(
-                        previousTest.status.charAt(0).toUpperCase() +
-                          previousTest.status.slice(1)
-                      )}
-                    </span>
-                  </small>
-                )}
-            </div>
-          </MostRecentTests>
+        {!formTests?.tests?.length ? (
+          <>
+            <RecentTestPanel />
+            <StatsPanel
+              stats={{
+                total: 0,
+                percentage: { success: 0, failed: 0, pending: 0 },
+                success: 0,
+                failed: 0,
+                pending: 0,
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <RecentTestPanel lastTest={lastTest} previousTest={previousTest} />
+            <StatsPanel stats={formTests.stats} />
+          </>
         )}
-
-        <ChartContainer>
-          <StatContainer>
-            <h3>{translate('Last 30 Days')}</h3>
-            <TotalCount>
-              {translate('Total Tests')}: {stats.total}
-            </TotalCount>
-            <StatRow>
-              <StatHeader>
-                <StatLabel $type="success">{translate('Success')}</StatLabel>
-                <StatValue>
-                  {stats.percentage.success}% ({stats.success})
-                </StatValue>
-              </StatHeader>
-              <ProgressBar>
-                <Progress
-                  $type="success"
-                  $percentage={stats.percentage.success}
-                />
-              </ProgressBar>
-            </StatRow>
-
-            <StatRow>
-              <StatHeader>
-                <StatLabel $type="failed">{translate('Failed')}</StatLabel>
-                <StatValue>
-                  {stats.percentage.failed}% ({stats.failed})
-                </StatValue>
-              </StatHeader>
-              <ProgressBar>
-                <Progress
-                  $type="failed"
-                  $percentage={stats.percentage.failed}
-                />
-              </ProgressBar>
-            </StatRow>
-
-            <StatRow>
-              <StatHeader>
-                <StatLabel $type="pending">{translate('Processing')}</StatLabel>
-                <StatValue>
-                  {stats.percentage.pending}% ({stats.pending})
-                </StatValue>
-              </StatHeader>
-              <ProgressBar>
-                <Progress
-                  $type="pending"
-                  $percentage={stats.percentage.pending}
-                />
-              </ProgressBar>
-            </StatRow>
-          </StatContainer>
-        </ChartContainer>
+        <ConfigurationPanel configuration={configuration} />
       </Wrapper>
     </Sidebar>
   );

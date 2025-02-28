@@ -1,22 +1,20 @@
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
+import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.xl};
-  padding: ${spacings.md};
 
   h3 {
-    margin: 0;
     font-size: 1.1em;
+    margin-bottom: 0;
   }
 `;
 
 export const ChartContainer = styled.div`
-  border-radius: ${borderRadius.md};
-  margin-bottom: ${spacings.md};
-  margin-top: ${spacings.lg};
+  padding-bottom: ${spacings.xl};
+  border-bottom: 1px solid ${colors.gray200};
 `;
 
 export const ChartDescription = styled.p`
@@ -43,19 +41,16 @@ export const StatContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.md};
-
-  h4 {
-    font-size: 15px;
-    font-weight: 600;
-    color: ${colors.gray800};
-    margin-bottom: 0;
-  }
+  padding: 0 ${spacings.md};
 `;
 
 export const MostRecentTests = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.md};
+  padding: 0 ${spacings.md};
+  padding-bottom: ${spacings.md};
+  border-bottom: 1px solid ${colors.gray200};
 
   .status-success,
   .status-failed,
@@ -164,4 +159,54 @@ export const Progress = styled.div<{
         ? colors.red600
         : colors.gray700};
   transition: width 0.3s ease;
+`;
+
+export const ConfigurationSection = styled.div`
+  padding: 0 ${spacings.md};
+  h3 {
+    margin: 0 0 ${spacings.md};
+  }
+`;
+
+export const ConfigWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.xs};
+`;
+
+export const ConfigItem = styled.div<{ $isColumn?: boolean }>`
+  display: flex;
+  align-items: ${({ $isColumn }) => ($isColumn ? 'flex-start' : 'center')};
+  flex-direction: ${({ $isColumn }) => ($isColumn ? 'column' : 'row')};
+  justify-content: ${({ $isColumn }) =>
+    $isColumn ? 'flex-start' : 'space-between'};
+  gap: ${({ $isColumn }) => ($isColumn ? spacings.xs : '0')};
+  margin-bottom: ${spacings.sm};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+export const ConfigLabel = styled.div`
+  color: ${colors.gray600};
+  font-size: 13px;
+  font-weight: 500;
+`;
+
+export const ConfigValue = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${spacings.xs};
+  font-size: 13px;
+`;
+
+export const MonitoredUrl = styled.code`
+  display: block;
+  padding: ${spacings.xs};
+  background: ${colors.gray100};
+  border-radius: 3px;
+  font-size: 12px;
+  word-break: break-all;
+  color: ${colors.gray700};
 `;

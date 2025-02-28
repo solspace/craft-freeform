@@ -1,10 +1,10 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\EventListeners;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Controllers\FormMonitorController;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Controllers\FormMonitorController;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\EventListeners;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use craft\helpers\Queue;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Jobs\FormMonitorCleanupJob;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Jobs\FormMonitorCleanupJob;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 
 class Cleanup extends FeatureBundle

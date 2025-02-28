@@ -1,13 +1,13 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\EventListeners;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
-use Solspace\Freeform\Integrations\Other\FormMonitor\FormMonitor;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Transformers\ManifestTransformer;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Transformers\ManifestTransformer;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\LoggerService;
 use yii\base\Event;

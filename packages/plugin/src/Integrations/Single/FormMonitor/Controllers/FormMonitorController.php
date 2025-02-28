@@ -1,13 +1,13 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\Controllers;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\Controllers;
 
 use craft\db\Query;
 use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Integrations\Other\FormMonitor\FormMonitor;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\FormsService;

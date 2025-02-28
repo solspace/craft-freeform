@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\Jobs;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\Jobs;
 
 use craft\helpers\Db;
 use craft\queue\BaseJob;

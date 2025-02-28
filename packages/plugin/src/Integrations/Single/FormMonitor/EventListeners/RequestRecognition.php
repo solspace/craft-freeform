@@ -1,11 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\EventListeners;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use Solspace\Freeform\Events\Forms\DisableFunctionalityEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\Transformers;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\Transformers;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\FieldInterface;

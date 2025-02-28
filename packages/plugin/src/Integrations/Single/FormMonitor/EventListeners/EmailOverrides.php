@@ -1,11 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\EventListeners;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use craft\mail\Message;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
 use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\FormsService;

@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Services;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Other\FormMonitor\FormMonitor;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 
 class FormMonitorService extends BaseService
 {

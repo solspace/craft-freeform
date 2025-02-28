@@ -1,12 +1,12 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor\Providers;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor\Providers;
 
 use craft\db\Query;
 use craft\web\Request;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Other\FormMonitor\FormMonitor;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 

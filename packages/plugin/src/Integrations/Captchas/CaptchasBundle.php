@@ -12,7 +12,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
 use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
 use Solspace\Freeform\Integrations\Captchas\Turnstile\Turnstile;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;

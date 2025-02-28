@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Other\FormMonitor;
+namespace Solspace\Freeform\Integrations\Single\FormMonitor;
 
 use craft\helpers\DateTimeHelper;
 use GuzzleHttp\Client;
@@ -11,13 +11,13 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Integrations\Other\FormMonitor\Transformers\ManifestTransformer;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Transformers\ManifestTransformer;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
 #[Edition(Edition::PRO)]
 #[Type(
     name: 'Form Monitor',
-    type: Type::TYPE_OTHER,
+    type: Type::TYPE_SINGLE,
     version: 'v1',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',

@@ -44,6 +44,14 @@
                         <span>{{ type.name }}</span>
                     </h1>
 
+                    {% if integration and integration.enabled %}
+                        {% if integration.id and integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
+                            <div class="singleton-auth-checker">
+                                {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
                     {% if type.readme %}
                         {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
                     {% endif %}

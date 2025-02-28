@@ -6,6 +6,7 @@ import Textarea from '@components/form-controls/control-types/textarea/textarea'
 import { HeaderContainer } from '@components/layout/blocks/header-container';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config from '@config/freeform/freeform.config';
+import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
 import { useSidebarSelect } from '@ff-client/hooks/use-sidebar-select';
 import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
@@ -64,6 +65,25 @@ export const LimitedUsersDetail: React.FC = () => {
     setState((prev) => updateItem(prev));
   };
 
+  const triggerSave =
+    (goBack: boolean = true) =>
+    (): void => {
+      mutation.mutate(
+        { name, description, items: state },
+        {
+          onSuccess: () => {
+            if (goBack) {
+              navigate(`/settings/limited-users`);
+            }
+
+            notifications.success(translate('Permission saved successfully.'));
+          },
+        }
+      );
+    };
+
+  useSaveShortcut(triggerSave(false));
+
   if (!data && isFetching) {
     return <div>{translate('Loading...')}</div>;
   }
@@ -89,22 +109,7 @@ export const LimitedUsersDetail: React.FC = () => {
 
       <HeaderContainer
         extra={
-          <button
-            className="btn submit"
-            onClick={() =>
-              mutation.mutate(
-                { name, description, items: state },
-                {
-                  onSuccess: () => {
-                    navigate(`/settings/limited-users`);
-                    notifications.success(
-                      translate('Permission saved successfully.')
-                    );
-                  },
-                }
-              )
-            }
-          >
+          <button className="btn submit" onClick={triggerSave()}>
             <LoadingText
               loading={mutation.isLoading}
               loadingText={translate('Saving')}

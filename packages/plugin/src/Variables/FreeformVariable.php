@@ -40,18 +40,17 @@ class FreeformVariable
 {
     public array $siteTemplatesDirectories = [];
 
-    /**
-     * @param int|string $handleOrId
-     */
-    public function form($handleOrId, ?array $properties = null): ?Form
+    public function form(int|string $handleOrId, mixed $properties = null, ?string $uniqueId = null): ?Form
     {
-        $site = SitesHelper::getFrontendSiteHandle();
-        $form = $this->getFormService()->getFormByHandleOrId($handleOrId, $site);
-        if (!$form) {
-            return null;
+        if (empty($uniqueId) && (\is_string($properties) || is_numeric($properties))) {
+            $uniqueId = $properties;
+            $properties = null;
         }
 
-        return $form->setProperties($properties);
+        $site = SitesHelper::getFrontendSiteHandle();
+        $form = $this->getFormService()->getFormByHandleOrId($handleOrId, $site, $uniqueId);
+
+        return $form?->setProperties($properties);
     }
 
     /**

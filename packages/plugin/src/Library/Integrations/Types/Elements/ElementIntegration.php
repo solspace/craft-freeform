@@ -32,6 +32,21 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
         return $element;
     }
 
+    protected function getMappedValue(string $source, Form $form, ?FieldMapping $mapping = null): mixed
+    {
+        if (null === $mapping) {
+            return null;
+        }
+
+        foreach ($mapping as $item) {
+            if ($source === $item->getSource()) {
+                return $item->extractValue($form);
+            }
+        }
+
+        return null;
+    }
+
     protected function processMapping(ElementInterface $element, Form $form, ?FieldMapping $mapping = null): void
     {
         if (null === $mapping) {

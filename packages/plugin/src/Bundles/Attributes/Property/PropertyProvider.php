@@ -42,7 +42,6 @@ use yii\di\Container;
 class PropertyProvider
 {
     public function __construct(
-        private Container $container,
         private ImplementationProvider $implementationProvider,
         private DefaultsProvider $defaultsProvider,
         private LimitedUserChecker $checker,
@@ -212,7 +211,7 @@ class PropertyProvider
 
         if (\is_string($options)) {
             /** @var OptionsGeneratorInterface $class */
-            $class = $this->container->get($options);
+            $class = $this->getContainer()->get($options);
             if ($class instanceof OptionsGeneratorInterface) {
                 $attribute->options = $class->fetchOptions($attribute);
             } else {
@@ -280,7 +279,7 @@ class PropertyProvider
         }
 
         /** @var TransformerInterface $transformer */
-        $transformer = $this->container->get($transformerAttribute->className);
+        $transformer = $this->getContainer()->get($transformerAttribute->className);
         $attribute->transformer = $transformer;
     }
 
@@ -327,7 +326,7 @@ class PropertyProvider
         }
 
         /** @var ValueGeneratorInterface $valueGenerator */
-        $valueGenerator = $this->container->get($valueGeneratorAttribute->className);
+        $valueGenerator = $this->getContainer()->get($valueGeneratorAttribute->className);
         $attribute->valueGenerator = $valueGenerator;
     }
 
@@ -399,5 +398,10 @@ class PropertyProvider
         }
 
         $attribute->visible = $this->checker->can($limitation->expression);
+    }
+
+    private function getContainer(): Container
+    {
+        return \Craft::$container;
     }
 }

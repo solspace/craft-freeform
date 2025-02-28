@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 class Entry extends ElementIntegration
 {
     #[Required]
+    #[VisibilityFilter('enabled')]
     #[Input\Select(
         label: 'Entry Type',
         emptyOption: 'Select an entry type',
@@ -33,6 +34,7 @@ class Entry extends ElementIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!!values.sectionEntry')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Entry attributes',
@@ -42,6 +44,7 @@ class Entry extends ElementIntegration
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!!values.sectionEntry')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable custom Entry fields',

@@ -12,6 +12,8 @@
 
 {% set title = "Diagnostics"|t("freeform") %}
 
+{% block actionButton %}{% endblock %}
+
 {% macro renderIcon(type) %}
     {%- if type == 'WarningValidator' -%}
         <svg aria-hidden="true" viewbox="0 0 576 512">
@@ -104,8 +106,7 @@
     <div class="gridy">
         {% set leftSections = [
             {'title': "Server Checks"|t('freeform'), 'items': server},
-            {'title': "Site Settings"|t('freeform'), 'items': site},
-            {'title': "Statistics"|t('freeform'), 'items': stats}
+            {'title': "Site Settings"|t('freeform'), 'items': site}
         ] %}
         <div class="diag">
             {% for section in leftSections %}
@@ -133,6 +134,7 @@
         </div>
 
         {% set rightSections = [
+            {'title': "Statistics"|t('freeform'), 'items': stats},
             {'title': "Integrations"|t('freeform'), 'items': integrations},
             {'title': "Form Types"|t('freeform'), 'items': formType},
             {'title': "Modules"|t('freeform'), 'items': modules}

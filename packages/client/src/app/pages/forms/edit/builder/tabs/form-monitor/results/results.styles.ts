@@ -133,14 +133,11 @@ export const PageInfo = styled.div`
   font-size: 13px;
 `;
 
-export const CodeBlock = styled.div`
+export const ResponseBlock = styled.div`
   position: relative;
-  padding: ${spacings.sm} ${spacings.md};
   font-family: monospace;
   font-size: 12px;
   line-height: 1.4;
-  background: ${colors.gray050};
-  border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.md};
   max-height: 60px;
   overflow-y: auto;
@@ -213,14 +210,14 @@ export const TestTableStyled = styled.table`
 
 export const DotsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, 12px);
+  grid-template-columns: repeat(auto-fill, minmax(15px, 1fr));
   gap: 12px;
   min-height: 60px;
   align-items: center;
   width: 100%;
   margin: ${spacings.md} 0;
 
-  @media (min-width: 1830px) {
+  @media (min-width: 1100px) {
     grid-template-columns: repeat(50, 1fr);
     gap: 8px;
   }
@@ -229,8 +226,8 @@ export const DotsContainer = styled.div`
 export const TestDot = styled.div<{
   $status: 'success' | 'failed' | 'pending';
 }>`
-  width: 15px;
-  height: 15px;
+  width: 100%;
+  aspect-ratio: 1;
   border-radius: 50%;
   background-color: ${({ $status }) =>
     $status === 'success'

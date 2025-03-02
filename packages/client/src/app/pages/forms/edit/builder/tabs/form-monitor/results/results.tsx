@@ -12,13 +12,13 @@ import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
   ChartContainer,
-  CodeBlock,
   DotsContainer,
   NoResults,
   PageButton,
   PageInfo,
   PaginationContainer,
   PaginationNav,
+  ResponseBlock,
   ResultsWrapper,
   StatsContainer,
   TableHeader,
@@ -94,9 +94,9 @@ export const FMResults: React.FC = () => {
         <ChartContainer>
           <h3>{translate('Last 50 Tests')}</h3>
           <TestDescription>
-            {translate(
-              `In the most recent 50 tests, a total of ${failedTestsCount} tests have failed for this form.`
-            )}
+            {translate(`In the most recent 50 tests, a total of `)}
+            <strong>{failedTestsCount}</strong>
+            {translate(` tests have failed for this form.`)}
           </TestDescription>
           <DotsContainer>
             {last50Tests.map((test) => (
@@ -111,7 +111,7 @@ export const FMResults: React.FC = () => {
                       </StatusIndicator>
                     </TestTooltipHeader>
                     <TestTooltipContent>
-                      <div className="test-id">Test #{test.id}</div>
+                      <div className="test-id">Test: {test.id}</div>
                       <div className="test-date">{test.dateAttempted}</div>
                       {test.response && (
                         <div className="test-response">{test.response}</div>
@@ -160,7 +160,7 @@ export const FMResults: React.FC = () => {
               const dateString = test.dateCompleted || test.dateAttempted;
               return (
                 <tr key={test.id}>
-                  <td className="no-break">#{test.id}</td>
+                  <td className="no-break">{test.id}</td>
                   <td className="no-break" title={dateString}>
                     {dateString}
                   </td>
@@ -171,7 +171,9 @@ export const FMResults: React.FC = () => {
                     </StatusIndicator>
                   </td>
                   <td className="code" title={test.response}>
-                    {!!test.response && <CodeBlock>{test.response}</CodeBlock>}
+                    {!!test.response && (
+                      <ResponseBlock>{test.response}</ResponseBlock>
+                    )}
                   </td>
                   <td>
                     {test.screenshot && test.status !== 'success' && (

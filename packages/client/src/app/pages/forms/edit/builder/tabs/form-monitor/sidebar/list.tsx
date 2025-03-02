@@ -20,6 +20,7 @@ import {
   ConfigLabel,
   ConfigurationSection,
   ConfigWrapper,
+  MainStats,
   MonitoredUrl,
   MostRecentTests,
   Progress,
@@ -131,27 +132,29 @@ const RecentTestPanel: React.FC<{
   return (
     <MostRecentTests>
       <h3>{translate('Most Recent Test')}</h3>
-      {lastTest?.dateAttempted}
-      <div className={`status-${lastTestStatus}`}>
-        <div className="status-main">
-          <div className="icon">
-            <TestStatusIcon status={lastTestStatus} />
+      <MainStats>
+        {lastTest?.dateAttempted}
+        <div className={`status-${lastTestStatus}`}>
+          <div className="status-main">
+            <div className="icon">
+              <TestStatusIcon status={lastTestStatus} />
+            </div>
+            {translate(getStatusText(lastTestStatus))}
           </div>
-          {translate(getStatusText(lastTestStatus))}
+          {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
+            previousTest && (
+              <small>
+                {translate('Previous Test')}:
+                <span className="icon">
+                  <TestStatusIcon status={previousTest.status} size={16} />
+                </span>{' '}
+                <span className={`status-text status-${previousTest.status}`}>
+                  {translate(getStatusText(previousTest.status))}
+                </span>
+              </small>
+            )}
         </div>
-        {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
-          previousTest && (
-            <small>
-              {translate('Previous Test')}:
-              <span className="icon">
-                <TestStatusIcon status={previousTest.status} size={16} />
-              </span>{' '}
-              <span className={`status-text status-${previousTest.status}`}>
-                {translate(getStatusText(previousTest.status))}
-              </span>
-            </small>
-          )}
-      </div>
+      </MainStats>
     </MostRecentTests>
   );
 };
@@ -165,22 +168,26 @@ const StatsPanel: React.FC<{ stats: FormTestsResponse['stats'] }> = ({
       <TotalCount>
         {translate('Total Tests')}: {stats?.total || 0}
       </TotalCount>
-      {(['success', 'failed', 'pending'] as const).map((type) => (
-        <StatRow key={type}>
-          <StatHeader>
-            <StatLabel $type={type}>{translate(getStatusText(type))}</StatLabel>
-            <StatValue>
-              {stats?.percentage?.[type] || 0}% ({stats?.[type] || 0})
-            </StatValue>
-          </StatHeader>
-          <ProgressBar>
-            <Progress
-              $type={type}
-              $percentage={stats?.percentage?.[type] || 0}
-            />
-          </ProgressBar>
-        </StatRow>
-      ))}
+      <MainStats>
+        {(['success', 'failed'] as const).map((type) => (
+          <StatRow key={type}>
+            <StatHeader>
+              <StatLabel $type={type}>
+                {translate(getStatusText(type))}
+              </StatLabel>
+              <StatValue>
+                {stats?.percentage?.[type] || 0}% ({stats?.[type] || 0})
+              </StatValue>
+            </StatHeader>
+            <ProgressBar>
+              <Progress
+                $type={type}
+                $percentage={stats?.percentage?.[type] || 0}
+              />
+            </ProgressBar>
+          </StatRow>
+        ))}
+      </MainStats>
     </StatContainer>
   </ChartContainer>
 );

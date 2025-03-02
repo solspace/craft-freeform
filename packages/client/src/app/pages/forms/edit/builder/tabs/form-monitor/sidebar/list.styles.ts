@@ -8,7 +8,7 @@ export const Wrapper = styled.div`
 
   h3 {
     font-size: 1.1em;
-    margin-bottom: 0;
+    margin-bottom: 0.3em;
   }
 `;
 
@@ -34,20 +34,24 @@ export const NoResults = styled.div`
 export const TotalCount = styled.div`
   font-size: 14px;
   color: ${colors.gray800};
-  margin-bottom: ${spacings.sm};
+  margin-bottom: ${spacings.md};
 `;
 
 export const StatContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.md};
   padding: 0 ${spacings.md};
+`;
+
+export const MainStats = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.md};
 `;
 
 export const MostRecentTests = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.md};
   padding: 0 ${spacings.md};
   padding-bottom: ${spacings.md};
   border-bottom: 1px solid ${colors.gray200};

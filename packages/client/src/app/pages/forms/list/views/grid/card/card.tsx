@@ -27,9 +27,12 @@ import { StatsChart } from './card.monitor.stats';
 import {
   CardBody,
   CardWrapper,
+  ChartWrapper,
   ControlButton,
   Controls,
+  FMContainer,
   FormBody,
+  FormBodyContent,
   LinkList,
   PaddedChartFooter,
   Subtitle,
@@ -148,89 +151,106 @@ export const Card: React.FC<Props> = ({
 
       <CardBody>
         <FormBody>
-          {isTitleOverflowing ? (
-            <Tooltip title={name} {...tooltipProps}>
-              {hasTitleLink ? (
-                <TitleLink
-                  ref={titleRef}
-                  onClick={onNavigate}
-                  onAuxClick={onNavigate}
-                >
-                  {name}
-                </TitleLink>
-              ) : (
-                <Title ref={titleRef}>{name}</Title>
-              )}
-            </Tooltip>
-          ) : hasTitleLink ? (
-            <TitleLink
-              ref={titleRef}
-              onClick={onNavigate}
-              onAuxClick={onNavigate}
-            >
-              {name}
-            </TitleLink>
-          ) : (
-            <Title ref={titleRef}>{name}</Title>
-          )}
-          {!!description &&
-            (isDescriptionOverflowing ? (
-              <Tooltip title={description} {...tooltipProps}>
-                <Subtitle ref={descriptionRef}>{description}</Subtitle>
-              </Tooltip>
-            ) : (
-              <Subtitle ref={descriptionRef} title={description}>
-                {description}
-              </Subtitle>
-            ))}
-
-          {linkList.length > 0 && (
-            <LinkList>
-              {linkList.map((link, idx) =>
-                link.internal ? (
-                  <NavLink key={idx} to={link.url}>
-                    {link.label}
-                  </NavLink>
+          <FormBodyContent>
+            {isTitleOverflowing ? (
+              <Tooltip title={name} {...tooltipProps}>
+                {hasTitleLink ? (
+                  <TitleLink
+                    ref={titleRef}
+                    onClick={onNavigate}
+                    onAuxClick={onNavigate}
+                  >
+                    {name}
+                  </TitleLink>
                 ) : (
-                  <li key={idx}>
-                    <a href={link.url}>{link.label}</a>
-                  </li>
-                )
-              )}
-            </LinkList>
-          )}
+                  <Title ref={titleRef}>{name}</Title>
+                )}
+              </Tooltip>
+            ) : hasTitleLink ? (
+              <TitleLink
+                ref={titleRef}
+                onClick={onNavigate}
+                onAuxClick={onNavigate}
+              >
+                {name}
+              </TitleLink>
+            ) : (
+              <Title ref={titleRef}>{name}</Title>
+            )}
+            {!!description &&
+              (isDescriptionOverflowing ? (
+                <Tooltip
+                  title={description}
+                  {...tooltipProps}
+                  position="bottom"
+                  distance={10}
+                  style={{ display: 'block' }}
+                >
+                  <Subtitle ref={descriptionRef}>{description}</Subtitle>
+                </Tooltip>
+              ) : (
+                <Subtitle ref={descriptionRef}>{description}</Subtitle>
+              ))}
+
+            {linkList.length > 0 && (
+              <LinkList>
+                {linkList.map((link, idx) =>
+                  link.internal ? (
+                    <NavLink key={idx} to={link.url}>
+                      {link.label}
+                    </NavLink>
+                  ) : (
+                    <li key={idx}>
+                      <a href={link.url}>{link.label}</a>
+                    </li>
+                  )
+                )}
+              </LinkList>
+            )}
+          </FormBodyContent>
+
+          <FMContainer>
+            {formMonitor?.enabled && formMonitorLink && (
+              <NavLink to={formMonitorLink.url}>
+                <StatsChart stats={formMonitor?.stats} />
+              </NavLink>
+            )}
+          </FMContainer>
         </FormBody>
-        {formMonitor?.enabled && formMonitorLink && (
-          <NavLink to={formMonitorLink.url}>
-            <StatsChart stats={formMonitor?.stats} />
-          </NavLink>
-        )}
       </CardBody>
 
-      <ResponsiveContainer width="100%" height={40}>
-        <AreaChart
-          data={form.chartData || randomData}
-          margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
-        >
-          <defs>
-            <linearGradient id={`color${form.id}`} x1={0} y1={0} x2={0} y2={1}>
-              <stop offset="5%" stopColor={color} stopOpacity={0.4} />
-              <stop offset="95%" stopColor={color} stopOpacity={0.3} />
-            </linearGradient>
-          </defs>
-          <Area
-            type="monotone"
-            dataKey={'uv'}
-            stroke={color}
-            strokeWidth={1}
-            strokeOpacity={1}
-            fillOpacity={1}
-            fill={`url(#color${form.id})`}
-            isAnimationActive={false}
-          />
-        </AreaChart>
-      </ResponsiveContainer>
-      <PaddedChartFooter $color={color} />
+      <ChartWrapper>
+        <ResponsiveContainer width="100%" height={40}>
+          <AreaChart
+            data={form.chartData || randomData}
+            margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
+          >
+            <defs>
+              <linearGradient
+                id={`color${form.id}`}
+                x1={0}
+                y1={0}
+                x2={0}
+                y2={1}
+              >
+                <stop offset="5%" stopColor={color} stopOpacity={0.4} />
+                <stop offset="95%" stopColor={color} stopOpacity={0.3} />
+              </linearGradient>
+            </defs>
+            <Area
+              type="monotone"
+              dataKey={'uv'}
+              stroke={color}
+              strokeWidth={1}
+              strokeOpacity={1}
+              fillOpacity={1}
+              fill={`url(#color${form.id})`}
+              isAnimationActive={false}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+        <PaddedChartFooter $color={color} />
+      </ChartWrapper>
     </CardWrapper>
   );
 };

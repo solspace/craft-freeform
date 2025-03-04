@@ -23,7 +23,7 @@ class FormMonitorCleanupJob extends BaseJob
                     '<',
                 )
             )
-            ->andWhere(['IS NOT', Submission::TABLE.'.[[requestId]]', null])
+            ->andWhere(['IS NOT', Db::rawTableShortName(Submission::TABLE.'.[[requestId]]'), null])
         ;
 
         foreach ($query->batch() as $submissions) {

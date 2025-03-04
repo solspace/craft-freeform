@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -154,7 +155,13 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
         ;
 
         $output = '<div class="freeform-signature-wrapper" style="position: relative;">';
-        $output .= '<input'.$inputAttributes.' />';
+        $output .= Html::tag(
+            $inputAttributes->getTag('input'),
+            '',
+            $inputAttributes->toHtmlTagArray([
+                'field' => $this,
+            ])
+        );
 
         $canvasAttributes = (new Attributes())
             ->set('style', 'padding: 1px; display: block; border-radius: 5px;')
@@ -168,12 +175,18 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             ->set('data-signature-field')
         ;
 
-        $output .= '<canvas'.$canvasAttributes.'>Your browser does not support the Signature field</canvas>';
+        $output .= Html::tag(
+            'canvas',
+            'Your browser does not support the Signature field',
+            $canvasAttributes->toHtmlTagArray()
+        );
 
         if ($this->showClearButton) {
-            $output .= '<button'.$attributes.'>';
-            $output .= Freeform::t('Clear');
-            $output .= '</button>';
+            $output .= Html::tag(
+                'button',
+                Freeform::t('Clear'),
+                $attributes->toHtmlTagArray(['field' => $this])
+            );
         }
 
         $output .= '</div>';

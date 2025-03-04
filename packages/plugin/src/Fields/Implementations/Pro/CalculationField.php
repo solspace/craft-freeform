@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
@@ -116,15 +117,26 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
             ->replace('readonly', true)
         ;
 
-        if (self::INPUT_TYPE_PLAIN === $this->inputType) {
-            $output = '<div class="freeform-calculation-wrapper">';
-            $output .= '<input'.$attributes.' />';
-            $output .= '<p class="freeform-calculation-plain-field">'.$this->getValue().'</p>';
-            $output .= '</div>';
+        $input = Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
 
-            return $output;
+        if (self::INPUT_TYPE_PLAIN === $this->inputType) {
+            $paragraph = Html::tag(
+                'p',
+                htmlentities($this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401),
+                ['class' => 'freeform-calculation-plain-field']
+            );
+
+            return Html::tag(
+                'div',
+                $input.$paragraph,
+                ['class' => 'freeform-calculation-wrapper']
+            );
         }
 
-        return '<input'.$attributes.' />';
+        return $input;
     }
 }

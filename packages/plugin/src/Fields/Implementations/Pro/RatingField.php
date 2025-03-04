@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
@@ -152,18 +153,29 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
         $maxValue = $this->getMaxValue();
         for ($i = $maxValue; $i >= 1; --$i) {
             $starId = $this->getIdAttribute().'_star_'.$i;
+            $isChecked = (int) $this->getValue() === $i;
 
-            $inputAttributes = clone $attributes;
-            $inputAttributes
+            $inputAttributes = $attributes
+                ->clone()
                 ->set('id', $starId)
                 ->replace('value', $i)
-                ->replace('checked', (int) $this->getValue() === $i)
+                ->replace('checked', $isChecked)
             ;
 
-            $output .= '<input'.$inputAttributes.' />'.\PHP_EOL;
+            $output .= Html::tag(
+                $inputAttributes->getTag('input'),
+                '',
+                $inputAttributes->toHtmlTagArray([
+                    'i' => $i,
+                    'index' => $i,
+                    'field' => $this,
+                    'checked' => $isChecked,
+                ])
+            );
 
-            $output .= '<label for="'.$starId.'"></label>';
+            $output .= Html::tag('label', '', ['for' => $starId]);
         }
+
         $output .= '</span>';
         $output .= '</div>';
 

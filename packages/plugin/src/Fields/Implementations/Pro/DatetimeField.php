@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use craft\gql\types\DateTime as DateTimeType;
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -539,6 +540,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             $attributes->append('class', 'form-datepicker');
         }
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this]),
+        );
     }
 }

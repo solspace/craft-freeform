@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
@@ -283,11 +284,31 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         return $array;
     }
 
-    public function toHtmlTagArray(): array
+    public function toHtmlTagArray(?array $properties = null): array
     {
         $array = $this->attributes;
         foreach (self::EXCLUDED_ATTRIBUTES as $attribute) {
             unset($array[$attribute]);
+        }
+
+        if (!empty($properties)) {
+            $twig = new IsolatedTwig();
+
+            $replacements = [];
+            foreach ($array as $key => $value) {
+                $key = $twig->render($key, $properties);
+                $value = !empty($value) ? $twig->render($value, $properties) : $value;
+
+                $replacements[$key] = $value;
+            }
+
+            $array = $replacements;
+        }
+
+        foreach ($array as $key => $value) {
+            if (null === $value) {
+                $array[$key] = true;
+            }
         }
 
         return $array;

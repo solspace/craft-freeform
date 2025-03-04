@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -65,7 +66,11 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
             ->set($this->getRequiredAttribute())
         ;
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     /**

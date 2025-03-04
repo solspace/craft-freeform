@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -91,7 +92,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
             'value' => '',
         ]);
 
-        $output = '<input'.$attributes.' />';
+        $output = Html::tag('input', '', $attributes->toHtmlTagArray());
         $output .= $this->getSingleInputHtml();
 
         return $output;
@@ -109,7 +110,11 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
             ->setIfEmpty($this->getRequiredAttribute())
         ;
 
-        return '<input '.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     public function renderSingleInput(): Markup

@@ -121,8 +121,7 @@ const TestStatusIcon: React.FC<{ status: string; size?: number }> = ({
 
 const RecentTestPanel: React.FC<{
   lastTest?: FormTest;
-  previousTest?: FormTest;
-}> = ({ lastTest, previousTest }) => {
+}> = ({ lastTest }) => {
   const lastTestStatus = lastTest?.status;
 
   if (!lastTestStatus) {
@@ -141,18 +140,6 @@ const RecentTestPanel: React.FC<{
             </div>
             {translate(getStatusText(lastTestStatus))}
           </div>
-          {(lastTestStatus === 'pending' || lastTestStatus === 'failed') &&
-            previousTest && (
-              <small>
-                {translate('Previous Test')}:
-                <span className="icon">
-                  <TestStatusIcon status={previousTest.status} size={16} />
-                </span>{' '}
-                <span className={`status-text status-${previousTest.status}`}>
-                  {translate(getStatusText(previousTest.status))}
-                </span>
-              </small>
-            )}
         </div>
       </MainStats>
     </MostRecentTests>
@@ -214,7 +201,6 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
   } as const;
 
   const lastTest = formTests?.tests?.[0];
-  const previousTest = formTests?.tests?.[1];
 
   return (
     <Sidebar>
@@ -234,7 +220,7 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
           </>
         ) : (
           <>
-            <RecentTestPanel lastTest={lastTest} previousTest={previousTest} />
+            <RecentTestPanel lastTest={lastTest} />
             <StatsPanel stats={formTests.stats} />
           </>
         )}

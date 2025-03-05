@@ -123,7 +123,6 @@ export const FMResults: React.FC = () => {
                 animation="fade"
                 arrow={true}
                 duration={200}
-                position="right"
                 size="small"
                 interactive
                 interactiveBorder={0}

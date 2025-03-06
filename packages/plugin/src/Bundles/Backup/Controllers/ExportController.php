@@ -10,7 +10,6 @@ use Solspace\Freeform\Bundles\Backup\Export\FreeformFormsExporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
-use Symfony\Component\Serializer\Context\Normalizer\ObjectNormalizerContextBuilder;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -152,10 +151,7 @@ class ExportController extends BaseApiController
             $sse->message('progress', 1);
         }
 
-        $context = (new ObjectNormalizerContextBuilder())
-            ->withGroups(['export'])
-            ->toArray()
-        ;
+        $context = ['groups' => ['export']];
 
         foreach ($collection->getFormSubmissions() as $formSubmissions) {
             $total = $formSubmissions->submissionBatchProcessor->total();

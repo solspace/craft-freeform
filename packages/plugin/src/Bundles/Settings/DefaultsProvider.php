@@ -36,6 +36,10 @@ class DefaultsProvider
             return $object->isLocked();
         }
 
+        if (\is_bool($object)) {
+            return $object;
+        }
+
         return false;
     }
 }

@@ -3,7 +3,7 @@ import config from '@config/freeform/freeform.config';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import classes from '@ff-client/utils/classes';
 
-import { PopupMenu, TriggerButton } from './breadcrumbs.site.style';
+import { Crumb, PopupMenu, TriggerButton } from './breadcrumbs.site.style';
 
 export const SiteCrumb: React.FC = () => {
   const [open, setOpen] = useState(false);
@@ -18,16 +18,17 @@ export const SiteCrumb: React.FC = () => {
     return null;
   }
 
-  if (!craft.is5) {
-    return null;
-  }
+  const craft4 = !craft.is5;
+  const craft5 = craft.is5;
 
   if (list.length <= 1) {
     return null;
   }
 
   return (
-    <li className="crumb">
+    <Crumb
+      className={classes('crumb', craft4 && 'craft-4', craft5 && 'craft-5')}
+    >
       <a id="site-crumb" className="crumb-link">
         <span className="cp-icon puny">
           <svg
@@ -75,6 +76,6 @@ export const SiteCrumb: React.FC = () => {
           </ul>
         </PopupMenu>
       </TriggerButton>
-    </li>
+    </Crumb>
   );
 };

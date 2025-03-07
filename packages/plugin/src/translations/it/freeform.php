@@ -295,7 +295,7 @@ return [
     'Source' => 'Fonte',
     'Choose type' => 'Scegli il tipo',
     'Search...' => 'Cerca...',
-    'Custom' => 'Personalizzato',
+    'Custom' => 'Pers.',
     'Elements' => 'Elementi',
     'Type' => 'Tipo',
     'Site ID' => 'ID Sito',

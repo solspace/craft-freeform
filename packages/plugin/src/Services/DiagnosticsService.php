@@ -47,14 +47,14 @@ class DiagnosticsService extends BaseService
 
         return [
             new DiagnosticItem(
-                '<span class="diag-check diag-enabled"></span>Freeform <b>{{ value.edition|title }} {{ value.version }}</b>',
+                '<span class="diag-check diag-enabled"></span><span class="item-inline">Freeform <b>{{ value.edition|title }} {{ value.version }}</b></span>',
                 [
                     'edition' => Freeform::getInstance()->edition,
                     'version' => Freeform::getInstance()->getVersion(),
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ (value.version <= "'.$maxCraftVersion.'" and value.version >= "'.$minCraftVersion.'") ? "enabled" : (value.version >= "'.$maxCraftVersion.'" ? "info" : "warning") }}"></span>Craft <b>{{ value.edition|title }} {{ value.version }}</b>',
+                '<span class="diag-check diag-{{ (value.version <= "'.$maxCraftVersion.'" and value.version >= "'.$minCraftVersion.'") ? "enabled" : (value.version >= "'.$maxCraftVersion.'" ? "info" : "warning") }}"></span><span class="item-inline">Craft <b>{{ value.edition|title }} {{ value.version }}</b></span>',
                 [
                     'version' => $system->craftVersion,
                     'edition' => $system->craftEdition,
@@ -73,7 +73,7 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ (value < "'.$maxPhpVersion.'" and value > "'.$minPhpVersion.'") ? "enabled" : (value > "'.$minPhpVersion.'" ? "info" : "warning") }}"></span>PHP <b>{{ value }}</b>',
+                '<span class="diag-check diag-{{ (value < "'.$maxPhpVersion.'" and value > "'.$minPhpVersion.'") ? "enabled" : (value > "'.$minPhpVersion.'" ? "info" : "warning") }}"></span><span class="item-inline">PHP <b>{{ value }}</b></span>',
                 $system->phpVersion,
                 [
                     new WarningValidator(
@@ -120,11 +120,11 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('OS').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('OS').': <b>{{ value }}</b></span>',
                 \sprintf('%s %s', \PHP_OS, php_uname('r')),
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Memory Limit').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Memory Limit').': <b>{{ value }}</b></span>',
                 \ini_get('memory_limit'),
                 [
                     // Suggestion validator for memory limits between 256M and 511M
@@ -177,36 +177,36 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Execution Time').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max Execution Time').': <b>{{ value }}</b></span>',
                 \ini_get('max_execution_time'),
                 []
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Input Time').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max Input Time').': <b>{{ value }}</b></span>',
                 \ini_get('max_input_time'),
                 []
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Input Vars').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max Input Vars').': <b>{{ value }}</b></span>',
                 \ini_get('max_input_vars'),
                 []
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max File Upload Size').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max File Upload Size').': <b>{{ value }}</b></span>',
                 \ini_get('upload_max_filesize'),
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max Post Size').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max Post Size').': <b>{{ value }}</b></span>',
                 \ini_get('post_max_size'),
                 []
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Output Buffering').': <b>{{ value }}</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Output Buffering').': <b>{{ value }}</b></span>',
                 \ini_get('output_buffering'),
                 []
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span>'.Freeform::t('PHP Sessions'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('PHP Sessions').'</span>',
                 \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
                 [
                     new WarningValidator(
@@ -217,7 +217,7 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span>'.Freeform::t('BC Math extension'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('BC Math extension').'</span>',
                 \extension_loaded('bcmath'),
                 [
                     new WarningValidator(
@@ -228,13 +228,24 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span>'.Freeform::t('ImageMagick extension'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "warning" }}"></span><span class="item-inline">'.Freeform::t('ImageMagick extension').'</span>',
                 \extension_loaded('imagick') || \extension_loaded('gd'),
                 [
                     new WarningValidator(
                         $trueOrFalse,
                         'Missing GD extension or ImageMagick extension',
                         'Missing GD extension or ImageMagick extension'
+                    ),
+                ]
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-{{ value ? "info" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('ModSecurity').'</span>',
+                $this->isModSecurityEnabled(),
+                [
+                    new SuggestionValidator(
+                        fn ($value) => !$value,
+                        '',
+                        'ModSecurity is enabled on the server. This may cause issues with form submissions and API requests. Consider disabling it or adjusting its rules.'
                     ),
                 ]
             ),
@@ -252,23 +263,23 @@ class DiagnosticsService extends BaseService
 
         return [
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Environment').': <code>{{ value }}</code>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Environment').': <code>{{ value }}</code></span>',
                 \Craft::$app->getConfig()->env,
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Dev Mode'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Dev Mode').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->devMode,
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Allow Admin Changes'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Allow Admin Changes').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->allowAdminChanges,
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Async CSRF Inputs'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Async CSRF Inputs').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs,
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Run Queue Automatically'),
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Run Queue Automatically').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->runQueueAutomatically,
                 [
                     new SuggestionValidator(
@@ -279,7 +290,7 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                '<span class="diag-check diag-spacer"></span>'.Freeform::t('Max File Upload Size').': <b>'.self::convertBytesToMB(\Craft::$app->getConfig()->getGeneral()->maxUploadFileSize).'M</b>',
+                '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Max File Upload Size').': <b>'.self::convertBytesToMB(\Craft::$app->getConfig()->getGeneral()->maxUploadFileSize).'M</b></span>',
                 \Craft::$app->getConfig()->getGeneral()->maxUploadFileSize,
             ),
             new DiagnosticItem(
@@ -419,11 +430,11 @@ class DiagnosticsService extends BaseService
         return [
             Freeform::t('General Settings') => [
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Disable Submit Button on Form Submit'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Disable Submit Button on Form Submit').'</span>',
                     $this->getSummary()->statistics->settings->disableSubmit
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Automatically Scroll to Form on Errors and Multipage forms'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Automatically Scroll to Form on Errors and Multipage forms').'</span>',
                     $this->getSummary()->statistics->settings->autoScroll,
                 ),
                 new DiagnosticItem(
@@ -459,15 +470,15 @@ class DiagnosticsService extends BaseService
                     ),
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Enable Search Index Updating on New Submissions'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Enable Search Index Updating on New Submissions').'</span>',
                     $this->getSettingsService()->getSettingsModel()->updateSearchIndexes
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Use Queue for Email Notifications'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Email Notifications').'</span>',
                     $this->getSettingsService()->getSettingsModel()->useQueueForEmailNotifications
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Use Queue for Integrations'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Integrations').'</span>',
                     $this->getSettingsService()->getSettingsModel()->useQueueForIntegrations
                 ),
                 new DiagnosticItem(
@@ -485,13 +496,13 @@ class DiagnosticsService extends BaseService
                     ],
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Site-Aware Forms'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Site-Aware Forms').'</span>',
                     $this->getSettingsService()->getSettingsModel()->sitesEnabled,
                 ),
             ],
             Freeform::t('Spam Controls') => [
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Spam Folder'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Spam Folder').'</span>',
                     $this->getSummary()->statistics->spam->spamFolder,
                     [
                         new SuggestionValidator(
@@ -519,7 +530,7 @@ class DiagnosticsService extends BaseService
                     ]
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Bypass All Spam Checks for Logged in Users'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Bypass All Spam Checks for Logged in Users').'</span>',
                     $this->getSummary()->statistics->spam->bypassSpamCheckOnLoggedInUsers
                 ),
                 new DiagnosticItem(
@@ -629,7 +640,7 @@ class DiagnosticsService extends BaseService
                     ]
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t("Include Freeform's Sample Formatting Templates"),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t("Include Freeform's Sample Formatting Templates").'</span>',
                     $this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates,
                 ),
                 new DiagnosticItem(
@@ -688,11 +699,11 @@ class DiagnosticsService extends BaseService
 
             Freeform::t('Notices & Alerts') => [
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Developer Digest Email'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Developer Digest Email').'</span>',
                     \count($this->getSettingsService()->getDigestRecipients()) > 0
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span>'.Freeform::t('Update Warnings & Notices'),
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Update Warnings & Notices').'</span>',
                     (bool) $this->getSettingsService()->getSettingsModel()->displayFeed
                 ),
                 new DiagnosticItem(
@@ -931,5 +942,40 @@ class DiagnosticsService extends BaseService
             ->where(['type' => StripeField::class])
             ->count()
         ;
+    }
+
+    private function isModSecurityEnabled(): bool
+    {
+        // Check for ModSecurity headers in $_SERVER
+        foreach (['MOD_SECURITY', 'HTTP_MOD_SECURITY'] as $key) {
+            if (!empty($_SERVER[$key])) {
+                return true;
+            }
+        }
+
+        // Construct a safe URL for cURL (avoid missing REQUEST_SCHEME)
+        $scheme = (!empty($_SERVER['HTTPS']) && 'off' !== $_SERVER['HTTPS']) ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+
+        $url = $scheme.'://'.$host.$uri;
+
+        // Check using cURL (if available)
+        if (\function_exists('curl_init')) {
+            $ch = curl_init($url);
+            curl_setopt($ch, \CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, \CURLOPT_HEADER, true);
+            curl_setopt($ch, \CURLOPT_NOBODY, true);
+            $response = curl_exec($ch);
+            $curlInfo = curl_getinfo($ch);
+            curl_close($ch);
+
+            // ModSecurity often returns a 403 Forbidden or modifies headers
+            if (403 === $curlInfo['http_code'] || str_contains($response, 'Mod_Security')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

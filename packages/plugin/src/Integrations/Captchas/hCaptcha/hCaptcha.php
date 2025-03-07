@@ -194,8 +194,8 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         $attributes = CaptchasBundle::getCaptchaAttributes($form);
         $attributes
             ->replace('data-freeform-hcaptcha-container', true)
-            ->replace('data-captcha', 'hcaptcha')
-            ->setIfEmpty('data-site-key', $this->getSiteKey())
+            ->replace('data-captcha', 'h-captcha')
+            ->setIfEmpty('data-sitekey', $this->getSiteKey())
             ->setIfEmpty('data-theme', $this->getTheme())
             ->setIfEmpty('data-size', $this->getSize())
             ->setIfEmpty('data-lazy-load', $this->isTriggerOnInteract())

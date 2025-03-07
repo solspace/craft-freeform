@@ -177,7 +177,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
         $attributes
             ->replace('data-freeform-turnstile-container')
             ->replace('data-captcha', 'turnstile')
-            ->setIfEmpty('data-site-key', $this->getSiteKey())
+            ->setIfEmpty('data-sitekey', $this->getSiteKey())
             ->setIfEmpty('data-theme', $this->getTheme())
             ->setIfEmpty('data-size', $this->getSize())
             ->setIfEmpty('data-lazy-load', $this->isTriggerOnInteract())

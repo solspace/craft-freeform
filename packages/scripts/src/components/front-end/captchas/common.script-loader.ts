@@ -106,7 +106,7 @@ export const getCaptchaContainer = (type: string, form: HTMLFormElement): HTMLEl
   form.querySelector<HTMLElement>(`[data-captcha="${type}"]`);
 
 export const readCaptchaConfig = <V = string>(element: HTMLElement): CaptchaConfig<V> => ({
-  sitekey: element.dataset.siteKey || '',
+  sitekey: element.dataset.sitekey || '',
   theme: (element.dataset.theme as Theme) || Theme.LIGHT,
   size: (element.dataset.size as Size) || Size.NORMAL,
   version: element.dataset.version as V,

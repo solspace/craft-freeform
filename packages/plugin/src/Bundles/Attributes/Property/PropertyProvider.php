@@ -15,6 +15,7 @@ use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Lock;
 use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
@@ -307,6 +308,11 @@ class PropertyProvider
     {
         $defaultValue = AttributeHelper::findAttribute($property, DefaultValue::class);
         if (!$defaultValue) {
+            $lock = AttributeHelper::findAttribute($property, Lock::class);
+            if ($lock) {
+                $attribute->disabled = !$this->defaultsProvider->isLocked($lock->path);
+            }
+
             return;
         }
 

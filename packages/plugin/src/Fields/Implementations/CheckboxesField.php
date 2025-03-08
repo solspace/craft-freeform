@@ -46,7 +46,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[Section('limits', 'Limits', icon: __DIR__.'/Icons/section-limit.svg')]
     #[Input\Select(
         label: 'Limit Options',
-        instructions: 'Limit the number of options that can be selected. Leave empty for no limit.',
+        instructions: 'Set limits on the number of options a user must select, including a minimum, maximum, exact number, or range.',
         options: [
             self::LIMIT_NO_LIMIT => 'Do not limit',
             self::LIMIT_REQUIRE_ALL => 'Require all options',
@@ -61,6 +61,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[VisibilityFilter('properties.limit === "'.self::LIMIT_MINIMUM.'"')]
     #[Input\Integer(
         label: 'Minimum',
+        instructions: 'Defines the minimum number of selectable options.',
     )]
     protected ?int $limitMin = null;
 
@@ -68,14 +69,15 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[VisibilityFilter('properties.limit === "'.self::LIMIT_MAXIMUM.'"')]
     #[Input\Integer(
         label: 'Maximum',
+        instructions: 'Defines the maximum number of selectable options.',
     )]
     protected ?int $limitMax = null;
 
     #[Section('limits')]
     #[VisibilityFilter('properties.limit === "'.self::LIMIT_RANGE.'"')]
     #[Input\MinMax(
-        label: 'Minimum',
-        instructions: 'The minimum and/or maximum numeric value this field is allowed to have.',
+        label: 'Minimum & Maximum',
+        instructions: 'Defines the minimum and maximum number of selectable options.',
     )]
     protected ?array $limitRange = [null, null];
 

@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.9.16 - 2025-03-07
+
+### Added
+- Added a check for `ModSecurity` to the Diagnostics page to assist with troubleshooting.
+- Added a Craft 5-style Site picker in the breadcrumbs of the form builder for Craft 4 to enhance the Site-Aware and translation experience.
+
+### Changed
+- Updated GTM scripts to load as an asset bundle instead of inline for compatibility with sites that have strict content security policies.
+- Adjusted longer translations for field _Source_ options to ensure they fit within the available space.
+- Renamed `data-site-key` to `data-sitekey` for captcha integrations to align with the expected standard attribute.
+- Updated the Limited Users settings page to support `CMD + S` for quick-saving settings.
+- Modified the _Multiple Forms_ extra in the demo templates to use the new overload feature.
+
+### Fixed
+- Fixed a bug where the **Save** button's **Email Notification Template** setting used the advanced template chooser instead of a regular dropdown, causing display issues and affecting the user experience.
+- Fixed a bug where the _Form Builder_ defaults setting for enabling/disabling Twig in HTML fields had no effect in the form builder.
+- Fixed a bug where Freeform Data export was not functioning correctly with PHP 8.0.x (Craft 4).
+- Fixed an incorrect instruction in the Salesforce integration guide.
+
 ## 5.9.15 - 2025-02-27
 
 ### Added

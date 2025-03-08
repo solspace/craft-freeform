@@ -235,7 +235,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
         $attributes
             ->replace('data-freeform-recaptcha-container')
             ->replace('data-captcha', 'recaptcha')
-            ->setIfEmpty('data-site-key', $this->getSiteKey())
+            ->setIfEmpty('data-sitekey', $this->getSiteKey())
             ->setIfEmpty('data-theme', $this->getTheme())
             ->setIfEmpty('data-size', $this->getSize())
             ->setIfEmpty('data-lazy-load', $this->isTriggerOnInteract())

@@ -13,7 +13,6 @@ import { useQueryClient } from '@tanstack/react-query';
 
 import { useCreateFormModal } from './modals/hooks/use-create-form-modal';
 import { FormGrid } from './views/grid/grid';
-import { GridSites } from './views/grid/grid.sites';
 import { FormList } from './views/list/list';
 import { Button, Header, Title, ViewButtons } from './list-view.styles';
 
@@ -42,8 +41,6 @@ export const ListProvider: React.FC = () => {
 
       <Header>
         <Title>{translate('Forms')}</Title>
-
-        <GridSites />
 
         <ViewButtons className="btngroup btngroup--exclusive">
           <button

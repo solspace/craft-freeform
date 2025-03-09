@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
@@ -83,6 +84,10 @@ class TextField extends AbstractField implements PlaceholderInterface, DefaultVa
             ->setIfEmpty('value', $this->getValue())
         ;
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 }

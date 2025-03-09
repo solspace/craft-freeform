@@ -13,11 +13,15 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
@@ -25,6 +29,7 @@ use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Checkboxes',
@@ -84,6 +89,51 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[Input\Hidden]
     protected ?array $defaultValue = [];
 
+    #[Section(
+        handle: 'attributes',
+        label: 'Attributes',
+        icon: __DIR__.'/SectionIcons/list.svg',
+        order: 999,
+    )]
+    #[Limitation('layout.fields.attributes')]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'optionLabel',
+                'label' => 'Input Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Container Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'instructions',
+                'label' => 'Instructions',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'error',
+                'label' => 'Error',
+                'previewTag' => 'ul',
+            ],
+        ]
+    )]
+    protected FieldAttributesCollection $attributes;
+
     /**
      * Return the field TYPE.
      */
@@ -122,14 +172,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getAttributes()
-            ->getInput()
-            ->clone()
-            ->setIfEmpty('name', $this->getHandle().'[]')
-            ->setIfEmpty('type', 'checkbox')
-            ->setIfEmpty('id', $this->getIdAttribute())
-            ->setIfEmpty('value', $this->getValue())
-        ;
+        $attributes = $this->getAttributes();
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
@@ -140,16 +183,41 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
             $isChecked = \in_array($option->getValue(), $this->getValue());
 
             $inputAttributes = $attributes
+                ->getInput()
                 ->clone()
+                ->setIfEmpty('name', $this->getHandle())
+                ->setIfEmpty('type', 'checkbox')
+                ->set($this->getRequiredAttribute())
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())
                 ->replace('checked', $isChecked)
             ;
 
-            $output .= '<label>';
-            $output .= '<input'.$inputAttributes.' />';
-            $output .= $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
-            $output .= '</label>';
+            $labelAttributes = $attributes
+                ->getOptionLabel()
+                ->clone()
+                ->setIfEmpty('for', $this->getIdAttribute().'-'.$index)
+            ;
+
+            $twigVariables = [
+                'i' => $index,
+                'index' => $index,
+                'option' => $option,
+                'field' => $this,
+            ];
+
+            $label = $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
+            $inputTag = Html::tag(
+                $inputAttributes->getTag('input'),
+                $option->getValue(),
+                $inputAttributes->toHtmlTagArray($twigVariables)
+            );
+
+            $output .= Html::tag(
+                $labelAttributes->getTag('label'),
+                $inputTag.$label,
+                $labelAttributes->toHtmlTagArray($twigVariables),
+            );
         }
 
         return $output;

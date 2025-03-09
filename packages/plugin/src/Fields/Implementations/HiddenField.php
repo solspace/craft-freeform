@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Input\Hidden;
@@ -52,6 +53,10 @@ class HiddenField extends TextField implements NoRenderInterface
             ->setIfEmpty('value', $this->getValue())
         ;
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 }

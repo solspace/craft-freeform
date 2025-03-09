@@ -50,6 +50,8 @@ class FieldAttributesCollectionTest extends TestCase
                 'container' => (object) [],
                 'error' => (object) [],
                 'class' => 'test',
+                'option' => (object) [],
+                'optionLabel' => (object) [],
             ],
             $result
         );

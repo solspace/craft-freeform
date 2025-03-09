@@ -13,15 +13,20 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Dropdown',
@@ -43,6 +48,51 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
     )]
     protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
+    #[Section(
+        handle: 'attributes',
+        label: 'Attributes',
+        icon: __DIR__.'/SectionIcons/list.svg',
+        order: 999,
+    )]
+    #[Limitation('layout.fields.attributes')]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'instructions',
+                'label' => 'Instructions',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'error',
+                'label' => 'Error',
+                'previewTag' => 'ul',
+            ],
+            [
+                'handle' => 'option',
+                'label' => 'Option',
+                'previewTag' => 'option',
+            ],
+        ]
+    )]
+    protected FieldAttributesCollection $attributes;
+
     public function getType(): string
     {
         return self::TYPE_SELECT;
@@ -63,17 +113,34 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             ->set($this->getRequiredAttribute())
         ;
 
-        $output = '<select'.$attributes.'>';
-        foreach ($this->getOptions() as $option) {
+        $output = '';
+        foreach ($this->getOptions() as $index => $option) {
             $isChecked = $option->getValue() == $this->getValue();
 
-            $output .= '<option value="'.$option->getValue().'"'.($isChecked ? ' selected' : '').'>';
-            $output .= $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
-            $output .= '</option>';
-        }
-        $output .= '</select>';
+            $optionAttributes = $this->getAttributes()
+                ->getOption()
+                ->clone()
+                ->replace('value', $option->getValue())
+                ->replace('selected', $isChecked)
+            ;
 
-        return $output;
+            $output .= Html::tag(
+                $optionAttributes->getTag('option'),
+                $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel()),
+                $optionAttributes->toHtmlTagArray([
+                    'i' => $index,
+                    'index' => $index,
+                    'option' => $option,
+                    'field' => $this,
+                ])
+            );
+        }
+
+        return Html::tag(
+            $attributes->getTag('select'),
+            $output,
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

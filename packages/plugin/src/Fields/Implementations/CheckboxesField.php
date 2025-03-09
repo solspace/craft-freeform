@@ -97,6 +97,26 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
         return self::TYPE_CHECKBOX_GROUP;
     }
 
+    public function getLimit(): string
+    {
+        return $this->limit;
+    }
+
+    public function getLimitMin(): ?int
+    {
+        return $this->limitMin;
+    }
+
+    public function getLimitMax(): ?int
+    {
+        return $this->limitMax;
+    }
+
+    public function getLimitRange(): ?array
+    {
+        return $this->limitRange;
+    }
+
     public function getDefaultValue(): array
     {
         return $this->defaultValue ?? [];

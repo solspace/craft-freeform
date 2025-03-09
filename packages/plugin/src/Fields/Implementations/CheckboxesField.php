@@ -22,6 +22,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
@@ -40,6 +41,50 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
 {
     use MultipleValueTrait;
     use OneLineTrait;
+
+    public const LIMIT_NO_LIMIT = '';
+    public const LIMIT_REQUIRE_ALL = 'all';
+    public const LIMIT_MINIMUM = 'min';
+    public const LIMIT_MAXIMUM = 'max';
+    public const LIMIT_RANGE = 'range';
+
+    #[Section('limits', 'Limits', icon: __DIR__.'/Icons/section-limit.svg')]
+    #[Input\Select(
+        label: 'Limit Options',
+        instructions: 'Set limits on the number of options a user must select, including a minimum, maximum, exact number, or range.',
+        options: [
+            self::LIMIT_NO_LIMIT => 'Do not limit',
+            self::LIMIT_REQUIRE_ALL => 'Require all options',
+            self::LIMIT_MINIMUM => 'A minimum of...',
+            self::LIMIT_MAXIMUM => 'A maximum of...',
+            self::LIMIT_RANGE => 'A range of...',
+        ]
+    )]
+    protected string $limit = '';
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limit === "'.self::LIMIT_MINIMUM.'"')]
+    #[Input\Integer(
+        label: 'Minimum',
+        instructions: 'Defines the minimum number of selectable options.',
+    )]
+    protected ?int $limitMin = null;
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limit === "'.self::LIMIT_MAXIMUM.'"')]
+    #[Input\Integer(
+        label: 'Maximum',
+        instructions: 'Defines the maximum number of selectable options.',
+    )]
+    protected ?int $limitMax = null;
+
+    #[Section('limits')]
+    #[VisibilityFilter('properties.limit === "'.self::LIMIT_RANGE.'"')]
+    #[Input\MinMax(
+        label: 'Minimum & Maximum',
+        instructions: 'Defines the minimum and maximum number of selectable options.',
+    )]
+    protected ?array $limitRange = [null, null];
 
     #[Input\Hidden]
     protected ?array $defaultValue = [];
@@ -141,7 +186,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
                 ->getInput()
                 ->clone()
                 ->setIfEmpty('name', $this->getHandle())
-                ->setIfEmpty('type', 'radio')
+                ->setIfEmpty('type', 'checkbox')
                 ->set($this->getRequiredAttribute())
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->getValue())

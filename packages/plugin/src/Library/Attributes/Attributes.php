@@ -13,6 +13,8 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
     public const STRATEGY_REMOVE = 'remove';
     public const STRATEGY_REPLACE = 'replace';
 
+    private const EXCLUDED_ATTRIBUTES = ['tag'];
+
     private array $attributes = [];
 
     public function __construct(array $attributes = [])
@@ -25,7 +27,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         $stringArray = [];
 
         foreach ($this->attributes as $key => $value) {
-            if (empty($key)) {
+            if (empty($key) || \in_array($key, self::EXCLUDED_ATTRIBUTES, true)) {
                 continue;
             }
 
@@ -81,6 +83,11 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         }
     }
 
+    public function getTag(string $default = 'div'): ?string
+    {
+        return $this->attributes['tag'] ?? $default;
+    }
+
     public static function fromArray(array $attributes): self
     {
         $instance = new self();
@@ -95,11 +102,6 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
     public function get(string $name, mixed $default = null): mixed
     {
         return $this->attributes[$name] ?? $default;
-    }
-
-    public function getNested(string $name): ?array
-    {
-        return null;
     }
 
     public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
@@ -276,6 +278,16 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
             if ($type && self::class === $type->getName()) {
                 $array[$property->getName()] = $this->{$property->getName()}->jsonSerialize();
             }
+        }
+
+        return $array;
+    }
+
+    public function toHtmlTagArray(): array
+    {
+        $array = $this->attributes;
+        foreach (self::EXCLUDED_ATTRIBUTES as $attribute) {
+            unset($array[$attribute]);
         }
 
         return $array;

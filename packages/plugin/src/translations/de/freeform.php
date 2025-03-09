@@ -556,6 +556,7 @@ return [
     'How the titles of submissions should be auto-generated for this form.' => 'Wie die Titel der Einreichungen für dieses Formular automatisch generiert werden sollen.',
     'Formatting Template' => 'Formatierungsvorlage',
     'Select a formatting template to be used when rendering this form.' => 'Wählen Sie eine Formatierungsvorlage aus, die beim Rendern dieses Formulars verwendet wird.',
+    'No Formatting Template (not recommended)' => 'Keine Formatierungsvorlage (nicht empfohlen)',
     'Form Description' => 'Formularbeschreibung',
     'Enter a description or notes for this form.' => 'Geben Sie eine Beschreibung oder Notizen für dieses Formular ein.',
     'Form Color' => 'Formularfarbe',

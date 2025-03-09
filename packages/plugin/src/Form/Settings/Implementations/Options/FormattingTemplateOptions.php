@@ -15,7 +15,7 @@ class FormattingTemplateOptions implements OptionsGeneratorInterface
     {
         $options = new OptionCollection();
 
-        $options->add('', 'No Formatting Template (Not Recommended)');
+        $options->add('', 'No Formatting Template (not recommended)');
 
         $includeDefaultTemplates = $this->settingsService->getSettingsModel()->defaults->includeSampleTemplates;
         if ($includeDefaultTemplates) {

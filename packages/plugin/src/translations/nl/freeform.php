@@ -556,6 +556,7 @@ return [
     'How the titles of submissions should be auto-generated for this form.' => 'Hoe de titels van inzendingen automatisch moeten worden gegenereerd voor dit formulier.',
     'Formatting Template' => 'Template opmaken',
     'Select a formatting template to be used when rendering this form.' => 'Selecteer een opmaaksjabloon die u wilt gebruiken bij het weergeven van dit formulier.',
+    'No Formatting Template (not recommended)' => 'Geen opmaaktemplate (niet aanbevolen)',
     'Form Description' => 'Formulierbeschrijving',
     'Enter a description or notes for this form.' => 'Voer een beschrijving of opmerkingen in voor dit formulier.',
     'Form Color' => 'Formulierkleur',

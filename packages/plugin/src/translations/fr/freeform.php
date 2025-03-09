@@ -556,6 +556,7 @@ return [
     'How the titles of submissions should be auto-generated for this form.' => 'Comment les titres des contributions doivent être générés automatiquement pour ce formulaire.',
     'Formatting Template' => 'Modèle de formatage',
     'Select a formatting template to be used when rendering this form.' => 'Sélectionnez un modèle de formatage à utiliser lors du rendu de ce formulaire.',
+    'No Formatting Template (not recommended)' => 'Aucun modèle de mise en forme (non recommandé)',
     'Form Description' => 'Description du formulaire',
     'Enter a description or notes for this form.' => 'Entrez une description ou des notes pour ce formulaire.',
     'Form Color' => 'Couleur du formulaire',

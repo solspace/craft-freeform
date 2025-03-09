@@ -556,6 +556,7 @@ return [
     'How the titles of submissions should be auto-generated for this form.' => 'How the titles of submissions should be auto-generated for this form.',
     'Formatting Template' => 'Formatting Template',
     'Select a formatting template to be used when rendering this form.' => 'Select a formatting template to be used when rendering this form.',
+    'No Formatting Template (not recommended)' => 'No Formatting Template (not recommended)',
     'Form Description' => 'Form Description',
     'Enter a description or notes for this form.' => 'Enter a description or notes for this form.',
     'Form Color' => 'Form Color',

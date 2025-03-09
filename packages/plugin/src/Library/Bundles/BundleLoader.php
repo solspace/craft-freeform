@@ -24,9 +24,11 @@ class BundleLoader
         foreach ($classMap as $class => $classPath) {
             try {
                 $reflectionClass = new \ReflectionClass($class);
-
-                if ($reflectionClass->implementsInterface(BundleInterface::class) && !$reflectionClass->isAbstract(
-                ) && !$reflectionClass->isInterface()) {
+                if (
+                    $reflectionClass->implementsInterface(BundleInterface::class)
+                    && !$reflectionClass->isAbstract()
+                    && !$reflectionClass->isInterface()
+                ) {
                     if ($class::isProOnly() && !Freeform::getInstance()->isPro()) {
                         continue;
                     }
@@ -34,7 +36,8 @@ class BundleLoader
                     $priority = $class::getPriority();
                     $loadableClasses[$priority][] = $class;
                 }
-            } catch (\Exception) {
+            } catch (\ReflectionException) {
+                continue;
             }
         }
 

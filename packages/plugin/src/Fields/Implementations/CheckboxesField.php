@@ -185,7 +185,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
             $inputAttributes = $attributes
                 ->getInput()
                 ->clone()
-                ->setIfEmpty('name', $this->getHandle())
+                ->setIfEmpty('name', $this->getHandle().'[]')
                 ->setIfEmpty('type', 'checkbox')
                 ->set($this->getRequiredAttribute())
                 ->replace('id', $this->getIdAttribute().'-'.$index)

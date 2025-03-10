@@ -129,6 +129,7 @@
 
 ### Changed
 - Improved some migrations not to fail if there were any previous failures.
+- Renamed `FreeformSubmissionCaptchaInputType` to `FreeformCaptchaInputType` for captchas in GraphQL. If using `FreeformSubmissionCaptchaInputType`, be sure to change it to `FreeformCaptchaInputType`.
 
 ### Fixed
 - Fixed a bug where the _Form Submission Throttling_ diagnostic item showed an extra warning message.

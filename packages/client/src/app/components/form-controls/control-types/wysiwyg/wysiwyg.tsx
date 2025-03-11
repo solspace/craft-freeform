@@ -18,6 +18,7 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
     <Control property={property} errors={errors} context={context}>
       <PreviewableComponent preview={<WysiwygPreview value={value} />}>
         <WysiwygEditor
+          paragraphSeparator={property.paragraphSeparator}
           actions={property.actions}
           value={value}
           updateValue={updateValue}

@@ -15,11 +15,13 @@ type Props = {
   value: string;
   updateValue: (value: string) => void;
   actions: string[];
+  paragraphSeparator?: string;
 };
 
 export const WysiwygEditor: React.FC<Props> = ({
   value,
   actions,
+  paragraphSeparator,
   updateValue,
 }) => {
   const editor = useRef<HTMLDivElement>(null);
@@ -33,7 +35,7 @@ export const WysiwygEditor: React.FC<Props> = ({
     instance.current = pell.init({
       element: editor.current,
       onChange: updateValue,
-      defaultParagraphSeparator: 'p',
+      defaultParagraphSeparator: paragraphSeparator || 'p',
       actions: compileActions(actions),
     });
 

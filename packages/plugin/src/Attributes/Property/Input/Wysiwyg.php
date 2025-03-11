@@ -39,6 +39,7 @@ class Wysiwyg extends Property
         ?string $placeholder = null,
         ?int $width = null,
         ?bool $disabled = null,
+        public ?string $paragraphSeparator = null,
         public ?array $actions = [],
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width, $disabled);

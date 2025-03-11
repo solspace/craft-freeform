@@ -17,23 +17,29 @@ type Props = {
 };
 
 export const InputPreview: React.FC<Props> = ({ tab, attributes }) => {
+  const tag: string =
+    attributes.find(([key]) => key.toLowerCase() === 'tag')?.[1] ||
+    tab.previewTag;
+
   return (
     <CodeBlock>
       {'<'}
-      {tab.previewTag}
-      {attributesToArray(attributes).map(([name, value], idx) => (
-        <span key={idx}>
-          <Name> {name}</Name>
-          {!!value && (
-            <>
-              <Operator>=</Operator>
-              <Quote />
-              <Value>{value}</Value>
-              <Quote />
-            </>
-          )}
-        </span>
-      ))}
+      {tag}
+      {attributesToArray(attributes)
+        .filter(([name]) => name !== 'tag')
+        .map(([name, value], idx) => (
+          <span key={idx}>
+            <Name> {name}</Name>
+            {!!value && (
+              <>
+                <Operator>=</Operator>
+                <Quote />
+                <Value>{value}</Value>
+                <Quote />
+              </>
+            )}
+          </span>
+        ))}
       {' />'}
     </CodeBlock>
   );

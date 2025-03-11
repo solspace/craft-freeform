@@ -8,5 +8,11 @@ export const Pre = styled.pre`
 `;
 
 export const PreviewContainer = styled(PreviewTable)`
+  height: auto;
+  min-height: 30px;
   padding: ${spacings.sm};
+
+  a {
+    pointer-events: none;
+  }
 `;

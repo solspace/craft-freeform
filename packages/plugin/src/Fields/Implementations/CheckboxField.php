@@ -17,6 +17,9 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -39,6 +42,23 @@ use Twig\Markup;
 class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
+
+    #[Translatable]
+    #[Required]
+    #[Section('general')]
+    #[Input\Wysiwyg(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'This is something',
+        actions: [
+            Input\Wysiwyg::BOLD,
+            Input\Wysiwyg::ITALIC,
+            Input\Wysiwyg::UNDERLINE,
+            Input\Wysiwyg::STRIKETHROUGH,
+            Input\Wysiwyg::LINK,
+        ],
+    )]
+    protected string $label = '';
 
     #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;

@@ -68,6 +68,7 @@ export const WysiwygEditor: React.FC<Props> = ({
             onEditorChange={updateValue}
             plugins={plugins}
             toolbar={toolbar}
+            licenseKey="gpl"
           />
         </WysiwygEditorWrapper>
       </PreviewContainer>

@@ -26,6 +26,10 @@ class FormMonitorCleanupJob extends BaseJob
             ->andWhere(['IS NOT', Db::rawTableShortName(Submission::TABLE.'.[[requestId]]'), null])
         ;
 
+        if (!$query->exists()) {
+            return;
+        }
+
         foreach ($query->batch() as $submissions) {
             foreach ($submissions as $submission) {
                 \Craft::$app->elements->deleteElement($submission, true);

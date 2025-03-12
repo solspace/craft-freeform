@@ -11,6 +11,7 @@ import {
   type OptionCollection,
   PropertyType,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
@@ -92,7 +93,7 @@ export const useFieldOptions: FieldOptions = (field, type) => {
     : data || [];
 
   if (emptyOption) {
-    options = [{ label: emptyOption, value: '' }, ...options];
+    options = [{ label: translate(emptyOption), value: '' }, ...options];
   }
 
   return [options, isFetchingAsync];

@@ -263,8 +263,8 @@ export type FieldMappingProperty = BaseProperty<
 export type FieldTypeProperty = BaseProperty<string, PropertyType.FieldType>;
 
 export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG> & {
-  paragraphSeparator?: string;
-  actions: string[];
+  menu?: boolean;
+  toolbar: string[] | boolean;
 };
 export type CodeEditorProperty = BaseProperty<
   string,

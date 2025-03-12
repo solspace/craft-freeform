@@ -3,72 +3,88 @@ import {
   PreviewContainer,
   PreviewEditor,
 } from '@components/form-controls/preview/previewable-component.styles';
-import type { PellElement } from 'pell';
-import pell from 'pell';
+import config from '@config/freeform/freeform.config';
+import { Editor } from '@tinymce/tinymce-react';
 
-import { compileActions } from './wysiwyg.actions';
+import 'tinymce/tinymce';
+import 'tinymce/models/dom/model';
+import 'tinymce/themes/silver';
+import 'tinymce/icons/default';
+import 'tinymce/skins/ui/oxide/skin';
+// Plugins
+import 'tinymce/plugins/advlist';
+import 'tinymce/plugins/autolink';
+import 'tinymce/plugins/code';
+import 'tinymce/plugins/codesample';
+import 'tinymce/plugins/image';
+import 'tinymce/plugins/link';
+import 'tinymce/plugins/lists';
+import 'tinymce/plugins/media';
+import 'tinymce/plugins/searchreplace';
+import 'tinymce/plugins/table';
+
 import { WysiwygEditorWrapper } from './wysiwyg.editor.styles';
-
-import 'pell/dist/pell.min.css';
 
 type Props = {
   value: string;
   updateValue: (value: string) => void;
-  actions: string[];
-  paragraphSeparator?: string;
+  menu: boolean;
+  toolbar: string[] | boolean;
 };
 
 export const WysiwygEditor: React.FC<Props> = ({
   value,
-  actions,
-  paragraphSeparator,
+  menu,
+  toolbar,
   updateValue,
 }) => {
-  const editor = useRef<HTMLDivElement>(null);
-  const instance = useRef<PellElement>(null);
+  const {
+    metadata: {
+      tinymce: { stylesPath },
+    },
+  } = config;
 
+  const initialValue = useRef<string>();
   useEffect(() => {
-    if (!editor.current) {
-      return;
+    if (!initialValue.current) {
+      initialValue.current = value;
     }
-
-    instance.current = pell.init({
-      element: editor.current,
-      onChange: updateValue,
-      defaultParagraphSeparator: paragraphSeparator || 'p',
-      actions: compileActions(actions),
-    });
-
-    const content = editor.current.querySelector('.pell-content');
-    if (content) {
-      content.innerHTML = value;
-    }
-
-    return () => {
-      if (editor.current) {
-        editor.current.innerHTML = '';
-      }
-    };
   }, []);
-
-  useEffect(() => {
-    if (editor.current) {
-      return;
-    }
-
-    const content = editor.current.querySelector('.pell-content');
-    if (content && content.innerHTML !== value) {
-      content.innerHTML = value;
-    }
-  }, [value]);
 
   return (
     <PreviewEditor>
       <PreviewContainer>
         <WysiwygEditorWrapper>
-          <div ref={editor} />
+          <Editor
+            init={{
+              menubar: menu,
+              promotion: false,
+              content_css: stylesPath,
+            }}
+            initialValue={initialValue.current}
+            onEditorChange={updateValue}
+            plugins={plugins}
+            toolbar={toolbar}
+          />
         </WysiwygEditorWrapper>
       </PreviewContainer>
     </PreviewEditor>
   );
 };
+
+const plugins = [
+  'autolink',
+  'code',
+  'codesample',
+  'fullscreen',
+  'help',
+  'image',
+  'link',
+  'lists',
+  'media',
+  'nonbreaking',
+  'searchreplace',
+  'table',
+  'visualblocks',
+  'visualchars',
+];

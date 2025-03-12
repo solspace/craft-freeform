@@ -140,6 +140,22 @@ export const FieldCellWrapper = styled.div`
       list-style-type: disc;
       padding-inline-start: 40px;
     }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+
+      border: 1px solid black;
+
+      td {
+        border: 1px solid black;
+        padding: 5px;
+      }
+    }
+
+    pre {
+      margin: 1em 0;
+    }
   }
 `;
 

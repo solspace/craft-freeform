@@ -29,12 +29,14 @@ type Props = {
   value: string;
   updateValue: (value: string) => void;
   menu: boolean;
+  statusbar: boolean;
   toolbar: string[] | boolean;
 };
 
 export const WysiwygEditor: React.FC<Props> = ({
   value,
   menu,
+  statusbar,
   toolbar,
   updateValue,
 }) => {
@@ -58,6 +60,7 @@ export const WysiwygEditor: React.FC<Props> = ({
           <Editor
             init={{
               menubar: menu,
+              statusbar: statusbar,
               promotion: false,
               content_css: stylesPath,
             }}
@@ -76,15 +79,10 @@ const plugins = [
   'autolink',
   'code',
   'codesample',
-  'fullscreen',
-  'help',
   'image',
   'link',
   'lists',
   'media',
-  'nonbreaking',
   'searchreplace',
   'table',
-  'visualblocks',
-  'visualchars',
 ];

@@ -50,7 +50,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
         instructions: 'Field label used to describe the field',
         order: 1,
         placeholder: 'This is something',
-        toolbar: ['bold italic underline strikethrough | link'],
+        toolbar: ['bold italic underline strikethrough link | removeformat code'],
     )]
     protected string $label = '';
 

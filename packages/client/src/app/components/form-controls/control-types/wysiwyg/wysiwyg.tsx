@@ -22,6 +22,7 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
       >
         <WysiwygEditor
           menu={property.menu}
+          statusbar={property.statusbar}
           toolbar={property.toolbar}
           value={value}
           updateValue={updateValue}

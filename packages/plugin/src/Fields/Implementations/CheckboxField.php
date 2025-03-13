@@ -98,6 +98,17 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
         return $this;
     }
 
+    public function getLabel(): string
+    {
+        $label = parent::getLabel();
+
+        // if there are more than one <p> tag, add a <br> between them instead
+        $label = preg_replace('/<\/p>\s*<p>/', '<br>', $label);
+
+        // remove wrapping <p> tags
+        return preg_replace('/^<p>(.*)<\/p>$/', '$1', $label);
+    }
+
     public function getInputHtml(): string
     {
         $attributes = new Attributes([

@@ -121,9 +121,51 @@ export const FieldCellWrapper = styled.div`
     border: 1px solid rgba(96, 125, 159, 0.25);
     border-radius: 3px;
   }
+
+  &[data-field-type='rich-text'] {
+    blockquote {
+      border-left: 2px solid #d9d9d9;
+      margin-left: 0;
+      padding-left: 10px;
+    }
+
+    pre {
+      border: 1px solid #d9d9d9;
+      padding: 10px;
+      white-space: pre-wrap;
+      background-color: rgb(247, 247, 247);
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-inline-start: 40px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+
+      border: 1px solid black;
+
+      td {
+        border: 1px solid black;
+        padding: 5px;
+      }
+    }
+
+    pre {
+      margin: 1em 0;
+    }
+  }
 `;
 
 export const Row = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+export const HtmlPreviewElement = styled.div`
+  a {
+    pointer-events: none;
+  }
 `;

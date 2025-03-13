@@ -36,6 +36,7 @@ export const PropertyEditor: React.FC = () => {
       'dropdown-rollout',
       'breadcrumbs',
       'tagify__dropdown',
+      'tox',
     ],
   });
 

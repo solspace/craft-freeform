@@ -53,23 +53,23 @@ use yii\base\Event;
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
     #[Translatable]
+    #[Validators\Required]
     #[Section(
         handle: 'general',
         label: 'General',
         icon: __DIR__.'/SectionIcons/bookmark.svg',
         order: 0,
     )]
-    #[Input\Text(
-        instructions: 'Field label used to describe the field',
-        order: 1,
-        placeholder: 'My Field',
-    )]
     #[Middleware('injectInto', [
         'target' => 'handle',
         'camelize' => true,
         'bypassConditions' => [['name' => 'id', 'isTrue' => true]],
     ])]
-    #[Validators\Required]
+    #[Input\Text(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'My Field',
+    )]
     protected string $label = '';
 
     #[Section('general')]

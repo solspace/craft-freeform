@@ -16,8 +16,17 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
 }) => {
   return (
     <Control property={property} errors={errors} context={context}>
-      <PreviewableComponent preview={<WysiwygPreview value={value} />}>
-        <WysiwygEditor value={value} updateValue={updateValue} />
+      <PreviewableComponent
+        preview={<WysiwygPreview value={value} />}
+        excludeClassNames={['tox']}
+      >
+        <WysiwygEditor
+          menu={property.menu}
+          statusbar={property.statusbar}
+          toolbar={property.toolbar}
+          value={value}
+          updateValue={updateValue}
+        />
       </PreviewableComponent>
     </Control>
   );

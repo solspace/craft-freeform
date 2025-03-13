@@ -75,10 +75,6 @@ export const Dropdown: React.FC<DropdownProps> = ({
     }
   }, [loading, open]);
 
-  if (emptyOption) {
-    emptyOption = translate(emptyOption);
-  }
-
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,
     query,
@@ -86,7 +82,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   );
 
   const selectedValue = useMemo(
-    () => findLabelByValue(options, value) || emptyOption,
+    () => findLabelByValue(options, value) || translate(emptyOption),
     [options, value, loading]
   );
 

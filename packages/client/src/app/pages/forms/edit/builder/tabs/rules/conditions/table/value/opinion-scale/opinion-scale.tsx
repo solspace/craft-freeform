@@ -2,7 +2,6 @@ import React from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import type { Field } from '@editor/store/slices/layout/fields';
 import type { OptionCollection } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
 
 type Props = {
   field: Field;
@@ -23,7 +22,7 @@ export const OpinionScaleRuleValue: React.FC<Props> = ({
 
   return (
     <Dropdown
-      emptyOption={translate('Select a scale value')}
+      emptyOption="Select a scale value"
       value={value}
       options={options}
       onChange={(selectedValue) => onChange && onChange(selectedValue)}

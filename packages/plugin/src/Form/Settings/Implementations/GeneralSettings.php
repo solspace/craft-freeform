@@ -122,6 +122,7 @@ class GeneralSettings extends SettingsNamespace
         label: 'Formatting Template',
         instructions: 'Select a formatting template to be used when rendering this form.',
         order: 7,
+        emptyOption: 'No Formatting Template (not recommended)',
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate = null;

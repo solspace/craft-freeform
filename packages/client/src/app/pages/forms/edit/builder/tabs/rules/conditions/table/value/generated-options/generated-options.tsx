@@ -4,7 +4,6 @@ import { TokenInput } from '@components/elements/token-input/token-input';
 import { useFieldOptions } from '@components/options/use-field-options';
 import type { Field } from '@editor/store/slices/layout/fields';
 import type { FieldType } from '@ff-client/types/fields';
-import translate from '@ff-client/utils/translations';
 
 type Props = {
   field: Field;
@@ -50,7 +49,7 @@ export const GeneratedOptionsRuleValue: React.FC<Props> = ({
 
   return (
     <Dropdown
-      emptyOption={translate('Select an option')}
+      emptyOption="Select an option"
       value={value}
       options={options}
       loading={loading}

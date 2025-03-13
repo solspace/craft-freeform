@@ -4,6 +4,7 @@ import type {
   OptionCollection,
   OptionGroup,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 export const isInOptions = (
   options: OptionCollection,
@@ -131,7 +132,7 @@ const filterOptions = (
   let emptyOpt: Option | undefined;
   if (emptyOption !== undefined && emptyOption !== null && !query) {
     emptyOpt = {
-      label: emptyOption,
+      label: translate(emptyOption),
       value: '',
       shadowIndex: index++,
     };

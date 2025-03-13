@@ -11,6 +11,7 @@ import 'tinymce/models/dom/model';
 import 'tinymce/themes/silver';
 import 'tinymce/icons/default';
 import 'tinymce/skins/ui/oxide/skin';
+import 'tinymce/skins/ui/oxide/content';
 // Plugins
 import 'tinymce/plugins/advlist';
 import 'tinymce/plugins/autolink';

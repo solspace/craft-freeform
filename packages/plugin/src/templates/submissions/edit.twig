@@ -56,6 +56,10 @@
 
 {% block content %}
 
+	{% js %}
+		window.isCraft5 = {{ isCraft5 is defined and isCraft5 ? 'true' : 'false' }};
+	{% endjs %}
+
 	<input type="hidden" name="action" value="{{ actionUrl }}">
 	<input type="hidden" name="submissionId" value="{{ submission.id }}">
 	{{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}

@@ -179,6 +179,7 @@ class SubmissionsController extends BaseController
             'fieldRenderer' => $fieldRenderer,
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
+            'isCraft5' => version_compare(\Craft::$app->version, '5.0', '>='),
         ];
 
         return $this->renderTemplate(

@@ -152,5 +152,7 @@ $(function () {
     });
   });
 
-  updateActionButtons();
+  if (window.isCraft5) {
+    updateActionButtons();
+  }
 });

@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -76,9 +77,11 @@ class TextareaField extends AbstractField implements PlaceholderInterface, TextI
             ->set($this->getRequiredAttribute())
         ;
 
-        return '<textarea'.$attributes.'>'
-            .htmlentities($this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
-            .'</textarea>';
+        return Html::tag(
+            $attributes->getTag('textarea'),
+            htmlentities($this->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401),
+            $attributes->toHtmlTagArray(['field' => $this]),
+        );
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

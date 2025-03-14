@@ -262,7 +262,11 @@ export type FieldMappingProperty = BaseProperty<
 };
 export type FieldTypeProperty = BaseProperty<string, PropertyType.FieldType>;
 
-export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG>;
+export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG> & {
+  menu?: boolean;
+  statusbar?: boolean;
+  toolbar: string[] | boolean;
+};
 export type CodeEditorProperty = BaseProperty<
   string,
   PropertyType.CodeEditor

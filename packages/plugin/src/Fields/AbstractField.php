@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use craft\helpers\Html;
 use craft\helpers\Template;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -52,23 +53,23 @@ use yii\base\Event;
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
     #[Translatable]
+    #[Validators\Required]
     #[Section(
         handle: 'general',
         label: 'General',
         icon: __DIR__.'/SectionIcons/bookmark.svg',
         order: 0,
     )]
-    #[Input\Text(
-        instructions: 'Field label used to describe the field',
-        order: 1,
-        placeholder: 'My Field',
-    )]
     #[Middleware('injectInto', [
         'target' => 'handle',
         'camelize' => true,
         'bypassConditions' => [['name' => 'id', 'isTrue' => true]],
     ])]
-    #[Validators\Required]
+    #[Input\Text(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'My Field',
+    )]
     protected string $label = '';
 
     #[Section('general')]
@@ -223,17 +224,13 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     final public function render(?array $parameters = null): Markup
     {
         $this->setParameters($parameters);
+        $instructionsBelow = 'below' === strtolower($this->parameters->instructions);
 
-        Event::trigger($this, self::EVENT_RENDER_CONTAINER, new FieldRenderEvent($this));
-
-        $containerAttributes = $this->getAttributes()->getContainer();
-        $output = '<div'.$containerAttributes.'>';
+        $output = $this->renderContainerOpeningTag();
 
         if (!$this instanceof InputOnlyInterface) {
             $output .= $this->renderLabel();
         }
-
-        $instructionsBelow = 'below' === strtolower($this->parameters->instructions);
 
         // Show instructions above by default
         if (!$instructionsBelow) {
@@ -253,7 +250,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             $output .= $this->renderErrors();
         }
 
-        $output .= '</div>';
+        $output .= $this->renderContainerClosingTag();
 
         return $this->renderRaw($output);
     }
@@ -607,12 +604,17 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected function getContainerOpeningTagHtml(): string
     {
-        return '<div'.$this->getAttributes()->getContainer().'>';
+        $attributes = $this->getAttributes()->getContainer();
+
+        return Html::beginTag(
+            $attributes->getTag(),
+            $attributes->toHtmlTagArray()
+        );
     }
 
     protected function getContainerClosingTagHtml(): string
     {
-        return '</div>';
+        return Html::endTag($this->getAttributes()->getContainer()->getTag());
     }
 
     /**
@@ -626,12 +628,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             ->replace('for', $this->getIdAttribute())
         ;
 
-        $output = '<label'.$attributes.'>';
-        $output .= $this->getLabel();
-        $output .= '</label>';
-        $output .= \PHP_EOL;
+        $tag = $this->getAttributes()->getLabel()->getTag('label');
 
-        return $output;
+        return Html::tag($tag, $this->getLabel(), $attributes->toHtmlTagArray());
     }
 
     /**
@@ -643,12 +642,13 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return '';
         }
 
-        $output = '<div'.$this->getAttributes()->getInstructions().'>';
-        $output .= $this->getInstructions();
-        $output .= '</div>';
-        $output .= \PHP_EOL;
+        $attributes = $this->getAttributes()->getInstructions();
 
-        return $output;
+        return Html::tag(
+            $attributes->getTag(),
+            $this->getInstructions(),
+            $attributes->toHtmlTagArray(),
+        );
     }
 
     /**
@@ -667,19 +667,19 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             ->setIfEmpty('class', 'errors')
         ;
 
-        $output = '<ul'.$attributes.'>';
-
+        $listItems = [];
         foreach ($errors as $error) {
             if (\is_array($error)) {
                 $error = implode(', ', $error);
             }
 
-            $output .= '<li>'.htmlentities($error, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401).'</li>';
+            $listItems[] = Html::tag(
+                $attributes->getTag('li'),
+                htmlentities($error, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
+            );
         }
 
-        $output .= '</ul>';
-
-        return $output;
+        return Html::tag($attributes->getTag('ul'), implode(\PHP_EOL, $listItems), $attributes->toHtmlTagArray());
     }
 
     protected function getRequiredAttribute(): string

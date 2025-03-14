@@ -224,7 +224,7 @@ class PropertyProvider
 
         foreach ($options as $key => $value) {
             $val = $value['value'] ?? $key;
-            $label = $value['label'] ?? $value;
+            $label = Freeform::t($value['label'] ?? $value);
 
             $collection->add($val, $label);
         }

@@ -378,10 +378,9 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
     }
 
-    public function renderFormTemplate(Form $form, string $templateName): ?Markup
+    public function renderFormTemplate(Form $form, ?string $templateName): ?Markup
     {
         $settings = $this->getSettingsService();
-
         if (empty($templateName)) {
             return null;
         }

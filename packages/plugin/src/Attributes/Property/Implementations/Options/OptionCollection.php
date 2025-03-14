@@ -7,7 +7,7 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 /**
  * @implements \IteratorAggregate<Option|OptionCollection>
  */
-class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate, \ArrayAccess
+class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate, \ArrayAccess, \Countable
 {
     private array $options = [];
 
@@ -140,6 +140,11 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
     public function offsetUnset(mixed $offset): void
     {
         throw new \BadMethodCallException('OptionCollection is read-only');
+    }
+
+    public function count(): int
+    {
+        return \count($this->options);
     }
 
     private function getOptionRecursively(self $collection, string $value): ?Option

@@ -3,7 +3,6 @@ import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import type { Field } from '@editor/store/slices/layout/fields';
 import type { OptionCollection } from '@ff-client/types/properties';
 import { range } from '@ff-client/utils/arrays';
-import translate from '@ff-client/utils/translations';
 
 type Props = {
   field: Field;
@@ -24,7 +23,7 @@ export const RatingRuleValue: React.FC<Props> = ({
 
   return (
     <Dropdown
-      emptyOption={translate('Select a rating')}
+      emptyOption="Select a rating"
       value={value}
       options={options}
       onChange={(selectedValue) => onChange && onChange(selectedValue)}

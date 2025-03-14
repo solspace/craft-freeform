@@ -288,4 +288,32 @@ class AttributesTest extends TestCase
 
         $this->assertEquals(' class="class-1"', (string) $attributes);
     }
+
+    public function testAttributesToHtmlArrayConversion()
+    {
+        $attributes = new Attributes([
+            'null-attribute' => null,
+            'false' => false,
+            'true' => true,
+            'empty-string' => '',
+            'string' => 'string',
+            'array' => ['one', 'two', 'three'],
+            'number' => 123,
+            'object' => (object) ['one' => 1, 'two' => 2, 'three' => 3],
+        ]);
+
+        $this->assertEquals(
+            [
+                'null-attribute' => true,
+                'false' => false,
+                'true' => true,
+                'empty-string' => '',
+                'string' => 'string',
+                'array' => 'one two three',
+                'number' => 123,
+                'object' => (object) ['one' => 1, 'two' => 2, 'three' => 3],
+            ],
+            $attributes->toHtmlTagArray(),
+        );
+    }
 }

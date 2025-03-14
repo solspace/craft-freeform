@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\LegendsTransformer;
@@ -152,12 +153,19 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
             $output .= '<li>';
 
-            $output .= '<input'.$inputAttributes.' />';
+            $output .= Html::tag(
+                $inputAttributes->getTag('input'),
+                '',
+                $inputAttributes->toHtmlTagArray([
+                    'i' => $index,
+                    'index' => $index,
+                    'scale' => $scale,
+                    'option' => $scale,
+                    'field' => $this,
+                ])
+            );
 
-            $output .= '<label for="'.$id.'">';
-            $output .= $this->translateOption('scales', $value, $label);
-            $output .= '</label>';
-
+            $output .= Html::tag('label', $this->translateOption('scales', $value, $label), ['for' => $id]);
             $output .= '</li>';
         }
         $output .= '</ul>';
@@ -165,9 +173,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         if ($this->getLegends()) {
             $output .= '<ul class="opinion-scale-legends">';
             foreach ($this->getLegends() as $legend) {
-                $output .= '<li>';
-                $output .= (string) $legend;
-                $output .= '</li>';
+                $output .= Html::tag('li', $legend);
             }
             $output .= '</ul>';
         }

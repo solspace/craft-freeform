@@ -179,6 +179,7 @@ class SubmissionsController extends BaseController
             'fieldRenderer' => $fieldRenderer,
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
+            'isCraft5' => version_compare(\Craft::$app->version, '5.0', '>='),
         ];
 
         return $this->renderTemplate(
@@ -267,6 +268,32 @@ class SubmissionsController extends BaseController
                 'errors' => $model->getErrors(),
             ]
         );
+    }
+
+    public function actionDelete(): Response
+    {
+        $this->requirePostRequest();
+
+        $id = \Craft::$app->request->post('id');
+        if (!$id) {
+            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission ID was missing.')]);
+        }
+
+        $submission = Submission::find()->id($id);
+        if (!$submission->count()) {
+            return $this->asJson(['success' => false, 'message' => Freeform::t('Submission with ID {id} not found', ['id' => $id])]);
+        }
+
+        $deleted = $this->getSubmissionsService()->delete($submission);
+        if (!$deleted) {
+            $this->asJson(['success' => false, 'message' => Freeform::t('Submission could not be deleted.')]);
+        }
+
+        $message = Freeform::t('Submission deleted.');
+
+        \Craft::$app->session->setSuccess($message);
+
+        return $this->asJson(['success' => true, 'message' => $message]);
     }
 
     protected function getTemplateBasePath(): string

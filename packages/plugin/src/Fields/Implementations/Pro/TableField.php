@@ -550,6 +550,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                     ->setIfEmpty('type', 'button')
                 ;
 
+                $output .= Html::tag('div', '', ['data-error-append-target' => $this->getHandle()]);
                 $output .= Html::tag(
                     'button',
                     $this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel(),

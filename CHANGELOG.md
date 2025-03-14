@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.9.16.1 - 2025-03-14
+
+### Fixed
+- Fixed a bug where **hCaptcha** was broken after changes in Freeform 5.9.16.
+
 ## 5.9.16 - 2025-03-07
 
 ### Added

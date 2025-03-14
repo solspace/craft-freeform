@@ -502,35 +502,32 @@ export default class Freeform {
         errorsList.appendChild(listItem);
       }
 
+      const container = form.querySelector<HTMLElement>(`[data-field-container="${key}"]`);
+      const errorAppendTarget = form.querySelector<HTMLElement>(`[data-error-append-target="${key}"]`);
       const inputList = form.querySelectorAll(
         `
           [name="${key}"],
-          [name="${key}[0][0]"],
           [type=file][name="${key}"],
           [type=file][name="${key}[]"],
+          [type=checkbox][name="${key}[]"]
+          [type=radio][name="${key}"]
           [data-error-append-target="${key}"]
         `
       );
 
-      for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
-        const input = inputList[inputIndex] as HTMLInputElement;
-
-        if (input.dataset.errorAppendTarget !== undefined) {
-          input.appendChild(errorsList);
-        } else {
-          addClass(input, errorClassField);
-          input.parentElement.appendChild(errorsList);
-        }
+      if (!container) {
+        return;
       }
 
-      const groupInputList = form.querySelectorAll<HTMLInputElement>(
-        `input[type=checkbox][name="${key}[]"], input[type=radio][name="${key}"]`
-      );
-      for (let inputIndex = 0; inputIndex < groupInputList.length; inputIndex++) {
-        const input = groupInputList[inputIndex];
-
+      for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
+        const input = inputList[inputIndex] as HTMLInputElement;
         addClass(input, errorClassField);
-        input.parentElement.parentElement.appendChild(errorsList);
+      }
+
+      if (errorAppendTarget) {
+        errorAppendTarget.appendChild(errorsList);
+      } else {
+        container.appendChild(errorsList);
       }
     }
   };

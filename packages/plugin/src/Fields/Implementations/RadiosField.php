@@ -116,7 +116,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
                 ->setIfEmpty('name', $this->getHandle())
                 ->setIfEmpty('type', 'radio')
                 ->set($this->getRequiredAttribute())
-                ->setIfEmpty('value', $this->getValue())
+                ->replace('value', $option->getValue())
                 ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('checked', $option->getValue() === $this->getValue())
             ;
@@ -137,7 +137,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
             $label = $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
             $inputTag = Html::tag(
                 $inputAttributes->getTag('input'),
-                $option->getValue(),
+                '',
                 $inputAttributes->toHtmlTagArray($twigVariables)
             );
 

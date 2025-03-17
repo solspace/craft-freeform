@@ -19,7 +19,9 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
@@ -87,12 +89,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
     #[Input\Hidden]
     protected ?array $defaultValue = [];
 
-    #[Section(
-        handle: 'attributes',
-        label: 'Attributes',
-        icon: __DIR__.'/SectionIcons/list.svg',
-        order: 999,
-    )]
+    #[Section('attributes')]
     #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(

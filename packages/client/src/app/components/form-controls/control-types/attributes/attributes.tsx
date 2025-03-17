@@ -3,6 +3,7 @@ import { useRenderContext } from '@components/form-controls/context/render.conte
 import { Control } from '@components/form-controls/control';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import type { ControlType } from '@components/form-controls/types';
+import { useDebounce } from '@ff-client/hooks/use-debounce';
 import type { AttributeProperty } from '@ff-client/types/properties';
 
 import { AttributesEditor } from './attributes.editor';
@@ -47,6 +48,11 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
     convertToEditable(attributes)
   );
 
+  const debouncedValue = useDebounce(editableAttributes, 1000);
+  useEffect(() => {
+    updateValue(convertFromEditable(debouncedValue));
+  }, [debouncedValue]);
+
   useEffect(() => {
     setEditableAttributes(convertToEditable(attributes));
   }, [attributes]);
@@ -63,7 +69,7 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
       <AttributesEditor
         property={property}
         attributes={editableAttributes}
-        updateValue={(value) => setEditableAttributes(value)}
+        updateValue={setEditableAttributes}
       />
     </PreviewableComponent>
   );

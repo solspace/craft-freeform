@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\gql\types\Number as NumberType;
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -151,6 +152,10 @@ class NumberField extends TextField implements NumericInterface
             ->set($this->getRequiredAttribute())
         ;
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 }

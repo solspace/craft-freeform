@@ -9,7 +9,7 @@ import styled from 'styled-components';
 
 export const NoContent = styled.div`
   position: absolute;
-  top: calc(50% - 15px);
+  top: calc(50% - 10px);
   left: 0;
   right: 0;
 
@@ -17,7 +17,7 @@ export const NoContent = styled.div`
   transition: opacity 0.2s ease-out;
 
   color: ${colors.gray200};
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   font-style: italic;
   text-align: center;

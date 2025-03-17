@@ -55,10 +55,10 @@ export const Bulk: React.FC<Props> = ({ open, close, bulkImport }) => {
           type: PropertyType.Select,
           value: '|',
           options: [
-            { value: '|', label: 'Pipe' },
-            { value: ',', label: 'Comma' },
-            { value: ';', label: 'Semicolon' },
-            { value: '=>', label: 'Arrow' },
+            { value: '|', label: '|' },
+            { value: ',', label: ',' },
+            { value: ';', label: ';' },
+            { value: '=>', label: '=>' },
             { value: ' ', label: 'Space' },
           ],
         }}

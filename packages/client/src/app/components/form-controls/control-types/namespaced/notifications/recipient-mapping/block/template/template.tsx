@@ -1,7 +1,6 @@
 import React from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import type { OptionCollection } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
 
 import FilesIcon from '../../../notification-template/icons/files.svg';
 import DatabaseIcon from '../../../notification-template/icons/files.svg';
@@ -51,7 +50,7 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
       <Dropdown
         value={selectedTemplate?.id as string}
         options={options}
-        emptyOption={translate('Use default template')}
+        emptyOption={'Use default template'}
         onChange={(selectedValue) => {
           if (/^[0-9]+$/.test(selectedValue)) {
             onChange(Number(selectedValue));

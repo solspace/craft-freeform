@@ -13,14 +13,20 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\Input\Hidden;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Radios',
@@ -32,8 +38,53 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
 {
     use OneLineTrait;
 
-    #[Hidden]
+    #[Input\Hidden]
     protected string $defaultValue = '';
+
+    #[Section(
+        handle: 'attributes',
+        label: 'Attributes',
+        icon: __DIR__.'/SectionIcons/list.svg',
+        order: 999,
+    )]
+    #[Limitation('layout.fields.attributes')]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'optionLabel',
+                'label' => 'Input Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Container Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'instructions',
+                'label' => 'Instructions',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'error',
+                'label' => 'Error',
+                'previewTag' => 'ul',
+            ],
+        ]
+    )]
+    protected FieldAttributesCollection $attributes;
 
     public function getType(): string
     {
@@ -50,33 +101,51 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getAttributes()
-            ->getInput()
-            ->clone()
-            ->setIfEmpty('name', $this->getHandle())
-            ->setIfEmpty('type', 'radio')
-            ->set($this->getRequiredAttribute())
-            ->setIfEmpty('value', $this->getValue())
-        ;
+        $attributes = $this->getAttributes();
 
         $output = '';
-
         foreach ($this->getOptions() as $index => $option) {
             if ($option instanceof OptionCollection) {
                 continue;
             }
 
             $inputAttributes = $attributes
+                ->getInput()
                 ->clone()
-                ->replace('id', $this->getIdAttribute().'-'.$index)
+                ->merge($attributes)
+                ->setIfEmpty('name', $this->getHandle())
+                ->setIfEmpty('type', 'radio')
+                ->set($this->getRequiredAttribute())
                 ->replace('value', $option->getValue())
+                ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('checked', $option->getValue() === $this->getValue())
             ;
 
-            $output .= '<label>';
-            $output .= '<input'.$inputAttributes.' />';
-            $output .= $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
-            $output .= '</label>';
+            $labelAttributes = $attributes
+                ->getOptionLabel()
+                ->clone()
+                ->setIfEmpty('for', $this->getIdAttribute().'-'.$index)
+            ;
+
+            $twigVariables = [
+                'i' => $index,
+                'index' => $index,
+                'option' => $option,
+                'field' => $this,
+            ];
+
+            $label = $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
+            $inputTag = Html::tag(
+                $inputAttributes->getTag('input'),
+                '',
+                $inputAttributes->toHtmlTagArray($twigVariables)
+            );
+
+            $output .= Html::tag(
+                $labelAttributes->getTag('label'),
+                $inputTag.$label,
+                $labelAttributes->toHtmlTagArray($twigVariables),
+            );
         }
 
         return $output;

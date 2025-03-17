@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 5.10.0 - 2025-03-17
+
+### Added
+- Added validation for minimum and maximum selected options on **Checkboxes** fields.
+- Added the ability to select `No formatting template` for the **Formatting Template** setting.
+- Added the ability to change the default rendering of HTML tags in fields by specifying a `tag` override.
+- Added the ability to add and modify attributes for **Dropdown** and **Multi-select** options, as well as **Checkboxes** and **Radios** option labels and inputs.
+
+### Changed
+- Updated the single **Checkbox** field label to include a rich text editor to make it easier to include links and font styling.
+- Updated the **Rich Text** field editor to use TinyMCE.
+- Updated the CP Submissions edit page to include a **Delete** button.
+- Updated error validation handling for required columns on **Table** fields.
+- Updated remaining dropdown setting fields in the form builder to be translatable.
+
 ## 5.9.16.1 - 2025-03-14
 
 ### Fixed

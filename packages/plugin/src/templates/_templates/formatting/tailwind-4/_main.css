@@ -1,0 +1,70 @@
+:root {
+  --indigo-500: oklch(0.585 0.233 277.117);
+  --indigo-600: oklch(0.511 0.262 276.966);
+}
+
+.freeform-form a {
+  color: var(--indigo-600);
+  font-weight: bold;
+  text-decoration: none;
+}
+.freeform-form a:hover {
+  color: var(--indigo-500);
+  text-decoration: none;
+}
+.freeform-form a:focus {
+  outline: 2px solid var(--indigo-600);
+  padding: 2px;
+  margin: -2px;
+  border-radius: 5px;
+}
+
+.freeform-form {
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.freeform-form .required::after {
+  content: "*";
+  color: #d00;
+  margin-left: 5px;
+}
+
+.freeform-form button[type=submit].freeform-processing {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.freeform-form button[type=submit].freeform-processing:before {
+  content: "";
+  display: block;
+  flex: 1 0 11px;
+  width: 11px;
+  height: 11px;
+  margin-right: 10px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: transparent transparent #fff #fff;
+  border-radius: 50%;
+  animation: freeform-processing .5s linear infinite;
+}
+
+.freeform-form [data-field-type=table] [type=radio]+label {
+  color: rgb(71, 85, 105);
+}
+
+@keyframes freeform-processing {
+  0% {
+    transform: rotate(0)
+  }
+
+  100% {
+    transform: rotate(1turn)
+  }
+}
+
+.freeform-form .input-group-one-line>div {
+  float: left;
+  margin-right: 15px;
+}

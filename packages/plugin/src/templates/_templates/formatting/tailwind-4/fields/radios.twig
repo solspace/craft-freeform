@@ -1,0 +1,32 @@
+{% do field.setParameters({
+  attributes: {
+    container: {
+      class: [
+        field.oneLine ? "input-group-one-line"
+      ]
+    }
+  }
+}) %}
+
+{{ field.renderContainerOpeningTag }}
+
+  {{ field.renderLabel }}
+  {{ field.renderInstructions }}
+  <div class="mt-1 space-y-1">
+  {% for index, option in field.options %}
+    <div class="flex items-center">
+      <input type="radio"
+        name="{{ field.handle }}"
+        value="{{ option.value }}"
+        id="{{ field.idAttribute }}-{{ index }}"
+        class="{{ field.attributes.input.get("class") }}{{ field.hasErrors ? ' outline-1 -outline-offset-1 outline-red-600' }}"
+        {{ option.value == field.value ? "checked" }}
+      />
+      <label for="{{ field.idAttribute }}-{{ index }}" class="{{ field.attributes.optionLabel.get("class") }}{{ field.hasErrors ? ' text-red-600' }}">
+        {{ option.label|t('freeform')|raw }}
+      </label>
+    </div>
+  {% endfor %}
+  {{ field.renderErrors }}
+
+{{ field.renderContainerClosingTag }}

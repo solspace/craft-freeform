@@ -43,6 +43,10 @@ class RulesInitialState extends FeatureBundle
         $field = $event->getField();
         $form = $field->getForm();
 
+        if ($field->getParentField()) {
+            return;
+        }
+
         $isHidden = $this->ruleValidator->isFieldHidden($form, $field);
         if (!$isHidden) {
             return;

@@ -26,6 +26,17 @@ class RowCollection implements \IteratorAggregate, \Countable
         return $this;
     }
 
+    public function get(string $uid): ?Row
+    {
+        foreach ($this->rows as $row) {
+            if ($row->getUid() === $uid) {
+                return $row;
+            }
+        }
+
+        return null;
+    }
+
     public function getFields(): FieldCollection
     {
         return $this->fieldCollection;

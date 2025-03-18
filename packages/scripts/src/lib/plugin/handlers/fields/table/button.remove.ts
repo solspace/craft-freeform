@@ -22,7 +22,6 @@ export const registerRemoveButtons = (instance: Freeform) => {
 };
 
 const handleRemove = (instance: Freeform) => (event: Event) => {
-  console.log('remove button clicked');
   const target = event.target as HTMLTableRowElement;
   if (target.closest('tbody').querySelectorAll('tr').length === 1) {
     return;

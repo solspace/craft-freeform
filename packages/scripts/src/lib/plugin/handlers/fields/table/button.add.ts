@@ -14,7 +14,6 @@ export const registerAddButton = (instance: Freeform) => {
 
     if (button) {
       instance.form.addEventListener(events.table.afterRemoveRow, () => {
-        console.log('listening for afterRemoveRow');
         toggleAddButton(table, button);
       });
 

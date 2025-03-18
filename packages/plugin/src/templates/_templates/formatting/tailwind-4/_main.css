@@ -1,22 +1,17 @@
 :root {
-  --indigo-500: oklch(0.585 0.233 277.117);
-  --indigo-600: oklch(0.511 0.262 276.966);
+  --color-indigo-500: oklch(0.585 0.233 277.117);
+  --color-indigo-600: oklch(0.511 0.262 276.966);
+  --color-gray-600: oklch(0.446 0.043 257.281);
 }
 
 .freeform-form a {
-  color: var(--indigo-600);
+  color: var(--color-indigo-600);
   font-weight: bold;
   text-decoration: none;
 }
 .freeform-form a:hover {
-  color: var(--indigo-500);
+  color: var(--color-indigo-500);
   text-decoration: none;
-}
-.freeform-form a:focus {
-  outline: 2px solid var(--indigo-600);
-  padding: 2px;
-  margin: -2px;
-  border-radius: 5px;
 }
 
 .freeform-form {
@@ -54,6 +49,15 @@
   color: rgb(71, 85, 105);
 }
 
+.freeform-form [data-field-type="file-dnd"] [data-placeholder] {
+  font-size: 0.875rem;
+  color: var(--color-gray-600);
+  text-align: center;
+  width: auto;
+}
+
+
+
 @keyframes freeform-processing {
   0% {
     transform: rotate(0)
@@ -62,9 +66,4 @@
   100% {
     transform: rotate(1turn)
   }
-}
-
-.freeform-form .input-group-one-line>div {
-  float: left;
-  margin-right: 15px;
 }

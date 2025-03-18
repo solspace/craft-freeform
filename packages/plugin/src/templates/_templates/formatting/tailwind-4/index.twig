@@ -64,7 +64,7 @@
                   "+class": "relative appearance-none size-4 rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden",
                 },
                 optionLabel: {
-                  class: "ml-3 block text-sm/6 font-medium text-gray-900",
+                  class: "ml-2 block text-sm/6 font-medium text-gray-900",
                 },
             },
         },
@@ -93,6 +93,14 @@
                 input: {
                   "-class": "block w-full px-3 py-1.5 rounded-md text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6",
                   "+class": "col-start-1 row-start-1 rounded-sm appearance-none size-4 rounded-full border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto",
+                },
+            },
+        },
+        "@file-dnd": {
+            attributes: {
+                input: {
+                  "-class": "block w-full outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600",
+                  "+class": "mt-2 justify-center rounded-lg !border border-dashed !border-gray-900/25",
                 },
             },
         },
@@ -143,7 +151,7 @@
               <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM8.28 7.22a.75.75 0 0 0-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 1 0 1.06 1.06L10 11.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L11.06 10l1.72-1.72a.75.75 0 0 0-1.06-1.06L10 8.94 8.28 7.22Z" clip-rule="evenodd" />
             </svg>
           </div>
-          <div class="ml-3">
+          <div class="ml-2">
             <h3 class="text-md font-medium text-red-800">{{ form.settings.errorMessage | t('freeform') }}</h3>
             {% if form.errors|length %}
             <div class="mt-2 text-sm text-red-700">

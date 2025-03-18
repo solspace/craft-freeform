@@ -1,20 +1,10 @@
-{% do field.setParameters({
-  attributes: {
-    container: {
-      class: [
-        field.oneLine ? "input-group-one-line"
-      ]
-    }
-  }
-}) %}
-
 {{ field.renderContainerOpeningTag }}
 
   {{ field.renderLabel }}
   {{ field.renderInstructions }}
-  <div class="mt-1 space-y-1">
+  <div class="mt-1 space-y-1{% if field.oneLine %} sm:flex sm:items-center sm:space-y-0 sm:space-x-5{% endif %}">
   {% for index, option in field.options %}
-    <div class="flex gap-3">
+    <div class="flex gap-2">
       <div class="flex h-6 shrink-0 items-center">
         <div class="group grid size-4 grid-cols-1">
           <input type="checkbox"

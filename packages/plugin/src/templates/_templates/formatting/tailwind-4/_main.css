@@ -2,6 +2,7 @@
   --color-indigo-500: oklch(0.585 0.233 277.117);
   --color-indigo-600: oklch(0.511 0.262 276.966);
   --color-gray-600: oklch(0.446 0.043 257.281);
+  --color-red-600: oklch(0.577 0.245 27.325);
 }
 
 .freeform-form a {
@@ -21,8 +22,8 @@
 
 .freeform-form .required::after {
   content: "*";
-  color: #d00;
-  margin-left: 5px;
+  color: var(--color-red-600);
+  margin-left: 3px;
 }
 
 .freeform-form button[type=submit].freeform-processing {

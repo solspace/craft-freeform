@@ -6,16 +6,16 @@
 {{ form.renderTag({
     attributes: {
         form: { class: "freeform-form", "data-freeform-tailwind": true },
-        row: { class: "flex flex-wrap w-full -mx-2 mb-4" },
+        row: { class: "flex items-center gap-x-2 -mx-2 mb-4" },
         novalidate: true,
     },
     buttons: {
         attributes: {
-            container: { class: "flex flex-wrap -mx-1 mb-4" },
-            column: { class: "ml-2" },
+            container: { class: "flex flex-wrap gap-x-2 -mx-2" },
+            column: { class: "ml-2 mb-4" },
             buttonWrapper: {},
-            submit: { class: "bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" },
-            back: { class: "bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded mr-2" },
+            submit: { class: "rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
+            back: { class: "text-sm/6 font-semibold text-gray-900" },
             save: { class: "bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" },
         },
     },
@@ -36,6 +36,7 @@
         ":required": {
             attributes: {
                 label: { "+class": "required" },
+                input: { "required": "" },
             },
         },
         ":errors": {
@@ -100,10 +101,23 @@
             attributes: {
                 input: {
                   "-class": "block w-full outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600",
-                  "+class": "mt-2 justify-center rounded-lg !border border-dashed !border-gray-900/25",
+                  "+class": "justify-center rounded-md !border border-dashed !border-gray-900/25",
                 },
             },
         },
+        "@file": {
+            attributes: {
+                label: { 
+                  "=class": "freeform-upload-btn inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-gray-900 font-normal bg-white rounded-md cursor-pointer ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50",
+                },
+                input: {
+                  "=class": "freeform-file-upload-input absolute inset-0 w-0 h-0 opacity-0 cursor-pointer",
+                },
+            },
+        },
+
+
+        
         "@opinion-scale, @signature, @table": {
             attributes: {
                 input: { "-class": "appearance-none block w-full" },

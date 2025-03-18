@@ -178,3 +178,24 @@ forms.forEach((function(e) {
     }))
   }))
 }));
+
+
+// Regular file upload fields display and handling
+document.querySelectorAll('.freeform-file-upload-container').forEach(container => {
+  const fileInput = container.querySelector('.freeform-file-upload-input');
+  const fileDisplay = container.querySelector('.freeform-file-name-display');
+  const uploadButton = container.querySelector('.freeform-upload-btn');
+
+  uploadButton.addEventListener('click', function () {
+    fileInput.click();
+  });
+
+  fileInput.addEventListener('change', function () {
+    if (fileInput.files.length > 0) {
+      const fileNames = Array.from(fileInput.files).map(file => file.name).join(', ');
+      fileDisplay.textContent = `Selected files: ${fileNames}`;
+    } else {
+      fileDisplay.textContent = 'No files selected';
+    }
+  });
+});

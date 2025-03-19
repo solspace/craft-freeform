@@ -16,6 +16,11 @@ class RuleRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_rules}}';
 
+    public static function primaryKey(): array
+    {
+        return ['id'];
+    }
+
     public static function tableName(): string
     {
         return self::TABLE;

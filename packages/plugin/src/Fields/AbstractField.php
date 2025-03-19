@@ -183,6 +183,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /** @var T */
     private mixed $defaultValue = null;
     private bool $validated = false;
+    private ?FieldInterface $parentField = null;
 
     private ?FieldAttributesCollection $compiledAttributes = null;
 
@@ -213,6 +214,18 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function setValue(mixed $value): FieldInterface
     {
         $this->value = $value;
+
+        return $this;
+    }
+
+    public function getParentField(): ?FieldInterface
+    {
+        return $this->parentField;
+    }
+
+    public function setParentField(FieldInterface $field): FieldInterface
+    {
+        $this->parentField = $field;
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Persistence\Rules;
 
+use craft\helpers\Db;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
@@ -85,13 +86,13 @@ class NotificationRulesPersistence extends FeatureBundle
                     $conditionRecord = new RuleConditionRecord();
                     $conditionRecord->ruleId = $rule->id;
                     $conditionRecord->uid = StringHelper::UUID();
-                    $conditionRecord->dateCreated = new \DateTime();
+                    $conditionRecord->dateCreated = Db::prepareDateForDb(new \DateTime());
                 }
 
                 $conditionRecord->fieldId = $conditionField->id;
                 $conditionRecord->operator = $condition->operator;
                 $conditionRecord->value = $condition->value;
-                $conditionRecord->dateUpdated = new \DateTime();
+                $conditionRecord->dateUpdated = Db::prepareDateForDb(new \DateTime());
                 $conditionRecord->save();
 
                 $usedConditionUids[] = $conditionRecord->uid;

@@ -180,7 +180,6 @@ export const ConfigWrapper = styled.div`
 
 export const ConfigItem = styled.div<{ $isColumn?: boolean }>`
   display: flex;
-  align-items: ${({ $isColumn }) => ($isColumn ? 'flex-start' : 'center')};
   flex-direction: ${({ $isColumn }) => ($isColumn ? 'column' : 'row')};
   justify-content: ${({ $isColumn }) =>
     $isColumn ? 'flex-start' : 'space-between'};
@@ -190,6 +189,36 @@ export const ConfigItem = styled.div<{ $isColumn?: boolean }>`
   &:last-child {
     margin-bottom: 0;
   }
+`;
+
+export const StatusContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: ${spacings.xs};
+`;
+
+export const ReactivateButton = styled.button`
+  padding: 3px 8px;
+  background-color: ${colors.gray700};
+  margin-top: ${spacings.xs};
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+`;
+
+export const StatusMessage = styled.div<{ $error?: boolean }>`
+  color: ${({ $error }) => ($error ? colors.red600 : 'inherit')};
+  font-style: italic;
+  font-size: 0.9em;
+  text-align: right;
 `;
 
 export const ConfigLabel = styled.div`

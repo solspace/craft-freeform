@@ -1,5 +1,6 @@
 import React from 'react';
 import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
+import { useFormMonitorEnableMutation } from '@ff-client/queries/form-monitor.mutations';
 import type {
   FormTest,
   FormTestsResponse,
@@ -25,10 +26,13 @@ import {
   MostRecentTests,
   Progress,
   ProgressBar,
+  ReactivateButton,
   StatContainer,
   StatHeader,
   StatLabel,
   StatRow,
+  StatusContainer,
+  StatusMessage,
   StatValue,
   TotalCount,
   Wrapper,
@@ -45,65 +49,129 @@ type Configuration = {
   integrationStatus: 'enabled' | 'disabled';
   serviceStatus: 'active' | 'inactive';
   monitoredUrl: string;
+  formId: number;
 };
 
-const ConfigurationPanel: React.FC<{ configuration: Configuration }> = ({
-  configuration,
-}) => (
-  <ConfigurationSection>
-    <h3>{translate('Configuration')}</h3>
-    <ConfigWrapper>
-      <ConfigItem>
-        <ConfigLabel>{translate('Integration Status')}</ConfigLabel>
-        <StatusIndicator
-          $size="sm"
-          $status={
-            configuration.integrationStatus === 'enabled'
-              ? 'success'
-              : 'disabled'
-          }
-        >
-          <StatusDot $size="md" />
-          {translate(
-            configuration.integrationStatus === 'enabled'
-              ? 'ENABLED'
-              : 'DISABLED'
-          )}
-        </StatusIndicator>
-      </ConfigItem>
+const ConfigurationPanel: React.FC<{
+  configuration: Configuration;
+  refetchData: () => void;
+}> = ({ configuration, refetchData }) => {
+  const [reactivationStatus, setReactivationStatus] = React.useState<
+    string | null
+  >(null);
 
-      <ConfigItem>
-        <ConfigLabel>{translate('Service Status')}</ConfigLabel>
-        <StatusIndicator
-          $size="sm"
-          $status={
-            configuration.serviceStatus === 'active'
-              ? 'active'
-              : configuration.serviceStatus === 'inactive'
-                ? 'inactive'
+  const reactivateMutation = useFormMonitorEnableMutation(
+    configuration.formId,
+    {
+      onLoading: () => {
+        setReactivationStatus('loading');
+      },
+      onSuccess: () => {
+        setReactivationStatus('success');
+        setTimeout(() => {
+          setReactivationStatus(null);
+          refetchData();
+        }, 2000);
+      },
+      onError: () => {
+        setReactivationStatus('error');
+        setTimeout(() => {
+          setReactivationStatus(null);
+        }, 2000);
+      },
+    }
+  );
+
+  const handleReactivate = (): void => {
+    reactivateMutation.mutate();
+  };
+
+  const getStatusMessage = (): string | null => {
+    if (reactivationStatus === 'loading') {
+      return translate('Reactivating service...');
+    } else if (reactivationStatus === 'error') {
+      return translate('Reactivation unsuccessful.');
+    } else if (reactivationStatus === 'success') {
+      return translate('Service reactivated!');
+    }
+    return null;
+  };
+
+  return (
+    <ConfigurationSection>
+      <h3>{translate('Configuration')}</h3>
+      <ConfigWrapper>
+        <ConfigItem>
+          <ConfigLabel>{translate('Integration Status')}</ConfigLabel>
+          <StatusIndicator
+            $size="sm"
+            $status={
+              configuration.integrationStatus === 'enabled'
+                ? 'success'
                 : 'disabled'
-          }
-        >
-          <StatusDot $size="md" />
-          {translate(
-            configuration.serviceStatus === 'active'
-              ? 'ACTIVE'
-              : configuration.serviceStatus === 'inactive'
-                ? 'INACTIVE'
+            }
+          >
+            <StatusDot $size="md" />
+            {translate(
+              configuration.integrationStatus === 'enabled'
+                ? 'ENABLED'
                 : 'DISABLED'
-          )}
-        </StatusIndicator>
-      </ConfigItem>
-
-      {configuration?.monitoredUrl && (
-        <ConfigItem $isColumn>
-          <ConfigLabel>{translate('Monitored URL')}</ConfigLabel>
-          <MonitoredUrl>{configuration.monitoredUrl}</MonitoredUrl>
+            )}
+          </StatusIndicator>
         </ConfigItem>
-      )}
-    </ConfigWrapper>
-  </ConfigurationSection>
-);
+
+        <ConfigItem>
+          <ConfigLabel>{translate('Service Status')}</ConfigLabel>
+          <StatusContainer>
+            <StatusIndicator
+              $size="sm"
+              $status={
+                configuration.serviceStatus === 'active'
+                  ? 'active'
+                  : configuration.serviceStatus === 'inactive'
+                    ? 'inactive'
+                    : 'disabled'
+              }
+            >
+              <StatusDot $size="md" />
+              {translate(
+                configuration.serviceStatus === 'active'
+                  ? 'ACTIVE'
+                  : configuration.serviceStatus === 'inactive'
+                    ? 'INACTIVE'
+                    : 'DISABLED'
+              )}
+            </StatusIndicator>
+
+            {configuration.serviceStatus === 'inactive' && (
+              <>
+                {reactivationStatus ? (
+                  <StatusMessage $error={reactivationStatus === 'error'}>
+                    {getStatusMessage()}
+                  </StatusMessage>
+                ) : (
+                  <ReactivateButton
+                    onClick={handleReactivate}
+                    disabled={reactivateMutation.isLoading}
+                  >
+                    {translate('Reactivate')}
+                  </ReactivateButton>
+                )}
+              </>
+            )}
+          </StatusContainer>
+        </ConfigItem>
+
+        {configuration?.monitoredUrl && (
+          <ConfigItem $isColumn>
+            <ConfigLabel>{translate('Monitored URL')}</ConfigLabel>
+            <MonitoredUrl>{configuration.monitoredUrl}</MonitoredUrl>
+          </ConfigItem>
+        )}
+      </ConfigWrapper>
+    </ConfigurationSection>
+  );
+};
 
 const TestStatusIcon: React.FC<{ status: string; size?: number }> = ({
   status,
@@ -184,7 +252,7 @@ type ListProps = {
 };
 
 export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
-  const { data: formTests, isLoading } = formTestsQuery;
+  const { data: formTests, isLoading, refetch } = formTestsQuery;
 
   if (isLoading) {
     return (
@@ -198,7 +266,8 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
     integrationStatus: formTests?.enabled ? 'enabled' : 'disabled',
     serviceStatus: formTests?.fmFormStats?.enabled ? 'active' : 'inactive',
     monitoredUrl: formTests?.url || '',
-  } as const;
+    formId: formTests?.formId,
+  } as Configuration;
 
   const lastTest = formTests?.tests?.[0];
 
@@ -224,7 +293,10 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
             <StatsPanel stats={formTests.stats} />
           </>
         )}
-        <ConfigurationPanel configuration={configuration} />
+        <ConfigurationPanel
+          configuration={configuration}
+          refetchData={refetch}
+        />
       </Wrapper>
     </Sidebar>
   );

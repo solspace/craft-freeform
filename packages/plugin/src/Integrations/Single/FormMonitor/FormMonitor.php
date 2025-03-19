@@ -157,6 +157,7 @@ class FormMonitor extends APIIntegration
 
         $data['enabled'] = $this->isEnabled();
         $data['url'] = $this->getTestUrl();
+        $data['formId'] = $form->getId();
 
         return $data;
     }
@@ -192,6 +193,12 @@ class FormMonitor extends APIIntegration
     public function disableManifest(Client $client, Form $form): void
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/disable');
+        $client->put($endpoint);
+    }
+
+    public function enableMonitoring(Client $client, Form $form): void
+    {
+        $endpoint = $this->getEndpoint('forms/'.$form->getId().'/enable');
         $client->put($endpoint);
     }
 

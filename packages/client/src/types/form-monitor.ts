@@ -34,6 +34,7 @@ export interface FormTestsResponse {
   stats: TestStats;
   enabled: boolean;
   url: string;
+  formId: number;
   fmFormStats?: {
     enabled: boolean;
   };

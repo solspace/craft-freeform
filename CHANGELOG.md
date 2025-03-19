@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.10.1 - 2025-03-19
+
+### Fixed
+- Fixed a bug where **Group** fields were not fully respecting Conditional Rules validation for fields nested within.
+- Fixed a bug where **Group** fields hidden by Conditional Rules validation appeared in email notifications.
+- Fixed a bug that allowed **Group** fields to be saved as favorites. Support for this feature is planned in the future.
+- Fixed a bug where the **Number** field's _Step_ setting was not allowing decimal places.
+- Fixed a bug where an accessibility label was missing on the button that removes files from the _File Upload Drag & Drop_ field.
+
 ## 5.10.0 - 2025-03-17
 
 ### Added
@@ -1404,6 +1413,11 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.25 - 2025-03-19
+
+### Fixed
+- Fixed a bug where querying Rich Text field contents would error when using GraphQL.
 
 ## 4.1.24 - 2025-01-24
 

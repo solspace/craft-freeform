@@ -37,7 +37,7 @@ class NumberField extends TextField implements NumericInterface
         instructions: 'The step',
         min: 0,
     )]
-    protected ?int $step = 1;
+    protected ?float $step = 1;
 
     public function getValue(): mixed
     {

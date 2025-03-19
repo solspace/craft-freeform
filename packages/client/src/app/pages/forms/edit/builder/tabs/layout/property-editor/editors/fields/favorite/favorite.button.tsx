@@ -70,7 +70,7 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
     setHover(false);
   }, active);
 
-  if (!field?.uid) {
+  if (!field?.uid || type.type === 'group') {
     return null;
   }
 

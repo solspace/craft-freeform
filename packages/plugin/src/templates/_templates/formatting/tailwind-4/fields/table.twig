@@ -2,22 +2,20 @@
 
 {{ field.render({
     tableAttributes: {
-        table: { class: "table" },
+        table: { class: "table min-w-full" },
         row: { class: "table-row" },
         column: { class: [
             tableColumnCount in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] ? "w-1/" ~ tableColumnCount,
             tableColumnCount == 1 ? "w-full",
-            "table-col pb-1"
+            "table-col text-sm/6 pb-1"
         ] },
-        label: { class: [
-            "text-left"
-        ] },
-        input: { class: [ field.attributes.input.get("class"), "mr-5 w-11/12 block" ] },
-        textarea: { class: [ field.attributes.input.get("class"), "mr-5" ] },
-        dropdown: { class: [ field.attributes.input.get("class"), "mr-5 w-11/12 block" ] },
-        checkbox: { class: [ field.attributes.input.get("class"), "w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded" ] },
-        radios: { class: [ field.attributes.input.get("class"), "w-4 h-4 text-blue-600 bg-slate-100 border-slate-300 rounded mr-2 font-normal text-slate-600", "freeform-table-radios" ] },
-        removeButton: { class: "bg-red-500 hover:bg-red-700 text-white font-normal py-1 px-3 rounded" },
-        addButton: { class: "bg-green-500 hover:bg-green-700 text-white font-normal py-1 px-3 rounded mt-2" },
+        label: { class: "text-left" },
+        input: { class: [ field.attributes.input.get("class"), "w-11/12 block" ] },
+        textarea: { class: [ field.attributes.input.get("class"), "w-11/12 block" ] },
+        dropdown: { class: [ field.attributes.input.get("class"), "w-11/12 block size-9" ] },
+        checkbox: { class: [ field.attributes.input.get("class"), "bg-white rounded-sm appearance-none size-4 !px-0 rounded-full border border-gray-300 checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 !focus-visible:outline-0 !focus-visible:outline-offset-0 relative flex items-center justify-center checked:before:content-['✔'] checked:before:text-white checked:before:text-xs" ] },
+        radios: { class: [ field.attributes.input.get("class"), "relative appearance-none size-4 !px-0 mr-2 w-4 h-4 !rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", "freeform-table-radios" ] },
+        removeButton: { class: "text-sm text-indigo-600 hover:text-red-600" },
+        addButton: { class: "block rounded-md bg-indigo-600 px-3 py-1 text-center text-sm font-medium text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
     },
 }) }}

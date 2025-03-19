@@ -1,7 +1,9 @@
 :root {
   --color-indigo-500: oklch(0.585 0.233 277.117);
   --color-indigo-600: oklch(0.511 0.262 276.966);
+  --color-gray-300: oklch(0.872 0.01 258.338);
   --color-gray-600: oklch(0.446 0.043 257.281);
+  --color-gray-900: oklch(0.21 0.034 264.665);
   --color-red-600: oklch(0.577 0.245 27.325);
 }
 
@@ -20,7 +22,7 @@
   box-sizing: border-box;
 }
 
-.freeform-form .required::after {
+.freeform-form .freeform-required::after {
   content: "*";
   color: var(--color-red-600);
   margin-left: 3px;
@@ -46,8 +48,30 @@
   animation: freeform-processing .5s linear infinite;
 }
 
+.freeform-form [data-field-type=multiple-select] option:checked {
+  background-color: var(--color-indigo-600);
+  color: #ffffff;
+}
+.freeform-form [data-field-type=signature] canvas {
+  border: 1px solid var(--color-gray-300)!important;
+}
+
+.freeform-form [data-field-type=table] [type=radio] {
+  margin-bottom: -3px !important;
+}
 .freeform-form [data-field-type=table] [type=radio]+label {
-  color: rgb(71, 85, 105);
+  color: var(--color-gray-900);
+}
+.freeform-form [data-field-type=table] table thead tr th {
+  color: var(--color-gray-600);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-bottom: 1px solid var(--color-gray-300);
+  padding-bottom: 3px !important;
+}
+.freeform-form [data-field-type=table] table tbody tr:first-child td {
+  padding-top: 10px !important;
 }
 
 .freeform-form [data-field-type="file-dnd"] [data-placeholder] {

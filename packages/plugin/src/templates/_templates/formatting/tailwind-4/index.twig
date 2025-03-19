@@ -6,7 +6,7 @@
 {{ form.renderTag({
     attributes: {
         form: { class: "freeform-form", "data-freeform-tailwind": true },
-        row: { class: "flex items-center gap-x-2 -mx-2 mb-4" },
+        row: { class: "flex gap-x-2 -mx-2 mb-4" },
         novalidate: true,
     },
     buttons: {
@@ -14,7 +14,7 @@
             container: { class: "flex flex-wrap gap-x-2 -mx-2" },
             column: { class: "ml-2 mb-4" },
             buttonWrapper: {},
-            submit: { class: "rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
+            submit: { class: "rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
             back: { class: "text-sm/6 font-semibold text-gray-900" },
             save: { class: "bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" },
         },
@@ -35,7 +35,7 @@
         },
         ":required": {
             attributes: {
-                label: { "+class": "required" },
+                label: { "+class": "freeform-required" },
                 input: { "required": "" },
             },
         },
@@ -49,6 +49,14 @@
                 input: {
                   "-class": "block px-3 placeholder:text-gray-400",
                   "+class": "col-start-1 row-start-1 appearance-none pr-8 pl-3",
+                },
+            },
+        },
+        "@multiple-select": {
+            attributes: {
+                input: {
+                  "-class": "placeholder:text-gray-400",
+                  "+class": "h-30 overflow-auto",
                 },
             },
         },
@@ -97,6 +105,17 @@
                 },
             },
         },
+        "@opinion-scale": {
+            attributes: {
+                container: {
+                  tag: "fieldset",
+                },
+                label: {
+                  tag: "legend",
+                },
+                input: { "-class": "appearance-none block w-full" },
+            },
+        },
         "@file-dnd": {
             attributes: {
                 input: {
@@ -108,34 +127,38 @@
         "@file": {
             attributes: {
                 label: { 
-                  "=class": "freeform-upload-btn inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-gray-900 font-normal bg-white rounded-md cursor-pointer ring-1 shadow-xs ring-gray-300 ring-inset hover:bg-gray-50",
+                  "=class": "freeform-upload-btn inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-gray-900 font-normal bg-white rounded-md cursor-pointer ring-1 ring-gray-300 ring-inset hover:bg-gray-50",
                 },
                 input: {
                   "=class": "freeform-file-upload-input absolute inset-0 w-0 h-0 opacity-0 cursor-pointer",
                 },
             },
         },
-
-
-        
-        "@opinion-scale, @signature, @table": {
-            attributes: {
-                input: { "-class": "appearance-none block w-full" },
-            },
-        },
         "@table": {
             attributes: {
                 label: { "-class": "block" },
+                input: { "-class": "appearance-none block w-full" },
+            },
+        },
+        "@group": {
+            attributes: {
+                container: {
+                  "+class": "-mb-4",
+                },
+                label: {
+                  "-class": "font-medium",
+                  "+class": "font-semibold",
+                },
             },
         },
         "@signature": {
             attributes: {
-                input: { "+class": "rounded py-1 px-2 mr-1 hover:bg-slate-400" },
+                input: { "=class": "inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-gray-900 font-normal bg-white rounded-md cursor-pointer ring-1 ring-gray-300 ring-inset hover:bg-gray-50" },
             },
         },
         "@stripe": {
             attributes: {
-                input: { "-class": "rounded py-2 px-3 leading-tight placeholder:font-light placeholder:text-slate-400 border border-slate-400 focus:outline-none focus:bg-white focus:border-blue-600" },
+                input: { "-class": "rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" },
             },
         },
     },

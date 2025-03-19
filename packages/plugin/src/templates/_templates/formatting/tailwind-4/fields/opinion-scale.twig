@@ -3,7 +3,7 @@
     {{ field.renderLabel }}
     {{ field.renderInstructions }}
 
-    <ul class="w-full text-sm font-medium border border-slate-400 rounded flex">
+    <ul class="w-full text-sm font-medium outline-1 -outline-offset-1 outline-gray-300 rounded-md flex">
         {% for scale in field.scales %}
             <li class="w-full">
                 <input type="radio" name="{{ field.handle }}"
@@ -13,13 +13,13 @@
                     class="hidden peer"
                  />
                 <label for="{{ field.idAttribute }}-{{ loop.index }}"
-                    class="inline-flex text-center w-full py-2 px-3 text-slate-800 bg-white cursor-pointer peer-checked:bg-slate-200 hover:bg-slate-100
+                    class="inline-flex justify-center text-center font-medium w-full py-2 px-3 text-gray-900 bg-white cursor-pointer peer-checked:bg-indigo-600 peer-checked:outline-indigo-600 peer-checked:text-white hover:bg-indigo-100 peer-checked:hover:bg-indigo-500
                         {% if loop.index == 1 %}
-                            border-r border-slate-400 rounded-tl rounded-bl
+                            border-r border-gray-300 rounded-tl rounded-bl
                         {% elseif loop.index == field.scales|length %}
                             rounded-tr rounded-br
                         {% else %}
-                            border-r border-slate-400
+                            border-r border-gray-300
                         {% endif %}">
                     {{ scale }}
                 </label>
@@ -28,7 +28,7 @@
     </ul>
 
     {% if field.legends %}
-        <ul class="w-full text-sm font-medium flex text-slate-500">
+        <ul class="flex w-full text-sm font-medium text-gray-500 mt-1">
             {% for legend in field.legends %}
                 <li class="w-full
                     {% if loop.index == 1 %}

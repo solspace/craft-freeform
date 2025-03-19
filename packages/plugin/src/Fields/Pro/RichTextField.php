@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -30,6 +31,14 @@ class RichTextField extends AbstractField implements DefaultFieldInterface, Sing
     public function getType(): string
     {
         return self::TYPE_RICH_TEXT;
+    }
+
+    /**
+     * Outputs the HTML of input.
+     */
+    public function getContent(): string
+    {
+        return $this->getValue();
     }
 
     /**

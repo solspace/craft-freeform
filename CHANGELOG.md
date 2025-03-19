@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.25 - 2025-03-19
+
+### Fixed
+- Fixed a bug where querying Rich Text field contents would error when using GraphQL.
+
 ## 4.1.24 - 2025-01-24
 
 ### Added

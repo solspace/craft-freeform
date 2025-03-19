@@ -165,6 +165,7 @@ class LayoutsService extends BaseService
         array $allFields,
         Page $page,
         FormLayout $mainLayout,
+        ?FieldInterface $parent = null,
     ): void {
         $allRowsCollection = $layout->getAllRows();
         $rowCollection = $layout->getRows();
@@ -182,6 +183,10 @@ class LayoutsService extends BaseService
             );
 
             foreach ($currentFields as $field) {
+                if ($parent) {
+                    $field->setParentField($parent);
+                }
+
                 $mainLayout->getFields()->add($field);
                 $page->getFields()->add($field);
                 $row->getAllFields()->add($field);
@@ -202,6 +207,7 @@ class LayoutsService extends BaseService
                         $allFields,
                         $page,
                         $mainLayout,
+                        $field,
                     );
                 }
 

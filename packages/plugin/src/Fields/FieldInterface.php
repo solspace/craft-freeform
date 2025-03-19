@@ -76,6 +76,10 @@ interface FieldInterface
 
     public function getForm(): Form;
 
+    public function getParentField(): ?self;
+
+    public function setParentField(self $field): self;
+
     public function getType(): string;
 
     public function getValue(): mixed;

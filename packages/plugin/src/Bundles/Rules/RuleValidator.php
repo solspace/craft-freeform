@@ -23,6 +23,10 @@ class RuleValidator
 
     public function isFieldHidden(Form $form, FieldInterface $field): bool
     {
+        if ($this->isParentHidden($form, $field)) {
+            return true;
+        }
+
         $rule = $this->ruleProvider->getFieldRule($form, $field);
         if (!$rule) {
             return false;
@@ -103,10 +107,12 @@ class RuleValidator
         $matchesSome = false;
         $matchesAll = true;
         foreach ($conditions as $condition) {
+            $field = $condition->getField();
+
             if ($availablePages) {
                 $hasField = false;
                 foreach ($availablePages as $page) {
-                    if ($page->getFields()->has($condition->getField())) {
+                    if ($page->getFields()->has($field)) {
                         $hasField = true;
 
                         break;
@@ -118,11 +124,11 @@ class RuleValidator
                 }
             }
 
-            $isConditionFieldHidden = $this->isFieldHidden($form, $condition->getField());
+            $isConditionFieldHidden = $this->isFieldHidden($form, $field);
             if ($isConditionFieldHidden) {
                 $postedValue = null;
             } else {
-                $event = new ProcessPostedRuleValueEvent($condition->getField());
+                $event = new ProcessPostedRuleValueEvent($field);
                 Event::trigger($this, self::EVENT_PROCESS_POSTED_RULE_VALUE, $event);
 
                 $postedValue = $event->getValue();
@@ -140,5 +146,20 @@ class RuleValidator
             Rule::COMBINATOR_AND => $matchesAll,
             Rule::COMBINATOR_OR => $matchesSome,
         };
+    }
+
+    private function isParentHidden(Form $form, FieldInterface $field): bool
+    {
+        $parent = $field->getParentField();
+        if (!$parent) {
+            return false;
+        }
+
+        $isHidden = $this->isFieldHidden($form, $parent);
+        if ($isHidden) {
+            return true;
+        }
+
+        return $this->isParentHidden($form, $parent);
     }
 }

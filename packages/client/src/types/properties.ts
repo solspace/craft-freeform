@@ -266,6 +266,7 @@ export type WYSIWYGProperty = BaseProperty<string, PropertyType.WYSIWYG> & {
   menu?: boolean;
   statusbar?: boolean;
   toolbar: string[] | boolean;
+  toggleEditor?: boolean;
 };
 export type CodeEditorProperty = BaseProperty<
   string,

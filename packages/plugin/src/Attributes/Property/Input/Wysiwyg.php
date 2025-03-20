@@ -22,6 +22,7 @@ class Wysiwyg extends Property
         ?bool $disabled = null,
         public ?bool $menu = false,
         public ?bool $statusbar = false,
+        public ?bool $toggleEditor = false,
         public array|bool $toolbar = false,
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width, $disabled);

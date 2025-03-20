@@ -41,6 +41,7 @@ use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Models\Settings;
@@ -137,14 +138,16 @@ class ExpressFormsExporter extends BaseExporter
 
             if (isset($form['adminNotification']) && $form['adminNotification']) {
                 $notification = new Notification();
+                $notification->id = $form['adminNotification'];
+                $notification->uid = HashHelper::sha1($exported->uid.'admin', 32);
                 $notification->name = 'Admin Notification';
                 $notification->type = Admin::class;
-                $notification->id = $form['adminNotification'];
                 $notification->idAttribute = 'template';
 
                 $recipients = FreeformStringHelper::extractSeparatedValues($form['adminEmails'] ?? '');
 
                 $notification->metadata = [
+                    'template' => $form['adminNotification'],
                     'recipients' => array_map(
                         fn (string $recipient) => ['email' => $recipient, 'name' => ''],
                         $recipients,
@@ -156,12 +159,14 @@ class ExpressFormsExporter extends BaseExporter
 
             if (isset($form['submitterNotification']) && $form['submitterNotification']) {
                 $notification = new Notification();
+                $notification->id = $form['submitterNotification'];
+                $notification->uid = HashHelper::sha1($exported->uid.'submitter', 32);
                 $notification->name = 'Submitter Notification';
                 $notification->type = EmailFieldNotification::class;
-                $notification->id = $form['submitterNotification'];
                 $notification->idAttribute = 'template';
                 $notification->metadata = [
                     'field' => $form['submitterEmailField'],
+                    'template' => $form['submitterNotification'],
                 ];
 
                 $exported->notifications->add($notification);
@@ -279,6 +284,7 @@ class ExpressFormsExporter extends BaseExporter
             }
 
             $exported = new NotificationTemplate();
+            $exported->id = $notification->fileName;
             $exported->uid = $notification->fileName;
             $exported->name = $notification->name;
             $exported->handle = CraftStringHelper::toCamelCase($notification->name);

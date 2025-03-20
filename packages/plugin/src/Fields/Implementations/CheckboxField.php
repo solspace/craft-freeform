@@ -107,7 +107,9 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
         $label = preg_replace('/<\/p>\s*<p>/', '<br>', $label);
 
         // remove wrapping <p> tags
-        return preg_replace('/^<p>(.*)<\/p>$/', '$1', $label);
+        $label = preg_replace('/^<p>(.*)<\/p>$/', '$1', $label);
+
+        return \Craft::t('freeform', $label);
     }
 
     public function getInputHtml(): string

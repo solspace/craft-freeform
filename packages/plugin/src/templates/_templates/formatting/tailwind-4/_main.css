@@ -28,6 +28,16 @@
   margin-left: 3px;
 }
 
+@keyframes freeform-processing {
+  0% {
+    transform: rotate(0)
+  }
+
+  100% {
+    transform: rotate(1turn)
+  }
+}
+
 .freeform-form button[type=submit].freeform-processing {
   display: inline-flex;
   flex-wrap: nowrap;
@@ -74,21 +84,9 @@
   padding-top: 10px !important;
 }
 
-.freeform-form [data-field-type="file-dnd"] [data-placeholder] {
+.freeform-form [data-field-type=file-dnd] [data-placeholder] {
   font-size: 0.875rem;
   color: var(--color-gray-600);
   text-align: center;
   width: auto;
-}
-
-
-
-@keyframes freeform-processing {
-  0% {
-    transform: rotate(0)
-  }
-
-  100% {
-    transform: rotate(1turn)
-  }
 }

@@ -139,34 +139,52 @@ forms.forEach((function(e) {
   e.addEventListener("freeform-stripe-appearance", (function(e) {
     e.elementOptions.appearance = Object.assign(e.elementOptions.appearance, {
       variables: {
-        colorPrimary: "#0d6efd",
+        colorPrimary: "#4c3aed",
         fontFamily: '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji"',
-        fontSizeBase: "16px",
+        fontSizeBase: "0.875rem",
         spacingUnit: "0.2em",
-        tabSpacing: "10px",
-        gridColumnSpacing: "20px",
-        gridRowSpacing: "20px",
-        colorText: "#212529",
+        tabSpacing: "0.825rem",
+        gridColumnSpacing: "1.625rem",
+        gridRowSpacing: "1.625rem",
+        colorText: "#121827",
+        colorTextPlaceholder: "#9ba1ae",
         colorBackground: "#ffffff",
-        colorDanger: "rgb(239 68 68)",
-        borderRadius: "5px"
+        colorDanger: "#d42422",
+        borderRadius: "5px",
       },
       rules: {
-        ".Tab, .Input": {
-          border: "1px solid rgb(148 163 184)",
-          boxShadow: "none"
+        ".Tab": {
+          border: "0",
+          outline: "1px solid #d2d5db",
+          boxShadow: "none",
+          padding: "1rem",
+        },
+        '.Tab--selected': {
+          border: "0",
+          outline: "2px solid #4c3aed",
+          boxShadow: "none",
+        },
+        ".Input": {
+          border: "0",
+          outline: "1px solid #d2d5db",
+          boxShadow: "none",
+          padding: "0.625rem 0.75rem",
         },
         ".Tab:focus, .Input:focus": {
-          border: "1px solid #0b5ed7",
+          border: "0",
           boxShadow: "none",
-          outline: "0",
-          transition: "border-color .15s ease-in-out"
+          outline: "2px solid #4c3aed",
+        },
+        ".Input--invalid": {
+          border: "0",
+          boxShadow: "none",
         },
         ".Label": {
-          fontSize: "16px",
-          fontWeight: "500"
+          fontSize: "1rem",
+          fontWeight: "500",
+          marginBottom: "0.5rem",
         }
-      }
+      },
     })
   })),
   e.addEventListener("freeform-on-submit", (function(e) {

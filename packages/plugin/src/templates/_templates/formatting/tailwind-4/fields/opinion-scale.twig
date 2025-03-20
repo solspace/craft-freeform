@@ -1,49 +1,35 @@
 {{ field.renderContainerOpeningTag }}
 
-    {{ field.renderLabel }}
-    {{ field.renderInstructions }}
+  {{ field.renderLabel }}
+  {{ field.renderInstructions }}
 
-    <ul class="w-full text-sm font-medium outline-1 -outline-offset-1 outline-gray-300 rounded-md flex">
-        {% for scale in field.scales %}
-            <li class="w-full">
-                <input type="radio" name="{{ field.handle }}"
-                    value="{{ scale.value }}"
-                    id="{{ field.idAttribute }}-{{ loop.index }}"
-                    {{ field.value == scale.value ? "checked" }}
-                    class="hidden peer"
-                 />
-                <label for="{{ field.idAttribute }}-{{ loop.index }}"
-                    class="inline-flex justify-center text-center font-medium w-full py-2 px-3 text-gray-900 bg-white cursor-pointer peer-checked:bg-indigo-600 peer-checked:outline-indigo-600 peer-checked:text-white hover:bg-indigo-100 peer-checked:hover:bg-indigo-500
-                        {% if loop.index == 1 %}
-                            border-r border-gray-300 rounded-tl rounded-bl
-                        {% elseif loop.index == field.scales|length %}
-                            rounded-tr rounded-br
-                        {% else %}
-                            border-r border-gray-300
-                        {% endif %}">
-                    {{ scale }}
-                </label>
-            </li>
-        {% endfor %}
+  <div class="flex gap-x-6">
+    {% for scale in field.scales %}
+      <div class="flex-1">
+        <input type="radio" name="{{ field.handle }}" value="{{ scale.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == scale.value ? "checked" }} class="hidden peer" />
+        <label
+          for="{{ field.idAttribute }}-{{ loop.index }}"
+          class="relative flex cursor-pointer bg-white px-3 py-1.5 rounded-md text-base text-gray-900 text-sm justify-center outline-1 -outline-offset-1 outline-gray-300 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-600 hover:bg-gray-100"
+        >
+          {{ scale }}
+          <svg class="size-5 text-indigo-600 hidden peer-checked:block" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"></path>
+          </svg>
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+
+  {% if field.legends %}
+    <ul class="flex w-full text-sm font-medium text-gray-500 mt-1">
+      {% for legend in field.legends %}
+        <li class="w-full {% if loop.index == 1 %}text-left{% elseif loop.index == field.legends|length %}text-right{% else %}text-center{% endif %}">
+          {{ legend }}
+        </li>
+      {% endfor %}
     </ul>
+  {% endif %}
 
-    {% if field.legends %}
-        <ul class="flex w-full text-sm font-medium text-gray-500 mt-1">
-            {% for legend in field.legends %}
-                <li class="w-full
-                    {% if loop.index == 1 %}
-                        text-left
-                    {% elseif loop.index == field.legends|length %}
-                        text-right
-                    {% else %}
-                        text-center
-                    {% endif %}">
-                    {{ legend }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {{ field.renderErrors }}
+  {{ field.renderErrors }}
 
 {{ field.renderContainerClosingTag }}

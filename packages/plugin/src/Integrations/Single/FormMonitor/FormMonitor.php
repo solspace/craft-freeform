@@ -137,22 +137,40 @@ class FormMonitor extends APIIntegration
         $response = $client->get($endpoint, ['query' => $options]);
         $data = json_decode((string) $response->getBody(), true);
 
-        // Format dates according to Craft's settings
+        $formatDate = function ($dateString) {
+            $date = DateTimeHelper::toDateTime($dateString);
+            if ($date) {
+                return \Craft::$app->getFormatter()->asDatetime(
+                    $date,
+                    \Craft::$app->getLocale()->getDateTimeFormat('short')
+                );
+            }
+
+            return $dateString;
+        };
+
         if (isset($data['tests']) && \is_array($data['tests'])) {
             foreach ($data['tests'] as &$test) {
-                $dateFields = ['dateAttempted', 'dateCompleted'];
-                foreach ($dateFields as $field) {
-                    if (isset($test[$field])) {
-                        $date = DateTimeHelper::toDateTime($test[$field]);
-                        if ($date) {
-                            $test[$field] = \Craft::$app->getFormatter()->asDatetime(
-                                $date,
-                                \Craft::$app->getLocale()->getDateTimeFormat('short')
-                            );
-                        }
-                    }
+                if (isset($test['dateAttempted'])) {
+                    $test['dateAttempted'] = $formatDate($test['dateAttempted']);
+                }
+                if (isset($test['dateCompleted'])) {
+                    $test['dateCompleted'] = $formatDate($test['dateCompleted']);
                 }
             }
+        }
+
+        if (isset($data['lastSubmission'])) {
+            if (isset($data['lastSubmission']['dateAttempted'])) {
+                $data['lastSubmission']['dateAttempted'] = $formatDate($data['lastSubmission']['dateAttempted']);
+            }
+            if (isset($data['lastSubmission']['dateCompleted'])) {
+                $data['lastSubmission']['dateCompleted'] = $formatDate($data['lastSubmission']['dateCompleted']);
+            }
+        }
+
+        if (isset($data['fmFormStats']['nextMonitoringTime'])) {
+            $data['fmFormStats']['nextMonitoringTime'] = $formatDate($data['fmFormStats']['nextMonitoringTime']);
         }
 
         $data['enabled'] = $this->isEnabled();

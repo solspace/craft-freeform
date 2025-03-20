@@ -243,3 +243,23 @@ export const MonitoredUrl = styled.code`
   word-break: break-all;
   color: ${colors.gray700};
 `;
+
+export const NextScheduledTestContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 0 ${spacings.md};
+  padding-bottom: ${spacings.xl};
+  border-bottom: 1px solid ${colors.gray200};
+
+  h3 {
+    margin-bottom: ${spacings.sm};
+    font-size: 1.1em;
+    font-weight: 600;
+    color: ${colors.gray700};
+  }
+
+  .next-test-time {
+    font-size: 14px;
+    color: ${colors.gray600};
+  }
+`;

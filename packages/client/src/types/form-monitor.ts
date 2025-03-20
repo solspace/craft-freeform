@@ -35,7 +35,15 @@ export interface FormTestsResponse {
   enabled: boolean;
   url: string;
   formId: number;
+  lastSubmission?: FormTest;
   fmFormStats?: {
     enabled: boolean;
+    nextMonitoringTime: string;
+    nextMonitoringTimeIn: {
+      humanReadable: string;
+      minutes: number;
+      hours: number;
+      remainingMinutes: number;
+    };
   };
 }

@@ -24,6 +24,7 @@ import {
   MainStats,
   MonitoredUrl,
   MostRecentTests,
+  NextScheduledTestContainer,
   Progress,
   ProgressBar,
   ReactivateButton,
@@ -214,6 +215,29 @@ const RecentTestPanel: React.FC<{
   );
 };
 
+const NextScheduledTestPanel: React.FC<{
+  nextMonitoringTime?: string;
+  nextMonitoringTimeIn?: {
+    humanReadable: string;
+    minutes: number;
+    hours: number;
+    remainingMinutes: number;
+  };
+}> = ({ nextMonitoringTime, nextMonitoringTimeIn }) => {
+  if (!nextMonitoringTimeIn) {
+    return null;
+  }
+
+  return (
+    <NextScheduledTestContainer>
+      <h3>{translate('Next Scheduled Test')}</h3>
+      <div className="next-test-time">
+        {nextMonitoringTime} (in {nextMonitoringTimeIn?.humanReadable})
+      </div>
+    </NextScheduledTestContainer>
+  );
+};
+
 const StatsPanel: React.FC<{ stats: FormTestsResponse['stats'] }> = ({
   stats,
 }) => (
@@ -269,8 +293,6 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
     formId: formTests?.formId,
   } as Configuration;
 
-  const lastTest = formTests?.tests?.[0];
-
   return (
     <Sidebar>
       <Wrapper>
@@ -289,7 +311,15 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
           </>
         ) : (
           <>
-            <RecentTestPanel lastTest={lastTest} />
+            <RecentTestPanel lastTest={formTests?.lastSubmission} />
+            {formTests?.lastSubmission?.status !== 'pending' && (
+              <NextScheduledTestPanel
+                nextMonitoringTime={formTests?.fmFormStats?.nextMonitoringTime}
+                nextMonitoringTimeIn={
+                  formTests?.fmFormStats?.nextMonitoringTimeIn
+                }
+              />
+            )}
             <StatsPanel stats={formTests.stats} />
           </>
         )}

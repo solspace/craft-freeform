@@ -14,7 +14,6 @@ export const registerAddButton = (instance: Freeform) => {
 
     if (button) {
       instance.form.addEventListener(events.table.afterRemoveRow, () => {
-        console.log('listening for afterRemoveRow');
         toggleAddButton(table, button);
       });
 
@@ -83,7 +82,6 @@ export const registerAddButton = (instance: Freeform) => {
 };
 
 const toggleAddButton = (table: Element, button: HTMLButtonElement) => {
-  console.log('toggleAddButton');
   const maxRows: number | string = table.getAttribute('data-max-rows');
   const totalRows = table.querySelectorAll<HTMLTableRowElement>('tbody > tr').length;
 

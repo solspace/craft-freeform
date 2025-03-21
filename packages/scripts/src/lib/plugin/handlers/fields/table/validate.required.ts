@@ -1,6 +1,6 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
-import { addClass, removeClass } from '@lib/plugin/helpers/classes';
+import { addClass, removeClass } from '@lib/plugin/helpers/elements';
 import type { FreeformEvent } from 'types/events';
 
 export const attachValidatorRequired = (instance: Freeform) => {

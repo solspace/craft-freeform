@@ -152,7 +152,7 @@ class SaveForm extends FeatureBundle
 
         $logger = $this->notificationLoggerProvider->getLogger($notification, $form);
 
-        $recipients = $mailer->processRecipients($emailField->getRecipients());
+        $recipients = $mailer->processRecipients($emailField->getRecipients(), $form);
         if (empty($recipients)) {
             $logger->warning('No recipients found', ['form' => $form->getHandle(), 'context' => 'Saving Form on front-end']);
 

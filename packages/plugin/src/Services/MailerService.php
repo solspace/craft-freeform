@@ -34,6 +34,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -57,6 +58,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function __construct(
         $config,
         private RuleValidator $ruleValidator,
+        private IsolatedTwig $isolatedTwig,
     ) {
         parent::__construct($config);
     }
@@ -79,7 +81,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             return 0;
         }
 
-        $recipients = $this->processRecipients($recipients);
+        $recipients = $this->processRecipients($recipients, $form);
 
         $fields = $form->getLayout()->getFields();
 
@@ -336,7 +338,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         return $message;
     }
 
-    public function processRecipients(RecipientCollection $recipients): array
+    public function processRecipients(RecipientCollection $recipients, ?Form $form = null): array
     {
         if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
             $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
@@ -345,7 +347,24 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
         }
 
-        return $recipients->emailsToArray();
+        $recipientList = $recipients->emailsToArray();
+        if ($form) {
+            $variables = [
+                'form' => $form,
+                'allFields' => $form->getLayout()->getFields(),
+            ];
+
+            foreach ($form->getFields() as $field) {
+                $variables[$field->getHandle()] = $field;
+            }
+
+            $recipientList = array_map(
+                fn ($recipient) => $this->isolatedTwig->render($recipient, $variables),
+                $recipientList,
+            );
+        }
+
+        return $recipientList;
     }
 
     private function parseEnvInArray(array $array): array
@@ -414,7 +433,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             return;
         }
 
-        $recipients = $this->processRecipients($recipients);
+        $recipients = $this->processRecipients($recipients, $form);
 
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);

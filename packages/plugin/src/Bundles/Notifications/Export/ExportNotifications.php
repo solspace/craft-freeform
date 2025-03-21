@@ -88,7 +88,7 @@ class ExportNotifications extends FeatureBundle
 
             $template = NotificationTemplate::fromRecord($record);
             $recipients = RecipientCollection::fromArray(json_decode($notification->recipients));
-            $processedRecipients = $mailer->processRecipients($recipients);
+            $processedRecipients = $mailer->processRecipients($recipients, $form);
 
             $logger = $this->notificationLoggerProvider->getLogger($template, $form);
 

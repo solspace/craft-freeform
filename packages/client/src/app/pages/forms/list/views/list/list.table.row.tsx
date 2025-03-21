@@ -130,9 +130,7 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
               <ControlButton
                 onClick={async (event) => {
                   if (event.metaKey && event.shiftKey) {
-                    await axios.post(`/api/forms/delete`, {
-                      id: id,
-                    });
+                    await axios.post(`/api/forms/delete`, { id });
                     queryClient.invalidateQueries(
                       QKGroups.all(getCurrentHandleWithFallback())
                     );

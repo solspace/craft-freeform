@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.10.2 - 2025-03-20
+
+### Added
+- Added a toggle for the Checkbox label setting to choose between plain and rich text.
+
+### Fixed
+- Fixed a bug where single Checkbox fields were not automatically translatable.
+- Fixed a bug where importing notification templates from Express Forms would cause the migration to fail.
+- Fixed a bug where an error would occur when attempting to save conditional notifications in PostgreSQL.
+
 ## 5.10.1 - 2025-03-19
 
 ### Fixed

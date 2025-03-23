@@ -102,7 +102,33 @@ An alternate duplicate check on records is also available. When the **Check Cont
 - Paste the Salesforce **Consumer Key** value into the **Client ID** field in Freeform.
 - Paste the Salesforce **Consumer Secret** value into the **Client Secret** field in Freeform.
 
-### 4. Additional Configuration
+### 4. Finish the Integration
+
+- Click the **Save** button.
+- You will be redirected to a Salesforce OAuth page to allow permissions.
+    - If not currently logged in, fill in your credentials.
+    - Click **Allow** when asked for permissions.
+- You will then be redirected back to the **Freeform CRM Integration** page.
+
+### 5. Verify Authorization
+
+- After the integration is saved, it'll return you to the list of CRM integrations.
+- Click into the newly created integration.
+- Confirm that there is green circle with **Authorized** in the middle of the page.
+
+### 6. Configure the Form
+
+To use this integration on your form(s), you'll need to configure each form individually.
+
+- Visit the form inside the form builder.
+- Click on the **Integrations** tab.
+- Click on **Salesforce** in the list of available integrations.
+- On the right side of the page:
+    - Enable the integration.
+    - Select the API endpoints you wish to map to.
+    - Map Freeform fields to the Salesforce fields as needed.
+
+### 7. Additional Configuration
 
 - **LEADS**
     - **Assign Lead Owner?** - Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules in Salesforce.

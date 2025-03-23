@@ -19,12 +19,12 @@ export const translate = (
   string: string | undefined | null,
   params: Params = {}
 ): string => {
-  if (typeof Craft !== 'undefined') {
-    return Craft.t('freeform', string, params);
-  }
-
   if (!string) {
     return '';
+  }
+
+  if (typeof Craft !== 'undefined') {
+    return Craft.t('freeform', string, params);
   }
 
   return replace(string, params);

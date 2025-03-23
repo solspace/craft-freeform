@@ -21,7 +21,9 @@ class Button
             return '';
         }
 
-        return '<button '.$attributes.'>'.htmlspecialchars($this->label).'</button>';
+        return '<button '.$attributes.'>'
+            .htmlspecialchars($this->label, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
+            .'</button>';
     }
 
     public function getLabel(): string

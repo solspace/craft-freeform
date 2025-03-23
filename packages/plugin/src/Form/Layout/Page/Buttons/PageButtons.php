@@ -20,6 +20,7 @@ use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Notifications\Components\Templates\TemplateOptions;
 use Twig\Markup;
 use yii\base\Event;
 
@@ -138,9 +139,11 @@ class PageButtons
     #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
-    #[Input\NotificationTemplate(
+    #[Input\Select(
         label: 'Email Notification Template',
         instructions: 'Select an email notification template.',
+        emptyOption: 'Select a template...',
+        options: TemplateOptions::class,
     )]
     private ?NotificationTemplate $notificationTemplate = null;
 
@@ -293,7 +296,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getSubmitLabel())
+                Freeform::t($this->getSubmitLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );
@@ -320,7 +324,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getBackLabel())
+                Freeform::t($this->getBackLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );
@@ -346,7 +351,8 @@ class PageButtons
         return Template::raw(
             '<button'.$attributes.'>'
             .htmlspecialchars(
-                Freeform::t($this->getSaveLabel())
+                Freeform::t($this->getSaveLabel()),
+                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
             )
             .'</button>'
         );
@@ -358,7 +364,7 @@ class PageButtons
             ->translationProvider
             ->getTranslation(
                 $this->getPage(),
-                $this->getPage()->getUid(),
+                $this->getPage()->getUid() ?? '',
                 $handle,
                 $defaultValue
             )

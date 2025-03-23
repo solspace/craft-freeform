@@ -1,5 +1,179 @@
 # Solspace Freeform Changelog
 
+## 5.10.2 - 2025-03-20
+
+### Added
+- Added a toggle for the Checkbox label setting to choose between plain and rich text.
+
+### Fixed
+- Fixed a bug where single Checkbox fields were not automatically translatable.
+- Fixed a bug where importing notification templates from Express Forms would cause the migration to fail.
+- Fixed a bug where an error would occur when attempting to save conditional notifications in PostgreSQL.
+
+## 5.10.1 - 2025-03-19
+
+### Fixed
+- Fixed a bug where **Group** fields were not fully respecting Conditional Rules validation for fields nested within.
+- Fixed a bug where **Group** fields hidden by Conditional Rules validation appeared in email notifications.
+- Fixed a bug that allowed **Group** fields to be saved as favorites. Support for this feature is planned in the future.
+- Fixed a bug where the **Number** field's _Step_ setting was not allowing decimal places.
+- Fixed a bug where an accessibility label was missing on the button that removes files from the _File Upload Drag & Drop_ field.
+
+## 5.10.0 - 2025-03-17
+
+### Added
+- Added validation for minimum and maximum selected options on **Checkboxes** fields.
+- Added the ability to select `No formatting template` for the **Formatting Template** setting.
+- Added the ability to change the default rendering of HTML tags in fields by specifying a `tag` override.
+- Added the ability to add and modify attributes for **Dropdown** and **Multi-select** options, as well as **Checkboxes** and **Radios** option labels and inputs.
+
+### Changed
+- Updated the single **Checkbox** field label to include a rich text editor to make it easier to include links and font styling.
+- Updated the **Rich Text** field editor to use TinyMCE.
+- Updated the CP Submissions edit page to include a **Delete** button.
+- Updated error validation handling for required columns on **Table** fields.
+- Updated remaining dropdown setting fields in the form builder to be translatable.
+
+## 5.9.16.1 - 2025-03-14
+
+### Fixed
+- Fixed a bug where **hCaptcha** was broken after changes in Freeform 5.9.16.
+
+## 5.9.16 - 2025-03-07
+
+### Added
+- Added a check for `ModSecurity` to the Diagnostics page to assist with troubleshooting.
+- Added a Craft 5-style Site picker in the breadcrumbs of the form builder for Craft 4 to enhance the Site-Aware and translation experience.
+
+### Changed
+- Updated GTM scripts to load as an asset bundle instead of inline for compatibility with sites that have strict content security policies.
+- Adjusted longer translations for field _Source_ options to ensure they fit within the available space.
+- Renamed `data-site-key` to `data-sitekey` for captcha integrations to align with the expected standard attribute.
+- Updated the Limited Users settings page to support `CMD + S` for quick-saving settings.
+- Modified the _Multiple Forms_ extra in the demo templates to use the new overload feature.
+
+### Fixed
+- Fixed a bug where the **Save** button's **Email Notification Template** setting used the advanced template chooser instead of a regular dropdown, causing display issues and affecting the user experience.
+- Fixed a bug where the _Form Builder_ defaults setting for enabling/disabling Twig in HTML fields had no effect in the form builder.
+- Fixed a bug where Freeform Data export was not functioning correctly with PHP 8.0.x (Craft 4).
+- Fixed an incorrect instruction in the Salesforce integration guide.
+
+## 5.9.15 - 2025-02-27
+
+### Added
+- Added an overload for forms to create an entirely separate instance with its own configurations that can be overridden. This will help with the issue of form attributes duplicating in some cases.
+- Added check for `runQueueAutomatically` to the Diagnostics page to help with troubleshooting.
+
+### Fixed
+- Fixed a bug where form attributes could duplicate when loading the same form more than once in the same template.
+- Fixed a bug where the Stripe _Link_ and _US Bank Account_ icons were not present in the control panel.
+- Fixed a bug where the duplicate email address check was not working correctly with encrypted fields.
+- Fixed a bug where relating Freeform submissions to elements was not working in Craft 5.
+- Fixed a bug where Freeform was using `\yii\di\Container` as a constructor dependency.
+- Fixed a bug where the bundle loader could crash if a cached class was found in the class map.
+
+## 5.9.14 - 2025-02-25
+
+### Added
+- Added the ability to order Entry element-populated fields by _Structure_, _Post Date_, _Date Created_, and _Date Updated_.
+- Added a setting to allow the takeover of _Inactive_ user accounts upon user registration with the Freeform User element integration.
+
+### Fixed
+- Fixed a bug where Stripe Payment Intent processing would crash when using some services like WeChat Pay, Alipay, Amazon Pay.
+
+## 5.9.13 - 2025-02-24
+
+### Added
+- Added various PHP Info values to the Diagnostics page to help with troubleshooting.
+
+### Fixed
+- Fixed a bug where the Digest email notification could fail to send.
+- Fixed a bug where the Freeform 4 migration's conditional rules script wasn't catching some scenarios.
+- Fixed a bug where Freeform could error about `HubSpotV1` not existing in rare circumstances.
+- Fixed a bug where limiting forms by checking for a duplicate Email Address could cause the form to break in some cases.
+
+## 5.9.12 - 2025-02-19
+
+### Added
+- Added the ability to hide the _Fields from other Forms_ area in the form builder for Limited Users.
+
+### Changed
+- Updated error logging for Conditional Rules to include more context.
+
+### Fixed
+- Fixed a bug where error logging used `json_validate`, which is unsupported in PHP versions lower than 8.3 in Craft 4.
+- Fixed a bug with a spacing issue for the submit buttons in the Limited Users settings pages.
+- Fixed a bug where a stray _Save_ button appeared on the Diagnostics page.
+
+## 5.9.11 - 2025-02-17
+
+### Added
+- Added `freeform/freeform/convert-handles` console command to convert all form and field handles to _camelCase_ or _under_scores_.
+
+### Fixed
+- Fixed a bug where the Express Forms migration utility included PDF templates and Settings as options.
+- Fixed a bug where the Freeform Form Data export was not working with prefixed tables.
+- Fixed a bug where the Form Data importer would error when no template folders were defined.
+- Fixed a bug where exports of submission data would include file IDs instead of file URLs for File Upload and File Drag & Drop fields.
+- Fixed a bug where a `Call to a member function getValue() on string` error could occur in rare cases when attempting to edit a form submission on the front end.
+
+## 5.9.10 - 2025-02-13
+
+### Added
+- Added additional checks for the _Limited Users_ feature:
+    - _Access Field Type Manager_
+    - _Access Favorite Fields Manager_
+    - _Save Fields as Favorites_
+
+### Changed
+- Improved the UI for the _log_ file view pages in the control panel.
+- Improved the UI for the _Diagnostics_ page in the control panel.
+- Adjustments to the _Spam Protection_ settings page.
+
+### Fixed
+- Fixed a bug where sites with prefixed database tables would see an error in _Export Profile_ area when using custom date ranges.
+- Fixed a bug in which the _ActiveCampaign_ integration was not correctly processing multiple _Contact_ tags.
+
+## 5.9.9 - 2025-02-11
+
+### Added
+- Added diagnostic checks for Queue settings and sample templates.
+
+### Changed
+- Minor adjustments to visuals for Stripe payment cards, adding _Cashapp_ icon.
+
+### Fixed
+- Fixed a bug where a console request check was missing on the limit by IP logic.
+- Fixed a bug where the email logging feature could affect queued notifications in rare circumstances.
+- Fixed a bug where the _ActiveCampaign_ integration contained a hardcoded Deal title, currency and value.
+
+## 5.9.8 - 2025-02-06
+
+### Fixed
+- Fixed a bug where Username validation was displayed on the Email field for User element integrations.
+- Fixed a bug where the Email and Username validation was incorrectly happening on User element integrations in edit mode ("update profile" type forms).
+- Fixed an `Uncaught ReflectionException` issue that could happen in rare circumstances.
+
+## 5.9.7 - 2025-02-05
+
+### Added
+- Added _Info_ and _Debugging_ logging for email notifications.
+    - Added an **Email Log** to the settings menu so admins can easily view and clear the log from the control panel.
+- Added more translations to the Freeform Diagnostics page.
+
+### Changed
+- Cleanup and improvements to GraphQL support.
+
+## 5.9.6 - 2025-02-04
+
+### Changed
+- Improved some migrations not to fail if there were any previous failures.
+- Renamed `FreeformSubmissionCaptchaInputType` to `FreeformCaptchaInputType` for captchas in GraphQL. If using `FreeformSubmissionCaptchaInputType`, be sure to change it to `FreeformCaptchaInputType`.
+
+### Fixed
+- Fixed a bug where the _Form Submission Throttling_ diagnostic item showed an extra warning message.
+- Fixed a bug where _Captchas_, _Javascript Test_ and various other form settings were not supported in GraphQL.
+
 ## 5.9.5 - 2025-01-31
 
 ### Added
@@ -1249,6 +1423,11 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.25 - 2025-03-19
+
+### Fixed
+- Fixed a bug where querying Rich Text field contents would error when using GraphQL.
 
 ## 4.1.24 - 2025-01-24
 

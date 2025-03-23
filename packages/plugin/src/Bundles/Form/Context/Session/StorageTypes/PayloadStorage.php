@@ -125,7 +125,7 @@ class PayloadStorage implements FormContextStorageInterface
     {
         $payload = RequestHelper::post(self::INPUT_PREFIX);
 
-        return $payload ? htmlspecialchars($payload) : null;
+        return $payload ? htmlspecialchars($payload, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401) : null;
     }
 
     private function getDecryptedBag(Form $form, ?string $payload = null)
@@ -176,7 +176,7 @@ class PayloadStorage implements FormContextStorageInterface
         return self::$encryptedPayloadCache[$cacheKey];
     }
 
-    private function getKey(Form $form)
+    private function getKey(Form $form): string
     {
         $key = $this->secret ?: \Craft::$app->getConfig()->getGeneral()->securityKey;
         $key .= $form->getUid();

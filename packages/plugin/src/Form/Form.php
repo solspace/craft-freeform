@@ -119,6 +119,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private ?int $id;
     private ?string $uid;
+    private ?string $uniqueId;
 
     // TODO: create a collection to handle error messages
     private array $errors = [];
@@ -156,6 +157,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
+        $this->uniqueId = $config['uniqueId'] ?? null;
 
         $this->dateCreated = new Carbon($config['dateCreated'] ?? 'now');
         $this->dateUpdated = new Carbon($config['dateUpdated'] ?? 'now');
@@ -233,6 +235,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getUid(): string
     {
         return $this->uid ?? '';
+    }
+
+    public function getUniqueId(): ?string
+    {
+        return $this->uniqueId;
     }
 
     public function getName(): string

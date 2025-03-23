@@ -5,13 +5,14 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use craft\gql\types\DateTime as DateTimeType;
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
+use Solspace\Freeform\Fields\Interfaces\DatePickerInterface;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
@@ -25,7 +26,7 @@ use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
     iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
-class DatetimeField extends AbstractField implements PlaceholderInterface, DatetimeInterface, ExtraFieldInterface, EncryptionInterface, MaxLengthInterface
+class DatetimeField extends AbstractField implements PlaceholderInterface, DatePickerInterface, ExtraFieldInterface, EncryptionInterface, MaxLengthInterface
 {
     use EncryptionTrait;
     use MaxLengthTrait;
@@ -539,6 +540,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, Datet
             $attributes->append('class', 'form-datepicker');
         }
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this]),
+        );
     }
 }

@@ -5,7 +5,9 @@ import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks/use-delete-form-modal';
+import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
+import { QKGroups } from '@ff-client/queries/form-groups';
 import { QKForms } from '@ff-client/queries/forms';
 import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
@@ -16,6 +18,7 @@ import CloneIcon from '@ff-icons/actions/clone.svg';
 import CrossIcon from '@ff-icons/actions/delete.svg';
 import MoveIcon from '@ff-icons/actions/move.svg';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import {
@@ -65,6 +68,7 @@ export const Card: React.FC<Props> = ({
   const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
+  const { getCurrentHandleWithFallback } = useSiteContext();
   const queryClient = useQueryClient();
 
   const { canDelete } = config.metadata.freeform;
@@ -142,7 +146,21 @@ export const Card: React.FC<Props> = ({
         )}
         {canDelete && (
           <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
-            <ControlButton onClick={openDeleteFormModal}>
+            <ControlButton
+              onClick={async (event) => {
+                if (event.metaKey && event.shiftKey) {
+                  await axios.post(`/api/forms/delete`, { id });
+                  queryClient.invalidateQueries(
+                    QKGroups.all(getCurrentHandleWithFallback())
+                  );
+                  queryClient.invalidateQueries(
+                    QKForms.all(getCurrentHandleWithFallback())
+                  );
+                } else {
+                  openDeleteFormModal();
+                }
+              }}
+            >
               <CrossIcon />
             </ControlButton>
           </Tooltip>

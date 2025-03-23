@@ -15,6 +15,7 @@ use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Lock;
 use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
@@ -42,7 +43,6 @@ use yii\di\Container;
 class PropertyProvider
 {
     public function __construct(
-        private Container $container,
         private ImplementationProvider $implementationProvider,
         private DefaultsProvider $defaultsProvider,
         private LimitedUserChecker $checker,
@@ -212,7 +212,7 @@ class PropertyProvider
 
         if (\is_string($options)) {
             /** @var OptionsGeneratorInterface $class */
-            $class = $this->container->get($options);
+            $class = $this->getContainer()->get($options);
             if ($class instanceof OptionsGeneratorInterface) {
                 $attribute->options = $class->fetchOptions($attribute);
             } else {
@@ -224,7 +224,7 @@ class PropertyProvider
 
         foreach ($options as $key => $value) {
             $val = $value['value'] ?? $key;
-            $label = $value['label'] ?? $value;
+            $label = Freeform::t($value['label'] ?? $value);
 
             $collection->add($val, $label);
         }
@@ -280,7 +280,7 @@ class PropertyProvider
         }
 
         /** @var TransformerInterface $transformer */
-        $transformer = $this->container->get($transformerAttribute->className);
+        $transformer = $this->getContainer()->get($transformerAttribute->className);
         $attribute->transformer = $transformer;
     }
 
@@ -308,6 +308,11 @@ class PropertyProvider
     {
         $defaultValue = AttributeHelper::findAttribute($property, DefaultValue::class);
         if (!$defaultValue) {
+            $lock = AttributeHelper::findAttribute($property, Lock::class);
+            if ($lock) {
+                $attribute->disabled = !$this->defaultsProvider->isLocked($lock->path);
+            }
+
             return;
         }
 
@@ -327,7 +332,7 @@ class PropertyProvider
         }
 
         /** @var ValueGeneratorInterface $valueGenerator */
-        $valueGenerator = $this->container->get($valueGeneratorAttribute->className);
+        $valueGenerator = $this->getContainer()->get($valueGeneratorAttribute->className);
         $attribute->valueGenerator = $valueGenerator;
     }
 
@@ -399,5 +404,10 @@ class PropertyProvider
         }
 
         $attribute->visible = $this->checker->can($limitation->expression);
+    }
+
+    private function getContainer(): Container
+    {
+        return \Craft::$container;
     }
 }

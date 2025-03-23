@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\ReflectionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
@@ -12,6 +13,8 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
     public const STRATEGY_APPEND = 'append';
     public const STRATEGY_REMOVE = 'remove';
     public const STRATEGY_REPLACE = 'replace';
+
+    private const EXCLUDED_ATTRIBUTES = ['tag'];
 
     private array $attributes = [];
 
@@ -25,7 +28,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         $stringArray = [];
 
         foreach ($this->attributes as $key => $value) {
-            if (empty($key)) {
+            if (empty($key) || \in_array($key, self::EXCLUDED_ATTRIBUTES, true)) {
                 continue;
             }
 
@@ -81,6 +84,11 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         }
     }
 
+    public function getTag(string $default = 'div'): ?string
+    {
+        return $this->attributes['tag'] ?? $default;
+    }
+
     public static function fromArray(array $attributes): self
     {
         $instance = new self();
@@ -95,11 +103,6 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
     public function get(string $name, mixed $default = null): mixed
     {
         return $this->attributes[$name] ?? $default;
-    }
-
-    public function getNested(string $name): ?array
-    {
-        return null;
     }
 
     public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
@@ -128,6 +131,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
                 $value
             );
             $value = array_filter($value);
+            $value = array_unique($value);
             $value = StringHelper::implodeRecursively(' ', $value);
         }
 
@@ -166,6 +170,11 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
             default:
                 if (\array_key_exists($key, $this->attributes) && !\is_bool($value)) {
                     $this->attributes[$key] = trim($this->attributes[$key].' '.$value);
+                    $values = explode(' ', $this->attributes[$key]);
+                    $values = array_filter($values);
+                    $values = array_unique($values);
+                    $values = array_map('trim', $values);
+                    $this->attributes[$key] = implode(' ', $values);
                 } else {
                     $this->attributes[$key] = $value;
                 }
@@ -269,6 +278,36 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
             $type = $property->getType();
             if ($type && self::class === $type->getName()) {
                 $array[$property->getName()] = $this->{$property->getName()}->jsonSerialize();
+            }
+        }
+
+        return $array;
+    }
+
+    public function toHtmlTagArray(?array $properties = null): array
+    {
+        $array = $this->attributes;
+        foreach (self::EXCLUDED_ATTRIBUTES as $attribute) {
+            unset($array[$attribute]);
+        }
+
+        if (!empty($properties)) {
+            $twig = new IsolatedTwig();
+
+            $replacements = [];
+            foreach ($array as $key => $value) {
+                $key = $twig->render($key, $properties);
+                $value = !empty($value) ? $twig->render($value, $properties) : $value;
+
+                $replacements[$key] = $value;
+            }
+
+            $array = $replacements;
+        }
+
+        foreach ($array as $key => $value) {
+            if (null === $value) {
+                $array[$key] = true;
             }
         }
 

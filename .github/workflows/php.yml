@@ -35,6 +35,35 @@ jobs:
       - name: Run CS Fixer
         run: composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)
 
+  php-compat:
+    runs-on: ubuntu-latest
+    name: PHP Compatibility Check
+
+    strategy:
+      matrix:
+        php-versions: ['8.2']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, mbstring, gd
+
+      - name: Cache vendors
+        uses: actions/cache@v3
+        with:
+          path: vendor/
+          key: vendors-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHP Compatibility Check
+        run: vendor/bin/phpcs -p ./packages/plugin --extensions=php
+
   php-tests:
     runs-on: ubuntu-latest
     name: Unit & Acceptance tests

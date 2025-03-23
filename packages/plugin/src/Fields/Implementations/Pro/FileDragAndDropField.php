@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -100,17 +101,22 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->setIfEmpty('data-base-url', UrlHelper::siteUrl('/freeform'))
         ;
 
-        $output = '';
-        $output .= '<div'.$attributes.'>';
-        $output .= '<div data-placeholder class="freeform-file-dnd__placeholder">';
+        $output = '<div data-placeholder class="freeform-file-dnd__placeholder">';
         $output .= $this->translate('placeholder', $this->getPlaceholder());
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-dnd__preview-zone"></div>';
         $output .= '<ul data-messages class="freeform-file-dnd__messages"></ul>';
-        $output .= '<input type="file" id="form-input-'.$this->getHandle().'" multiple />';
-        $output .= '</div>';
+        $output .= Html::tag(
+            'input',
+            '',
+            ['type' => 'file', 'id' => 'form-input-'.$this->getHandle(), 'multiple' => true]
+        );
 
-        return $output;
+        return Html::tag(
+            'div',
+            $output,
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     public function uploadFile(): ?array

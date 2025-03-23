@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;

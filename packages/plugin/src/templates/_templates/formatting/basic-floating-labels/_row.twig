@@ -14,7 +14,9 @@
 
         {% set width = (12 / (row|length)) %}
 
-        <div{{ form.attributes.row|raw }}>
+        {% set attributes = form.attributes.row %}
+        {% tag attributes.tag with attributes.toHtmlTagArray %}
+
             {% for field in row %}
 
                 {% do field.setParameters({
@@ -31,7 +33,7 @@
                 {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
 
             {% endfor %}
-        </div>
+        {% endtag %}
 
     {% endfor %}
 

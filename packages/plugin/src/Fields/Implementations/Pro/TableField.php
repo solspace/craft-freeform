@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
@@ -380,7 +381,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 ->set(($isRequired ? '+' : '-').'class', 'freeform-required')
             ;
 
-            $output .= '<th'.$thAttributes.'>'.htmlentities($label).'</th>';
+            $output .= '<th'.$thAttributes.'>'.htmlentities($label, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401).'</th>';
         }
         $output .= '<th>&nbsp;</th></tr>';
         $output .= '</thead>';
@@ -395,7 +396,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $type = $column->type;
                 $defaultValue = $column->value;
                 $value = $row[$index] ?? $defaultValue;
-                $value = htmlentities($value);
+                $value = htmlentities($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
                 $output .= '<td'.$columnAttributes.'>';
 
@@ -413,7 +414,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                             ->replace('checked', $column->checked)
                         ;
 
-                        $output .= '<input'.$inputAttributes.' />';
+                        $output .= Html::tag('input', '', $inputAttributes->toHtmlTagArray());
 
                         break;
 
@@ -434,7 +435,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                                 ->set('selected', $option === $value)
                             ;
 
-                            $output .= '<option '.$optionAttributes.'>'.$option.'</option>';
+                            $output .= Html::tag('option', $option, $optionAttributes->toHtmlTagArray());
                         }
 
                         $output .= '</select>';
@@ -464,8 +465,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                             ;
 
                             $output .= '<div>';
-                            $output .= '<input'.$optionAttributes.' />';
-                            $output .= '<label for="'.$radioId.'">'.$option.'</label>';
+                            $output .= Html::tag('input', '', $optionAttributes->toHtmlTagArray());
+                            $output .= Html::tag('label', $option, ['for' => $radioId]);
                             $output .= '</div>';
                         }
 
@@ -483,7 +484,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                             ->replace('data-default-value', $defaultValue)
                         ;
 
-                        $output .= '<textarea'.$inputAttributes.'>'.$value.'</textarea>';
+                        $output .= Html::tag('textarea', $value, $inputAttributes->toHtmlTagArray());
 
                         break;
 
@@ -499,7 +500,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                             ->replace('data-default-value', $defaultValue)
                         ;
 
-                        $output .= '<input'.$inputAttributes.' />';
+                        $output .= Html::tag('input', '', $inputAttributes->toHtmlTagArray());
 
                         break;
                 }
@@ -522,9 +523,11 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                         ->setIfEmpty('type', 'button')
                     ;
 
-                    $output .= '<button'.$buttonAttributes.'>'
-                        .($this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel())
-                        .'</button>';
+                    $output .= Html::tag(
+                        'button',
+                        $this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel(),
+                        $buttonAttributes->toHtmlTagArray()
+                    );
 
                     $output .= '</td>';
                 }
@@ -547,9 +550,12 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                     ->setIfEmpty('type', 'button')
                 ;
 
-                $output .= '<button'.$buttonAttributes.'>'
-                    .($this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel())
-                    .'</button>';
+                $output .= Html::tag('div', '', ['data-error-append-target' => $this->getHandle()]);
+                $output .= Html::tag(
+                    'button',
+                    $this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel(),
+                    $buttonAttributes->toHtmlTagArray()
+                );
             }
         }
 

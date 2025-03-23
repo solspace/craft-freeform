@@ -117,12 +117,12 @@ class GeneralSettings extends SettingsNamespace
     #[Section(self::SECTION_GENERAL)]
     #[Limitation('settings.tab.general.formattingTemplate')]
     #[ValueGenerator(DefaultTemplateGenerator::class)]
-    #[Validators\Required]
     #[DefaultValue('settings.general.formattingTemplate')]
     #[Input\Select(
         label: 'Formatting Template',
         instructions: 'Select a formatting template to be used when rendering this form.',
         order: 7,
+        emptyOption: 'No Formatting Template (not recommended)',
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate = null;

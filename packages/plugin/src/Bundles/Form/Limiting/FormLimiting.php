@@ -16,6 +16,8 @@ use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Helpers\EncryptionHelper;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
@@ -32,7 +34,6 @@ class FormLimiting extends FeatureBundle
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleDuplicateCheck']);
-        Event::on(Form::class, Form::EVENT_RENDER_AFTER_CLOSING_TAG, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleDuplicateCheck']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleDuplicateCheck']);
     }
@@ -91,65 +92,116 @@ class FormLimiting extends FeatureBundle
     private function limitByEmail(FormEventInterface $event): void
     {
         $request = \Craft::$app->getRequest();
-
         if ($request->getIsCpRequest() || $request->getIsConsoleRequest()) {
             return;
         }
 
         $form = $event->getForm();
 
-        // Get all email fields on the form
-        $emailFields = $form->getLayout()->getFields(EmailField::class);
+        $emailFieldIds = [];
+        $emailFieldHandles = [];
 
-        // Get all email field values
-        $emailFieldValues = [];
+        // Get all email fields for the form
+        $formFieldsTable = FormFieldRecord::TABLE;
+        $emailFields = (new Query())
+            ->select('ff.[[id]], ff.[[metadata]]')
+            ->from("{$formFieldsTable} ff")
+            ->where([
+                'ff.[[formId]]' => $form->getId(),
+                'ff.[[type]]' => EmailField::class,
+            ])
+            ->all()
+        ;
+
         foreach ($emailFields as $emailField) {
-            $value = $request->post($emailField->getHandle());
-            if (!empty($value)) {
-                $emailFieldValues[] = '"'.$value.'"';
+            if (empty($emailField['metadata'])) {
+                continue;
             }
+
+            $metadata = json_decode($emailField['metadata']);
+            if (!$metadata || empty($metadata->handle)) {
+                continue;
+            }
+
+            $emailFieldIds[] = $emailField['id'];
+            $emailFieldHandles[] = $metadata->handle;
         }
 
-        // If no email field values, bail
-        if (empty($emailFieldValues)) {
+        // If no email field IDs or handles, bail
+        if (empty($emailFieldIds) || empty($emailFieldHandles)) {
             return;
         }
 
-        // Builds an SQL query that checks existing email field values against submitted email field values
-        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com')
-        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
-        $emailFieldQuery = [];
-        $emailFieldValues = '('.implode(', ', $emailFieldValues).')';
-        foreach ($emailFields as $emailField) {
-            $emailFieldQuery[] = 'sc.[['.Submission::getFieldColumnName($emailField).']] IN '.$emailFieldValues;
+        // Get all posted email values from request
+        $postedEmailValues = [];
+        foreach ($emailFieldHandles as $emailFieldHandle) {
+            $value = $request->post($emailFieldHandle);
+            if (!empty($value)) {
+                $postedEmailValues[] = $value;
+            }
         }
-        $emailFieldQuery = implode(' OR ', $emailFieldQuery);
 
+        // If no posted email values, bail
+        if (empty($postedEmailValues)) {
+            return;
+        }
+
+        // Build up our select clause to grab all email field column values from the submissions table
+        $emailFieldColumnNames = [];
+        foreach ($emailFields as $index => $emailField) {
+            $emailFieldColumnNames[] = 'sc.[['.Submission::generateFieldColumnName($emailFieldIds[$index], $emailFieldHandles[$index]).']]';
+        }
+
+        // Get all submissions for form
         $elements = Table::ELEMENTS;
         $submissions = Submission::TABLE;
         $submissionsContents = Submission::getContentTableName($form);
 
-        $query = (new Query())
-            ->select(['s.[[id]]'])
+        $submissions = (new Query())
+            ->select($emailFieldColumnNames)
             ->from("{$submissions} s")
             ->innerJoin(
                 "{$elements} e",
                 'e.[[id]] = s.[[id]]'
             )
-            ->innerJoin("{$submissionsContents} sc", 'sc.[[id]] = s.[[id]]')
+            ->innerJoin(
+                "{$submissionsContents} sc",
+                'sc.[[id]] = s.[[id]]'
+            )
             ->where([
                 's.[[isSpam]]' => false,
                 's.[[formId]]' => $form->getId(),
                 'e.[[dateDeleted]]' => null,
             ])
-            ->andWhere($emailFieldQuery)
-            ->limit(1)
         ;
 
-        $isPosted = (bool) $query->scalar();
+        // If no submissions for the form, bail
+        if (0 === $submissions->count()) {
+            return;
+        }
 
-        if ($isPosted) {
-            $this->addMessage($event);
+        $encryptionKey = EncryptionHelper::getKey($form->getUid());
+
+        $submissionEmailFieldColumns = $submissions->all();
+
+        foreach ($submissionEmailFieldColumns as $submissionEmailFieldColumn) {
+            foreach ($submissionEmailFieldColumn as $submissionEmailFieldValue) {
+                if (empty($submissionEmailFieldValue)) {
+                    continue;
+                }
+
+                // Decrypt if needed
+                if (str_starts_with($submissionEmailFieldValue, 'encrypted:')) {
+                    $submissionEmailFieldValue = EncryptionHelper::decrypt($encryptionKey, $submissionEmailFieldValue);
+                }
+
+                // Check against posted values
+                if (\in_array($submissionEmailFieldValue, $postedEmailValues, true)) {
+                    $this->addMessage($event);
+
+                    break 2; // Exit both inner loops
+                }
+            }
         }
     }
 
@@ -165,6 +217,11 @@ class FormLimiting extends FeatureBundle
 
     private function limitByIp(FormEventInterface $event): void
     {
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsCpRequest() || $request->getIsConsoleRequest()) {
+            return;
+        }
+
         $form = $event->getForm();
         $settings = $form->getSettings();
         $generalSettings = $settings->getGeneral();
@@ -175,12 +232,12 @@ class FormLimiting extends FeatureBundle
 
         $submissions = Submission::TABLE;
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $event->getForm()->getId(),
-                'ip' => \Craft::$app->request->getUserIP(),
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $event->getForm()->getId(),
+                's.[[ip]]' => $request->getUserIP(),
             ])
             ->limit(1)
         ;
@@ -188,8 +245,8 @@ class FormLimiting extends FeatureBundle
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Element::tableName();
             $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             );
         }
 
@@ -217,17 +274,17 @@ class FormLimiting extends FeatureBundle
         $submissions = Submission::TABLE;
 
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $form->getId(),
-                'userId' => $userId,
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $form->getId(),
+                's.[[userId]]' => $userId,
             ])
             ->limit(1)
             ->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             )
         ;
 
@@ -249,12 +306,12 @@ class FormLimiting extends FeatureBundle
 
         $submissions = Submission::TABLE;
         $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
             ->where([
-                'isSpam' => false,
-                'formId' => $event->getForm()->getId(),
-                'userId' => $userId,
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $event->getForm()->getId(),
+                's.[[userId]]' => $userId,
             ])
             ->limit(1)
         ;
@@ -262,8 +319,8 @@ class FormLimiting extends FeatureBundle
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Element::tableName();
             $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                "{$elements} e",
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
             );
         }
 

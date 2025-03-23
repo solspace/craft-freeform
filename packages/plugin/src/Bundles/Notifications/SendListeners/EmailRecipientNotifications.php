@@ -64,14 +64,7 @@ class EmailRecipientNotifications extends FeatureBundle
             }
 
             $recipient = $field->getValue();
-            if (!$recipient) {
-                continue;
-            }
-
             $notificationTemplate = $notification->getTemplate();
-            if (!$notificationTemplate) {
-                continue;
-            }
 
             $recipientCollection = new RecipientCollection();
             $recipientCollection->add(new Recipient($recipient));
@@ -84,6 +77,7 @@ class EmailRecipientNotifications extends FeatureBundle
                     'recipients' => $recipientCollection,
                     'template' => $notificationTemplate,
                     'notificationType' => EmailField::class,
+                    'notificationId' => $notification->getId(),
                 ])
             );
         }

@@ -116,6 +116,7 @@ class ConditionalNotifications extends FeatureBundle
                     'recipients' => $recipients,
                     'template' => $template,
                     'notificationType' => Conditional::class,
+                    'notificationId' => $notification->getId(),
                 ])
             );
         }

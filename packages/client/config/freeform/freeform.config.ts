@@ -25,6 +25,9 @@ type Config = {
       canCreate: boolean;
       canDelete: boolean;
     };
+    tinymce: {
+      stylesPath: string;
+    };
   };
   editions: {
     edition: Edition;

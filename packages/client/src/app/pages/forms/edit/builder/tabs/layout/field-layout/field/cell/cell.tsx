@@ -16,6 +16,7 @@ import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-la
 import { useLoaderAnimation } from './cell.animations';
 import {
   FieldCellWrapper,
+  HtmlPreviewElement,
   Icon,
   Instructions,
   Label,
@@ -66,6 +67,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
 
   return (
     <FieldCellWrapper
+      data-field-type={type.type}
       className={classes(
         hasErrors(field.errors) && 'errors',
         type.type === Type.Group && 'group',
@@ -107,7 +109,9 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
         <>
           {noLabel ? (
             <Row>
-              <div dangerouslySetInnerHTML={{ __html: preview }} />
+              <HtmlPreviewElement
+                dangerouslySetInnerHTML={{ __html: preview }}
+              />
               <FieldAssociationsBadges uid={uid} />
             </Row>
           ) : (

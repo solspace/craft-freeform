@@ -33,7 +33,6 @@
             
                 img {
                     border-radius: 5px;
-                    box-shadow: 1px 1px 3px rgba(0,0,0,0.05);
                 }
             }
             
@@ -95,11 +94,14 @@
                          class="{{ paymentMethod.type }}"
                     />
                 </div>
+                <div class="brand">
+                    {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
+                </div>
 
             {% else %}
 
                 <div class="brand">
-                    {{ paymentMethod.type|capitalize|t('freeform') }}
+                    {{ paymentMethod.type|replace('_', ' ')|title|t('freeform') }}
                 </div>
 
             {% endif %}

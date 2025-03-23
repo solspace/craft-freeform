@@ -13,9 +13,13 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -38,6 +42,18 @@ use Twig\Markup;
 class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
+
+    #[Translatable]
+    #[Required]
+    #[Section('general')]
+    #[Input\Wysiwyg(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'This is something',
+        toggleEditor: true,
+        toolbar: ['bold italic underline strikethrough link | removeformat code'],
+    )]
+    protected string $label = '';
 
     #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;
@@ -83,6 +99,19 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
         return $this;
     }
 
+    public function getLabel(): string
+    {
+        $label = parent::getLabel();
+
+        // if there are more than one <p> tag, add a <br> between them instead
+        $label = preg_replace('/<\/p>\s*<p>/', '<br>', $label);
+
+        // remove wrapping <p> tags
+        $label = preg_replace('/^<p>(.*)<\/p>$/', '$1', $label);
+
+        return \Craft::t('freeform', $label);
+    }
+
     public function getInputHtml(): string
     {
         $attributes = new Attributes([
@@ -91,7 +120,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
             'value' => '',
         ]);
 
-        $output = '<input'.$attributes.' />';
+        $output = Html::tag('input', '', $attributes->toHtmlTagArray());
         $output .= $this->getSingleInputHtml();
 
         return $output;
@@ -109,7 +138,11 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
             ->setIfEmpty($this->getRequiredAttribute())
         ;
 
-        return '<input '.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     public function renderSingleInput(): Markup

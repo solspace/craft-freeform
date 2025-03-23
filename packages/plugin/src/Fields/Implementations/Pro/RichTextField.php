@@ -35,6 +35,11 @@ class RichTextField extends AbstractField implements InputOnlyInterface, NoStora
     #[Wysiwyg(
         label: 'Content',
         instructions: 'The HTML content to be rendered',
+        menu: false,
+        statusbar: false,
+        toolbar: [
+            'blocks bold italic underline forecolor backcolor | align numlist bullist | link image table | removeformat code',
+        ],
     )]
     protected ?string $content = '';
 

@@ -15,11 +15,12 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
+use craft\gql\interfaces\elements\Asset as FileUploadType;
+use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -146,7 +147,11 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
             ->set($this->getRequiredAttribute())
         ;
 
-        return '<input'.$attributes.' />';
+        return Html::tag(
+            $attributes->getTag('input'),
+            '',
+            $attributes->toHtmlTagArray(['field' => $this])
+        );
     }
 
     public function getContentGqlType(): array|GQLType

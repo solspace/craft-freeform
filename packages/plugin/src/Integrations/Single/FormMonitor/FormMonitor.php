@@ -192,6 +192,7 @@ class FormMonitor extends APIIntegration
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId());
         $payload = [
+            'name' => $form->getName(),
             'url' => $this->getTestUrl(),
             'email' => $this->getEmail(),
             'manifest' => $transformer->transform($form),

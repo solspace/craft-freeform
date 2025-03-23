@@ -176,11 +176,11 @@ const ConfigurationPanel: React.FC<{
 
 const TestStatusIcon: React.FC<{ status: string; size?: number }> = ({
   status,
-  size = 48,
+  size = 40,
 }) => {
   switch (status) {
     case 'success':
-      return <SuccessIcon width={size} height={size} />;
+      return <SuccessIcon width={48} height={48} />;
     case 'failed':
       return <FailedIcon width={size} height={size} />;
     default:

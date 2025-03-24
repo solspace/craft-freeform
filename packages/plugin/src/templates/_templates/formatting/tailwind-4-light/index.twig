@@ -1,6 +1,6 @@
-{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\Tailwind4Bundle') %}
+{% do view.registerAssetBundle('Solspace\\Freeform\\Resources\\Bundles\\FormattingTemplates\\Tailwind4LightBundle') %}
 
-{% import "freeform/_templates/formatting/tailwind-4/_row.twig" as rowMacro %}
+{% import "freeform/_templates/formatting/tailwind-4-light/_row.twig" as rowMacro %}
 
 {# Render the opening form tag #}
 {{ form.renderTag({
@@ -11,12 +11,12 @@
   },
   buttons: {
     attributes: {
-      container: { class: "flex flex-wrap gap-x-2 -mx-2" },
-      column: { class: "ml-2 mb-4" },
+      container: { class: "flex flex-wrap -mx-7.5 mb-4" },
+      column: { class: "mx-6" },
       buttonWrapper: {},
-      submit: { class: "rounded-md bg-indigo-600 px-3 py-2 text-md font-semibold text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
-      back: { class: "text-sm/6 font-semibold text-gray-900" },
-      save: { class: "bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mr-2" },
+      submit: { class: "rounded-md mx-1.5 px-5 py-2 text-md font-semibold text-white bg-indigo-600 hover:bg-indigo-500" },
+      back: { class: "rounded-md mx-1.5 px-5 py-2 text-md font-normal text-gray-900 bg-gray-200 hover:bg-gray-100" },
+      save: { class: "rounded-md mx-1.5 px-5 py-2 text-md font-normal text-gray-900 bg-gray-300 hover:bg-gray-200" },
     },
   },
   fields: {
@@ -74,7 +74,7 @@
     },
     "@opinion-scale": {
       attributes: {
-        optionLabel: { "=class": "relative flex items-center justify-between cursor-pointer bg-white px-3 py-1.5 rounded-md text-base text-gray-900 text-sm outline-1 -outline-offset-1 outline-gray-300 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-600 hover:bg-gray-50" },
+        optionLabel: { "=class": "relative flex items-center justify-between cursor-pointer bg-gray-50 px-3 py-1.5 rounded-md text-base text-gray-900 text-sm outline-1 -outline-offset-1 outline-gray-300 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-600 hover:bg-gray-100" },
         input: { "-class": "appearance-none block w-full" },
       },
     },
@@ -193,11 +193,11 @@
 {% if form.pages|length > 1 %}
 
 <nav class="mb-10" aria-label="Progress">
-  <ol role="list" class="divide-y divide-gray-300 rounded-md border border-gray-300 md:flex md:divide-y-0">
+  <ol role="list" class="divide-y divide-gray-300 rounded-md border border-gray-300 sm:flex sm:divide-y-0">
   {% for page in form.pages %}
-    <li class="relative md:flex md:flex-1"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
+    <li class="relative sm:flex sm:flex-1"{% if form.currentPage.index == page.index %} aria-current="step"{% endif %}>
       <div class="group flex w-full items-center">
-        <span class="flex items-center px-6 py-4 text-sm font-medium">
+        <span class="flex items-center px-3 sm:px-6 py-2 sm:py-4 text-sm font-medium">
           <span class="flex size-10 shrink-0 items-center justify-center rounded-full {% if form.currentPage.index > page.index %}bg-indigo-600{% elseif form.currentPage.index == page.index %}border-2 border-indigo-600{% else %}border-2 border-gray-300{% endif %}">
           {% if form.currentPage.index > page.index %}
             <svg class="size-6 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" data-slot="icon">
@@ -211,7 +211,7 @@
         </span>
       </div>
       {% if (page.index + 1) != form.pages.count %}
-      <div class="absolute top-0 right-0 hidden h-full w-5 md:block" aria-hidden="true">
+      <div class="absolute top-0 right-0 hidden h-full w-5 sm:block" aria-hidden="true">
         <svg class="size-full text-gray-300" viewBox="0 0 22 80" fill="none" preserveAspectRatio="none">
           <path d="M0 -2L20 40L0 82" vector-effect="non-scaling-stroke" stroke="currentcolor" stroke-linejoin="round" />
         </svg>

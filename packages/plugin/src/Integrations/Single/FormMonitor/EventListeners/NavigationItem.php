@@ -30,5 +30,6 @@ class NavigationItem extends FeatureBundle
         $event->rules['freeform/api/form-monitor/forms/<id:\d+>/tests'] = 'freeform/form-monitor/tests';
         $event->rules['freeform/form-monitor/<id:\d+>/disable'] = 'freeform/form-monitor/disable';
         $event->rules['freeform/api/form-monitor/forms/<id:\d+>/enable'] = 'freeform/form-monitor/enable';
+        $event->rules['freeform/api/form-monitor/forms/<id:\d+>/tests/<testId:\d+>'] = 'freeform/form-monitor/delete-test';
     }
 }

@@ -28,3 +28,26 @@ export const useFormMonitorEnableMutation = (
     },
   });
 };
+
+export type DeleteTestCallback = {
+  onSuccess?: () => void;
+  onError?: () => void;
+};
+
+export const useDeleteTestMutation = (
+  formId: number,
+  testId: number,
+  callbacks?: DeleteTestCallback
+): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
+  return useMutation({
+    mutationFn: () => {
+      return axios.delete(`/api/form-monitor/forms/${formId}/tests/${testId}`);
+    },
+    onSuccess: () => {
+      callbacks?.onSuccess?.();
+    },
+    onError: () => {
+      callbacks?.onError?.();
+    },
+  });
+};

@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useOutletContext, useSearchParams } from 'react-router-dom';
+import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
+import { RemoveButton } from '@components/elements/remove-button/remove';
+import { useHover } from '@ff-client/hooks/use-hover';
 import type { FormTestsResponse } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -10,6 +13,7 @@ import { FormMonitorDetailsLoader } from '../form-monitor.loader';
 import { ScreenshotModal } from '../form-monitor.screenshot.modal';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
+import { DeleteTestModal } from './results.modal.test.delete';
 import {
   ChartContainer,
   DotsContainer,
@@ -35,16 +39,96 @@ type FormMonitorContext = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
 };
 
+type ScreenshotModalState = {
+  url: string;
+  testId: number;
+} | null;
+
+type DeleteModalState = {
+  formId: number;
+  testId: number;
+} | null;
+
+type TestRowProps = {
+  test: FormTestsResponse['tests'][0];
+  formId: number;
+  onDelete: (data: DeleteModalState) => void;
+  onScreenshot: (data: ScreenshotModalState) => void;
+};
+
+const tooltipProps: Omit<TooltipProps, 'children'> = {
+  position: 'top',
+  animation: 'fade',
+  delay: [100, 0] as unknown as number,
+};
+
+const TestRow: React.FC<TestRowProps> = ({
+  test,
+  formId,
+  onDelete,
+  onScreenshot,
+}) => {
+  const rowRef = useRef<HTMLTableRowElement>(null);
+  const isHovering = useHover(rowRef);
+  const dateString = test.dateCompleted || test.dateAttempted;
+
+  return (
+    <tr ref={rowRef}>
+      <td className="no-break">{test.id}</td>
+      <td className="no-break" title={dateString}>
+        {dateString}
+      </td>
+      <td className="no-break">
+        <StatusIndicator $status={test.status} $size="sm">
+          <StatusDot $size="lg" />
+          {translate(test.status.toUpperCase())}
+        </StatusIndicator>
+      </td>
+      <td className="code" title={test.response}>
+        {!!test.response && <ResponseBlock>{test.response}</ResponseBlock>}
+      </td>
+      <td>
+        {test.screenshot && test.status !== 'success' && (
+          <button
+            onClick={() =>
+              onScreenshot({
+                url: test.screenshot!,
+                testId: test.id,
+              })
+            }
+            className="view-screenshot-btn"
+          >
+            {translate('View Screenshot')}
+          </button>
+        )}
+      </td>
+      <td>
+        <Tooltip title={translate('Delete Test')} {...tooltipProps}>
+          <RemoveButton
+            active={isHovering}
+            onClick={() =>
+              onDelete({
+                formId,
+                testId: test.id,
+              })
+            }
+          />
+        </Tooltip>
+      </td>
+    </tr>
+  );
+};
+
 export const FMResults: React.FC = () => {
   const { formTestsQuery } = useOutletContext<FormMonitorContext>();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const [selectedScreenshot, setSelectedScreenshot] = React.useState<{
-    url: string;
-    testId: number;
-  } | null>(null);
+  const [selectedScreenshot, setSelectedScreenshot] =
+    React.useState<ScreenshotModalState>(null);
+  const [testToDelete, setTestToDelete] =
+    React.useState<DeleteModalState>(null);
 
-  const { data: formTests, isLoading, isFetching } = formTestsQuery;
+  const { data: formTests, isLoading, isFetching, refetch } = formTestsQuery;
 
   if (isLoading || isFetching) {
     return <FormMonitorDetailsLoader />;
@@ -152,46 +236,19 @@ export const FMResults: React.FC = () => {
               <th>{translate('Status')}</th>
               <th>{translate('Response')}</th>
               <th>{translate('Screenshot')}</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
-            {formTests.tests.map((test) => {
-              const dateString = test.dateCompleted || test.dateAttempted;
-              return (
-                <tr key={test.id}>
-                  <td className="no-break">{test.id}</td>
-                  <td className="no-break" title={dateString}>
-                    {dateString}
-                  </td>
-                  <td className="no-break">
-                    <StatusIndicator $status={test.status} $size="sm">
-                      <StatusDot $size="lg" />
-                      {translate(test.status.toUpperCase())}
-                    </StatusIndicator>
-                  </td>
-                  <td className="code" title={test.response}>
-                    {!!test.response && (
-                      <ResponseBlock>{test.response}</ResponseBlock>
-                    )}
-                  </td>
-                  <td>
-                    {test.screenshot && test.status !== 'success' && (
-                      <button
-                        onClick={() =>
-                          setSelectedScreenshot({
-                            url: test.screenshot!,
-                            testId: test.id,
-                          })
-                        }
-                        className="view-screenshot-btn"
-                      >
-                        {translate('View Screenshot')}
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
+            {formTests.tests.map((test) => (
+              <TestRow
+                key={test.id}
+                test={test}
+                formId={formTests.formId}
+                onDelete={setTestToDelete}
+                onScreenshot={setSelectedScreenshot}
+              />
+            ))}
           </tbody>
         </TestTableStyled>
       </TableTestList>
@@ -225,6 +282,17 @@ export const FMResults: React.FC = () => {
           imageUrl={selectedScreenshot.url}
           testId={selectedScreenshot.testId}
           onClose={() => setSelectedScreenshot(null)}
+        />
+      )}
+
+      {testToDelete && (
+        <DeleteTestModal
+          formId={testToDelete.formId}
+          testId={testToDelete.testId}
+          onClose={() => setTestToDelete(null)}
+          onSuccess={() => {
+            refetch();
+          }}
         />
       )}
     </ResultsWrapper>

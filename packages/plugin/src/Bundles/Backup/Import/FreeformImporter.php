@@ -154,7 +154,11 @@ class FreeformImporter
             $formSites = $form->sites;
             if (!$formSites) {
                 foreach ($sites as $site) {
-                    $formSiteRecord = new FormSiteRecord();
+                    $formSiteRecord = FormSiteRecord::findOne(['formId' => $formRecord->id, 'siteId' => $site->id]);
+                    if (!$formSiteRecord) {
+                        $formSiteRecord = new FormSiteRecord();
+                    }
+
                     $formSiteRecord->formId = $formRecord->id;
                     $formSiteRecord->siteId = $site->id;
                     $formSiteRecord->save();

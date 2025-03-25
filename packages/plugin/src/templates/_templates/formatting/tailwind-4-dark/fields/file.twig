@@ -1,0 +1,26 @@
+{% do field.setParameters({
+    attributes: {
+        container: {
+            "+class": "freeform-file-upload-container",
+            "data-field-id": field.id,
+            "data-field-handle": field.handle
+        }
+    }
+}) %}
+
+{{ field.renderContainerOpeningTag }}
+
+  {{ field.renderInput }}
+
+  <label class="{{ field.attributes.label.get("class") }}">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 16v-6m-4 4V8m-4 4V4m-4 16h16M4 20V4a2 2 0 012-2h12a2 2 0 012 2v16" />
+    </svg>
+    <span{{ field.required ? ' class="freeform-required"' }}>{{ field.label }}</span>
+  </label>
+  <p class="freeform-file-name-display mt-1 text-sm text-gray-500">{{ "No files selected"|t('freeform') }}</p>
+
+  {{ field.renderInstructions }}
+  {{ field.renderErrors }}
+
+{{ field.renderContainerClosingTag }}

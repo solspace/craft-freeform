@@ -30,12 +30,12 @@
 
         {# Also see Parsley site's example for more info: https://parsleyjs.org/doc/examples/simple.html #}
 
-        <div class="bs-callout bs-callout-warning hidden">
+        <div class="bs-callout bs-callout-warning freeform-demo-hidden">
             <h4>Oh snap!</h4>
             <p>This form seems to be invalid :(</p>
         </div>
 
-        <div class="bs-callout bs-callout-info hidden">
+        <div class="bs-callout bs-callout-info freeform-demo-hidden">
             <h4>Yay!</h4>
             <p>Everything seems to be ok :)</p>
         </div>
@@ -100,8 +100,8 @@
         $(function () {
             $('#parsley-form').parsley().on('field:validated', function() {
                 var ok = $('.parsley-error').length === 0;
-                $('.bs-callout-info').toggleClass('hidden', !ok);
-                $('.bs-callout-warning').toggleClass('hidden', ok);
+                $('.bs-callout-info').toggleClass('freeform-demo-hidden', !ok);
+                $('.bs-callout-warning').toggleClass('freeform-demo-hidden', ok);
             })
             .on('form:submit', function() {
                 return false; // Don't submit form for this demo

@@ -21,7 +21,7 @@
 
 <!doctype html>
 <html lang="en"
-{%- if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "conversational"] %}
+{%- if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "conversational"] %}
  data-theme="dark"
 {%- endif -%}
 {%- if pageTemplate == "bootstrap-5-dark" %} data-bs-theme="dark"{%- endif %}>
@@ -29,24 +29,23 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>{{ pageTitle ? "Freeform Demo | " ~ pageTitle : "Freeform Demo" }}</title>
-    <!-- Set Dark or Light Mode -->
-    {% if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "conversational"] %}
+    {% if pageTemplate in ["basic-dark", "bootstrap-5-dark", "tailwind-3-dark", "tailwind-4-dark", "conversational"] %}
         {% set colorMode = "dark" %}
     {% else %}
         {% set colorMode = "light" %}
     {% endif %}
     {% if demoArea == "templates" and craft.app.request.segment(4) %}
-        <!-- Is this a Bootstrap template -->
         {% if pageTemplate in ["bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels"] %}
             <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
         {% endif %}
-        <!-- Is this a Foundation template -->
         {% if pageTemplate == "foundation-6" %}
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css" crossorigin="anonymous">
             <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js" crossorigin="anonymous"></script>
         {% endif %}
-        <!-- Is this a Tailwind template -->
+        {% if pageTemplate in ["tailwind-4-light", "tailwind-4-dark"] %}
+            <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        {% endif %}
         {% if pageTemplate in ["tailwind-3", "tailwind-3-dark"] %}
             <script src="https://cdn.tailwindcss.com/3.3.3"></script>
         {% endif %}
@@ -205,7 +204,6 @@
             "d": "This example shows how to have a successful submit return to the same page with a success query in the URL.",
         }
     } %}
-    {#% set extrasTemplates = include('demo/extras/_items.twig') %#}
 
     <div class="freeform-nav">
         <a href="{{ siteUrl }}demo/" class="freeform-logo">
@@ -218,7 +216,7 @@
                     {{ pageTemplate ? pageTemplate|title|replace({'-':' '}) : 'Select a template...' }}
                 </span>
                 <div class="freeform-nav-dropdown-content">
-                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
+                {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "multipage-all-fields", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "tailwind-4-light", "tailwind-4-dark", "tailwind-3", "tailwind-3-dark", "foundation-6"]) -%}
                     {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
                 {%- endfor %}
                 </div>

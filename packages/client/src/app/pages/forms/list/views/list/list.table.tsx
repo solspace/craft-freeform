@@ -28,7 +28,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
           <th>{translate('Handle')}</th>
           <th>{translate('Description')}</th>
           <th>{translate('Chart')}</th>
-          {hasFormMonitor && <th>{translate('Form Monitor')}</th>}
+          {hasFormMonitor && <th>{translate('Monitoring')}</th>}
           <th>{translate('Submissions')}</th>
           <th>{translate('Spam')}</th>
           <th>{translate('Manage')}</th>

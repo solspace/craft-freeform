@@ -21,7 +21,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 {
     public const DEFAULT_ACCENT = '#3a85ee';
     public const DEFAULT_THEME = 'light';
-    public const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
+    public const DEFAULT_PLACEHOLDER = 'Upload a file or drag and drop';
 
     #[Input\ColorPicker(
         label: 'Accent Color',

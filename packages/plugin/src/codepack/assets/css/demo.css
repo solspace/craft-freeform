@@ -26,14 +26,14 @@ a:hover {
     color: #0f5fd5;
     text-decoration: underline;
 }
-h3 {
+h3.freeform-form-title {
     font: 400 30px sans-serif;
     color: var(--page-text);
     text-decoration: none;
     padding: 0;
     margin: 0 0 20px 0;
 }
-.hidden {
+.freeform-demo-hidden {
     display: none;
 }
 

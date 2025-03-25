@@ -42,7 +42,7 @@
         input: { "+class": "border-1 border-red-700" },
       },
     },
-    "@checkboxes, @radios, @opinion-scale": {
+    "@checkboxes, @radios, @opinion-scale, @rating": {
       attributes: {
         container: { tag: "fieldset" },
         label: { tag: "legend" },
@@ -76,6 +76,11 @@
       attributes: {
         optionLabel: { "=class": "relative flex items-center justify-between cursor-pointer bg-white/10 px-3 py-1.5 rounded-md text-base text-white text-sm outline-1 -outline-offset-1 outline-white/10 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-500 hover:bg-white/5" },
         input: { "-class": "appearance-none block w-full" },
+      },
+    },
+    "@rating": {
+      attributes: {
+        optionLabel: { "+class": "mr-1" },
       },
     },
     "@checkbox": {

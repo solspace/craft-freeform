@@ -89,7 +89,7 @@ export const StatsChart: React.FC<{
             }}
           >
             {total === 0
-              ? translate('Not')
+              ? translate('N/A')
               : `${stats?.percentage?.success || 0}%`}
           </strong>
           <span
@@ -99,7 +99,7 @@ export const StatsChart: React.FC<{
               marginTop: -2,
             }}
           >
-            {total === 0 ? translate('audited') : translate('uptime')}
+            {total === 0 ? translate('pending') : translate('uptime')}
           </span>
         </div>
       </div>

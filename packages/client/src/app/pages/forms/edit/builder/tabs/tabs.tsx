@@ -19,6 +19,7 @@ import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
 
 import {
+  BetaLabel,
   FormName,
   Heading,
   SaveButton,
@@ -86,7 +87,10 @@ export const Tabs: React.FC = () => {
         )}
         {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
           <NavLink to="form-monitor">
-            <span>{translate('Monitoring')}</span>
+            <span>
+              {translate('Monitoring')}
+              <BetaLabel>BETA</BetaLabel>
+            </span>
           </NavLink>
         )}
         {formSettingsData && config.limitations.can('settings.tab') && (

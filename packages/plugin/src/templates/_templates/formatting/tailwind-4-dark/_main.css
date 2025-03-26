@@ -1,0 +1,95 @@
+:root {
+  --color-indigo-400: oklch(0.673 0.182 276.935);
+  --color-indigo-500: oklch(0.585 0.233 277.117);
+  --color-gray-300: oklch(0.872 0.01 258.338);
+  --color-gray-500: oklch(0.551 0.027 264.364);
+  --color-gray-700: oklch(0.373 0.034 259.733);
+  --color-gray-900: oklch(0.21 0.034 264.665);
+  --color-red-700: oklch(0.505 0.213 27.518);
+  --color-white: #ffffff;
+  --color-white-10: rgba(255, 255, 255, 0.10);
+}
+
+.freeform-form a {
+  color: var(--color-indigo-500);
+  font-weight: bold;
+  text-decoration: none;
+}
+.freeform-form a:hover {
+  color: var(--color-indigo-400);
+  text-decoration: none;
+}
+
+.freeform-form {
+  font-family: sans-serif;
+  box-sizing: border-box;
+}
+
+.freeform-form .freeform-required::after {
+  content: "*";
+  color: var(--color-red-700);
+  margin-left: 3px;
+}
+
+@keyframes freeform-processing {
+  0% {
+    transform: rotate(0)
+  }
+
+  100% {
+    transform: rotate(1turn)
+  }
+}
+
+.freeform-form button[type=submit].freeform-processing {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.freeform-form button[type=submit].freeform-processing:before {
+  content: "";
+  display: block;
+  flex: 1 0 11px;
+  width: 11px;
+  height: 11px;
+  margin-right: 10px;
+  border-style: solid;
+  border-width: 2px;
+  border-color: transparent transparent var(--color-white) var(--color-white);
+  border-radius: 50%;
+  animation: freeform-processing .5s linear infinite;
+}
+
+.freeform-form [data-field-type=multiple-select] option:checked {
+  background-color: var(--color-indigo-500);
+  color: var(--color-white);
+}
+.freeform-form [data-field-type=signature] canvas {
+  border: 1px solid var(--color-white-10)!important;
+}
+
+.freeform-form [data-field-type=table] [type=radio] {
+  margin-bottom: -3px !important;
+}
+.freeform-form [data-field-type=table] [type=radio]+label {
+  color: var(--color-white);
+}
+.freeform-form [data-field-type=table] table thead tr th {
+  color: var(--color-gray-500);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-bottom: 1px solid var(--color-gray-700);
+  padding-bottom: 3px !important;
+}
+.freeform-form [data-field-type=table] table tbody tr:first-child td {
+  padding-top: 10px !important;
+}
+
+.freeform-form [data-field-type=file-dnd] [data-placeholder] {
+  font-size: 0.875rem;
+  color: var(--color-gray-500);
+  text-align: center;
+  width: auto;
+}

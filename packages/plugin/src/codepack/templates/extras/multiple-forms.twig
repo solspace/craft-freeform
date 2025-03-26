@@ -16,7 +16,7 @@
 
     {% if form %}
 
-        <h3>{{ form.name }} <small>(1st instance)</small></h3>
+        <h3 class="freeform-form-title">{{ form.name }} <small>(1st instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values, and an additional argument of 'first-form' after the properties #}
         {{ form.render(
@@ -32,7 +32,7 @@
 
         <br /><br /><hr /><br /><br />
 
-        <h3>{{ form.name }} <small>(2nd instance)</small></h3>
+        <h3 class="freeform-form-title">{{ form.name }} <small>(2nd instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values, and an additional argument of 'second-form' after the properties #}
         {{ form.render(

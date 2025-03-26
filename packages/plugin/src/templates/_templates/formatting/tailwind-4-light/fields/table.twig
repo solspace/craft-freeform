@@ -1,0 +1,21 @@
+{% set tableColumnCount = field.tableLayout|length %}
+
+{{ field.render({
+    tableAttributes: {
+        table: { class: "table min-w-full" },
+        row: { class: "table-row" },
+        column: { class: [
+            tableColumnCount in [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] ? "w-1/" ~ tableColumnCount,
+            tableColumnCount == 1 ? "w-full",
+            "table-col text-sm/6 pb-1"
+        ] },
+        label: { class: "text-left" },
+        input: { class: [ field.attributes.input.get("class"), "w-11/12 block" ] },
+        textarea: { class: [ field.attributes.input.get("class"), "w-11/12 block" ] },
+        dropdown: { class: [ field.attributes.input.get("class"), "w-11/12 block size-9" ] },
+        checkbox: { class: "bg-white rounded-sm appearance-none size-4 !px-0 rounded-full border border-gray-300 checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 !focus-visible:outline-0 !focus-visible:outline-offset-0 relative flex items-center justify-center checked:before:content-['✔'] checked:before:text-white checked:before:text-xs" },
+        radios: { class: "relative appearance-none size-4 !px-0 mr-2 w-4 h-4 !rounded-full border border-gray-300 before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 freeform-table-radios" },
+        removeButton: { class: "text-sm text-indigo-600 hover:text-red-600" },
+        addButton: { class: "block rounded-md bg-indigo-600 px-3 py-1 text-center text-sm font-medium text-white hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600" },
+    },
+}) }}

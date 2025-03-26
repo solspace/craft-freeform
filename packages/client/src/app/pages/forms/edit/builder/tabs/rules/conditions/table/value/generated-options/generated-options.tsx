@@ -23,11 +23,22 @@ export const GeneratedOptionsRuleValue: React.FC<Props> = ({
   const [options, loading] = useFieldOptions(field, fieldType);
 
   if (multiple) {
+    let inputValue: string;
+    if (value) {
+      try {
+        inputValue = JSON.parse(value);
+      } catch {
+        inputValue = value;
+      }
+    } else {
+      inputValue = '';
+    }
+
     return (
       <>
         {!loading && (
           <TokenInput
-            value={value && JSON.parse(value)}
+            value={inputValue}
             options={options
               .map((option) => {
                 if ('value' in option) {

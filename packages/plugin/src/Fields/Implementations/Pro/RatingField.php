@@ -5,13 +5,18 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
@@ -51,9 +56,46 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
     #[Input\ColorPicker('Selected Color')]
     protected string $colorSelected = '#FF7700';
 
-    /**
-     * @param T $value
-     */
+    #[Section('attributes')]
+    #[Limitation('layout.fields.attributes')]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'instructions',
+                'label' => 'Instructions',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'error',
+                'label' => 'Error',
+                'previewTag' => 'ul',
+            ],
+            [
+                'handle' => 'optionLabel',
+                'label' => 'Star',
+                'previewTag' => 'label',
+            ],
+        ]
+    )]
+    protected FieldAttributesCollection $attributes;
+
     public function setValue(mixed $value): FieldInterface
     {
         if (!empty($value)) {
@@ -135,7 +177,9 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->getAttributes()
+        $attributeCollection = $this->getAttributes();
+
+        $attributes = $attributeCollection
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
@@ -147,13 +191,19 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
             ->set('id', $this->getIdAttribute())
         ;
 
-        $output = '<div>';
-        $output .= '<span'.$spanAttributes.'>';
+        $output = '';
 
         $maxValue = $this->getMaxValue();
         for ($i = $maxValue; $i >= 1; --$i) {
             $starId = $this->getIdAttribute().'_star_'.$i;
             $isChecked = (int) $this->getValue() === $i;
+
+            $variables = [
+                'i' => $i,
+                'index' => $i,
+                'field' => $this,
+                'checked' => $isChecked,
+            ];
 
             $inputAttributes = $attributes
                 ->clone()
@@ -165,21 +215,32 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
             $output .= Html::tag(
                 $inputAttributes->getTag('input'),
                 '',
-                $inputAttributes->toHtmlTagArray([
-                    'i' => $i,
-                    'index' => $i,
-                    'field' => $this,
-                    'checked' => $isChecked,
-                ])
+                $inputAttributes->toHtmlTagArray($variables)
             );
 
-            $output .= Html::tag('label', '', ['for' => $starId]);
+            $labelAttributes = $attributeCollection
+                ->getOptionLabel()
+                ->clone()
+                ->setIfEmpty('for', $starId)
+            ;
+
+            $output .= Html::tag(
+                'label',
+                '',
+                $labelAttributes->toHtmlTagArray($variables)
+            );
         }
 
-        $output .= '</span>';
-        $output .= '</div>';
-
-        return $output;
+        return Html::tag(
+            'div',
+            Html::tag(
+                'span',
+                $output,
+                $spanAttributes->toHtmlTagArray([
+                    'field' => $this,
+                ])
+            )
+        );
     }
 
     private function getFormSha(): string

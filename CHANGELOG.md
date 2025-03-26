@@ -4,7 +4,7 @@
 
 ### Added
 - Added **Tailwind 4 Light** and **Tailwind 4 Dark** sample formatting templates.
-- Added the ability to parse Twig in **Recipient** inputs for email notifications in the form builder. Can use `form` or and field handle, e.g. `{{ form.handle }}` or `{{ emailAddress}}`.
+- Added the ability to parse Twig in **Recipient** inputs for email notifications in the form builder. Can use `form` or and field handle, e.g. `{{ form.handle }}` or `{{ emailAddress }}`.
 
 ### Fixed
 - Fixed a bug where error classes were not properly being added to Table field inputs.

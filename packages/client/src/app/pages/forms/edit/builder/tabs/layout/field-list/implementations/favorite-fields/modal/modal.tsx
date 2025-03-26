@@ -26,7 +26,7 @@ import {
   FieldList,
 } from './modal.styles';
 
-export const CreateModal: ModalType = ({ closeModal }) => {
+export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
   const { data } = useFetchFavorites();
 
   const [focusedField, setFocusedField] = useState<FieldFavorite>();
@@ -44,7 +44,7 @@ export const CreateModal: ModalType = ({ closeModal }) => {
   });
 
   const deleteMutation = useFavoritesDeleteMutation({
-    onSuccess: (_, deletedId) => {
+    onSuccess: (_, deletedId: number) => {
       const next = data.filter((favorite) => favorite.id !== deletedId)?.at(0);
       if (next) {
         setFocusedField(next);

@@ -69,6 +69,21 @@ class FavoritesController extends BaseApiController
         return $this->asEmptyResponse(204);
     }
 
+    public function actionDelete(): ?bool
+    {
+        $this->requirePostRequest();
+        $id = $this->request->post('id');
+
+        $record = FavoriteFieldRecord::findOne(['id' => $id]);
+        if (!$record) {
+            return null;
+        }
+
+        $record->delete();
+
+        return true;
+    }
+
     protected function get(): array
     {
         return $this->favoritesProvider->getFavoriteFields();
@@ -123,18 +138,6 @@ class FavoritesController extends BaseApiController
         $this->response->statusCode = 201;
 
         return null;
-    }
-
-    protected function delete(int $id): ?bool
-    {
-        $record = FavoriteFieldRecord::findOne(['id' => $id]);
-        if (!$record) {
-            return null;
-        }
-
-        $record->delete();
-
-        return true;
     }
 
     private function getValidatedMetadata(FavoriteFieldRecord $record, array $values): array

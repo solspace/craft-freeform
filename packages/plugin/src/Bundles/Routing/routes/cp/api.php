@@ -5,6 +5,7 @@ return [
     'freeform/api/fields/forms' => 'freeform/api/fields/forms',
     'freeform/api/fields/favorites' => 'freeform/api/fields/favorites',
     'freeform/api/fields/favorites/update' => 'freeform/api/fields/favorites/update',
+    'freeform/api/fields/favorites/delete' => 'freeform/api/fields/favorites/delete',
     'freeform/api/fields/types' => 'freeform/api/fields/types',
     'freeform/api/fields/types/sections' => 'freeform/api/fields/types/sections',
     'freeform/api/fields/types/groups' => 'freeform/api/fields/groups',

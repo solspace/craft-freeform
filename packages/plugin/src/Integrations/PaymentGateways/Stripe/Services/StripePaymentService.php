@@ -28,10 +28,22 @@ class StripePaymentService
         $model->card = $details->last4 ?? null;
         $model->brand = $details->brand ?? null;
         $model->type = $record->type;
+        $model->method = $method;
         $model->planName = $method->planName ?? null;
         $model->interval = $method->interval ?? null;
         $model->frequency = $method->frequency ?? null;
-        $model->errorMessage = $method->error ?? null;
+
+        if ($method->error) {
+            if (\is_string($method->error)) {
+                $model->errorMessage = $method->error;
+            } else {
+                if (isset($method->error->message)) {
+                    $model->errorMessage = $method->error->message;
+                } else {
+                    $model->errorMessage = json_encode($method->error);
+                }
+            }
+        }
 
         return $model;
     }

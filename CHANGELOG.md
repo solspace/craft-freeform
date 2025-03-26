@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.10.3 - 2025-03-26
+
+### Added
+- Added **Tailwind 4 Light** and **Tailwind 4 Dark** sample formatting templates.
+- Added the ability to parse Twig in **Recipient** inputs for email notifications in the form builder. Can use `form` or and field handle, e.g. `{{ form.handle }}` or `{{ emailAddress}}`.
+
+### Fixed
+- Fixed a bug where error classes were not properly being added to Table field inputs.
+- Fixed a bug where attempting to _Replace_ forms in the Express Forms migration utility would not work.
+- Fixed a bug where the `attachRulesJSON()` method created an object instead of an array.
+- Fixed a bug where some `console.log`'s were left in some areas of the Table field javascript.
+- Fixed a bug where mapping Freeform single **Checkbox** fields to Craft's **Checkboxes** field type with a single option was not working.
+
 ## 5.10.2 - 2025-03-20
 
 ### Added

@@ -21,7 +21,7 @@
   {% if field.legends %}
     <ul class="sm:flex hidden w-full text-sm font-medium text-gray-400 mt-1">
       {% for legend in field.legends %}
-        <li class="w-full {% if loop.index == 1 %}text-left{% elseif loop.index == field.legends|length %}text-right{% else %}text-center{% endif %}">
+        <li class="w-full {{ field.attributes.option.get("class") }} {% if loop.index == 1 %}text-left{% elseif loop.index == field.legends|length %}text-right{% else %}text-center{% endif %}">
           {{ legend }}
         </li>
       {% endfor %}

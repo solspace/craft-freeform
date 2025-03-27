@@ -5,16 +5,20 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\LegendsTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\OpinionScale\ScalesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
     name: 'Opinion Scale',
@@ -52,6 +56,51 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         ],
     )]
     protected array $legends = [];
+
+    #[Section('attributes')]
+    #[Limitation('layout.fields.attributes')]
+    #[ValueTransformer(FieldAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+        tabs: [
+            [
+                'handle' => 'container',
+                'label' => 'Container',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'input',
+                'label' => 'Scale Input',
+                'previewTag' => 'input',
+            ],
+            [
+                'handle' => 'optionLabel',
+                'label' => 'Scale Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'option',
+                'label' => 'Legend',
+                'previewTag' => 'li',
+            ],
+            [
+                'handle' => 'label',
+                'label' => 'Label',
+                'previewTag' => 'label',
+            ],
+            [
+                'handle' => 'instructions',
+                'label' => 'Instructions',
+                'previewTag' => 'div',
+            ],
+            [
+                'handle' => 'error',
+                'label' => 'Error',
+                'previewTag' => 'ul',
+            ],
+        ]
+    )]
+    protected FieldAttributesCollection $attributes;
 
     public function getType(): string
     {
@@ -125,7 +174,9 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             return '';
         }
 
-        $attributes = $this->getAttributes()
+        $attributesCollection = $this->getAttributes();
+
+        $attributes = $attributesCollection
             ->getInput()
             ->clone()
             ->setIfEmpty('name', $this->getHandle())
@@ -144,6 +195,14 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             $isSelected = $value == $this->getValue();
             $id = $this->getIdAttribute()."-{$index}";
 
+            $variables = [
+                'i' => $index,
+                'index' => $index,
+                'scale' => $scale,
+                'option' => $scale,
+                'field' => $this,
+            ];
+
             $inputAttributes = $attributes
                 ->clone()
                 ->replace('id', $id)
@@ -156,24 +215,43 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             $output .= Html::tag(
                 $inputAttributes->getTag('input'),
                 '',
-                $inputAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'scale' => $scale,
-                    'option' => $scale,
-                    'field' => $this,
-                ])
+                $inputAttributes->toHtmlTagArray($variables)
             );
 
-            $output .= Html::tag('label', $this->translateOption('scales', $value, $label), ['for' => $id]);
+            $labelAttributes = $attributesCollection
+                ->getOptionLabel()
+                ->clone()
+                ->setIfEmpty('for', $id)
+            ;
+
+            $output .= Html::tag(
+                $labelAttributes->getTag('label'),
+                $this->translateOption('scales', $value, $label),
+                $labelAttributes->toHtmlTagArray($variables)
+            );
+
             $output .= '</li>';
         }
         $output .= '</ul>';
 
         if ($this->getLegends()) {
             $output .= '<ul class="opinion-scale-legends">';
-            foreach ($this->getLegends() as $legend) {
-                $output .= Html::tag('li', $legend);
+            foreach ($this->getLegends() as $index => $legend) {
+                $legendAttributes = $attributesCollection
+                    ->getOption()
+                    ->clone()
+                ;
+
+                $output .= Html::tag(
+                    $legendAttributes->getTag('li'),
+                    $legend,
+                    $legendAttributes->toHtmlTagArray([
+                        'i' => $index,
+                        'index' => $index,
+                        'legend' => $legend,
+                        'field' => $this,
+                    ])
+                );
             }
             $output .= '</ul>';
         }

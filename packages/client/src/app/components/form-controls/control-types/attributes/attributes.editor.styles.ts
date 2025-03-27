@@ -19,6 +19,11 @@ export const AttributeTypeTabs = styled(TabsWrapper)`
 
   padding: ${spacings.md} ${spacings.md} 0;
   box-shadow: ${shadows.bottom};
+
+  a {
+    cursor: pointer;
+    user-select: none;
+  }
 `;
 
 export const AttributeTabContent = styled.div`

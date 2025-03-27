@@ -88,7 +88,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->clone()
             ->append('class', 'freeform-file-dnd__input')
             ->replace('data-freeform-file-upload', $this->getHandle())
-            ->setIfEmpty('data-error-append-target', $this->getHandle())
             ->replace('data-file-count', $fileCount)
             ->replace('data-max-files', $this->getFileCount())
             ->replace('data-max-size', $this->getMaxFileSizeBytes())
@@ -112,11 +111,14 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ['type' => 'file', 'id' => 'form-input-'.$this->getHandle(), 'multiple' => true]
         );
 
-        return Html::tag(
+        $errorTag = '<div data-error-append-target="'.$this->getHandle().'"></div>';
+        $tag = Html::tag(
             'div',
             $output,
             $attributes->toHtmlTagArray(['field' => $this])
         );
+
+        return $tag.$errorTag;
     }
 
     public function uploadFile(): ?array

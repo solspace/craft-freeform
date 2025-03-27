@@ -18,4 +18,5 @@ class PaymentModel extends Model
     public ?string $interval = null;
     public ?string $frequency = null;
     public ?string $resourceId = null;
+    public null|array|\stdClass $method = null;
 }

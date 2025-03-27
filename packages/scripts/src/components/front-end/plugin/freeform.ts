@@ -511,6 +511,7 @@ export default class Freeform {
           [type=file][name="${key}[]"],
           [type=checkbox][name="${key}[]"],
           [type=radio][name="${key}"],
+          select[multiple][name="${key}[]"],
           [data-error-append-target="${key}"]
         `
       );
@@ -521,7 +522,6 @@ export default class Freeform {
 
       for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
         const input = inputList[inputIndex] as HTMLInputElement;
-        console.log(input);
         addClass(input, errorClassField);
       }
 

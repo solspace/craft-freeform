@@ -62,7 +62,12 @@ class StripePaymentService
         if (isset($intent->payment_method)) {
             $method = ['type' => $intent->payment_method->type];
             if (isset($intent->payment_method->{$intent->payment_method->type})) {
-                $method['details'] = $intent->payment_method->{$intent->payment_method->type}->toArray();
+                $details = $intent->payment_method->type;
+                if (method_exists($details, 'toArray')) {
+                    $details = $details->toArray();
+                }
+
+                $method['details'] = $details;
             }
 
             $model->method = $method;

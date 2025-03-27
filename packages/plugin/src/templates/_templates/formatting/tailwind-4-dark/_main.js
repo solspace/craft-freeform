@@ -197,13 +197,13 @@ forms.forEach((function(e) {
         '.BlockDivider': {
           backgroundColor: "rgba(255,255,255,0.10)",
         },
-        '.PickerItem': {
+        '.PickerItem, .PickerItem--selected': {
           border: "0",
           outline: "1px solid rgba(255,255,255,0.15)",
           backgroundColor: "rgba(255,255,255,0.10)",
           boxShadow: "none",
         },
-        '.PickerItem:hover': {
+        '.PickerItem:hover, .PickerItem--selected:hover': {
           border: "0",
           outline: "1px solid rgba(255,255,255,0.15)",
           backgroundColor: "rgba(255,255,255,0.05)",

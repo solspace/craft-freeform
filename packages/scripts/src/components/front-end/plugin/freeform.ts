@@ -512,7 +512,7 @@ export default class Freeform {
           [type=checkbox][name="${key}[]"],
           [type=radio][name="${key}"],
           select[multiple][name="${key}[]"],
-          [data-error-append-target="${key}"]
+          [data-freeform-file-upload="${key}"]
         `
       );
 

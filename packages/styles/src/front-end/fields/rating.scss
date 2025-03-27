@@ -4,7 +4,7 @@
   --ff-rating-color-selected: #FF7700;
 
   .form-rating-field-wrapper {
-    float: left;
+    display: inline-block;
 
     &:after {
       content: '';

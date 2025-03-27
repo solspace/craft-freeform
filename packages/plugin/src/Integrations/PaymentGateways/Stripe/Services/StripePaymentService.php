@@ -33,15 +33,13 @@ class StripePaymentService
         $model->interval = $method->interval ?? null;
         $model->frequency = $method->frequency ?? null;
 
-        if ($method->error) {
+        if (isset($method->error)) {
             if (\is_string($method->error)) {
                 $model->errorMessage = $method->error;
+            } elseif (isset($method->error->message)) {
+                $model->errorMessage = $method->error->message;
             } else {
-                if (isset($method->error->message)) {
-                    $model->errorMessage = $method->error->message;
-                } else {
-                    $model->errorMessage = json_encode($method->error);
-                }
+                $model->errorMessage = json_encode($method->error);
             }
         }
 

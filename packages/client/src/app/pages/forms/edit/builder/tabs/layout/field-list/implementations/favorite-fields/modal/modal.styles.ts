@@ -104,6 +104,10 @@ export const FieldListItem = styled.li`
     background: ${colors.gray500};
     color: ${colors.white};
     fill: currentColor;
+
+    a {
+      color: ${colors.blue300};
+    }
   }
 
   &.errors {

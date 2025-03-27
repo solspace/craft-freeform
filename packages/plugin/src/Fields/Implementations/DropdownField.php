@@ -48,12 +48,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
     )]
     protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
-    #[Section(
-        handle: 'attributes',
-        label: 'Attributes',
-        icon: __DIR__.'/SectionIcons/list.svg',
-        order: 999,
-    )]
+    #[Section('attributes')]
     #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(FieldAttributesTransformer::class)]
     #[Input\Attributes(

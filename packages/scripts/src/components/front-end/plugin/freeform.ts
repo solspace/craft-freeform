@@ -509,8 +509,9 @@ export default class Freeform {
           [name="${key}"],
           [type=file][name="${key}"],
           [type=file][name="${key}[]"],
-          [type=checkbox][name="${key}[]"]
-          [type=radio][name="${key}"]
+          [type=checkbox][name="${key}[]"],
+          [type=radio][name="${key}"],
+          select[multiple][name="${key}[]"],
           [data-error-append-target="${key}"]
         `
       );

@@ -63,7 +63,7 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
 
         dispatchChange(container);
       })
-      .catch(console.log);
+      .catch(console.error);
   }
 };
 

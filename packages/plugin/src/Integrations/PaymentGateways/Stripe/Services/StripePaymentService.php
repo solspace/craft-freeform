@@ -60,6 +60,7 @@ class StripePaymentService
         $model->planName = $intent->invoice?->subscription?->plan?->product?->name ?? null;
         $model->interval = $intent->invoice?->subscription?->plan?->interval ?? null;
         $model->frequency = $intent->invoice?->subscription?->plan?->interval_count ?? null;
+        $model->method = $intent->payment_method?->{$intent->payment_method?->type}?->toArray() ?? null;
 
         return $model;
     }

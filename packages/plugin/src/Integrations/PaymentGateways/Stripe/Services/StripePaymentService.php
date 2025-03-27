@@ -58,14 +58,14 @@ class StripePaymentService
         $model->planName = $intent->invoice?->subscription?->plan?->product?->name ?? null;
         $model->interval = $intent->invoice?->subscription?->plan?->interval ?? null;
         $model->frequency = $intent->invoice?->subscription?->plan?->interval_count ?? null;
-        $paymentMethodType = $intent->payment_method?->{$intent->payment_method?->type} ?? null;
 
-        if (\is_object($paymentMethodType) && method_exists($paymentMethodType, 'toArray')) {
-            $model->method = $paymentMethodType->toArray();
-        } elseif (\is_array($paymentMethodType)) {
-            $model->method = $paymentMethodType;
-        } else {
-            $model->method = null;
+        if (isset($intent->payment_method)) {
+            $method = ['type' => $intent->payment_method->type];
+            if (isset($intent->payment_method->{$intent->payment_method->type})) {
+                $method['details'] = $intent->payment_method->{$intent->payment_method->type}->toArray();
+            }
+
+            $model->method = $method;
         }
 
         return $model;

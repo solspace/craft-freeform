@@ -47,7 +47,7 @@ export default [
     },
 
     rules: {
-      'no-console': 'off',
+      'no-console': ['error', { allow: ['warn', 'error'] }],
       'no-prototype-builtins': 'off',
       'no-undef': 'off',
       'react/no-find-dom-node': 'off',

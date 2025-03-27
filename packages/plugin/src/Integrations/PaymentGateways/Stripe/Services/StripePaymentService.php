@@ -28,10 +28,20 @@ class StripePaymentService
         $model->card = $details->last4 ?? null;
         $model->brand = $details->brand ?? null;
         $model->type = $record->type;
+        $model->method = $method;
         $model->planName = $method->planName ?? null;
         $model->interval = $method->interval ?? null;
         $model->frequency = $method->frequency ?? null;
-        $model->errorMessage = $method->error ?? null;
+
+        if (isset($method->error)) {
+            if (\is_string($method->error)) {
+                $model->errorMessage = $method->error;
+            } elseif (isset($method->error->message)) {
+                $model->errorMessage = $method->error->message;
+            } else {
+                $model->errorMessage = json_encode($method->error);
+            }
+        }
 
         return $model;
     }
@@ -48,6 +58,20 @@ class StripePaymentService
         $model->planName = $intent->invoice?->subscription?->plan?->product?->name ?? null;
         $model->interval = $intent->invoice?->subscription?->plan?->interval ?? null;
         $model->frequency = $intent->invoice?->subscription?->plan?->interval_count ?? null;
+
+        if (isset($intent->payment_method)) {
+            $method = ['type' => $intent->payment_method->type];
+            if (isset($intent->payment_method->{$intent->payment_method->type})) {
+                $details = $intent->payment_method->type;
+                if (method_exists($details, 'toArray')) {
+                    $details = $details->toArray();
+                }
+
+                $method['details'] = $details;
+            }
+
+            $model->method = $method;
+        }
 
         return $model;
     }

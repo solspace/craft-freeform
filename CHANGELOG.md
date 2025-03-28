@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.10.5 - Unreleased
+
+### Changed
+- Updated the list of available fields that can be part of conditional rules for other fields to filter out `Rich Text`, `HTML`, `File Upload Drag & Drop`, `File Upload` and `Signature` field types.
+
+### Fixed
+- Fixed a bug where the Stripe Webhook URL could sometimes error.
+- Fixed a bug where **Rating** and **Opinion Scale** fields are not working with the `greater than`, `greater than or equal to`, `less than` and `less than or equal to` conditional rules.
+
 ## 5.10.4 - 2025-03-27
 
 ### Added

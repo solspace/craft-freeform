@@ -11,7 +11,8 @@ import { layoutSelectors } from '../layouts/layouts.selectors';
 import { pageSelecors } from '../pages/pages.selectors';
 
 export const useFieldOptionCollection = (
-  excludedUids?: string[]
+  excludedUids?: string[],
+  excludedTypes?: string[]
 ): OptionCollection => {
   const { getState } = useAppStore();
   const findType = useFieldTypeSearch();
@@ -31,6 +32,11 @@ export const useFieldOptionCollection = (
             }
 
             const type = findType(field.typeClass);
+
+            if (excludedTypes?.includes(type.type)) {
+              return null;
+            }
+
             if (type?.type === 'group') {
               const fields = layoutSelectors.cartographed.layoutFieldList(
                 getState(),

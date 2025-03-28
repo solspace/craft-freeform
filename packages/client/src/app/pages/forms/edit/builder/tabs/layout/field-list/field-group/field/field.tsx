@@ -14,7 +14,7 @@ export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
   return (
     <Wrapper ref={dragRef} onClick={onClick} title={label}>
       <Icon dangerouslySetInnerHTML={{ __html: icon }} />
-      <Name>{label}</Name>
+      <Name dangerouslySetInnerHTML={{ __html: label }} />
     </Wrapper>
   );
 };

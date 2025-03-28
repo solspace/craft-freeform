@@ -44,7 +44,6 @@
           .attr('disabled', true)
           .on('click', (event) => {
             event.preventDefault();
-            console.log('No more prev');
           });
       }
 
@@ -53,7 +52,6 @@
           .attr('disabled', true)
           .on('click', (event) => {
             event.preventDefault();
-            console.log('No more next');
           });
       }
 

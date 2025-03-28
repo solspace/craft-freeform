@@ -71,7 +71,9 @@ export const FavoritesEditor: React.FC<Props> = ({
     <>
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
-        <span>{values?.label || type.name}</span>
+        <span
+          dangerouslySetInnerHTML={{ __html: values?.label || type.name }}
+        />
       </Title>
       <RenderContextProvider size={'small'}>
         <SectionWrapper>{sectionBlocks}</SectionWrapper>

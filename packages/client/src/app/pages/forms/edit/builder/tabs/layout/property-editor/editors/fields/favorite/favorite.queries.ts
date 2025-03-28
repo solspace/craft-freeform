@@ -114,7 +114,7 @@ export const useFavoritesDeleteMutation = (
     );
   };
 
-  return useMutation((data: number) => {
-    return axios.delete(`/api/fields/favorites/${data}`);
+  return useMutation((favoriteId: number) => {
+    return axios.post(`/api/fields/favorites/delete`, { id: favoriteId });
   }, options);
 };

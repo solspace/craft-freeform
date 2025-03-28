@@ -41,7 +41,7 @@ export const FavoriteListItem: React.FC<Props> = ({
       className={classes(isActive && 'active', hasErrors && 'errors')}
     >
       <Icon dangerouslySetInnerHTML={{ __html: fieldType.icon }} />
-      <span>{label}</span>
+      <span dangerouslySetInnerHTML={{ __html: label }} />
       <RemoveButton active={hovering} onClick={onDelete} />
     </FieldListItem>
   );

@@ -11,7 +11,7 @@ import { LoaderFieldGroup } from '../../field-group/field-group.loader';
 import { List } from '../../field-group/field-group.styles';
 import { useSelectSearchedFavorites } from '../../hooks/use-select-searched-fields';
 
-import { useCreateModal } from './modal/use-create-modal';
+import { useFavoriteFieldsManagerModal } from './modal/use-create-modal';
 import { FieldItem } from './field-item';
 
 const title = translate('Favorites');
@@ -19,7 +19,7 @@ const title = translate('Favorites');
 export const FavoriteFields: React.FC = () => {
   const select = useSelectSearchedFavorites();
   const { data, isFetching, isError, error } = useFetchFavorites({ select });
-  const openModal = useCreateModal();
+  const openModal = useFavoriteFieldsManagerModal();
   const findType = useFieldTypeSearch();
 
   if (!data && isFetching) {

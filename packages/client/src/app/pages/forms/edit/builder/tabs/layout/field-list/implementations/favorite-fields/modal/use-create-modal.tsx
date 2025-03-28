@@ -1,11 +1,11 @@
 import { useModal } from '@components/modals/modal.context';
 
-import { CreateModal } from './modal';
+import { FavoriteFieldsManagerModal } from './modal';
 
-export const useCreateModal = (): (() => void) => {
+export const useFavoriteFieldsManagerModal = (): (() => void) => {
   const { openModal } = useModal();
 
   return (): void => {
-    openModal(CreateModal);
+    openModal(FavoriteFieldsManagerModal);
   };
 };

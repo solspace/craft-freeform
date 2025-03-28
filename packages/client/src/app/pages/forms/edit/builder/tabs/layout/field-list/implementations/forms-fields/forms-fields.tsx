@@ -29,7 +29,10 @@ export const FormsFields: React.FC = () => {
     return null;
   }
 
-  const forms = data.filter((form) => form.uid !== uid);
+  const forms = data
+    .filter((form) => form.uid !== uid)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   const hasFields = forms.some((form) => form.fields.length > 0);
 
   if (!forms.length || !hasFields) {

@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.10.4 - 2025-03-27
+
+### Added
+- Added the ability to get the **payment method** used in Stripe payment submissions (`payments.method.type`).
+- Added support for extra attributes on **Rating** and **Opinion Scale** fields .
+
+### Changed
+- Updated the **Fields from other Forms** listing to be alphabetically sorted.
+- Improved error display on **Checkboxes**, **Rating**, **Multi-select**, **Table** and **File Drag & Drop** fields on the front end.
+- Updated Tailwind 4 sample formatting templates to have their CSS and JS minified.
+- Improved error handling on **Stripe** payments.
+
+### Fixed
+- Fixed a bug where switching a conditional rule from `is equal to` to `is one of` would crash the builder.
+- Fixed a bug that prevented users from deleting favorite fields in the **Favorites Manager**.
+- Fixed a bug where **Checkbox** fields with rich text values displayed HTML tags in their labels in some areas of the form builder.
+
 ## 5.10.3 - 2025-03-26
 
 ### Added

@@ -45,7 +45,7 @@ class StripeWebhookController extends BaseStripeController
         $json = json_decode($payload, false);
         $header = $_SERVER['HTTP_STRIPE_SIGNATURE'] ?? null;
 
-        $this->logger->debug('Received a Stripe Webhook', json_decode($payload, true));
+        $this->logger->debug('Received a Stripe Webhook', json_decode($payload, true) ?? []);
 
         if (!$json || !$header) {
             return $this->asEmptyResponse(400);

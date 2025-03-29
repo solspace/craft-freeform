@@ -227,6 +227,12 @@ class FormMonitor extends APIIntegration
         $client->delete($endpoint);
     }
 
+    public function clearAllTests(Client $client, Form $form): void
+    {
+        $endpoint = $this->getEndpoint('forms/'.$form->getId().'/tests/all');
+        $client->delete($endpoint);
+    }
+
     protected function getProcessableFields(string $category): array
     {
         return [];

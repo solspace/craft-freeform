@@ -51,3 +51,25 @@ export const useDeleteTestMutation = (
     },
   });
 };
+
+export type ClearAllTestsCallback = {
+  onSuccess?: () => void;
+  onError?: () => void;
+};
+
+export const useClearAllTestHistoryMutation = (
+  formId: number,
+  callbacks?: ClearAllTestsCallback
+): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
+  return useMutation({
+    mutationFn: () => {
+      return axios.delete(`/api/form-monitor/forms/${formId}/tests/all`);
+    },
+    onSuccess: () => {
+      callbacks?.onSuccess?.();
+    },
+    onError: () => {
+      callbacks?.onError?.();
+    },
+  });
+};

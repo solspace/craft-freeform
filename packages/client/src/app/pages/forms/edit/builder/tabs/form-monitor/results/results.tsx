@@ -11,9 +11,9 @@ import type { AxiosError } from 'axios';
 
 import { FormMonitorDetailsLoader } from '../form-monitor.loader';
 import { ScreenshotModal } from '../form-monitor.screenshot.modal';
+import { DeleteTestModal } from '../form-monitor.test.delete';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
-import { DeleteTestModal } from './results.modal.test.delete';
 import {
   ChartContainer,
   DotsContainer,

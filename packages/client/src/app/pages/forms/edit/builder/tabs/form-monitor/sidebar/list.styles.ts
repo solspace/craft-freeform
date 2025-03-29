@@ -263,3 +263,22 @@ export const NextScheduledTestContainer = styled.div`
     color: ${colors.gray600};
   }
 `;
+
+export const ClearAllButton = styled.button`
+  margin-top: ${spacings.xl};
+  background-color: ${colors.gray700};
+  color: ${colors.white};
+  padding: ${spacings.sm} ${spacings.md};
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+
+  &:hover {
+    background-color: ${colors.red700};
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+`;

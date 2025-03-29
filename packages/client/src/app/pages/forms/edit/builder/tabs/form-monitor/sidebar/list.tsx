@@ -13,10 +13,12 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
 import { FormMonitorLoader } from '../form-monitor.loader';
+import { DeleteTestModal } from '../form-monitor.test.delete';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
   ChartContainer,
+  ClearAllButton,
   ConfigItem,
   ConfigLabel,
   ConfigurationSection,
@@ -56,10 +58,12 @@ type Configuration = {
 const ConfigurationPanel: React.FC<{
   configuration: Configuration;
   refetchData: () => void;
-}> = ({ configuration, refetchData }) => {
+  hasTests?: boolean;
+}> = ({ configuration, refetchData, hasTests }) => {
   const [reactivationStatus, setReactivationStatus] = React.useState<
     string | null
   >(null);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const reactivateMutation = useFormMonitorEnableMutation(
     configuration.formId,
@@ -169,7 +173,27 @@ const ConfigurationPanel: React.FC<{
             <MonitoredUrl>{configuration.monitoredUrl}</MonitoredUrl>
           </ConfigItem>
         )}
+
+        {hasTests && (
+          <ConfigItem>
+            <ClearAllButton onClick={() => setShowDeleteModal(true)}>
+              {translate('Clear All Test History')}
+            </ClearAllButton>
+          </ConfigItem>
+        )}
       </ConfigWrapper>
+
+      {showDeleteModal && (
+        <DeleteTestModal
+          formId={configuration.formId}
+          testId={0}
+          onClose={() => setShowDeleteModal(false)}
+          onSuccess={() => {
+            setShowDeleteModal(false);
+            refetchData();
+          }}
+        />
+      )}
     </ConfigurationSection>
   );
 };
@@ -293,6 +317,8 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
     formId: formTests?.formId,
   } as Configuration;
 
+  const hasTests = formTests?.tests?.length > 0;
+
   return (
     <Sidebar>
       <Wrapper>
@@ -326,6 +352,7 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
         <ConfigurationPanel
           configuration={configuration}
           refetchData={refetch}
+          hasTests={hasTests}
         />
       </Wrapper>
     </Sidebar>

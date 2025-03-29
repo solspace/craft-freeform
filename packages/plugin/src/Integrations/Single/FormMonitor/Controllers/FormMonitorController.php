@@ -174,4 +174,32 @@ class FormMonitorController extends BaseApiController
             throw $exception;
         }
     }
+
+    public function actionClearAllTests(?int $id = null): Response
+    {
+        $form = $this->formsService->getFormById($id);
+        if (!$form) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $formMonitor = $this->formIntegrationsProvider->getFirstForForm($form, FormMonitor::class);
+        if (!$formMonitor) {
+            throw new NotFoundHttpException('Form Monitor integration not found');
+        }
+
+        $client = $this->clientProvider->getAuthorizedClient($formMonitor);
+
+        try {
+            $formMonitor->clearAllTests($client, $form);
+
+            return $this->asJson(['success' => true]);
+        } catch (BadResponseException $exception) {
+            $this->loggerService
+                ->getLogger('Form Monitor')
+                ->error((string) $exception->getResponse()->getBody())
+            ;
+
+            throw $exception;
+        }
+    }
 }

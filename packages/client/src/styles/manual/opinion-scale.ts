@@ -29,7 +29,7 @@ const style = createGlobalStyle`
         > label {
           display: block;
           padding: 6px 12px;
-          margin: 0 0 5px;
+          margin: 0;
 
           text-align: center;
           color: black !important;

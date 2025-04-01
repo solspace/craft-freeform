@@ -85,7 +85,7 @@ export const Options: React.FC<Props> = ({
                 )}
                 <LabelContainer>
                   {option.icon && option.icon}
-                  {option.label}
+                  <span dangerouslySetInnerHTML={{ __html: option.label }} />
                 </LabelContainer>
 
                 {showValues && value && value !== option.label && (

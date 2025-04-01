@@ -21,9 +21,15 @@ class FormsController extends BaseApiController
 
     protected function get(): array|object
     {
-        $forms = [];
+        $service = $this->getFormsService();
+        $allowedIds = $service->getAllowedFormIds();
 
-        foreach ($this->getFormsService()->getAllForms() as $form) {
+        $forms = $service->getFormsFromQuery(
+            $service->getFormQuery()->where(['forms.id' => $allowedIds])
+        );
+
+        $results = [];
+        foreach ($forms as $form) {
             $fields = $form->getLayout()->getFields()->getIterator()->getArrayCopy();
             $fields = array_filter($fields, fn ($field) => !$field instanceof GroupField);
 
@@ -32,13 +38,13 @@ class FormsController extends BaseApiController
                 $transformedFields[] = $this->fieldTransformer->transform($field);
             }
 
-            $forms[] = (object) [
+            $results[] = (object) [
                 'uid' => $form->getUid(),
                 'name' => $form->getName(),
                 'fields' => $transformedFields,
             ];
         }
 
-        return $forms;
+        return $results;
     }
 }

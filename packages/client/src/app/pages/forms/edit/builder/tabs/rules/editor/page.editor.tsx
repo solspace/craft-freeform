@@ -40,7 +40,7 @@ export const PageRulesEditor: React.FC = () => {
             loadingText={translate('Loading data')}
             loading={isFetching}
           >
-            {label}
+            <span dangerouslySetInnerHTML={{ __html: label }} />
           </LoadingText>
         </Label>
         {!isFetching && (
@@ -69,7 +69,7 @@ export const PageRulesEditor: React.FC = () => {
           loadingText={translate('Loading data')}
           loading={isFetching}
         >
-          {label}
+          <span dangerouslySetInnerHTML={{ __html: label }} />
         </LoadingText>
       </Label>
       {!isFetching && (

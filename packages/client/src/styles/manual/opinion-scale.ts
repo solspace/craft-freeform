@@ -15,17 +15,22 @@ const style = createGlobalStyle`
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
       grid-gap: 0;
+      align-items: stretch;
 
-      > * {
+      > li {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        border: 1px solid ${borderColor};
+        border-left: none;
+
         > label {
           display: block;
           padding: 6px 12px;
-          margin: 0 0 5px;
+          margin: 0;
 
-          border: 1px solid ${borderColor};
-          border-left: none;
-
-          white-space: nowrap;
           text-align: center;
           color: black !important;
           cursor: pointer;
@@ -46,19 +51,15 @@ const style = createGlobalStyle`
         }
 
         &:first-child {
-          > label {
-            border-left: 1px solid ${borderColor};
+          border-left: 1px solid ${borderColor};
 
-            border-top-left-radius: ${radius};
-            border-bottom-left-radius: ${radius};
-          }
+          border-top-left-radius: ${radius};
+          border-bottom-left-radius: ${radius};
         }
 
         &:last-child {
-          > label {
-            border-top-right-radius: ${radius};
-            border-bottom-right-radius: ${radius};
-          }
+          border-top-right-radius: ${radius};
+          border-bottom-right-radius: ${radius};
         }
       }
     }

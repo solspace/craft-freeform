@@ -92,7 +92,11 @@ export const Field: React.FC<Props> = ({ field }) => {
     >
       <FieldInfo>
         <Icon dangerouslySetInnerHTML={{ __html: type?.icon }} />
-        <Label>{field.properties.label || type?.name}</Label>
+        <Label
+          dangerouslySetInnerHTML={{
+            __html: field.properties.label || type?.name,
+          }}
+        />
       </FieldInfo>
 
       {type?.type === 'group' && (

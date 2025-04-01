@@ -157,7 +157,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       <CurrentValue
         className={classes(loading && 'disabled', value === '' && 'empty')}
       >
-        <span>{selectedValue}</span>
+        <span dangerouslySetInnerHTML={{ __html: selectedValue }} />
 
         {loading && (
           <SpinnerWrapper>

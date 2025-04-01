@@ -35,7 +35,7 @@ trait FileUploadTrait
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Upload Location',
-        instructions: 'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.',
+        instructions: 'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.',
         order: 2,
         placeholder: 'path/to/subfolder',
     )]

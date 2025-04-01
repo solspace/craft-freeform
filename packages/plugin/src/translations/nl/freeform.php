@@ -262,7 +262,7 @@ return [
     'Asset Source' => 'Bestandsbron',
     'Select an asset source to be able to store user uploaded files.' => 'Selecteer een bestandsbron om door gebruikers geüploade bestanden op te kunnen slaan.',
     'Upload Location' => 'Uploadlocatie',
-    'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.' => 'Het submappad waarnaar bestanden moeten worden geüpload. Kan ook {{ form.handle }} of {{ form.id }} variabelen bevatten.',
+    'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.' => 'Het submappad waarnaar bestanden moeten worden geüpload. Kan ook `{{ form.handle }}` of `{{ form.id }}` variabelen bevatten.',
     'File Kinds' => 'Bestandssoorten',
     'Select the file kinds that are allowed to be uploaded.' => 'Selecteer de bestandstypen die mogen worden geüpload.',
     'Maximum File Size' => 'Maximale bestandsgrootte',

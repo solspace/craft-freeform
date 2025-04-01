@@ -68,29 +68,7 @@
 	<div id="fields">
 		{% for page in layout.pages %}
 			<div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
-				{% for field in page.getFields(["hidden", "invisible", "calculation"]) %}
-					{% set fieldHandle = field.handle %}
-
-					{% if not (field.getType() == "calculation" and field.canRender()) %}
-						<div class="fields-row">
-							<div class="fields-column">
-								{% set options = {
-									label: field.label,
-									name: fieldHandle,
-									id: fieldHandle,
-									value: submission[fieldHandle],
-									required: field.required,
-									errors: submission.errors(fieldHandle),
-									first: loop.index0 == 0,
-								} %}
-
-								{{ forms.textField(options) }}
-							</div>
-						</div>
-					{% endif %}
-				{% endfor %}
-
-				{% for row in page %}
+				{% for row in page.layout.allRows %}
 					{{ rowMacro.render(row, submission, fieldRenderer) }}
 				{% endfor %}
 			</div>

@@ -55,6 +55,7 @@ class StripeCallbackService
             );
 
             $form->quickLoad($payload);
+            $form->setFinished(true);
             $this->submissionsService->handleSubmission($form);
 
             $type = null !== $paymentIntent->invoice ? 'subscription' : 'payment';

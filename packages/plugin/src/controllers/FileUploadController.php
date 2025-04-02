@@ -65,7 +65,8 @@ class FileUploadController extends BaseController
 
         $totalUploaded = (int) (new Query())
             ->select('id')
-            ->from(UnfinalizedFileRecord::TABLE)->where([
+            ->from(UnfinalizedFileRecord::TABLE)
+            ->where([
                 'fieldHandle' => $handle,
                 'formToken' => $token,
             ])

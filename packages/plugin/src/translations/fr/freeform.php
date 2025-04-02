@@ -261,7 +261,7 @@ return [
     'Specify the maximum uploadable file count.' => 'Spécifiez le nombre maximum de fichiers pouvant être téléchargés.',
     'Select an asset source to be able to store user uploaded files.' => 'Sélectionnez une source d’actifs pour pouvoir stocker les fichiers téléchargés par les utilisateurs.',
     'Upload Location' => 'Emplacement de téléchargement',
-    'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.' => 'Le chemin du sous-dossier vers lequel les fichiers doivent être téléchargés. Peut contenir également les variables {{ form.handle }} ou {{ form.id }}.',
+    'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.' => 'Le chemin du sous-dossier vers lequel les fichiers doivent être téléchargés. Peut contenir également les variables `{{ form.handle }}` ou `{{ form.id }}`.',
     'File Kinds' => 'Types de fichiers',
     'Select the file kinds that are allowed to be uploaded.' => 'Sélectionnez les types de fichiers autorisés à être téléchargés.',
     'Maximum File Size' => 'Taille maximale de fichier',

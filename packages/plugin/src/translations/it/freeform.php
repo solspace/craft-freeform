@@ -262,7 +262,7 @@ return [
     'Asset Source' => 'Origine delle risorse',
     'Select an asset source to be able to store user uploaded files.' => 'Seleziona un’origine delle risorse per memorizzare i file caricati dagli utenti.',
     'Upload Location' => 'Percorso di caricamento',
-    'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.' => 'Il percorso della sottocartella in cui caricare i file. Può contenere anche le variabili {{ form.handle }} o {{ form.id }}.',
+    'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.' => 'Il percorso della sottocartella in cui caricare i file. Può contenere anche le variabili `{{ form.handle }}` o `{{ form.id }}`.',
     'File Kinds' => 'Tipi di file',
     'Select the file kinds that are allowed to be uploaded.' => 'Seleziona i tipi di file consentiti per il caricamento.',
     'Maximum File Size' => 'Dimensione massima del file',

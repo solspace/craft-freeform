@@ -262,7 +262,7 @@ return [
     'Asset Source' => 'Asset-Quelle',
     'Select an asset source to be able to store user uploaded files.' => 'Wählen Sie eine Asset-Quelle aus, um Benutzer hochgeladene Dateien zu speichern.',
     'Upload Location' => 'Upload-Speicherort',
-    'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.' => 'Der Unterordnerpfad, in den Dateien hochgeladen werden sollen. Kann auch die Variablen {{ form.handle }} oder {{ form.id }} enthalten.',
+    'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.' => 'Der Unterordnerpfad, in den Dateien hochgeladen werden sollen. Kann auch die Variablen `{{ form.handle }}` oder `{{ form.id }}` enthalten.',
     'File Kinds' => 'Dateitypen',
     'Select the file kinds that are allowed to be uploaded.' => 'Wählen Sie die Dateitypen aus, die hochgeladen werden dürfen.',
     'Maximum File Size' => 'Maximale Dateigröße',

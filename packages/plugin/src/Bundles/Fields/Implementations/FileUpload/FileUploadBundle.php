@@ -12,6 +12,7 @@ use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -113,6 +114,8 @@ class FileUploadBundle extends FeatureBundle
     {
         $fields = $form->getLayout()->getFields(FileUploadField::class);
         $assetIds = [];
+
+        /** @var FileUploadInterface $field */
         foreach ($fields as $field) {
             $assetIds = array_merge($assetIds, $field->getValue() ?? []);
         }

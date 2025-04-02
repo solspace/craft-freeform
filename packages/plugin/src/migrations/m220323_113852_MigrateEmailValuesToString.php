@@ -36,7 +36,9 @@ class m220323_113852_MigrateEmailValuesToString extends Migration
                     }
 
                     $values = json_decode($value);
-                    $modifiedColumns[$column] = reset($values);
+                    if (\is_array($values)) {
+                        $modifiedColumns[$column] = reset($values);
+                    }
                 }
 
                 if (empty($modifiedColumns)) {

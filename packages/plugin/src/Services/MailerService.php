@@ -236,17 +236,13 @@ class MailerService extends BaseService implements MailHandlerInterface
             return App::parseEnv($template);
         }
 
-        return \Craft::$app->view
-            ->getTwig()
-            ->createTemplate($template)
-            ->render($variables)
-        ;
+        return \Craft::$app->view->renderString($template, $variables);
     }
 
     public function compileMessage(NotificationTemplate $notification, array $values, ?LoggerInterface $logger = null): Message
     {
-        $fromName = trim(App::parseEnv($this->renderString($notification->getFromName(), $values)));
-        $fromEmail = trim(App::parseEnv($this->renderString($notification->getFromEmail(), $values)));
+        $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $values);
+        $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $values);
         $text = $this->renderString($notification->getTextBody(), $values);
         $html = $this->renderString($notification->getBody(), $values);
         $subject = $this->renderString($notification->getSubject(), $values);
@@ -295,7 +291,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         if ($notification->getReplyToEmail()) {
             $replyToName = trim(App::parseEnv($this->renderString($notification->getReplyToName() ?? '', $values)));
-            $replyTo = trim(App::parseEnv($this->renderString($notification->getReplyToEmail(), $values)));
+            $replyTo = $this->getSystemDefault('replyToEmail', $notification->getReplyToEmail(), $values);
             if (!empty($replyTo)) {
                 if ($replyToName) {
                     $replyTo = [$replyTo => $replyToName];
@@ -482,5 +478,21 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         \Craft::$app->mailer->send($message);
         \Craft::$app->view->setTemplateMode($templateMode);
+    }
+
+    private function getSystemDefault(string $key, string $address, array $twigVariables): string
+    {
+        $currentSiteUid = \Craft::$app->getSites()->getCurrentSite()->uid;
+        $mailSettings = App::mailSettings();
+        $overrides = $mailSettings->siteOverrides[$currentSiteUid] ?? null;
+        if ($overrides) {
+            if (!empty($overrides[$key])) {
+                if (preg_match('/app\.projectConfig\.get\([\'"]email\.'.$key.'[\'"]\)/', $address)) {
+                    $address = $overrides[$key];
+                }
+            }
+        }
+
+        return trim(App::parseEnv($this->renderString($address, $twigVariables)));
     }
 }

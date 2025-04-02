@@ -262,7 +262,7 @@ return [
     'Asset Source' => 'Asset Source',
     'Select an asset source to be able to store user uploaded files.' => 'Select an asset source to be able to store user uploaded files.',
     'Upload Location' => 'Upload Location',
-    'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.' => 'The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well.',
+    'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.' => 'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.',
     'File Kinds' => 'File Kinds',
     'Select the file kinds that are allowed to be uploaded.' => 'Select the file kinds that are allowed to be uploaded.',
     'Maximum File Size' => 'Maximum File Size',

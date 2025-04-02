@@ -380,11 +380,11 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      *
      * @param mixed $assetId
      */
-    public function markAssetUnfinalized($assetId, ?FileUploadField $field = null, ?string $formToken = null)
+    public function markAssetUnfinalized($assetId, ?FileUploadField $field = null, ?string $formToken = null): void
     {
         $record = new UnfinalizedFileRecord();
         $record->assetId = $assetId;
-        $record->fieldHandle = $field ? $field->getHandle() : null;
+        $record->fieldHandle = $field?->getHandle();
         $record->formToken = $formToken;
         $record->save(false);
     }
@@ -418,18 +418,18 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                     ->column()
                 ;
 
-                $query = (new Query())
-                    ->select(['assetId'])
-                    ->from(UnfinalizedFileRecord::TABLE)
-                    ->where(['<', '{{%freeform_unfinalized_files}}.[[dateCreated]]', Db::prepareDateForDb($date)])
-                    ->getRawSql()
-                ;
-
                 foreach ($assetIds as $assetId) {
                     try {
                         $isDeleted = \Craft::$app
                             ->getElements()
                             ->deleteElementById($assetId, Asset::class, hardDelete: true)
+                        ;
+
+                        \Craft::$app
+                            ->db
+                            ->createCommand()
+                            ->delete(UnfinalizedFileRecord::TABLE, ['assetId' => $assetId])
+                            ->execute()
                         ;
 
                         if ($isDeleted) {
@@ -452,7 +452,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function getAssetSources(): array
     {
-        /** @var Volume[] $volumes */
         $volumes = \Craft::$app->volumes->getAllVolumes();
         $assetSources = [];
         foreach ($volumes as $source) {
@@ -516,7 +515,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function getAssetSourceList(): array
     {
-        /** @var Volume[] $volumes */
         $volumes = \Craft::$app->volumes->getAllVolumes();
         $assetSources = [];
         foreach ($volumes as $source) {
@@ -535,12 +533,10 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
     {
         $fileKinds = Assets::getAllowedFileKinds();
 
-        $returnArray = [];
-        foreach ($fileKinds as $kind => $extensions) {
-            $returnArray[$kind] = $extensions['extensions'];
-        }
-
-        return $returnArray;
+        return array_map(
+            fn ($extensions) => $extensions['extensions'],
+            $fileKinds
+        );
     }
 
     /**
@@ -565,54 +561,53 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return $allowedExtensions;
     }
 
-    private function getFolder($volumeId, string $subpath, Form $form)
+    private function getFolder($volumeId, string $subpath, Form $form): ?VolumeFolder
     {
         $assetsService = \Craft::$app->getAssets();
 
-        if (null === $volumeId || ($rootFolder = $assetsService->getRootFolderByVolumeId($volumeId)) === null) {
+        $rootFolder = $assetsService->getRootFolderByVolumeId($volumeId);
+        if (null === $volumeId || null === $rootFolder) {
             throw new InvalidFsException();
         }
 
-        $subpath = \is_string($subpath) ? trim($subpath, '/') : '';
-
+        $subpath = trim($subpath, '/');
         if ('' === $subpath) {
-            $folder = $rootFolder;
-        } else {
-            try {
-                $renderedSubpath = \Craft::$app->view->renderString($subpath, ['form' => $form]);
-            } catch (Throwable $e) {
-                throw new InvalidSubpathException($subpath, null, 0, $e);
-            }
+            return $rootFolder;
+        }
 
-            if (
-                '' === $renderedSubpath
-                || trim($renderedSubpath, '/') != $renderedSubpath
-                || str_contains($renderedSubpath, '//')
-            ) {
-                throw new InvalidSubpathException($subpath);
-            }
+        try {
+            $renderedSubpath = \Craft::$app->view->renderString($subpath, ['form' => $form]);
+        } catch (\Throwable $e) {
+            throw new InvalidSubpathException($subpath, null, 0, $e);
+        }
 
-            $segments = explode('/', $renderedSubpath);
+        if (
+            '' === $renderedSubpath
+            || trim($renderedSubpath, '/') != $renderedSubpath
+            || str_contains($renderedSubpath, '//')
+        ) {
+            throw new InvalidSubpathException($subpath);
+        }
 
-            foreach ($segments as &$segment) {
-                $segment = FileHelper::sanitizeFilename($segment, [
-                    'asciiOnly' => \Craft::$app->getConfig()->getGeneral()->convertFilenamesToAscii,
-                ]);
-            }
-
-            unset($segment);
-            $subpath = implode('/', $segments);
-
-            $folder = $assetsService->findFolder([
-                'volumeId' => $volumeId,
-                'path' => $subpath.'/',
+        $segments = explode('/', $renderedSubpath);
+        foreach ($segments as &$segment) {
+            $segment = FileHelper::sanitizeFilename($segment, [
+                'asciiOnly' => \Craft::$app->getConfig()->getGeneral()->convertFilenamesToAscii,
             ]);
+        }
 
-            // Ensure that the folder exists
-            if (!$folder) {
-                $volume = \Craft::$app->getVolumes()->getVolumeById($volumeId);
-                $folder = $assetsService->ensureFolderByFullPathAndVolume($subpath, $volume);
-            }
+        unset($segment);
+        $subpath = implode('/', $segments);
+
+        $folder = $assetsService->findFolder([
+            'volumeId' => $volumeId,
+            'path' => $subpath.'/',
+        ]);
+
+        // Ensure that the folder exists
+        if (!$folder) {
+            $volume = \Craft::$app->getVolumes()->getVolumeById($volumeId);
+            $folder = $assetsService->ensureFolderByFullPathAndVolume($subpath, $volume);
         }
 
         return $folder;

@@ -220,6 +220,8 @@ class RuleHandler implements FreeformHandler {
           currentValue = Array.from(field)
             .filter((checkbox) => (checkbox as HTMLInputElement).checked)
             .map((checkbox) => (checkbox as HTMLInputElement).value);
+
+          currentValue = currentValue.length > 0 ? currentValue[0] : '';
         } else {
           currentValue = field.value;
         }

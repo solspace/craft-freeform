@@ -1,13 +1,22 @@
 # Solspace Freeform Changelog
 
-## 5.10.5 - Unreleased
+## 5.10.5 -  2025-04-01
+
+### Added
+- Added support for Craft 5.6's Email settings **Site Overrides** feature so email notification templates will respect per-Site email settings.
 
 ### Changed
+- Updated the Submissions detail page in the control panel to display **Hidden** and **Invisible** fields in the same position they are set in the form builder.
 - Updated the list of available fields that can be part of conditional rules for other fields to filter out `Rich Text`, `HTML`, `File Upload Drag & Drop`, `File Upload` and `Signature` field types.
+- Updated the **Fields from other Forms** area of the form builder to only display forms for which the user has form management permissions.
 
 ### Fixed
-- Fixed a bug where the Stripe Webhook URL could sometimes error.
+- Fixed a bug where the **Stripe** Webhook URL could sometimes error.
+- Fixed a bug where **Checkbox** fields with rich text values displayed HTML tags in their labels in some dropdown settings in the form builder.
 - Fixed a bug where **Rating** and **Opinion Scale** fields are not working with the `greater than`, `greater than or equal to`, `less than` and `less than or equal to` conditional rules.
+- Fixed a bug where **Opinion Scale** field rendering in the form builder preview would overflow if there were many and/or wordy options.
+- Fixed a bug where the `m220323_113852_MigrateEmailValuesToString.php` migration could error if some Email fields contained non-array values.
+- Fixed a bug where **File Upload Drag & Drop** fields on **Stripe Payment** forms would not remove their file rows from the `freeform_unfinalized_files` database table and subsequently have their assets incorrectly deleted hours later.
 
 ## 5.10.4 - 2025-03-27
 

@@ -46,7 +46,7 @@ abstract class BaseStripeController extends BaseApiController
         }
 
         $form->disableFunctionality(['captchas']);
-        $form->handleRequest($this->request);
+        $form->handleRequest($this->request, true);
 
         /** @var Stripe $integration */
         $integrations = $this->getIntegrationsService()->getForForm($form, Type::TYPE_PAYMENT_GATEWAYS);

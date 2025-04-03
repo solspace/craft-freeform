@@ -25,6 +25,7 @@ class FileUploadBundle extends FeatureBundle
     {
         Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'finalizeFiles']);
         Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, [$this, 'handleDnDPost']);
+        Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, [$this, 'handleBasicUploadPost']);
         Event::on(Submission::class, Submission::EVENT_RENDER_TABLE_VALUE, [$this, 'renderTableValue']);
         Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'prolongUnfinalizedAssets']);
     }
@@ -57,6 +58,16 @@ class FileUploadBundle extends FeatureBundle
         foreach ($records as $record) {
             $record->delete();
         }
+    }
+
+    public function handleBasicUploadPost(TransformValueEvent $event): void
+    {
+        $field = $event->getField();
+        if (FileUploadField::class !== $field::class) {
+            return;
+        }
+
+        $event->setValue($field->getValue());
     }
 
     public function handleDnDPost(TransformValueEvent $event): void

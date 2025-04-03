@@ -230,7 +230,11 @@ class MailerService extends BaseService implements MailHandlerInterface
             return App::parseEnv($template);
         }
 
-        return \Craft::$app->view->renderString($template, $variables);
+        return \Craft::$app->view
+            ->getTwig()
+            ->createTemplate($template)
+            ->render($variables)
+        ;
     }
 
     public function compileMessage(NotificationTemplate $notification, array $values, ?LoggerInterface $logger = null): Message

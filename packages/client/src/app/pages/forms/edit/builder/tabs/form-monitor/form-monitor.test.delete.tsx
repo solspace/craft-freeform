@@ -52,7 +52,7 @@ export const DeleteTestModal: React.FC<Props> = ({
   };
 
   const handleDelete = (): void => {
-    if (!enabled) {
+    if (isBulkDelete && !enabled) {
       return;
     }
 
@@ -64,8 +64,12 @@ export const DeleteTestModal: React.FC<Props> = ({
   };
 
   useEffect(() => {
-    setEnabled(inputValue.toUpperCase() === 'DELETE');
-  }, [inputValue]);
+    if (isBulkDelete) {
+      setEnabled(inputValue.toUpperCase() === 'DELETE');
+    } else {
+      setEnabled(true);
+    }
+  }, [inputValue, isBulkDelete]);
 
   const isLoading =
     deleteTestMutation.isLoading || clearAllTestsMutation.isLoading;
@@ -87,23 +91,25 @@ export const DeleteTestModal: React.FC<Props> = ({
                 : 'Are you sure you want to permanently delete this test? This action cannot be undone.'
             )}
           </div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: translate(
-                isBulkDelete
-                  ? 'To clear all test history, please type <strong>DELETE</strong> in the box below:'
-                  : 'To delete this test, please type <strong>DELETE</strong> in the box below:'
-              ),
-            }}
-          />
-          <input
-            type="text"
-            autoFocus={true}
-            value={inputValue}
-            autoComplete="off"
-            onChange={handleChange}
-            className="text fullwidth"
-          />
+          {isBulkDelete && (
+            <>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: translate(
+                    'To clear all test history, please type <strong>DELETE</strong> in the box below:'
+                  ),
+                }}
+              />
+              <input
+                type="text"
+                autoFocus={true}
+                value={inputValue}
+                autoComplete="off"
+                onChange={handleChange}
+                className="text fullwidth"
+              />
+            </>
+          )}
         </FormWrapper>
 
         <ModalFooter>

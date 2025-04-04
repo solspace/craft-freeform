@@ -1,4 +1,4 @@
-import { colors, spacings } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -265,11 +265,11 @@ export const NextScheduledTestContainer = styled.div`
 `;
 
 export const ClearAllButton = styled.button`
-  margin-top: ${spacings.xl};
+  margin-top: ${spacings.lg};
   background-color: ${colors.gray700};
   color: ${colors.white};
-  padding: ${spacings.sm} ${spacings.md};
-  border-radius: 4px;
+  padding: ${spacings.xs} ${spacings.md};
+  border-radius: ${borderRadius.md};
   border: none;
   cursor: pointer;
   font-size: 12px;

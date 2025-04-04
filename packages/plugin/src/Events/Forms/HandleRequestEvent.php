@@ -9,7 +9,7 @@ use yii\web\Request;
 
 class HandleRequestEvent extends CancelableArrayableEvent implements FormEventInterface
 {
-    public function __construct(private Form $form, private Request $request)
+    public function __construct(private Form $form, private Request $request, private bool $lookupCall = false)
     {
         parent::__construct();
     }
@@ -27,5 +27,10 @@ class HandleRequestEvent extends CancelableArrayableEvent implements FormEventIn
     public function getRequest(): Request
     {
         return $this->request;
+    }
+
+    public function isLookupCall(): bool
+    {
+        return $this->lookupCall;
     }
 }

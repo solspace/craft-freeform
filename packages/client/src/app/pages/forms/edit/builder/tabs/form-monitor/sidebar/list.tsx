@@ -17,7 +17,6 @@ import { DeleteTestModal } from '../form-monitor.test.delete';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
-  ChartContainer,
   ClearAllButton,
   ConfigItem,
   ConfigLabel,
@@ -27,17 +26,9 @@ import {
   MonitoredUrl,
   MostRecentTests,
   NextScheduledTestContainer,
-  Progress,
-  ProgressBar,
   ReactivateButton,
-  StatContainer,
-  StatHeader,
-  StatLabel,
-  StatRow,
   StatusContainer,
   StatusMessage,
-  StatValue,
-  TotalCount,
   Wrapper,
 } from './list.styles';
 
@@ -262,39 +253,6 @@ const NextScheduledTestPanel: React.FC<{
   );
 };
 
-const StatsPanel: React.FC<{ stats: FormTestsResponse['stats'] }> = ({
-  stats,
-}) => (
-  <ChartContainer>
-    <StatContainer>
-      <h3>{translate('Last 30 Days')}</h3>
-      <TotalCount>
-        {translate('Total Tests')}: {stats?.total || 0}
-      </TotalCount>
-      <MainStats>
-        {(['success', 'failed'] as const).map((type) => (
-          <StatRow key={type}>
-            <StatHeader>
-              <StatLabel $type={type}>
-                {translate(getStatusText(type))}
-              </StatLabel>
-              <StatValue>
-                {stats?.percentage?.[type] || 0}% ({stats?.[type] || 0})
-              </StatValue>
-            </StatHeader>
-            <ProgressBar>
-              <Progress
-                $type={type}
-                $percentage={stats?.percentage?.[type] || 0}
-              />
-            </ProgressBar>
-          </StatRow>
-        ))}
-      </MainStats>
-    </StatContainer>
-  </ChartContainer>
-);
-
 type ListProps = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
 };
@@ -325,15 +283,6 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
         {!formTests?.tests?.length ? (
           <>
             <RecentTestPanel />
-            <StatsPanel
-              stats={{
-                total: 0,
-                percentage: { success: 0, failed: 0, pending: 0 },
-                success: 0,
-                failed: 0,
-                pending: 0,
-              }}
-            />
           </>
         ) : (
           <>
@@ -346,7 +295,6 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
                 }
               />
             )}
-            <StatsPanel stats={formTests.stats} />
           </>
         )}
         <ConfigurationPanel

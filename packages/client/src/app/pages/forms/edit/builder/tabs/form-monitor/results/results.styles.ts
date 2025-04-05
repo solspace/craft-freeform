@@ -212,44 +212,6 @@ export const TestTableStyled = styled.table`
   }
 `;
 
-export const DotsContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(15px, 1fr));
-  gap: 12px;
-  min-height: 60px;
-  align-items: center;
-  width: 100%;
-  margin: ${spacings.md} 0;
-
-  @media (min-width: 1100px) {
-    grid-template-columns: repeat(50, 1fr);
-    gap: 8px;
-  }
-`;
-
-export const TestDot = styled.div<{
-  $status: 'success' | 'failed' | 'pending';
-}>`
-  width: 100%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  background-color: ${({ $status }) =>
-    $status === 'success'
-      ? colors.green600
-      : $status === 'failed'
-        ? colors.red600
-        : colors.gray700};
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
-
-  &:hover {
-    transform: scale(1.2);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-`;
-
 export const TestTooltip = styled.div`
   overflow: hidden;
   min-width: 160px;
@@ -291,4 +253,67 @@ export const TestTooltipContent = styled.div`
       font-size: 11px;
     }
   }
+`;
+
+export const DailyTestsContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(30, 1fr);
+  gap: 8px;
+  height: 270px;
+  margin: ${spacings.md} 0 ${spacings.xl} 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    gap: 2px;
+  }
+`;
+
+export const DayColumn = styled.div`
+  position: relative;
+  height: 100%;
+  min-width: 4px;
+  background: ${colors.gray100};
+  border-radius: ${borderRadius.lg};
+  overflow: hidden;
+`;
+
+export const TestSegment = styled.div<{
+  $status: 'success' | 'failed' | 'pending' | 'inactive';
+  $height: number;
+  $offset: number;
+  $isLast: boolean;
+  $isHovering?: boolean;
+  $isPending?: boolean;
+}>`
+  position: absolute;
+  bottom: ${({ $offset }) => $offset}%;
+  left: 0;
+  width: 100%;
+  height: ${({ $height }) => $height}%;
+  background-color: ${({ $status }) =>
+    $status === 'success'
+      ? colors.green600
+      : $status === 'failed'
+        ? colors.red600
+        : $status === 'pending'
+          ? colors.gray700
+          : colors.gray100};
+  box-sizing: border-box;
+  border-top: ${({ $isLast }) =>
+    $isLast ? 'none' : '1px solid ' + colors.white};
+  transition: opacity 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+export const NoTestsMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: ${colors.gray500};
+  font-style: italic;
 `;

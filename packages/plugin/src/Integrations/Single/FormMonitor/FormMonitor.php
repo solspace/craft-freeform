@@ -138,39 +138,95 @@ class FormMonitor extends APIIntegration
         $data = json_decode((string) $response->getBody(), true);
 
         $formatDate = function ($dateString) {
+            if (!$dateString) {
+                return null;
+            }
+
             $date = DateTimeHelper::toDateTime($dateString);
-            if ($date) {
-                return \Craft::$app->getFormatter()->asDatetime(
+            if (!$date) {
+                return null;
+            }
+
+            return [
+                'formatted' => \Craft::$app->getFormatter()->asDatetime(
                     $date,
                     \Craft::$app->getLocale()->getDateTimeFormat('short')
-                );
-            }
-
-            return $dateString;
+                ),
+                'date' => $date->format('Y-m-d'),
+            ];
         };
 
+        $groupedTests = [];
         if (isset($data['tests']) && \is_array($data['tests'])) {
-            foreach ($data['tests'] as &$test) {
-                if (isset($test['dateAttempted'])) {
-                    $test['dateAttempted'] = $formatDate($test['dateAttempted']);
+            // First pass: group tests by date
+            foreach ($data['tests'] as $test) {
+                $attemptedDates = $formatDate($test['dateAttempted'] ?? null);
+                $completedDates = $formatDate($test['dateCompleted'] ?? null);
+
+                if ($attemptedDates) {
+                    $test['dateAttempted'] = $attemptedDates['formatted'];
+                    $groupDate = $attemptedDates['date'];
+
+                    if (!isset($groupedTests[$groupDate])) {
+                        $groupedTests[$groupDate] = [
+                            'date' => $groupDate,
+                            'tests' => [],
+                            'isInactive' => true,
+                        ];
+                    }
                 }
-                if (isset($test['dateCompleted'])) {
-                    $test['dateCompleted'] = $formatDate($test['dateCompleted']);
+
+                if ($completedDates) {
+                    $test['dateCompleted'] = $completedDates['formatted'];
+                }
+
+                if (isset($groupDate)) {
+                    $groupedTests[$groupDate]['tests'][] = $test;
+                    $groupedTests[$groupDate]['isInactive'] = false;
                 }
             }
+
+            // Always create 30 days of data, starting from today
+            $today = DateTimeHelper::now();
+            $currentDate = clone $today;
+
+            // Go back 29 days to have a total of 30 days including today
+            for ($i = 0; $i < 30; ++$i) {
+                $dateStr = $currentDate->format('Y-m-d');
+
+                if (!isset($groupedTests[$dateStr])) {
+                    $groupedTests[$dateStr] = [
+                        'date' => $dateStr,
+                        'tests' => [],
+                        'isInactive' => true,
+                    ];
+                }
+
+                $currentDate->modify('-1 day');
+            }
+
+            // Sort by date descending (today first)
+            krsort($groupedTests);
+            $data['tests'] = array_values($groupedTests);
         }
 
         if (isset($data['lastSubmission'])) {
-            if (isset($data['lastSubmission']['dateAttempted'])) {
-                $data['lastSubmission']['dateAttempted'] = $formatDate($data['lastSubmission']['dateAttempted']);
+            $lastAttempted = $formatDate($data['lastSubmission']['dateAttempted'] ?? null);
+            $lastCompleted = $formatDate($data['lastSubmission']['dateCompleted'] ?? null);
+
+            if ($lastAttempted) {
+                $data['lastSubmission']['dateAttempted'] = $lastAttempted['formatted'];
             }
-            if (isset($data['lastSubmission']['dateCompleted'])) {
-                $data['lastSubmission']['dateCompleted'] = $formatDate($data['lastSubmission']['dateCompleted']);
+            if ($lastCompleted) {
+                $data['lastSubmission']['dateCompleted'] = $lastCompleted['formatted'];
             }
         }
 
         if (isset($data['fmFormStats']['nextMonitoringTime'])) {
-            $data['fmFormStats']['nextMonitoringTime'] = $formatDate($data['fmFormStats']['nextMonitoringTime']);
+            $nextMonitoring = $formatDate($data['fmFormStats']['nextMonitoringTime']);
+            if ($nextMonitoring) {
+                $data['fmFormStats']['nextMonitoringTime'] = $nextMonitoring['formatted'];
+            }
         }
 
         $data['enabled'] = $this->isEnabled();

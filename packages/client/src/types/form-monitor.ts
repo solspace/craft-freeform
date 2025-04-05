@@ -10,6 +10,12 @@ export interface FormTest {
   screenshot?: string;
 }
 
+export interface TestGroup {
+  date: string;
+  tests: FormTest[];
+  isInactive?: boolean;
+}
+
 export interface TestStats {
   success: number;
   failed: number;
@@ -23,14 +29,7 @@ export interface TestStats {
 }
 
 export interface FormTestsResponse {
-  tests: FormTest[];
-  pagination: {
-    total: number;
-    totalPages: number;
-    currentPage: number;
-    limit: number;
-    offset: number;
-  };
+  tests: TestGroup[];
   stats: TestStats;
   enabled: boolean;
   url: string;

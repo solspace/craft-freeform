@@ -139,22 +139,23 @@ const ConfigurationPanel: React.FC<{
               )}
             </StatusIndicator>
 
-            {configuration.serviceStatus === 'inactive' && (
-              <>
-                {reactivationStatus ? (
-                  <StatusMessage $error={reactivationStatus === 'error'}>
-                    {getStatusMessage()}
-                  </StatusMessage>
-                ) : (
-                  <ReactivateButton
-                    onClick={handleReactivate}
-                    disabled={reactivateMutation.isLoading}
-                  >
-                    {translate('Reactivate')}
-                  </ReactivateButton>
-                )}
-              </>
-            )}
+            {configuration.serviceStatus === 'inactive' &&
+              configuration.integrationStatus === 'enabled' && (
+                <>
+                  {reactivationStatus ? (
+                    <StatusMessage $error={reactivationStatus === 'error'}>
+                      {getStatusMessage()}
+                    </StatusMessage>
+                  ) : (
+                    <ReactivateButton
+                      onClick={handleReactivate}
+                      disabled={reactivateMutation.isLoading}
+                    >
+                      {translate('Reactivate')}
+                    </ReactivateButton>
+                  )}
+                </>
+              )}
           </StatusContainer>
         </ConfigItem>
 
@@ -275,12 +276,12 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
     formId: formTests?.formId,
   } as Configuration;
 
-  const hasTests = formTests?.tests?.length > 0;
+  const hasTests = formTests?.stats?.total > 0;
 
   return (
     <Sidebar>
       <Wrapper>
-        {!formTests?.tests?.length ? (
+        {!hasTests ? (
           <>
             <RecentTestPanel />
           </>

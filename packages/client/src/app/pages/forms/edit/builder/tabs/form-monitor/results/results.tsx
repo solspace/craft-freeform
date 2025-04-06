@@ -278,7 +278,7 @@ export const FMResults: React.FC = () => {
 
   const { data: formTests, isLoading, isFetching, refetch } = formTestsQuery;
 
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = 100;
 
   if (isLoading || isFetching) {
     return <FormMonitorDetailsLoader />;
@@ -288,17 +288,21 @@ export const FMResults: React.FC = () => {
     return (
       <ResultsWrapper>
         <NoResults>
-          <p>{translate('No test results available.')}</p>
+          <p>{translate('Form Monitor is not enabled for this form.')}</p>
         </NoResults>
       </ResultsWrapper>
     );
   }
 
-  if (formTests.tests.length === 0) {
+  if (formTests?.stats?.total === 0 && formTests?.fmFormStats?.enabled) {
     return (
       <ResultsWrapper>
         <NoResults>
-          <p>{translate('No test results have been recorded yet.')}</p>
+          <p>
+            {translate(
+              'This form is awaiting its first scan. This could take several hours.'
+            )}
+          </p>
         </NoResults>
       </ResultsWrapper>
     );

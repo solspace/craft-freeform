@@ -1203,6 +1203,7 @@ return [
     'Run Queue Automatically' => 'Run Queue Automatically',
     'Memory Limit' => 'Memory Limit',
     'Craft Email configuration' => 'Craft Email configuration',
+    'Blitz cache plugin' => 'Blitz cache plugin',
     'Max Execution Time' => 'Max Execution Time',
     'Max Input Time' => 'Max Input Time',
     'Max Input Vars' => 'Max Input Vars',

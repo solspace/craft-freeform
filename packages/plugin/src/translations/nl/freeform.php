@@ -1203,6 +1203,7 @@ return [
     'Run Queue Automatically' => 'Wachtrij automatisch uitvoeren',
     'Memory Limit' => 'Geheugenlimiet',
     'Craft Email configuration' => 'Craft e-mailconfiguratie',
+    'Blitz cache plugin' => 'Blitz-cacheplugin',
     'Max Execution Time' => 'Max. uitvoeringstijd',
     'Max Input Time' => 'Max. invoertijd',
     'Max Input Vars' => 'Max. invoervars',

@@ -1203,6 +1203,7 @@ return [
     'Run Queue Automatically' => 'Warteschlange automatisch ausführen',
     'Memory Limit' => 'Speicherlimit',
     'Craft Email configuration' => 'Craft E-Mail-Konfiguration',
+    'Blitz cache plugin' => 'Blitz-Cache-Plugin',
     'Max Execution Time' => 'Maximale Ausführungszeit',
     'Max Input Time' => 'Maximale Eingabezeit',
     'Max Input Vars' => 'Maximale Eingabevariablen',

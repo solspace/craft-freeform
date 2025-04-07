@@ -1203,6 +1203,7 @@ return [
     'Run Queue Automatically' => 'Exécuter la file d’attente automatiquement',
     'Memory Limit' => 'Limite de mémoire',
     'Craft Email configuration' => 'Configuration des emails Craft',
+    'Blitz cache plugin' => 'Plugin de cache Blitz',
     'Max Execution Time' => 'Temps d’exécution maximum',
     'Max Input Time' => 'Temps d’entrée maximum',
     'Max Input Vars' => 'Vars d’entrée maximales',

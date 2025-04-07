@@ -1203,6 +1203,7 @@ return [
     'Run Queue Automatically' => 'Esegui la coda automaticamente',
     'Memory Limit' => 'Limite di Memoria',
     'Craft Email configuration' => 'Configurazione Email di Craft',
+    'Blitz cache plugin' => 'Plugin cache Blitz',
     'Max Execution Time' => 'Tempo massimo di esecuzione',
     'Max Input Time' => 'Tempo di ingresso massimo',
     'Max Input Vars' => 'Variazioni input massime',

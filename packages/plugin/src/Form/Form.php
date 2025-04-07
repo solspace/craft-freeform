@@ -602,7 +602,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this;
     }
 
-    public function handleRequest(Request $request): bool
+    public function handleRequest(Request $request, bool $lookupCall = false): bool
     {
         $this->createSubmission();
 
@@ -611,7 +611,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             return false;
         }
 
-        $event = new HandleRequestEvent($this, $request);
+        $event = new HandleRequestEvent($this, $request, $lookupCall);
         Event::trigger(self::class, self::EVENT_BEFORE_HANDLE_REQUEST, $event);
 
         if (!$event->isValid) {
@@ -622,7 +622,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
             $this->validate();
         }
 
-        $event = new HandleRequestEvent($this, $request);
+        $event = new HandleRequestEvent($this, $request, $lookupCall);
         Event::trigger(self::class, self::EVENT_AFTER_HANDLE_REQUEST, $event);
 
         return $event->isValid;

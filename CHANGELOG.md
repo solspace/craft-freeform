@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.10.6 -  2025-04-07
+
+### Added
+- Added checks for _Multi-Sites_ and the _Blitz_ plugin on the **Diagnostics** page.
+
+### Fixed
+- Fixed a bug where the **Email Digest** queue jobs were breaking from the Freeform 5.10.5 change.
+- Fixed a bug where **File Upload** fields duplicated assets within a Stripe payment form.
+- Fixed a bug where quick-saving (`CMD + S`) the **Limited Users** settings page was not working.
+
 ## 5.10.5 -  2025-04-01
 
 ### Added

@@ -261,6 +261,10 @@ class DiagnosticsService extends BaseService
         $system = $this->getSummary()->statistics->system;
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
+        $plugins = \Craft::$app->getPlugins();
+        $blitzEnabled = $plugins->isPluginEnabled('blitz');
+        $blitzVersion = $plugins->getStoredPluginInfo('blitz')['version'] ?? 'Unknown';
+
         return [
             new DiagnosticItem(
                 '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Environment').': <code>{{ value }}</code></span>',
@@ -273,6 +277,13 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Allow Admin Changes').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->allowAdminChanges,
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-{{ value.enabled ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Multi-Sites').'{% if value.count > 1 %}: <b>{{ value.count }}</b>{% endif %}</span>',
+                [
+                    'enabled' => \Craft::$app->getIsMultiSite(),
+                    'count' => \count(\Craft::$app->getSites()->getAllSites()),
+                ],
             ),
             new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Async CSRF Inputs').'</span>',
@@ -296,6 +307,10 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Craft Email configuration').': <b>{{ value.transport }}</b></span>',
                 ['transport' => $emailTransport, 'issues' => $emailIssues],
+            ),
+            new DiagnosticItem(
+                '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Blitz cache plugin').'{% if value %}: <b>'.$blitzVersion.'</b></span>{% endif %}',
+                $blitzEnabled,
             ),
         ];
     }

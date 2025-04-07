@@ -3,15 +3,14 @@
 namespace Solspace\Freeform\Bundles\Fields\Validation;
 
 use craft\helpers\Assets;
+use Solspace\Freeform\Bundles\Fields\Implementations\FileUpload\FileUploadAssetBundle;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
-use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Services\FilesService;
 use yii\base\Event;
@@ -27,66 +26,13 @@ class FileUploadValidation extends FeatureBundle
         'type',
     ];
 
-    /**
-     * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
-     * Stores the assetID once as value for handle key.
-     */
-    private static array $filesUploaded = [];
-
-    /**
-     * Contains any errors for a given upload field.
-     */
-    private static array $filesUploadedErrors = [];
-
-    public function __construct(
-        private FilesService $filesService
-    ) {
+    public function __construct(private FilesService $filesService)
+    {
         Event::on(
             FieldInterface::class,
             FieldInterface::EVENT_VALIDATE,
             [$this, 'validate']
         );
-
-        Event::on(
-            Form::class,
-            Form::EVENT_AFTER_VALIDATE,
-            [$this, 'uploadFiles']
-        );
-    }
-
-    public function uploadFiles(ValidationEvent $event): void
-    {
-        $form = $event->getForm();
-        $uploadFields = $form->getLayout()->getFields(FileUploadField::class);
-
-        foreach ($uploadFields as $field) {
-            $handle = $field->getHandle();
-
-            if (!isset(self::$filesUploaded[$handle])) {
-                $response = $this->filesService->uploadFile($field, $form);
-
-                self::$filesUploaded[$handle] = null;
-                self::$filesUploadedErrors[$handle] = [];
-
-                if ($response) {
-                    if ($response->getAssetIds() || empty($response->getErrors())) {
-                        $field->setValue($response->getAssetIds());
-                        self::$filesUploaded[$handle] = $response->getAssetIds();
-
-                        continue;
-                    }
-
-                    $field->addErrors($response->getErrors());
-                    self::$filesUploadedErrors[$handle] = $field->getErrors();
-
-                    throw new FileUploadException(implode('. ', $response->getErrors()));
-                }
-            }
-
-            if (!empty(self::$filesUploadedErrors[$handle])) {
-                $field->addErrors(self::$filesUploadedErrors[$handle]);
-            }
-        }
     }
 
     public function validate(ValidateEvent $event): void
@@ -97,7 +43,7 @@ class FileUploadValidation extends FeatureBundle
             return;
         }
 
-        if (!isset(self::$filesUploaded[$field->getHandle()])) {
+        if (!isset(FileUploadAssetBundle::$filesUploaded[$field->getHandle()])) {
             if ($form->isGraphQLPosted()) {
                 $this->validateGQL($form, $field);
             } else {
@@ -189,10 +135,10 @@ class FileUploadValidation extends FeatureBundle
 
         // if there are errors - prevent the file from being uploaded
         if ($field->hasErrors()) {
-            self::$filesUploaded[$handle] = null;
+            FileUploadAssetBundle::$filesUploaded[$handle] = null;
         }
 
-        self::$filesUploadedErrors[$handle] = $field->hasErrors();
+        FileUploadAssetBundle::$filesUploadedErrors[$handle] = $field->hasErrors();
     }
 
     private function validateGQL(Form $form, FileUploadField $field): void
@@ -297,10 +243,10 @@ class FileUploadValidation extends FeatureBundle
         }
 
         if ($uploadErrors) {
-            self::$filesUploaded[$handle] = null;
+            FileUploadAssetBundle::$filesUploaded[$handle] = null;
         }
 
-        self::$filesUploadedErrors[$handle] = $uploadErrors;
+        FileUploadAssetBundle::$filesUploadedErrors[$handle] = $uploadErrors;
 
         $form->setGraphQLArguments($arguments);
     }

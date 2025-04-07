@@ -1198,6 +1198,7 @@ return [
     'Environment' => 'Omgeving',
     'Dev Mode' => 'Dev-modus',
     'Allow Admin Changes' => 'Sta beheerderswijzigingen toe',
+    'Multi-Sites' => 'Multi-Sites',
     'Async CSRF Inputs' => 'Asynchrone CSRF-invoer',
     'Run Queue Automatically' => 'Wachtrij automatisch uitvoeren',
     'Memory Limit' => 'Geheugenlimiet',

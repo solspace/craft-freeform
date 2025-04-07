@@ -275,6 +275,13 @@ class DiagnosticsService extends BaseService
                 \Craft::$app->getConfig()->getGeneral()->allowAdminChanges,
             ),
             new DiagnosticItem(
+                '<span class="diag-check diag-{{ value.enabled ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Multi-Sites').'{% if value.count > 1 %}: <b>{{ value.count }}</b>{% endif %}</span>',
+                [
+                    'enabled' => \Craft::$app->getIsMultiSite(),
+                    'count' => \count(\Craft::$app->getSites()->getAllSites()),
+                ],
+            ),
+            new DiagnosticItem(
                 '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Async CSRF Inputs').'</span>',
                 \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs,
             ),

@@ -1198,6 +1198,7 @@ return [
     'Environment' => 'Environnement',
     'Dev Mode' => 'Mode développeur',
     'Allow Admin Changes' => 'Autoriser les modifications administratives',
+    'Multi-Sites' => 'Multi-Sites',
     'Async CSRF Inputs' => 'Entrées CSRF asynchrones',
     'Run Queue Automatically' => 'Exécuter la file d’attente automatiquement',
     'Memory Limit' => 'Limite de mémoire',

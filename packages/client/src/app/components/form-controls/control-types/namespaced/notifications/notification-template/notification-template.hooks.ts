@@ -1,5 +1,9 @@
+import { useParams } from 'react-router-dom';
 import type { NotificationTemplateGroups } from '@ff-client/queries/notifications';
-import { useQueryNotificationTemplates } from '@ff-client/queries/notifications';
+import {
+  useQueryFormNotificationTemplates,
+  useQueryNotificationTemplates,
+} from '@ff-client/queries/notifications';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
 
 type UseNotificationTemplates = (selectedId: string | number) => {
@@ -11,7 +15,13 @@ type UseNotificationTemplates = (selectedId: string | number) => {
 export const useNotificationTemplates: UseNotificationTemplates = (
   selectedId
 ) => {
+  const { formId } = useParams();
+
   const { data, isFetching } = useQueryNotificationTemplates();
+  const { data: formNotificationData, isFetching: formNotificationIsFetching } =
+    useQueryFormNotificationTemplates(Number(formId));
+
+  console.log(formNotificationData, formNotificationIsFetching);
 
   const templates = data?.templates || {
     database: [],

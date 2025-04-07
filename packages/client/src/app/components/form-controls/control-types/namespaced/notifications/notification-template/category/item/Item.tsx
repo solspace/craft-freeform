@@ -5,6 +5,7 @@ import type { NotificationTemplate } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
 
 import SubjectIcon from '../../icons/subject.svg';
+import { useNotificationEditModal } from '../../modal/template.modal.hooks';
 import type { NotificationSelectHandler } from '../../notification-template';
 
 import { Id, Name, Subject, TemplateCard } from './item.styles';
@@ -19,6 +20,7 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
   const { id, name, description, subject } = template;
 
   const [hover, setHover] = React.useState(false);
+  const openModal = useNotificationEditModal();
 
   const cardAnimations = useSpring({
     transform: hover ? 'scale(1.08) rotate(1deg)' : 'scale(1) rotate(0deg)',
@@ -38,7 +40,22 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
       onMouseLeave={() => setHover(false)}
       onClick={() => onClick(template)}
     >
-      <Name>{name}</Name>
+      <Name>
+        {name}{' '}
+        <a
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            console.log('THIS IS GOING TO BE A MODAL');
+            openModal(id);
+
+            return false;
+          }}
+        >
+          Click Me To Edit
+        </a>
+      </Name>
       <Id className="code">
         {typeof id === 'number' && 'ID: '}
         {id}

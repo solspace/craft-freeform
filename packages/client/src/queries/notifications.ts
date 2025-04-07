@@ -15,6 +15,8 @@ export const QKNotifications = {
   all: ['notifications'] as const,
   types: () => [...QKNotifications.all, 'types'] as const,
   templates: () => [...QKNotifications.all, 'templates'] as const,
+  formTemplates: (id: number) =>
+    [...QKNotifications.all, 'forms', id, 'templates'] as const,
   single: (id: number) => [...QKNotifications.all, 'forms', id] as const,
 };
 
@@ -92,6 +94,22 @@ export const useQueryNotificationTemplates = (): UseQueryResult<
     () =>
       axios
         .get<NotificationTemplatePayload>('/api/notifications/templates')
+        .then((res) => res.data),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
+};
+
+export const useQueryFormNotificationTemplates = (
+  formId?: number
+): UseQueryResult<NotificationTemplate[], AxiosError> => {
+  return useQuery(
+    QKNotifications.formTemplates(formId),
+    () =>
+      axios
+        .get(`/api/forms/${formId}/notifications/templates`)
         .then((res) => res.data),
     {
       staleTime: Infinity,

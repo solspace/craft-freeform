@@ -113,6 +113,7 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_notification_templates'))
                 ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer())
                 ->addField('pdfTemplateIds', $this->text())
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
@@ -129,7 +130,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('autoText', $this->boolean()->notNull()->defaultValue(true))
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
-                ->addField('sortOrder', $this->integer()),
+                ->addField('sortOrder', $this->integer())
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())

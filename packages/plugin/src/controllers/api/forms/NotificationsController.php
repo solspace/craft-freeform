@@ -49,4 +49,23 @@ class NotificationsController extends BaseApiController
 
         return $this->response;
     }
+
+    public function actionGetTemplates(int $formId): Response
+    {
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
+            return $this->asJson([]);
+        }
+
+        $notifications = $this->formNotificationsProvider->getByForm($form);
+
+        $serialized = $this->serializer->serialize($notifications, 'json', [
+            IdentificationNormalizer::NORMALIZE_TO_IDENTIFICATORS => true,
+        ]);
+
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $serialized;
+
+        return $this->response;
+    }
 }

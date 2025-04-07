@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 /**
  * @property int    $id
+ * @property int    $formId
  * @property string $pdfTemplateIds
  * @property string $name
  * @property string $handle

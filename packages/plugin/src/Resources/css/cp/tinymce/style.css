@@ -1,1 +1,30 @@
-body{font-family:system-ui,"system-ui",-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",sans-serif;font-size:14px;padding:18px 24px}code{padding-block:.0625em;padding-inline:.25em;background-color:#e4edf6;border:1px solid rgba(51,64,77,.1019607843);border-radius:3px}pre{padding:10px !important;background:#f7f7f7 !important;border:1px solid #d9d9d9;white-space:pre-wrap !important}
+body {
+  font-family: system-ui, "system-ui", -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  padding: 18px 24px;
+}
+
+code {
+  padding-block: 0.0625em;
+  padding-inline: 0.25em;
+  background-color: #e4edf6;
+  border: 1px solid rgba(51, 64, 77, 0.1019607843);
+  border-radius: 3px;
+}
+
+pre {
+  padding: 10px !important;
+  background: rgb(247, 247, 247) !important;
+  border: 1px solid #d9d9d9;
+  white-space: pre-wrap !important;
+}
+
+span[data-freeform-token] {
+  background-color: #e4edf6;
+  border: 1px solid rgba(51, 64, 77, 0.1019607843);
+  border-radius: 3px;
+  padding: 0.0625em 0.25em;
+}
+span[data-freeform-token][data-mce-selected] {
+  outline: 3px solid #0078d4 !important;
+}

@@ -7,3 +7,9 @@ export type ModalContainerProps = PropsWithChildren<{
   closeModal: () => void;
   data?: GenericValue;
 }>;
+
+export type ModalConfig = {
+  allowEscape?: boolean;
+  requireConfirmation?: boolean;
+  confirmationMessage?: string;
+};

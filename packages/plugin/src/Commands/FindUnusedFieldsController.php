@@ -1,0 +1,55 @@
+<?php
+
+namespace Solspace\Freeform\Commands;
+
+use Craft;
+use Solspace\Freeform\Freeform;
+use yii\console\Controller;
+use yii\helpers\Console;
+
+class FindUnusedFieldsController extends Controller
+{
+    public function actionIndex(): int
+    {
+        $db = Craft::$app->getDb();
+
+        $fieldIds = $db->createCommand('SELECT id FROM {{%freeform_fields}}')->queryColumn();
+
+        $submissionTables = array_filter($db->schema->getTableNames(), function ($tableName) {
+            return str_starts_with($tableName, Craft::$app->getDb()->tablePrefix . 'freeform_submissions_');
+        });
+
+        $usedFieldIds = [];
+
+        foreach ($submissionTables as $tableName) {
+            $columns = $db->getSchema()->getTableSchema($tableName)->columnNames;
+
+            foreach ($columns as $columnName) {
+                if (preg_match('/_(\d+)$/', $columnName, $matches)) {
+                    $usedFieldIds[] = (int) $matches[1];
+                }
+            }
+        }
+
+        $usedFieldIds = array_unique($usedFieldIds);
+
+        $unusedFieldIds = array_diff($fieldIds, $usedFieldIds);
+
+        if (empty($unusedFieldIds)) {
+            $this->stdout("No unused fields found.\n", Console::FG_GREEN);
+            return Controller::EXIT_CODE_NORMAL;
+        }
+
+        $this->stdout("Unused Freeform Fields:\n", Console::FG_YELLOW);
+
+        $unusedFields = $db->createCommand(
+            'SELECT id, handle, label FROM {{%freeform_fields}} WHERE id IN (' . implode(',', $unusedFieldIds) . ')'
+        )->queryAll();
+
+        foreach ($unusedFields as $field) {
+            $this->stdout("- [ID: {$field['id']}] {$field['handle']} ({$field['label']})\n", Console::FG_RED);
+        }
+
+        return Controller::EXIT_CODE_NORMAL;
+    }
+}

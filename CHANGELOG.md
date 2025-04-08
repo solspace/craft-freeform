@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.10.7 -  2025-04-08
+
+### Changed
+- Updated the spam count for the **Spam Folder** to show the count per Site (where applicable).
+
+### Fixed
+- Fixed a bug where mapping Freeform single **Checkbox** fields to Craft's **Checkboxes** field type with a single option only worked for Entry elements.
+- Fixed a bug where `checkedByDefault` did not work for **Checkbox** fields in GraphQL. A fallback for `checked` is still available (which doesn't work), although it is deprecated and will be removed in Freeform 6.0.
+
+### Deprecated
+- Deprecated the `checked` attribute for **Checkbox** fields in GraphQL. Please use `checkedByDefault` instead.
+
 ## 5.10.6 -  2025-04-07
 
 ### Added

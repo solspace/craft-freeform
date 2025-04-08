@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
@@ -24,6 +25,7 @@ use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePaymentService;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
@@ -107,6 +109,16 @@ class FreeformVariable
         $query = Submission::find()->limit(1)->token($token);
 
         return Freeform::getInstance()->submissions->delete($query, true);
+    }
+
+    public function integration(Form $form, string $handle): ?IntegrationInterface
+    {
+        $provider = \Craft::$container->get(FormIntegrationsProvider::class);
+
+        return $provider->getFirstForForm(
+            $form,
+            filter: fn (IntegrationInterface $integration) => $integration->getHandle() === $handle,
+        );
     }
 
     public function getSettings(): Settings

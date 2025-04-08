@@ -51,6 +51,7 @@ class GeneralSettings extends SettingsNamespace
     #[Middleware('injectInto', [
         'target' => 'handle',
         'camelize' => true,
+        'transliterate' => true,
         'bypassConditions' => [['name' => 'isNew', 'isTrue' => false]],
     ])]
     #[Validators\Required]

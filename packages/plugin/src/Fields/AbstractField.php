@@ -63,6 +63,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[Middleware('injectInto', [
         'target' => 'handle',
         'camelize' => true,
+        'transliterate' => true,
         'bypassConditions' => [['name' => 'id', 'isTrue' => true]],
     ])]
     #[Input\Text(

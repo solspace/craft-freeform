@@ -254,8 +254,8 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_CHECKBOX === $typeName) {
-            $fieldDefinitions['checked'] = [
-                'name' => 'checked',
+            $fieldDefinitions['checkedByDefault'] = [
+                'name' => 'checkedByDefault',
                 'type' => Type::boolean(),
                 'description' => 'Is this checkbox checked by default',
             ];

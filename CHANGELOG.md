@@ -10,7 +10,7 @@
 ### Added
 - Verified support for Craft 4.14.x.
 
-### Changes
+### Changed
 - Updated the plugin icon.
 - Updated some internal dependencies to prevent security warnings.
 

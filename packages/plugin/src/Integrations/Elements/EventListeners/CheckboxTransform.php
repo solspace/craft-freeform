@@ -1,12 +1,12 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\Elements\Entry\EventListeners;
+namespace Solspace\Freeform\Integrations\Elements\EventListeners;
 
 use craft\fields\Checkboxes;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Integrations\Elements\Entry\Entry;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use yii\base\Event;
 
 class CheckboxTransform extends FeatureBundle
@@ -14,18 +14,14 @@ class CheckboxTransform extends FeatureBundle
     public function __construct()
     {
         Event::on(
-            Entry::class,
-            Entry::EVENT_PROCESS_VALUE,
+            ElementIntegrationInterface::class,
+            ElementIntegrationInterface::EVENT_PROCESS_VALUE,
             [$this, 'processCheckbox']
         );
     }
 
     public function processCheckbox(ProcessValueEvent $event): void
     {
-        if (!$event->getIntegration() instanceof Entry) {
-            return;
-        }
-
         $craftField = $event->getCraftField();
         if (!$craftField instanceof Checkboxes) {
             return;

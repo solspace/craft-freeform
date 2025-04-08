@@ -254,10 +254,21 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_CHECKBOX === $typeName) {
+            $fieldDefinitions['checkedByDefault'] = [
+                'name' => 'checkedByDefault',
+                'type' => Type::boolean(),
+                'description' => 'Is this checkbox checked by default',
+            ];
+
+            /*
+             * @deprecated - this attribute is no longer used
+             *
+             * @remove - Freeform 6.0
+             */
             $fieldDefinitions['checked'] = [
                 'name' => 'checked',
                 'type' => Type::boolean(),
-                'description' => 'Is this checkbox checked by default',
+                'description' => 'Is this checkbox checked by default. Deprecated. Will be removed in Freeform 6.0.',
             ];
         }
 

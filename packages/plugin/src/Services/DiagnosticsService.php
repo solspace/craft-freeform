@@ -9,6 +9,7 @@ use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\Gmail;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
+use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -16,6 +17,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
+use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\ValidatorContext;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -51,6 +53,31 @@ class DiagnosticsService extends BaseService
                 [
                     'edition' => Freeform::getInstance()->edition,
                     'version' => Freeform::getInstance()->getVersion(),
+                ],
+                [
+                    new SuggestionValidator(
+                        function ($value, ValidatorContext $context) {
+                            $version = $value['version'];
+
+                            try {
+                                $response = (new Client())->get(
+                                    'https://api.github.com/repos/solspace/craft-freeform/releases/latest',
+                                    ['headers' => ['Accept' => 'application/json']]
+                                );
+                                $json = json_decode((string) $response->getBody());
+                                $latest = preg_replace('/^v/', '', $json->name);
+
+                                $context->add($latest, 'latestVersion');
+                                $context->add(UrlHelper::cpUrl('utilities/updates'), 'url');
+                            } catch (\Exception) {
+                                return true;
+                            }
+
+                            return version_compare($version, $latest, '>');
+                        },
+                        'Version Outdated',
+                        'An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest feature, bugfixes, and improvements.',
+                    ),
                 ]
             ),
             new DiagnosticItem(

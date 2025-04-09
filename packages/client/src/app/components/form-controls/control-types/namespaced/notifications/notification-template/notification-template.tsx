@@ -3,6 +3,7 @@ import { Control } from '@components/form-controls/control';
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config from '@config/freeform/freeform.config';
 import { useNewNotificationMutation } from '@ff-client/queries/notifications.mutation';
 import { spacings } from '@ff-client/styles/variables';
 import {
@@ -38,6 +39,10 @@ const NotificationTemplate: React.FC<
   const [open, setOpen] = React.useState(false);
   const { templates, isFetching, selectedTemplate } =
     useNotificationTemplates(value);
+
+  const {
+    templates: { canCreate },
+  } = config;
 
   const editorAnimations = useEditorAnimations(
     open,
@@ -120,33 +125,35 @@ const NotificationTemplate: React.FC<
             {translate('Clear choice')}
           </Button>
 
-          <Button
-            className={classes(
-              'btn',
-              'submit',
-              !mutation.isLoading && 'add',
-              !mutation.isLoading && 'icon',
-              mutation.isLoading && 'disabled'
-            )}
-            disabled={mutation.isLoading}
-            onClick={() =>
-              mutation.mutate(
-                { name: 'New Template' },
-                {
-                  onSuccess: (data) => {
-                    const template = data.data;
-                    handleSelect(template);
-                  },
-                }
-              )
-            }
-          >
-            {mutation.isLoading && (
-              <LoadingText>{translate('Creating a template')}</LoadingText>
-            )}
+          {canCreate && (
+            <Button
+              className={classes(
+                'btn',
+                'submit',
+                !mutation.isLoading && 'add',
+                !mutation.isLoading && 'icon',
+                mutation.isLoading && 'disabled'
+              )}
+              disabled={mutation.isLoading}
+              onClick={() =>
+                mutation.mutate(
+                  { name: 'New Template' },
+                  {
+                    onSuccess: (data) => {
+                      const template = data.data;
+                      handleSelect(template);
+                    },
+                  }
+                )
+              }
+            >
+              {mutation.isLoading && (
+                <LoadingText>{translate('Creating a template')}</LoadingText>
+              )}
 
-            {!mutation.isLoading && translate('New template')}
-          </Button>
+              {!mutation.isLoading && translate('New template')}
+            </Button>
+          )}
         </ButtonRow>
 
         {mutation.isError && (

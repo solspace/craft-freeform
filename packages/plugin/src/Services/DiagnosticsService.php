@@ -73,7 +73,7 @@ class DiagnosticsService extends BaseService
                                 return true;
                             }
 
-                            return version_compare($version, $latest, '>');
+                            return version_compare($version, $latest, '>=');
                         },
                         'Version Outdated',
                         'An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest feature, bugfixes, and improvements.',

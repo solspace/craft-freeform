@@ -71,7 +71,7 @@ $(() => {
       filters.forEach((filter) => {
         const { expression } = filter;
 
-        const fn = new Function(...Object.keys(values), `return ${expression};`);
+        const fn = new Function(...Object.keys(values.values), `return ${expression};`);
 
         if (fn(...Object.values(values))) {
           $field.show();

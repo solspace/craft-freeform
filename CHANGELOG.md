@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.10.7 -  2025-04-08
+## 5.10.7 - 2025-04-08
 
 ### Changed
 - Updated the spam count for the **Spam Folder** to show the count per Site (where applicable).
@@ -12,7 +12,7 @@
 ### Deprecated
 - Deprecated the `checked` attribute for **Checkbox** fields in GraphQL. Please use `checkedByDefault` instead.
 
-## 5.10.6 -  2025-04-07
+## 5.10.6 - 2025-04-07
 
 ### Added
 - Added checks for _Multi-Sites_ and the _Blitz_ plugin on the **Diagnostics** page.
@@ -22,7 +22,7 @@
 - Fixed a bug where **File Upload** fields duplicated assets within a Stripe payment form.
 - Fixed a bug where quick-saving (`CMD + S`) the **Limited Users** settings page was not working.
 
-## 5.10.5 -  2025-04-01
+## 5.10.5 - 2025-04-01
 
 ### Added
 - Added support for Craft 5.6's Email settings **Site Overrides** feature so email notification templates will respect per-Site email settings.

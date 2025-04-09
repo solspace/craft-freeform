@@ -1187,6 +1187,7 @@ return [
     'Warnings' => 'Waarschuwingen',
     'Suggestions' => 'Suggesties',
     'Server Checks' => 'Servercontroles',
+    'Site Settings' => 'Site-instellingen',
     'Statistics' => 'Statistieken',
     'Freeform Configuration' => 'Freeform-configuratie',
     'Form Types' => 'Formuliertypen',

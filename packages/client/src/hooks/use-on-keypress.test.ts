@@ -1,5 +1,5 @@
-import { describe, expect, it, jest } from '@jest/globals';
 import { renderHook } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import { useOnKeypress } from './use-on-keypress';
 
@@ -7,7 +7,7 @@ type KeypressProps = Parameters<typeof useOnKeypress>[0];
 
 describe('use-on-keypress', () => {
   it('binds by default', () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     renderHook(() =>
       useOnKeypress({
@@ -21,7 +21,7 @@ describe('use-on-keypress', () => {
   });
 
   it('binds when meets condition', () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     renderHook(() =>
       useOnKeypress({
@@ -36,7 +36,7 @@ describe('use-on-keypress', () => {
   });
 
   it("unbinds when doesn't meet condition", () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const { rerender } = renderHook(
       (props: KeypressProps) => useOnKeypress(props),
@@ -58,7 +58,7 @@ describe('use-on-keypress', () => {
   });
 
   it('unbinds when unmouts', () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
 
     const { unmount } = renderHook(
       (props: KeypressProps) => useOnKeypress(props),

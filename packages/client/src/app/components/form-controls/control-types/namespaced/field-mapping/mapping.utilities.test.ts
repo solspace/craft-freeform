@@ -1,5 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
-
 import { extractParameter } from './mapping.utilities';
 
 describe('field-mapping.utilities', () => {

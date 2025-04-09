@@ -29,6 +29,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -406,7 +407,7 @@ class IntegrationsService extends BaseService
 
         $freeformEdition = Freeform::getInstance()->edition;
 
-        $key = ($form?->getId() ?? '0').$type;
+        $key = $this->getCacheKey($form, $type, $enabled, $filter);
 
         if (!isset($cache[$key])) {
             $isClassType = class_exists($type) || interface_exists($type);
@@ -575,5 +576,23 @@ class IntegrationsService extends BaseService
     protected function createIntegrationModel(array $data): IntegrationModel
     {
         return new IntegrationModel($data);
+    }
+
+    private function getCacheKey(?Form $form, ?string $type, ?bool $enabled, ?callable $filter = null): string
+    {
+        $formId = $form?->getId() ?? '0';
+        $type ??= IntegrationInterface::class;
+        $enabled = $enabled ? '1' : '0';
+        $filter = $filter ? spl_object_hash((object) $filter) : '0';
+
+        return HashHelper::sha1(
+            \sprintf(
+                '%s-%s-%s-%s',
+                $formId,
+                $type,
+                $enabled,
+                $filter
+            )
+        );
     }
 }

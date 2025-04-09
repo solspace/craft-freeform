@@ -9,7 +9,6 @@ use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\Gmail;
 use craft\mail\transportadapters\Sendmail;
 use craft\mail\transportadapters\Smtp;
-use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -46,34 +45,29 @@ class DiagnosticsService extends BaseService
         $maxCraftVersion = '5.7.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.4.0';
+        $latestVersion = $this->getLatestFreeformVersion();
+        $hasUpdate = version_compare($this->getLatestFreeformVersion(), Freeform::getInstance()->version, '>');
 
         return [
             new DiagnosticItem(
-                '<span class="diag-check diag-enabled"></span><span class="item-inline">Freeform <b>{{ value.edition|title }} {{ value.version }}</b></span>',
+                '<span class="diag-check diag-{{ value.hasUpdate ? \'info\' : \'enabled\' }}"></span><span class="item-inline">Freeform <b>{{ value.edition|title }} {{ value.version }}</b></span>',
                 [
                     'edition' => Freeform::getInstance()->edition,
                     'version' => Freeform::getInstance()->getVersion(),
+                    'latestVersion' => $latestVersion,
+                    'hasUpdate' => $hasUpdate,
                 ],
                 [
                     new SuggestionValidator(
-                        function ($value, ValidatorContext $context) {
-                            $version = $value['version'];
-
-                            try {
-                                $response = (new Client())->get(
-                                    'https://api.github.com/repos/solspace/craft-freeform/releases/latest',
-                                    ['headers' => ['Accept' => 'application/json']]
-                                );
-                                $json = json_decode((string) $response->getBody());
-                                $latest = preg_replace('/^v/', '', $json->name);
-
-                                $context->add($latest, 'latestVersion');
-                                $context->add(UrlHelper::cpUrl('utilities/updates'), 'url');
-                            } catch (\Exception) {
+                        function ($value, ValidatorContext $context) use ($latestVersion, $hasUpdate) {
+                            if (!$latestVersion) {
                                 return true;
                             }
 
-                            return version_compare($version, $latest, '>=');
+                            $context->add($latestVersion, 'latestVersion');
+                            $context->add(UrlHelper::cpUrl('utilities/updates'), 'url');
+
+                            return !$hasUpdate;
                         },
                         'Version Outdated',
                         'An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest feature, bugfixes, and improvements.',
@@ -843,6 +837,26 @@ class DiagnosticsService extends BaseService
         }
 
         return $diagnosticItems;
+    }
+
+    private function getLatestFreeformVersion(): ?string
+    {
+        $updates = \Craft::$app->updates->getUpdates();
+        $freeform = $updates->plugins['freeform'];
+        $latestVersion = null;
+
+        try {
+            $releases = $freeform->releases;
+            foreach ($releases as $release) {
+                if (!$latestVersion || version_compare($latestVersion, $release->version, '<')) {
+                    $latestVersion = $release->version;
+                }
+            }
+        } catch (\Exception) {
+            return null;
+        }
+
+        return $latestVersion;
     }
 
     private static function convertBytesToMB(int|string $size): float

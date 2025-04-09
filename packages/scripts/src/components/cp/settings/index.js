@@ -99,18 +99,24 @@ $(() => {
     change: (event) => {
       const { value } = event.target;
 
-      if (['files', 'files_database'].includes(value)) {
-        filesDirectory.removeClass('hidden');
-      } else {
-        filesDirectory.addClass('hidden');
-      }
+      const isFiles = ['files', 'files_database'].includes(value);
 
-      if (value === 'files_database') {
-        templateDefault.removeClass('hidden');
-      } else {
-        templateDefault.addClass('hidden');
-      }
+      filesDirectory.toggleClass('hidden', !isFiles);
+      templateDefault.toggleClass('combined', value === 'files_database').trigger('change');
     },
+  });
+
+  $('#allow-builder-templates').on({
+    change: (event) => {
+      const checked = $('input', event.target).val() == '1';
+      templateDefault.toggleClass('builder-templates', checked).trigger('change');
+    },
+  });
+
+  templateDefault.on('change', (event) => {
+    const classList = event.target.classList;
+    const isBoth = classList.contains('combined') && classList.contains('builder-templates');
+    $(event.target).toggleClass('hidden', !isBoth);
   });
 
   const notificationsMigrator = $('#notifications-migrator');

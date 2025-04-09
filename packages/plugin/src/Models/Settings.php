@@ -86,6 +86,8 @@ class Settings extends Model
     /** @var string */
     public $emailTemplateDefault;
 
+    public bool $allowBuilderTemplateCreation = true;
+
     /** @var string */
     public $successTemplateDirectory;
 

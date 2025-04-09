@@ -9,6 +9,7 @@ export enum Edition {
 type Config = {
   templates: {
     native: boolean;
+    canCreate: boolean;
   };
   feed: boolean;
   limits: {

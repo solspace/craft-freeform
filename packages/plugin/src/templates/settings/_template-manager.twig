@@ -95,10 +95,23 @@
         },
     }) }}
 
-    <div id="template-default" class="field {{ settings.emailTemplateStorageType != "files_database" ? "hidden" }}">
+    {{ forms.lightswitchField({
+        id: "allow-builder-templates",
+        label: "Allow New Templates to be created inside the Form Builder"|t("freeform"),
+        instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
+        name: "settings[allowBuilderTemplateCreation]",
+        value: settings.allowBuilderTemplateCreation,
+        errors: settings.errors("allowBuilderTemplateCreation"),
+        on: settings.allowBuilderTemplateCreation,
+    }) }}
+
+
+    {% set isBuilder = settings.allowBuilderTemplateCreation %}
+    {% set isCombined = settings.emailTemplateStorageType == "files_database" %}
+    <div id="template-default" class="field {{ isBuilder ? 'builder-templates' }} {{ isCombined ? 'combined' }} {{ not isBuilder or not isCombined ? "hidden" }}">
         {{ forms.selectField({
-            label: "Default Email Template Creation Method"|t('freeform'),
-            instructions: "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder."|t('freeform'),
+            label: "New Template Type for Form Builder"|t('freeform'),
+            instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
             name: "settings[emailTemplateDefault]",
             value: settings.emailTemplateDefault,
             errors: settings.errors("emailTemplateDefault"),
@@ -112,8 +125,8 @@
     <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
         {{ forms.lightswitchField({
-            label: "Allow File-based Email Templates to be created inside the Control Panel"|t('freeform'),
-            instructions: "Allowing users to generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
+            label: "Allow File-based Email Templates to be managed inside the Notifications area"|t('freeform'),
+            instructions: "Allowing users to modify or generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
             name: "settings[allowFileTemplateEdit]",
             on: settings.allowFileTemplateEdit,
             errors: settings.errors("allowFileTemplateEdit"),
@@ -125,32 +138,6 @@
                 "name": directory
             }]) %}
         {% endfor %}
-
-        {{ forms.autosuggestField({
-            label: "Default From Email for New Templates"|t('freeform'),
-            id: "defaultFromEmail",
-            class: "code",
-            suggestEnvVars: true,
-            suggestAliases: false,
-            limit: 10,
-            name: "settings[defaultFromEmail]",
-            value: settings.defaultFromEmail,
-            errors: settings.getErrors("defaultFromEmail"),
-            instructions: "The default email address to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
-        }) }}
-
-        {{ forms.autosuggestField({
-            label: "Default From Name for New Templates"|t('freeform'),
-            id: "defaultFromName",
-            class: "code",
-            suggestEnvVars: true,
-            suggestAliases: false,
-            limit: 10,
-            name: "settings[defaultFromName]",
-            value: settings.defaultFromName,
-            errors: settings.getErrors("defaultFromName"),
-            instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
-        }) }}
 
         {{ forms.autosuggestField({
             label: "File Directory Path"|t('freeform'),
@@ -237,6 +224,32 @@
         {% endif %}
 
     </div>
+
+    {{ forms.autosuggestField({
+        label: "Default From Email for New Templates"|t('freeform'),
+        id: "defaultFromEmail",
+        class: "code",
+        suggestEnvVars: true,
+        suggestAliases: false,
+        limit: 10,
+        name: "settings[defaultFromEmail]",
+        value: settings.defaultFromEmail,
+        errors: settings.getErrors("defaultFromEmail"),
+        instructions: "The default email address to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Default From Name for New Templates"|t('freeform'),
+        id: "defaultFromName",
+        class: "code",
+        suggestEnvVars: true,
+        suggestAliases: false,
+        limit: 10,
+        name: "settings[defaultFromName]",
+        value: settings.defaultFromName,
+        errors: settings.getErrors("defaultFromName"),
+        instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
+    }) }}
 
     <hr />
 

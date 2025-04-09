@@ -113,10 +113,9 @@ $(() => {
     },
   });
 
-  templateDefault.on('change', (event) => {
-    const classList = event.target.classList;
-    const isBoth = classList.contains('combined') && classList.contains('builder-templates');
-    $(event.target).toggleClass('hidden', !isBoth);
+  templateDefault.on('change', () => {
+    const isBoth = templateDefault.hasClass('combined') && templateDefault.hasClass('builder-templates');
+    templateDefault.toggleClass('hidden', !isBoth);
   });
 
   const notificationsMigrator = $('#notifications-migrator');

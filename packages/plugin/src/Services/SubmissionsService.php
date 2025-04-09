@@ -33,6 +33,8 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SavedFormRecord;
 use Twig\Markup;
@@ -90,6 +92,23 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function getSubmissionCount(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false): int
     {
+        $isSitesEnabled = $this->getSettingsService()->getSettingsModel()->sitesEnabled;
+        if ($isSitesEnabled) {
+            $siteId = SitesHelper::getCurrentCpPageSiteId();
+            $availableFormIds = (new Query())
+                ->select('formId')
+                ->from(FormSiteRecord::TABLE)
+                ->where(['siteId' => $siteId])
+                ->column()
+            ;
+
+            if ($formIds) {
+                $formIds = array_intersect($formIds, $availableFormIds);
+            } else {
+                $formIds = $availableFormIds;
+            }
+        }
+
         $submissions = Submission::TABLE;
         $query = (new Query())
             ->select(["COUNT({$submissions}.[[id]])"])

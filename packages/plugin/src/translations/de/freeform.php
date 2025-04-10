@@ -1196,6 +1196,7 @@ return [
     'Modules' => 'Module',
     'Spam Controls' => 'Spam-Kontrollen',
     'Template Directories' => 'Template-Verzeichnisse',
+    'An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest features, bug fixes, and improvements.' => 'Für Freeform ist ein Update verfügbar. Bitte aktualisiere jetzt auf <b><a href="{{ url }}">v{{ latestVersion }}</a></b>, um die neuesten Funktionen, Fehlerbehebungen und Verbesserungen zu erhalten.',
     'Database Driver' => 'Datenbanktreiber',
     'OS' => 'Betriebssystem',
     'Environment' => 'Umgebung',

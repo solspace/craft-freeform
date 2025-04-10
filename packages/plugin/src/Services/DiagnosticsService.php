@@ -70,7 +70,7 @@ class DiagnosticsService extends BaseService
                             return !$hasUpdate;
                         },
                         'Version Outdated',
-                        'An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest feature, bugfixes, and improvements.',
+                        Freeform::t('An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest features, bug fixes, and improvements.'),
                     ),
                 ]
             ),

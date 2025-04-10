@@ -20,6 +20,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Db;
 use craft\helpers\Session;
 use craft\records\Element;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
@@ -417,6 +418,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $query = $this
             ->getFindQuery()
+            ->trashed(null)
             ->andWhere(
                 Db::parseDateParam(
                     Db::rawTableShortName(Submission::TABLE.'.[[dateCreated]]'),
@@ -452,6 +454,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return [$deletedSubmissions, $deletedAssets];
     }
 
+    /**
+     * @return SubmissionQuery
+     */
     protected function getFindQuery(): Query
     {
         return Submission::find();
@@ -485,7 +490,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         foreach ($uploadFields as $field) {
             $value = $submission->getFormFieldValue($field);
-            $assetIds = array_merge($assetIds, $value);
+            $assetIds = array_merge($assetIds, $value ?? []);
         }
 
         return $assetIds;

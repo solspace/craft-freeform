@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FormComponent } from '@components/form-controls';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { injectInto as handleMiddleware } from '@components/middleware/implementations';
+import { handle as handleParser } from '@components/middleware/implementations';
 import {
   ModalContainer,
   ModalFooter,
@@ -78,6 +80,16 @@ export const CreateFormModal: React.FC<ModalContainerProps> = ({
     setIsSaving(true);
 
     try {
+      handleMiddleware(
+        state.name,
+        { camelize: true, transliterate: true, target: '' },
+        undefined,
+        (_, value) => {
+          state.handle = value;
+        }
+      );
+      state.handle = handleParser(state.handle);
+
       const { data: form } = await axios.post<Form>('/api/forms/modal', state);
 
       setState({ ...initialValues });

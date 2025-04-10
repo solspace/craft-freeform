@@ -1,10 +1,10 @@
-import { describe, expect, it, jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 import injectInto from './inject-into';
 
 describe('injectInto middleware', () => {
   it('calls injector with correct arguments, returns self', () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
     const result = injectInto(
       'My Test Value',
       { target: 'myProp' },
@@ -19,7 +19,7 @@ describe('injectInto middleware', () => {
   });
 
   it('calls injector with camelize on and receives camelized string', () => {
-    const callback = jest.fn();
+    const callback = vi.fn();
     injectInto(
       'My Test Value',
       { target: 'myProp', camelize: true },
@@ -32,7 +32,7 @@ describe('injectInto middleware', () => {
 
   describe('conditional injector', () => {
     it('bypasses injector with condition that matches', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       injectInto(
         'My Test Value',
         {
@@ -47,7 +47,7 @@ describe('injectInto middleware', () => {
     });
 
     it('bypasses injector with several conditions with one matching', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       injectInto(
         'My Test Value',
         {
@@ -65,7 +65,7 @@ describe('injectInto middleware', () => {
     });
 
     it('bypasses injector with several conditions that should not match', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       injectInto(
         'My Test Value',
         {
@@ -83,7 +83,7 @@ describe('injectInto middleware', () => {
     });
 
     it('calls injector when condition does not match', () => {
-      const callback = jest.fn();
+      const callback = vi.fn();
       injectInto(
         'My Test Value',
         {

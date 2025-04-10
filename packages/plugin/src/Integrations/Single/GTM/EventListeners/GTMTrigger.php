@@ -74,12 +74,13 @@ class GTMTrigger extends FeatureBundle
             return;
         }
 
+        $event->addScript('js/scripts/front-end/integrations/gtm/gtm.js');
+
         $containerId = $integration->getContainerId();
         if (!$containerId) {
             return;
         }
 
-        $event->addScript('js/scripts/front-end/integrations/gtm/gtm.js');
         $event->addChunk(
             <<<'GTMSCRIPT'
                 <!-- Google Tag Manager (noscript) -->

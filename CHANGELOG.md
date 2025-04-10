@@ -1,6 +1,31 @@
 # Solspace Freeform Changelog
 
-## 5.10.6 -  2025-04-07
+## 5.10.8 - 2025-04-10
+
+### Added
+- Added the ability to access some integration properties on the frontend via Twig (e.g. `{{ freeform.integration(form, "post-forwarding").url }}`).
+- Added a setting to disable template creation inside the form builder.
+- Added transliteration to form handles and field handles in the form builder.
+- Added a Freeform version check on the Diagnostics page.
+
+### Fixed
+- Fixed a bug where the `freeform/purge/spam` console command was not purging soft-deleted submissions.
+- Fixed a bug where the GTM push layer event was not working when the Container ID setting was left empty for the Google Tag Manager integration.
+- Fixed a bug where `getFields()` was unavailable to the `SendNotificationsEvent` event.
+
+## 5.10.7 - 2025-04-08
+
+### Changed
+- Updated the spam count for the **Spam Folder** to show the count per Site (where applicable).
+
+### Fixed
+- Fixed a bug where mapping Freeform single **Checkbox** fields to Craft's **Checkboxes** field type with a single option only worked for Entry elements.
+- Fixed a bug where `checkedByDefault` did not work for **Checkbox** fields in GraphQL. A fallback for `checked` is still available (which doesn't work), although it is deprecated and will be removed in Freeform 6.0.
+
+### Deprecated
+- Deprecated the `checked` attribute for **Checkbox** fields in GraphQL. Please use `checkedByDefault` instead.
+
+## 5.10.6 - 2025-04-07
 
 ### Added
 - Added checks for _Multi-Sites_ and the _Blitz_ plugin on the **Diagnostics** page.
@@ -10,7 +35,7 @@
 - Fixed a bug where **File Upload** fields duplicated assets within a Stripe payment form.
 - Fixed a bug where quick-saving (`CMD + S`) the **Limited Users** settings page was not working.
 
-## 5.10.5 -  2025-04-01
+## 5.10.5 - 2025-04-01
 
 ### Added
 - Added support for Craft 5.6's Email settings **Site Overrides** feature so email notification templates will respect per-Site email settings.

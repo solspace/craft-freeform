@@ -368,7 +368,7 @@ class Submission extends Element
 
     public function getFormFieldValue(FieldInterface $field): mixed
     {
-        return $this->fieldCollection->get($field)?->getValue();
+        return $this->fieldCollection?->get($field)?->getValue();
     }
 
     public function getFormFieldValues(): array

@@ -1,4 +1,4 @@
-import { transliterate } from 'transliteration';
+import transliterate from '@sindresorhus/transliterate';
 
 import type { MiddlewareImplementation } from '../middleware';
 

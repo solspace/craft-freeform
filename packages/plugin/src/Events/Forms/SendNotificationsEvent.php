@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Events\Forms;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Services\MailerService;
 
 class SendNotificationsEvent extends CancelableArrayableEvent
@@ -25,6 +26,11 @@ class SendNotificationsEvent extends CancelableArrayableEvent
     public function getSubmission(): Submission
     {
         return $this->submission;
+    }
+
+    public function getFields(): FieldCollection
+    {
+        return $this->form->getFields();
     }
 
     public function getMailer(): MailerService

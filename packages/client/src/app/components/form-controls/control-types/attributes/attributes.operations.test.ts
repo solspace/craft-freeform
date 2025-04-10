@@ -1,5 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
-
 import { attributesToString, cleanAttributes } from './attributes.operations';
 
 describe('attributes -> operations', () => {

@@ -48,18 +48,10 @@ class ModalController extends BaseApiController
             $data->formattingTemplate = '';
         }
 
-        $regex = '/[^a-zA-Z_0-9]+/i';
-        if ($this->settingsService->getSettingsModel()->allowDashesInFieldHandles) {
-            $regex = '/[^a-zA-Z\-_0-9]+/i';
-        }
-
-        $handle = preg_replace($regex, ' ', $data->name);
-        $handle = StringHelper::toHandle($handle);
-
         $data->settings = (object) ['general' => (object) []];
         $data->settings->general->name = $data->name;
         $data->settings->general->type = $data->type;
-        $data->settings->general->handle = $handle;
+        $data->settings->general->handle = $data->handle;
         $data->settings->general->formattingTemplate = $data->formattingTemplate;
         $data->settings->general->storeData = $data->storeData;
 

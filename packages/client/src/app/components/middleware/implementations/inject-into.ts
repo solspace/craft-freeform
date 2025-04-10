@@ -1,3 +1,4 @@
+import transliterateFn from '@sindresorhus/transliterate';
 import { camelCase } from 'lodash';
 
 import type { MiddlewareImplementation } from '../middleware';
@@ -5,6 +6,7 @@ import type { MiddlewareImplementation } from '../middleware';
 type Args = {
   target: string;
   camelize?: boolean;
+  transliterate?: boolean;
   bypassConditions?: Array<{
     name: string;
     isTrue: boolean;
@@ -13,7 +15,7 @@ type Args = {
 
 const injectInto: MiddlewareImplementation<string, Args> = (
   value,
-  { target, camelize = false, bypassConditions },
+  { target, camelize = false, transliterate = false, bypassConditions },
   context,
   updateCallback
 ) => {
@@ -26,6 +28,10 @@ const injectInto: MiddlewareImplementation<string, Args> = (
   }
 
   let targetValue = value;
+
+  if (transliterate) {
+    targetValue = transliterateFn(targetValue);
+  }
 
   if (camelize) {
     targetValue = camelCase(targetValue);

@@ -1,5 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
-
 import { Source } from '../../options.types';
 
 import { cleanOptions } from './custom.operations';

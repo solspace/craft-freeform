@@ -1,5 +1,3 @@
-import { describe, expect, it } from '@jest/globals';
-
 import { handle } from '.';
 
 describe('handle middleware', () => {

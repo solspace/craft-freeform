@@ -33,6 +33,7 @@ class FreeformConfig implements \JsonSerializable
         $this->config = [
             'templates' => [
                 'native' => (bool) $settingsModel->defaults->includeSampleTemplates,
+                'canCreate' => $settingsModel->allowBuilderTemplateCreation,
             ],
             'feed' => (bool) $settingsModel->displayFeed,
             'limits' => [

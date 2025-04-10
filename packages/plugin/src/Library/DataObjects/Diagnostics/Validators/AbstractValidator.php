@@ -2,19 +2,16 @@
 
 namespace Solspace\Freeform\Library\DataObjects\Diagnostics\Validators;
 
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+
 class AbstractValidator
 {
     /** @var callable */
     private $validator;
-
-    /** @var string */
-    private $heading;
-
-    /** @var string */
-    private $message;
-
-    /** @var array */
-    private $extraProperties;
+    private string $heading;
+    private string $message;
+    private array $extraProperties;
+    private ValidatorContext $context;
 
     public function __construct(callable $validator, string $heading, string $message, array $extraProperties = [])
     {
@@ -22,11 +19,13 @@ class AbstractValidator
         $this->heading = $heading;
         $this->message = $message;
         $this->extraProperties = $extraProperties;
+
+        $this->context = new ValidatorContext();
     }
 
     public function validate($value): bool
     {
-        return \call_user_func($this->validator, $value);
+        return \call_user_func($this->validator, $value, $this->context);
     }
 
     public function getHeading(): string
@@ -36,7 +35,9 @@ class AbstractValidator
 
     public function getMessage(): string
     {
-        return $this->message;
+        $context = $this->context->jsonSerialize();
+
+        return (new IsolatedTwig())->render($this->message, $context);
     }
 
     public function getExtraProperties(): array

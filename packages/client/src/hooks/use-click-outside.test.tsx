@@ -1,10 +1,10 @@
 import React from 'react';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { vi } from 'vitest';
 
 import { useClickOutside } from './use-click-outside';
 
-const callback = jest.fn();
+const callback = vi.fn();
 
 const MockComponent: React.FC = () => {
   const ref = useClickOutside<HTMLDivElement>({
@@ -38,7 +38,7 @@ const MockComponent: React.FC = () => {
 
 describe('useClickOutside', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should not close when clicking refObject', () => {

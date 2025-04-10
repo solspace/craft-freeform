@@ -220,10 +220,12 @@ const DailyTestColumn: React.FC<{
     );
   }
 
+  // Reverse the tests array so the most recent tests appear at the top
+  const testsToDisplay = [...activeTests].reverse();
+
   return (
     <DayColumn ref={columnRef}>
-      {/* Render active test segments */}
-      {activeTests.map((test, index) => (
+      {testsToDisplay.map((test, index) => (
         <Tooltip
           key={test.id}
           html={renderTooltipContent(test)}
@@ -242,7 +244,7 @@ const DailyTestColumn: React.FC<{
             $height={segmentHeight}
             $offset={index * segmentHeight}
             $isLast={
-              index === activeTests.length - 1 && remainingSegments === 0
+              index === testsToDisplay.length - 1 && remainingSegments === 0
             }
             $isHovering={isHovering}
             $isPending={false}
@@ -250,14 +252,13 @@ const DailyTestColumn: React.FC<{
         </Tooltip>
       ))}
 
-      {/* Render pending segments only for current day */}
       {remainingSegments > 0 &&
         Array.from({ length: remainingSegments }).map((_, index) => (
           <TestSegment
             key={`pending-${index}`}
             $status="inactive"
             $height={segmentHeight}
-            $offset={(activeTests.length + index) * segmentHeight}
+            $offset={(testsToDisplay.length + index) * segmentHeight}
             $isLast={index === remainingSegments - 1}
             $isHovering={isHovering}
             $isPending={true}

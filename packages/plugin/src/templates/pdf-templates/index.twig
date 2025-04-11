@@ -31,6 +31,7 @@
                 <table id="templates" data-file-templates class="data fullwidth collapsible">
                     <thead>
                     <th scope="col">{{ "Name"|t('freeform') }}</th>
+                    <th scope="col">{{ "ID"|t('freeform') }}</th>
                     <th scope="col">{{ "File Name"|t('freeform') }}</th>
                     <th scope="col">{{ "Description"|t('freeform') }}</th>
                     <td class="thin"></td>
@@ -48,6 +49,9 @@
                                     {{ template.name }}
                                 {% endif %}
                             </th>
+                            <td data-title="{{ 'ID'|t('freeform') }}">
+                                <code>{{ template.id }}</code>
+                            </td>
                             <td data-title="{{ 'File Name'|t('freeform') }}">
                                 <code>{{ template.fileName }}</code>
                             </td>

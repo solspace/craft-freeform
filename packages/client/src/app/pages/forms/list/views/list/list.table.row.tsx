@@ -71,7 +71,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
     if (total === 0) {
       return (
         <StatsChartContainer>
-          <MonitorStatus>{translate('Not monitored')}</MonitorStatus>
+          <MonitorStatus>{translate('Pending')}</MonitorStatus>
         </StatsChartContainer>
       );
     }

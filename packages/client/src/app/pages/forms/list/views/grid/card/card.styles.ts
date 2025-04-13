@@ -101,7 +101,6 @@ export const CardWrapper = styled.li`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: ${spacings.sm};
 
   overflow: hidden;
 

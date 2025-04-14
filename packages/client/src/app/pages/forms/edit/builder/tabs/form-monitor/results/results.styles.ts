@@ -259,7 +259,7 @@ export const DailyTestsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(30, 1fr);
   gap: 8px;
-  height: 270px;
+  height: 80px;
   margin: ${spacings.md} 0 ${spacings.xl} 0;
   width: 100%;
 

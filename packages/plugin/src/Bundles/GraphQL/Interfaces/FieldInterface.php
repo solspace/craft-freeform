@@ -61,6 +61,14 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::boolean(),
                 'description' => "Field's required state",
             ],
+            'requiredMessage' => [
+                'name' => 'requiredMessage',
+                'type' => Type::string(),
+                'description' => "Field's custom required message",
+                'resolve' => function ($source) {
+                    return $source->getRequiredErrorMessage();
+                },
+            ],
             'pageIndex' => [
                 'name' => 'pageIndex',
                 'type' => Type::int(),

@@ -978,7 +978,7 @@ class DiagnosticsService extends BaseService
                 $version = $type->version ?? JsonHelper::decode($integration['metadata'], true)['version'] ?? null;
 
                 $integrationsByForm[$id] = [
-                    'name' => $type->name,
+                    'name' => $type?->name ?? '',
                     'version' => $version ?? '', // Provide a default value if version is not found
                     'count' => 0,
                 ];

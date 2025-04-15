@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Commands;
 
 use Craft;
+use craft\db\Query;
 use Solspace\Freeform\Freeform;
 use yii\console\Controller;
 use yii\helpers\Console;
@@ -40,17 +41,17 @@ class FindUnusedFieldsController extends Controller
             return Controller::EXIT_CODE_NORMAL;
         }
 
-        $this->stdout("Unused Freeform Fields:\n", Console::FG_YELLOW);
+        $this->stdout("Unused Fields in Freeform:\n", Console::FG_BLUE);
 
         $unusedFields = (new Query())
-            ->select(['id', 'handle', 'label')
+            ->select(['id', 'handle', 'label'])
             ->from('{{%freeform_fields}}')
             ->where(['id' => $unusedFieldIds])
             ->all()
         ;
 
         foreach ($unusedFields as $field) {
-            $this->stdout("- [ID: {$field['id']}] {$field['handle']} ({$field['label']})\n", Console::FG_RED);
+            $this->stdout("- #{$field['id']}: {$field['label']} ({$field['handle']})\n", Console::FG_YELLOW);
         }
 
         return Controller::EXIT_CODE_NORMAL;

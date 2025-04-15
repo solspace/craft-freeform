@@ -42,6 +42,7 @@ class Admin extends BaseNotification
     )]
     protected ?NotificationTemplate $template;
 
+    #[Required]
     #[ValueTransformer(RecipientTransformer::class)]
     #[Input\Recipients(
         instructions: 'List the recipients of this notification.',

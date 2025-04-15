@@ -27,6 +27,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollec
 )]
 class Dynamic extends BaseNotification
 {
+    #[Required]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target field',
@@ -59,6 +60,7 @@ class Dynamic extends BaseNotification
     )]
     protected RecipientCollection $recipients;
 
+    #[Required]
     #[ValueTransformer(RecipientMappingTransformer::class)]
     #[Input\RecipientMapping(
         label: 'Recipient Mapping',

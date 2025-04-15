@@ -43,6 +43,7 @@ class Conditional extends BaseNotification
     )]
     protected ?NotificationTemplate $template;
 
+    #[Required]
     #[ValueTransformer(RecipientTransformer::class)]
     #[Input\Recipients(
         instructions: 'List the recipients of this notification.',
@@ -51,6 +52,7 @@ class Conditional extends BaseNotification
     )]
     protected RecipientCollection $recipients;
 
+    #[Required]
     #[ValueTransformer(NotificationRuleTransformer::class)]
     #[Input\Special\ConditionalNotificationRule(
         label: 'Notification Rule',

@@ -23,6 +23,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 )]
 class EmailField extends BaseNotification
 {
+    #[Required]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target field',

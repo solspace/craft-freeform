@@ -42,9 +42,12 @@ class FindUnusedFieldsController extends Controller
 
         $this->stdout("Unused Freeform Fields:\n", Console::FG_YELLOW);
 
-        $unusedFields = $db->createCommand(
-            'SELECT id, handle, label FROM {{%freeform_fields}} WHERE id IN (' . implode(',', $unusedFieldIds) . ')'
-        )->queryAll();
+        $unusedFields = (new Query())
+            ->select(['id', 'handle', 'label')
+            ->from('{{%freeform_fields}}')
+            ->where(['id' => $unusedFieldIds])
+            ->all()
+        ;
 
         foreach ($unusedFields as $field) {
             $this->stdout("- [ID: {$field['id']}] {$field['handle']} ({$field['label']})\n", Console::FG_RED);

@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.10.9 - 2025-04-15
+
+### Added
+- Added a `PREPARE_NOTIFICATION` event for processing email notifications.
+- Added an **ID** column to the **PDF Templates** control panel page.
+
+### Fixed
+- Fixed a bug where Freeform's **Stripe** loading scripts could conflict with any other use of `window.onload`.
+- Fixed a bug where `requiredMessage` for custom field error messages was missing from the GraphQL schema.
+- Fixed a bug where custom recipient options could be created and not removed for **User Select** email notifications.
+- Fixed a bug where not all required email notification settings were being validated in the form builder.
+
 ## 5.10.8 - 2025-04-10
 
 ### Added

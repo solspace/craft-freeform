@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 4.1.26 - 2025-04-15
+
+### Added
+- Added a `freeform/find-unused-fields` console command to list fields not used by any forms.
+- Verified support for Craft 4.15.x.
+
+### Fixed
+- Fixed a bug where querying HTML field contents would error when using GraphQL.
+
 ## 4.1.25 - 2025-03-19
 
 ### Fixed

@@ -19,12 +19,11 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
-use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use yii\base\Event;
 
-class ConditionalNotifications extends FeatureBundle
+class ConditionalNotifications extends NotificationListener
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
@@ -63,12 +62,16 @@ class ConditionalNotifications extends FeatureBundle
 
         foreach ($notifications as $notification) {
             $recipients = $notification->getRecipients();
-            if (!$recipients) {
-                continue;
-            }
-
             $template = $notification->getTemplate();
-            if (!$template) {
+
+            [$recipients, $template] = $this->getProcessedRecipientsAndTemplate(
+                $form,
+                $notification,
+                $recipients,
+                $template,
+            );
+
+            if (!$recipients->count() || !$template) {
                 continue;
             }
 

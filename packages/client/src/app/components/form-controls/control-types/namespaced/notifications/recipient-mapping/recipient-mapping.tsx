@@ -11,8 +11,6 @@ import type {
   Option,
   RecipientMappingProperty,
 } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
 
 import { RecipientMappingBlock } from './block/block';
 import { MappingOption } from './mapping.option';
@@ -61,6 +59,7 @@ const RecipientMapping: React.FC<
               <RecipientMappingBlock
                 key={idx}
                 mapping={mapping}
+                removable
                 onRemove={() => {
                   updateValue([
                     ...value.slice(0, idx),
@@ -78,6 +77,7 @@ const RecipientMapping: React.FC<
             );
           })}
 
+        {/*
         <button
           className={classes('btn', 'add', 'icon', 'dashed')}
           onClick={() =>
@@ -88,7 +88,7 @@ const RecipientMapping: React.FC<
           }
         >
           {translate('Add a custom value')}
-        </button>
+        </button> */}
       </RecipientMappingWrapper>
     </Control>
   );

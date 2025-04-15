@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -22,6 +23,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 )]
 class EmailField extends BaseNotification
 {
+    #[Required]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target field',
@@ -32,6 +34,7 @@ class EmailField extends BaseNotification
     )]
     protected ?FieldInterface $field;
 
+    #[Required]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[DefaultValue('notifications.emailField.template')]
     #[VisibilityFilter('Boolean(field)')]

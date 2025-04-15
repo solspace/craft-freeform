@@ -44,6 +44,14 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, SingleVa
     /**
      * Outputs the HTML of input.
      */
+    public function getContent(): string
+    {
+        return $this->getValue();
+    }
+
+    /**
+     * Outputs the HTML of input.
+     */
     public function getInputHtml(): string
     {
         if ($this->isTwig()) {

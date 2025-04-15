@@ -18,11 +18,10 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
-use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use yii\base\Event;
 
-class DynamicRecipients extends FeatureBundle
+class DynamicRecipients extends NotificationListener
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
@@ -73,6 +72,13 @@ class DynamicRecipients extends FeatureBundle
                     $template = $mapping->getTemplate() ?? $template;
                     $recipients = $mapping->getRecipients()->count() ? $mapping->getRecipients() : $recipients;
                 }
+
+                [$recipients, $template] = $this->getProcessedRecipientsAndTemplate(
+                    $form,
+                    $notification,
+                    $recipients,
+                    $template,
+                );
 
                 if (!$recipients->emailsToArray() || !$template) {
                     continue;

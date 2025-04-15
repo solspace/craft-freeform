@@ -18,11 +18,10 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
-use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use yii\base\Event;
 
-class AdminNotifications extends FeatureBundle
+class AdminNotifications extends NotificationListener
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
@@ -52,6 +51,17 @@ class AdminNotifications extends FeatureBundle
         foreach ($notifications as $notification) {
             $recipients = $notification->getRecipients();
             $template = $notification->getTemplate();
+
+            [$recipients, $template] = $this->getProcessedRecipientsAndTemplate(
+                $form,
+                $notification,
+                $recipients,
+                $template
+            );
+
+            if (!$recipients->count() || !$template) {
+                continue;
+            }
 
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([

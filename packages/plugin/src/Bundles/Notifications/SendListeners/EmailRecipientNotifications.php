@@ -19,13 +19,12 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
-use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 use yii\base\Event;
 
-class EmailRecipientNotifications extends FeatureBundle
+class EmailRecipientNotifications extends NotificationListener
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
@@ -68,6 +67,13 @@ class EmailRecipientNotifications extends FeatureBundle
 
             $recipientCollection = new RecipientCollection();
             $recipientCollection->add(new Recipient($recipient));
+
+            [$recipientCollection, $notificationTemplate] = $this->getProcessedRecipientsAndTemplate(
+                $form,
+                $notification,
+                $recipientCollection,
+                $notificationTemplate
+            );
 
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([

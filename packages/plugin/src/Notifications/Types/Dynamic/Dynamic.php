@@ -9,6 +9,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Notifica
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientMappingTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -39,6 +40,7 @@ class Dynamic extends BaseNotification
     )]
     protected ?FieldInterface $field;
 
+    #[Required]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[DefaultValue('notifications.userSelect.template')]
     #[Input\NotificationTemplate(

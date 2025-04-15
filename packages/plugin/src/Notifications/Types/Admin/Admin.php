@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
@@ -31,6 +32,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 )]
 class Admin extends BaseNotification
 {
+    #[Required]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[DefaultValue('notifications.admin.template')]
     #[Input\NotificationTemplate(

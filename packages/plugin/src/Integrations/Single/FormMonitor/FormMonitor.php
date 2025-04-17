@@ -258,13 +258,6 @@ class FormMonitor extends APIIntegration
         $client->put($endpoint, ['json' => $payload]);
     }
 
-    public function deleteManifest(Client $client, Form $form): void
-    {
-        $endpoint = $this->getEndpoint('forms/'.$form->getId());
-
-        $client->delete($endpoint);
-    }
-
     public function disableManifest(Client $client, Form $form): void
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/disable');

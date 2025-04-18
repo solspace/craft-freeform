@@ -29,6 +29,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
           <th>{translate('Description')}</th>
           <th>{translate('Chart')}</th>
           {hasFormMonitor && <th>{translate('Monitoring')}</th>}
+          {hasFormMonitor && <th>{translate('Last Test')}</th>}
           <th>{translate('Submissions')}</th>
           <th>{translate('Spam')}</th>
           <th>{translate('Manage')}</th>
@@ -46,7 +47,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
 
         {!isFetching && !forms?.length && canCreate && (
           <tr>
-            <td colSpan={hasFormMonitor ? 8 : 7}>
+            <td colSpan={hasFormMonitor ? 9 : 7}>
               <p>
                 {translate(
                   `You don't have any forms yet. Create your first form now...`
@@ -65,7 +66,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
 
         {!isFetching && !forms?.length && !canCreate && (
           <tr>
-            <td colSpan={hasFormMonitor ? 8 : 7}>
+            <td colSpan={hasFormMonitor ? 9 : 7}>
               <p>{translate(`You don't have any forms yet.`)}</p>
             </td>
           </tr>

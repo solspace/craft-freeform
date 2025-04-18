@@ -1,129 +1,115 @@
 import React from 'react';
-import { colors } from '@ff-client/styles/variables';
+import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
-import { Legend } from 'recharts';
-import { Cell, Pie, PieChart } from 'recharts';
+import CheckIcon from '@ff-icons/actions/check.svg';
+import ExclamationIcon from '@ff-icons/actions/exclamation.svg';
+import HourglassIcon from '@ff-icons/actions/hourglass.svg';
 
-import { LegendItem, StatsChartContainer } from './card.monitor.stats.styles';
+import {
+  LastTestStatus,
+  LineIndicator,
+  MonitorStatus,
+  StatsChartContainer,
+  TestStatusIcon,
+} from './card.monitor.stats.styles';
 
-export const StatsChart: React.FC<{
-  stats: {
-    success: number;
-    failed: number;
-    pending: number;
-    total: number;
-    percentage: {
-      success: number;
-      failed: number;
-      pending: number;
-    };
+export type StatusSize = 'sm' | 'lg';
+export type StatsAlign = 'left' | 'right';
+export type TestStatus = 'success' | 'failed' | 'pending';
+
+const DEFAULT_PROPS = {
+  align: 'left' as const,
+  width: '70%',
+  showLastTest: false,
+  size: 'lg' as const,
+};
+
+export const getLastTestStatus = (
+  formMonitor: FormWithStats['formMonitor'],
+  size: StatusSize = DEFAULT_PROPS.size
+): React.JSX.Element | null => {
+  if (!formMonitor?.enabled) return null;
+
+  const { stats } = formMonitor;
+  if (!stats) {
+    return (
+      <TestStatusIcon $status="pending" $size={size}>
+        <HourglassIcon />
+      </TestStatusIcon>
+    );
+  }
+
+  const { lastTest } = stats;
+  if (!lastTest) {
+    return (
+      <TestStatusIcon $status="pending" $size={size}>
+        <HourglassIcon />
+      </TestStatusIcon>
+    );
+  }
+
+  const statusMap: Record<TestStatus, React.JSX.Element> = {
+    success: (
+      <TestStatusIcon $status="success" $size={size}>
+        <CheckIcon />
+      </TestStatusIcon>
+    ),
+    failed: (
+      <TestStatusIcon $status="failed" $size={size}>
+        <ExclamationIcon />
+      </TestStatusIcon>
+    ),
+    pending: (
+      <TestStatusIcon $status="pending" $size={size}>
+        <HourglassIcon />
+      </TestStatusIcon>
+    ),
   };
-}> = ({ stats }) => {
-  const total = stats?.total || 0;
 
-  // If not monitored, show full circle in gray
-  const data =
-    total === 0
-      ? [
-          {
-            name: 'Not Monitored',
-            value: 100,
-            color: colors.gray300,
-          },
-        ]
-      : [
-          {
-            name: 'Success',
-            value: stats?.percentage?.success || 0,
-            color: colors.green600,
-          },
-          {
-            name: 'Failed',
-            value: stats?.percentage?.failed || 0,
-            color: colors.red600,
-          },
-          {
-            name: 'Processing',
-            value: stats?.percentage?.pending || 0,
-            color: colors.gray700,
-          },
-        ];
+  return statusMap[lastTest.status as TestStatus] || statusMap.pending;
+};
+
+export interface FormMonitorStatsProps {
+  formMonitor: FormWithStats['formMonitor'];
+  align?: StatsAlign;
+  width?: string;
+  showLastTest?: boolean;
+  size?: StatusSize;
+}
+
+export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
+  formMonitor,
+  align = DEFAULT_PROPS.align,
+  width = DEFAULT_PROPS.width,
+  showLastTest = DEFAULT_PROPS.showLastTest,
+  size = DEFAULT_PROPS.size,
+}) => {
+  const stats = formMonitor?.stats;
+  const isPending = !stats || (stats.total || 0) === 0;
+
+  const success = isPending ? 0 : stats.percentage?.success || 0;
+  const failed = isPending ? 0 : stats.percentage?.failed || 0;
+  const pending = isPending ? 100 : stats.percentage?.pending || 0;
+
+  const progressStyle = {
+    '--success': `${success}%`,
+    '--failed': `${success + failed}%`,
+    '--pending': `${success + failed + pending}%`,
+  } as React.CSSProperties;
 
   return (
-    <StatsChartContainer>
-      <div style={{ width: 60, height: 60, position: 'relative' }}>
-        <PieChart width={60} height={60}>
-          <Pie
-            data={data}
-            cx={30}
-            cy={30}
-            innerRadius={20}
-            outerRadius={25}
-            startAngle={90}
-            endAngle={-270}
-            dataKey="value"
-          >
-            {data.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-        </PieChart>
-        <div
-          style={{
-            position: 'absolute',
-            top: 15,
-            left: 10,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <strong
-            style={{
-              fontSize: 10,
-              color: colors.gray700,
-              lineHeight: 1,
-            }}
-          >
-            {total === 0
-              ? translate('N/A')
-              : `${stats?.percentage?.success || 0}%`}
-          </strong>
-          <span
-            style={{
-              fontSize: 9,
-              color: colors.gray500,
-              marginTop: -2,
-            }}
-          >
-            {total === 0 ? translate('pending') : translate('uptime')}
-          </span>
-        </div>
-      </div>
-
-      <Legend>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.green600}>
-          {total === 0
-            ? translate('Not monitored')
-            : `${stats?.percentage?.success || 0}%`}{' '}
-          {total === 0 ? '' : translate('Success')}
-        </LegendItem>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.red600}>
-          {total === 0
-            ? translate('Not monitored')
-            : `${stats?.percentage?.failed || 0}%`}{' '}
-          {total === 0 ? '' : translate('Failed')}
-        </LegendItem>
-        <LegendItem color={total === 0 ? colors.gray300 : colors.gray700}>
-          {total === 0
-            ? translate('Not monitored')
-            : `${stats?.percentage?.pending || 0}%`}{' '}
-          {total === 0 ? '' : translate('Processing')}
-        </LegendItem>
-      </Legend>
+    <StatsChartContainer $align={align}>
+      {showLastTest && (
+        <LastTestStatus>
+          Last Test {getLastTestStatus(formMonitor, size)}
+        </LastTestStatus>
+      )}
+      <LineIndicator $width={width} style={progressStyle} />
+      <MonitorStatus>
+        {isPending
+          ? translate('Uptime: Pending')
+          : `${translate('Uptime')}: ${success}%`}
+      </MonitorStatus>
     </StatsChartContainer>
   );
 };

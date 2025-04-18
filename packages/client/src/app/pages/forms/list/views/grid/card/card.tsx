@@ -26,7 +26,7 @@ import {
   useCloneFormMutation,
 } from '../grid.mutations';
 
-import { StatsChart } from './card.monitor.stats';
+import { FormMonitorStats } from './card.monitor.stats';
 import {
   CardBody,
   CardWrapper,
@@ -230,7 +230,13 @@ export const Card: React.FC<Props> = ({
           <FMContainer>
             {formMonitor?.enabled && formMonitorLink && (
               <NavLink to={formMonitorLink.url}>
-                <StatsChart stats={formMonitor?.stats} />
+                <FormMonitorStats
+                  formMonitor={formMonitor}
+                  align="right"
+                  width="100%"
+                  showLastTest
+                  size="sm"
+                />
               </NavLink>
             )}
           </FMContainer>

@@ -18,17 +18,17 @@ export const FormBody = styled.div`
 export const FormBodyContent = styled.div`
   flex: 1;
   min-width: 0;
-  max-width: 82%;
+  max-width: 70%;
 `;
 
 export const FMContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
   flex-shrink: 0;
-  width: 18%;
+  width: 30%;
+  text-align: right;
   margin-left: auto;
-  margin-right: ${spacings.md};
+  margin-top: 6px;
 `;
 
 export const Title = styled.h2`

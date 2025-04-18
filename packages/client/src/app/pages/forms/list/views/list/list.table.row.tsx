@@ -18,17 +18,15 @@ import axios from 'axios';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useDeleteFormModal } from '../../modals/hooks/use-delete-form-modal';
+import {
+  FormMonitorStats,
+  getLastTestStatus,
+} from '../grid/card/card.monitor.stats';
 import { ControlButton } from '../grid/card/card.styles';
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
 } from '../grid/grid.mutations';
-
-import {
-  LineIndicator,
-  MonitorStatus,
-  StatsChartContainer,
-} from './list.table.row.styles';
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
   position: 'top',
@@ -61,40 +59,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
     (link) => link.handle === 'submissions'
   );
   const spamLink = form.links.find((link) => link.handle === 'spam');
-
   const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
-
-  const renderStatsChart = (): JSX.Element | null => {
-    if (!formMonitor?.enabled) return null;
-
-    const total = formMonitor.stats?.total || 0;
-    if (total === 0) {
-      return (
-        <StatsChartContainer>
-          <MonitorStatus>{translate('Pending')}</MonitorStatus>
-        </StatsChartContainer>
-      );
-    }
-
-    const success = formMonitor.stats?.percentage?.success || 0;
-    const failed = formMonitor.stats?.percentage?.failed || 0;
-    const pending = formMonitor.stats?.percentage?.pending || 0;
-
-    return (
-      <StatsChartContainer>
-        <LineIndicator
-          style={
-            {
-              '--success': `${success}%`,
-              '--failed': `${success + failed}%`,
-              '--pending': `${success + failed + pending}%`,
-            } as React.CSSProperties
-          }
-        />
-        <MonitorStatus>{`${translate('Uptime')}: ${success}%`}</MonitorStatus>
-      </StatsChartContainer>
-    );
-  };
 
   return (
     <tr>
@@ -146,11 +111,22 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
         </ResponsiveContainer>
       </td>
       {hasFormMonitor && (
-        <td>
-          {formMonitor?.enabled && formMonitorLink && (
-            <NavLink to={formMonitorLink.url}>{renderStatsChart()}</NavLink>
-          )}
-        </td>
+        <>
+          <td>
+            {formMonitor?.enabled && formMonitorLink && (
+              <NavLink to={formMonitorLink.url}>
+                <FormMonitorStats formMonitor={formMonitor} />
+              </NavLink>
+            )}
+          </td>
+          <td>
+            {formMonitor?.enabled && (
+              <NavLink to={formMonitorLink.url}>
+                {getLastTestStatus(formMonitor, 'lg')}
+              </NavLink>
+            )}
+          </td>
+        </>
       )}
       <td>
         {!!submissionLink && (

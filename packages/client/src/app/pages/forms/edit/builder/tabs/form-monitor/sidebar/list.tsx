@@ -6,9 +6,7 @@ import type {
   FormTestsResponse,
 } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
-import FailedIcon from '@ff-icons/actions/failed.svg';
 import LoadingIcon from '@ff-icons/actions/loading.svg';
-import SuccessIcon from '@ff-icons/actions/success.svg';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -190,20 +188,6 @@ const ConfigurationPanel: React.FC<{
   );
 };
 
-const TestStatusIcon: React.FC<{ status: string; size?: number }> = ({
-  status,
-  size = 40,
-}) => {
-  switch (status) {
-    case 'success':
-      return <SuccessIcon width={48} height={48} />;
-    case 'failed':
-      return <FailedIcon width={size} height={size} />;
-    default:
-      return <LoadingIcon width={size} height={size} />;
-  }
-};
-
 const RecentTestPanel: React.FC<{
   lastTest?: FormTest;
 }> = ({ lastTest }) => {
@@ -220,10 +204,12 @@ const RecentTestPanel: React.FC<{
         {lastTest?.dateAttempted}
         <div className={`status-${lastTestStatus}`}>
           <div className="status-main">
-            <div className="icon">
-              <TestStatusIcon status={lastTestStatus} />
-            </div>
-            {translate(getStatusText(lastTestStatus))}
+            <StatusIndicator $status={lastTestStatus} $size="xl">
+              <StatusDot $size="xl" $status={lastTestStatus}>
+                {lastTestStatus === 'pending' && <LoadingIcon />}
+              </StatusDot>
+              {translate(getStatusText(lastTestStatus))}
+            </StatusIndicator>
           </div>
         </div>
       </MainStats>

@@ -33,6 +33,12 @@ const sizeStyles = {
     padding: 2px 6px;
     gap: 8px;
   `,
+  xl: css`
+    font-size: 16px;
+    padding: 6px 10px 6px 6px;
+    gap: 6px;
+    width: fit-content;
+  `,
 };
 
 const dotSizeStyles = {
@@ -48,6 +54,10 @@ const dotSizeStyles = {
     width: 12px;
     height: 12px;
   `,
+  xl: css`
+    width: 20px;
+    height: 20px;
+  `,
 };
 
 export const StatusIndicator = styled.div<{
@@ -58,7 +68,7 @@ export const StatusIndicator = styled.div<{
     | 'disabled'
     | 'active'
     | 'inactive';
-  $size?: 'sm' | 'md' | 'lg';
+  $size?: 'sm' | 'md' | 'lg' | 'xl';
 }>`
   display: inline-flex;
   align-items: center;
@@ -99,10 +109,44 @@ export const StatusIndicator = styled.div<{
 `;
 
 export const StatusDot = styled.span<{
-  $size?: 'sm' | 'md' | 'lg';
+  $size?: 'sm' | 'md' | 'lg' | 'xl';
+  $status?:
+    | 'success'
+    | 'failed'
+    | 'pending'
+    | 'disabled'
+    | 'active'
+    | 'inactive';
 }>`
   display: inline-block;
   border-radius: 50%;
   background-color: currentColor;
+  position: relative;
   ${({ $size = 'sm' }) => dotSizeStyles[$size]}
+
+  ${({ $status }) =>
+    $status === 'pending' &&
+    css`
+      background-color: transparent;
+      color: currentColor;
+
+      svg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+        animation: spin 2s linear infinite;
+      }
+
+      @keyframes spin {
+        from {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+    `}
 `;

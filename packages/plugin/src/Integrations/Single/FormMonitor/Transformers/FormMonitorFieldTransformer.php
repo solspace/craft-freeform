@@ -16,7 +16,10 @@ class FormMonitorFieldTransformer
         $typeClass = $field::class;
         $editableProperties = $this->propertyProvider->getEditableProperties($typeClass);
 
-        $properties = ['type' => $typeClass];
+        $properties = [
+            'type' => $typeClass,
+            'uid' => $field->getUid(),
+        ];
         foreach ($editableProperties as $property) {
             $reflectionProperty = new \ReflectionProperty($field, $property->handle);
 

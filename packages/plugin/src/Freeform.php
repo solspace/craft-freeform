@@ -74,6 +74,7 @@ use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
+use Solspace\Freeform\Services\Form\SubmitService;
 use Solspace\Freeform\Services\Form\TranslationsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormGroupsService;
@@ -124,6 +125,7 @@ use yii\db\Query;
  * @property SettingsService            $settings
  * @property StatusesService            $statuses
  * @property SubmissionsService         $submissions
+ * @property SubmitService              $submit
  * @property SpamSubmissionsService     $spamSubmissions
  * @property LoggerService              $logger
  * @property IntegrationsService        $integrations
@@ -456,6 +458,7 @@ class Freeform extends Plugin
                 'spamSubmissions' => SpamSubmissionsService::class,
                 'statuses' => StatusesService::class,
                 'submissions' => SubmissionsService::class,
+                'submit' => SubmitService::class,
                 'summary' => SummaryService::class,
                 'translations' => TranslationsService::class,
                 'widgets' => WidgetsService::class,

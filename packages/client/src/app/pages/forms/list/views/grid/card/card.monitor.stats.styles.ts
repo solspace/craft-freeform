@@ -2,7 +2,8 @@ import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const MonitorStatus = styled.span`
-  display: inline-flex;
+  display: inline-block;
+  white-space: nowrap;
   align-items: center;
   border-radius: 3px;
   font-size: 11px;

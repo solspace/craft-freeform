@@ -94,7 +94,7 @@ const TestRow: React.FC<TestRowProps> = ({
         {!!test.response && <ResponseBlock>{test.response}</ResponseBlock>}
       </td>
       <td>
-        {test.screenshot && test.status !== 'success' && (
+        {test.screenshot && (
           <button
             onClick={() =>
               onScreenshot({

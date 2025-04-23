@@ -763,12 +763,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('error log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
+                                    'type' => Freeform::t('error log'),
+                                ]
+                            ),
                         ),
                     ]
                 ),
@@ -784,12 +785,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/integrations-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('integrations log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/integrations-log'),
+                                    'type' => Freeform::t('integrations log'),
+                                ]
+                            ),
                         ),
                     ]
                 ),
@@ -805,12 +807,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/email-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('email log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/email-log'),
+                                    'type' => Freeform::t('email log'),
+                                ],
+                            ),
                         ),
                     ]
                 ),

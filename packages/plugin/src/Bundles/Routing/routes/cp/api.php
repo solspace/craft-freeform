@@ -78,4 +78,7 @@ return [
     'freeform/api/limited-users/<id:new>' => 'freeform/api/limited-users',
     'freeform/api/limited-users/<id:\d+>' => 'freeform/api/limited-users',
     'freeform/api/limited-users/<id:\d+>/delete' => 'freeform/api/limited-users/delete',
+
+    // TEMPLATES
+    'freeform/api/templates/demo' => 'freeform/api/templates/demo',
 ];

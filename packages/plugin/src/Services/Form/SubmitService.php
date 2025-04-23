@@ -15,16 +15,20 @@ class SubmitService extends BaseService
     {
         $generalSettings = $form->getSettings()->getGeneral();
         if (!$generalSettings->storeData) {
-            Freeform::$logger->getLogger('freeform')->warning(
-                'Form submission was not stored because the "Store Data" setting is disabled.',
-                [
-                    'context' => 'Manual Form submit API',
-                    'form' => [
-                        'id' => $form->getId(),
-                        'handle' => $form->getHandle(),
-                    ],
-                ]
-            );
+            Freeform::getInstance()
+                ->logger
+                ->getLogger('freeform')
+                ->warning(
+                    'Form submission was not stored because the "Store Data" setting is disabled.',
+                    [
+                        'context' => 'Manual Form submit API',
+                        'form' => [
+                            'id' => $form->getId(),
+                            'handle' => $form->getHandle(),
+                        ],
+                    ]
+                )
+            ;
 
             return;
         }

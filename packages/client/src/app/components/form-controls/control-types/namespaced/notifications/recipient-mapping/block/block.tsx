@@ -1,5 +1,7 @@
 import React from 'react';
+import { Action } from '@editor/builder/tabs/rules/conditions/table/condition-table.styles';
 import type { RecipientMapping } from '@ff-client/types/notifications';
+import DeleteIcon from '@ff-icons/actions/delete.svg';
 
 import { Recipients } from './recipients/recipients';
 import { Template } from './template/template';
@@ -11,6 +13,7 @@ export type RecipientMappingUpdate = (value: RecipientMapping) => void;
 type Props = {
   predefined?: boolean;
   mapping: RecipientMapping;
+  removable?: boolean;
   onChange: RecipientMappingUpdate;
   onRemove?: () => void;
 };
@@ -18,7 +21,9 @@ type Props = {
 export const RecipientMappingBlock: React.FC<Props> = ({
   predefined,
   mapping,
+  removable,
   onChange,
+  onRemove,
 }) => {
   const { value, template, recipients } = mapping;
 
@@ -45,6 +50,7 @@ export const RecipientMappingBlock: React.FC<Props> = ({
       />
       <Recipients
         recipients={recipients}
+        spanMultiple={!removable}
         onChange={(newValue) => {
           onChange({
             ...mapping,
@@ -52,6 +58,11 @@ export const RecipientMappingBlock: React.FC<Props> = ({
           });
         }}
       />
+      {removable && (
+        <Action>
+          <DeleteIcon onClick={onRemove} />
+        </Action>
+      )}
     </BlockWrapper>
   );
 };

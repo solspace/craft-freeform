@@ -34,9 +34,9 @@ document.addEventListener(ffStripeEvents.load, () => {
   });
 });
 
-window.onload = () => {
+document.addEventListener('DOMContentLoaded', () => {
   document.dispatchEvent(new CustomEvent(ffStripeEvents.load));
-};
+});
 
 const recursiveFreeformAttachment = (node: HTMLFormElement) => {
   if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {

@@ -1,24 +1,27 @@
 @use '../../shared/mixins';
 
 #components-wrapper {
-  @include mixins.clearfix;
-  margin: 25px -10px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 
   > div {
     position: relative;
     box-sizing: border-box;
-
-    float: left;
-    width: 50%;
-
-    padding: 0 10px;
-    margin: 0 0 25px;
   }
 
-  @media only screen and (max-width: 800px) {
+  @media only screen and (max-width: 1600px) {
+    grid-template-columns: 1fr;
+
     > div {
       width: 100%;
     }
+  }
+
+  .btn-group {
+    position: absolute;
+    right: 15px;
+    top: 5px;
   }
 }
 

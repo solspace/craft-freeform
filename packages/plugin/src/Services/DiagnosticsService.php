@@ -42,7 +42,7 @@ class DiagnosticsService extends BaseService
         $trueOrFalse = function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.7.0';
+        $maxCraftVersion = '5.8.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.4.0';
         $latestVersion = $this->getLatestFreeformVersion();

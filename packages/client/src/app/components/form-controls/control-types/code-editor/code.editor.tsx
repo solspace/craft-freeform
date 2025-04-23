@@ -24,6 +24,9 @@ export const CodeEditor: React.FC<Props> = ({
           value={value}
           defaultLanguage={language}
           onChange={updateValue}
+          onMount={() => {
+            document.body.classList.remove('underline-links');
+          }}
           options={{
             scrollbar: {
               verticalScrollbarSize: 5,

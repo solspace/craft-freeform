@@ -9,6 +9,7 @@ declare let hcaptcha: any;
 declare const Craft: {
   csrfTokenName: string;
   csrfTokenValue: string;
+  getCpUrl: (url: string) => string;
 };
 
 interface CraftGlobal {

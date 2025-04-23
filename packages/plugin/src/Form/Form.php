@@ -628,6 +628,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $event->isValid;
     }
 
+    /**
+     * A method for directly submitting data to the form.
+     * Only use this if you need to generate a submission by bypassing security features
+     * like CSRF tokens, honeypots, etc., when generating a submission via an API call.
+     *
+     * This is not a replacement for the submit controller process that front-end users go through.
+     */
+    public function submit(array $data): void
+    {
+        Freeform::getInstance()->submit->submit($this, $data);
+    }
+
     public function quickLoad(array $payload): void
     {
         $this->getProperties()->merge($payload['properties'] ?? []);

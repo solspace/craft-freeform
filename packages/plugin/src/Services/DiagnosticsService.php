@@ -16,7 +16,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
-use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\ValidatorContext;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -42,7 +41,7 @@ class DiagnosticsService extends BaseService
         $trueOrFalse = function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.7.0';
+        $maxCraftVersion = '5.8.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.4.0';
         $latestVersion = $this->getLatestFreeformVersion();
@@ -59,18 +58,15 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new SuggestionValidator(
-                        function ($value, ValidatorContext $context) use ($latestVersion, $hasUpdate) {
-                            if (!$latestVersion) {
-                                return true;
-                            }
-
-                            $context->add($latestVersion, 'latestVersion');
-                            $context->add(UrlHelper::cpUrl('utilities/updates'), 'url');
-
-                            return !$hasUpdate;
-                        },
+                        fn ($value) => !$value['hasUpdate'],
                         'Version Outdated',
-                        Freeform::t('An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest features, bug fixes, and improvements.'),
+                        Freeform::t(
+                            'An update is available for Freeform. Please update to <b><a href="{url}">v{latestVersion}</a></b> now for access to the latest features, bug fixes, and improvements.',
+                            [
+                                'latestVersion' => $latestVersion,
+                                'url' => UrlHelper::cpUrl('utilities/updates'),
+                            ]
+                        ),
                     ),
                 ]
             ),
@@ -763,12 +759,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('error log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
+                                    'type' => Freeform::t('error log'),
+                                ]
+                            ),
                         ),
                     ]
                 ),
@@ -784,12 +781,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/integrations-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('integrations log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/integrations-log'),
+                                    'type' => Freeform::t('integrations log'),
+                                ]
+                            ),
                         ),
                     ]
                 ),
@@ -805,12 +803,13 @@ class DiagnosticsService extends BaseService
                                 return !$value['count'];
                             },
                             '',
-                            Freeform::t('Please check the <a href="{{ extra.url }}">{{ extra.type }}</a> to see if there are any potential issues.'),
-                            [
-                                'url' => UrlHelper::cpUrl('freeform/settings/email-log'),
-                                'count' => Freeform::getInstance()->logger->getLogReader()->count(),
-                                'type' => Freeform::t('email log'),
-                            ]
+                            Freeform::t(
+                                'Please check the <a href="{url}">{type}</a> to see if there are any potential issues.',
+                                [
+                                    'url' => UrlHelper::cpUrl('freeform/settings/email-log'),
+                                    'type' => Freeform::t('email log'),
+                                ],
+                            ),
                         ),
                     ]
                 ),

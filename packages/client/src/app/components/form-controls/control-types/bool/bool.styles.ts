@@ -38,10 +38,11 @@ export const LightSwitch = styled.div`
 
   width: 34px;
 
-  padding: 1px;
+  padding: 2px;
 
-  border-radius: 12px;
-  background-color: ${colors.gray400};
+  border-radius: 11px;
+  background-image: linear-gradient(to right, var(--gray-400), var(--gray-400));
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
 
   transition: background-color 0.2s ${beziers.easeOut};
 
@@ -50,17 +51,23 @@ export const LightSwitch = styled.div`
 
     display: block;
 
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
 
-    border-radius: 10px;
+    inset-inline-start: calc(50% - 9px);
+    border-radius: 9px;
 
     background-color: ${colors.white};
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ${beziers.bounce.easeOut};
   }
 
   &.on {
-    background-color: ${colors.enabled};
+    background-image: linear-gradient(
+      to right,
+      var(--enabled-color),
+      var(--enabled-color)
+    );
 
     &:after {
       transform: translateX(12px);

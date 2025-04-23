@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 5.10.10 - 2025-04-23
+
+### Added
+- Added an API for manually generating form submissions.
+- Added the ability to clone any sample formatting templates into your formatting templates directory to get started with customization easily.
+- Verified support for Craft 5.7.x.
+
+### Changed
+- Updated lightswitch styles in the form builder to match the new Craft 5.7 style.
+- Adjusted the formatting template names in the CP to be titleized.
+
+### Fixed
+- Fixed a visual bug where the **Singles** integration tabs were not applying active state on initial load.
+- Fixed a bug where link underlines would appear throughout the CP nav when loading the **HTML** field editor in the form builder.
+- Various fixes to the **Diagnostics** page.
+
 ## 5.10.9 - 2025-04-15
 
 ### Added

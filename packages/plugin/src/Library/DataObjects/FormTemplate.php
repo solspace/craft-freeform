@@ -13,7 +13,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-use Solspace\Freeform\Library\Helpers\StringHelper;
+use craft\helpers\StringHelper;
 
 class FormTemplate implements \JsonSerializable
 {
@@ -31,8 +31,8 @@ class FormTemplate implements \JsonSerializable
             $name = pathinfo(\dirname($filePath), \PATHINFO_FILENAME);
         }
 
-        $this->name = StringHelper::camelize(StringHelper::humanize($name));
-        $this->name = str_replace(['-', '_'], ' ', $this->name);
+        $this->name = str_replace(['-', '_'], ' ', $name);
+        $this->name = StringHelper::titleize($this->name);
     }
 
     public function getFilePath(): string

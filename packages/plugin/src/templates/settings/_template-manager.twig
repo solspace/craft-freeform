@@ -65,9 +65,20 @@
 
         <div id="components-wrapper">
             <div>
-                <button type="button" class="btn submit small icon add add-sample-template" id="add-formatting-template">
-                    {{ "Add Sample"|t('freeform') }}
-                </button>
+                <div class="btn-group">
+                    <button type="button" class="btn submit small icon add menubtn" id="add-formatting-template">
+                        {{ "Clone a Sample Template"|t('freeform') }}
+                    </button>
+                    <div class="menu" id="demo-template-list">
+                        <ul>
+                            {% for template in solspaceTemplates %}
+                                <li>
+                                    <a data-template="{{ template.fileName }}">{{ template.name }}</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
 
                 {{ _self.listFiles(
                     settings.formTemplateDirectory,
@@ -300,33 +311,6 @@
 {% endblock %}
 
 {% js %}
-    var dataFormatting = {
-        templateName: "flexbox",
-    };
-
-    dataFormatting["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
-
-    $("#add-formatting-template").on({
-        click: function() {
-            $.ajax({
-                url: "{{ url("freeform/settings/add-demo-template") }}",
-                type: "post",
-                dataType: "json",
-                data: dataFormatting,
-                success: function(response) {
-                    if (!response.errors.length) {
-                        window.location.reload();
-                    } else {
-                        for (var i = 0; i < response.errors.length; i++ ) {
-                            var message = response.errors[i];
-                            Craft.cp.displayError(message);
-                        }
-                    }
-                }
-            });
-        }
-    });
-
     var dataEmail = {
         templateName: "emailsample",
     };

@@ -97,47 +97,6 @@ class SettingsController extends BaseController
         return $this->redirect(UrlHelper::cpUrl("freeform/{$defaultView}"));
     }
 
-    public function actionAddDemoTemplate(): Response
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-
-        $this->requirePostRequest();
-
-        $errors = [];
-        $settings = $this->getSettingsModel();
-
-        $templateDirectory = $settings->getAbsoluteFormTemplateDirectory();
-        $templateName = \Craft::$app->request->post('templateName');
-
-        if (!$templateDirectory) {
-            $errors[] = Freeform::t('No custom template directory specified in settings');
-        } else {
-            if ($templateName) {
-                $templateName = CraftStringHelper::toSnakeCase($templateName);
-
-                $templatePath = $templateDirectory.'/'.$templateName;
-                if (file_exists($templatePath)) {
-                    $errors[] = Freeform::t("Template '{name}' already exists", ['name' => $templateName]);
-                } else {
-                    try {
-                        $settings->cloneDemoTemplateContent($templateName, $templatePath);
-                    } catch (FreeformException $exception) {
-                        $errors[] = $exception->getMessage();
-                    }
-                }
-            } else {
-                $errors[] = Freeform::t('No template name specified');
-            }
-        }
-
-        return $this->asJson(
-            [
-                'templateName' => $templateName,
-                'errors' => $errors,
-            ]
-        );
-    }
-
     public function actionAddEmailTemplate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -281,6 +240,7 @@ class SettingsController extends BaseController
             'freeform/settings/'.($section ? '_'.(string) $section : ''),
             [
                 'settings' => $this->getSettingsModel(),
+                'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,
             ]
         );

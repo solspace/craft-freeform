@@ -16,7 +16,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
-use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\ValidatorContext;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -59,18 +58,15 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new SuggestionValidator(
-                        function ($value, ValidatorContext $context) use ($latestVersion, $hasUpdate) {
-                            if (!$latestVersion) {
-                                return true;
-                            }
-
-                            $context->add($latestVersion, 'latestVersion');
-                            $context->add(UrlHelper::cpUrl('utilities/updates'), 'url');
-
-                            return !$hasUpdate;
-                        },
+                        fn ($value) => !$value['hasUpdate'],
                         'Version Outdated',
-                        Freeform::t('An update is available for Freeform. Please update to <b><a href="{{ url }}">v{{ latestVersion }}</a></b> now for access to the latest features, bug fixes, and improvements.'),
+                        Freeform::t(
+                            'An update is available for Freeform. Please update to <b><a href="{url}">v{latestVersion}</a></b> now for access to the latest features, bug fixes, and improvements.',
+                            [
+                                'latestVersion' => $latestVersion,
+                                'url' => UrlHelper::cpUrl('utilities/updates'),
+                            ]
+                        ),
                     ),
                 ]
             ),

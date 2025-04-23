@@ -22,13 +22,10 @@ class TemplateReplacer
 
     public function replace(): void
     {
-        $newName = $this->targetDirName;
-        if (file_exists($this->targetDir.\DIRECTORY_SEPARATOR.$newName)) {
-            $count = 1;
-            do {
-                $newName = $this->targetDirName.'-'.$count++;
-            } while (file_exists($this->targetDir.\DIRECTORY_SEPARATOR.$newName));
-        }
+        $count = 1;
+        do {
+            $newName = $this->targetDirName.'-'.$count++;
+        } while (file_exists($this->targetDir.\DIRECTORY_SEPARATOR.$newName));
 
         $this->targetDirName = $newName;
         $newPath = $this->targetDir.\DIRECTORY_SEPARATOR.$newName;

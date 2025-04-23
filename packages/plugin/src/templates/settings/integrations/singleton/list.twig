@@ -10,6 +10,9 @@
 {% block content %}
 
     {% set selectedIntegration = craft.app.request.segment(5) %}
+    {% if not selectedIntegration %}
+        {% set selectedIntegration = (types|first).shortName %}
+    {% endif %}
     {% set saveShortcutRedirect = 'freeform/settings/integrations/single/'~selectedIntegration %}
 
     <input type="hidden" name="action" value="freeform/integrations/single/save">
@@ -19,9 +22,11 @@
         <div class="integration-stack-list">
             <ul class="integration-stack-items">
             {% for type in types %}
+                {% set isSelected = selectedIntegration == type.shortName %}
+
                 {% set integration = integrations[type.class]|default(null) %}
 
-                <li data-name="{{ type.shortName }}" class="{{ selectedIntegration == type.shortName ? "active" }}">
+                <li data-name="{{ type.shortName }}" class="{{ isSelected ? "active" }}">
                     <a data-type="{{ type.class }}" data-name="{{ type.shortName }}">
                         <img src="{{ type.iconUrl }}" alt="{{ type.name }}" />
                         <span>{{ type.name }}</span>

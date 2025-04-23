@@ -23,7 +23,7 @@ $(() => {
     $('input[name="selectedIntegration"]').val(name);
 
     $(this).trigger(EVENT_INTEGRATION_UPDATE);
-    $(this).parent().addClass('active').siblings('.active').removeClass('active');
+    $(this).parents('li[data-name]').addClass('active').siblings('.active').removeClass('active');
   });
 
   $('.enabled-switch[data-name] button.lightswitch').on('click', function () {

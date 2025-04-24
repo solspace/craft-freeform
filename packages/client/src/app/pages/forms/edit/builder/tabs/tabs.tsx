@@ -9,6 +9,7 @@ import { save } from '@editor/store/actions/form';
 import { State } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
+import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
@@ -37,6 +38,7 @@ export const Tabs: React.FC = () => {
   const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(fieldSelectors.hasErrors);
   const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
+  const hasIntegrationErrors = useSelector(integrationSelectors.errors.any);
 
   const { getTranslation } = useTranslations({
     ...form.settings.general,
@@ -81,7 +83,10 @@ export const Tabs: React.FC = () => {
           </NavLink>
         )}
         {config.limitations.can('integrations.tab') && (
-          <NavLink to="integrations">
+          <NavLink
+            to="integrations"
+            className={classes(hasIntegrationErrors && 'errors')}
+          >
             <span>{translate('Integrations')}</span>
           </NavLink>
         )}

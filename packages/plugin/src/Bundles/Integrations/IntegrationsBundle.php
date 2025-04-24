@@ -119,21 +119,26 @@ class IntegrationsBundle extends FeatureBundle
             return;
         }
 
+        $form = $event->getForm();
         $integration = $event->getIntegration();
         $logger = $this->loggerProvider->getLogger($integration);
         $exception = $event->getException();
 
         $message = $exception->getMessage();
         if ($exception instanceof RequestException) {
-            if (method_exists($exception->getResponse(), 'getBody')) {
-                $message = (string) $exception->getResponse()->getBody();
+            $response = $exception->getResponse();
+            if ($response && method_exists($response, 'getBody')) {
+                $message = (string) $response->getBody();
             }
         }
 
         $context = [
-            'form' => $event->getForm()->getHandle(),
             'integration' => $integration->getHandle(),
         ];
+
+        if ($form) {
+            $context['form'] = $form->getHandle();
+        }
 
         $json = json_decode($message, true);
         if (\JSON_ERROR_NONE === json_last_error()) {

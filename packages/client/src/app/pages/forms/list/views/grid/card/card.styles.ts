@@ -2,29 +2,45 @@ import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const CardBody = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: ${spacings.xl} ${spacings.xl} 0;
+`;
+
+export const FormBody = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: ${spacings.md};
+  width: 100%;
+`;
+
+export const FormBodyContent = styled.div`
   flex: 1;
+  min-width: 0;
+  max-width: 70%;
+`;
+
+export const FMContainer = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: start;
-
-  padding: ${spacings.xl} ${spacings.xl} 0;
+  flex-shrink: 0;
+  width: 30%;
+  text-align: right;
+  margin-left: auto;
+  margin-top: 6px;
 `;
 
 export const Title = styled.h2`
   cursor: default;
-
-  margin: 0;
-
+  margin: 0 0 ${spacings.xs} 0;
   color: #3d464e;
-
   font-size: 20px;
   font-weight: 700;
   text-align: left;
-
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-
   transition: all 0.2s ease-out;
 `;
 
@@ -33,16 +49,20 @@ export const TitleLink = styled(Title)`
 `;
 
 export const Subtitle = styled.span`
-  display: inline-block;
-
+  display: block;
   color: #868f96;
   font-size: 14px;
-
+  line-height: 1.4;
   max-width: 100%;
-
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  margin-bottom: ${spacings.sm};
+  cursor: default;
+
+  &:hover {
+    color: #6f7a82;
+  }
 `;
 
 export const Controls = styled.div`
@@ -118,6 +138,8 @@ export const CardWrapper = styled.li`
     }
   }
 `;
+
+export const ChartWrapper = styled.div``;
 
 export const PaddedChartFooter = styled.div<{ $color: string }>`
   margin-top: -3px;

@@ -94,3 +94,13 @@ export const SaveButtonWrapper = styled.div`
 `;
 
 export const SaveButton = styled.button``;
+
+export const BetaLabel = styled.span`
+  color: ${colors.gray700};
+  font-size: 9px;
+  margin-left: ${spacings.xs};
+  font-weight: bold;
+  transform: translateY(-4px);
+  display: inline-block;
+  line-height: 1;
+`;

@@ -71,6 +71,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         RecipientCollection $recipients,
         ?NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null,
+        array $headers = [],
         ?LoggerInterface $logger = null,
     ): int {
         $sentMailCount = 0;
@@ -108,6 +109,11 @@ class MailerService extends BaseService implements MailHandlerInterface
 
                 $email = $this->compileMessage($notificationTemplate, $fieldValues, $logger);
                 $email->setTo([$emailAddress]);
+
+                if ($headers) {
+                    $headers = array_map('strval', $headers);
+                    $email->setHeaders($headers);
+                }
 
                 $pdfTemplates = $notificationTemplate->getPdfTemplateRecords();
                 if ($pdfTemplates) {

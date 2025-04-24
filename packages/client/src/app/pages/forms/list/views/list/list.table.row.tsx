@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { FlexRow } from '@components/layout/blocks/flex';
@@ -18,6 +18,10 @@ import axios from 'axios';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useDeleteFormModal } from '../../modals/hooks/use-delete-form-modal';
+import {
+  FormMonitorStats,
+  getLastTestStatus,
+} from '../grid/card/card.monitor.stats';
 import { ControlButton } from '../grid/card/card.styles';
 import {
   useArchiveFormMutation,
@@ -32,9 +36,10 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
 
 type Props = {
   form: FormWithStats;
+  hasFormMonitor: boolean;
 };
 
-export const ListTableRow: React.FC<Props> = ({ form }) => {
+export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
   const isLiteAndUp = config.editions.isAtLeast(Edition.Lite);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
@@ -45,7 +50,8 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
 
   const { canDelete } = config.metadata.freeform;
 
-  const { id, name, handle, description, settings, dateArchived } = form;
+  const { id, name, handle, description, settings, dateArchived, formMonitor } =
+    form;
   const color = settings.general.color;
 
   const hasTitleLink = form.links.some(({ type }) => type === 'title');
@@ -53,6 +59,7 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
     (link) => link.handle === 'submissions'
   );
   const spamLink = form.links.find((link) => link.handle === 'spam');
+  const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
 
   return (
     <tr>
@@ -103,6 +110,24 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
           </AreaChart>
         </ResponsiveContainer>
       </td>
+      {hasFormMonitor && (
+        <>
+          <td>
+            {formMonitor?.enabled && formMonitorLink && (
+              <NavLink to={formMonitorLink.url}>
+                <FormMonitorStats formMonitor={formMonitor} />
+              </NavLink>
+            )}
+          </td>
+          <td>
+            {formMonitor?.enabled && (
+              <NavLink to={formMonitorLink.url}>
+                {getLastTestStatus(formMonitor, 'lg')}
+              </NavLink>
+            )}
+          </td>
+        </>
+      )}
       <td>
         {!!submissionLink && (
           <a href={submissionLink.url}>{submissionLink.count}</a>

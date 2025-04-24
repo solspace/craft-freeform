@@ -155,10 +155,17 @@ class PersistFormEvent extends Event
 
         $errorList = $this->responseData['errors'] ?? [];
 
-        $errorList[$key] = array_merge_recursive(
-            $errorList[$key] ?? [],
-            $errors
-        );
+        if (!isset($errorList[$key])) {
+            $errorList[$key] = [];
+        }
+
+        foreach ($errors as $id => $entries) {
+            if (isset($errorList[$key][$id])) {
+                $errorList[$key][$id] = array_merge_recursive($errorList[$key][$id], $entries);
+            } else {
+                $errorList[$key][$id] = $entries;
+            }
+        }
 
         $this->responseData['errors'] = $errorList;
         $this->status = 400;

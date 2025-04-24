@@ -39,6 +39,7 @@ export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
       value={value}
       property={property}
       updateValue={generateUpdateHandler(property)}
+      errors={integration?.errors?.[property.handle]}
       context={integration}
     />
   );

@@ -56,33 +56,39 @@ class IntegrationsBundle extends FeatureBundle
                     }
                 }
 
-                return $value;
+                $event->setValue($value);
+
+                break;
 
             case FieldObject::TYPE_NUMERIC:
-                return (int) preg_replace('/\D/', '', $value) ?: '';
+                $event->setValue((int) preg_replace('/\D/', '', $value) ?: '');
+
+                break;
 
             case FieldObject::TYPE_FLOAT:
-                return (float) preg_replace('/[^0-9,.]/', '', $value) ?: '';
+                $event->setValue((float) preg_replace('/[^0-9,.]/', '', $value) ?: '');
+
+                break;
 
             case FieldObject::TYPE_DATE:
                 if ($freeformField instanceof DatetimeField) {
                     $carbon = $freeformField->getCarbon();
                     if ($carbon) {
-                        return $carbon->toDateString();
+                        $event->setValue($carbon->toDateString());
                     }
                 }
 
-                return (string) $value;
+                break;
 
             case FieldObject::TYPE_DATETIME:
                 if ($freeformField instanceof DatetimeField) {
                     $carbon = $freeformField->getCarbon();
                     if ($carbon) {
-                        return $carbon->toAtomString();
+                        $event->setValue($carbon->toAtomString());
                     }
                 }
 
-                return (string) $value;
+                break;
 
             case FieldObject::TYPE_TIMESTAMP:
             case FieldObject::TYPE_MICROTIME:
@@ -98,18 +104,22 @@ class IntegrationsBundle extends FeatureBundle
                             $timestamp *= 1000;
                         }
 
-                        return $timestamp;
+                        $event->setValue($timestamp);
                     }
                 }
 
-                return (int) $value;
+                break;
 
             case FieldObject::TYPE_BOOLEAN:
-                return (bool) $value;
+                $event->setValue((bool) $value);
+
+                break;
 
             case FieldObject::TYPE_STRING:
             default:
-                return (string) $value;
+                $event->setValue((string) $value);
+
+                break;
         }
     }
 

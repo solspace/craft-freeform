@@ -201,7 +201,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
                 'field' => $this,
             ];
 
-            $label = $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
+            $label = $this->translateOptionLabel($option);
             $inputTag = Html::tag(
                 $inputAttributes->getTag('input'),
                 $option->getValue(),

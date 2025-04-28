@@ -45,4 +45,9 @@ abstract class BaseOptionsField extends AbstractField implements OptionsInterfac
     {
         return implode(', ', $this->getLabels());
     }
+
+    public function translateOptionLabel(mixed $option): string
+    {
+        return (string) $option;
+    }
 }

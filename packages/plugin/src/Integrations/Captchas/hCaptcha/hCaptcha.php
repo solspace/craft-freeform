@@ -61,12 +61,14 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private ?string $secretKey = null;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Only load Captcha scripts once the user interacts with the form',
         instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
     )]
     private bool $triggerOnInteract = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "checkbox"')]
     #[Input\Select(
         options: [
@@ -76,6 +78,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $theme = 'light';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "checkbox"')]
     #[Input\Select(
         options: [
@@ -85,6 +88,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $size = 'normal';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version !== "checkbox"')]
     #[Input\Select(
         label: 'Failure Behavior',
@@ -95,6 +99,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.failureBehavior !== "send-to-spam"')]
     #[Input\Text(
         label: 'Error Message',
@@ -103,6 +108,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Locale',
         instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',

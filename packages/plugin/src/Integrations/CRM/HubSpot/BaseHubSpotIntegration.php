@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotIntegrationInterface
@@ -26,6 +27,7 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotI
     protected const CATEGORY_COMPANY = 'Company';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Access Token',
         instructions: "This is your app's unique ID. You'll need it to make API calls.",
@@ -33,6 +35,8 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotI
     )]
     protected ?string $accessToken = null;
 
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapContacts)')]
     #[Input\Text(
         label: 'IP Address Field',
         instructions: "Enter a custom HubSpot Contact field handle where you wish to store the client's IP address from the submission (optional).",
@@ -40,6 +44,8 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotI
     )]
     protected ?string $ipField = null;
 
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapContacts)')]
     #[Input\Boolean(
         label: 'Append checkbox group field values on Contact update',
         instructions: 'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
@@ -47,6 +53,8 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotI
     )]
     protected bool $appendContactData = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.mapCompanies)')]
     #[Input\Boolean(
         label: 'Append checkbox group field values on Company update?',
         instructions: 'If a Company already exists in HubSpot, enabling this will append additional checkbox group field values to the Company inside HubSpot, instead of overwriting the options.',

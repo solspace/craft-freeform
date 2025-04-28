@@ -134,7 +134,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
                 'field' => $this,
             ];
 
-            $label = $this->translateOption('optionConfiguration', $option->getValue(), $option->getLabel());
+            $label = $this->translateOptionLabel($option);
             $inputTag = Html::tag(
                 $inputAttributes->getTag('input'),
                 '',

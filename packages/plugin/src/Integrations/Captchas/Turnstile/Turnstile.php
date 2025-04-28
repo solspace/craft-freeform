@@ -47,12 +47,14 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private ?string $secretKey = null;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Only load Captcha scripts once the user interacts with the form',
         instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
     )]
     private bool $triggerOnInteract = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         label: 'Failure Behavior',
         options: [
@@ -62,6 +64,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $failureBehavior = self::BEHAVIOR_DISPLAY_ERROR;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.failureBehavior === "display-error"')]
     #[Input\Text(
         label: 'Error Message',
@@ -70,6 +73,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $errorMessage = 'Please verify that you are not a robot.';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         options: [
             'auto' => 'Auto',
@@ -79,6 +83,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $theme = 'auto';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         options: [
             'normal' => 'Normal (300x65px)',
@@ -88,6 +93,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $size = 'normal';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
     #[Input\Text(
         instructions: 'The action to use when validating the Captcha.',
@@ -95,6 +101,7 @@ class Turnstile extends BaseIntegration implements CaptchaIntegrationInterface
     )]
     private string $action = 'submit';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Locale',
         instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',

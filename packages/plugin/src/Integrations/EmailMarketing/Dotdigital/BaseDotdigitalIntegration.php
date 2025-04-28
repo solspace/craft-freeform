@@ -17,6 +17,7 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIntegration;
@@ -51,6 +52,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     )]
     protected string $apiUserPassword = '';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         label: 'Email Opt In Type',
         instructions: "Setting this to 'Verified Double' will result in a double opt-in confirmation email sent to the contact. The result will state that the contact's Opt-In Type is 'Double' and the Status is 'Pending Opt-In'. These will only update to 'Verified Double' and 'Subscribed', respectively, once the contact has clicked the link in the confirmation email, at which point they will be added to the account.",
@@ -63,6 +65,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
     )]
     protected string $optInType = '';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Select(
         label: 'Email Type',
         order: 5,

@@ -33,4 +33,16 @@ abstract class BaseGeneratedOptionsField extends BaseOptionsField implements Gen
     {
         return $this->optionConfiguration->getOptions();
     }
+
+    public function translateOptionLabel(mixed $option): string
+    {
+        if (!$option instanceof Option) {
+            return '';
+        }
+
+        $value = $option->getValue();
+        $label = $option->getLabel();
+
+        return $this->translateOption('optionConfiguration', $value, $label);
+    }
 }

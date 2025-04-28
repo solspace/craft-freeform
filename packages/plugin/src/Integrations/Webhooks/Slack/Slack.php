@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
@@ -19,6 +20,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 )]
 class Slack extends WebhookIntegration
 {
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Required]
     #[TextArea(
         label: 'Message',

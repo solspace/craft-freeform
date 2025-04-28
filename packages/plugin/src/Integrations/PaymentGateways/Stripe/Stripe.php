@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingT
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Properties\WebhookUrlGenerator;
@@ -65,12 +66,14 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected string $webhookSecret = '';
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Suppress Email Notifications & Integrations when Payments Fail',
         instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
     )]
     protected bool $suppressOnFail = false;
 
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Send Success Email from Stripe to Submitter',
         instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, automatically triggering Stripe to send a successful email notification.",
@@ -78,6 +81,7 @@ class Stripe extends PaymentGatewayIntegration
     protected bool $sendSuccessMail = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(
         label: 'Customer Mapping',
@@ -88,6 +92,7 @@ class Stripe extends PaymentGatewayIntegration
     protected ?FieldMapping $customerMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping(
         label: 'Customer Address Mapping',

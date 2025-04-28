@@ -249,7 +249,6 @@ class HubSpotV3 extends BaseHubSpotIntegration
                     $this->logger->debug('Found contact by cookie', ['cookie' => $_COOKIE['hubspotutk'], 'contactId' => $contactId]);
                 } catch (\Exception $exception) {
                     $this->logger->debug('Failed to find contact by cookie', ['cookie' => $_COOKIE['hubspotutk']]);
-                    $this->processException($exception, self::CATEGORY_CONTACT);
                 }
             }
         } else {

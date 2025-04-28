@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
@@ -29,6 +30,7 @@ abstract class EmailMarketingIntegration extends APIIntegration implements Email
 {
     #[Validators\Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Target Email Field',
@@ -40,6 +42,7 @@ abstract class EmailMarketingIntegration extends APIIntegration implements Email
     protected ?FieldInterface $emailField = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[ValueTransformer(FieldTransformer::class)]
     #[Input\Field(
         label: 'Opt-in Field (optional)',
@@ -51,6 +54,7 @@ abstract class EmailMarketingIntegration extends APIIntegration implements Email
     protected ?FieldInterface $optInField = null;
 
     #[Validators\Required]
+    #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(EmailMarketingTransformer::class)]
     #[Input\DynamicSelect(

@@ -13,7 +13,8 @@
         {{ option.value == field.value ? "checked" }}
       />
       <label for="{{ field.idAttribute }}-{{ index }}" class="{{ field.attributes.optionLabel.get("class") }}{{ field.hasErrors ? ' text-red-600' }}">
-        {{ option.label|t('freeform')|raw }}
+        {{ field.translateOptionLabel(option) }} {# Use this for form builder translations #}
+        {# {{ option.label|t('freeform')|raw }} #} {# Use this instead if using static translations #}
       </label>
     </div>
   {% endfor %}

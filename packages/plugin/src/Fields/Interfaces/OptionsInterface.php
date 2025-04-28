@@ -22,4 +22,6 @@ interface OptionsInterface
     public function getLabels(): array;
 
     public function getLabelsAsString(): string;
+
+    public function translateOptionLabel(mixed $option): string;
 }

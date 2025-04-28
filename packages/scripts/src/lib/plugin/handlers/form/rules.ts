@@ -201,6 +201,7 @@ class RuleHandler implements FreeformHandler {
       const field = this.form[condition.field] || this.form[`${condition.field}[]`];
 
       const isCheckbox = fieldContainer.getAttribute('data-field-type') === 'checkbox';
+      const isMultipleCheckboxes = fieldContainer.getAttribute('data-field-type') === 'checkboxes';
 
       // Default the value to `null` if the field is hidden, which will help
       // with triggering nested rules
@@ -212,6 +213,10 @@ class RuleHandler implements FreeformHandler {
         if (isCheckbox) {
           const checkboxField = field[1] as HTMLInputElement;
           currentValue = checkboxField.checked ? '1' : '';
+        } else if (isMultipleCheckboxes) {
+          currentValue = Array.from(field)
+            .filter((checkbox) => (checkbox as HTMLInputElement).checked)
+            .map((checkbox) => (checkbox as HTMLInputElement).value);
         } else if (field instanceof HTMLSelectElement && field.multiple) {
           currentValue = Array.from(field.options)
             .filter((option) => option.selected)

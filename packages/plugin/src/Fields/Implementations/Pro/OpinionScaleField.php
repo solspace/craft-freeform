@@ -168,6 +168,19 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         ];
     }
 
+    public function translateOptionLabel(mixed $option): string
+    {
+        if (!$option instanceof Scale) {
+            return '';
+        }
+
+        $value = $option->getValue();
+        $label = $option->getLabel();
+        $label = $label ?: $value;
+
+        return $this->translateOption('scales', $value, $label);
+    }
+
     protected function getInputHtml(): string
     {
         if (empty($this->scales)) {
@@ -226,7 +239,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $this->translateOption('scales', $value, $label),
+                $this->translateOptionLabel($scale),
                 $labelAttributes->toHtmlTagArray($variables)
             );
 

@@ -14,9 +14,13 @@ use Solspace\Freeform\Events\PostForwarding\PostForwardingEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Captchas\hCaptcha\hCaptcha;
+use Solspace\Freeform\Integrations\Captchas\ReCaptcha\ReCaptcha;
+use Solspace\Freeform\Integrations\Captchas\Turnstile\Turnstile;
 use Solspace\Freeform\Integrations\Single\PostForwarding\PostForwarding;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Library\Integrations\Types\Captchas\CaptchaIntegrationInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
@@ -109,6 +113,25 @@ class PostForwardingTrigger extends FeatureBundle
         $payload['submission-title'] = $submission->title;
         $payload['submission-ip'] = $submission->ip;
 
+        if (!$form->isDisabled()->captchas) {
+            $responseFields = [
+                ReCaptcha::class => 'g-recaptcha-response',
+                hCaptcha::class => 'h-captcha-response',
+                Turnstile::class => 'cf-turnstile-response',
+            ];
+
+            $integrations = $this->integrationsProvider->getForForm($form, CaptchaIntegrationInterface::class);
+            foreach ($integrations as $integration) {
+                foreach ($responseFields as $class => $fieldName) {
+                    if ($integration instanceof $class) {
+                        $payload[$fieldName] = \Craft::$app->request->post($fieldName);
+
+                        break 2;
+                    }
+                }
+            }
+        }
+
         $payloadEvent = new PostForwardingEvent(
             new Client(),
             new Request('POST', $url),
@@ -188,6 +211,7 @@ class PostForwardingTrigger extends FeatureBundle
                     'form' => $form->getHandle(),
                     'submission' => $submission?->id,
                     'message' => $e->getMessage(),
+                    'response' => (string) $e->getResponse()->getBody(),
                 ]
             );
         }

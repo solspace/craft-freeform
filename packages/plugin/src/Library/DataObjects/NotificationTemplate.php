@@ -50,6 +50,13 @@ class NotificationTemplate implements IdentificatorInterface
     private string $textBody;
     private bool $autoText;
 
+    public function __set(string $name, $value): void
+    {
+        if (property_exists($this, $name)) {
+            $this->{$name} = $value;
+        }
+    }
+
     public static function fromRecord(NotificationTemplateRecord $record): self
     {
         $template = new self();

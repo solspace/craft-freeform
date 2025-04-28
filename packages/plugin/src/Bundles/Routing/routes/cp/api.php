@@ -49,6 +49,7 @@ return [
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',
     'freeform/api/notifications/templates' => 'freeform/api/notifications/get-templates',
+    'freeform/api/notifications/templates/<id:\d+>' => 'freeform/api/notifications/get-one-template',
 
     // TYPES
     'freeform/api/types/page-buttons' => 'freeform/api/types/page-buttons/get-type',

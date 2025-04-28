@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   PreviewContainer,
   PreviewEditor,
 } from '@components/form-controls/preview/previewable-component.styles';
 import config from '@config/freeform/freeform.config';
+import { useInitialValue } from '@ff-client/hooks/use-initial-value';
 import { Editor } from '@tinymce/tinymce-react';
 
 import 'tinymce/tinymce';
@@ -41,18 +42,12 @@ export const WysiwygEditor: React.FC<Props> = ({
   toolbar,
   updateValue,
 }) => {
+  const initialValue = useInitialValue(value);
   const {
     metadata: {
       tinymce: { stylesPath },
     },
   } = config;
-
-  const initialValue = useRef<string>();
-  useEffect(() => {
-    if (!initialValue.current) {
-      initialValue.current = value;
-    }
-  }, []);
 
   return (
     <PreviewEditor>
@@ -65,7 +60,7 @@ export const WysiwygEditor: React.FC<Props> = ({
               promotion: false,
               content_css: stylesPath,
             }}
-            initialValue={initialValue.current}
+            initialValue={initialValue}
             onEditorChange={updateValue}
             plugins={plugins}
             toolbar={toolbar}

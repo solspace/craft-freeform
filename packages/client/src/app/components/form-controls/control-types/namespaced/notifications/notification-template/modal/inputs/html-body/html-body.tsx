@@ -25,11 +25,12 @@ import 'tinymce/plugins/table';
 
 import type { InputControl } from '../../template.modal.types';
 
-import { registerFormTokens } from './html-body.plugin';
+import { registerFormTokens } from './tokens/tokens.plugin';
 
 registerFormTokens(tinymce);
 
 export const HtmlBodyInput: React.FC<InputControl> = (props) => {
+  const { value, onChange } = props;
   const store = useStore();
 
   const {
@@ -42,16 +43,17 @@ export const HtmlBodyInput: React.FC<InputControl> = (props) => {
     <ControlBlock {...props}>
       <Editor
         init={{
+          branding: false,
           menubar: false,
           statusbar: true,
           promotion: false,
           content_css: stylesPath,
           store,
         }}
-        initialValue={''}
-        onEditorChange={console.log}
+        value={value}
+        onEditorChange={onChange}
         plugins={plugins}
-        toolbar={'undo redo | styleselect | bold italic | mergeTags'}
+        toolbar={'undo redo | styleselect | bold italic | freeform-tokens'}
         licenseKey="gpl"
       />
     </ControlBlock>
@@ -68,5 +70,5 @@ const plugins = [
   'media',
   'searchreplace',
   'table',
-  'mergeTags',
+  'freeform-tokens',
 ];

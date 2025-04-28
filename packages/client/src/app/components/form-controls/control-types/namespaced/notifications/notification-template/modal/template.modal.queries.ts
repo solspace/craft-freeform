@@ -1,0 +1,42 @@
+import type { NotificationTemplate } from '@ff-client/types/notifications';
+import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
+
+const QKNotificationTemplates = {
+  all: ['notification-emplates'] as const,
+  one: (templateId: string | number) =>
+    [...QKNotificationTemplates.all, templateId] as const,
+};
+
+export const useQueryNotificationTemplate = (
+  templateId: string | number
+): UseQueryResult<NotificationTemplate, AxiosError> => {
+  return useQuery(
+    QKNotificationTemplates.one(templateId),
+    () =>
+      axios
+        .get(`/api/notifications/templates/${templateId}`)
+        .then((res) => res.data),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
+};
+
+export const useNotificationTemplateMutation = (
+  formId?: number
+): UseMutationResult => {
+  return useMutation({
+    mutationFn: (payload: NotificationTemplate) => {
+      return axios
+        .post('/api/notifications/templates', {
+          formId,
+          ...payload,
+        })
+        .then((res) => res.data);
+    },
+  });
+};

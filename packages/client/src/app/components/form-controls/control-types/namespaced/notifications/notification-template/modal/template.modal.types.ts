@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import type { ControlProps } from '@components/form-controls/control.block';
+import type { GenericValue } from '@ff-client/types/properties';
 
 import { HtmlBodyInput } from './inputs/html-body/html-body';
 import { TextInput } from './inputs/text';
@@ -7,6 +8,8 @@ import { TextInput } from './inputs/text';
 export type InputControl = ControlProps & {
   type: FC<ControlProps>;
   multiline?: boolean;
+  value?: GenericValue;
+  onChange?: (value: GenericValue) => void;
 };
 
 type Row = InputControl[];
@@ -59,7 +62,7 @@ export const configuration = [
         {
           type: HtmlBodyInput,
           label: 'Email Body (HTML)',
-          handle: 'bodyHtml',
+          handle: 'body',
           instructions:
             'The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables.',
         },
@@ -122,4 +125,6 @@ type FieldHandles =
   (typeof configuration)[number]['rows'][number][number]['handle'];
 
 export type NotificationTabs = (typeof configuration)[number]['name'];
-export type NotificationConfiguration = Partial<Record<FieldHandles, string>>;
+export type NotificationConfiguration = Partial<
+  Record<FieldHandles, GenericValue>
+>;

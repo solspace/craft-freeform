@@ -2,8 +2,10 @@ import type { TinyMCE } from 'tinymce';
 
 import { getSuggestions } from './html-body.plugin.suggestions';
 
-export const registerFormTokens = (tinymce: TinyMCE): void => {
-  tinymce.PluginManager.add('mergeTags', function (editor) {
+export const registerTokenPlugin = (tinymce: TinyMCE): void => {
+  console.log('Registering form tokens plugin');
+
+  tinymce.PluginManager.add('freeform-tokens', function (editor) {
     const store = editor.getParam('store');
 
     editor.ui.registry.addAutocompleter('mergeTags', {

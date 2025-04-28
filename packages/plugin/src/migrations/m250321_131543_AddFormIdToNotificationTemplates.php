@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 
 class m250321_131543_AddFormIdToNotificationTemplates extends Migration
@@ -34,6 +33,7 @@ class m250321_131543_AddFormIdToNotificationTemplates extends Migration
             foreach ($foreignKeys as $foreignKey) {
                 if ($foreignKey->columnNames === ['formId']) {
                     $this->dropForeignKey($foreignKey->name, self::TABLE);
+
                     break;
                 }
             }

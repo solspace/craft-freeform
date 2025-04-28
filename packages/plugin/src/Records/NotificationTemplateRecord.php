@@ -134,6 +134,28 @@ class NotificationTemplateRecord extends ActiveRecord
         ];
     }
 
+    public function safeAttributes(): array
+    {
+        return [
+            'name',
+            'handle',
+            'description',
+            'fromName',
+            'fromEmail',
+            'replyToName',
+            'replyToEmail',
+            'cc',
+            'bcc',
+            'subject',
+            'autoText',
+            'bodyHtml',
+            'bodyText',
+            'includeAttachments',
+            'presetAssets',
+            'pdfTemplateIds',
+        ];
+    }
+
     public function getHandle(): string
     {
         return $this->handle;

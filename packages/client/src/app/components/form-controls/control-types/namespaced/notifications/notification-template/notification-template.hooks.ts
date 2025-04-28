@@ -21,8 +21,6 @@ export const useNotificationTemplates: UseNotificationTemplates = (
   const { data: formNotificationData, isFetching: formNotificationIsFetching } =
     useQueryFormNotificationTemplates(Number(formId));
 
-  console.log(formNotificationData, formNotificationIsFetching);
-
   const templates = data?.templates || {
     database: [],
     files: [],

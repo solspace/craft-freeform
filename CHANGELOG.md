@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.10.11 - 2025-04-28
+
+### Added
+- Added `translateOptionLabel` function for manually calling builder translations for field option labels.
+
+### Changed
+- Updated the **POST Forwarding** payload to include the captcha response if present.
+- Updated the **Tailwind 4** sample templates to use the new `translateOptionLabel` function for compatibility with builder translations.
+
+### Fixed
+- Fixed a bug where the **Conditional Rules** were not reading all checkbox values when evaluating rule conditions.
+- Fixed a couple of potential issues with the **HubSpot** integration.
+- Fixed a bug where integration value processors were sometimes not transforming values correctly.
+- Fixed a typo for the **Blocked IP Addresses** integration.
+- Fixed a bug where the field property editor in the form builder was covering the Site dropdown picker.
+- Fixed some translation issues in the **Diagnostics** page.
+
 ## 5.10.10 - 2025-04-23
 
 ### Added

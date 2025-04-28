@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
 export const TriggerButton = styled.button`
+  z-index: 3 !important;
+
   &:after {
     margin-left: 0 !important;
   }

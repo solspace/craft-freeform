@@ -24,6 +24,7 @@ use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
 use Solspace\Freeform\Records\Rules\SubmitFormRuleRecord;
+use yii\db\Expression;
 
 class m230101_200000_FF4to5_MigrateData extends Migration
 {
@@ -742,6 +743,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     private function processRules(int $formId, \stdClass $props): void
     {
+        $currentTime = new Expression('NOW()');
+
         $rules = $props->rules ?? null;
         if (!$rules || empty($rules->list)) {
             return;
@@ -765,6 +768,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 $ruleRecord = new RuleRecord([
                     'uid' => StringHelper::UUID(),
                     'combinator' => $fieldRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                    'dateCreated' => $currentTime,
+                    'dateUpdated' => $currentTime,
                 ]);
                 $ruleRecord->save();
 
@@ -778,12 +783,17 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         'pageId' => $this->pageMap[$pageHandle]->id,
                         'button' => 'submit',
                         'display' => $fieldRule->show ? 'show' : 'hide',
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
+                        'uid' => StringHelper::UUID(),
                     ]);
                     $submitButtonRuleRecord->save();
 
                     $backRuleRecord = new RuleRecord([
                         'uid' => StringHelper::UUID(),
                         'combinator' => $fieldRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
                     ]);
                     $backRuleRecord->save();
                     $backButtonRuleRecord = new ButtonRuleRecord([
@@ -791,6 +801,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         'pageId' => $this->pageMap[$pageHandle]->id,
                         'button' => 'back',
                         'display' => $fieldRule->show ? 'show' : 'hide',
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
+                        'uid' => StringHelper::UUID(),
                     ]);
                     $backButtonRuleRecord->save();
 
@@ -802,6 +815,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                         'id' => $ruleRecord->id,
                         'fieldId' => $targetFieldRecord->id,
                         'display' => $fieldRule->show ? 'show' : 'hide',
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
+                        'uid' => StringHelper::UUID(),
                     ]);
                     $fieldRuleRecord->save();
                 }
@@ -819,6 +835,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 $ruleRecord = new RuleRecord([
                     'uid' => StringHelper::UUID(),
                     'combinator' => $pageRule->matchAll ? Rule::COMBINATOR_AND : Rule::COMBINATOR_OR,
+                    'dateCreated' => $currentTime,
+                    'dateUpdated' => $currentTime,
                 ]);
                 $ruleRecord->save();
 
@@ -826,12 +844,18 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                     $submitRuleRecord = new SubmitFormRuleRecord([
                         'id' => $ruleRecord->id,
                         'formId' => $formId,
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
+                        'uid' => StringHelper::UUID(),
                     ]);
                     $submitRuleRecord->save();
                 } else {
                     $pageRuleRecord = new PageRuleRecord([
                         'id' => $ruleRecord->id,
                         'pageId' => $targetPageRecord->id,
+                        'dateCreated' => $currentTime,
+                        'dateUpdated' => $currentTime,
+                        'uid' => StringHelper::UUID(),
                     ]);
                     $pageRuleRecord->save();
                 }
@@ -843,6 +867,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
 
     private function processCriteria(int $ruleId, array $criteriaList): void
     {
+        $currentTime = new Expression('NOW()');
+
         foreach ($criteriaList as $criteria) {
             $conditionField = $this->fieldMap[$criteria->hash] ?? null;
             if (!$conditionField) {
@@ -863,6 +889,9 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                 'fieldId' => $conditionField->id,
                 'operator' => $operator,
                 'value' => $value,
+                'dateCreated' => $currentTime,
+                'dateUpdated' => $currentTime,
+                'uid' => StringHelper::UUID(),
             ]);
             $conditionRecord->save();
         }

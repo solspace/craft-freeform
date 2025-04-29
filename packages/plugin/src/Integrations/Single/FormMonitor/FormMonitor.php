@@ -11,6 +11,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\EmailValueGenerator;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Transformers\ManifestTransformer;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
@@ -43,6 +44,7 @@ class FormMonitor extends APIIntegration
     private string $testUrl = '';
 
     #[Required]
+    #[ValueGenerator(EmailValueGenerator::class)]
     #[Input\Text(
         label: 'Error Notification Email',
         instructions: 'Email address to receive notifications about the form.',

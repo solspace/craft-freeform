@@ -2,12 +2,17 @@ import type { RootState } from '@editor/store';
 import { clone } from 'lodash';
 import type { Store } from 'redux';
 
-type SuggestionCategory = {
+export type SuggestionCategory = {
   name: string;
   items: Suggestion[];
 };
 
-type Suggestion = { text: string; value: string };
+export type Suggestion = {
+  label: string;
+  token: string;
+  value: string;
+  active?: boolean;
+};
 
 export const getSuggestions = (
   store: Store<RootState>
@@ -17,7 +22,8 @@ export const getSuggestions = (
   const fields: Suggestion[] = [];
   store.getState().layout.fields.forEach((field) => {
     fields.push({
-      text: field.properties.label,
+      label: field.properties.label,
+      token: field.properties.label,
       value: `field.${field.uid}`,
     });
   });
@@ -35,15 +41,18 @@ const defaultSuggestions: SuggestionCategory[] = [
     name: 'Submission',
     items: [
       {
-        text: 'Submission ID',
+        token: 'Submission ID',
+        label: 'ID',
         value: 'submission.id',
       },
       {
-        text: 'Submission Date',
+        token: 'Submission Date',
+        label: 'Date',
         value: 'submission.date',
       },
       {
-        text: 'Submission Status',
+        token: 'Submission Status',
+        label: 'Status',
         value: 'submission.status',
       },
     ],
@@ -52,15 +61,18 @@ const defaultSuggestions: SuggestionCategory[] = [
     name: 'Form',
     items: [
       {
-        text: 'Form ID',
+        token: 'Form ID',
+        label: 'ID',
         value: 'form.id',
       },
       {
-        text: 'Form Name',
+        token: 'Form Name',
+        label: 'Name',
         value: 'form.name',
       },
       {
-        text: 'Form Handle',
+        token: 'Form Handle',
+        label: 'Handle',
         value: 'form.handle',
       },
     ],
@@ -69,7 +81,8 @@ const defaultSuggestions: SuggestionCategory[] = [
     name: 'Predefined',
     items: [
       {
-        text: 'Field Labels and Values',
+        token: 'Field Labels and Values',
+        label: 'Field Labels and Values',
         value: 'loop.field.labels',
       },
     ],

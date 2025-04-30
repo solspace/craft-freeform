@@ -15,14 +15,14 @@ export const registerFormTokens = (tinymce: TinyMCE): void => {
           const rect = range.getBoundingClientRect();
 
           // Show dropdown at cursor position
-          show(editor, rect, '');
+          show(editor, rect);
         }, 0);
       }
     });
 
     // Clean up when editor is removed
     editor.on('remove', () => {
-      hide(editor);
+      hide();
     });
   });
 };

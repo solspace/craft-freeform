@@ -1,8 +1,13 @@
 import type { Editor } from 'tinymce';
 
+import type { TokenAPI } from '../tokens.dropdown';
+import { renderTokenDropdown } from '../tokens.dropdown';
+
 import { insertToken } from './insert';
 import { getDropdown, getFilter, setDropdown, setFilter } from './state';
 import { getSuggestions } from './suggestions';
+
+let api: TokenAPI;
 
 const create = (): HTMLElement => {
   const dropdown = document.createElement('div');
@@ -26,47 +31,40 @@ const create = (): HTMLElement => {
   return dropdown;
 };
 
-let keydownNav: (e: KeyboardEvent) => void = undefined;
+const keydownNav: (e: KeyboardEvent) => void = undefined;
 
-export const show = (editor: Editor, rect: DOMRect, filter = ''): void => {
-  hide(editor);
+export const show = (editor: Editor, rect: DOMRect): void => {
+  hide();
+  api = renderTokenDropdown(editor);
 
-  const dropdown = create();
-  position(editor, dropdown, rect);
-  populate(editor, dropdown, filter);
-  setFilter(filter);
+  //const dropdown = create();
+  //position(editor, rect);
+  //setFilter(filter);
 
   // Close dropdown when clicking outside
-  document.addEventListener('click', handleOutsideClick(editor));
+  // document.addEventListener('click', handleOutsideClick(editor));
 
-  keydownNav = handleKeyboardNavigation(editor);
+  //keydownNav = handleKeyboardNavigation(editor);
 
   // Handle keyboard navigation
-  editor.on('keydown', keydownNav);
+  // editor.on('keydown', keydownNav);
 };
 
-export const hide = (editor: Editor): void => {
-  const dropdown = getDropdown();
-  if (dropdown) {
-    document.body.removeChild(dropdown);
-    setDropdown(undefined);
-    setFilter('');
-
-    document.removeEventListener('click', handleOutsideClick(editor));
-    editor.off('keydown', keydownNav);
+export const hide = (): void => {
+  if (api) {
+    api.close();
+    api = undefined;
   }
 };
 
-const position = (
-  editor: Editor,
-  dropdown: HTMLElement,
-  rect: DOMRect
-): void => {
+const position = (editor: Editor, rect: DOMRect): void => {
   const editorRect = editor.getContentAreaContainer().getBoundingClientRect();
-
-  // Position dropdown below the cursor or trigger point
-  dropdown.style.left = `${Math.min(rect.left, editorRect.right - 250)}px`;
-  dropdown.style.top = `${rect.bottom + window.scrollY}px`;
+  if (api) {
+    api.updatePosition({
+      left: Math.min(rect.left, editorRect.right - 250),
+      top: rect.bottom + window.scrollY,
+    });
+  }
 };
 
 // Populate dropdown with suggestions
@@ -156,7 +154,7 @@ const populate = (editor: Editor, dropdown: HTMLElement, filter = ''): void => {
 const handleOutsideClick = (editor: Editor) => (event: MouseEvent) => {
   const dropdown = getDropdown();
   if (dropdown && !dropdown.contains(event.target as Node)) {
-    hide(editor);
+    hide();
   }
 };
 

@@ -10,12 +10,8 @@ export const registerFormTokens = (tinymce: TinyMCE): void => {
     editor.on('keydown', (e) => {
       if (e.key === '@') {
         setTimeout(() => {
-          const selection = editor.selection;
-          const range = selection.getRng();
-          const rect = range.getBoundingClientRect();
-
           // Show dropdown at cursor position
-          show(editor, rect);
+          show(editor);
         }, 0);
       }
     });

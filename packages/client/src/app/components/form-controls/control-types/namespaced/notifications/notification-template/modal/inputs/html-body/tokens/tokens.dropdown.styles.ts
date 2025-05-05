@@ -40,7 +40,7 @@ export const Body = styled.div`
   flex-direction: column;
   gap: ${spacings.xs};
 
-  padding: ${spacings.xs} ${spacings.sm};
+  padding: ${spacings.xs} 0;
 
   overflow-y: auto;
   ${scrollBar};

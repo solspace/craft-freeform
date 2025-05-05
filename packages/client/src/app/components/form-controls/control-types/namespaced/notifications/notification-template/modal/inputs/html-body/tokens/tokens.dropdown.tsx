@@ -1,13 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import translate from '@ff-client/utils/translations';
 import type { Editor } from 'tinymce';
 
 import { Category } from './components/category';
+import { useFilteredSuggestions } from './operations/filter';
+import { insertToken } from './operations/insert';
+import { usePosition } from './operations/position';
 import type { Suggestion } from './operations/suggestions';
 import { Body, Title, TokenDropdownWrapper } from './tokens.dropdown.styles';
-import { useFilteredSuggestions } from './tokens.hooks';
 
 export type Position = {
   left: number;
@@ -23,7 +25,7 @@ type Props = {
   editor: Editor;
   position?: Position;
   close?: () => void;
-  insert: (item: Suggestion) => void;
+  insert: (item: Suggestion, filter: string) => void;
 };
 
 const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
@@ -35,6 +37,8 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
     editor,
     index
   );
+
+  usePosition(editor, ref);
 
   useEffect(() => {
     itemCountRef.current = suggestions.reduce(
@@ -50,7 +54,7 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
       return;
     }
 
-    const keyDown = (event: KeyboardEvent): void => {
+    const keyDown = (event: KeyboardEvent): void | boolean => {
       switch (event.key) {
         case 'Escape':
           event.preventDefault();
@@ -60,6 +64,13 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
 
         case 'Backspace':
           setFilter((prev) => (prev.length > 0 ? prev.slice(0, -1) : ''));
+
+          break;
+
+        case 'ArrowRight':
+        case 'ArrowLeft':
+          event.preventDefault();
+          close();
 
           break;
 
@@ -83,17 +94,22 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
 
         case 'Enter':
           event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+
           if (index > -1) {
             const item = suggestions
               .flatMap((category) => category.items)
               .find((item) => item.active);
 
             if (item) {
-              insert(item);
+              insert(item, filter);
             }
           }
           setFilter('');
           close();
+
+          return false;
 
           break;
 
@@ -105,22 +121,32 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
       }
     };
 
-    editor.on('keydown', keyDown);
+    editor.on('keydown', keyDown, true);
 
     return () => {
       editor.off('keydown', keyDown);
     };
   }, [index, close, editor, suggestions]);
 
+  const onInsert = useCallback(
+    (item: Suggestion) => {
+      insert(item, filter);
+      setFilter('');
+      close();
+    },
+    [filter, insert, close]
+  );
+
   return (
     <TokenDropdownWrapper ref={ref}>
       <Title>{translate('Freeform Template Tokens')}</Title>
-      <Title>
-        {filter} : {index}
-      </Title>
       <Body>
         {suggestions.map((category) => (
-          <Category key={category.name} category={category} />
+          <Category
+            key={category.name}
+            category={category}
+            onClick={onInsert}
+          />
         ))}
       </Body>
     </TokenDropdownWrapper>
@@ -133,12 +159,7 @@ export const renderTokenDropdown = (editor: Editor): TokenAPI => {
   document.body.appendChild(container);
 
   const root = ReactDOM.createRoot(container);
-
-  const insertToken = (item: Suggestion): void => {
-    editor.insertContent(
-      `<span contenteditable="false" data-freeform-token="${item.value}">${item.token}</span>&nbsp;`
-    );
-  };
+  const insert = insertToken(editor);
 
   const close = (): void => {
     root.unmount();
@@ -147,9 +168,7 @@ export const renderTokenDropdown = (editor: Editor): TokenAPI => {
     }
   };
 
-  root.render(
-    <TokenDropdown editor={editor} close={close} insert={insertToken} />
-  );
+  root.render(<TokenDropdown editor={editor} close={close} insert={insert} />);
 
   return {
     close,
@@ -159,7 +178,7 @@ export const renderTokenDropdown = (editor: Editor): TokenAPI => {
           editor={editor}
           close={close}
           position={position}
-          insert={insertToken}
+          insert={insert}
         />
       );
     },

@@ -47,7 +47,6 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
             e.preventDefault();
             e.stopPropagation();
 
-            console.log('THIS IS GOING TO BE A MODAL');
             openModal(id);
 
             return false;

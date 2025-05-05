@@ -301,7 +301,7 @@ export const FMResults: React.FC = () => {
         <NoResults>
           <p>
             {translate(
-              'This form is awaiting its first scan. This could take few minutes.'
+              'This form is awaiting its first scan. This could take a few minutes.'
             )}
           </p>
         </NoResults>

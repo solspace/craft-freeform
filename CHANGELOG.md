@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.10.12 - 2025-05-05
+
+### Changed
+- Updated the **POST Forwarding** payload to include an improved captcha response.
+- Updated various integration icons.
+
+### Fixed
+- Fixed a bug where `dateCreated`, `dateUpdated`, and `UID` columns for **Conditional Rules** database tables were erroring on PostgreSQL installs when running the migration from Freeform 4.x to 5.x.
+- Fixed a bug where the _Delete_ row button triggered a JS error when used on pages beyond the first one on multi-page forms.
+
 ## 5.10.11 - 2025-04-28
 
 ### Added

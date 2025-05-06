@@ -113,13 +113,13 @@ class PostForwardingTrigger extends FeatureBundle
         $payload['submission-title'] = $submission->title;
         $payload['submission-ip'] = $submission->ip;
 
-        if (!$form->isDisabled()->captchas) {
-            $responseFields = [
-                ReCaptcha::class => 'g-recaptcha-response',
-                hCaptcha::class => 'h-captcha-response',
-                Turnstile::class => 'cf-turnstile-response',
-            ];
+        $responseFields = [
+            ReCaptcha::class => 'g-recaptcha-response',
+            hCaptcha::class => 'h-captcha-response',
+            Turnstile::class => 'cf-turnstile-response',
+        ];
 
+        if (!$form->isDisabled()->captchas) {
             $integrations = $this->integrationsProvider->getForForm($form, CaptchaIntegrationInterface::class);
             foreach ($integrations as $integration) {
                 foreach ($responseFields as $class => $fieldName) {
@@ -129,6 +129,15 @@ class PostForwardingTrigger extends FeatureBundle
                         break 2;
                     }
                 }
+            }
+        }
+
+        // Detect and grab manual Captcha integration response values
+        foreach ($responseFields as $class => $fieldName) {
+            if (\Craft::$app->request->post($fieldName)) {
+                $payload[$fieldName] = \Craft::$app->request->post($fieldName);
+
+                break;
             }
         }
 

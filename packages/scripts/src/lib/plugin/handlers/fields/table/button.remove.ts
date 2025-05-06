@@ -2,6 +2,8 @@ import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { removeElement } from '@lib/plugin/helpers/elements';
 
+let isRegistered = false;
+
 export const registerRemoveButtons = (instance: Freeform) => {
   const tables = instance.form.querySelectorAll('[data-freeform-table]');
   tables.forEach((table) => {
@@ -12,13 +14,16 @@ export const registerRemoveButtons = (instance: Freeform) => {
     }
   });
 
-  instance.form.addEventListener(events.table.afterRowAdded, (event: CustomEvent & { row: HTMLTableRowElement }) => {
-    const row = event.row;
-    const removeRowButton = row.querySelector<HTMLButtonElement>('[data-freeform-table-remove-row]');
-    if (removeRowButton) {
-      removeRowButton.addEventListener('click', handleRemove(instance));
-    }
-  });
+  if (!isRegistered) {
+    isRegistered = true;
+    instance.form.addEventListener(events.table.afterRowAdded, (event: CustomEvent & { row: HTMLTableRowElement }) => {
+      const row = event.row;
+      const removeRowButton = row.querySelector<HTMLButtonElement>('[data-freeform-table-remove-row]');
+      if (removeRowButton) {
+        removeRowButton.addEventListener('click', handleRemove(instance));
+      }
+    });
+  }
 };
 
 const handleRemove = (instance: Freeform) => (event: Event) => {

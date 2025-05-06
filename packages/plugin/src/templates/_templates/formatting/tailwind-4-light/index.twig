@@ -164,7 +164,7 @@
           </svg>
         </div>
         <div class="ml-2">
-          <h3 class="text-md font-medium text-green-800">{{ form.successMessage }}</h3>
+          <h3 class="text-md font-medium text-green-800">{{ form.successMessage | t('freeform') }}</h3>
         </div>
       </div>
     </div>
@@ -178,7 +178,7 @@
         </svg>
         </div>
         <div class="ml-2">
-          <h3 class="text-md font-medium text-red-800">{{ form.errorMessage }}</h3>
+          <h3 class="text-md font-medium text-red-800">{{ form.errorMessage | t('freeform') }}</h3>
           {% if form.errors|length %}
             <div class="mt-2 text-sm text-red-700">
               <ul role="list" class="list-disc space-y-1 pl-5">

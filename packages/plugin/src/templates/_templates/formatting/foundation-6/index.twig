@@ -58,12 +58,12 @@
 {% if not form.settings.ajax %}
     {% if form.submittedSuccessfully %}
         <div{{ form.attributes.success|raw }}>
-            <p>{{ form.successMessage }}</p>
+            <p>{{ form.successMessage | t('freeform') }}</p>
         </div>
     {% endif %}
     {% if form.hasErrors %}
         <div{{ form.attributes.errors|raw }}>
-            <p>{{ form.errorMessage }}</p>
+            <p>{{ form.errorMessage | t('freeform') }}</p>
 
             {% if form.errors|length %}
                 <ul class="mb-0">

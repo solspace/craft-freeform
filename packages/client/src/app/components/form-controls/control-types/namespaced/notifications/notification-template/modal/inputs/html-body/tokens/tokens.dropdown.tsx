@@ -111,8 +111,6 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
 
           return false;
 
-          break;
-
         default:
           if (event.key.length === 1) {
             setFilter((prev) => prev + event.key);

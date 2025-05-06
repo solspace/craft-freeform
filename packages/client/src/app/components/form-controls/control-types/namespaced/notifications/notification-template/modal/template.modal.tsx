@@ -29,7 +29,8 @@ export const EditNotificationModal: React.FC<ModalContainerProps> = ({
   data,
   closeModal,
 }) => {
-  const { id } = data;
+  const id = data?.id;
+
   const { data: template, isLoading } = useQueryNotificationTemplate(id);
   const mutation = useNotificationTemplateMutation();
 
@@ -74,7 +75,7 @@ export const EditNotificationModal: React.FC<ModalContainerProps> = ({
 
       <ModalContent>
         {!isLoading &&
-          template.id &&
+          template?.id &&
           configuration.map((tab) => (
             <TabContent
               key={tab.name}

@@ -120,7 +120,7 @@
     },
     "@file": {
       attributes: {
-        label: { 
+        label: {
           "=class": "freeform-upload-btn inline-flex items-center justify-center gap-2 px-3 py-1.5 text-sm text-white font-normal bg-white/10 rounded-md cursor-pointer ring-1 ring-white/10 ring-inset hover:bg-white/5",
         },
         input: {
@@ -164,7 +164,7 @@
           </svg>
         </div>
         <div class="ml-2">
-          <h3 class="text-md font-medium text-green-100">{{ form.settings.successMessage | t('freeform') }}</h3>
+          <h3 class="text-md font-medium text-green-100">{{ form.successMessage }}</h3>
         </div>
       </div>
     </div>
@@ -178,7 +178,7 @@
         </svg>
         </div>
         <div class="ml-2">
-          <h3 class="text-md font-medium text-red-100">{{ form.settings.errorMessage | t('freeform') }}</h3>
+          <h3 class="text-md font-medium text-red-100">{{ form.errorMessage }}</h3>
           {% if form.errors|length %}
             <div class="mt-2 text-sm text-red-200">
               <ul role="list" class="list-disc space-y-1 pl-5">

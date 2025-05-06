@@ -30,7 +30,7 @@ use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\BaseMailchimpIntegra
     type: Type::TYPE_EMAIL_MARKETING,
     version: 'v3',
     readme: __DIR__.'/../README.md',
-    iconPath: __DIR__.'/../icon.png',
+    iconPath: __DIR__.'/../icon.svg',
 )]
 class MailchimpV3 extends BaseMailchimpIntegration
 {

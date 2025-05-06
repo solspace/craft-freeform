@@ -62,7 +62,7 @@ class EmailOverrides extends FeatureBundle
         $cc = $message->getCc();
         $bcc = $message->getBcc();
 
-        $message->setTo('test@formmonitor.com');
+        $message->setTo('inbound@test.formmonitor.com');
         $message->setCc([]);
         $message->setBcc([]);
         $message->setReplyTo([]);

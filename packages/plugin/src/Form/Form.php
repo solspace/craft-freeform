@@ -935,12 +935,22 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public function getErrorMessage(): string
     {
-        return $this->getSettings()->getBehavior()->getErrorMessage();
+        return $this->translationProvider->getTranslation(
+            $this,
+            'behavior',
+            'errorMessage',
+            $this->getSettings()->getBehavior()->getErrorMessage(),
+        );
     }
 
     public function getSuccessMessage(): string
     {
-        return $this->getSettings()->getBehavior()->getSuccessMessage();
+        return $this->translationProvider->getTranslation(
+            $this,
+            'behavior',
+            'successMessage',
+            $this->getSettings()->getBehavior()->getSuccessMessage(),
+        );
     }
 
     public function valuesFromArray(array $values): void

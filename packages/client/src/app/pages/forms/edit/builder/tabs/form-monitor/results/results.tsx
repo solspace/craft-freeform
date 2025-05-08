@@ -24,6 +24,8 @@ import {
   DayColumn,
   NoResults,
   NoTestsMessage,
+  NotificationType,
+  NotificationTypesContainer,
   PageButton,
   PageInfo,
   PaginationContainer,
@@ -60,6 +62,8 @@ type TestRowProps = {
   formId: number;
   onDelete: (data: DeleteModalState) => void;
   onScreenshot: (data: ScreenshotModalState) => void;
+  enabledNotifications: number;
+  showNotifications: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -73,6 +77,8 @@ const TestRow: React.FC<TestRowProps> = ({
   formId,
   onDelete,
   onScreenshot,
+  enabledNotifications,
+  showNotifications,
 }) => {
   const rowRef = useRef<HTMLTableRowElement>(null);
   const isHovering = useHover(rowRef);
@@ -93,6 +99,53 @@ const TestRow: React.FC<TestRowProps> = ({
       <td className="code" title={test.response}>
         {!!test.response && <ResponseBlock>{test.response}</ResponseBlock>}
       </td>
+      {showNotifications && (
+        <td>
+          <Tooltip
+            html={
+              <TestTooltip>
+                <TestTooltipContent>
+                  <div>
+                    {translate('Enabled Notifications')}: {enabledNotifications}
+                  </div>
+                  <div>
+                    {translate('Received Notifications')}:{' '}
+                    {test.notifications?.length || 0}
+                  </div>
+                  <NotificationTypesContainer>
+                    {test.notifications?.map((notification, index) => (
+                      <NotificationType key={index}>
+                        {notification.type}
+                      </NotificationType>
+                    ))}
+                  </NotificationTypesContainer>
+                </TestTooltipContent>
+              </TestTooltip>
+            }
+            position="top"
+            theme="light"
+            animation="fade"
+            arrow
+            duration={100}
+            distance={10}
+            size="small"
+            hideOnClick={false}
+            followCursor
+          >
+            <StatusIndicator
+              $status={
+                test.notifications?.length === enabledNotifications
+                  ? 'success'
+                  : 'failed'
+              }
+              $size="sm"
+              style={{ cursor: 'pointer' }}
+            >
+              {test.notifications?.length || 0}/{enabledNotifications}
+            </StatusIndicator>
+          </Tooltip>
+        </td>
+      )}
       <td>
         {test.screenshot && (
           <button
@@ -356,6 +409,9 @@ export const FMResults: React.FC = () => {
               <th>{translate('Date')}</th>
               <th>{translate('Status')}</th>
               <th>{translate('Response')}</th>
+              {formTests.notifications?.enabled && (
+                <th>{translate('Notifications')}</th>
+              )}
               <th>{translate('Screenshot')}</th>
               <th></th>
             </tr>
@@ -368,6 +424,8 @@ export const FMResults: React.FC = () => {
                 formId={formTests.formId}
                 onDelete={setTestToDelete}
                 onScreenshot={setSelectedScreenshot}
+                enabledNotifications={formTests.notifications?.count || 0}
+                showNotifications={formTests.notifications?.enabled}
               />
             ))}
           </tbody>

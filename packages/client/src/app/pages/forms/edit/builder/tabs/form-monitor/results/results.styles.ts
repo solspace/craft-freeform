@@ -317,3 +317,23 @@ export const NoTestsMessage = styled.div`
   color: ${colors.gray500};
   font-style: italic;
 `;
+
+export const NotificationTypesContainer = styled.div`
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+`;
+
+export const NotificationType = styled.div`
+  background: ${colors.gray100};
+  padding: 2px 6px;
+  border-radius: ${borderRadius.sm};
+  font-size: 11px;
+  color: ${colors.gray700};
+  text-transform: capitalize;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  line-height: 1;
+`;

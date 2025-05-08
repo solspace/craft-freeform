@@ -8,6 +8,9 @@ export interface FormTest {
   responseCode: number;
   customerId?: number;
   screenshot?: string;
+  notifications?: {
+    type?: string;
+  }[];
 }
 
 export interface TestGroup {
@@ -36,6 +39,10 @@ export interface FormTestsResponse {
   url: string;
   formId: number;
   lastSubmission?: FormTest;
+  notifications?: {
+    enabled: boolean;
+    count: number;
+  };
   fmFormStats?: {
     enabled: boolean;
     nextMonitoringTime: string;

@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\EmailValueGenerator;
@@ -235,6 +236,16 @@ class FormMonitor extends APIIntegration
         $data['enabled'] = $this->isEnabled();
         $data['url'] = $this->getTestUrl();
         $data['formId'] = $form->getId();
+
+        // Get notifications info
+        $notificationsProvider = \Craft::$container->get(NotificationsProvider::class);
+        $notifications = $notificationsProvider->getByForm($form);
+        $enabledNotifications = array_filter($notifications, fn ($notification) => $notification->isEnabled());
+
+        $data['notifications'] = [
+            'enabled' => !empty($enabledNotifications),
+            'count' => \count($enabledNotifications),
+        ];
 
         return $data;
     }

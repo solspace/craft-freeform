@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.10.13 - 2025-05-06
+
+### Added
+- Added `successMessage` and `errorMessage` for formatting templates. These are compatible with Site-aware forms with builder translations that do not use AJAX. These supersede `settings.successMessage` and `settings.errorMessage`, which are now deprecated.
+- Added a `siteId` argument to the `freeform/submissions/resave` command.
+
+### Fixed
+- Fixed a bug where the `freeform/submissions/resave` command was not Site-aware.
+
+### Deprecated
+- Deprecated `settings.successMessage` and `settings.errorMessage` for non-AJAX forms. Please use `successMessage` and `errorMessage` instead, which are compatible with form builder translations.
+
 ## 5.10.12 - 2025-05-05
 
 ### Changed

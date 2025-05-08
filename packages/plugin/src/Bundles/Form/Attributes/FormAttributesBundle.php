@@ -95,26 +95,7 @@ class FormAttributesBundle extends FeatureBundle
             );
         }
 
-        $attributes->replace(
-            'data-success-message',
-            $this->translationProvider
-                ->getTranslation(
-                    $form,
-                    'behavior',
-                    'successMessage',
-                    $behaviorSettings->getSuccessMessage(),
-                )
-        );
-
-        $attributes->replace(
-            'data-error-message',
-            $this->translationProvider
-                ->getTranslation(
-                    $form,
-                    'behavior',
-                    'errorMessage',
-                    $behaviorSettings->getErrorMessage(),
-                )
-        );
+        $attributes->replace('data-success-message', $form->getSuccessMessage());
+        $attributes->replace('data-error-message', $form->getErrorMessage());
     }
 }

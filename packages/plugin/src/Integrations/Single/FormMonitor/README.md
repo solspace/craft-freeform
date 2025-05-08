@@ -1,28 +1,59 @@
 # Setup Guide
 
-This guide assumes you already have an endpoint to submit to.
+## Overview
+
+### Requirements
+
+- Freeform Pro 5.11+
+- Craft 4.x or 5.x
+
+In order for Form Monitor to work, your site must:
+
+- Have a **valid Freeform Pro edition license**. If the license has expired, you must renew it in order to continue using Form Monitor.
+- Be **publicly accessible**. Form Monitor will not be able to access local dev sites or sites using HTTP Authentication.
+
+### Imposed Limitations
+
+The following limitations have been set for sites during the beta testing period. This may change in the future:
+
+- Form Monitor can be enabled for up to 3 forms per Craft site.
+- Form Monitor will test each form 3 times per day (every 8 hours).
+
+### Technical Limitations
+
+Form Monitor will not work for every form and site setup. Please be aware that Form Monitor may not work for, but not limited to, setups that:
+
+- Use complex site layouts, structure or other CSS/JS that may make it harder for Form Monitor to locate and interact with the form properly.
+- Forms that are placed inside of modals or popups.
+- If multiple instances of the same form exist on the same page, the first instance will be tested.
+
+### Recommendations
+
+- To ensure that you receive important alerts from Form Monitor, we strongly recommend that you whitelist the email Form Monitor will use: `noreply@formmonitor.com`.
+
+### Privacy
+
+- TBD
+
 
 ## Setup Instructions
 
-### 1. Enable POST Forwarding inside Freeform
+### 1. Enable the Form Monitor integration
 
-- Enable POST Forwarding by toggling on the **Enabled** setting.
-- If you'd like POST Forwarding to be enabled for all forms by default, toggle on the **Enabled by default** setting.
-- Enter the URL where the POST request should be sent to in the **URL** field. 
-- Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. `error` or `an error occurred`, etc.
-- Save the form.
+- Go to the **Single** integration page in the Freeform Settings area.
+- Click on **Form Monitor**.
+- Enable **Form Monitor** by toggling on the **Enabled** setting.
+- Confirm or enter a different default email address in the **Default Error Notification Email** setting.
+- Save the page.
+- **Form Monitor** will validate its connection.
 
-### 2. Configure the Form
-To use this integration on your form(s), you'll need to configure each form individually. If you toggled on the **Enabled by default** setting in the Freeform Settings, it will automatically be ON for all forms. You can disable them for each form as necessary.
+### 2. Configure your Forms
+To use this integration on your form(s), you'll need to configure each form individually.
 
 - Visit the form inside the form builder.
 - Click on the **Integrations** tab.
-- Click on **POST Forwarding** in the list of available integrations.
+- Click on **Form Monitor** in the list of available integrations.
 - On the right side of the page:
-    - Enable (or disable) the integration.
+    - Enable the integration.
     - Adjust any of the settings as needed.
 - Save the form.
-
----
-
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

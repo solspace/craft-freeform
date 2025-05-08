@@ -70,6 +70,9 @@ class SubmissionsController extends Controller
     /** @var null|string End dates with this date (Can use relative wording.) */
     public ?string $rangeEnd = null;
 
+    /** @var null|array|int Site ID's to resave for */
+    public null|array|int $siteId = null;
+
     public ?bool $verbose = false;
     public ?bool $dryRun = false;
 
@@ -111,6 +114,7 @@ class SubmissionsController extends Controller
                 'queue',
                 'offset',
                 'limit',
+                'siteId',
             ],
         };
     }
@@ -430,6 +434,18 @@ class SubmissionsController extends Controller
 
         if (isset($this->limit)) {
             $criteria['limit'] = $this->limit;
+        }
+
+        if ($this->siteId) {
+            if (\is_array($this->siteId)) {
+                $this->siteId = array_map('intval', $this->siteId);
+            } else {
+                $this->siteId = (int) $this->siteId;
+            }
+
+            $criteria['siteId'] = $this->siteId;
+        } else {
+            $criteria['siteId'] = \Craft::$app->sites->getAllSiteIds();
         }
 
         return $criteria;

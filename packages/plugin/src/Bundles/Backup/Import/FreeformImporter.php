@@ -479,9 +479,9 @@ class FreeformImporter
             } else {
                 $record = $this->notificationsService->createOfType(
                     $notification->name,
-                    $notification->isFile ?
-                        Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES :
-                        Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE,
+                    $notification->isFile
+                        ? Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES
+                        : Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE,
                 );
             }
 

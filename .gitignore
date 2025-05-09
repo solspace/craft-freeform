@@ -5,13 +5,11 @@
 
 vendor/
 node_modules/
+composer.lock
+yarn.lock
 
 yarn-error.log
 lerna-debug.log
-
-yarndeploy.sh
-yarninstall.sh
-yarnstart.sh
 
 .phpunit.result.cache
 .php_cs.cache
@@ -25,4 +23,3 @@ packages/client/coverage/
 
 packages/client/src/request-mocks/http-client.env.json
 cghooks.lock
-

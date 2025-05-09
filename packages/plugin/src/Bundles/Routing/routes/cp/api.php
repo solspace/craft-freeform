@@ -38,6 +38,7 @@ return [
     'freeform/api/forms/<formId:\d+>/integrations/<id:\d+>' => 'freeform/api/forms/integrations/get-one',
 
     'freeform/api/forms/<formId:\d+>/notifications' => 'freeform/api/forms/notifications/get',
+    'freeform/api/forms/<formId:\d+>/notifications/templates' => 'freeform/api/forms/notifications/get-templates',
 
     'freeform/api/forms/<formId:\d+>/rules' => 'freeform/api/forms/rules/get',
     'freeform/api/forms/<formId:\d+>/rules/notifications' => 'freeform/api/forms/rules/get-notifications',
@@ -49,6 +50,7 @@ return [
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',
     'freeform/api/notifications/templates' => 'freeform/api/notifications/get-templates',
+    'freeform/api/notifications/templates/get-default-metadata' => 'freeform/api/notifications/get-one-template',
     'freeform/api/notifications/templates/<id:\d+>' => 'freeform/api/notifications/get-one-template',
 
     // TYPES

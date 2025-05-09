@@ -5,6 +5,8 @@ import styled from 'styled-components';
 export const TemplateCategoryWrapper = styled.div``;
 
 export const Title = styled.h3`
+  cursor: pointer;
+
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -12,6 +14,8 @@ export const Title = styled.h3`
 
   padding: 0;
   margin: 0 0 ${spacings.sm};
+
+  user-select: none;
 
   svg {
     width: 20px;
@@ -48,5 +52,19 @@ export const TemplateList = styled.ul`
 
     width: 4px;
     background-color: ${colors.gray050};
+  }
+`;
+
+export const Collapser = styled.div`
+  display: block;
+  transition: transform 0.2s ease-in-out;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &.collapsed {
+    transform: rotate(90deg);
   }
 `;

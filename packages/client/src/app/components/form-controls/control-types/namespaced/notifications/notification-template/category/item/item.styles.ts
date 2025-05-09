@@ -34,13 +34,30 @@ export const TemplateCard = styled(animated.li)`
     div {
       color: ${colors.white};
     }
+
+    button svg {
+      fill: ${colors.white};
+    }
   }
 `;
 
 export const Name = styled.h4`
+  position: relative;
+
   margin: 0;
   padding: 0;
   font-size: 12px;
+`;
+
+export const EditButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
 `;
 
 export const Subject = styled.div`

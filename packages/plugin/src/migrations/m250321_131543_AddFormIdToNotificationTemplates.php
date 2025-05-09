@@ -20,6 +20,9 @@ class m250321_131543_AddFormIdToNotificationTemplates extends Migration
                 ['id'],
                 'CASCADE'
             );
+
+            $this->dropIndexIfExists(self::TABLE, 'handle', true);
+            $this->createIndex('formId_handle', self::TABLE, ['formId', 'handle'], true);
         }
 
         return true;
@@ -38,6 +41,8 @@ class m250321_131543_AddFormIdToNotificationTemplates extends Migration
                 }
             }
 
+            $this->dropIndexIfExists(self::TABLE, ['formId', 'handle'], true);
+            $this->createIndex('handle', self::TABLE, ['handle'], true);
             $this->dropColumn(self::TABLE, 'formId');
         }
 

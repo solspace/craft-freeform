@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { NotificationTemplateGroups } from '@ff-client/queries/notifications';
 import {
@@ -15,26 +16,54 @@ type UseNotificationTemplates = (selectedId: string | number) => {
 export const useNotificationTemplates: UseNotificationTemplates = (
   selectedId
 ) => {
-  const { formId } = useParams();
-
-  const { data, isFetching } = useQueryNotificationTemplates();
-  const { data: formNotificationData, isFetching: formNotificationIsFetching } =
-    useQueryFormNotificationTemplates(Number(formId));
-
-  const templates = data?.templates || {
-    database: [],
-    files: [],
-  };
-
   const isDb = typeof selectedId === 'number';
   const isFile = typeof selectedId === 'string';
 
-  let selectedTemplate: NotificationTemplate;
-  if (isDb) {
-    selectedTemplate = templates?.database?.find((t) => t.id === selectedId);
-  } else if (isFile) {
-    selectedTemplate = templates?.files?.find((t) => t.id === selectedId);
-  }
+  const { formId } = useParams();
+
+  const { data, isFetching } = useQueryNotificationTemplates();
+  const { data: formTemplates, isFetching: isFetchingFormTemplates } =
+    useQueryFormNotificationTemplates(Number(formId));
+
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<NotificationTemplate>();
+  const [templates, setTemplates] = useState<NotificationTemplateGroups>({
+    database: [],
+    files: [],
+  });
+
+  useEffect(() => {
+    if (data && !isFetching) {
+      setTemplates((prev) => ({
+        ...prev,
+        database: data.templates.database,
+        files: data.templates.files,
+      }));
+    }
+  }, [data, isFetching]);
+
+  useEffect(() => {
+    if (formTemplates && !isFetchingFormTemplates) {
+      setTemplates((prev) => ({
+        ...prev,
+        form: formTemplates,
+      }));
+    }
+  }, [formTemplates, isFetchingFormTemplates]);
+
+  useEffect(() => {
+    if (isDb) {
+      let dbTemplate = templates?.database?.find((t) => t.id === selectedId);
+      if (!dbTemplate) {
+        dbTemplate = templates?.form?.find((t) => t.id === selectedId);
+      }
+
+      setSelectedTemplate(dbTemplate);
+    } else if (isFile) {
+      const fileTemplate = templates?.files?.find((t) => t.id === selectedId);
+      setSelectedTemplate(fileTemplate);
+    }
+  }, [selectedId, templates]);
 
   return {
     templates,

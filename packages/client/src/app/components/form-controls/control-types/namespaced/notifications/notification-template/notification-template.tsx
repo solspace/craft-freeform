@@ -1,11 +1,9 @@
 import React from 'react';
+import { ButtonChoices } from '@components/elements/button-choices/button-choices';
 import { Control } from '@components/form-controls/control';
-import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import config from '@config/freeform/freeform.config';
-import { useNewNotificationMutation } from '@ff-client/queries/notifications.mutation';
-import { spacings } from '@ff-client/styles/variables';
 import {
   NotificationTemplate,
   TemplateType,
@@ -16,6 +14,7 @@ import translate from '@ff-client/utils/translations';
 
 import { Category } from './category/category';
 import ChevronIcon from './icons/chevron.svg';
+import { useNotificationEditModal } from './modal/template.modal.hooks';
 import {
   useEditorAnimations,
   useSelectionAnimations,
@@ -40,17 +39,17 @@ const NotificationTemplate: React.FC<
   const { templates, isFetching, selectedTemplate } =
     useNotificationTemplates(value);
 
+  const openModal = useNotificationEditModal();
+
   const {
     templates: { canCreate },
   } = config;
 
+  const selectionAnimations = useSelectionAnimations(open);
   const editorAnimations = useEditorAnimations(
     open,
     templates?.database?.length + templates?.files?.length
   );
-  const selectionAnimations = useSelectionAnimations(open);
-
-  const mutation = useNewNotificationMutation();
 
   if (isFetching && !templates) {
     return (
@@ -70,7 +69,6 @@ const NotificationTemplate: React.FC<
   }
 
   const handleSelect: NotificationSelectHandler = (template) => {
-    mutation.reset();
     updateValue(template.id);
     setOpen(false);
   };
@@ -89,24 +87,30 @@ const NotificationTemplate: React.FC<
         <CategorySelectionWrapper style={selectionAnimations}>
           <Category
             value={value}
+            category={TemplateType.Form}
+            templates={templates.form}
+            onClick={handleSelect}
+          />
+          <Category
+            value={value}
             category={TemplateType.Database}
             templates={templates.database}
+            collapseByDefault
             onClick={handleSelect}
           />
           <Category
             value={value}
             category={TemplateType.File}
             templates={templates.files}
+            collapseByDefault
             onClick={handleSelect}
           />
         </CategorySelectionWrapper>
 
         <ButtonRow style={{ opacity: selectionAnimations.opacity }}>
           <Button
-            className={classes('btn', mutation.isLoading && 'disabled')}
-            disabled={mutation.isLoading}
+            className={classes('btn')}
             onClick={() => {
-              mutation.reset();
               setOpen(false);
             }}
           >
@@ -114,10 +118,8 @@ const NotificationTemplate: React.FC<
           </Button>
 
           <Button
-            className={classes('btn', mutation.isLoading && 'disabled')}
-            disabled={mutation.isLoading}
+            className={classes('btn')}
             onClick={() => {
-              mutation.reset();
               updateValue(undefined);
               setOpen(false);
             }}
@@ -126,42 +128,16 @@ const NotificationTemplate: React.FC<
           </Button>
 
           {canCreate && (
-            <Button
-              className={classes(
-                'btn',
-                'submit',
-                !mutation.isLoading && 'add',
-                !mutation.isLoading && 'icon',
-                mutation.isLoading && 'disabled'
-              )}
-              disabled={mutation.isLoading}
-              onClick={() =>
-                mutation.mutate(
-                  { name: 'New Template' },
-                  {
-                    onSuccess: (data) => {
-                      const template = data.data;
-                      handleSelect(template);
-                    },
-                  }
-                )
-              }
-            >
-              {mutation.isLoading && (
-                <LoadingText>{translate('Creating a template')}</LoadingText>
-              )}
-
-              {!mutation.isLoading && translate('New template')}
-            </Button>
+            <div>
+              <ButtonChoices
+                label="New Template"
+                onClick={() => {
+                  openModal({ type: 'form' });
+                }}
+              />
+            </div>
           )}
         </ButtonRow>
-
-        {mutation.isError && (
-          <FormErrorList
-            style={{ margin: `0 ${spacings.sm} ${spacings.sm}` }}
-            errors={mutation.error.errors as unknown as string[]}
-          />
-        )}
       </NotificationTemplateSelector>
     </Control>
   );

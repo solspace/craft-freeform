@@ -4,20 +4,22 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-const QKNotificationTemplates = {
+export const QKNotificationTemplates = {
   all: ['notification-emplates'] as const,
   one: (templateId: string | number) =>
     [...QKNotificationTemplates.all, templateId] as const,
 };
 
 export const useQueryNotificationTemplate = (
-  templateId: string | number
+  templateId?: string | number
 ): UseQueryResult<NotificationTemplate, AxiosError> => {
   return useQuery(
     QKNotificationTemplates.one(templateId),
     () =>
       axios
-        .get(`/api/notifications/templates/${templateId}`)
+        .get(
+          `/api/notifications/templates/${templateId || 'get-default-metadata'}`
+        )
         .then((res) => res.data),
     {
       staleTime: Infinity,

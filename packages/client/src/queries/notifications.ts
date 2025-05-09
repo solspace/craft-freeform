@@ -75,6 +75,7 @@ export const useQueryFormNotifications = (
 };
 
 export type NotificationTemplateGroups = {
+  form?: NotificationTemplate[];
   database: NotificationTemplate[];
   files: NotificationTemplate[];
 };

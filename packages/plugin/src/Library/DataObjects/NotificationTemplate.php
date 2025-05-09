@@ -27,6 +27,7 @@ class NotificationTemplate implements IdentificatorInterface
     public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     private int|string $id;
+    private ?int $formId = null;
     private array $pdfTemplateIds = [];
     private string $uid;
 
@@ -63,6 +64,7 @@ class NotificationTemplate implements IdentificatorInterface
 
         $template->id = $record->id ?? $record->filepath;
         $template->uid = $record->uid ?? $record->filepath;
+        $template->formId = $record->formId ?? null;
         $template->pdfTemplateIds = $record->getPdfTemplateIdList();
         $template->handle = $record->handle;
         $template->name = $record->name;
@@ -178,6 +180,11 @@ class NotificationTemplate implements IdentificatorInterface
     public function getUid(): string
     {
         return $this->uid;
+    }
+
+    public function getFormId(): ?int
+    {
+        return $this->formId;
     }
 
     public function getPdfTemplateIds(): array

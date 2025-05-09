@@ -75,7 +75,7 @@ export const SelectedNotification = styled.div<SelectedNotificationProps>`
 export const CategorySelectionWrapper = styled(animated.div)`
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
+  gap: ${spacings.md};
 
   height: 100%;
   padding: ${spacings.sm} ${spacings.lg} ${spacings.sm} ${spacings.sm};
@@ -98,6 +98,10 @@ export const ButtonRow = styled(animated.div)`
 
   padding: ${spacings.sm};
   background-color: ${colors.gray100};
+
+  > div {
+    margin-left: auto;
+  }
 `;
 
 export const Button = styled.button`

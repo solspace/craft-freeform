@@ -17,11 +17,9 @@ use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
-use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\SettingsService;
@@ -43,8 +41,19 @@ class NotificationsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-    public function actionGetOneTemplate(mixed $id): Response
+    public function actionGetOneTemplate(mixed $id = null): Response
     {
+        if (null === $id) {
+            $record = NotificationTemplateRecord::create();
+            $record->name = 'Notification';
+            $record->handle = 'notification';
+
+            $fields = $record->toArray();
+            $fields['body'] = $this->htmlTemplateParser->toTwig($record->bodyHtml);
+
+            return $this->asSerializedJson($fields);
+        }
+
         $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
         $template->body = $this->htmlTemplateParser->fromTwig($template->getBody());
 
@@ -70,7 +79,9 @@ class NotificationsController extends BaseApiController
                 return $this->editTemplate($id);
             }
 
-            return $this->createNewTemplate();
+            $formId = $this->request->post('formId');
+
+            return $this->createNewTemplate($formId);
         }
 
         $database = $this->notificationTemplateProvider->getDatabaseTemplates();
@@ -135,41 +146,20 @@ class NotificationsController extends BaseApiController
         return $this->asSerializedJson($notification);
     }
 
-    private function createNewTemplate(): Response
+    private function createNewTemplate(int $formId): Response
     {
         $request = $this->request;
-        $errors = [];
+        $post = $request->post();
 
-        $name = $request->post('name');
+        $record = NotificationTemplateRecord::create();
+        $record->formId = $formId;
+        $record->setAttributes($post);
+        $record->save();
 
-        if (!$name) {
-            $errors[] = Freeform::t('Name is required');
-        }
-
-        $record = null;
-        $iterator = 1;
-
-        do {
-            try {
-                $record = $this->getNotificationsService()->create($name);
-            } catch (NotificationException $e) {
-                switch ($e->getCode()) {
-                    case NotificationException::NO_EMAIL_DIR:
-                    case NotificationException::NO_CONTENT:
-                        $errors[] = $e->getMessage();
-
-                        break 2;
-                }
-            }
-
-            $name = preg_replace('/\s\d+$/', '', $name);
-            $name = $name.' '.$iterator++;
-        } while (!$record);
-
-        if ($errors) {
+        if ($record->getErrors()) {
             $this->response->statusCode = 405;
 
-            return $this->asJson(['errors' => $errors]);
+            return $this->asJson(['errors' => $record->getErrors()]);
         }
 
         $notification = NotificationTemplate::fromRecord($record);

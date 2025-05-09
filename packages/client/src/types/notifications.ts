@@ -36,6 +36,7 @@ export type RecipientMapping = {
 export enum TemplateType {
   Database = 'database',
   File = 'file',
+  Form = 'form',
 }
 
 export type NotificationTemplate = {

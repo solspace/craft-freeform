@@ -114,7 +114,7 @@ class NotificationTemplateRecord extends ActiveRecord
     {
         return [
             [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
-            [['handle'], 'unique'],
+            [['handle'], 'unique', 'targetAttribute' => ['handle', 'formId']],
             [
                 'bodyHtml',
                 'required',

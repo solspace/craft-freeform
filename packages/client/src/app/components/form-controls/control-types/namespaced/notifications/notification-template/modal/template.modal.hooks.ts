@@ -2,15 +2,20 @@ import { useModal } from '@components/modals/modal.context';
 
 import { EditNotificationModal } from './template.modal';
 
-type Modal = () => (id: string | number) => void;
+type Options = {
+  id?: string | number;
+  type?: string;
+};
+
+type Modal = () => (options?: Options) => void;
 
 export const useNotificationEditModal: Modal = () => {
   const { openModal } = useModal();
 
-  return (id): void => {
+  return (options = {}): void => {
     openModal(
       EditNotificationModal,
-      { id },
+      { ...options },
       {
         allowEscape: false,
         requireConfirmation: true,

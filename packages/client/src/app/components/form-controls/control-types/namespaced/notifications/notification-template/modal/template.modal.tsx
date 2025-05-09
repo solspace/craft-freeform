@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { ModalFooter, ModalHeader } from '@components/modals/modal.styles';
 import type { ModalContainerProps } from '@components/modals/modal.types';
+import { QKNotifications } from '@ff-client/queries/notifications';
 import type { GenericValue } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
+import { useQueryClient } from '@tanstack/react-query';
 
 import {
+  QKNotificationTemplates,
   useNotificationTemplateMutation,
   useQueryNotificationTemplate,
 } from './template.modal.queries';
@@ -25,20 +29,40 @@ import {
 
 const firstTab = configuration[0].name;
 
+type PushState = NotificationConfiguration & {
+  formId?: number;
+};
+
 export const EditNotificationModal: React.FC<ModalContainerProps> = ({
   data,
   closeModal,
 }) => {
-  const id = data?.id;
+  const { formId } = useParams();
 
+  const id = data?.id;
+  const type = data?.type;
+
+  const queryClient = useQueryClient();
   const { data: template, isLoading } = useQueryNotificationTemplate(id);
-  const mutation = useNotificationTemplateMutation();
+  const mutation = useNotificationTemplateMutation(formId && Number(formId));
 
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
-  const [state, setState] = useState<NotificationConfiguration>();
+  const [state, setState] = useState<PushState>();
 
   const handleSave = async (): Promise<void> => {
-    await mutation.mutate(state);
+    await mutation.mutate(state, {
+      onSuccess: (response: { id: string | number }) => {
+        setState((prev) => ({
+          ...prev,
+          id: response.id,
+        }));
+
+        queryClient.invalidateQueries(QKNotificationTemplates.one(id));
+        queryClient.invalidateQueries(QKNotifications.templates());
+
+        closeModal();
+      },
+    });
   };
 
   useEffect(() => {
@@ -56,7 +80,7 @@ export const EditNotificationModal: React.FC<ModalContainerProps> = ({
             loading={isLoading}
             spinner
           >
-            {template?.name || 'New Template'}
+            {template?.name || 'New Template'} ({type})
           </LoadingText>
         </h1>
       </ModalHeader>
@@ -75,7 +99,7 @@ export const EditNotificationModal: React.FC<ModalContainerProps> = ({
 
       <ModalContent>
         {!isLoading &&
-          template?.id &&
+          template !== undefined &&
           configuration.map((tab) => (
             <TabContent
               key={tab.name}

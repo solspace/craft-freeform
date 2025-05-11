@@ -187,8 +187,14 @@ export const NextScheduledTestContainer = styled.div`
   }
 `;
 
-export const ClearAllButton = styled.button`
+export const ActionContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.xs};
   margin-top: ${spacings.lg};
+`;
+
+export const ActionButton = styled.button`
   background-color: ${colors.gray700};
   color: ${colors.white};
   padding: ${spacings.xs} ${spacings.md};

@@ -14,7 +14,7 @@ import {
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import { FormWrapper } from './form-monitor.test.delete.styles';
+import { FormWrapper } from './form-monitor.action.modal.styles';
 
 type Props = {
   formId: number;

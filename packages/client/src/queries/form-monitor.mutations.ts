@@ -73,3 +73,47 @@ export const useClearAllTestHistoryMutation = (
     },
   });
 };
+
+export type DisableMonitoringCallback = {
+  onSuccess?: () => void;
+  onError?: () => void;
+};
+
+export const useDisableMonitoringMutation = (
+  formId: number,
+  callbacks?: DisableMonitoringCallback
+): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
+  return useMutation({
+    mutationFn: () => {
+      return axios.put(`/api/form-monitor/forms/${formId}/disable`);
+    },
+    onSuccess: () => {
+      callbacks?.onSuccess?.();
+    },
+    onError: () => {
+      callbacks?.onError?.();
+    },
+  });
+};
+
+export type DisableAndClearMonitoringCallback = {
+  onSuccess?: () => void;
+  onError?: () => void;
+};
+
+export const useDisableAndClearMonitoringMutation = (
+  formId: number,
+  callbacks?: DisableAndClearMonitoringCallback
+): UseMutationResult<AxiosResponse, unknown, void, unknown> => {
+  return useMutation({
+    mutationFn: () => {
+      return axios.put(`/api/form-monitor/forms/${formId}/disable-and-clear`);
+    },
+    onSuccess: () => {
+      callbacks?.onSuccess?.();
+    },
+    onError: () => {
+      callbacks?.onError?.();
+    },
+  });
+};

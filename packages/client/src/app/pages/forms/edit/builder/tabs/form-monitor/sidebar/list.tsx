@@ -10,12 +10,17 @@ import LoadingIcon from '@ff-icons/actions/loading.svg';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
+import {
+  DisableAndDeleteMonitoringModal,
+  DisableMonitoringModal,
+} from '../form-monitor.disable';
 import { FormMonitorLoader } from '../form-monitor.loader';
 import { DeleteTestModal } from '../form-monitor.test.delete';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
-  ClearAllButton,
+  ActionButton,
+  ActionContainer,
   ConfigItem,
   ConfigLabel,
   ConfigurationSection,
@@ -53,6 +58,9 @@ const ConfigurationPanel: React.FC<{
     string | null
   >(null);
   const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const [showDisableModal, setShowDisableModal] = React.useState(false);
+  const [showDisableAndClearModal, setShowDisableAndClearModal] =
+    React.useState(false);
 
   const reactivateMutation = useFormMonitorEnableMutation(
     configuration.formId,
@@ -164,13 +172,33 @@ const ConfigurationPanel: React.FC<{
           </ConfigItem>
         )}
 
-        {hasTests && (
-          <ConfigItem>
-            <ClearAllButton onClick={() => setShowDeleteModal(true)}>
-              {translate('Clear All Test History')}
-            </ClearAllButton>
-          </ConfigItem>
-        )}
+        <ActionContainer>
+          {hasTests && (
+            <ConfigItem>
+              <ActionButton onClick={() => setShowDeleteModal(true)}>
+                {translate('Clear All Test History')}
+              </ActionButton>
+            </ConfigItem>
+          )}
+          {configuration.serviceStatus !== 'inactive' && (
+            <>
+              <ConfigItem>
+                <ActionButton onClick={() => setShowDisableModal(true)}>
+                  {translate('Disable Monitoring')}
+                </ActionButton>
+              </ConfigItem>
+              {hasTests && (
+                <ConfigItem>
+                  <ActionButton
+                    onClick={() => setShowDisableAndClearModal(true)}
+                  >
+                    {translate('Disable & Delete Monitoring Data')}
+                  </ActionButton>
+                </ConfigItem>
+              )}
+            </>
+          )}
+        </ActionContainer>
       </ConfigWrapper>
 
       {showDeleteModal && (
@@ -180,6 +208,26 @@ const ConfigurationPanel: React.FC<{
           onClose={() => setShowDeleteModal(false)}
           onSuccess={() => {
             setShowDeleteModal(false);
+            refetchData();
+          }}
+        />
+      )}
+      {showDisableModal && (
+        <DisableMonitoringModal
+          formId={configuration.formId}
+          onClose={() => setShowDisableModal(false)}
+          onSuccess={() => {
+            setShowDisableModal(false);
+            refetchData();
+          }}
+        />
+      )}
+      {showDisableAndClearModal && (
+        <DisableAndDeleteMonitoringModal
+          formId={configuration.formId}
+          onClose={() => setShowDisableAndClearModal(false)}
+          onSuccess={() => {
+            setShowDisableAndClearModal(false);
             refetchData();
           }}
         />

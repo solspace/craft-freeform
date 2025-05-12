@@ -218,7 +218,20 @@ class FormMonitorController extends BaseApiController
         $client = $this->clientProvider->getAuthorizedClient($formMonitor);
 
         try {
-            $formMonitor->disableAndClearManifest($client, $form);
+            $record = FormIntegrationRecord::find()
+                ->where([
+                    'formId' => $form->getId(),
+                    'integrationId' => $formMonitor->getId(),
+                ])
+                ->one()
+            ;
+
+            if ($record) {
+                $record->enabled = false;
+                $record->save();
+            }
+
+            $formMonitor->deleteManifest($client, $form);
 
             return $this->asJson(['success' => true]);
         } catch (BadResponseException $exception) {

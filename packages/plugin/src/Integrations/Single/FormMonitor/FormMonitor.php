@@ -278,12 +278,6 @@ class FormMonitor extends APIIntegration
         $client->delete($endpoint);
     }
 
-    public function disableAndClearManifest(Client $client, Form $form): void
-    {
-        $endpoint = $this->getEndpoint('forms/'.$form->getId().'/disable-and-clear');
-        $client->put($endpoint);
-    }
-
     public function disableManifest(Client $client, Form $form): void
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/disable');

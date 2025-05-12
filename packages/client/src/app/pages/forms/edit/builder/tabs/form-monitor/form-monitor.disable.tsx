@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   ModalContainer,
   ModalFooter,
   ModalHeader,
 } from '@components/modals/modal.styles';
 import { Modal } from '@ff-client/app/components/modals/modal';
+import { QKFormMonitor } from '@ff-client/queries/form-monitor';
 import {
   useDisableAndClearMonitoringMutation,
   useDisableMonitoringMutation,
 } from '@ff-client/queries/form-monitor.mutations';
+import { QKForms } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { FormWrapper } from './form-monitor.action.modal.styles';
 
@@ -70,14 +74,19 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [enabled, setEnabled] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
   const disableAndClearMonitoringMutation =
     useDisableAndClearMonitoringMutation(formId, {
       onSuccess: () => {
+        queryClient.invalidateQueries(QKFormMonitor.base);
+        queryClient.invalidateQueries(QKForms.single(formId));
         onSuccess();
         onClose();
+        navigate(`/forms/${formId}`, { replace: true });
       },
     });
 

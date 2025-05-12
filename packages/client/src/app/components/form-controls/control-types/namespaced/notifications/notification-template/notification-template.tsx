@@ -132,7 +132,13 @@ const NotificationTemplate: React.FC<
               <ButtonChoices
                 label="New Template"
                 onClick={() => {
-                  openModal({ type: 'form' });
+                  openModal({
+                    type: 'form',
+                    onSuccess: (id: number) => {
+                      updateValue(id);
+                      setOpen(false);
+                    },
+                  });
                 }}
               />
             </div>

@@ -2,12 +2,13 @@ import { useModal } from '@components/modals/modal.context';
 
 import { EditNotificationModal } from './template.modal';
 
-type Options = {
+export type NotificationEditModalOptions = {
   id?: string | number;
   type?: string;
+  onSuccess?: (id: string | number) => void;
 };
 
-type Modal = () => (options?: Options) => void;
+type Modal = () => (options?: NotificationEditModalOptions) => void;
 
 export const useNotificationEditModal: Modal = () => {
   const { openModal } = useModal();

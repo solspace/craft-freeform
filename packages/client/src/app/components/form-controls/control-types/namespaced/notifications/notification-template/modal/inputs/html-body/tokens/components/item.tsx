@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
+import type { Suggestion } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
-
-import type { Suggestion } from '../operations/suggestions';
 
 import { ItemWrapper } from './item.styles';
 
@@ -28,7 +27,7 @@ export const Item: React.FC<Props> = ({ item, onClick }) => {
       className={classes(item?.active && 'active')}
       onClick={() => onClick?.(item)}
     >
-      {item.label}
+      {item.shortName}
     </ItemWrapper>
   );
 };

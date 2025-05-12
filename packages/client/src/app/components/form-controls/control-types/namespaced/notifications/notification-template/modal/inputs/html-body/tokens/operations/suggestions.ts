@@ -1,90 +1,49 @@
+import { useEffect, useState } from 'react';
 import type { RootState } from '@editor/store';
-import { clone } from 'lodash';
+import type {
+  Suggestion,
+  SuggestionCategory,
+} from '@ff-client/types/notifications';
+import axios from 'axios';
 import type { Store } from 'redux';
+import type { Editor } from 'tinymce';
 
-export type SuggestionCategory = {
-  name: string;
-  items: Suggestion[];
-};
+let fetchedSuggestions: SuggestionCategory[];
 
-export type Suggestion = {
-  label: string;
-  token: string;
-  value: string;
-  active?: boolean;
-};
-
-export const getSuggestions = (
-  store: Store<RootState>
-): SuggestionCategory[] => {
-  const suggestions = clone(defaultSuggestions);
-
+const compileStoreSuggestions = (store: Store<RootState>): Suggestion[] => {
   const fields: Suggestion[] = [];
   store.getState().layout.fields.forEach((field) => {
     fields.push({
-      label: field.properties.label,
-      token: field.properties.label,
-      value: `field.${field.uid}`,
+      shortName: field.properties.label,
+      name: field.properties.label,
+      token: `field.${field.uid}`,
     });
   });
 
-  suggestions.push({
-    name: 'Fields',
-    items: fields,
-  });
-
-  return suggestions;
+  return fields;
 };
 
-const defaultSuggestions: SuggestionCategory[] = [
-  {
-    name: 'Submission',
-    items: [
-      {
-        token: 'Submission ID',
-        label: 'ID',
-        value: 'submission.id',
-      },
-      {
-        token: 'Submission Date',
-        label: 'Date',
-        value: 'submission.date',
-      },
-      {
-        token: 'Submission Status',
-        label: 'Status',
-        value: 'submission.status',
-      },
-    ],
-  },
-  {
-    name: 'Form',
-    items: [
-      {
-        token: 'Form ID',
-        label: 'ID',
-        value: 'form.id',
-      },
-      {
-        token: 'Form Name',
-        label: 'Name',
-        value: 'form.name',
-      },
-      {
-        token: 'Form Handle',
-        label: 'Handle',
-        value: 'form.handle',
-      },
-    ],
-  },
-  {
-    name: 'Predefined',
-    items: [
-      {
-        token: 'Field Labels and Values',
-        label: 'Field Labels and Values',
-        value: 'loop.field.labels',
-      },
-    ],
-  },
-];
+export const useSuggestions = (editor: Editor): SuggestionCategory[] => {
+  const store = editor.getParam('store');
+
+  const [compiled, setCompiled] = useState<SuggestionCategory[]>([]);
+
+  useEffect(() => {
+    if (fetchedSuggestions) {
+      setCompiled([
+        ...fetchedSuggestions,
+        {
+          name: 'Fields',
+          items: compileStoreSuggestions(store),
+        },
+      ]);
+    } else {
+      axios.get('/api/templates/notifications/suggestions').then((res) => {
+        fetchedSuggestions = res.data;
+        setCompiled(fetchedSuggestions);
+      });
+    }
+  }, [fetchedSuggestions]);
+
+  return compiled;
+};

@@ -1,6 +1,8 @@
 import React from 'react';
-
-import type { Suggestion, SuggestionCategory } from '../operations/suggestions';
+import type {
+  Suggestion,
+  SuggestionCategory,
+} from '@ff-client/types/notifications';
 
 import { CategoryWrapper, Label } from './category.styles';
 import { Item } from './item';
@@ -18,7 +20,7 @@ export const Category: React.FC<Props> = ({ category, onClick }) => {
       <Label>{category.name}</Label>
       <div>
         {category.items.map((item) => (
-          <Item key={item.value} item={item} onClick={onClick} />
+          <Item key={item.token} item={item} onClick={onClick} />
         ))}
       </div>
     </CategoryWrapper>

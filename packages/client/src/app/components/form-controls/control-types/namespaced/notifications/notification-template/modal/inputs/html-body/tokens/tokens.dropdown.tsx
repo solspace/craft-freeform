@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import type { Suggestion } from '@ff-client/types/notifications';
 import translate from '@ff-client/utils/translations';
 import type { Editor } from 'tinymce';
 
@@ -8,7 +9,6 @@ import { Category } from './components/category';
 import { useFilteredSuggestions } from './operations/filter';
 import { insertToken } from './operations/insert';
 import { usePosition } from './operations/position';
-import type { Suggestion } from './operations/suggestions';
 import { Body, Title, TokenDropdownWrapper } from './tokens.dropdown.styles';
 
 export type Position = {

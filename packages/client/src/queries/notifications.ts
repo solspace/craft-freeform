@@ -4,6 +4,7 @@ import type {
   Notification,
   NotificationTemplate,
   NotificationType,
+  SuggestionCategory,
   TemplateType,
 } from '@ff-client/types/notifications';
 import type { UseQueryResult } from '@tanstack/react-query';
@@ -15,6 +16,7 @@ export const QKNotifications = {
   all: ['notifications'] as const,
   types: () => [...QKNotifications.all, 'types'] as const,
   templates: () => [...QKNotifications.all, 'templates'] as const,
+  suggestions: () => [...QKNotifications.templates(), 'suggestions'] as const,
   formTemplates: (id: number) =>
     [...QKNotifications.all, 'forms', id, 'templates'] as const,
   single: (id: number) => [...QKNotifications.all, 'forms', id] as const,
@@ -39,6 +41,23 @@ export const useQueryNotificationTypes = (): UseQueryResult<
         .get<NotificationType[]>('/api/notifications/types')
         .then((res) => res.data)
         .then((res) => res.sort((a, b) => a.order - b.order)),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
+};
+
+export const useQueryNotificationSuggestions = (): UseQueryResult<
+  SuggestionCategory[],
+  AxiosError
+> => {
+  return useQuery<SuggestionCategory[], AxiosError>(
+    QKNotifications.suggestions(),
+    () =>
+      axios
+        .get<SuggestionCategory[]>('/api/templates/notifications/suggestions')
+        .then((res) => res.data),
     {
       staleTime: Infinity,
       cacheTime: Infinity,

@@ -8,6 +8,7 @@ import type { GenericValue } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 
+import type { NotificationEditModalOptions } from './template.modal.hooks';
 import {
   QKNotificationTemplates,
   useNotificationTemplateMutation,
@@ -33,10 +34,9 @@ type PushState = NotificationConfiguration & {
   formId?: number;
 };
 
-export const EditNotificationModal: React.FC<ModalContainerProps> = ({
-  data,
-  closeModal,
-}) => {
+export const EditNotificationModal: React.FC<
+  ModalContainerProps<NotificationEditModalOptions>
+> = ({ data, closeModal }) => {
   const { formId } = useParams();
 
   const id = data?.id;
@@ -59,8 +59,13 @@ export const EditNotificationModal: React.FC<ModalContainerProps> = ({
 
         queryClient.invalidateQueries(QKNotificationTemplates.one(id));
         queryClient.invalidateQueries(QKNotifications.templates());
+        queryClient.invalidateQueries(
+          QKNotifications.formTemplates(Number(formId))
+        );
 
         closeModal();
+
+        data?.onSuccess(response.id);
       },
     });
   };

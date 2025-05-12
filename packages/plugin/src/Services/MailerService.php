@@ -23,7 +23,6 @@ use Solspace\Freeform\Bundles\Rules\RuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\Pro\RichTextField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
@@ -32,7 +31,6 @@ use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
-use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\StringHelper;
@@ -82,14 +80,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         $recipients = $this->processRecipients($recipients, $form);
-
-        $fields = $form->getLayout()->getFields();
-
-        $fieldValues = $this->getFieldValues($fields, $form, $submission);
-        $renderEvent = new RenderEmailEvent($form, $notificationTemplate, $fieldValues, $submission);
-
-        $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
-        $fieldValues = $renderEvent->getFieldValues();
+        $twigVariables = $this->compileTwigVariables($form, $notificationTemplate, $submission);
 
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
@@ -106,14 +97,14 @@ class MailerService extends BaseService implements MailHandlerInterface
                     'template' => $notificationTemplate->getName(),
                 ]);
 
-                $email = $this->compileMessage($notificationTemplate, $fieldValues, $logger);
+                $email = $this->compileMessage($notificationTemplate, $twigVariables, $logger);
                 $email->setTo([$emailAddress]);
 
                 $pdfTemplates = $notificationTemplate->getPdfTemplateRecords();
                 if ($pdfTemplates) {
                     foreach ($pdfTemplates as $pdfTemplate) {
-                        $fileName = $this->renderString($pdfTemplate->fileName, $fieldValues);
-                        $body = $this->renderString($pdfTemplate->getBody(), $fieldValues);
+                        $fileName = $this->renderString($pdfTemplate->fileName, $twigVariables);
+                        $body = $this->renderString($pdfTemplate->getBody(), $twigVariables);
 
                         if (!preg_match('/\.pdf$/i', $fileName)) {
                             $fileName .= '.pdf';
@@ -140,6 +131,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 }
 
                 if ($notificationTemplate->isIncludeAttachments()) {
+                    $fields = $form->getLayout()->getFields();
                     foreach ($fields as $field) {
                         if ($field instanceof SignatureField && $field->getValueAsString()) {
                             $email->attach($field->getValueAsString(), [
@@ -172,7 +164,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     }
                 }
 
-                $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $fieldValues, $submission);
+                $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $twigVariables, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {
@@ -372,12 +364,11 @@ class MailerService extends BaseService implements MailHandlerInterface
         return array_map(fn ($item) => trim(App::parseEnv($item)), $array);
     }
 
-    /**
-     * @param FieldInterface[] $fields
-     */
-    private function getFieldValues(FieldCollection $fields, Form $form, ?Submission $submission = null): array
+    private function compileTwigVariables(Form $form, NotificationTemplate $template, ?Submission $submission = null): array
     {
-        $values = [];
+        $fields = $form->getLayout()->getFields();
+
+        $variables = [];
         $usableFields = [];
         $fieldsAndBlocks = [];
 
@@ -398,23 +389,32 @@ class MailerService extends BaseService implements MailHandlerInterface
 
             $fieldsAndBlocks[] = $field;
             $usableFields[] = $field;
-            $values[$field->getHandle()] = $field;
+            $variables[$field->getHandle()] = $field;
         }
 
         // TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->hasFields(PaymentFieldInterface::class)) {
             $payments = PaymentRecord::findAll(['submissionId' => $submission->getId()]);
-            $values['payments'] = $payments;
+            $variables['payments'] = $payments;
         }
 
-        $values['allFields'] = $usableFields;
-        $values['allFieldsAndBlocks'] = $fieldsAndBlocks;
-        $values['form'] = $form;
-        $values['submission'] = $submission;
-        $values['dateCreated'] = new \DateTime();
-        $values['token'] = $submission?->token;
+        $variables['allFields'] = $usableFields;
+        $variables['allFieldsAndBlocks'] = $fieldsAndBlocks;
+        $variables['form'] = $form;
+        $variables['submission'] = $submission;
+        $variables['dateCreated'] = new \DateTime();
+        $variables['token'] = $submission?->token;
 
-        return $values;
+        $variables['loop'] = [
+            'field' => [
+                'labels' => '-------field label loop goes here--------',
+            ],
+        ];
+
+        $renderEvent = new RenderEmailEvent($form, $template, $variables, $submission);
+        $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
+
+        return $renderEvent->getTwigVariables();
     }
 
     private function notifyAboutEmailSendingError(

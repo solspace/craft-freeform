@@ -43,19 +43,22 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
     >
       <Name>
         {name}
-        <EditButton
-          title={translate('Edit')}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
 
-            openModal({ id });
+        {!!template.formId && (
+          <EditButton
+            title={translate('Edit')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
 
-            return false;
-          }}
-        >
-          <EditIcon />
-        </EditButton>
+              openModal({ id });
+
+              return false;
+            }}
+          >
+            <EditIcon />
+          </EditButton>
+        )}
       </Name>
       <Id className="code">
         {typeof id === 'number' && 'ID: '}

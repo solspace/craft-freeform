@@ -2,6 +2,7 @@ import React from 'react';
 import { useStore } from 'react-redux';
 import { ControlBlock } from '@components/form-controls/control.block';
 import config from '@config/freeform/freeform.config';
+import { useQueryClient } from '@tanstack/react-query';
 import { Editor } from '@tinymce/tinymce-react';
 import tinymce from 'tinymce/tinymce';
 
@@ -32,6 +33,7 @@ registerFormTokens(tinymce);
 export const HtmlBodyInput: React.FC<InputControl> = (props) => {
   const { value, onChange } = props;
   const store = useStore();
+  const queryClient = useQueryClient();
 
   const {
     metadata: {
@@ -49,6 +51,7 @@ export const HtmlBodyInput: React.FC<InputControl> = (props) => {
           promotion: false,
           content_css: stylesPath,
           store,
+          queryClient,
         }}
         value={value}
         onEditorChange={onChange}

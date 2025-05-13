@@ -14,12 +14,13 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Input\Wysiwyg;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Form\Settings\Implementations\Toolbars\RichTextToolbarConfiguration;
 
 #[Type(
     name: 'Rich Text',
@@ -32,14 +33,12 @@ class RichTextField extends AbstractField implements InputOnlyInterface, NoStora
     protected string $instructions = '';
     protected bool $required = false;
 
-    #[Wysiwyg(
+    #[Input\Wysiwyg(
         label: 'Content',
         instructions: 'The HTML content to be rendered',
         menu: false,
         statusbar: false,
-        toolbar: [
-            'blocks bold italic underline forecolor backcolor | align numlist bullist | link image table | removeformat code',
-        ],
+        toolbar: RichTextToolbarConfiguration::class,
     )]
     protected ?string $content = '';
 

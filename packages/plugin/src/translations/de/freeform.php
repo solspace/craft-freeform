@@ -983,6 +983,8 @@ return [
     'Allow Twig to be enabled in HTML blocks' => 'Twig in HTML-Blöcken erlauben',
     'A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.' => 'Ein Schalter erscheint für jedes HTML-Blockfeld im Formular-Builder, der die Verwendung von Twig-Code ermöglicht.',
     'Render HTML block Twig in Isolated Mode' => 'HTML-Block-Twig im isolierten Modus rendern',
+    'Rich Text Field Toolbar Configuration' => 'Konfiguration der Rich-Text-Feld-Symbolleiste',
+    'Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported.' => 'Wählen Sie, welche Komponenten in der Rich-Text-Editor-Symbolleiste angezeigt werden und in welcher Reihenfolge. Es werden nur native TinyMCE-Kernkomponenten unterstützt.',
     "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well." => "Wenn aktiviert, sind nur die Freeform-Variablen 'form' und 'fields' verfügbar. Wenn deaktiviert, werden auch die Craft-Variablen eingeschlossen.",
     "Include Freeform's Sample Formatting Templates" => 'Beispiel-Formatierungsvorlagen von Freeform einschließen',
     "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting." => 'Erlauben Sie Benutzern, eine Beispiel-Formatierungsvorlage auszuwählen, die mit Freeform für die Einstellung der Formular-Formatierungsvorlage enthalten ist.',

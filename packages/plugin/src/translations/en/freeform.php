@@ -983,6 +983,8 @@ return [
     'Allow Twig to be enabled in HTML blocks' => 'Allow Twig to be enabled in HTML blocks',
     'A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.' => 'A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.',
     'Render HTML block Twig in Isolated Mode' => 'Render HTML block Twig in Isolated Mode',
+    'Rich Text Field Toolbar Configuration' => 'Rich Text Field Toolbar Configuration',
+    'Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported.' => 'Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported.',
     "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well." => "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well.",
     "Include Freeform's Sample Formatting Templates" => "Include Freeform's Sample Formatting Templates",
     "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting." => "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting.",

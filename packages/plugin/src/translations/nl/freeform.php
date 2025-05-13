@@ -983,6 +983,8 @@ return [
     'Allow Twig to be enabled in HTML blocks' => 'Toestaan dat Twig wordt ingeschakeld in HTML-blokken',
     'A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.' => 'Er verschijnt een schakelaar voor elk HTML-blokveld in de formulierbouwer, waardoor het gebruik van Twig-code mogelijk wordt.',
     'Render HTML block Twig in Isolated Mode' => 'Genereer HTML-blok Twig in geïsoleerde modus',
+    'Rich Text Field Toolbar Configuration' => 'Configuratie van de werkbalk voor Rich Text-velden',
+    'Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported.' => 'Kies welke componenten in de werkbalk van de Rich Text-editor verschijnen en in welke volgorde. Alleen de belangrijkste, native TinyMCE-componenten worden ondersteund.',
     "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well." => "Als dit is ingeschakeld, zijn alleen de variabelen 'formulier' en 'velden' van Freeform beschikbaar. Als dit is uitgeschakeld, worden de variabelen van Craft ook opgenomen.",
     "Include Freeform's Sample Formatting Templates" => 'Inclusief de voorbeeldopmaaksjablonen van Freeform',
     "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting." => 'Sta gebruikers toe een voorbeeld van een opmaaksjabloon te selecteren die bij Freeform is geleverd voor de instelling van de opmaaksjabloon van het formulier.',

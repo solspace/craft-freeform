@@ -36,14 +36,14 @@ class FormMonitor extends APIIntegration
     )]
     protected bool $testEmails = true;
 
-    #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Boolean(
         label: 'Test Email Notifications on Live Environment only',
         instructions: 'If this setting is enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
-        order: 5
+        order: 6
     )]
     protected bool $liveOnly = true;
+
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]

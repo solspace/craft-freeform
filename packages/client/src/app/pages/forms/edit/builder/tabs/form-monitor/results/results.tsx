@@ -36,6 +36,7 @@ import {
   PageInfo,
   PaginationContainer,
   PaginationNav,
+  PendingStatus,
   ResponseBlock,
   ResultsWrapper,
   StatsContainer,
@@ -125,54 +126,62 @@ const TestRow: React.FC<TestRowProps> = ({
       {showNotifications && (
         <td>
           {test?.totalNotifications ? (
-            <Tooltip
-              html={
-                <TestTooltip>
-                  <TestTooltipContent>
-                    <NotificationStats>
-                      <NotificationStat>
-                        <div className="label">{translate('Enabled')}</div>
-                        <div className="value">{test.totalNotifications}</div>
-                      </NotificationStat>
-                      <NotificationStat>
-                        <div className="label">{translate('Received')}</div>
-                        <div className="value">
-                          {test.notifications?.length || 0}
-                        </div>
-                      </NotificationStat>
-                    </NotificationStats>
-                    <NotificationTypesContainer>
-                      {test.notifications?.map((notification, index) => (
-                        <NotificationType key={index}>
-                          {notification.type}
-                        </NotificationType>
-                      ))}
-                    </NotificationTypesContainer>
-                  </TestTooltipContent>
-                </TestTooltip>
-              }
-              position="top"
-              theme="light"
-              animation="fade"
-              arrow
-              duration={100}
-              distance={10}
-              size="small"
-              hideOnClick={false}
-              followCursor
-            >
-              <StatusIndicator
-                $status={
-                  test.notifications?.length === test.totalNotifications
-                    ? 'success'
-                    : 'failed'
+            test.dateCompleted ? (
+              <Tooltip
+                html={
+                  <TestTooltip>
+                    <TestTooltipContent>
+                      <NotificationStats>
+                        <NotificationStat>
+                          <div className="label">{translate('Enabled')}</div>
+                          <div className="value">{test.totalNotifications}</div>
+                        </NotificationStat>
+                        <NotificationStat>
+                          <div className="label">{translate('Received')}</div>
+                          <div className="value">
+                            {test.notifications?.length || 0}
+                          </div>
+                        </NotificationStat>
+                      </NotificationStats>
+                      <NotificationTypesContainer>
+                        {test.notifications?.map((notification, index) => (
+                          <NotificationType key={index}>
+                            {notification.type}
+                          </NotificationType>
+                        ))}
+                      </NotificationTypesContainer>
+                    </TestTooltipContent>
+                  </TestTooltip>
                 }
-                $size="sm"
-                style={{ cursor: 'pointer' }}
+                position="top"
+                theme="light"
+                animation="fade"
+                arrow
+                duration={100}
+                distance={10}
+                size="small"
+                hideOnClick={false}
+                followCursor
               >
-                {test.notifications?.length || 0}/{test.totalNotifications}
-              </StatusIndicator>
-            </Tooltip>
+                <StatusIndicator
+                  $status={
+                    test.notifications?.length === test.totalNotifications
+                      ? 'success'
+                      : 'failed'
+                  }
+                  $size="sm"
+                  style={{ cursor: 'pointer' }}
+                >
+                  {test.notifications?.length || 0}/{test.totalNotifications}
+                </StatusIndicator>
+              </Tooltip>
+            ) : (
+              <PendingStatus>
+                <StatusIcon>
+                  <HourglassIcon />
+                </StatusIcon>
+              </PendingStatus>
+            )
           ) : (
             <StatusIndicator $status="inactive" $size="sm">
               N/A

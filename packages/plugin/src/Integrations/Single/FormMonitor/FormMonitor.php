@@ -148,16 +148,24 @@ class FormMonitor extends APIIntegration
             ];
         }
 
+        $payload = [
+            'requestId' => $requestId,
+            'submissionId' => $submission->getId(),
+            'status' => $isSuccessful ? 'success' : 'fail',
+            'errors' => $errors,
+        ];
+
+        if ($this->getLiveOnly()) {
+            $payload['environment'] = [
+                'isProduction' => 'production' === strtolower(\Craft::$app->getConfig()->env),
+            ];
+        }
+
         $endpoint = $this->getEndpoint('/submissions/acknowledgement');
         $client->post(
             $endpoint,
             [
-                'json' => [
-                    'requestId' => $requestId,
-                    'submissionId' => $submission->getId(),
-                    'status' => $isSuccessful ? 'success' : 'fail',
-                    'errors' => $errors,
-                ],
+                'json' => $payload,
             ]
         );
     }

@@ -28,4 +28,14 @@ class Wysiwyg extends Property implements ToolbarInterface
     ) {
         parent::__construct($label, $instructions, $order, $value, $placeholder, $width, $disabled, $menu, $statusbar, $toggleEditor, $toolbar);
     }
+
+    public function setToolbar(array|bool|string|ToolbarConfigurationInterface $toolbar): void
+    {
+        $this->toolbar = $toolbar;
+    }
+
+    public function getToolbar(): array|bool|string|ToolbarConfigurationInterface
+    {
+        return $this->toolbar;
+    }
 }

@@ -10,7 +10,7 @@ class RichTextToolbarConfiguration implements ToolbarConfigurationInterface
 {
     public function __construct(private SettingsService $settingsService) {}
 
-    public function fetchToolbar(?Property $property): array
+    public function fetchComponents(?Property $property): array
     {
         return [$this->settingsService->getSettingsModel()->defaults->richTextFieldToolbarConfiguration];
     }

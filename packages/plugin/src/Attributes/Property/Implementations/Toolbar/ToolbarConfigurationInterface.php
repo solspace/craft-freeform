@@ -6,5 +6,5 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 interface ToolbarConfigurationInterface
 {
-    public function fetchToolbar(?Property $property): array;
+    public function fetchComponents(?Property $property): array;
 }

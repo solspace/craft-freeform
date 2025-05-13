@@ -7,7 +7,7 @@ use Solspace\Freeform\Attributes\Property\Property;
 
 class CheckboxToolbarConfiguration implements ToolbarConfigurationInterface
 {
-    public function fetchToolbar(?Property $property): array
+    public function fetchComponents(?Property $property): array
     {
         return ['bold italic underline strikethrough link | removeformat code'];
     }

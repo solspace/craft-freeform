@@ -206,25 +206,21 @@ class PropertyProvider
             return;
         }
 
-        $toolbar = $attribute->toolbar;
-
-        if (null === $toolbar) {
-            return;
-        }
+        $toolbar = $attribute->getToolbar();
 
         if (\is_string($toolbar)) {
             /** @var ToolbarConfigurationInterface $class */
             $class = $this->getContainer()->get($toolbar);
             if ($class instanceof ToolbarConfigurationInterface) {
-                $attribute->toolbar = $class->fetchToolbar($attribute);
+                $attribute->setToolbar($class->fetchComponents($attribute));
             } else {
-                $attribute->toolbar = false;
+                $attribute->setToolbar(false);
             }
 
             return;
         }
 
-        $attribute->toolbar = $toolbar;
+        $attribute->setToolbar($toolbar);
     }
 
     private function processOptions(Property $attribute): void

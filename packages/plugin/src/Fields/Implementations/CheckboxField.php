@@ -17,7 +17,6 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
@@ -41,7 +40,7 @@ use Twig\Markup;
     iconPath: __DIR__.'/Icons/checkbox.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox.ejs',
 )]
-class CheckboxField extends AbstractField implements ToolbarInterface, InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
+class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
 
@@ -51,12 +50,7 @@ class CheckboxField extends AbstractField implements ToolbarInterface, InputOnly
     #[Input\Wysiwyg(
         instructions: 'Field label used to describe the field',
         order: 1,
-        value: null,
-        placeholder: null,
-        width: null,
-        disabled: null,
-        menu: false,
-        statusbar: false,
+        placeholder: 'This is something',
         toggleEditor: true,
         toolbar: CheckboxToolbarConfiguration::class,
     )]

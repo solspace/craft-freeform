@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -29,7 +28,7 @@ use Solspace\Freeform\Form\Settings\Implementations\Toolbars\RichTextToolbarConf
     iconPath: __DIR__.'/../Icons/rich-text.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rich-text.ejs',
 )]
-class RichTextField extends AbstractField implements ToolbarInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface, NoEmailPresenceInterface
+class RichTextField extends AbstractField implements InputOnlyInterface, NoStorageInterface, ExtraFieldInterface, NoEmailPresenceInterface
 {
     protected string $instructions = '';
     protected bool $required = false;
@@ -37,14 +36,8 @@ class RichTextField extends AbstractField implements ToolbarInterface, InputOnly
     #[Input\Wysiwyg(
         label: 'Content',
         instructions: 'The HTML content to be rendered',
-        order: 1,
-        value: null,
-        placeholder: null,
-        width: null,
-        disabled: null,
         menu: false,
         statusbar: false,
-        toggleEditor: false,
         toolbar: RichTextToolbarConfiguration::class,
     )]
     protected ?string $content = '';

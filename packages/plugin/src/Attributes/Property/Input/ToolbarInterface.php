@@ -7,4 +7,9 @@ use Solspace\Freeform\Attributes\Property\Implementations\Toolbar\ToolbarConfigu
 /**
  * @property array|bool|string|ToolbarConfigurationInterface $toolbar
  */
-interface ToolbarInterface {}
+interface ToolbarInterface
+{
+    public function setToolbar(array|bool|string|ToolbarConfigurationInterface $toolbar): void;
+
+    public function getToolbar(): array|bool|string|ToolbarConfigurationInterface;
+}

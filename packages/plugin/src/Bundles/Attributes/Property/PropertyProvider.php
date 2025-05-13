@@ -10,10 +10,12 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataConfiguration;
+use Solspace\Freeform\Attributes\Property\Implementations\Toolbar\ToolbarConfigurationInterface;
 use Solspace\Freeform\Attributes\Property\Input\DatePicker;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
+use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Lock;
 use Solspace\Freeform\Attributes\Property\Message;
@@ -126,6 +128,7 @@ class PropertyProvider
                 continue;
             }
 
+            $this->processToolbarConfigurations($attribute);
             $this->processOptions($attribute);
             $this->processTabularDataConfiguration($attribute);
             $this->processImplementations($attribute);
@@ -195,6 +198,33 @@ class PropertyProvider
     protected function getPluginEdition(): string
     {
         return Freeform::getInstance()->edition;
+    }
+
+    private function processToolbarConfigurations(Property $attribute): void
+    {
+        if (!$attribute instanceof ToolbarInterface) {
+            return;
+        }
+
+        $toolbar = $attribute->toolbar;
+
+        if (null === $toolbar) {
+            return;
+        }
+
+        if (\is_string($toolbar)) {
+            /** @var ToolbarConfigurationInterface $class */
+            $class = $this->getContainer()->get($toolbar);
+            if ($class instanceof ToolbarConfigurationInterface) {
+                $attribute->toolbar = $class->fetchToolbar($attribute);
+            } else {
+                $attribute->toolbar = false;
+            }
+
+            return;
+        }
+
+        $attribute->toolbar = $toolbar;
     }
 
     private function processOptions(Property $attribute): void

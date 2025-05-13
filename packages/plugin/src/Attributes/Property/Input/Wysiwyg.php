@@ -2,13 +2,14 @@
 
 namespace Solspace\Freeform\Attributes\Property\Input;
 
+use Solspace\Freeform\Attributes\Property\Implementations\Toolbar\ToolbarConfigurationInterface;
 use Solspace\Freeform\Attributes\Property\Property;
 
 /**
  * @extends Property<string>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Wysiwyg extends Property
+class Wysiwyg extends Property implements ToolbarInterface
 {
     public ?string $type = 'wysiwyg';
 
@@ -23,8 +24,8 @@ class Wysiwyg extends Property
         public ?bool $menu = false,
         public ?bool $statusbar = false,
         public ?bool $toggleEditor = false,
-        public array|bool $toolbar = false,
+        public array|bool|string|ToolbarConfigurationInterface $toolbar = false,
     ) {
-        parent::__construct($label, $instructions, $order, $value, $placeholder, $width, $disabled);
+        parent::__construct($label, $instructions, $order, $value, $placeholder, $width, $disabled, $menu, $statusbar, $toggleEditor, $toolbar);
     }
 }

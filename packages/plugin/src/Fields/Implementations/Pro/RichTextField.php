@@ -14,12 +14,14 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Input\Wysiwyg;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Form\Settings\Implementations\Toolbars\RichTextToolbarConfiguration;
 
 #[Type(
     name: 'Rich Text',
@@ -27,19 +29,23 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
     iconPath: __DIR__.'/../Icons/rich-text.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rich-text.ejs',
 )]
-class RichTextField extends AbstractField implements InputOnlyInterface, NoStorageInterface, ExtraFieldInterface, NoEmailPresenceInterface
+class RichTextField extends AbstractField implements ToolbarInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface, NoEmailPresenceInterface
 {
     protected string $instructions = '';
     protected bool $required = false;
 
-    #[Wysiwyg(
+    #[Input\Wysiwyg(
         label: 'Content',
         instructions: 'The HTML content to be rendered',
+        order: 1,
+        value: null,
+        placeholder: null,
+        width: null,
+        disabled: null,
         menu: false,
         statusbar: false,
-        toolbar: [
-            'blocks bold italic underline forecolor backcolor | align numlist bullist | link image table | removeformat code',
-        ],
+        toggleEditor: false,
+        toolbar: RichTextToolbarConfiguration::class,
     )]
     protected ?string $content = '';
 

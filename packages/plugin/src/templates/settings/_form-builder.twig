@@ -60,6 +60,18 @@
         </div>
     </div>
 
+    <div class="field">
+        {{ forms.autosuggestField({
+            class: "code",
+            label: "Rich Text Field Toolbar Configuration"|t('freeform'),
+            instructions: "Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported."|t('freeform'),
+            name: "settings[defaults][richTextFieldToolbarConfiguration]",
+            value: settings.defaults.richTextFieldToolbarConfiguration,
+            errors: settings.defaults.getErrors("richTextFieldToolbarConfiguration"),
+            suggestEnvVars: true,
+        }) }}
+    </div>
+
     <div class="field smart-switch">
         <div>
             {{ forms.lightswitch({

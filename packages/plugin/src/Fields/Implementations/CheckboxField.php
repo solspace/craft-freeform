@@ -17,6 +17,7 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Input\ToolbarInterface;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
@@ -27,6 +28,7 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoLabelInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
+use Solspace\Freeform\Form\Settings\Implementations\Toolbars\CheckboxToolbarConfiguration;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
 
@@ -39,7 +41,7 @@ use Twig\Markup;
     iconPath: __DIR__.'/Icons/checkbox.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox.ejs',
 )]
-class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
+class CheckboxField extends AbstractField implements ToolbarInterface, InputOnlyInterface, NoLabelInterface, BooleanInterface, DefaultValueInterface
 {
     use DefaultTextValueTrait;
 
@@ -49,9 +51,14 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
     #[Input\Wysiwyg(
         instructions: 'Field label used to describe the field',
         order: 1,
-        placeholder: 'This is something',
+        value: null,
+        placeholder: null,
+        width: null,
+        disabled: null,
+        menu: false,
+        statusbar: false,
         toggleEditor: true,
-        toolbar: ['bold italic underline strikethrough link | removeformat code'],
+        toolbar: CheckboxToolbarConfiguration::class,
     )]
     protected string $label = '';
 

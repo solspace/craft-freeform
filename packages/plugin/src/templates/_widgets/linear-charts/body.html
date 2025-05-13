@@ -1,24 +1,106 @@
-{% set ID = random() %}
-<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}%"></canvas>
+{% set ID = 'chart' ~ random() %}
+<canvas id="submission-chart-{{ ID }}" style="width: 100%; height: 400px; min-height: 400px;"></canvas>
 
-{% js "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" %}
+{% set view = craft.app.view %}
+{% if not view.hasJsFile('chartjs') %}
+  {% do view.registerJsFile('https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js', {
+    position: constant('craft\\web\\View::POS_HEAD'),
+    key: 'chartjs'
+  }) %}
+{% endif %}
+
 {% js %}
-  $(function () {
-    setTimeout(function() {
-      var ctx       = document.getElementById("submission-chart-{{ ID }}").getContext("2d");
-      var chartData = {{ chartData|json_encode|raw }};
-      var incrementSkip = {{ incrementSkip }};
+(function () {
+  const ID = '{{ ID }}';
+  const canvasId = 'submission-chart-' + ID;
+  const canvas = document.getElementById(canvasId);
+  const incrementSkip = {{ incrementSkip }};
 
-      chartData.options.scales.xAxes[0].ticks = {
-        callback: function (value, index, values) {
-          return index % incrementSkip === 0 ? value : null;
+  let chartInstance = null;
+
+  const chartData = {{ chartData|json_encode|raw }};
+  chartData.options = chartData.options || {};
+  chartData.options.responsive = true;
+  chartData.options.maintainAspectRatio = false;
+  chartData.options.cutoutPercentage = 70;
+
+  chartData.options.scales.xAxes[0].ticks = {
+    callback: function (value, index, values) {
+      return index % incrementSkip === 0 ? value : null;
+    }
+  };
+
+  function hasValidSize(el) {
+    return (
+      el.offsetWidth > 10 &&
+      el.offsetHeight > 10 &&
+      el.clientWidth > 10 &&
+      el.clientHeight > 10
+    );
+  }
+
+  function renderChart() {
+    if (chartInstance) {
+      chartInstance.destroy();
+    }
+
+    // Force a fallback size if Chart.js sees canvas as too small
+    canvas.width = canvas.offsetWidth || 400;
+    canvas.height = canvas.offsetHeight || 400;
+
+    const ctx = canvas.getContext('2d');
+    ctx.fillColor = "#000";
+    ctx.fillText("123%", 100 - 20, 100, 200);
+
+    try {
+      chartInstance = new Chart(ctx, chartData);
+    } catch (e) {
+      console.error('Chart rendering error:', e);
+    }
+  }
+
+  function waitUntilReadyAndRender(attempt = 0) {
+    if (hasValidSize(canvas)) {
+      renderChart();
+    } else if (attempt < 10) {
+      // exponential backoff
+      setTimeout(() => waitUntilReadyAndRender(attempt + 1), 100 * (attempt + 1));
+    } else {
+      console.warn(`Canvas "${canvasId}" never reached a valid size.`);
+    }
+  }
+
+  function observeResizeAndRedraw() {
+    // Use ResizeObserver if supported
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+          if (entry.target === canvas && hasValidSize(canvas)) {
+            renderChart();
+          }
         }
-      }
+      });
 
-      ctx.fillColor = "#000";
-      ctx.fillText("123%", 100 - 20, 100, 200);
+      resizeObserver.observe(canvas);
+    } else {
+      // Fallback: redraw on window resize
+      window.addEventListener('resize', () => {
+        if (hasValidSize(canvas)) {
+          renderChart();
+        }
+      });
+    }
+  }
 
-      var myChart = new Chart(ctx, chartData);
-    }, 200);
-  });
+  function waitForChartJsAndStart() {
+    if (typeof Chart === 'undefined') {
+      setTimeout(waitForChartJsAndStart, 50);
+    } else {
+      waitUntilReadyAndRender();
+      observeResizeAndRedraw();
+    }
+  }
+
+  waitForChartJsAndStart();
+})();
 {% endjs %}

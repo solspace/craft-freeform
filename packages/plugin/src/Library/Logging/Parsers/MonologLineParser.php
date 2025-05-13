@@ -15,13 +15,13 @@ namespace Solspace\Freeform\Library\Logging\Parsers;
 
 class MonologLineParser implements LogParserInterface
 {
-    private string $pattern = '/^'.
-        '\[(?<date>.*)] '.
-        '(?<channel>[\w\-_ ]+).(?<level>\w+): '.
-        '(?<message>.*)'.
-        '(?<context> (\[.*?]|\{.*?}))'.
-        '(?<extra> (\{.*}))'.
-        '\s{0,2}/';
+    private string $pattern = '/^'
+        .'\[(?<date>.*)] '
+        .'(?<channel>[\w\-_ ]+).(?<level>\w+): '
+        .'(?<message>.*)'
+        .'(?<context> (\[.*?]|\{.*?}))'
+        .'(?<extra> (\{.*}))'
+        .'\s{0,2}/';
 
     public function __construct(?string $pattern = null)
     {

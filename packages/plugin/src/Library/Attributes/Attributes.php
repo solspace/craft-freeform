@@ -15,6 +15,7 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
     public const STRATEGY_REPLACE = 'replace';
 
     private const EXCLUDED_ATTRIBUTES = ['tag'];
+    private const EXCLUDED_TWIG_ATTRIBUTES = ['value', 'name', 'id'];
 
     private array $attributes = [];
 
@@ -297,7 +298,10 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
             $replacements = [];
             foreach ($array as $key => $value) {
                 $key = $twig->render($key, $properties);
-                $value = !empty($value) ? $twig->render($value, $properties) : $value;
+
+                if (!empty($value) && !\in_array($key, self::EXCLUDED_TWIG_ATTRIBUTES, true)) {
+                    $value = $twig->render($value, $properties);
+                }
 
                 $replacements[$key] = $value;
             }

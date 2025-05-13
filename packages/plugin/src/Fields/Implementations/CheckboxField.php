@@ -49,8 +49,6 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
     #[Section('general')]
     #[Input\Wysiwyg(
         instructions: 'Field label used to describe the field',
-        order: 1,
-        placeholder: 'This is something',
         toggleEditor: true,
         toolbar: CheckboxToolbarConfiguration::class,
     )]

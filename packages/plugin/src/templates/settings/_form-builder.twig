@@ -60,17 +60,21 @@
         </div>
     </div>
 
-    <div class="field">
-        {{ forms.autosuggestField({
-            class: "code",
-            label: "Rich Text Field Toolbar Configuration"|t('freeform'),
-            instructions: "Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported."|t('freeform'),
-            name: "settings[defaults][richTextFieldToolbarConfiguration]",
-            value: settings.defaults.richTextFieldToolbarConfiguration,
-            errors: settings.getErrors("defaults.richTextFieldToolbarConfiguration"),
-            suggestEnvVars: true,
-        }) }}
-    </div>
+    {% if craft.freeform.pro %}
+
+        <div class="field">
+            {{ forms.autosuggestField({
+                class: "code",
+                label: "Rich Text Field Toolbar Configuration"|t('freeform'),
+                instructions: "Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported."|t('freeform'),
+                name: "settings[defaults][richTextFieldToolbarConfiguration]",
+                value: settings.defaults.richTextFieldToolbarConfiguration,
+                errors: settings.getErrors("defaults.richTextFieldToolbarConfiguration"),
+                suggestEnvVars: false,
+            }) }}
+        </div>
+
+    {% endif %}
 
     <div class="field smart-switch">
         <div>

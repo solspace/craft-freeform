@@ -2,16 +2,27 @@
 
 namespace Solspace\Freeform\Integrations\Single\FormMonitor\Transformers;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class ManifestTransformer
 {
     public function __construct(
         private FormMonitorFieldTransformer $fieldTransformer,
+        private NotificationsProvider $notificationsProvider,
+        private Serializer $serializer,
     ) {}
 
     public function transform(Form $form): object
     {
+        $notifications = $this->notificationsProvider->getByForm($form);
+        $serialized = $this->serializer->serialize($notifications, 'json', [
+            IdentificationNormalizer::NORMALIZE_TO_IDENTIFICATORS => true,
+        ]);
+
         $manifest = [
             'form' => [
                 'id' => $form->getId(),
@@ -20,7 +31,7 @@ class ManifestTransformer
                 'handle' => $form->getHandle(),
                 'settings' => $form->getSettings()->toArray(),
             ],
-            'notifications' => [],
+            'notifications' => JsonHelper::decode($serialized, true),
         ];
 
         $layout = [];

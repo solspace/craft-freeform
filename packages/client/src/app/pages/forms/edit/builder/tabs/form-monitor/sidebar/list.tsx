@@ -239,7 +239,7 @@ const ConfigurationPanel: React.FC<{
 const RecentTestPanel: React.FC<{
   lastTest?: FormTest;
 }> = ({ lastTest }) => {
-  const lastTestStatus = lastTest?.status;
+  const lastTestStatus = lastTest?.totalStatus;
 
   if (!lastTestStatus) {
     return null;

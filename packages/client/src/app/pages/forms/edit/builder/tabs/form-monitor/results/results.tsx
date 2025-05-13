@@ -10,6 +10,9 @@ import type {
   TestGroup,
 } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
+import CheckmarkIcon from '@ff-icons/actions/checkmark.svg';
+import DeleteIcon from '@ff-icons/actions/delete.svg';
+import HourglassIcon from '@ff-icons/actions/hourglass.svg';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -22,8 +25,11 @@ import {
   ChartContainer,
   DailyTestsContainer,
   DayColumn,
+  FormSubmitStatus,
   NoResults,
   NoTestsMessage,
+  NotificationStat,
+  NotificationStats,
   NotificationType,
   NotificationTypesContainer,
   PageButton,
@@ -33,6 +39,7 @@ import {
   ResponseBlock,
   ResultsWrapper,
   StatsContainer,
+  StatusIcon,
   TableHeader,
   TableTestList,
   TestDescription,
@@ -62,7 +69,6 @@ type TestRowProps = {
   formId: number;
   onDelete: (data: DeleteModalState) => void;
   onScreenshot: (data: ScreenshotModalState) => void;
-  enabledNotifications: number;
   showNotifications: boolean;
 };
 
@@ -72,12 +78,24 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [100, 0] as unknown as number,
 };
 
+const getStatusIcon = (status: string): JSX.Element => {
+  switch (status) {
+    case 'success':
+      return <CheckmarkIcon />;
+    case 'failed':
+      return <DeleteIcon />;
+    case 'pending':
+      return <HourglassIcon />;
+    default:
+      return <HourglassIcon />;
+  }
+};
+
 const TestRow: React.FC<TestRowProps> = ({
   test,
   formId,
   onDelete,
   onScreenshot,
-  enabledNotifications,
   showNotifications,
 }) => {
   const rowRef = useRef<HTMLTableRowElement>(null);
@@ -91,59 +109,75 @@ const TestRow: React.FC<TestRowProps> = ({
         {dateString}
       </td>
       <td className="no-break">
-        <StatusIndicator $status={test.status} $size="sm">
+        <StatusIndicator $status={test.totalStatus} $size="sm">
           <StatusDot $size="lg" />
-          {translate(test.status.toUpperCase())}
+          {translate(test.totalStatus?.toUpperCase())}
         </StatusIndicator>
       </td>
       <td className="code" title={test.response}>
         {!!test.response && <ResponseBlock>{test.response}</ResponseBlock>}
       </td>
+      <td className="no-break">
+        <FormSubmitStatus $status={test.status}>
+          <StatusIcon>{getStatusIcon(test.status)}</StatusIcon>
+        </FormSubmitStatus>
+      </td>
       {showNotifications && (
         <td>
-          <Tooltip
-            html={
-              <TestTooltip>
-                <TestTooltipContent>
-                  <div>
-                    {translate('Enabled Notifications')}: {enabledNotifications}
-                  </div>
-                  <div>
-                    {translate('Received Notifications')}:{' '}
-                    {test.notifications?.length || 0}
-                  </div>
-                  <NotificationTypesContainer>
-                    {test.notifications?.map((notification, index) => (
-                      <NotificationType key={index}>
-                        {notification.type}
-                      </NotificationType>
-                    ))}
-                  </NotificationTypesContainer>
-                </TestTooltipContent>
-              </TestTooltip>
-            }
-            position="top"
-            theme="light"
-            animation="fade"
-            arrow
-            duration={100}
-            distance={10}
-            size="small"
-            hideOnClick={false}
-            followCursor
-          >
-            <StatusIndicator
-              $status={
-                test.notifications?.length === enabledNotifications
-                  ? 'success'
-                  : 'failed'
+          {test?.totalNotifications ? (
+            <Tooltip
+              html={
+                <TestTooltip>
+                  <TestTooltipContent>
+                    <NotificationStats>
+                      <NotificationStat>
+                        <div className="label">{translate('Enabled')}</div>
+                        <div className="value">{test.totalNotifications}</div>
+                      </NotificationStat>
+                      <NotificationStat>
+                        <div className="label">{translate('Received')}</div>
+                        <div className="value">
+                          {test.notifications?.length || 0}
+                        </div>
+                      </NotificationStat>
+                    </NotificationStats>
+                    <NotificationTypesContainer>
+                      {test.notifications?.map((notification, index) => (
+                        <NotificationType key={index}>
+                          {notification.type}
+                        </NotificationType>
+                      ))}
+                    </NotificationTypesContainer>
+                  </TestTooltipContent>
+                </TestTooltip>
               }
-              $size="sm"
-              style={{ cursor: 'pointer' }}
+              position="top"
+              theme="light"
+              animation="fade"
+              arrow
+              duration={100}
+              distance={10}
+              size="small"
+              hideOnClick={false}
+              followCursor
             >
-              {test.notifications?.length || 0}/{enabledNotifications}
+              <StatusIndicator
+                $status={
+                  test.notifications?.length === test.totalNotifications
+                    ? 'success'
+                    : 'failed'
+                }
+                $size="sm"
+                style={{ cursor: 'pointer' }}
+              >
+                {test.notifications?.length || 0}/{test.totalNotifications}
+              </StatusIndicator>
+            </Tooltip>
+          ) : (
+            <StatusIndicator $status="inactive" $size="sm">
+              N/A
             </StatusIndicator>
-          </Tooltip>
+          )}
         </td>
       )}
       <td>
@@ -221,9 +255,9 @@ const DailyTestColumn: React.FC<{
   const renderTooltipContent = (test: FormTest): React.JSX.Element => (
     <TestTooltip>
       <TestTooltipHeader>
-        <StatusIndicator $status={test.status} $size="sm">
+        <StatusIndicator $status={test.totalStatus} $size="sm">
           <StatusDot $size="md" />
-          {translate(test.status.toUpperCase())}
+          {translate(test.totalStatus?.toUpperCase())}
         </StatusIndicator>
       </TestTooltipHeader>
       <TestTooltipContent>
@@ -293,7 +327,7 @@ const DailyTestColumn: React.FC<{
         >
           <TestSegment
             key={test.id}
-            $status={test.status}
+            $status={test.totalStatus}
             $height={segmentHeight}
             $offset={index * segmentHeight}
             $isLast={
@@ -409,6 +443,7 @@ export const FMResults: React.FC = () => {
               <th>{translate('Date')}</th>
               <th>{translate('Status')}</th>
               <th>{translate('Response')}</th>
+              <th>{translate('Form Submit')}</th>
               {formTests.notifications?.enabled && (
                 <th>{translate('Notifications')}</th>
               )}
@@ -424,7 +459,6 @@ export const FMResults: React.FC = () => {
                 formId={formTests.formId}
                 onDelete={setTestToDelete}
                 onScreenshot={setSelectedScreenshot}
-                enabledNotifications={formTests.notifications?.count || 0}
                 showNotifications={formTests.notifications?.enabled}
               />
             ))}

@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
@@ -34,9 +35,27 @@ class EmailOverrides extends FeatureBundle
     public function handleJobPreparation(PrepareSendNotificationEvent $event): void
     {
         $job = $event->getJob();
+        if (Conditional::class === $job->notificationType) {
+            return;
+        }
+
         $form = $this->formsService->getFormById($job->formId);
         $isFormMonitorRequest = $this->formMonitorProvider->isRequestFromFormMonitor($form);
         if (!$isFormMonitorRequest) {
+            return;
+        }
+
+        $formMonitor = $this->formMonitorProvider->getFormMonitor($form);
+        if (!$formMonitor) {
+            return;
+        }
+
+        if (!$formMonitor->getTestEmails()) {
+            return;
+        }
+
+        $isProduction = 'production' === strtolower(\Craft::$app->getConfig()->env);
+        if ($formMonitor->getLiveOnly() && !$isProduction) {
             return;
         }
 

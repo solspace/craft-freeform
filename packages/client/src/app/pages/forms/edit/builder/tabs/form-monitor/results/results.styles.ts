@@ -325,6 +325,28 @@ export const NotificationTypesContainer = styled.div`
   flex-wrap: wrap;
 `;
 
+export const NotificationStats = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+`;
+
+export const NotificationStat = styled.div`
+  flex: 1;
+
+  .label {
+    font-size: 12px;
+    color: ${colors.gray600};
+    margin-bottom: 2px;
+  }
+
+  .value {
+    font-size: 14px;
+    font-weight: bold;
+    color: ${colors.gray900};
+  }
+`;
+
 export const NotificationType = styled.div`
   background: ${colors.gray100};
   padding: 2px 6px;
@@ -336,4 +358,47 @@ export const NotificationType = styled.div`
   display: flex;
   align-items: center;
   line-height: 1;
+`;
+
+export const FormSubmitStatus = styled.div<{
+  $status: 'success' | 'failed' | 'pending';
+}>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: ${({ $status }) =>
+    $status === 'success'
+      ? 'rgba(34, 197, 94, 0.2)'
+      : $status === 'failed'
+        ? 'rgba(239, 68, 68, 0.2)'
+        : 'rgba(55, 65, 81, 0.2)'};
+  color: ${({ $status }) =>
+    $status === 'success'
+      ? colors.green600
+      : $status === 'failed'
+        ? colors.red600
+        : colors.gray700};
+`;
+
+export const StatusIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+    stroke-width: 2;
+  }
+`;
+
+export const StatusText = styled.span`
+  font-size: 13px;
+  font-weight: 500;
 `;

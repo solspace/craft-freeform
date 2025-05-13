@@ -3,7 +3,8 @@ export interface FormTest {
   formId?: number;
   dateAttempted?: string;
   dateCompleted?: string;
-  status: 'success' | 'failed' | 'pending';
+  status?: 'success' | 'failed' | 'pending';
+  totalStatus?: 'success' | 'failed' | 'pending';
   response: string;
   responseCode: number;
   customerId?: number;
@@ -11,6 +12,7 @@ export interface FormTest {
   notifications?: {
     type?: string;
   }[];
+  totalNotifications?: number;
 }
 
 export interface TestGroup {
@@ -41,7 +43,6 @@ export interface FormTestsResponse {
   lastSubmission?: FormTest;
   notifications?: {
     enabled: boolean;
-    count: number;
   };
   fmFormStats?: {
     enabled: boolean;

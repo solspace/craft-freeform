@@ -8,9 +8,9 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
-use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\EmailValueGenerator;
@@ -27,6 +27,23 @@ use Solspace\Freeform\Library\Integrations\APIIntegration;
 )]
 class FormMonitor extends APIIntegration
 {
+    #[Required]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Boolean(
+        label: 'Test Email Notifications',
+        instructions: 'Allow Form Monitor to test any email notifications configured for this form.',
+        order: 5
+    )]
+    protected bool $testEmails = true;
+
+    #[Required]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Boolean(
+        label: 'Test Email Notifications on Live Environment only',
+        instructions: 'If this setting is enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
+        order: 5
+    )]
+    protected bool $liveOnly = true;
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]
@@ -84,6 +101,16 @@ class FormMonitor extends APIIntegration
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getTestEmails(): bool
+    {
+        return $this->testEmails;
+    }
+
+    public function getLiveOnly(): bool
+    {
+        return $this->liveOnly;
     }
 
     public function getApiRootUrl(): string
@@ -237,14 +264,8 @@ class FormMonitor extends APIIntegration
         $data['url'] = $this->getTestUrl();
         $data['formId'] = $form->getId();
 
-        // Get notifications info
-        $notificationsProvider = \Craft::$container->get(NotificationsProvider::class);
-        $notifications = $notificationsProvider->getByForm($form);
-        $enabledNotifications = array_filter($notifications, fn ($notification) => $notification->isEnabled());
-
         $data['notifications'] = [
-            'enabled' => !empty($enabledNotifications),
-            'count' => \count($enabledNotifications),
+            'enabled' => $this->getTestEmails(),
         ];
 
         return $data;
@@ -267,6 +288,7 @@ class FormMonitor extends APIIntegration
             'email' => $this->getEmail(),
             'manifest' => $transformer->transform($form),
             'enabled' => $this->isEnabled(),
+            'testEmailsEnabled' => $this->getTestEmails(),
         ];
 
         $client->put($endpoint, ['json' => $payload]);

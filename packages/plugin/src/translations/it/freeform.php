@@ -983,6 +983,8 @@ return [
     'Allow Twig to be enabled in HTML blocks' => 'Consenti l’Abilitazione di Twig nei Blocchi HTML',
     'A toggle will appear for each HTML block field inside the form builder, allowing the use of Twig code.' => 'Un interruttore apparirà per ogni campo di blocco HTML all’interno del costruttore di moduli, consentendo l’utilizzo del codice Twig.',
     'Render HTML block Twig in Isolated Mode' => 'Esegui il Rendering dei Blocchi HTML Twig in Modalità Isolata',
+    'Rich Text Field Toolbar Configuration' => 'Configurazione della barra degli strumenti dei campi di testo avanzato',
+    'Choose which components appear in the Rich Text editor toolbar and in what order. Only core native TinyMCE components are supported.' => "Scegli quali componenti visualizzare nella barra degli strumenti dell'editor di testo avanzato e in quale ordine. Sono supportati solo i componenti nativi TinyMCE.",
     "When enabled, only the Freeform 'form' and 'fields' variables will be available. If disabled, Craft's variables will be included as well." => "Quando abilitato, saranno disponibili solo le variabili 'form' e 'fields' di Freeform. Se disabilitato, saranno incluse anche le variabili di Craft.",
     "Include Freeform's Sample Formatting Templates" => 'Includi i Modelli di Formattazione di Esempio di Freeform',
     "Allow users to select a sample formatting template included with Freeform for the form's Formatting Template setting." => 'Consenti agli utenti di selezionare un modello di formattazione di esempio incluso in Freeform per l’impostazione del modello di formattazione del modulo.',

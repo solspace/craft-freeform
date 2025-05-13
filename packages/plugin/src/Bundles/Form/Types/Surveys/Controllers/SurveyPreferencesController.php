@@ -23,8 +23,8 @@ class SurveyPreferencesController extends BaseApiController
         $canModifyForm = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE.':'.$form->getId())
             || PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE);
 
-        $canViewSubmissions =
-            PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
+        $canViewSubmissions
+            = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
             && (
                 PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)
                 || PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE.':'.$form->getId())

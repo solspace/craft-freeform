@@ -1,8 +1,7 @@
 {% set ID = 'chart' ~ random() %}
-<canvas id="submission-chart-{{ ID }}" style="width: 400px; height: 400px; min-height: 400px;"></canvas>
+<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}"></canvas>
 
-{% set view = craft.app.view %}
-{% do view.registerJsFile('https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js', {
+{% do craft.app.view.registerJsFile('https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js', {
   position: constant('craft\\web\\View::POS_HEAD'),
   key: 'chartjs'
 }) %}
@@ -19,7 +18,10 @@
   chartData.options = chartData.options || {};
   chartData.options.responsive = true;
   chartData.options.maintainAspectRatio = false;
-  chartData.options.cutoutPercentage = 70;
+
+  if (chartData.type === 'doughnut' || chartData.type === 'pie') {
+    chartData.options.cutout = '70%';
+  }
 
   function hasValidSize(el) {
     return (
@@ -34,10 +36,6 @@
     if (chartInstance) {
       chartInstance.destroy();
     }
-
-    // Force a fallback size if Chart.js sees canvas as too small
-    canvas.width = canvas.offsetWidth || 400;
-    canvas.height = canvas.offsetHeight || 400;
 
     const ctx = canvas.getContext('2d');
 

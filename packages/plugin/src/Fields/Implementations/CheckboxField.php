@@ -27,6 +27,7 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoLabelInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
+use Solspace\Freeform\Form\Settings\Implementations\Toolbars\CheckboxToolbarConfiguration;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
 
@@ -48,10 +49,8 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, NoLabel
     #[Section('general')]
     #[Input\Wysiwyg(
         instructions: 'Field label used to describe the field',
-        order: 1,
-        placeholder: 'This is something',
         toggleEditor: true,
-        toolbar: ['bold italic underline strikethrough link | removeformat code'],
+        toolbar: CheckboxToolbarConfiguration::class,
     )]
     protected string $label = '';
 

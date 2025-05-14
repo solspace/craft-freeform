@@ -366,8 +366,8 @@ export const FormSubmitStatus = styled.div<{
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: ${({ $status }) =>
     $status === 'success'
@@ -387,8 +387,8 @@ export const PendingStatus = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: rgba(55, 65, 81, 0.2);
   color: ${colors.gray700};
@@ -398,8 +398,10 @@ export const StatusIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
+  margin-top: -1px;
+  margin-left: -0.1rem;
 
   svg {
     width: 100%;

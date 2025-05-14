@@ -1,7 +1,10 @@
 {% set ID = random() %}
-<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}%"></canvas>
+<div style="position: relative; height: auto; min-height: {{ settings.chartHeight }}vh; width: 100%;">
+  <canvas id="submission-chart-{{ ID }}"></canvas>
+</div>
 
-{% js "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" %}
+{% js "https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" %}
+
 {% js %}
   $(function () {
     setTimeout(function() {
@@ -9,16 +12,19 @@
       var chartData = {{ chartData|json_encode|raw }};
       var incrementSkip = {{ incrementSkip }};
 
-      chartData.options.scales.xAxes[0].ticks = {
-        callback: function (value, index, values) {
+      // Set maintainAspectRatio to false so the chart fills its container
+      chartData.options = chartData.options || {};
+      chartData.options.responsive = true;
+      chartData.options.maintainAspectRatio = false;
+
+      // Optional: skip every nth label on the x-axis
+      if (chartData.options.scales && chartData.options.scales.x && chartData.options.scales.x.ticks) {
+        chartData.options.scales.x.ticks.callback = function(value, index) {
           return index % incrementSkip === 0 ? value : null;
-        }
+        };
       }
 
-      ctx.fillColor = "#000";
-      ctx.fillText("123%", 100 - 20, 100, 200);
-
-      var myChart = new Chart(ctx, chartData);
+      new Chart(ctx, chartData);
     }, 200);
   });
 {% endjs %}

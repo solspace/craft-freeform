@@ -1,107 +1,30 @@
-{% set ID = 'chart' ~ random() %}
-<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}"></canvas>
+{% set ID = random() %}
+<div style="display: flex; align-items: center; justify-content: center; position: relative; min-height: {{ settings.chartHeight }}vh; width: 100%;">
+  <canvas id="submission-chart-{{ ID }}"></canvas>
+</div>
 
-{% do craft.app.view.registerJsFile('https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js', {
-  position: constant('craft\\web\\View::POS_HEAD'),
-  key: 'chartjs'
-}) %}
+{% js "https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" %}
 
 {% js %}
-(function () {
-  const ID = '{{ ID }}';
-  const canvasId = 'submission-chart-' + ID;
-  const canvas = document.getElementById(canvasId);
-  const incrementSkip = {{ incrementSkip }};
+  $(function () {
+    setTimeout(function() {
+      var ctx       = document.getElementById("submission-chart-{{ ID }}").getContext("2d");
+      var chartData = {{ chartData|json_encode|raw }};
+      var incrementSkip = {{ incrementSkip }};
 
-  let chartInstance = null;
+      // Set maintainAspectRatio to false so the chart fills its container
+      chartData.options = chartData.options || {};
+      chartData.options.responsive = true;
+      chartData.options.maintainAspectRatio = false;
 
-  const chartData = {{ chartData|json_encode|raw }};
-  chartData.options = chartData.options || {};
-  chartData.options.responsive = true;
-  chartData.options.maintainAspectRatio = false;
+      // Optional: skip every nth label on the x-axis
+      if (chartData.options.scales && chartData.options.scales.x && chartData.options.scales.x.ticks) {
+        chartData.options.scales.x.ticks.callback = function(value, index) {
+          return index % incrementSkip === 0 ? value : null;
+        };
+      }
 
-  if (chartData.type === 'doughnut' || chartData.type === 'pie') {
-    chartData.options.cutout = '70%';
-  }
-
-  chartData.options.scales = chartData.options.scales || {};
-  chartData.options.scales.x = chartData.options.scales.x || {};
-  chartData.options.scales.x.ticks = {
-    callback: function (value, index, values) {
-      return index % incrementSkip === 0 ? value : null;
-    }
-  };
-
-  delete chartData.options.scales.xAxes;
-  delete chartData.options.scales.yAxes;
-
-  function hasValidSize(el) {
-    return (
-      el.offsetWidth > 10 &&
-      el.offsetHeight > 10 &&
-      el.clientWidth > 10 &&
-      el.clientHeight > 10
-    );
-  }
-
-  function renderChart() {
-    if (chartInstance) {
-      chartInstance.destroy();
-    }
-
-    const ctx = canvas.getContext('2d');
-    ctx.fillColor = "#000";
-    ctx.fillText("123%", 100 - 20, 100, 200);
-
-    try {
-      chartInstance = new Chart(ctx, chartData);
-    } catch (e) {
-      console.error('Chart rendering error:', e);
-    }
-  }
-
-  function waitUntilReadyAndRender(attempt = 0) {
-    if (hasValidSize(canvas)) {
-      renderChart();
-    } else if (attempt < 10) {
-      // exponential backoff
-      setTimeout(() => waitUntilReadyAndRender(attempt + 1), 100 * (attempt + 1));
-    } else {
-      console.warn(`Canvas "${canvasId}" never reached a valid size.`);
-    }
-  }
-
-  function observeResizeAndRedraw() {
-    // Use ResizeObserver if supported
-    if (typeof ResizeObserver !== 'undefined') {
-      const resizeObserver = new ResizeObserver(entries => {
-        for (let entry of entries) {
-          if (entry.target === canvas && hasValidSize(canvas)) {
-            renderChart();
-          }
-        }
-      });
-
-      resizeObserver.observe(canvas);
-    } else {
-      // Fallback: redraw on window resize
-      window.addEventListener('resize', () => {
-        if (hasValidSize(canvas)) {
-          renderChart();
-        }
-      });
-    }
-  }
-
-  function waitForChartJsAndStart() {
-    if (typeof Chart === 'undefined') {
-      setTimeout(waitForChartJsAndStart, 50);
-    } else {
-      waitUntilReadyAndRender();
-      observeResizeAndRedraw();
-    }
-  }
-
-  waitForChartJsAndStart();
-})();
+      new Chart(ctx, chartData);
+    }, 200);
+  });
 {% endjs %}

@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.10.14 - 2025-05-13
+
+### Added
+- Added a setting to customize the configuration of the TinyMCE **Rich Text** field toolbar.
+
+### Fixed
+- Fixed a bug where `composer.lock` was included in the Freeform package, potentially causing false security warnings from security scanners.
+
+### Security
+- Fixed a vulnerability allowing isolated Twig template rendering in default field values.
+
 ## 5.10.13 - 2025-05-06
 
 ### Added

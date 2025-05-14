@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
-use craft\helpers\Html;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
@@ -25,7 +24,11 @@ class CsrfInput extends FeatureBundle
     public function attachInput(RenderTagEvent $event): void
     {
         $this->setNoCacheHeaders();
-        $event->addChunk(Html::csrfInput());
+
+        $csrfTokenName = \Craft::$app->getConfig()->getGeneral()->csrfTokenName;
+        $csrfTokenValue = \Craft::$app->getRequest()->getCsrfToken();
+
+        $event->addChunk('<input type="hidden" name="'.$csrfTokenName.'" value="'.$csrfTokenValue.'" />');
     }
 
     public function attachToJson(OutputAsJsonEvent $event): void

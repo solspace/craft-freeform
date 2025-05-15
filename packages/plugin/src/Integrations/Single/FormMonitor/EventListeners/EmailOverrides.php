@@ -51,11 +51,15 @@ class EmailOverrides extends FeatureBundle
         }
 
         if (!$formMonitor->getTestEmails()) {
+            $job->headers = ['X-Form-Monitor' => 'false'];
+
             return;
         }
 
         $isProduction = 'production' === strtolower(\Craft::$app->getConfig()->env);
         if ($formMonitor->getLiveOnly() && !$isProduction) {
+            $job->headers = ['X-Form-Monitor' => 'false'];
+
             return;
         }
 
@@ -71,9 +75,15 @@ class EmailOverrides extends FeatureBundle
     public function handleEmails(SendEmailEvent $event): void
     {
         $message = $event->getMessage();
-        $isFormMonitorRequest = $message->getHeader('X-Form-Monitor');
-        if (!$isFormMonitorRequest) {
+        $formMonitorHeader = $message->getHeader('X-Form-Monitor');
+        // If there is no such header - skip this handler
+        if (null === $formMonitorHeader) {
             return;
+        }
+
+        // If the header is present, but set to `false` => prevent the email from being sent
+        if ('false' === $formMonitorHeader) {
+            $event->isValid = false;
         }
 
         $to = $message->getTo();

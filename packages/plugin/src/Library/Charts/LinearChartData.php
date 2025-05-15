@@ -103,40 +103,39 @@ class LinearChartData implements \JsonSerializable
                 'datasets' => $this->datasets,
             ],
             'options' => [
-                'tooltips' => [
-                    'backgroundColor' => 'rgba(250, 250, 250, 0.9)',
-                    'titleFontColor' => '#000',
-                    'bodyFontColor' => '#000',
-                    'cornerRadius' => 4,
-                    'xPadding' => 10,
-                    'yPadding' => 7,
-                    'displayColors' => false,
-                ],
-                'responsive' => true,
-                'legend' => [
-                    'display' => $this->isLegends(),
-                    'labels' => [
-                        'padding' => 20,
-                        'usePointStyle' => true,
-                    ],
-                ],
-                'scales' => [
-                    'yAxes' => [
-                        [
-                            'stacked' => $this->isStacked(),
-                            'beginAtZero' => true,
-                            'ticks' => [
-                                'maxTicksLimit' => 10,
-                                'min' => 0,
-                            ],
+                'plugins' => [
+                    'legend' => [
+                        'display' => $this->isLegends(),
+                        'position' => 'top',
+                        'labels' => [
+                            'padding' => 20,
+                            'usePointStyle' => true,
                         ],
                     ],
-                    'xAxes' => [
-                        [
-                            'stacked' => $this->isStacked(),
-                            'gridLines' => [
-                                'display' => false,
-                            ],
+                    'tooltip' => [
+                        'backgroundColor' => 'rgba(250, 250, 250, 0.9)',
+                        'titleColor' => '#000',
+                        'bodyColor' => '#000',
+                        'cornerRadius' => 4,
+                        'padding' => 10,
+                        'displayColors' => false,
+                    ],
+                ],
+                'responsive' => true,
+                'maintainAspectRatio' => false,
+                'scales' => [
+                    'y' => [
+                        'stacked' => $this->isStacked(),
+                        'beginAtZero' => true,
+                    ],
+                    'x' => [
+                        'stacked' => $this->isStacked(),
+                        'grid' => [
+                            'display' => false,
+                        ],
+                        'ticks' => [
+                            'maxTicksLimit' => 10,
+                            'min' => 0,
                         ],
                     ],
                 ],

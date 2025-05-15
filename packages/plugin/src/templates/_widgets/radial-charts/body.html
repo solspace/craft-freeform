@@ -1,7 +1,10 @@
 {% set ID = random() %}
-<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}%"></canvas>
+<div style="position: relative; height: auto; min-height: {{ settings.chartHeight }}vh; width: 100%;">
+  <canvas id="submission-chart-{{ ID }}"></canvas>
+</div>
 
-{% js "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" %}
+{% js "https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" %}
+
 {% js %}
   $(function () {
     setTimeout(function() {

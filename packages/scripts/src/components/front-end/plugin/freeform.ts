@@ -657,18 +657,23 @@ export default class Freeform {
       data.append(submitter.name, '1');
     }
 
-    const method = form.getAttribute('method');
-    const action = form.getAttribute('action');
+    const method = form.getAttribute('method') || 'POST';
+    const url = form.getAttribute('action') || window.location.href;
 
-    request.open(method, action ? action : window.location.href, true);
-    request.setRequestHeader('Cache-Control', 'no-cache');
-    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-    request.setRequestHeader('HTTP_X_REQUESTED_WITH', 'XMLHttpRequest');
-    request.onload = () => {
+    const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });
+    if (submitEvent.defaultPrevented) {
+      return;
+    }
+
+    ajax(url, {
+      data,
+      method,
+      request,
+    }).then((serverResponse) => {
       this._removeMessages();
 
-      if (request.status === 200) {
-        const response = JSON.parse(request.response);
+      if (serverResponse.status === 200) {
+        const response = serverResponse.data as FreeformResponseWithToken;
         const { success, finished, actions = [], errors, formErrors, returnUrl } = response;
 
         const onBeforeSuccess = this._dispatchEvent(events.form.ajaxBeforeSuccess, { request, response });
@@ -747,14 +752,7 @@ export default class Freeform {
       }
 
       this.unlockSubmit();
-    };
-
-    const submitEvent = this._dispatchEvent(events.form.ajaxBeforeSubmit, { data, request });
-    if (submitEvent.defaultPrevented) {
-      return;
-    }
-
-    request.send(data);
+    });
   };
 
   _getSubmitButtons = (): NodeListOf<HTMLButtonElement | HTMLInputElement> => {

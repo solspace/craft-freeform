@@ -2,6 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
+use craft\helpers\Html;
+use craft\helpers\UrlHelper;
+use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
@@ -18,22 +21,35 @@ class CsrfInput extends FeatureBundle
         }
 
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
+        Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'attachCsrfUrlAttribute']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
     }
 
     public function attachInput(RenderTagEvent $event): void
     {
-        $this->setNoCacheHeaders();
+        $isAsyncCsrfEnabled = \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs;
+        if (!$isAsyncCsrfEnabled) {
+            $this->setNoCacheHeaders();
+        }
 
-        $csrfTokenName = \Craft::$app->getConfig()->getGeneral()->csrfTokenName;
-        $csrfTokenValue = \Craft::$app->getRequest()->getCsrfToken();
+        $event->addChunk(Html::csrfInput());
+    }
 
-        $event->addChunk('<input type="hidden" name="'.$csrfTokenName.'" value="'.$csrfTokenValue.'" />');
+    public function attachCsrfUrlAttribute(AttachFormAttributesEvent $event): void
+    {
+        $event
+            ->getForm()
+            ->getAttributes()
+            ->set('data-csrf-info', UrlHelper::actionUrl('users/session-info'))
+        ;
     }
 
     public function attachToJson(OutputAsJsonEvent $event): void
     {
-        $this->setNoCacheHeaders();
+        $isAsyncCsrfEnabled = \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs;
+        if (!$isAsyncCsrfEnabled) {
+            $this->setNoCacheHeaders();
+        }
 
         $csrfTokenName = \Craft::$app->getConfig()->getGeneral()->csrfTokenName;
         $csrfTokenValue = \Craft::$app->getRequest()->getCsrfToken();

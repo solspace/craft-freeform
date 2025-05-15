@@ -36,6 +36,8 @@ class EmailOverrides extends FeatureBundle
     {
         $job = $event->getJob();
         if (Conditional::class === $job->notificationType) {
+            $job->headers = ['X-Form-Monitor' => 'false'];
+
             return;
         }
 

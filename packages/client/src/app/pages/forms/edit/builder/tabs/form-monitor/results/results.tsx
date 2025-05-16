@@ -115,8 +115,29 @@ const TestRow: React.FC<TestRowProps> = ({
           {translate(test.totalStatus?.toUpperCase())}
         </StatusIndicator>
       </td>
-      <td className="code" title={test.response}>
-        {!!test.response && <ResponseBlock>{test.response}</ResponseBlock>}
+      <td className="code">
+        {test?.totalResponse && (
+          <Tooltip
+            html={
+              <TestTooltip>
+                <TestTooltipContent>
+                  <div>{test.totalResponse}</div>
+                </TestTooltipContent>
+              </TestTooltip>
+            }
+            position="top"
+            theme="light"
+            animation="fade"
+            arrow
+            duration={100}
+            distance={10}
+            size="small"
+            hideOnClick={false}
+            followCursor
+          >
+            <ResponseBlock>{test.totalResponse}</ResponseBlock>
+          </Tooltip>
+        )}
       </td>
       <td className="no-break">
         <FormSubmitStatus $status={test.status}>
@@ -272,7 +293,9 @@ const DailyTestColumn: React.FC<{
       <TestTooltipContent>
         <div className="test-id">Test: {test.id}</div>
         <div className="test-date">{test.dateAttempted}</div>
-        {test.response && <div className="test-response">{test.response}</div>}
+        {test.totalResponse && (
+          <div className="test-response">{test.totalResponse}</div>
+        )}
       </TestTooltipContent>
     </TestTooltip>
   );

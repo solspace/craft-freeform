@@ -13,6 +13,7 @@ export interface FormTest {
     type?: string;
   }[];
   totalNotifications?: number;
+  totalResponse?: string;
 }
 
 export interface TestGroup {

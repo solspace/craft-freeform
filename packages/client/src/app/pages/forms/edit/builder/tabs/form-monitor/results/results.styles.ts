@@ -139,13 +139,11 @@ export const ResponseBlock = styled.div`
   font-size: 12px;
   line-height: 1.4;
   border-radius: ${borderRadius.md};
-  max-height: 60px;
-  overflow-y: auto;
-  ${scrollBar};
-
-  &:hover {
-    max-height: none;
-  }
+  max-width: 190px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
 `;
 
 export const TestTableStyled = styled.table`

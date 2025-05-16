@@ -441,7 +441,7 @@ return [
     'this field when' => 'this field when',
     'this button when' => 'this button when',
     'Go to this page when' => 'Go to this page when',
-    'Submit Form' => 'Submit Form',
+    'Submit Form Early' => 'Submit Form Early',
     'Submit this form when' => 'Submit this form when',
     'any' => 'any',
     'all' => 'all',

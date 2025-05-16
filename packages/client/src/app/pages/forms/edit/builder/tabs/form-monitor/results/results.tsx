@@ -165,7 +165,7 @@ const TestRow: React.FC<TestRowProps> = ({
               >
                 <StatusIndicator
                   $status={
-                    test.notifications?.length === test.totalNotifications
+                    test.notifications?.length >= test.totalNotifications
                       ? 'success'
                       : 'failed'
                   }

@@ -6,7 +6,11 @@ import type {
   FormTestsResponse,
 } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
+import BroomIcon from '@ff-icons/actions/broom.svg';
+import EllipsisIcon from '@ff-icons/actions/ellipsis.svg';
 import LoadingIcon from '@ff-icons/actions/loading.svg';
+import StopIcon from '@ff-icons/actions/stop.svg';
+import TrashIcon from '@ff-icons/actions/trash.svg';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -19,13 +23,16 @@ import { DeleteTestModal } from '../form-monitor.test.delete';
 import { StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
-  ActionButton,
   ActionContainer,
   ConfigItem,
   ConfigLabel,
   ConfigurationSection,
   ConfigWrapper,
   MainStats,
+  MenuButton,
+  MenuDropdown,
+  MenuItem,
+  MenuItemWithBorder,
   MonitoredUrl,
   MostRecentTests,
   NextScheduledTestContainer,
@@ -61,6 +68,21 @@ const ConfigurationPanel: React.FC<{
   const [showDisableModal, setShowDisableModal] = React.useState(false);
   const [showDisableAndClearModal, setShowDisableAndClearModal] =
     React.useState(false);
+  const [showMenu, setShowMenu] = React.useState(false);
+  const menuRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent): void => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const reactivateMutation = useFormMonitorEnableMutation(
     configuration.formId,
@@ -172,31 +194,53 @@ const ConfigurationPanel: React.FC<{
           </ConfigItem>
         )}
 
-        <ActionContainer>
-          {hasTests && (
-            <ConfigItem>
-              <ActionButton onClick={() => setShowDeleteModal(true)}>
-                {translate('Clear All Test History')}
-              </ActionButton>
-            </ConfigItem>
-          )}
-          {configuration.serviceStatus !== 'inactive' && (
-            <>
-              <ConfigItem>
-                <ActionButton onClick={() => setShowDisableModal(true)}>
-                  {translate('Disable Monitoring')}
-                </ActionButton>
-              </ConfigItem>
+        <ActionContainer ref={menuRef}>
+          <MenuButton
+            onClick={() => setShowMenu(!showMenu)}
+            aria-expanded={showMenu}
+            aria-controls="action-menu"
+            title={translate('Actions')}
+          >
+            <EllipsisIcon />
+          </MenuButton>
+          {showMenu && (
+            <MenuDropdown id="action-menu">
               {hasTests && (
-                <ConfigItem>
-                  <ActionButton
-                    onClick={() => setShowDisableAndClearModal(true)}
-                  >
-                    {translate('Disable & Delete Monitoring Data')}
-                  </ActionButton>
-                </ConfigItem>
+                <MenuItem
+                  onClick={() => {
+                    setShowMenu(false);
+                    setShowDeleteModal(true);
+                  }}
+                >
+                  <BroomIcon />
+                  {translate('Clear All Test History')}
+                </MenuItem>
               )}
-            </>
+              {configuration.serviceStatus !== 'inactive' && (
+                <>
+                  <MenuItem
+                    onClick={() => {
+                      setShowMenu(false);
+                      setShowDisableModal(true);
+                    }}
+                  >
+                    <StopIcon />
+                    {translate('Disable Monitoring')}
+                  </MenuItem>
+                  {hasTests && (
+                    <MenuItemWithBorder
+                      onClick={() => {
+                        setShowMenu(false);
+                        setShowDisableAndClearModal(true);
+                      }}
+                    >
+                      <TrashIcon />
+                      {translate('Disable & Delete Monitoring Data')}
+                    </MenuItemWithBorder>
+                  )}
+                </>
+              )}
+            </MenuDropdown>
           )}
         </ActionContainer>
       </ConfigWrapper>
@@ -282,7 +326,7 @@ const NextScheduledTestPanel: React.FC<{
     <NextScheduledTestContainer>
       <h3>{translate('Next Scheduled Test')}</h3>
       <div className="next-test-time">
-        {nextMonitoringTime} (in {nextMonitoringTimeIn?.humanReadable})
+        {nextMonitoringTime} <br /> (in {nextMonitoringTimeIn?.humanReadable})
       </div>
     </NextScheduledTestContainer>
   );

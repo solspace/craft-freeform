@@ -13,6 +13,7 @@ import translate from '@ff-client/utils/translations';
 import CheckmarkIcon from '@ff-icons/actions/checkmark.svg';
 import DeleteIcon from '@ff-icons/actions/delete.svg';
 import HourglassIcon from '@ff-icons/actions/hourglass.svg';
+import CameraIcon from '@ff-icons/camera.svg';
 import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
@@ -38,7 +39,9 @@ import {
   PaginationNav,
   PendingStatus,
   ResponseBlock,
+  ResponseText,
   ResultsWrapper,
+  ScreenshotButton,
   StatsContainer,
   StatusIcon,
   TableHeader,
@@ -115,34 +118,24 @@ const TestRow: React.FC<TestRowProps> = ({
           {translate(test.totalStatus?.toUpperCase())}
         </StatusIndicator>
       </td>
-      <td className="code">
-        {test?.totalResponse && (
-          <Tooltip
-            html={
-              <TestTooltip>
-                <TestTooltipContent>
-                  <div>{test.totalResponse}</div>
-                </TestTooltipContent>
-              </TestTooltip>
-            }
-            position="top"
-            theme="light"
-            animation="fade"
-            arrow
-            duration={100}
-            distance={10}
-            size="small"
-            hideOnClick={false}
-            followCursor
-          >
-            <ResponseBlock>{test.totalResponse}</ResponseBlock>
-          </Tooltip>
-        )}
-      </td>
       <td className="no-break">
         <FormSubmitStatus $status={test.status}>
           <StatusIcon>{getStatusIcon(test.status)}</StatusIcon>
         </FormSubmitStatus>
+        {test.screenshot && (
+          <Tooltip title={translate('View Screenshot')} {...tooltipProps}>
+            <ScreenshotButton
+              onClick={() =>
+                onScreenshot({
+                  url: test.screenshot!,
+                  testId: test.id,
+                })
+              }
+            >
+              <CameraIcon />
+            </ScreenshotButton>
+          </Tooltip>
+        )}
       </td>
       {showNotifications && (
         <td>
@@ -210,19 +203,11 @@ const TestRow: React.FC<TestRowProps> = ({
           )}
         </td>
       )}
-      <td>
-        {test.screenshot && (
-          <button
-            onClick={() =>
-              onScreenshot({
-                url: test.screenshot!,
-                testId: test.id,
-              })
-            }
-            className="view-screenshot-btn"
-          >
-            {translate('View Screenshot')}
-          </button>
+      <td className="no-break">
+        {test?.totalResponse && (
+          <ResponseBlock>
+            <ResponseText>{test.totalResponse}</ResponseText>
+          </ResponseBlock>
         )}
       </td>
       <td>
@@ -474,12 +459,11 @@ export const FMResults: React.FC = () => {
               <th>{translate('Test ID')}</th>
               <th>{translate('Date')}</th>
               <th>{translate('Status')}</th>
-              <th>{translate('Response')}</th>
               <th>{translate('Form Submit')}</th>
               {formTests.notifications?.enabled && (
                 <th>{translate('Notifications')}</th>
               )}
-              <th>{translate('Screenshot')}</th>
+              <th>{translate('Response')}</th>
               <th></th>
             </tr>
           </thead>

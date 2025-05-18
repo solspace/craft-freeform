@@ -192,22 +192,78 @@ export const ActionContainer = styled.div`
   flex-direction: column;
   gap: ${spacings.xs};
   margin-top: ${spacings.lg};
+  position: relative;
 `;
 
-export const ActionButton = styled.button`
-  background-color: ${colors.gray700};
-  color: ${colors.white};
-  padding: ${spacings.xs} ${spacings.md};
+export const MenuButton = styled.button`
+  height: var(--ui-control-height);
+  width: var(--ui-control-height);
+  border: 1px solid ${colors.gray250};
   border-radius: ${borderRadius.md};
-  border: none;
   cursor: pointer;
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${colors.gray700};
+  padding: 0;
 
-  &:hover {
-    background-color: ${colors.red700};
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: ${colors.gray500};
   }
 
-  &:active {
-    transform: translateY(1px);
+  &:hover {
+    background: rgba(96, 125, 159, 0.3);
+  }
+`;
+
+export const MenuDropdown = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid ${colors.gray200};
+  border-radius: ${borderRadius.md};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 250px;
+  z-index: 100;
+  margin-top: ${spacings.sm};
+`;
+
+export const MenuItem = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${spacings.sm};
+  width: 100%;
+  padding: ${spacings.sm} ${spacings.md};
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: ${colors.gray700};
+  font-size: 12px;
+  text-align: left;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+  }
+
+  &:hover {
+    background: ${colors.gray050};
+  }
+`;
+
+export const MenuItemWithBorder = styled(MenuItem)`
+  border-top: 1px solid ${colors.gray200};
+  color: ${colors.red600};
+
+  svg {
+    stroke: ${colors.red600};
+  }
+
+  &:hover {
+    background: ${colors.red050};
   }
 `;

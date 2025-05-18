@@ -134,16 +134,16 @@ export const PageInfo = styled.div`
 `;
 
 export const ResponseBlock = styled.div`
+  max-width: 380px;
+`;
+
+export const ResponseText = styled.div`
   position: relative;
   font-family: monospace;
   font-size: 12px;
   line-height: 1.4;
   border-radius: ${borderRadius.md};
-  max-width: 190px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  cursor: pointer;
+  white-space: normal;
 `;
 
 export const TestTableStyled = styled.table`
@@ -361,7 +361,7 @@ export const NotificationType = styled.div`
 export const FormSubmitStatus = styled.div<{
   $status: 'success' | 'failed' | 'pending';
 }>`
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
@@ -379,6 +379,34 @@ export const FormSubmitStatus = styled.div<{
       : $status === 'failed'
         ? colors.red600
         : colors.gray700};
+  margin-right: ${spacings.sm};
+`;
+
+export const ScreenshotButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: #3f4d5a;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  opacity: 0.9;
+  transition: all 0.2s ease;
+
+  &:hover {
+    opacity: 1;
+    background: #4a5a6a;
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    stroke: currentColor;
+  }
 `;
 
 export const PendingStatus = styled.div`

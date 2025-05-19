@@ -88,6 +88,7 @@ use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\NotesService;
+use Solspace\Freeform\Services\Notifications\NotificationWrappersService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
@@ -113,37 +114,38 @@ use yii\db\Query;
 /**
  * Class Plugin.
  *
- * @property CrmService                 $crm
- * @property FilesService               $files
- * @property FormsService               $forms
- * @property FormGroupsService          $formGroups
- * @property FieldsService              $fields
- * @property LayoutsService             $formLayouts
- * @property MailerService              $mailer
- * @property EmailMarketingService      $emailMarketing
- * @property NotificationsService       $notifications
- * @property SettingsService            $settings
- * @property StatusesService            $statuses
- * @property SubmissionsService         $submissions
- * @property SubmitService              $submit
- * @property SpamSubmissionsService     $spamSubmissions
- * @property LoggerService              $logger
- * @property IntegrationsService        $integrations
- * @property IntegrationsQueueService   $integrationsQueue
- * @property ChartsService              $charts
- * @property WidgetsService             $widgets
- * @property ExportService              $export
- * @property ExportProfilesService      $exportProfiles
- * @property ExportNotificationsService $exportNotifications
- * @property RelationsService           $relations
- * @property DigestService              $digest
- * @property SummaryService             $summary
- * @property FreeformFeedService        $feed
- * @property LockService                $lock
- * @property DiagnosticsService         $diagnostics
- * @property PreflightService           $preflight
- * @property TypesService               $formTypes
- * @property TranslationsService        $translations
+ * @property CrmService                  $crm
+ * @property FilesService                $files
+ * @property FormsService                $forms
+ * @property FormGroupsService           $formGroups
+ * @property FieldsService               $fields
+ * @property LayoutsService              $formLayouts
+ * @property MailerService               $mailer
+ * @property EmailMarketingService       $emailMarketing
+ * @property NotificationsService        $notifications
+ * @property NotificationWrappersService $notificationWrappers
+ * @property SettingsService             $settings
+ * @property StatusesService             $statuses
+ * @property SubmissionsService          $submissions
+ * @property SubmitService               $submit
+ * @property SpamSubmissionsService      $spamSubmissions
+ * @property LoggerService               $logger
+ * @property IntegrationsService         $integrations
+ * @property IntegrationsQueueService    $integrationsQueue
+ * @property ChartsService               $charts
+ * @property WidgetsService              $widgets
+ * @property ExportService               $export
+ * @property ExportProfilesService       $exportProfiles
+ * @property ExportNotificationsService  $exportNotifications
+ * @property RelationsService            $relations
+ * @property DigestService               $digest
+ * @property SummaryService              $summary
+ * @property FreeformFeedService         $feed
+ * @property LockService                 $lock
+ * @property DiagnosticsService          $diagnostics
+ * @property PreflightService            $preflight
+ * @property TypesService                $formTypes
+ * @property TranslationsService         $translations
  */
 class Freeform extends Plugin
 {
@@ -452,6 +454,7 @@ class Freeform extends Plugin
                 'mailer' => MailerService::class,
                 'notes' => NotesService::class,
                 'notifications' => NotificationsService::class,
+                'notificationWrappers' => NotificationWrappersService::class,
                 'preflight' => PreflightService::class,
                 'relations' => RelationsService::class,
                 'settings' => SettingsService::class,

@@ -1,7 +1,9 @@
 import type { FC } from 'react';
 import type { ControlProps } from '@components/form-controls/control.block';
-import type { GenericValue } from '@ff-client/types/properties';
+import type { GenericValue, Option } from '@ff-client/types/properties';
 
+import { BooleanInput } from './inputs/boolean';
+import { DropdownInput } from './inputs/dropdown';
 import { HtmlBodyInput } from './inputs/html-body/html-body';
 import { TextInput } from './inputs/text';
 
@@ -9,6 +11,8 @@ export type InputControl = ControlProps & {
   type: FC<ControlProps>;
   multiline?: boolean;
   value?: GenericValue;
+  emptyValue?: string;
+  options?: Option[] | (() => Promise<Option[]>);
   onChange?: (value: GenericValue) => void;
 };
 
@@ -115,6 +119,36 @@ export const configuration = [
           label: 'BCC',
           handle: 'bcc',
           instructions: `The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use.`,
+        },
+      ],
+      [
+        {
+          type: BooleanInput,
+          label: 'Include Attachments',
+          handle: 'includeAttachments',
+          instructions:
+            'Whether or not to include attachments in the email notification.',
+        },
+      ],
+    ],
+  },
+  {
+    name: 'Templates',
+    rows: [
+      [
+        {
+          type: DropdownInput,
+          label: 'Template Wrapper',
+          handle: 'templateWrapper',
+          instructions: `The template wrapper for the email notification. This is the HTML that wraps around the body of the email.`,
+        },
+      ],
+      [
+        {
+          type: DropdownInput,
+          label: 'PDF Template',
+          handle: 'pdfTemplate',
+          instructions: `Pick a PDF template to use for this notification. This will be used when the notification is sent as a PDF.`,
         },
       ],
     ],

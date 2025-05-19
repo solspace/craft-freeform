@@ -26,6 +26,7 @@ abstract class AbstractNotificationsController extends BaseController
         $notificationId = $post['notificationId'] ?? null;
         $notification = $this->getService()->getById($notificationId) ?? NotificationTemplateRecord::create();
 
+        $notification->wrapperId = $request->post('wrapperId') ?: null;
         $notification->pdfTemplateIds = $request->post('pdfTemplateIds');
         $notification->name = $request->post('name');
         $notification->handle = $request->post('handle');
@@ -111,7 +112,7 @@ abstract class AbstractNotificationsController extends BaseController
 
         $presetAssets = $record->getPresetAssets();
 
-        // Show Preset Assets field by default but when we are using a file based template, we do extra checks
+        // Show Preset Assets field by default, but when we are using a file-based template, we do extra checks
         if ($record->isFileBasedTemplate()) {
             // Check if the Preset Assets value is using Twig tags or using an array of numeric values?
             if (\is_array($presetAssets)) {
@@ -119,7 +120,7 @@ abstract class AbstractNotificationsController extends BaseController
                     // If numeric values, show the Preset Assets field
                     $showPresetAssets = (\count(array_filter($presetAssets, 'is_numeric')) > 0);
                 } else {
-                    // Empty array so lets show the field
+                    // Empty array, so let's show the field
                     $showPresetAssets = true;
                 }
             } else {
@@ -135,12 +136,19 @@ abstract class AbstractNotificationsController extends BaseController
             ->column()
         ;
 
+        $wrappers = ['' => Freeform::t('None')];
+        $wrapperRecords = Freeform::getInstance()->notificationWrappers->getAll();
+        foreach ($wrapperRecords as $wrapperRecord) {
+            $wrappers[$wrapperRecord->id] = $wrapperRecord->name;
+        }
+
         $variables = [
             'notification' => $record,
             'title' => $title,
             'type' => $this->getType(),
             'showPresetAssets' => $showPresetAssets,
             'pdfTemplateOptions' => $pdfTemplates,
+            'wrappers' => $wrappers,
         ];
 
         return $this->renderTemplate('freeform/notifications/edit', $variables);

@@ -21,6 +21,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 /**
  * @property int    $id
  * @property int    $formId
+ * @property int    $wrapperId
  * @property string $pdfTemplateIds
  * @property string $name
  * @property string $handle
@@ -88,8 +89,19 @@ class NotificationTemplateRecord extends ActiveRecord
             $includeAttachments = $template->isIncludeAttachments();
         }
 
+        $wrapperId = $template->getWrapperId();
+        if (\is_string($wrapperId)) {
+            $wrapperRecord = Freeform::getInstance()->notificationWrappers->getWrapperById($wrapperId);
+            if ($wrapperRecord) {
+                $wrapperId = $wrapperRecord->id;
+            } else {
+                $wrapperId = null;
+            }
+        }
+
         $record = new self();
         $record->filepath = pathinfo($filePath, \PATHINFO_BASENAME);
+        $record->wrapperId = $wrapperId;
         $record->pdfTemplateIds = $template->getPdfTemplateIds();
         $record->name = $template->getName();
         $record->handle = $template->getHandle();
@@ -140,6 +152,7 @@ class NotificationTemplateRecord extends ActiveRecord
             'name',
             'handle',
             'description',
+            'wrapperId',
             'fromName',
             'fromEmail',
             'replyToName',
@@ -154,6 +167,11 @@ class NotificationTemplateRecord extends ActiveRecord
             'presetAssets',
             'pdfTemplateIds',
         ];
+    }
+
+    public function getWrapperId(): ?int
+    {
+        return $this->wrapperId;
     }
 
     public function getHandle(): string

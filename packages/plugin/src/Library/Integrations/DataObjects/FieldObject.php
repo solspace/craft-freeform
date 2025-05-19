@@ -24,6 +24,7 @@ class FieldObject
     public const TYPE_TIMESTAMP = 'timestamp';
     public const TYPE_MICROTIME = 'microtime';
     public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_BIRTHDAY = 'birthday';
 
     private FieldOptionCollection $options;
 

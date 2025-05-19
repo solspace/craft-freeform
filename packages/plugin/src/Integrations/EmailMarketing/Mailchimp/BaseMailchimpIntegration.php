@@ -385,8 +385,10 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
 
         foreach ($json->merge_fields as $field) {
             $type = match ($field->type) {
-                'text', 'website', 'url', 'dropdown', 'radio', 'date', 'birthday', 'zip' => FieldObject::TYPE_STRING,
+                'text', 'website', 'url', 'dropdown', 'radio', 'zip' => FieldObject::TYPE_STRING,
                 'number', 'phone' => FieldObject::TYPE_NUMERIC,
+                'birthday', => FieldObject::TYPE_BIRTHDAY,
+                'date', => FieldObject::TYPE_DATE,
                 default => null,
             };
 

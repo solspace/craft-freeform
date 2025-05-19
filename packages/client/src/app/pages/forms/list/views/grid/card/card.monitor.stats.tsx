@@ -6,6 +6,7 @@ import ExclamationIcon from '@ff-icons/actions/exclamation.svg';
 import HourglassIcon from '@ff-icons/actions/hourglass.svg';
 
 import {
+  ErrorMessage,
   LastTestStatus,
   LineIndicator,
   MonitorStatus,
@@ -26,9 +27,14 @@ const DEFAULT_PROPS = {
 
 export const getLastTestStatus = (
   formMonitor: FormWithStats['formMonitor'],
-  size: StatusSize = DEFAULT_PROPS.size
+  size: StatusSize = DEFAULT_PROPS.size,
+  isError: boolean = false
 ): React.JSX.Element | null => {
   if (!formMonitor?.enabled) return null;
+
+  if (isError) {
+    return <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>;
+  }
 
   const { stats } = formMonitor;
   if (!stats) {
@@ -84,8 +90,13 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
   showLastTest = DEFAULT_PROPS.showLastTest,
   size = DEFAULT_PROPS.size,
 }) => {
-  const stats = formMonitor?.stats;
+  if (!formMonitor?.enabled) {
+    return null;
+  }
+
+  const stats = formMonitor.stats;
   const isPending = !stats || (stats.total || 0) === 0;
+  const isError = formMonitor?.error;
 
   const success = isPending ? 0 : stats.percentage?.success || 0;
   const failed = isPending ? 0 : stats.percentage?.failed || 0;
@@ -98,17 +109,28 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
   } as React.CSSProperties;
 
   return (
-    <StatsChartContainer $align={align}>
+    <StatsChartContainer
+      $align={align}
+      style={isError ? { marginTop: '10px' } : undefined}
+    >
       {showLastTest && (
-        <LastTestStatus>
-          Last Test {getLastTestStatus(formMonitor, size)}
-        </LastTestStatus>
+        <>
+          {!isError ? (
+            <LastTestStatus>
+              Last Test {getLastTestStatus(formMonitor, size)}
+            </LastTestStatus>
+          ) : (
+            getLastTestStatus(formMonitor, size, true)
+          )}
+        </>
       )}
-      <LineIndicator $width={width} style={progressStyle} />
+      {!isError && <LineIndicator $width={width} style={progressStyle} />}
       <MonitorStatus>
-        {isPending
-          ? translate('Uptime: Pending')
-          : `${translate('Uptime')}: ${success}%`}
+        {isError
+          ? translate('Uptime: Error')
+          : isPending
+            ? translate('Uptime: Pending')
+            : `${translate('Uptime')}: ${success}%`}
       </MonitorStatus>
     </StatsChartContainer>
   );

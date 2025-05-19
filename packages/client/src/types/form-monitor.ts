@@ -55,4 +55,8 @@ export interface FormTestsResponse {
       remainingMinutes: number;
     };
   };
+  error?: {
+    exception: string;
+    message: string;
+  };
 }

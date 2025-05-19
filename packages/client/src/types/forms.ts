@@ -50,6 +50,10 @@ export type Form = {
   formMonitor: {
     enabled: boolean;
     stats?: TestStats;
+    error?: {
+      exception: string;
+      message: string;
+    };
   };
 };
 

@@ -22,6 +22,7 @@ import {
   FormMonitorStats,
   getLastTestStatus,
 } from '../grid/card/card.monitor.stats';
+import { ErrorMessage } from '../grid/card/card.monitor.stats.styles';
 import { ControlButton } from '../grid/card/card.styles';
 import {
   useArchiveFormMutation,
@@ -115,14 +116,25 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
           <td>
             {formMonitor?.enabled && formMonitorLink && (
               <NavLink to={formMonitorLink.url}>
-                <FormMonitorStats formMonitor={formMonitor} />
+                {formMonitor?.error ? (
+                  <>
+                    <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>
+                    <FormMonitorStats formMonitor={formMonitor} />
+                  </>
+                ) : (
+                  <FormMonitorStats formMonitor={formMonitor} />
+                )}
               </NavLink>
             )}
           </td>
           <td>
             {formMonitor?.enabled && (
               <NavLink to={formMonitorLink.url}>
-                {getLastTestStatus(formMonitor, 'lg')}
+                {formMonitor?.error ? (
+                  <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>
+                ) : (
+                  getLastTestStatus(formMonitor, 'lg')
+                )}
               </NavLink>
             )}
           </td>

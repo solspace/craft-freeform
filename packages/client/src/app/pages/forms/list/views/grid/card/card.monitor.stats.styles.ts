@@ -77,3 +77,11 @@ export const TestStatusIcon = styled.div<{
     fill: currentColor;
   }
 `;
+
+export const ErrorMessage = styled.div`
+  color: ${colors.red600};
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  font-family: monospace;
+`;

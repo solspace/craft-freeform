@@ -1,42 +1,63 @@
-let csrf: { name: string; value: string } | null;
+type CSRFToken = { name: string; value: string };
+type TokenResponse = {
+  csrf?: CSRFToken;
+};
 
-type CsrfResponse = { name: string; value: string };
+let globalCsrf: CSRFToken;
 
-export const fetchCsrf = async (): Promise<CsrfResponse> => {
-  if (csrf === undefined) {
-    let response: Response;
-    try {
-      const form = document.querySelector<HTMLFormElement>('form[data-csrf-info]');
-      let url: string;
-      if (form) {
-        url = form.dataset.csrfInfo;
-      }
+enum RefreshType {
+  None = 'none',
+  Once = 'once',
+  Always = 'always',
+}
 
-      if (!url) {
-        url = '/index.php?p=actions/users/session-info';
-      }
-
-      response = await fetch(url, {
-        headers: {
-          Accept: 'application/json',
-        },
-      });
-
-      const data = await response.json();
-      if (data.csrfTokenName !== undefined) {
-        csrf = {
-          name: data.csrfTokenName,
-          value: data.csrfTokenValue,
-        };
-      } else {
-        csrf = null;
-      }
-    } catch {
-      csrf = null;
+export const fetchCsrf = async (): Promise<CSRFToken> => {
+  try {
+    const form = document.querySelector<HTMLFormElement>('form[data-csrf-refresh]');
+    if (!form) {
+      return null;
     }
+
+    const tokenRefreshType = form.dataset.csrfRefresh;
+    switch (tokenRefreshType) {
+      case RefreshType.Once:
+        if (globalCsrf === undefined) {
+          globalCsrf = await fetchCsrfTokenPayload();
+        }
+
+        return globalCsrf;
+
+      case RefreshType.Always:
+        return await fetchCsrfTokenPayload();
+
+      case RefreshType.None:
+      default:
+        return null;
+    }
+  } catch {
+    // Do Nothing
   }
 
-  return csrf;
+  return null;
+};
+
+const fetchCsrfTokenPayload = async (): Promise<CSRFToken | null> => {
+  const url: string = '/freeform/tokens';
+
+  const data = (await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+    },
+  }).then((res) => res.json())) as TokenResponse;
+
+  if (data.csrf !== undefined) {
+    return {
+      name: data.csrf.name,
+      value: data.csrf.value,
+    };
+  }
+
+  return null;
 };
 
 export const updateCsrfInputs = async (): Promise<void> => {

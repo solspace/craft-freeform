@@ -3,12 +3,12 @@
 namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
 use craft\helpers\Html;
-use craft\helpers\UrlHelper;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Models\Settings;
 use yii\base\Event;
 
 class CsrfInput extends FeatureBundle
@@ -21,33 +21,50 @@ class CsrfInput extends FeatureBundle
         }
 
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
-        Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'attachCsrfUrlAttribute']);
+        Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'attachCsrfAttribute']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
     }
 
     public function attachInput(RenderTagEvent $event): void
     {
-        $isAsyncCsrfEnabled = \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs;
-        if (!$isAsyncCsrfEnabled) {
-            $this->setNoCacheHeaders();
+        $isCSRFEnabled = $this->isCSRFEnabled();
+        $isAsyncEnabled = $this->isAsyncCSRFEnabled();
+
+        if (!$isCSRFEnabled || $isAsyncEnabled) {
+            return;
         }
+
+        $this->setNoCacheHeaders();
 
         $event->addChunk(Html::csrfInput());
     }
 
-    public function attachCsrfUrlAttribute(AttachFormAttributesEvent $event): void
+    public function attachCsrfAttribute(AttachFormAttributesEvent $event): void
     {
+        $isCSRFEnabled = $this->isCSRFEnabled();
+        $isAsyncEnabled = $this->isAsyncCSRFEnabled();
+
+        if (!$isCSRFEnabled || !$isAsyncEnabled) {
+            return;
+        }
+
+        $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_ONCE;
+
         $event
             ->getForm()
             ->getAttributes()
-            ->set('data-csrf-info', UrlHelper::actionUrl('users/session-info'))
+            ->set('data-csrf-refresh', $refresh)
         ;
     }
 
     public function attachToJson(OutputAsJsonEvent $event): void
     {
-        $isAsyncCsrfEnabled = \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs;
-        if (!$isAsyncCsrfEnabled) {
+        $isCSRFEnabled = $this->isCSRFEnabled();
+        if (!$isCSRFEnabled) {
+            return;
+        }
+
+        if (!$this->isAsyncCSRFEnabled()) {
             $this->setNoCacheHeaders();
         }
 
@@ -69,6 +86,16 @@ class CsrfInput extends FeatureBundle
             'value' => $csrfTokenValue,
             'token' => $csrfTokenValue,
         ]);
+    }
+
+    private function isCSRFEnabled(): bool
+    {
+        return \Craft::$app->getConfig()->getGeneral()->enableCsrfProtection;
+    }
+
+    private function isAsyncCSRFEnabled(): bool
+    {
+        return \Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs;
     }
 
     /**

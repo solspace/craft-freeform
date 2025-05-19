@@ -28,9 +28,14 @@ class CsrfInput extends FeatureBundle
     public function attachInput(RenderTagEvent $event): void
     {
         $isCSRFEnabled = $this->isCSRFEnabled();
-        $isAsyncEnabled = $this->isAsyncCSRFEnabled();
+        $isAsyncCSRFEnabled = $this->isAsyncCSRFEnabled();
+        $isFormAJAX = $event->getForm()->getSettings()->getBehavior()->ajax;
 
-        if (!$isCSRFEnabled || $isAsyncEnabled) {
+        if (!$isCSRFEnabled) {
+            return;
+        }
+
+        if ($isAsyncCSRFEnabled && $isFormAJAX) {
             return;
         }
 

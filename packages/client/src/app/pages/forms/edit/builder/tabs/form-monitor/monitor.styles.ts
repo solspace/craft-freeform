@@ -152,9 +152,11 @@ export const StatusDot = styled.span<{
 `;
 
 export const ErrorMessage = styled.div`
-  text-align: center;
   color: ${colors.red600};
   font-size: 14px;
   line-height: 1.5;
-  margin: ${spacings.xl};
+  padding: ${spacings.xl};
+  background: ${colors.white};
+  width: 100%;
+  height: 100%;
 `;

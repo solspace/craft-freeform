@@ -78,10 +78,11 @@ export const TestStatusIcon = styled.div<{
   }
 `;
 
-export const ErrorMessage = styled.div`
+export const ErrorMessage = styled.div<{ $withMargin?: boolean }>`
   color: ${colors.red600};
   font-size: 11px;
   line-height: 1.2;
   font-weight: 500;
   font-family: monospace;
+  margin-top: ${({ $withMargin }) => ($withMargin ? '15px' : '0px')};
 `;

@@ -117,10 +117,7 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
             {formMonitor?.enabled && formMonitorLink && (
               <NavLink to={formMonitorLink.url}>
                 {formMonitor?.error ? (
-                  <>
-                    <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>
-                    <FormMonitorStats formMonitor={formMonitor} />
-                  </>
+                  <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>
                 ) : (
                   <FormMonitorStats formMonitor={formMonitor} />
                 )}

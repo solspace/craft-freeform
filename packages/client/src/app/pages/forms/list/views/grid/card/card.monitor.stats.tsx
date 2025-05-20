@@ -27,14 +27,9 @@ const DEFAULT_PROPS = {
 
 export const getLastTestStatus = (
   formMonitor: FormWithStats['formMonitor'],
-  size: StatusSize = DEFAULT_PROPS.size,
-  isError: boolean = false
+  size: StatusSize = DEFAULT_PROPS.size
 ): React.JSX.Element | null => {
   if (!formMonitor?.enabled) return null;
-
-  if (isError) {
-    return <ErrorMessage>{formMonitor.error?.message}</ErrorMessage>;
-  }
 
   const { stats } = formMonitor;
   if (!stats) {
@@ -108,29 +103,27 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     '--pending': `${success + failed + pending}%`,
   } as React.CSSProperties;
 
+  if (isError) {
+    return (
+      <ErrorMessage $withMargin>{formMonitor.error?.message}</ErrorMessage>
+    );
+  }
+
   return (
     <StatsChartContainer
       $align={align}
       style={isError ? { marginTop: '10px' } : undefined}
     >
       {showLastTest && (
-        <>
-          {!isError ? (
-            <LastTestStatus>
-              Last Test {getLastTestStatus(formMonitor, size)}
-            </LastTestStatus>
-          ) : (
-            getLastTestStatus(formMonitor, size, true)
-          )}
-        </>
+        <LastTestStatus>
+          Last Test {getLastTestStatus(formMonitor, size)}
+        </LastTestStatus>
       )}
-      {!isError && <LineIndicator $width={width} style={progressStyle} />}
+      <LineIndicator $width={width} style={progressStyle} />
       <MonitorStatus>
-        {isError
-          ? translate('Uptime: Error')
-          : isPending
-            ? translate('Uptime: Pending')
-            : `${translate('Uptime')}: ${success}%`}
+        {isPending && !isError
+          ? translate('Uptime: Pending')
+          : `${translate('Uptime')}: ${success}%`}
       </MonitorStatus>
     </StatsChartContainer>
   );

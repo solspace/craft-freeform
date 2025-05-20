@@ -60,7 +60,8 @@ const ConfigurationPanel: React.FC<{
   configuration: Configuration;
   refetchData: () => void;
   hasTests?: boolean;
-}> = ({ configuration, refetchData, hasTests }) => {
+  isError?: boolean;
+}> = ({ configuration, refetchData, hasTests, isError }) => {
   const [reactivationStatus, setReactivationStatus] = React.useState<
     string | null
   >(null);
@@ -125,24 +126,26 @@ const ConfigurationPanel: React.FC<{
     <ConfigurationSection>
       <h3>{translate('Configuration')}</h3>
       <ConfigWrapper>
-        <ConfigItem>
-          <ConfigLabel>{translate('Integration Status')}</ConfigLabel>
-          <StatusIndicator
-            $size="sm"
-            $status={
-              configuration.integrationStatus === 'enabled'
-                ? 'success'
-                : 'disabled'
-            }
-          >
-            <StatusDot $size="md" />
-            {translate(
-              configuration.integrationStatus === 'enabled'
-                ? 'ENABLED'
-                : 'DISABLED'
-            )}
-          </StatusIndicator>
-        </ConfigItem>
+        {!isError && (
+          <ConfigItem>
+            <ConfigLabel>{translate('Integration Status')}</ConfigLabel>
+            <StatusIndicator
+              $size="sm"
+              $status={
+                configuration.integrationStatus === 'enabled'
+                  ? 'success'
+                  : 'disabled'
+              }
+            >
+              <StatusDot $size="md" />
+              {translate(
+                configuration.integrationStatus === 'enabled'
+                  ? 'ENABLED'
+                  : 'DISABLED'
+              )}
+            </StatusIndicator>
+          </ConfigItem>
+        )}
 
         <ConfigItem>
           <ConfigLabel>{translate('Service Status')}</ConfigLabel>
@@ -158,13 +161,15 @@ const ConfigurationPanel: React.FC<{
               }
             >
               <StatusDot $size="md" />
-              {translate(
-                configuration.serviceStatus === 'active'
-                  ? 'ACTIVE'
-                  : configuration.serviceStatus === 'inactive'
-                    ? 'INACTIVE'
-                    : 'DISABLED'
-              )}
+              {isError
+                ? translate('Error')
+                : translate(
+                    configuration.serviceStatus === 'active'
+                      ? 'ACTIVE'
+                      : configuration.serviceStatus === 'inactive'
+                        ? 'INACTIVE'
+                        : 'DISABLED'
+                  )}
             </StatusIndicator>
 
             {configuration.serviceStatus === 'inactive' &&
@@ -195,14 +200,16 @@ const ConfigurationPanel: React.FC<{
         )}
 
         <ActionContainer ref={menuRef}>
-          <MenuButton
-            onClick={() => setShowMenu(!showMenu)}
-            aria-expanded={showMenu}
-            aria-controls="action-menu"
-            title={translate('Actions')}
-          >
-            <EllipsisIcon />
-          </MenuButton>
+          {!isError && (
+            <MenuButton
+              onClick={() => setShowMenu(!showMenu)}
+              aria-expanded={showMenu}
+              aria-controls="action-menu"
+              title={translate('Actions')}
+            >
+              <EllipsisIcon />
+            </MenuButton>
+          )}
           {showMenu && (
             <MenuDropdown id="action-menu">
               {hasTests && (
@@ -351,6 +358,7 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
   } as Configuration;
 
   const hasTests = formTests?.stats?.total > 0;
+  const isError = Boolean(formTestsQuery.data?.error?.message);
 
   return (
     <Sidebar>
@@ -376,6 +384,7 @@ export const List: React.FC<ListProps> = ({ formTestsQuery }) => {
           configuration={configuration}
           refetchData={refetch}
           hasTests={hasTests}
+          isError={isError}
         />
       </Wrapper>
     </Sidebar>

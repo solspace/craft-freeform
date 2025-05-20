@@ -3,7 +3,7 @@ import { Outlet, useParams, useSearchParams } from 'react-router-dom';
 import { useFMFormTestsQuery } from '@ff-client/queries/form-monitor';
 
 import { List } from './sidebar/list';
-import { ErrorMessage, MonitorWrapper } from './monitor.styles';
+import { MonitorWrapper } from './monitor.styles';
 
 export const FormMonitor: React.FC = () => {
   const { formId } = useParams();
@@ -16,14 +16,6 @@ export const FormMonitor: React.FC = () => {
     limit: ITEMS_PER_PAGE,
     offset,
   });
-
-  if (formTestsQuery.data?.error) {
-    return (
-      <MonitorWrapper>
-        <ErrorMessage>{formTestsQuery.data.error.message}</ErrorMessage>
-      </MonitorWrapper>
-    );
-  }
 
   return (
     <MonitorWrapper>

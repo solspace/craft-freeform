@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Single\FormMonitor\Controllers;
 use craft\db\Query;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
@@ -71,10 +72,10 @@ class FormMonitorController extends BaseApiController
                 'offset' => $offset,
                 'sort' => $sort,
             ]);
-        } catch (\Exception $exception) {
-            $message = $exception instanceof ConnectException
+        } catch (\Exception $e) {
+            $message = ($e instanceof ConnectException || $e instanceof ServerException)
                 ? 'Cannot connect to the Form Monitor service at this time. Please try again later.'
-                : $exception->getMessage();
+                : $e->getMessage();
 
             $this
                 ->loggerService
@@ -85,7 +86,7 @@ class FormMonitorController extends BaseApiController
             return $this->asJson([
                 'error' => [
                     'message' => $message,
-                    'exception' => $exception::class,
+                    'exception' => $e::class,
                 ],
             ]);
         }

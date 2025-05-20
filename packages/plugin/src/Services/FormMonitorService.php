@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\ServerException;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
@@ -31,9 +32,8 @@ class FormMonitorService extends BaseService
                     'stats' => $stats,
                 ];
             } catch (\Exception $e) {
-                // If API call fails, return enabled but with error info
-                $message = 'Something went wrong';
-                if ($e instanceof ConnectException) {
+                $message = 'Error';
+                if ($e instanceof ConnectException || $e instanceof ServerException) {
                     $message = 'Cannot connect';
                 }
 

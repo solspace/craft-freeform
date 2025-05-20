@@ -20,7 +20,7 @@ import type { AxiosError } from 'axios';
 import { FormMonitorDetailsLoader } from '../form-monitor.loader';
 import { ScreenshotModal } from '../form-monitor.screenshot.modal';
 import { DeleteTestModal } from '../form-monitor.test.delete';
-import { StatusDot, StatusIndicator } from '../monitor.styles';
+import { ErrorMessage, StatusDot, StatusIndicator } from '../monitor.styles';
 
 import {
   ChartContainer,
@@ -387,6 +387,10 @@ export const FMResults: React.FC = () => {
 
   if (isLoading || isFetching) {
     return <FormMonitorDetailsLoader />;
+  }
+
+  if (formTests?.error) {
+    return <ErrorMessage>{formTests.error?.message}</ErrorMessage>;
   }
 
   if (!formTests || !formTests.tests) {

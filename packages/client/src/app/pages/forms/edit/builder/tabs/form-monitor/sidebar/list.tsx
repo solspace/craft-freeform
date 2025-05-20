@@ -217,29 +217,25 @@ const ConfigurationPanel: React.FC<{
                 </MenuItem>
               )}
               {configuration.serviceStatus !== 'inactive' && (
-                <>
-                  <MenuItem
-                    onClick={() => {
-                      setShowMenu(false);
-                      setShowDisableModal(true);
-                    }}
-                  >
-                    <StopIcon />
-                    {translate('Disable Monitoring')}
-                  </MenuItem>
-                  {hasTests && (
-                    <MenuItemWithBorder
-                      onClick={() => {
-                        setShowMenu(false);
-                        setShowDisableAndClearModal(true);
-                      }}
-                    >
-                      <TrashIcon />
-                      {translate('Disable & Delete Monitoring Data')}
-                    </MenuItemWithBorder>
-                  )}
-                </>
+                <MenuItem
+                  onClick={() => {
+                    setShowMenu(false);
+                    setShowDisableModal(true);
+                  }}
+                >
+                  <StopIcon />
+                  {translate('Disable Monitoring')}
+                </MenuItem>
               )}
+              <MenuItemWithBorder
+                onClick={() => {
+                  setShowMenu(false);
+                  setShowDisableAndClearModal(true);
+                }}
+              >
+                <TrashIcon />
+                {translate('Disable & Delete Monitoring Data')}
+              </MenuItemWithBorder>
             </MenuDropdown>
           )}
         </ActionContainer>

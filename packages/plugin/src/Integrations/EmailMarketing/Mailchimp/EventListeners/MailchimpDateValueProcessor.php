@@ -22,6 +22,8 @@ use yii\base\Event;
 
 class MailchimpDateValueProcessor extends FeatureBundle
 {
+    private const DATE_FORMAT = 'm/d/Y';
+
     public function __construct()
     {
         Event::on(
@@ -52,15 +54,18 @@ class MailchimpDateValueProcessor extends FeatureBundle
         $event->setValue($this->normalizeToMMDDYYYY($value));
     }
 
-    protected function normalizeToMMDDYYYY($value)
+    private function normalizeToMMDDYYYY(string $value): string
     {
         $possibleFormats = [
+            'Y.m.d',
             'Y/m/d',
             'Y-m-d',
+            'd.m.Y',
             'd/m/Y',
             'd-m-Y',
+            'm.d.Y',
+            'm/d/Y',
             'm-d-Y',
-            'm/d/Y', // already correct format
         ];
 
         foreach ($possibleFormats as $format) {
@@ -68,13 +73,12 @@ class MailchimpDateValueProcessor extends FeatureBundle
 
             // Check for valid date and matching format
             if ($date && $date->format($format) === $value) {
-                // Already MM/DD/YYYY? Return as-is
-                if ('m/d/Y' === $format) {
+                // already correct format, return as-is
+                if (self::DATE_FORMAT === $format) {
                     return $value;
                 }
 
-                // Convert to MM/DD/YYYY
-                return $date->format('m/d/Y');
+                return $date->format(self::DATE_FORMAT);
             }
         }
 

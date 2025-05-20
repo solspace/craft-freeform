@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -27,6 +28,8 @@ use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\EmailMarketingIn
 abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implements OAuth2ConnectorInterface, MailchimpIntegrationInterface
 {
     use OAuth2Trait;
+
+    public const TYPE_BIRTHDAY = 'birthday';
 
     protected const LOG_CATEGORY = 'Mailchimp';
 
@@ -387,7 +390,7 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
             $type = match ($field->type) {
                 'text', 'website', 'url', 'dropdown', 'radio', 'zip' => FieldObject::TYPE_STRING,
                 'number', 'phone' => FieldObject::TYPE_NUMERIC,
-                'birthday', => FieldObject::TYPE_BIRTHDAY,
+                'birthday', => self::TYPE_BIRTHDAY,
                 'date', => FieldObject::TYPE_DATE,
                 default => null,
             };

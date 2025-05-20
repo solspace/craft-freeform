@@ -14,14 +14,16 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\EventListeners;
 
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\MailchimpIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use yii\base\Event;
 
 class MailchimpBirthdayValueProcessor extends FeatureBundle
 {
+    private const BIRTHDAY_FORMAT = 'm/d';
+
     public function __construct()
     {
         Event::on(
@@ -39,43 +41,54 @@ class MailchimpBirthdayValueProcessor extends FeatureBundle
         }
 
         $integrationField = $event->getIntegrationField();
-        if (FieldObject::TYPE_BIRTHDAY !== $integrationField->getType()) {
+        if ($integration::TYPE_BIRTHDAY !== $integrationField->getType()) {
             return;
         }
 
-        $value = $event->getValue();
+        $freeformField = $event->getFreeformField();
+
+        $value = $freeformField->getValue();
         if (empty($value)) {
             return;
         }
 
-        // Mailchimp requires MM/DD for a valid birthday input
+        if ($freeformField instanceof DatetimeField) {
+            $event->setValue($freeformField->getCarbon()->format(self::BIRTHDAY_FORMAT));
+
+            return;
+        }
+
         $event->setValue($this->normalizeToBirthday($value));
     }
 
-    public function normalizeToBirthday($value): string
+    private function normalizeToBirthday(string $value): string
     {
-        // Acceptable input formats
-        $formats = [
-            'Y/m/d',
-            'Y-m-d',
-            'd/m/Y',
-            'd-m-Y',
-            'm/d/Y',
-            'm-d-Y',
-            'd/m',
-            'd-m',
-            'm/d',
-            'm-d',
-        ];
+        try {
+            $date = new \DateTime($value);
 
-        foreach ($formats as $format) {
-            $date = \DateTime::createFromFormat($format, $value);
-            if ($date && $date->format($format) === $value) {
-                return $date->format('m/d'); // Convert to MM/DD
+            return $date->format(self::BIRTHDAY_FORMAT);
+        } catch (\Exception $exception) {
+            // Possible ambiguous or incomplete input formats
+            $formats = [
+                'd/m',
+                'd-m',
+                'm/d',
+                'm-d',
+                'm.d',
+                'd.m',
+                'm d',
+                'd m',
+            ];
+
+            foreach ($formats as $format) {
+                $date = \DateTime::createFromFormat($format, $value);
+                if ($date && $date->format($format) === $value) {
+                    return $date->format(self::BIRTHDAY_FORMAT);
+                }
             }
-        }
 
-        // Invalid or unrecognized format, so just return the original value
-        return $value;
+            // Invalid or unrecognized format, so just return the original value
+            return $value;
+        }
     }
 }

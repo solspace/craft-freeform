@@ -74,3 +74,10 @@ export type Suggestion = {
   token: string;
   active?: boolean;
 };
+
+export type Wrapper = {
+  id: number;
+  name: string;
+  description?: string;
+  content: string;
+};

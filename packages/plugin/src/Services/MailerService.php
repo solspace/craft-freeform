@@ -42,6 +42,7 @@ use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
+use Twig\Markup;
 
 class MailerService extends BaseService implements MailHandlerInterface
 {
@@ -238,6 +239,19 @@ class MailerService extends BaseService implements MailHandlerInterface
         $subject = $this->renderString($notification->getSubject(), $values);
         $subject = htmlspecialchars_decode($subject, \ENT_QUOTES);
 
+        if ($notification->getWrapperId()) {
+            $wrapper = Freeform::getInstance()->notificationWrappers->getById($notification->getWrapperId());
+            if ($wrapper) {
+                $html = $this->renderString(
+                    $wrapper->content,
+                    array_merge(
+                        $values,
+                        ['emailBody' => new Markup($html, 'UTF-8')],
+                    ),
+                );
+            }
+        }
+
         $message = new Message();
         $message->variables = $values;
         $message
@@ -404,12 +418,6 @@ class MailerService extends BaseService implements MailHandlerInterface
         $variables['submission'] = $submission;
         $variables['dateCreated'] = new \DateTime();
         $variables['token'] = $submission?->token;
-
-        $variables['loop'] = [
-            'field' => [
-                'labels' => '-------field label loop goes here--------',
-            ],
-        ];
 
         $renderEvent = new RenderEmailEvent($form, $template, $variables, $submission);
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);

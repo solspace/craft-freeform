@@ -1,6 +1,11 @@
 import type { FC } from 'react';
 import type { ControlProps } from '@components/form-controls/control.block';
-import type { GenericValue, Option } from '@ff-client/types/properties';
+import type { Wrapper } from '@ff-client/types/notifications';
+import type {
+  GenericValue,
+  OptionCollection,
+} from '@ff-client/types/properties';
+import axios from 'axios';
 
 import { BooleanInput } from './inputs/boolean';
 import { DropdownInput } from './inputs/dropdown';
@@ -11,8 +16,8 @@ export type InputControl = ControlProps & {
   type: FC<ControlProps>;
   multiline?: boolean;
   value?: GenericValue;
-  emptyValue?: string;
-  options?: Option[] | (() => Promise<Option[]>);
+  emptyOption?: string;
+  optionDefinition?: OptionCollection | (() => Promise<OptionCollection>);
   onChange?: (value: GenericValue) => void;
 };
 
@@ -139,8 +144,19 @@ export const configuration = [
         {
           type: DropdownInput,
           label: 'Template Wrapper',
-          handle: 'templateWrapper',
+          handle: 'wrapperId',
           instructions: `The template wrapper for the email notification. This is the HTML that wraps around the body of the email.`,
+          emptyOption: 'No Wrapper',
+          optionDefinition: async () => {
+            const wrappers = await axios.get<Wrapper[]>(
+              '/api/templates/wrappers'
+            );
+
+            return wrappers.data.map((wrapper) => ({
+              label: wrapper.name,
+              value: String(wrapper.id),
+            }));
+          },
         },
       ],
       [

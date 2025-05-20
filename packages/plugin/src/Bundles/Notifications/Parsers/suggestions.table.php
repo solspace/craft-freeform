@@ -23,8 +23,8 @@ return [
     [
         'name' => 'Predefined',
         'items' => [
-            ['token' => 'loop.field.all', 'name' => 'All Fields', 'shortName' => 'All Fields'],
-            ['token' => 'loop.field.allNonEmpty', 'name' => 'All Non-empty Fields', 'shortName' => 'All Non-empty Fields'],
+            ['token' => 'loop.field.labels', 'name' => 'All Fields', 'shortName' => 'All Fields'],
+            ['token' => 'loop.field.labelsWithValues', 'name' => 'All Non-empty Fields', 'shortName' => 'All Non-empty Fields'],
             ['token' => 'loop.field.visible', 'name' => 'All Visible Fields', 'shortName' => 'All Visible Fields'],
         ],
     ],

@@ -65,7 +65,9 @@ export const EditNotificationModal: React.FC<
 
         closeModal();
 
-        data?.onSuccess(response.id);
+        if (typeof data?.onSuccess === 'function') {
+          data.onSuccess(response.id);
+        }
       },
     });
   };

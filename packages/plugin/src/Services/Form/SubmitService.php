@@ -46,6 +46,7 @@ class SubmitService extends BaseService
         ]);
 
         $submission->setFormFieldValues($data, false);
+        $form->setFieldValues($data);
 
         $dateCreated = new \DateTime();
         $collectIps = $generalSettings->collectIpAddresses;

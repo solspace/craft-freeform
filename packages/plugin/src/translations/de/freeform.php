@@ -441,7 +441,7 @@ return [
     'this field when' => 'dieses Feld, wenn',
     'this button when' => 'diese Schaltfläche, wenn',
     'Go to this page when' => 'Gehe zu dieser Seite, wenn',
-    'Submit Form' => 'Formular absenden',
+    'Submit Form Early' => 'Formular früh absenden',
     'Submit this form when' => 'Sende dieses Formular, wenn',
     'any' => 'irgendeine',
     'all' => 'alle',

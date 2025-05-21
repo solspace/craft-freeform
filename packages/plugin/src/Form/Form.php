@@ -32,6 +32,7 @@ use Solspace\Freeform\Events\Forms\QuickLoadEvent;
 use Solspace\Freeform\Events\Forms\RegisterContextEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
+use Solspace\Freeform\Events\Forms\SetFieldValuesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\AbstractField;
@@ -83,6 +84,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public const EVENT_COLLECT_SCRIPTS = 'collect-scripts';
     public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     public const EVENT_SET_PROPERTIES = 'set-properties';
+    public const EVENT_SET_FIELD_VALUES = 'set-field-values';
     public const EVENT_SUBMIT = 'submit';
     public const EVENT_ON_SUBMIT_RESPONSE = 'on-submit-response';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
@@ -776,11 +778,26 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return new Relations($this->getProperties()->get(self::DATA_RELATIONS));
     }
 
+    public function setFieldValues(array $values): self
+    {
+        $event = new SetFieldValuesEvent($this, $values);
+        Event::trigger($this, self::EVENT_SET_FIELD_VALUES, $event);
+
+        foreach ($event->getValues() as $handle => $value) {
+            $field = $this->get($handle);
+            if ($field instanceof FieldInterface) {
+                $field->setValue($value);
+            }
+        }
+
+        return $this;
+    }
+
     public function setProperties(?array $properties = null): self
     {
         $event = new SetPropertiesEvent($this, $properties ?? []);
         Event::trigger(
-            self::class,
+            $this,
             self::EVENT_SET_PROPERTIES,
             $event
         );

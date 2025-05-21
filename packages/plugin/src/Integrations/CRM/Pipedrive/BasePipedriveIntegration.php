@@ -115,6 +115,17 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
                 default => null,
             };
 
+            $options = null;
+            if (isset($field->options) && \is_array($field->options)) {
+                $options = [];
+                foreach ($field->options as $option) {
+                    $options[] = [
+                        'key' => $option->id,
+                        'label' => $option->label,
+                    ];
+                }
+            }
+
             if (null === $type) {
                 continue;
             }
@@ -130,6 +141,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
                 $type,
                 $category,
                 $required,
+                $options,
             );
         }
 

@@ -441,7 +441,7 @@ return [
     'this field when' => 'ce champ quand',
     'this button when' => 'ce bouton quand',
     'Go to this page when' => 'Aller à cette page quand',
-    'Submit Form' => 'Soumettre le formulaire',
+    'Submit Form Early' => 'Soumettre le formulaire tôt',
     'Submit this form when' => 'Soumettre ce formulaire quand',
     'any' => 'n’importe lequel',
     'all' => 'tous',

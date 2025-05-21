@@ -34,7 +34,7 @@ export const SubmitForm: React.FC = () => {
       <div>
         <SubmitIcon />
       </div>
-      <Label>{translate('Submit Form')}</Label>
+      <Label>{translate('Submit Form Early')}</Label>
     </SubmitFormWrapper>
   );
 };

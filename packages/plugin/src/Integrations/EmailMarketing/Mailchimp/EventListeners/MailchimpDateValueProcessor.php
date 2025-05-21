@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\EventListeners;
 
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Integrations\EmailMarketing\Mailchimp\MailchimpIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
@@ -45,8 +46,16 @@ class MailchimpDateValueProcessor extends FeatureBundle
             return;
         }
 
-        $value = $event->getValue();
+        $freeformField = $event->getFreeformField();
+
+        $value = $freeformField->getValue();
         if (empty($value)) {
+            return;
+        }
+
+        if ($freeformField instanceof DatetimeField) {
+            $event->setValue($freeformField->getCarbon()->format(self::DATE_FORMAT));
+
             return;
         }
 
@@ -60,12 +69,15 @@ class MailchimpDateValueProcessor extends FeatureBundle
             'Y.m.d',
             'Y/m/d',
             'Y-m-d',
+            'Y m d',
             'd.m.Y',
             'd/m/Y',
             'd-m-Y',
+            'd m Y',
             'm.d.Y',
             'm/d/Y',
             'm-d-Y',
+            'm d Y',
         ];
 
         foreach ($possibleFormats as $format) {

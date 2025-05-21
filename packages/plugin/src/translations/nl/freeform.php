@@ -441,7 +441,7 @@ return [
     'this field when' => 'dit veld wanneer',
     'this button when' => 'deze knop wanneer',
     'Go to this page when' => 'Ga naar deze pagina wanneer',
-    'Submit Form' => 'Formulier verzenden',
+    'Submit Form Early' => 'Formulier vroeg indienen',
     'Submit this form when ' => 'Verzend dit formulier wanneer ',
     'any' => 'elk',
     'all' => 'alles',

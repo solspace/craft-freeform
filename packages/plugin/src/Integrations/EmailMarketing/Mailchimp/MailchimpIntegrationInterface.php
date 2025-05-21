@@ -15,6 +15,8 @@ namespace Solspace\Freeform\Integrations\EmailMarketing\Mailchimp;
 
 interface MailchimpIntegrationInterface
 {
+    public const TYPE_BIRTHDAY = 'birthday';
+
     public function getDataCenter(): string;
 
     public function setDataCenter(string $dataCenter): self;

@@ -8,6 +8,7 @@ import { useDeleteFormModal } from '@ff-client/app/pages/forms/list/modals/hooks
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import { QKGroups } from '@ff-client/queries/form-groups';
+import { useFMFormStatsQuery } from '@ff-client/queries/form-monitor';
 import { QKForms } from '@ff-client/queries/forms';
 import type { FormWithStats } from '@ff-client/types/forms';
 import classes from '@ff-client/utils/classes';
@@ -26,6 +27,7 @@ import {
   useCloneFormMutation,
 } from '../grid.mutations';
 
+import { FMLoading } from './card.loading';
 import { FormMonitorStats } from './card.monitor.stats';
 import {
   CardBody,
@@ -104,6 +106,11 @@ export const Card: React.FC<Props> = ({
   const hasTitleLink = form.links.filter(({ type }) => type === 'title').length;
   const linkList = form.links.filter(({ type }) => type === 'linkList');
   const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
+
+  const { data: formMonitorStats, isLoading: isStatsLoading } =
+    useFMFormStatsQuery(form.id, {
+      enabled: formMonitor?.enabled === true,
+    });
 
   return (
     <CardWrapper
@@ -230,13 +237,20 @@ export const Card: React.FC<Props> = ({
           <FMContainer>
             {formMonitor?.enabled && formMonitorLink && (
               <NavLink to={formMonitorLink.url}>
-                <FormMonitorStats
-                  formMonitor={formMonitor}
-                  align="right"
-                  width="100%"
-                  showLastTest
-                  size="sm"
-                />
+                {isStatsLoading ? (
+                  <FMLoading />
+                ) : (
+                  <FormMonitorStats
+                    formMonitor={{
+                      ...formMonitorStats,
+                      enabled: formMonitor?.enabled,
+                    }}
+                    align="right"
+                    width="100%"
+                    showLastTest
+                    size="sm"
+                  />
+                )}
               </NavLink>
             )}
           </FMContainer>

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FormWithStats } from '@ff-client/types/forms';
+import type { TestStats } from '@ff-client/types/form-monitor';
 import translate from '@ff-client/utils/translations';
 import CheckIcon from '@ff-icons/actions/check.svg';
 import ExclamationIcon from '@ff-icons/actions/exclamation.svg';
@@ -26,22 +26,10 @@ const DEFAULT_PROPS = {
 };
 
 export const getLastTestStatus = (
-  formMonitor: FormWithStats['formMonitor'],
+  stats: TestStats,
   size: StatusSize = DEFAULT_PROPS.size
 ): React.JSX.Element | null => {
-  if (!formMonitor?.enabled) return null;
-
-  const { stats } = formMonitor;
-  if (!stats) {
-    return (
-      <TestStatusIcon $status="pending" $size={size}>
-        <HourglassIcon />
-      </TestStatusIcon>
-    );
-  }
-
-  const { lastTest } = stats;
-  if (!lastTest) {
+  if (!stats?.lastTest) {
     return (
       <TestStatusIcon $status="pending" $size={size}>
         <HourglassIcon />
@@ -67,11 +55,11 @@ export const getLastTestStatus = (
     ),
   };
 
-  return statusMap[lastTest.status as TestStatus] || statusMap.pending;
+  return statusMap[stats.lastTest.status as TestStatus] || statusMap.pending;
 };
 
 export interface FormMonitorStatsProps {
-  formMonitor: FormWithStats['formMonitor'];
+  formMonitor: TestStats & { enabled: boolean };
   align?: StatsAlign;
   width?: string;
   showLastTest?: boolean;
@@ -89,19 +77,9 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     return null;
   }
 
-  const stats = formMonitor.stats;
-  const isPending = !stats || (stats.total || 0) === 0;
+  const isPending =
+    !formMonitor || !formMonitor.percentage || formMonitor.total === 0;
   const isError = formMonitor?.error;
-
-  const success = isPending ? 0 : stats.percentage?.success || 0;
-  const failed = isPending ? 0 : stats.percentage?.failed || 0;
-  const pending = isPending ? 100 : stats.percentage?.pending || 0;
-
-  const progressStyle = {
-    '--success': `${success}%`,
-    '--failed': `${success + failed}%`,
-    '--pending': `${success + failed + pending}%`,
-  } as React.CSSProperties;
 
   if (isError) {
     return (
@@ -109,19 +87,29 @@ export const FormMonitorStats: React.FC<FormMonitorStatsProps> = ({
     );
   }
 
+  const success = isPending ? 0 : formMonitor.percentage?.success || 0;
+  const failed = isPending ? 0 : formMonitor.percentage?.failed || 0;
+  const pending = isPending ? 100 : formMonitor.percentage?.pending || 0;
+
+  const progressStyle = {
+    '--success': `${success}%`,
+    '--failed': `${success + failed}%`,
+    '--pending': `${success + failed + pending}%`,
+  } as React.CSSProperties;
+
   return (
     <StatsChartContainer
       $align={align}
-      style={isError ? { marginTop: '10px' } : undefined}
+      style={isPending ? { marginTop: '10px' } : undefined}
     >
-      {showLastTest && (
+      {showLastTest && formMonitor.lastTest && (
         <LastTestStatus>
           Last Test {getLastTestStatus(formMonitor, size)}
         </LastTestStatus>
       )}
       <LineIndicator $width={width} style={progressStyle} />
       <MonitorStatus>
-        {isPending && !isError
+        {isPending
           ? translate('Uptime: Pending')
           : `${translate('Uptime')}: ${success}%`}
       </MonitorStatus>

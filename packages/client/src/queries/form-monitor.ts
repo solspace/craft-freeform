@@ -38,7 +38,8 @@ export const useFMFormTestsQuery = (
 };
 
 export const useFMFormStatsQuery = (
-  formId: number
+  formId: number,
+  options?: { enabled?: boolean }
 ): UseQueryResult<TestStats, AxiosError> => {
   return useQuery(
     QKFormMonitor.stats(formId),
@@ -47,7 +48,7 @@ export const useFMFormStatsQuery = (
         .get<TestStats>(`/api/form-monitor/forms/${formId}/stats`)
         .then((res) => res.data),
     {
-      enabled: !!formId,
+      enabled: options?.enabled ?? !!formId,
     }
   );
 };

@@ -10,8 +10,6 @@ import type {
   Section,
 } from '@ff-client/types/properties';
 
-import type { TestStats } from './form-monitor';
-
 export type SettingsNamespace = {
   namespaceType: 'settings';
   namespace: string;
@@ -47,13 +45,8 @@ export type Form = {
   settings: SettingCollection;
   ownership?: FormOwnership;
   dateArchived: string | null;
-  formMonitor: {
+  formMonitor?: {
     enabled: boolean;
-    stats?: TestStats;
-    error?: {
-      exception: string;
-      message: string;
-    };
   };
 };
 

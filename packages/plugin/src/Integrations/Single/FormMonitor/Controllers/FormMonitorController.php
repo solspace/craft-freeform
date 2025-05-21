@@ -122,40 +122,45 @@ class FormMonitorController extends BaseApiController
         }
     }
 
-    public function actionStats(): Response
+    public function actionStats(?int $id = null): Response
     {
-        try {
-            $integration = (new Query())
-                ->select(['*'])
-                ->from(IntegrationRecord::TABLE)
-                ->where([
-                    'class' => FormMonitor::class,
-                    'enabled' => true,
-                ])
-                ->one()
-            ;
+        $form = $this->formsService->getFormById($id);
+        $integration = $this->formIntegrationsProvider->getFirstForForm($form, FormMonitor::class);
 
-            if (!$integration) {
-                return $this->asJson([]);
+        $isEnabled = $integration && $integration->isEnabled();
+
+        if ($isEnabled) {
+            try {
+                $client = $this->clientProvider->getAuthorizedClient($integration);
+                $stats = $integration->fetchStats($client, $form);
+
+                return $this->asJson($stats);
+            } catch (\Exception $e) {
+                $isConnectException = $e instanceof ConnectException || $e instanceof ServerException;
+                $message = 'Error';
+
+                if ($isConnectException) {
+                    $message = 'Cannot connect';
+                }
+
+                $this->loggerService
+                    ->getLogger('Form Monitor')
+                    ->error($isConnectException ? 'Cannot connect to the Form Monitor service at this time. Please try again later.' : $e->getMessage())
+                ;
+
+                return $this->asJson([
+                    'enable' => true,
+                    'error' => [
+                        'message' => $message,
+                        'exception' => $e::class,
+                    ],
+                ]);
             }
-
-            $formMonitor = $this->formIntegrationsProvider->getById($integration['id']);
-            if (!$formMonitor instanceof FormMonitor) {
-                return $this->asJson([]);
-            }
-
-            $client = $this->clientProvider->getAuthorizedClient($formMonitor);
-            $stats = $formMonitor->fetchStats($client);
-
-            return $this->asJson($stats);
-        } catch (\Exception $exception) {
-            $this->loggerService
-                ->getLogger('Form Monitor')
-                ->error($exception->getMessage())
-            ;
-
-            return $this->asJson([]);
         }
+
+        return $this->asJson([
+            'enabled' => false,
+        ]);
     }
 
     public function actionEnable(?int $id = null): Response

@@ -27,7 +27,6 @@ export const FMContainer = styled.div`
   flex-shrink: 0;
   width: 30%;
   text-align: right;
-  margin-left: auto;
   margin-top: 6px;
 `;
 

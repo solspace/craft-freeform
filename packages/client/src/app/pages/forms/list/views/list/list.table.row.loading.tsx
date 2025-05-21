@@ -5,6 +5,12 @@ import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
+export const SampleSkeleton: React.FC = () => (
+  <>
+    <Skeleton height={20} width={40} highlightColor="#5372b64f" />
+  </>
+);
+
 export const ListTableRowLoading: React.FC = () => {
   const color = '#dfdfdf';
   const data = Array.from({ length: 10 }, () => ({
@@ -48,10 +54,10 @@ export const ListTableRowLoading: React.FC = () => {
         </ResponsiveContainer>
       </td>
       <td>
-        <Skeleton height={20} width={40} highlightColor="#5372b64f" />
+        <SampleSkeleton />
       </td>
       <td>
-        <Skeleton height={20} width={20} highlightColor="#5372b64f" />
+        <SampleSkeleton />
       </td>
       <td>
         <Skeleton height={20} width={61} />

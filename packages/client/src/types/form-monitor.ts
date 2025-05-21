@@ -33,6 +33,10 @@ export interface TestStats {
     failed: number;
     pending: number;
   };
+  error?: {
+    exception: string;
+    message: string;
+  };
 }
 
 export interface FormTestsResponse {

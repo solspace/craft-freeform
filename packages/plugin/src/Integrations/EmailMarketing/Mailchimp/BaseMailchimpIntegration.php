@@ -29,8 +29,6 @@ abstract class BaseMailchimpIntegration extends EmailMarketingIntegration implem
 {
     use OAuth2Trait;
 
-    public const TYPE_BIRTHDAY = 'birthday';
-
     protected const LOG_CATEGORY = 'Mailchimp';
 
     protected const CATEGORY_CONTACT = 'Contact';

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.10.15.1 - 2025-05-22
+
+### Fixed
+- Fixed a bug where the Mailchimp integration could fail about the Birthday field type on some installs.
+
 ## 5.10.15 - 2025-05-21
 
 ### Added

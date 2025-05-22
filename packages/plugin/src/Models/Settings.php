@@ -53,6 +53,10 @@ class Settings extends Model
     public const CONTEXT_TYPE_SESSION = 'session';
     public const CONTEXT_TYPE_DATABASE = 'database';
 
+    public const CSRF_REFRESH_NONE = 'none';
+    public const CSRF_REFRESH_ONCE = 'once';
+    public const CSRF_REFRESH_ALWAYS = 'always';
+
     public const DEFAULT_AJAX = true;
     public const DEFAULT_FORMATTING_TEMPLATE = 'basic-light/index.twig';
 
@@ -278,6 +282,7 @@ class Settings extends Model
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
+    public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
 
     /**
      * Settings constructor.

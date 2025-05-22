@@ -5,4 +5,5 @@ return [
     'freeform/plugin.css' => 'freeform/resources/plugin-css',
     'freeform/submit' => 'freeform/submit',
     'freeform/validate' => 'freeform/submit/validate',
+    'freeform/tokens' => 'freeform/api/tokens',
 ];

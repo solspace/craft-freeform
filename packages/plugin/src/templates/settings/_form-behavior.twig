@@ -49,6 +49,20 @@
         errors: settings.errors("rememberPageSubmitOrder"),
     }) }}
 
+    {% if (craft.app.config.general.asyncCsrfInputs) %}
+        {{ forms.selectField({
+            label: "CSRF Token Refresh Method"|t('freeform'),
+            instructions: "You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching."|t('freeform'),
+            name: "settings[csrfRefresh]",
+            value: settings.csrfRefresh,
+            errors: settings.errors("csrfRefresh"),
+            options: {
+                "once": "Once Per Page View (recommended)"|t('freeform'),
+                "always": "Always on Each Request"|t('freeform'),
+            },
+        }) }}
+    {% endif %}
+
     <hr>
 
     <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>

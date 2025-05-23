@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 5.10.15.1 - 2025-05-22
+
+### Fixed
+- Fixed a bug where the Mailchimp integration could fail about the Birthday field type on some installs.
+
+## 5.10.15 - 2025-05-21
+
+### Added
+- Added detection and mapping of predefined options to applicable fields in the Pipedrive integration.
+
+### Changed
+- Updated the _Submit Form_ target in the Conditional Rules tab of the form builder to display only on multipage forms. Also renamed it to `Submit Form Early` to clarify what it does.
+
+### Fixed
+- Fixed a bug where not all date formats reliably made it to Mailchimp Date or Birthday field types.
+- Fixed a bug where the submission Submit service API did not always include all submitted values.
+- Fixed a bug with `0` values in predefined options for integration mapping.
+- Fixed a bug where Chart dashboard widgets would sometimes fail to display correctly when there are many forms.
+
 ## 5.10.14 - 2025-05-13
 
 ### Added

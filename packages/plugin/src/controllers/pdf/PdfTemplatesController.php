@@ -125,11 +125,15 @@ class PdfTemplatesController extends BaseController
 
     protected function getNewOrExistingRecord(mixed $id): PdfTemplateRecord
     {
-        $record = PdfTemplateRecord::findOne($id);
-        if (!$record) {
-            $record = new PdfTemplateRecord();
-            $record->name = 'New PDF Template';
+        if (null !== $id && is_numeric($id) && '' !== $id) {
+            $record = PdfTemplateRecord::findOne((int) $id);
+            if (null !== $record) {
+                return $record;
+            }
         }
+
+        $record = new PdfTemplateRecord();
+        $record->name = 'New PDF Template';
 
         return $record;
     }

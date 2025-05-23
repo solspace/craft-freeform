@@ -35,11 +35,6 @@ class EmailOverrides extends FeatureBundle
     public function handleJobPreparation(PrepareSendNotificationEvent $event): void
     {
         $job = $event->getJob();
-        if (Conditional::class === $job->notificationType) {
-            $job->headers = ['X-Form-Monitor' => 'false'];
-
-            return;
-        }
 
         $form = $this->formsService->getFormById($job->formId);
         $isFormMonitorRequest = $this->formMonitorProvider->isRequestFromFormMonitor($form);
@@ -49,6 +44,12 @@ class EmailOverrides extends FeatureBundle
 
         $formMonitor = $this->formMonitorProvider->getFormMonitor($form);
         if (!$formMonitor) {
+            return;
+        }
+
+        if (Conditional::class === $job->notificationType) {
+            $job->headers = ['X-Form-Monitor' => 'false'];
+
             return;
         }
 
@@ -67,10 +68,10 @@ class EmailOverrides extends FeatureBundle
 
         $job->headers = [
             'X-Form-Monitor' => 'true',
-            'X-Form-Monitor-Form-Id' => $form->getId(),
-            'X-Form-Monitor-Submission-Id' => $job->submissionId,
-            'X-Form-Monitor-Request-Id' => $this->formMonitorProvider->getRequestId($form),
-            'X-Form-Monitor-Notification-Type' => $job->notificationType,
+            'X-Form-Monitor-Form-Id' => (string) $form->getId(),
+            'X-Form-Monitor-Submission-Id' => (string) $job->submissionId,
+            'X-Form-Monitor-Request-Id' => (string) $this->formMonitorProvider->getRequestId($form),
+            'X-Form-Monitor-Notification-Type' => (string) $job->notificationType,
         ];
     }
 
@@ -78,14 +79,25 @@ class EmailOverrides extends FeatureBundle
     {
         $message = $event->getMessage();
         $formMonitorHeader = $message->getHeader('X-Form-Monitor');
+
         // If there is no such header - skip this handler
         if (null === $formMonitorHeader) {
             return;
         }
 
+        // Normalize header value to string
+        $headerValue = $this->normalizeHeaderValue($formMonitorHeader);
+
         // If the header is present, but set to `false` => prevent the email from being sent
-        if ('false' === $formMonitorHeader) {
+        if ('false' === $headerValue) {
             $event->isValid = false;
+
+            return;
+        }
+
+        // Only process if this is actually a Form Monitor request
+        if ('true' !== $headerValue) {
+            return;
         }
 
         $to = $message->getTo();
@@ -102,6 +114,15 @@ class EmailOverrides extends FeatureBundle
         $this->setHeader($message, 'X-Form-Monitor-Reply-To', $replyTo);
         $this->setHeader($message, 'X-Form-Monitor-Cc', $cc);
         $this->setHeader($message, 'X-Form-Monitor-Bcc', $bcc);
+    }
+
+    private function normalizeHeaderValue($value): string
+    {
+        if (\is_array($value)) {
+            return (string) reset($value);
+        }
+
+        return (string) $value;
     }
 
     private function setHeader(Message $message, $header, mixed $value): void

@@ -426,14 +426,13 @@ export const StatusIcon = styled.div`
   justify-content: center;
   width: 14px;
   height: 14px;
-  margin-top: -1px;
-  margin-left: -0.1rem;
 
   svg {
     width: 100%;
     height: 100%;
     fill: currentColor;
-    stroke-width: 2;
+    display: block;
+    margin: auto;
   }
 `;
 

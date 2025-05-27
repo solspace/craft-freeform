@@ -129,6 +129,18 @@ class FormMonitor extends APIIntegration
         }
     }
 
+    public function disableMe(Client $client): void
+    {
+        $endpoint = $this->getEndpoint('/me');
+        $client->patch($endpoint);
+    }
+
+    public function deleteMe(Client $client): void
+    {
+        $endpoint = $this->getEndpoint('/me');
+        $client->delete($endpoint);
+    }
+
     public function acknowledgeSubmission(Client $client, Form $form, Submission $submission, string $requestId): void
     {
         $isSuccessful = !$form->hasErrors() && $submission->getId();

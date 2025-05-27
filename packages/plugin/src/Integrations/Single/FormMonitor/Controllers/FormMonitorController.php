@@ -10,10 +10,14 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use Solspace\Freeform\Services\LoggerService;
+use yii\db\Exception;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -27,6 +31,7 @@ class FormMonitorController extends BaseApiController
         private FormIntegrationsProvider $formIntegrationsProvider,
         private IntegrationClientProvider $clientProvider,
         private LoggerService $loggerService,
+        private IntegrationsService $integrationsService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -286,5 +291,68 @@ class FormMonitorController extends BaseApiController
 
             throw $exception;
         }
+    }
+
+    public function actionDisableMe(): Response
+    {
+        try {
+            $formMonitor = $this->getFormMonitor();
+            $client = $this->clientProvider->getAuthorizedClient($formMonitor);
+            $formMonitor->disableMe($client);
+
+            return $this->asJson(['success' => true]);
+        } catch (BadResponseException $exception) {
+            $this->loggerService
+                ->getLogger('Form Monitor')
+                ->error((string) $exception->getResponse()->getBody())
+            ;
+
+            throw $exception;
+        }
+    }
+
+    public function actionDeleteMe(): Response
+    {
+        try {
+            $formMonitor = $this->getFormMonitor();
+            $client = $this->clientProvider->getAuthorizedClient($formMonitor);
+            $formMonitor->deleteMe($client);
+
+            return $this->asJson(['success' => true]);
+        } catch (BadResponseException $exception) {
+            $this->loggerService
+                ->getLogger('Form Monitor')
+                ->error((string) $exception->getResponse()->getBody())
+            ;
+
+            throw $exception;
+        }
+    }
+
+    /**
+     * @throws IntegrationNotFoundException
+     * @throws Exception
+     * @throws NotFoundHttpException
+     */
+    private function getFormMonitor(): IntegrationInterface
+    {
+        $record = IntegrationRecord::find()
+            ->where(['class' => FormMonitor::class])
+            ->one()
+        ;
+
+        if (!$record) {
+            throw new NotFoundHttpException('Form Monitor integration not found');
+        }
+
+        $record->enabled = false;
+        $record->save();
+
+        $model = $this->integrationsService->getById($record->id);
+        if (!$model) {
+            throw new NotFoundHttpException('Form Monitor integration not found');
+        }
+
+        return $model->getIntegrationObject();
     }
 }

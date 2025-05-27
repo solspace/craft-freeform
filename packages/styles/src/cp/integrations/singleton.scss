@@ -114,5 +114,15 @@
         height: 30px;
       }
     }
+
+    .fm-button {
+      background-color: var(--gray-700);
+      color: white;
+      padding: var(--s);
+
+      &:hover {
+        background-color: var(--red-500);
+      }
+    }
   }
 }

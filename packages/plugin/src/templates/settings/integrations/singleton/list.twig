@@ -77,6 +77,12 @@
 
                         {% endfor %}
                     </div>
+
+                    {% if integration and integration.enabled and type.class == 'Solspace\\Freeform\\Integrations\\Single\\FormMonitor\\FormMonitor' %}
+                        {% include "freeform/settings/integrations/_components/monitor-actions" with { 
+                            integration: integration,
+                        } %}
+                    {% endif %}
                 </div>
 
             {% endfor %}

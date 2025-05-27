@@ -116,12 +116,12 @@
     }
 
     .fm-button {
-      background-color: var(--gray-700);
+      background-color: var(--secondary-button-bg);
       color: white;
       padding: var(--s);
 
       &:hover {
-        background-color: var(--red-500);
+        background-color: var(--primary-button-bg);
       }
     }
   }

@@ -946,6 +946,7 @@ class DiagnosticsService extends BaseService
         }
 
         return match ($this->getSummary()->statistics->settings->csrfRefresh) {
+            Settings::CSRF_REFRESH_NONE => Freeform::t('Never'),
             Settings::CSRF_REFRESH_ONCE => Freeform::t('Once Per Page View'),
             Settings::CSRF_REFRESH_ALWAYS => Freeform::t('Always on Each Request'),
             default => '',

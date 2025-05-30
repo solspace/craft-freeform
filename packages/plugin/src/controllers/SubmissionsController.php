@@ -148,8 +148,6 @@ class SubmissionsController extends BaseController
             $statuses[$statusId] = $status;
         }
 
-        $fieldRenderer = [$submissionsService, 'renderSubmissionField'];
-
         $tabs = array_reduce(
             array_map(
                 fn (Page $page) => [
@@ -176,7 +174,6 @@ class SubmissionsController extends BaseController
             'statuses' => $statuses,
             'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
-            'fieldRenderer' => $fieldRenderer,
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
             'isCraft5' => version_compare(\Craft::$app->version, '5.0', '>='),

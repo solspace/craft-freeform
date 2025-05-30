@@ -11,7 +11,6 @@ class FreeformTwigFilters extends AbstractExtension
     {
         return [
             new TwigFilter('truncater', [$this, 'truncateFilter']),
-            new TwigFilter('call', [$this, 'callUserFunction']),
             new TwigFilter('freeformRegexReplace', [$this, 'regexReplace']),
         ];
     }
@@ -23,15 +22,6 @@ class FreeformTwigFilters extends AbstractExtension
         }
 
         return substr($input, 0, $length - \strlen($ellipsis)).'...';
-    }
-
-    public function callUserFunction(callable $callable, ...$arguments): mixed
-    {
-        if (!\is_callable($callable)) {
-            throw new \Exception('An un-callable function was passed to the "call" filter');
-        }
-
-        return \call_user_func($callable, ...$arguments);
     }
 
     public function regexReplace($input, $pattern, $replacement = ''): string

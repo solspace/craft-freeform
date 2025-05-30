@@ -69,7 +69,7 @@
 		{% for page in layout.pages %}
 			<div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
 				{% for row in page.layout.allRows %}
-					{{ rowMacro.render(row, submission, fieldRenderer) }}
+					{{ rowMacro.render(row, submission) }}
 				{% endfor %}
 			</div>
 		{% endfor %}

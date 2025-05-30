@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Services\Pro;
 use Carbon\Carbon;
 use craft\helpers\Db;
 use craft\web\View;
+use Solspace\Freeform\Bundles\Digest\Providers\DigestLoggerProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -23,10 +24,16 @@ class DigestService extends Component
     public const FREQUENCY_WEEKLY_FRIDAYS = 5;
     public const FREQUENCY_WEEKLY_SATURDAYS = 6;
 
+    public const LOCK_KEY_DIGEST = 'freeform-digest-lock-key';
     public const CACHE_KEY_DIGEST = 'freeform-digest-cache-key';
     public const CACHE_TTL_DIGEST = 60 * 60 * 3; // every 3h
 
     public const TEMPLATE_PATH = '_templates/email/digest.twig';
+
+    public function __construct(private DigestLoggerProvider $loggerProvider, $config = [])
+    {
+        parent::__construct($config);
+    }
 
     public function triggerDigest(Carbon $refDate): void
     {
@@ -44,21 +51,37 @@ class DigestService extends Component
 
         $devRecipients = $settingsService->getDigestRecipients();
         $devFrequency = $settingsService->getDigestFrequency();
-        $this->parseDigest(
-            NotificationLogRecord::TYPE_DIGEST_DEV,
-            $devRecipients,
-            $devFrequency,
-            $refDate
-        );
+
+        if ($devRecipients->count()) {
+            $this->loggerProvider->getLogger()->debug('Processing dev', [
+                'recipients' => $devRecipients->emailsToArray(),
+                'frequency' => $devFrequency,
+            ]);
+
+            $this->parseDigest(
+                NotificationLogRecord::TYPE_DIGEST_DEV,
+                $devRecipients,
+                $devFrequency,
+                $refDate
+            );
+        }
 
         $clientRecipients = $settingsService->getClientDigestRecipients();
         $clientFrequency = $settingsService->getClientDigestFrequency();
-        $this->parseDigest(
-            NotificationLogRecord::TYPE_DIGEST_CLIENT,
-            $clientRecipients,
-            $clientFrequency,
-            $refDate
-        );
+
+        if ($clientRecipients->count()) {
+            $this->loggerProvider->getLogger()->debug('Processing client', [
+                'recipients' => $clientRecipients->emailsToArray(),
+                'frequency' => $clientFrequency,
+            ]);
+
+            $this->parseDigest(
+                NotificationLogRecord::TYPE_DIGEST_CLIENT,
+                $clientRecipients,
+                $clientFrequency,
+                $refDate
+            );
+        }
     }
 
     public function sendDigest(RecipientCollection $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd): void
@@ -90,6 +113,8 @@ class DigestService extends Component
 
         \Craft::$app->mailer->send($message);
         \Craft::$app->view->setTemplateMode($templateMode);
+
+        $this->loggerProvider->getLogger()->info('Sent digest notification');
     }
 
     private function parseDigest(string $type, RecipientCollection $recipients, int $frequency, Carbon $refDate): void

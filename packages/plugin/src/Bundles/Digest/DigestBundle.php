@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Digest;
 use Carbon\Carbon;
 use craft\helpers\Queue;
 use craft\web\Application;
+use Solspace\Freeform\Bundles\Digest\Providers\DigestLoggerProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Jobs\SendDigestJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -14,7 +15,7 @@ use yii\base\Event;
 
 class DigestBundle extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private DigestLoggerProvider $loggerProvider)
     {
         if (!$this->plugin()->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
             return;
@@ -33,7 +34,7 @@ class DigestBundle extends FeatureBundle
             return;
         }
 
-        if (Freeform::isLocked(DigestService::CACHE_KEY_DIGEST, DigestService::CACHE_TTL_DIGEST)) {
+        if (Freeform::isLockedWithGuard(DigestService::CACHE_KEY_DIGEST, DigestService::LOCK_KEY_DIGEST, DigestService::CACHE_TTL_DIGEST)) {
             return;
         }
 
@@ -45,6 +46,8 @@ class DigestBundle extends FeatureBundle
         if (!$devRecipients->count() && !$clientRecipients->count()) {
             return;
         }
+
+        $this->loggerProvider->getLogger()->info('Adding job to queue');
 
         $job = new SendDigestJob(new Carbon('now'));
         Queue::push($job, $settings->getQueuePriority());

@@ -205,6 +205,11 @@ class Freeform extends Plugin
         return self::getInstance()->lock->isLocked($key, $seconds);
     }
 
+    public static function isLockedWithGuard(string $cacheKey, string $mutexKey, int $seconds): bool
+    {
+        return self::getInstance()->lock->isLockedWithGuard($cacheKey, $mutexKey, $seconds);
+    }
+
     public static function editions(): array
     {
         return [

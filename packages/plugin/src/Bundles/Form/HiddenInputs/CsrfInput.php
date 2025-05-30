@@ -53,7 +53,7 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
-        $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_ONCE;
+        $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
 
         $event
             ->getForm()

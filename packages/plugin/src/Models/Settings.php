@@ -282,7 +282,7 @@ class Settings extends Model
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
-    public string $csrfRefresh = self::CSRF_REFRESH_ONCE;
+    public string $csrfRefresh = self::CSRF_REFRESH_NONE;
 
     /**
      * Settings constructor.

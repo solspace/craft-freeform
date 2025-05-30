@@ -1,4 +1,4 @@
-{% macro render(row, submission, fieldRenderer) %}
+{% macro render(row, submission) %}
     {% import "_includes/forms" as forms %}
 
     <div class="fields-row">
@@ -14,7 +14,7 @@
                 },
             }) }}
 
-                {{ fieldRenderer|call(field, submission) }}
+                {{ craft.freeformSubmissions.renderSubmissionField(field, submission) }}
 
             {{ field.renderContainerClosingTag }}
         {% endfor %}

@@ -105,6 +105,7 @@ use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Twig\Filters\ImplementsClassFilter;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
+use Solspace\Freeform\Variables\FreeformSubmissionsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
@@ -481,6 +482,12 @@ class Freeform extends Plugin
                 $event->sender->set('freeform', FreeformVariable::class);
                 $event->sender->set('freeformServices', FreeformServicesVariable::class);
                 $event->sender->set('freeformBanners', FreeformBannersVariable::class);
+
+                if ($event->sender instanceof CraftVariable) {
+                    if ($event->sender->app->request->isCpRequest) {
+                        $event->sender->set('freeformSubmissions', FreeformSubmissionsVariable::class);
+                    }
+                }
             }
         );
 

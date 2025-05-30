@@ -49,11 +49,14 @@ class CsrfInput extends FeatureBundle
         $isCSRFEnabled = $this->isCSRFEnabled();
         $isAsyncEnabled = $this->isAsyncCSRFEnabled();
 
-        if (!$isCSRFEnabled || !$isAsyncEnabled) {
+        if (!$isCSRFEnabled) {
             return;
         }
 
         $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
+        if (!$isAsyncEnabled || Settings::CSRF_REFRESH_NONE !== $refresh) {
+            return;
+        }
 
         $event
             ->getForm()

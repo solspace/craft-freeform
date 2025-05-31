@@ -35,12 +35,14 @@ class CsrfInput extends FeatureBundle
             return;
         }
 
-        if ($isAsyncCSRFEnabled && $isFormAJAX) {
-            return;
+        if ($isAsyncCSRFEnabled) {
+            $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
+            if ($isFormAJAX && Settings::CSRF_REFRESH_NONE !== $refresh) {
+                return;
+            }
         }
 
         $this->setNoCacheHeaders();
-
         $event->addChunk(Html::csrfInput());
     }
 
@@ -54,7 +56,7 @@ class CsrfInput extends FeatureBundle
         }
 
         $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
-        if (!$isAsyncEnabled || Settings::CSRF_REFRESH_NONE !== $refresh) {
+        if (!$isAsyncEnabled || Settings::CSRF_REFRESH_NONE === $refresh) {
             return;
         }
 

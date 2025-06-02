@@ -40,7 +40,7 @@ export const EditNotificationModal: React.FC<
   const { formId } = useParams();
 
   const id = data?.id;
-  const type = data?.type;
+  // const type = data?.type;
 
   const queryClient = useQueryClient();
   const { data: template, isLoading } = useQueryNotificationTemplate(id);
@@ -87,7 +87,7 @@ export const EditNotificationModal: React.FC<
             loading={isLoading}
             spinner
           >
-            {template?.name || 'New Template'} ({type})
+            {template?.name || 'New Template'}
           </LoadingText>
         </h1>
       </ModalHeader>

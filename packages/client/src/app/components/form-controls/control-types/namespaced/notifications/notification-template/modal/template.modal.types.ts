@@ -7,6 +7,7 @@ import type {
 } from '@ff-client/types/properties';
 import axios from 'axios';
 
+import { AssetsInput } from './inputs/assets';
 import { BooleanInput } from './inputs/boolean';
 import { DropdownInput } from './inputs/dropdown';
 import { HtmlBodyInput } from './inputs/html-body/html-body';
@@ -133,6 +134,15 @@ export const configuration = [
           handle: 'includeAttachments',
           instructions:
             'Whether or not to include attachments in the email notification.',
+        },
+      ],
+      [
+        {
+          type: AssetsInput,
+          label: 'Predefined Assets',
+          handle: 'presetAssets',
+          instructions:
+            'The assets that will be included in the email notification. This is a list of asset IDs. You can use the asset picker to select them.',
         },
       ],
     ],

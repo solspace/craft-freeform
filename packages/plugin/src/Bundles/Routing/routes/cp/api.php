@@ -86,4 +86,7 @@ return [
     'freeform/api/templates/demo' => 'freeform/api/templates/demo',
     'freeform/api/templates/notifications/suggestions' => 'freeform/api/templates/notifications',
     'freeform/api/templates/wrappers' => 'freeform/api/templates/wrappers',
+
+    // ASSETS
+    'freeform/api/assets' => 'freeform/api/assets',
 ];

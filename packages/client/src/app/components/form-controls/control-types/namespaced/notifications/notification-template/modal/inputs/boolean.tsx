@@ -1,3 +1,4 @@
+import type { FC } from 'react';
 import React from 'react';
 import { ControlBlock } from '@components/form-controls/control.block';
 import {
@@ -12,7 +13,7 @@ import translate from '@ff-client/utils/translations';
 
 import type { InputControl } from '../template.modal.types';
 
-export const BooleanInput: React.FC<InputControl> = (props) => {
+export const BooleanInput: FC<InputControl> = (props) => {
   const { value, label, handle, instructions, onChange } = props;
 
   return (

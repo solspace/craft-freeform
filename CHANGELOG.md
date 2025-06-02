@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.10.16.1 - 2025-06-02
+
+### Fixed
+- Fixed an issue with checking the lock service.
+
 ## 5.10.16 - 2025-05-30
 
 ### Fixed

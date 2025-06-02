@@ -24,7 +24,7 @@ class LockService
 
         $now = time();
 
-        $lastRun = $cache->get($cacheKey);
+        $lastRun = (int) $cache->get($cacheKey);
 
         // Bail out if it's already locked / too soon
         if ($lastRun && ($now - $lastRun) < $interval) {
@@ -34,8 +34,7 @@ class LockService
         // Try to acquire mutex to double-check under safe conditions
         if ($mutex->acquire($lockKey, 0)) {
             try {
-                $lastRun = $cache->get($cacheKey);
-
+                $lastRun = (int) $cache->get($cacheKey);
                 if ($lastRun && ($now - $lastRun) < $interval) {
                     return true;
                 }

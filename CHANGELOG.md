@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.10.16.1 - 2025-06-02
+
+### Fixed
+- Fixed an issue with checking the lock service.
+
+## 5.10.16 - 2025-05-30
+
+### Fixed
+- Fixed a bug that occurred when creating new PDF templates using PostgreSQL.
+- Fixed a race condition issue that caused Digest email notifications to sometimes send multiple duplicates. Added debug and info logging as well.
+
+### Security
+- Fixed a potential security vulnerability with submission titles.
+
 ## 5.10.15.1 - 2025-05-22
 
 ### Fixed

@@ -106,6 +106,7 @@ use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Twig\Filters\ImplementsClassFilter;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
+use Solspace\Freeform\Variables\FreeformSubmissionsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
@@ -204,6 +205,11 @@ class Freeform extends Plugin
     public static function isLocked(string $key, int $seconds): bool
     {
         return self::getInstance()->lock->isLocked($key, $seconds);
+    }
+
+    public static function isLockedWithGuard(string $cacheKey, string $mutexKey, int $seconds): bool
+    {
+        return self::getInstance()->lock->isLockedWithGuard($cacheKey, $mutexKey, $seconds);
     }
 
     public static function editions(): array
@@ -479,6 +485,12 @@ class Freeform extends Plugin
                 $event->sender->set('freeform', FreeformVariable::class);
                 $event->sender->set('freeformServices', FreeformServicesVariable::class);
                 $event->sender->set('freeformBanners', FreeformBannersVariable::class);
+
+                if ($event->sender instanceof CraftVariable) {
+                    if ($event->sender->app->request->isCpRequest) {
+                        $event->sender->set('freeformSubmissions', FreeformSubmissionsVariable::class);
+                    }
+                }
             }
         );
 

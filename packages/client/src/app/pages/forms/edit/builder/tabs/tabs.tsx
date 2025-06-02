@@ -54,12 +54,12 @@ export const Tabs: React.FC = () => {
     <TabWrapper>
       <Breadcrumb
         id="form-name"
-        label={form.name || 'New Form'}
+        label={form.name || 'Create a new Form'}
         url={`/forms/${form.id}`}
       />
 
       <Heading>
-        <FormName>{formName || translate('New Form')}</FormName>
+        <FormName>{formName || translate('Create a new Form')}</FormName>
       </Heading>
 
       <TabsWrapper className="main-tabs">

@@ -81,6 +81,7 @@ return [
     'Rich Text' => 'Rijke tekst',
     'Invisible' => 'Onzichtbaar',
     'Stripe Payment' => 'Stripe-betaling',
+    "You don't have any forms yet. Create your first form now..." => 'Je hebt nog geen formulieren. Maak nu je eerste formulier aan...',
 
     // Form Builder // Layout
     'Layout' => 'Indeling',
@@ -750,6 +751,9 @@ return [
     'Notification saved.' => 'Melding opgeslagen.',
     'Notification not saved.' => 'Melding niet opgeslagen.',
     'Are you sure you want to delete this notification?' => 'Weet u zeker dat u deze melding wilt verwijderen?',
+    'No database-based email notification templates exist yet.' => 'Er bestaan nog geen databasegebaseerde e-mailnotificatiesjablonen.',
+    'No file-based email notification templates exist yet.' => 'Er bestaan nog geen bestandsgebaseerde e-mailnotificatiesjablonen.',
+    'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Om nieuwe notificatiesjabloonbestanden toe te voegen, moet je eerst <a href="{link}">het pad naar de map instellen in de instellingen</a>.',
 
     // Import / Export
     'Import / Export' => 'Importeren/Exporteren',
@@ -817,6 +821,7 @@ return [
     'Email Subject' => 'E-mailonderwerp',
     'Email Message' => 'E-mailbericht',
     'The text content of the email notification.' => 'De tekstinhoud van de e-mailmelding.',
+    'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade naar de Pro-editie van Freeform om toegang te krijgen tot exportmeldingen.',
 
     // Import / Export // Freeform Data
     'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
@@ -951,6 +956,7 @@ return [
     'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.' => 'Je kunt bepalen hoe CSRF-tokens worden vernieuwd door te kiezen tussen eenmaal per paginabezoek (aanbevolen) of bij elk AJAX-verzoek. Dit helpt bij een veilige, automatische afhandeling van tokens, zelfs bij het gebruik van pagina-caching.',
     'Once Per Page View (recommended)' => 'Eén keer per paginabezoek (aanbevolen)',
     'Always on Each Request' => 'Bij elk verzoek',
+    'Never' => 'Nooit',
     'Form Processing' => 'Formulierverwerking',
     'Use Queue for Email Notifications' => 'Gebruik wachtrij voor e-mailmeldingen',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Gebruik het wachtrijsysteem van Craft om e-mails te activeren. Als u dit inschakelt, wordt de verwerking van inzendingen voor uw gebruikers versneld.',
@@ -1030,6 +1036,7 @@ return [
     'Rules on Submit Form' => 'Regels voor het indienen van een formulier',
     'Integrations Tab' => 'Integraties Tab',
     'Settings Tab' => 'Tabblad Instellingen',
+    'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade naar de Freeform Pro-editie om toegang te krijgen tot de functie Beperkte gebruikers.',
 
     // Settings // Template Manager
     'Template Manager' => 'Sjabloonbeheerder',
@@ -1037,6 +1044,7 @@ return [
     'Directory Path' => 'Pad naar map',
     'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.' => 'Geef een relatief pad op naar de map Craft Templates waar de map met aangepaste opmaaksjablonen zich bevindt. Als u de directory nog niet heeft aangemaakt, doe dat dan eerst voordat u deze instelling invult. Hierdoor kunt u Twig-sjabloonbestanden gebruiken voor uw formulieropmaak en kan Freeform deze bestanden lokaliseren bij het toewijzen aan een formulier.',
     'Add Sample' => 'Voorbeeld toevoegen',
+    'Clone a Sample Template' => 'Een voorbeeldsjabloon klonen',
     'Email Notification Templates' => 'Sjablonen voor e-mailmeldingen',
     'Template Storage Type' => 'Sjabloonopslagtype',
     'File & Database' => 'Bestand en database',
@@ -1184,6 +1192,7 @@ return [
     'Email Log' => 'E-maillogboek',
     'Clear' => 'Wissen',
     'Are you sure you want to clear this log?' => 'Weet u zeker dat u dit logboek wilt wissen?',
+    'Page {current} of {total}' => 'Pagina {current} van {total}',
     'Everything appears to be okay right now! No errors were found.' => 'Alles lijkt op dit moment in orde te zijn! Er zijn geen fouten gevonden.',
     'No log items were found.' => 'Er zijn geen logitems gevonden.',
     'Level' => 'Niveau',

@@ -81,6 +81,7 @@ return [
     'Rich Text' => 'Texte enrichi',
     'Invisible' => 'Invisible',
     'Stripe Payment' => 'Paiement Stripe',
+    "You don't have any forms yet. Create your first form now..." => 'Vous n’avez pas encore de formulaires. Créez votre premier formulaire maintenant...',
 
     // Form Builder // Layout
     'Layout' => 'Mise en page',
@@ -750,6 +751,9 @@ return [
     'Notification saved.' => 'Notification enregistrée.',
     'Notification not saved.' => 'Notification non enregistrée.',
     'Are you sure you want to delete this notification?' => 'Êtes-vous sûr de vouloir supprimer cette notification ?',
+    'No database-based email notification templates exist yet.' => 'Aucun modèle de notification par e-mail basé sur la base de données n’existe pour le moment.',
+    'No file-based email notification templates exist yet.' => 'Aucun modèle de notification par e-mail basé sur un fichier n’existe pour le moment.',
+    'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Pour ajouter de nouveaux fichiers de modèle de notification, vous devez d’abord <a href="{link}">définir le chemin du répertoire dans les paramètres</a>.',
 
     // Import / Export
     'Import / Export' => 'Importer / Exporter',
@@ -817,6 +821,7 @@ return [
     'Email Subject' => 'Sujet de l’e-mail',
     'Email Message' => 'Message de l’e-mail',
     'The text content of the email notification.' => 'Le contenu texte de la notification par e-mail.',
+    'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Passez à l’édition Pro de Freeform pour accéder aux notifications d’exportation.',
 
     // Import / Export // Freeform Data
     'Export Freeform Data (beta)' => 'Exporter des données Freeform (beta)',
@@ -951,6 +956,7 @@ return [
     'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.' => 'Vous pouvez contrôler la façon dont les jetons CSRF sont rafraîchis en choisissant entre un rafraîchissement à chaque affichage de page (recommandé) ou à chaque requête AJAX. Cela permet une gestion automatique et sécurisée des jetons, même avec la mise en cache des pages.',
     'Once Per Page View (recommended)' => 'Une fois par affichage de page (recommandé)',
     'Always on Each Request' => 'À chaque requête',
+    'Never' => 'Jamais',
     'Form Processing' => 'Traitement du formulaire',
     'Use Queue for Email Notifications' => 'Utiliser la file d’attente pour les notifications par e-mail',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => "Utiliser le système de file d'attente de Craft pour déclencher les e-mails. L'activation de cette option accélérera le traitement des contributions pour vos utilisateurs.",
@@ -1030,6 +1036,7 @@ return [
     'Rules on Submit Form' => 'Règles sur la contribution du formulaire',
     'Integrations Tab' => 'Onglet Intégrations',
     'Settings Tab' => 'Onglet Paramètres',
+    'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Passez à l’édition Freeform Pro pour accéder à la fonctionnalité Utilisateurs limités.',
 
     // Settings // Template Manager
     'Template Manager' => 'Gestionnaire de modèles',
@@ -1037,6 +1044,7 @@ return [
     'Directory Path' => 'Chemin du répertoire',
     'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.' => 'Fournissez un chemin relatif vers le dossier des modèles Craft où se trouve votre répertoire de modèles de formatage personnalisés. Si vous n’avez pas encore créé le répertoire, veuillez le faire avant de remplir ce paramètre. Cela vous permet d’utiliser des fichiers de modèle Twig pour le formatage de vos formulaires et permet à Freeform de localiser ces fichiers lors de l’attribution à un formulaire.',
     'Add Sample' => 'Ajouter un exemple',
+    'Clone a Sample Template' => 'Cloner un modèle d’exemple',
     'Email Notification Templates' => 'Modèles de notification par e-mail',
     'Template Storage Type' => 'Type de stockage des modèles',
     'File & Database' => 'Fichier & Base de données',
@@ -1184,6 +1192,7 @@ return [
     'Email Log' => 'Journal d’e-mail',
     'Clear' => 'Supprimer',
     'Are you sure you want to clear this log?' => 'Êtes-vous sûr de vouloir effacer ce journal?',
+    'Page {current} of {total}' => 'Page {current} sur {total}',
     'Everything appears to be okay right now! No errors were found.' => 'Tout semble bien se passer pour le moment ! Aucune erreur n’a été trouvée.',
     'No log items were found.' => 'Aucun élément de journal n’a été trouvé.',
     'Level' => 'Niveau',

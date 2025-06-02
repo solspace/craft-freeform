@@ -81,6 +81,7 @@ return [
     'Rich Text' => 'Rich-Text',
     'Invisible' => 'Unsichtbar',
     'Stripe Payment' => 'Stripe-Zahlung',
+    "You don't have any forms yet. Create your first form now..." => 'Sie haben noch keine Formulare. Erstellen Sie jetzt Ihr erstes Formular...',
 
     // Form Builder // Layout
     'Layout' => 'Layout',
@@ -750,6 +751,9 @@ return [
     'Notification saved.' => 'Benachrichtigung gespeichert.',
     'Notification not saved.' => 'Benachrichtigung nicht gespeichert.',
     'Are you sure you want to delete this notification?' => 'Sind Sie sicher, dass Sie diese Benachrichtigung löschen möchten?',
+    'No database-based email notification templates exist yet.' => 'Es existieren noch keine datenbankbasierten E-Mail-Benachrichtigungsvorlagen.',
+    'No file-based email notification templates exist yet.' => 'Es existieren noch keine dateibasierten E-Mail-Benachrichtigungsvorlagen.',
+    'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Um neue Benachrichtigungsvorlagen hinzuzufügen, müssen Sie zunächst <a href="{link}">den Verzeichnispfad in den Einstellungen festlegen</a>.',
 
     // Import / Export
     'Import / Export' => 'Import / Export',
@@ -817,6 +821,7 @@ return [
     'Email Subject' => 'E-Mail-Betreff',
     'Email Message' => 'E-Mail-Nachricht',
     'The text content of the email notification.' => 'Der Textinhalt der E-Mail-Benachrichtigung.',
+    'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade auf die Pro-Edition von Freeform, um auf Exportbenachrichtigungen zuzugreifen.',
 
     // Import / Export // Freeform Data
     'Export Freeform Data (beta)' => 'Freeform-Daten exportieren (Beta)',
@@ -951,6 +956,7 @@ return [
     'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.' => 'Sie können steuern, wie CSRF-Tokens aktualisiert werden - entweder einmal pro Seitenansicht (empfohlen) oder bei jeder AJAX-Anfrage. Dies sorgt für eine sichere, automatische Handhabung von Tokens, auch bei Verwendung von Seiten-Caching.',
     'Once Per Page View (recommended)' => 'Einmal pro Seitenansicht (empfohlen)',
     'Always on Each Request' => 'Bei jeder Anfrage',
+    'Never' => 'Nie',
     'Form Processing' => 'Formularverarbeitung',
     'Use Queue for Email Notifications' => 'Warteschlange für E-Mail-Benachrichtigungen verwenden',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Verwenden Sie das Warteschlangensystem von Craft, um E-Mails auszulösen. Das Aktivieren dieser Option beschleunigt die Formularverarbeitung für Ihre Benutzer.',
@@ -999,7 +1005,7 @@ return [
     // Settings // Limited Users
     'Limited Users' => 'Eingeschränkte Benutzer',
     'No groups exist yet' => 'Es existieren noch keine Gruppen',
-    'Click on the "New Group" button to set up your first Limited User permission group.' => 'Klicken Sie auf die Schaltfläche "Neue Gruppe", um Ihre erste Berechtigungsgruppe für eingeschränkte Benutzer einzurichten.',
+    'Click on the "New Group" button to set up your first Limited User permission group.' => 'Klicken Sie auf die Schaltfläche "Neue Gruppe", um Ihre erste Berechtigungsgruppe für Eingeschränkte Benutzer einzurichten.',
     'New Group' => 'Neue Gruppe',
     'Are you sure you want to delete this?' => 'Sind Sie sicher, dass Sie dies löschen möchten?',
     'Permission saved successfully.' => 'Berechtigung erfolgreich gespeichert.',
@@ -1030,6 +1036,7 @@ return [
     'Rules on Submit Form' => 'Regeln für Formularabsendung',
     'Integrations Tab' => 'Integrationen-Tab',
     'Settings Tab' => 'Einstellungen-Tab',
+    'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade auf die Freeform Pro Edition, um auf die Funktion Eingeschränkte Benutzer zuzugreifen.',
 
     // Settings // Template Manager
     'Template Manager' => 'Vorlagen-Manager',
@@ -1037,6 +1044,7 @@ return [
     'Directory Path' => 'Verzeichnispfad',
     'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.' => 'Geben Sie einen relativen Pfad zum Craft-Vorlagenordner an, in dem sich Ihr benutzerdefiniertes Formatierungsvorlagenverzeichnis befindet. Wenn Sie das Verzeichnis noch nicht erstellt haben, tun Sie dies bitte, bevor Sie diese Einstellung ausfüllen. Dies ermöglicht die Verwendung von Twig-Vorlagendateien für Ihre Formularformatierung und erlaubt es Freeform, diese Dateien beim Zuweisen zu einem Formular zu finden.',
     'Add Sample' => 'Beispiel hinzufügen',
+    'Clone a Sample Template' => 'Eine Beispielvorlage klonen',
     'Email Notification Templates' => 'E-Mail-Benachrichtigungsvorlagen',
     'Template Storage Type' => 'Vorlagenspeicher-Typ',
     'File & Database' => 'Datei & Datenbank',
@@ -1184,6 +1192,7 @@ return [
     'Email Log' => 'E-Mail-Protokoll',
     'Clear' => 'Löschen',
     'Are you sure you want to clear this log?' => 'Möchten Sie dieses Protokoll wirklich löschen?',
+    'Page {current} of {total}' => 'Seite {current} von {total}',
     'Everything appears to be okay right now! No errors were found.' => 'Alles scheint in Ordnung zu sein! Es wurden keine Fehler gefunden.',
     'No log items were found.' => 'Es wurden keine Protokollelemente gefunden.',
     'Level' => 'Ebene',

@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
 import './form.persistence';
+import './form-monitor.persistence';
 
 import type {
   FormErrors,

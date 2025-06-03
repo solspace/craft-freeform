@@ -4,7 +4,6 @@ import { hide, show } from './operations/dropdown';
 
 export const registerFormTokens = (tinymce: TinyMCE): void => {
   // Register the plugin
-
   tinymce.PluginManager.add('freeform-tokens', (editor) => {
     // Listen for '@' key press
     editor.on('keydown', (e) => {

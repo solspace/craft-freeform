@@ -6,6 +6,8 @@ import translate from '@ff-client/utils/translations';
 import type { Editor } from 'tinymce';
 
 import { Category } from './components/category';
+import { useArrowNavigation } from './listeners/use-arrows';
+import { useKeyboard } from './listeners/use-keyboard';
 import { useFilteredSuggestions } from './operations/filter';
 import { insertToken } from './operations/insert';
 import { usePosition } from './operations/position';
@@ -48,83 +50,18 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
   }, [suggestions]);
 
   useClickOutside({ isEnabled: true, callback: close, refObject: ref });
-
-  useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
-    const keyDown = (event: KeyboardEvent): void | boolean => {
-      switch (event.key) {
-        case 'Escape':
-          event.preventDefault();
-          close();
-
-          break;
-
-        case 'Backspace':
-          setFilter((prev) => (prev.length > 0 ? prev.slice(0, -1) : ''));
-
-          break;
-
-        case 'ArrowRight':
-        case 'ArrowLeft':
-          event.preventDefault();
-          close();
-
-          break;
-
-        case 'ArrowDown':
-          event.preventDefault();
-          if (index < itemCountRef.current - 1) {
-            setIndex((prev) =>
-              prev < itemCountRef.current ? prev + 1 : itemCountRef.current - 1
-            );
-          }
-
-          break;
-
-        case 'ArrowUp':
-          event.preventDefault();
-          if (index > 0) {
-            setIndex((prev) => (prev > 0 ? prev - 1 : 0));
-          }
-
-          break;
-
-        case 'Enter':
-          event.preventDefault();
-          event.stopPropagation();
-          event.stopImmediatePropagation();
-
-          if (index > -1) {
-            const item = suggestions
-              .flatMap((category) => category.items)
-              .find((item) => item.active);
-
-            if (item) {
-              insert(item, filter);
-            }
-          }
-          setFilter('');
-          close();
-
-          return false;
-
-        default:
-          if (event.key.length === 1) {
-            setFilter((prev) => prev + event.key);
-          }
-          break;
-      }
-    };
-
-    editor.on('keydown', keyDown, true);
-
-    return () => {
-      editor.off('keydown', keyDown);
-    };
-  }, [index, close, editor, suggestions]);
+  useKeyboard({ editor, setFilter, close });
+  useArrowNavigation({
+    editor,
+    index,
+    filter,
+    setIndex,
+    setFilter,
+    itemCountRef,
+    suggestions,
+    insert,
+    close,
+  });
 
   const onInsert = useCallback(
     (item: Suggestion) => {

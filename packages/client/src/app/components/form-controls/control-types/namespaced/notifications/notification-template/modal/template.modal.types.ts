@@ -44,6 +44,7 @@ export const configuration = [
           type: TextInput,
           label: 'Name',
           handle: 'name',
+          required: true,
           instructions:
             'What this notification template will be called in the CP.',
           updateState: (value: string, state: GenericValue) => {
@@ -75,6 +76,7 @@ export const configuration = [
           type: TextInput,
           label: 'Subject',
           handle: 'subject',
+          required: true,
           instructions: 'The subject line for the email notification.',
         },
       ],
@@ -97,6 +99,7 @@ export const configuration = [
           type: TextInput,
           label: 'From Name',
           handle: 'fromName',
+          required: true,
           instructions:
             'The name that the email will appear from in your email notification.',
         },
@@ -113,6 +116,7 @@ export const configuration = [
           type: TextInput,
           label: 'From Email',
           handle: 'fromEmail',
+          required: true,
           instructions:
             'The email address that the email will appear from in your email notification.',
         },
@@ -152,7 +156,7 @@ export const configuration = [
           label: 'Predefined Assets',
           handle: 'presetAssets',
           instructions:
-            'The assets that will be included in the email notification. This is a list of asset IDs. You can use the asset picker to select them.',
+            'Select any Assets you wish to include as attachments on all email notifications using this template.',
         },
       ],
     ],

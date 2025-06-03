@@ -64,6 +64,10 @@ export const TabListItem = styled.li`
       background-color: #0d99f2;
     }
   }
+
+  &.errors {
+    color: ${colors.error};
+  }
 `;
 
 export const TabContent = styled.div`

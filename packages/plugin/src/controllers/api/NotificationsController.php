@@ -143,6 +143,14 @@ class NotificationsController extends BaseApiController
         $notification->setAttributes($post);
         $notification->save();
 
+        if ($notification->hasErrors()) {
+            foreach ($notification->getErrors() as $attribute => $errorList) {
+                $errors->add('notification', $attribute, $errorList);
+            }
+
+            throw new ApiException(400, $errors);
+        }
+
         return $this->asSerializedJson($notification);
     }
 

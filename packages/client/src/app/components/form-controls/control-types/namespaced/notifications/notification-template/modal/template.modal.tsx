@@ -4,7 +4,10 @@ import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { ModalFooter, ModalHeader } from '@components/modals/modal.styles';
 import type { ModalContainerProps } from '@components/modals/modal.types';
 import { QKNotifications } from '@ff-client/queries/notifications';
+import type { APIError } from '@ff-client/types/api';
 import type { GenericValue } from '@ff-client/types/properties';
+import classes from '@ff-client/utils/classes';
+import { objectHasAnyKey } from '@ff-client/utils/comparison';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -48,6 +51,7 @@ export const EditNotificationModal: React.FC<
 
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
   const [state, setState] = useState<PushState>();
+  const [errors, setErrors] = useState<Record<string, string[]>>({});
 
   const handleSave = async (): Promise<void> => {
     await mutation.mutate(state, {
@@ -68,6 +72,9 @@ export const EditNotificationModal: React.FC<
         if (typeof data?.onSuccess === 'function') {
           data.onSuccess(response.id);
         }
+      },
+      onError: (err: APIError) => {
+        setErrors(err.errors.notification);
       },
     });
   };
@@ -96,10 +103,16 @@ export const EditNotificationModal: React.FC<
         {configuration.map((tab) => (
           <TabListItem
             key={tab.name}
-            className={tab.name === activeTab && 'active'}
+            className={classes(
+              tab.name === activeTab && 'active',
+              objectHasAnyKey(
+                errors,
+                tab.rows.flatMap((row) => row.map((field) => field.handle))
+              ) && 'errors'
+            )}
             onClick={() => setActiveTab(tab.name)}
           >
-            {tab.name}
+            <span>{tab.name}</span>
           </TabListItem>
         ))}
       </TabList>
@@ -110,7 +123,7 @@ export const EditNotificationModal: React.FC<
           configuration.map((tab) => (
             <TabContent
               key={tab.name}
-              className={tab.name === activeTab && 'active'}
+              className={classes(tab.name === activeTab && 'active')}
             >
               {tab.rows.map((row, index) => (
                 <Row key={index}>
@@ -119,6 +132,7 @@ export const EditNotificationModal: React.FC<
                       key={field.handle}
                       {...field}
                       value={state?.[field.handle] || ''}
+                      errors={errors?.[field.handle]}
                       onChange={(value: GenericValue) => {
                         setState((prev) => ({
                           ...prev,

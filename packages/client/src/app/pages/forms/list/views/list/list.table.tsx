@@ -55,7 +55,7 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
                 className="btn submit add icon"
                 onClick={openCreateFormModal}
               >
-                {translate('New Form')}
+                {translate('Create a new Form')}
               </button>
             </td>
           </tr>

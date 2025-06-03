@@ -81,6 +81,7 @@ return [
     'Rich Text' => 'Rich Text',
     'Invisible' => 'Invisible',
     'Stripe Payment' => 'Stripe Payment',
+    "You don't have any forms yet. Create your first form now..." => "You don't have any forms yet. Create your first form now...",
 
     // Form Builder // Layout
     'Layout' => 'Layout',
@@ -750,6 +751,9 @@ return [
     'Notification saved.' => 'Notification saved.',
     'Notification not saved.' => 'Notification not saved.',
     'Are you sure you want to delete this notification?' => 'Are you sure you want to delete this notification?',
+    'No database-based email notification templates exist yet.' => 'No database-based email notification templates exist yet.',
+    'No file-based email notification templates exist yet.' => 'No file-based email notification templates exist yet.',
+    'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.',
 
     // Import / Export
     'Import / Export' => 'Import / Export',
@@ -817,6 +821,7 @@ return [
     'Email Subject' => 'Email Subject',
     'Email Message' => 'Email Message',
     'The text content of the email notification.' => 'The text content of the email notification.',
+    'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade to the Pro edition of Freeform to get access to Export Notifications.',
 
     // Import / Export // Freeform Data
     'Export Freeform Data (beta)' => 'Export Freeform Data (beta)',
@@ -947,6 +952,11 @@ return [
     'Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight.' => 'Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight.',
     'Remember the Page Order in Multi-page forms' => 'Remember the Page Order in Multi-page forms',
     "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms." => "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms.",
+    'CSRF Token Refresh Method' => 'CSRF Token Refresh Method',
+    'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.' => 'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.',
+    'Once Per Page View (recommended)' => 'Once Per Page View (recommended)',
+    'Always on Each Request' => 'Always on Each Request',
+    'Never' => 'Never',
     'Form Processing' => 'Form Processing',
     'Use Queue for Email Notifications' => 'Use Queue for Email Notifications',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users.",
@@ -1026,6 +1036,7 @@ return [
     'Rules on Submit Form' => 'Rules on Submit Form',
     'Integrations Tab' => 'Integrations Tab',
     'Settings Tab' => 'Settings Tab',
+    'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.',
 
     // Settings // Template Manager
     'Template Manager' => 'Template Manager',
@@ -1033,6 +1044,7 @@ return [
     'Directory Path' => 'Directory Path',
     'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.' => 'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.',
     'Add Sample' => 'Add Sample',
+    'Clone a Sample Template' => 'Clone a Sample Template',
     'Email Notification Templates' => 'Email Notification Templates',
     'Template Storage Type' => 'Template Storage Type',
     'File & Database' => 'File & Database',
@@ -1180,6 +1192,7 @@ return [
     'Email Log' => 'Email Log',
     'Clear' => 'Clear',
     'Are you sure you want to clear this log?' => 'Are you sure you want to clear this log?',
+    'Page {current} of {total}' => 'Page {current} of {total}',
     'Everything appears to be okay right now! No errors were found.' => 'Everything appears to be okay right now! No errors were found.',
     'No log items were found.' => 'No log items were found.',
     'Level' => 'Level',

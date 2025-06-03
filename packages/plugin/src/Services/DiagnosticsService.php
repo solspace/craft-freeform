@@ -470,6 +470,10 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->settings->autoScroll,
                 ),
                 new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value == "Never" ? "disabled" : "enabled" }}"></span><span class="item-inline">'.Freeform::t('CSRF Token Refresh Method').'{% if value %}: <b>{{ value }}</b>{% endif %}</span>',
+                    $this->getCsrfRefresh()
+                ),
+                new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Script Insert Location').': <b>{{ value }}</b></span>',
                     Freeform::t(
                         match ($rawScriptInsertLocation) {
@@ -933,6 +937,20 @@ class DiagnosticsService extends BaseService
         }
 
         return $blockers;
+    }
+
+    private function getCsrfRefresh(): ?string
+    {
+        if (!\Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs) {
+            return null;
+        }
+
+        return match ($this->getSummary()->statistics->settings->csrfRefresh) {
+            Settings::CSRF_REFRESH_NONE => Freeform::t('Never'),
+            Settings::CSRF_REFRESH_ONCE => Freeform::t('Once Per Page View'),
+            Settings::CSRF_REFRESH_ALWAYS => Freeform::t('Always on Each Request'),
+            default => '',
+        };
     }
 
     private function getJsInsertType(): string

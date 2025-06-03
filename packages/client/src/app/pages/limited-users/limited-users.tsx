@@ -119,7 +119,7 @@ export const LimitedUsers: React.FC = () => {
               <EmptyBlock
                 lite
                 title={translate(
-                  'Upgrade to the Freeform Pro edition to get access to the Limited Users feature'
+                  'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.'
                 )}
               />
             )}

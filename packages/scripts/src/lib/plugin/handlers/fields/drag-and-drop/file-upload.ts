@@ -1,6 +1,7 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
-import { ajax, CancelToken } from '@lib/plugin/helpers/ajax';
+import { ajax } from '@lib/plugin/helpers/ajax';
+import { CancelToken } from '@lib/plugin/helpers/ajax/ajax.classes';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import { filesize } from 'filesize';
 

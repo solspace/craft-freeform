@@ -81,6 +81,7 @@ return [
     'Rich Text' => 'Testo ricco',
     'Invisible' => 'Invisibile',
     'Stripe Payment' => 'Pagamento Stripe',
+    "You don't have any forms yet. Create your first form now..." => 'Non hai ancora nessun modulo. Crea subito il tuo primo modulo...',
 
     // Form Builder // Layout
     'Layout' => 'Layout',
@@ -750,6 +751,9 @@ return [
     'Notification saved.' => 'Notifica salvata.',
     'Notification not saved.' => 'Notifica non salvata.',
     'Are you sure you want to delete this notification?' => 'Sei sicuro di voler eliminare questa notifica?',
+    'No database-based email notification templates exist yet.' => 'Non esistono ancora modelli di notifica e-mail basati sul database.',
+    'No file-based email notification templates exist yet.' => 'Non esistono ancora modelli di notifica e-mail basati su file.',
+    'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Per aggiungere nuovi file di modelli di notifica, devi prima <a href="{link}">impostare il percorso della directory nelle impostazioni</a>.',
 
     // Import / Export
     'Import / Export' => 'Importa / Esporta',
@@ -817,6 +821,7 @@ return [
     'Email Subject' => 'Oggetto dell’Email',
     'Email Message' => 'Messaggio dell’Email',
     'The text content of the email notification.' => 'Il contenuto testuale della notifica via email.',
+    'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Passa all’edizione Pro di Freeform per accedere alle notifiche di esportazione.',
 
     // Import / Export // Freeform Data
     'Export Freeform Data (beta)' => 'Esporta Dati Freeform (beta)',
@@ -947,6 +952,11 @@ return [
     'Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight.' => 'Abilita questa opzione quando utilizzi AJAX per far scorrere automaticamente Freeform verso l’alto del modulo al momento dell’invio. È particolarmente utile per moduli più lunghi, in cui i messaggi di successo/errore in cima al modulo potrebbero non essere visibili.',
     'Remember the Page Order in Multi-page forms' => 'Ricorda l’Ordine delle Pagine nei Moduli Multipagina',
     "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms." => "Quando abilitato, Freeform terrà conto del salto delle pagine in base alle Regole Condizionali quando l’utente fa clic sul pulsante 'Precedente' nei moduli multipagina.",
+    'CSRF Token Refresh Method' => 'Metodo di aggiornamento del token CSRF',
+    'You can control how CSRF tokens refresh by choosing between refreshing once per page view (recommended) or on every AJAX request. This helps ensure secure, automatic token handling even when using page caching.' => 'Puoi controllare come aggiornare i token CSRF scegliendo se aggiornarli una volta per ogni visualizzazione della pagina (consigliato) o ad ogni richiesta AJAX. Questo garantisce una gestione sicura e automatica dei token anche quando si utilizza il caching delle pagine.',
+    'Once Per Page View (recommended)' => 'Una volta per ogni visualizzazione della pagina (consigliato)',
+    'Always on Each Request' => 'Ad ogni richiesta',
+    'Never' => 'Mai',
     'Form Processing' => 'Elaborazione del Modulo',
     'Use Queue for Email Notifications' => 'Utilizza la Coda per le Notifiche Email',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Utilizza il sistema di coda di Craft per inviare email. Abilitando questa opzione, si velocizzerà l’elaborazione degli invii per i tuoi utenti.',
@@ -1026,6 +1036,7 @@ return [
     'Rules on Submit Form' => 'Regole sull’Invio del Modulo',
     'Integrations Tab' => 'Scheda Integrazioni',
     'Settings Tab' => 'Scheda Impostazioni',
+    'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Passa all’edizione Freeform Pro per accedere alla funzionalità Utenti limitati.',
 
     // Settings // Template Manager
     'Template Manager' => 'Gestore dei Template',
@@ -1033,6 +1044,7 @@ return [
     'Directory Path' => 'Percorso della Directory',
     'Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form.' => 'Fornisci un percorso relativo alla cartella Templates di Craft dove si trova la directory dei tuoi template di formattazione personalizzati. Se non hai ancora creato la directory, fallo prima di compilare questa impostazione. Questo ti consente di utilizzare i file template Twig per la formattazione dei moduli e permette a Freeform di individuare questi file durante l’assegnazione a un modulo.',
     'Add Sample' => 'Aggiungi Esempio',
+    'Clone a Sample Template' => 'Clona un modello di esempio',
     'Email Notification Templates' => 'Template di Notifica Email',
     'Template Storage Type' => 'Tipo di Archiviazione dei Template',
     'File & Database' => 'File e Database',
@@ -1180,6 +1192,7 @@ return [
     'Email Log' => 'Registro e-mail',
     'Clear' => 'Eliminare',
     'Are you sure you want to clear this log?' => 'Sei sicuro di voler cancellare questo registro?',
+    'Page {current} of {total}' => 'Pagina {current} di {total}',
     'Everything appears to be okay right now! No errors were found.' => 'Sembra che vada tutto bene adesso! Non è stato trovato alcun errore.',
     'No log items were found.' => 'Non è stato trovato alcun elemento di registro.',
     'Level' => 'Livello',

@@ -16,7 +16,7 @@ const initialState: FormState = {
   id: null,
   uid: v4(),
   type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-  name: 'New Form',
+  name: 'Create a new Form',
   handle: 'newForm',
   isNew: true,
   settings: {},

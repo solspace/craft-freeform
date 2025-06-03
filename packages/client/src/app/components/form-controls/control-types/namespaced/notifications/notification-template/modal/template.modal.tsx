@@ -119,12 +119,16 @@ export const EditNotificationModal: React.FC<
                       key={field.handle}
                       {...field}
                       value={state?.[field.handle] || ''}
-                      onChange={(value: GenericValue) =>
+                      onChange={(value: GenericValue) => {
                         setState((prev) => ({
                           ...prev,
                           [field.handle]: value,
-                        }))
-                      }
+                        }));
+
+                        if ('updateState' in field && field.updateState) {
+                          setState((prev) => field.updateState(value, prev));
+                        }
+                      }}
                     />
                   ))}
                 </Row>

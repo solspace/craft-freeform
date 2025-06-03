@@ -1,11 +1,14 @@
 import type { FC } from 'react';
 import type { ControlProps } from '@components/form-controls/control.block';
+import { handle } from '@components/middleware/implementations';
 import type { Wrapper } from '@ff-client/types/notifications';
 import type {
   GenericValue,
   OptionCollection,
 } from '@ff-client/types/properties';
+import transliterate from '@sindresorhus/transliterate';
 import axios from 'axios';
+import { camelCase } from 'lodash';
 
 import { AssetsInput } from './inputs/assets';
 import { BooleanInput } from './inputs/boolean';
@@ -20,6 +23,7 @@ export type InputControl = ControlProps & {
   emptyOption?: string;
   optionDefinition?: OptionCollection | (() => Promise<OptionCollection>);
   onChange?: (value: GenericValue) => void;
+  updateState?: (value: GenericValue, state: GenericValue) => GenericValue;
 };
 
 type Row = InputControl[];
@@ -42,6 +46,12 @@ export const configuration = [
           handle: 'name',
           instructions:
             'What this notification template will be called in the CP.',
+          updateState: (value: string, state: GenericValue) => {
+            return {
+              ...state,
+              handle: handle(camelCase(transliterate(value))),
+            };
+          },
         },
         {
           type: TextInput,

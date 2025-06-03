@@ -14,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\EmailValueGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SiteNameValueGenerator;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Transformers\ManifestTransformer;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
@@ -40,7 +41,7 @@ class FormMonitor extends APIIntegration
     #[Boolean(
         label: 'Test Email Notifications on Live Environment only',
         instructions: 'If this setting is enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
-        order: 6
+        order: 7
     )]
     protected bool $liveOnly = true;
 
@@ -70,6 +71,16 @@ class FormMonitor extends APIIntegration
         placeholder: 'notices@example.com',
     )]
     private string $email = '';
+
+    #[Required]
+    #[ValueGenerator(SiteNameValueGenerator::class)]
+    #[Input\Text(
+        label: 'Site Name',
+        instructions: 'The name of your Craft site (e.g. "Bob\'s Stamps"). This helps identify your site in Form Monitor.',
+        order: 6,
+        placeholder: 'My Craft Site'
+    )]
+    private string $siteName = '';
 
     public function getApiKey(): string
     {
@@ -101,6 +112,11 @@ class FormMonitor extends APIIntegration
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function getSiteName(): string
+    {
+        return $this->siteName;
     }
 
     public function getTestEmails(): bool

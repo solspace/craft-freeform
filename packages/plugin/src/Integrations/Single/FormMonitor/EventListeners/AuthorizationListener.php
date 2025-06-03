@@ -63,6 +63,7 @@ class AuthorizationListener extends FeatureBundle
                     'url' => \Craft::$app->getSites()->getPrimarySite()->baseUrl,
                     'email' => $integration->getEmail(),
                     'key' => $licenseKey,
+                    'siteName' => $integration->getSiteName(),
                 ],
             ]
         );

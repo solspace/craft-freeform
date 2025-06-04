@@ -20,30 +20,18 @@ class ForeignKey
         self::SET_DEFAULT,
     ];
 
-    private Table $table;
-
-    private string $column;
-
-    private string $referenceTable;
-
-    private string $referenceColumn;
-
     private ?string $onDelete;
-
     private ?string $onUpdate;
 
     public function __construct(
-        Table $table,
-        string $column,
-        string $referenceTable,
-        string $referenceColumn,
+        private Table $table,
+        private string $column,
+        private string $referenceTable,
+        private string $referenceColumn,
         ?string $onDelete = null,
-        ?string $onUpdate = null
+        ?string $onUpdate = null,
+        private ?string $name = null,
     ) {
-        $this->table = $table;
-        $this->column = $column;
-        $this->referenceTable = $referenceTable;
-        $this->referenceColumn = $referenceColumn;
         $this->onDelete = self::getHandler($onDelete);
         $this->onUpdate = self::getHandler($onUpdate);
     }
@@ -55,6 +43,10 @@ class ForeignKey
 
     public function getName(): string
     {
+        if (null !== $this->name) {
+            return $this->name;
+        }
+
         return $this->table.'_'.$this->column.'_fk';
     }
 

@@ -42,7 +42,7 @@ export const configuration = [
       [
         {
           type: TextInput,
-          label: 'Name',
+          label: 'Template Name',
           handle: 'name',
           required: true,
           instructions:
@@ -53,25 +53,6 @@ export const configuration = [
               handle: handle(camelCase(transliterate(value))),
             };
           },
-        },
-        {
-          type: TextInput,
-          label: 'Handle',
-          handle: 'handle',
-          instructions: 'Unique identifier for the notification',
-          required: true,
-          onChange: (value: string) => {
-            return handle(value);
-          },
-        },
-      ],
-      [
-        {
-          type: TextInput,
-          label: 'Description',
-          handle: 'description',
-          instructions: 'Description of this notification.',
-          multiline: true,
         },
       ],
       [
@@ -95,7 +76,7 @@ export const configuration = [
     ],
   },
   {
-    name: 'Advanced',
+    name: 'Configuration',
     rows: [
       [
         {
@@ -142,6 +123,32 @@ export const configuration = [
           label: 'BCC',
           handle: 'bcc',
           instructions: `The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use.`,
+        },
+      ],
+    ],
+  },
+  {
+    name: 'Advanced',
+    rows: [
+      [
+        {
+          type: TextInput,
+          label: 'Handle',
+          handle: 'handle',
+          instructions: 'Unique identifier for the notification',
+          required: true,
+          onChange: (value: string) => {
+            return handle(value);
+          },
+        },
+      ],
+      [
+        {
+          type: TextInput,
+          label: 'Description',
+          handle: 'description',
+          instructions: 'Description of this notification.',
+          multiline: true,
         },
       ],
       [

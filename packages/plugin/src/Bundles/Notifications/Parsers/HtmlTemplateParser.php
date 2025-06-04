@@ -6,22 +6,24 @@ class HtmlTemplateParser
 {
     public function fromTwig(string $template): string
     {
+        $parsedTemplate = $template;
+
         $replacements = $this->getReplacementTable();
 
-        return preg_replace_callback(
-            '/{{\s*([a-zA-Z0-9_.]+)\s*}}/',
-            function ($matches) use ($replacements) {
-                $token = $matches[1];
-                $label = $replacements[$token] ?? null;
+        foreach ($replacements as $replacement) {
+            foreach ($replacement['items'] as $item) {
+                $token = $item['token'] ?? null;
+                $name = $item['name'] ?? null;
 
-                if (null === $label) {
-                    return $matches[0];
-                }
+                $parsedTemplate = preg_replace(
+                    '/{{\s*'.preg_quote($token, '/').'\s*}}/',
+                    \sprintf('<span contenteditable="false" data-freeform-token="%s">%s</span>', $token, $name),
+                    $parsedTemplate
+                );
+            }
+        }
 
-                return \sprintf('<span contenteditable="false" data-freeform-token="%s">%s</span>', $token, $label);
-            },
-            $template
-        );
+        return $parsedTemplate;
     }
 
     public function toTwig(string $template): string
@@ -36,7 +38,7 @@ class HtmlTemplateParser
     private function getReplacementTable(): array
     {
         // Load the map.table.php file and return the array
-        $filePath = __DIR__.'/map.table.php';
+        $filePath = __DIR__.'/suggestions.table.php';
         if (!file_exists($filePath)) {
             return [];
         }

@@ -60,6 +60,9 @@ export const configuration = [
           handle: 'handle',
           instructions: 'Unique identifier for the notification',
           required: true,
+          onChange: (value: string) => {
+            return handle(value);
+          },
         },
       ],
       [

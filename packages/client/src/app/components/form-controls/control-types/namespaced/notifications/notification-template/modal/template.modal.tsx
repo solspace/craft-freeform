@@ -134,6 +134,10 @@ export const EditNotificationModal: React.FC<
                       value={state?.[field.handle] || ''}
                       errors={errors?.[field.handle]}
                       onChange={(value: GenericValue) => {
+                        if ('onChange' in field && field.onChange) {
+                          value = field.onChange(value);
+                        }
+
                         setState((prev) => ({
                           ...prev,
                           [field.handle]: value,

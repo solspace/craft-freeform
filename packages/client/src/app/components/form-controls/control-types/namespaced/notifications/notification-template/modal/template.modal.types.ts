@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import type { ControlProps } from '@components/form-controls/control.block';
 import { handle } from '@components/middleware/implementations';
+import { Edition } from '@config/freeform/freeform.config';
 import type { Wrapper } from '@ff-client/types/notifications';
 import type {
   GenericValue,
@@ -21,6 +22,7 @@ export type InputControl = ControlProps & {
   multiline?: boolean;
   value?: GenericValue;
   emptyOption?: string;
+  minEdition?: Edition;
   optionDefinition?: OptionCollection | (() => Promise<OptionCollection>);
   onChange?: (value: GenericValue) => void;
   updateState?: (value: GenericValue, state: GenericValue) => GenericValue;
@@ -165,6 +167,7 @@ export const configuration = [
           type: AssetsInput,
           label: 'Predefined Assets',
           handle: 'presetAssets',
+          minEdition: Edition.Pro,
           instructions:
             'Select any Assets you wish to include as attachments on all email notifications using this template.',
         },
@@ -198,6 +201,7 @@ export const configuration = [
           type: DropdownInput,
           label: 'PDF Template',
           handle: 'pdfTemplate',
+          minEdition: Edition.Pro,
           instructions: `Pick a PDF template to use for this notification. This will be used when the notification is sent as a PDF.`,
         },
       ],

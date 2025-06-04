@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { ModalFooter, ModalHeader } from '@components/modals/modal.styles';
 import type { ModalContainerProps } from '@components/modals/modal.types';
+import config from '@config/freeform/freeform.config';
 import { QKNotifications } from '@ff-client/queries/notifications';
 import type { APIError } from '@ff-client/types/api';
 import type { GenericValue } from '@ff-client/types/properties';
@@ -127,28 +128,36 @@ export const EditNotificationModal: React.FC<
             >
               {tab.rows.map((row, index) => (
                 <Row key={index}>
-                  {row.map((field) => (
-                    <field.type
-                      key={field.handle}
-                      {...field}
-                      value={state?.[field.handle] || ''}
-                      errors={errors?.[field.handle]}
-                      onChange={(value: GenericValue) => {
-                        if ('onChange' in field && field.onChange) {
-                          value = field.onChange(value);
-                        }
+                  {row.map((field) => {
+                    if ('minEdition' in field && field.minEdition) {
+                      if (!config.editions.isAtLeast(field.minEdition)) {
+                        return null;
+                      }
+                    }
 
-                        setState((prev) => ({
-                          ...prev,
-                          [field.handle]: value,
-                        }));
+                    return (
+                      <field.type
+                        key={field.handle}
+                        {...field}
+                        value={state?.[field.handle] || ''}
+                        errors={errors?.[field.handle]}
+                        onChange={(value: GenericValue) => {
+                          if ('onChange' in field && field.onChange) {
+                            value = field.onChange(value);
+                          }
 
-                        if ('updateState' in field && field.updateState) {
-                          setState((prev) => field.updateState(value, prev));
-                        }
-                      }}
-                    />
-                  ))}
+                          setState((prev) => ({
+                            ...prev,
+                            [field.handle]: value,
+                          }));
+
+                          if ('updateState' in field && field.updateState) {
+                            setState((prev) => field.updateState(value, prev));
+                          }
+                        }}
+                      />
+                    );
+                  })}
                 </Row>
               ))}
             </TabContent>

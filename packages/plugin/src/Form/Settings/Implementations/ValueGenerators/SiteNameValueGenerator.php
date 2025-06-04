@@ -8,6 +8,6 @@ class SiteNameValueGenerator implements ValueGeneratorInterface
 {
     public function generateValue(?object $referenceObject): string
     {
-        return \Craft::$app->getSites()->getCurrentSite()->name;
+        return \Craft::$app->getSystemName();
     }
 }

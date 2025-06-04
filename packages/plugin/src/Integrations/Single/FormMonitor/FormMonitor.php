@@ -40,7 +40,7 @@ class FormMonitor extends APIIntegration
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Boolean(
         label: 'Test Email Notifications on Live Environment only',
-        instructions: 'If this setting is enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
+        instructions: 'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
         order: 7
     )]
     protected bool $liveOnly = true;
@@ -66,8 +66,8 @@ class FormMonitor extends APIIntegration
     #[Required]
     #[ValueGenerator(EmailValueGenerator::class)]
     #[Input\Text(
-        label: 'Error Notification Email',
-        instructions: 'Email address to receive notifications about the form.',
+        label: 'Notification Email',
+        instructions: 'Email address to receive email alerts and other notifications for the form.',
         placeholder: 'notices@example.com',
     )]
     private string $email = '';
@@ -76,7 +76,7 @@ class FormMonitor extends APIIntegration
     #[ValueGenerator(SiteNameValueGenerator::class)]
     #[Input\Text(
         label: 'Site Name',
-        instructions: 'The name of your Craft site (e.g. "Bob\'s Stamps"). This helps identify your site in Form Monitor.',
+        instructions: 'The name of your Craft site. Form Monitor will use this in email notifications.',
         order: 6,
         placeholder: 'My Craft Site'
     )]

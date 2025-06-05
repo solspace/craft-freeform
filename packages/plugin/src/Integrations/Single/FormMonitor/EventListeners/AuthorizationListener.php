@@ -64,6 +64,7 @@ class AuthorizationListener extends FeatureBundle
                     'email' => $integration->getEmail(),
                     'key' => $licenseKey,
                     'siteName' => $integration->getSiteName(),
+                    'timeZone' => \Craft::$app->getTimeZone() ?? 'UTC',
                 ],
             ]
         );

@@ -77,10 +77,12 @@ class CalculationFieldValidation extends FeatureBundle
         try {
             $result = $this->expressionLanguage->evaluate($calculationLogic, $variablesWithValue);
             if (null !== $decimalCount && $decimalCount >= 0) {
-                $result = number_format($result, $decimalCount);
+                // Avoid using commas in formatted result
+                $result = number_format($result, $decimalCount, '.', '');
             }
 
-            if ($valueOrdination != $result) {
+            // Compare as floats with rounding
+            if (round((float) $valueOrdination, $decimalCount) !== round((float) $result, $decimalCount)) {
                 $errorMessage = Freeform::t('Incorrectly calculated value');
 
                 if ($canRender) {

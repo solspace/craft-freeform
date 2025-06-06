@@ -73,6 +73,7 @@ class FormMonitor extends APIIntegration
     private string $email = '';
 
     #[Required]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[ValueGenerator(SiteNameValueGenerator::class)]
     #[Input\Text(
         label: 'Site Name',

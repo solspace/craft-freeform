@@ -23,7 +23,7 @@ This integration allows you to map Freeform submission data to [Craft User](http
 - On the right side of the page:
     - Enable the integration.
     - Confirm the user group in the **User Group** field, or change it as necessary.
-        <span class="note danger"><b>CAUTION:</b> All user groups, including ones with access to control panel will show here. Use extreme caution if allowing users to self-register for accounts that can access the Craft control panel!</span>
+      <span class="note danger"><b>CAUTION:</b> All user groups, including ones with access to control panel will show here. Use extreme caution if allowing users to self-register for accounts that can access the Craft control panel!</span>
     - Toggle whether the user account should be **Activated** or not.
         - If you'd like new users to not yet be activated and receive the Craft User Activation email, toggle the **Activate Users** setting ON. If you'd like to manually approve registrations and suppress the email notification to users, toggle the **Send Activation Email** setting OFF.
     - Toggle whether to **Send an Activation Email** to the user or not.
@@ -37,5 +37,3 @@ See [Mapping Guidelines](https://docs.solspace.com/craft/freeform/v5/integration
 ---
 
 <small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
-
-<style type="text/css">.warning {display:block;padding:10px 15px;border:1px solid var(--warning-color);border-radius:5px;}.danger {color:var(--error-color);display:block;padding:10px 15px;border:1px solid var(--error-color);border-radius:5px;}</style>

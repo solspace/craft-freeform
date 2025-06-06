@@ -71,7 +71,9 @@ You also are in complete control of your data. From within the Freeform control 
 - Go to the **Single** integration page in the Freeform Settings area.
 - Click on **Form Monitor**.
 - Enable **Form Monitor** by toggling on the **Enabled** setting.
-- Confirm or enter a different default email address in the **Notification Email** setting.
+- Confirm or enter a different:
+    - Default email address in the **Notification Email** setting.
+    - Site/System Name in the **Site Name** setting.
 - Save the page.
 - **Form Monitor** will validate its connection.
 

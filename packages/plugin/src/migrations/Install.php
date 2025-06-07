@@ -141,7 +141,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('handle', $this->string()->notNull())
                 ->addField('description', $this->text())
                 ->addField('content', $this->longText()->notNull())
-                ->addIndex(['name'], true, name: 'idx-freeform_notification_template_wrappers-name'),
+                ->addIndex(['name'], true, name: 'name'),
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())

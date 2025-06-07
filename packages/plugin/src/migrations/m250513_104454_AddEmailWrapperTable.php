@@ -27,7 +27,7 @@ class m250513_104454_AddEmailWrapperTable extends Migration
         );
 
         $this->createIndex(
-            'idx-freeform_notification_template_wrappers-name',
+            'name',
             '{{%freeform_notification_template_wrappers}}',
             ['name'],
             true

@@ -62,18 +62,18 @@ class NotificationLoopVariables extends FeatureBundle
         RenderEmailEvent $event,
         string $variableName,
     ): void {
-        if (!\count($fields)) {
-            return;
-        }
+        $markup = '';
 
-        $markup = '<ul>';
-        foreach ($fields as $field) {
-            $markup .= '<li>';
-            $markup .= $field->getLabel().': ';
-            $markup .= $field->getValueAsString();
-            $markup .= '</li>';
+        if (\count($fields)) {
+            $markup .= '<ul>';
+            foreach ($fields as $field) {
+                $markup .= '<li>';
+                $markup .= $field->getLabel().': ';
+                $markup .= $field->getValueAsString();
+                $markup .= '</li>';
+            }
+            $markup .= '</ul>';
         }
-        $markup .= '</ul>';
 
         $loop = $event->getTwigVariable('loop');
         $loop['field'][$variableName] = new Markup($markup, 'UTF-8');

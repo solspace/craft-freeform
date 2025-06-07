@@ -15,14 +15,18 @@ import { AssetsInput } from './inputs/assets';
 import { BooleanInput } from './inputs/boolean';
 import { DropdownInput } from './inputs/dropdown';
 import { HtmlBodyInput } from './inputs/html-body/html-body';
+import { TemplatePreview } from './inputs/preview/preview';
 import { TextInput } from './inputs/text';
+import type { PushState } from './template.modal';
 
 export type InputControl = ControlProps & {
   type: FC<ControlProps>;
   multiline?: boolean;
   value?: GenericValue;
   emptyOption?: string;
+  inView?: boolean;
   minEdition?: Edition;
+  context?: PushState;
   optionDefinition?: OptionCollection | (() => Promise<OptionCollection>);
   onChange?: (value: GenericValue) => void;
   updateState?: (value: GenericValue, state: GenericValue) => GenericValue;
@@ -203,6 +207,19 @@ export const configuration = [
           handle: 'pdfTemplate',
           minEdition: Edition.Pro,
           instructions: `Pick a PDF template to use for this notification. This will be used when the notification is sent as a PDF.`,
+        },
+      ],
+    ],
+  },
+  {
+    name: 'Preview',
+    rows: [
+      [
+        {
+          type: TemplatePreview,
+          label: 'Preview',
+          handle: 'preview',
+          instructions: `Preview your notification template. This will show you how the email will look when sent.`,
         },
       ],
     ],

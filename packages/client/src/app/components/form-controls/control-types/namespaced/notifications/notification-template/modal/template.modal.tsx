@@ -12,6 +12,8 @@ import { objectHasAnyKey } from '@ff-client/utils/comparison';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 
+import { TemplatePreview } from './inputs/preview/preview';
+import { QKPreview } from './inputs/preview/preview.queries';
 import type { NotificationEditModalOptions } from './template.modal.hooks';
 import {
   QKNotificationTemplates,
@@ -34,7 +36,7 @@ import {
 
 const firstTab = configuration[0].name;
 
-type PushState = NotificationConfiguration & {
+export type PushState = NotificationConfiguration & {
   formId?: number;
 };
 
@@ -53,6 +55,14 @@ export const EditNotificationModal: React.FC<
   const [activeTab, setActiveTab] = useState<NotificationTabs>(firstTab);
   const [state, setState] = useState<PushState>();
   const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+  useEffect(() => {
+    return () => {
+      setState(undefined);
+      setErrors({});
+      queryClient.removeQueries(QKPreview);
+    };
+  }, []);
 
   const handleSave = async (): Promise<void> => {
     await mutation.mutate(state, {
@@ -135,10 +145,17 @@ export const EditNotificationModal: React.FC<
                       }
                     }
 
+                    let context;
+                    if (field.type === TemplatePreview) {
+                      context = state;
+                    }
+
                     return (
                       <field.type
                         key={field.handle}
                         {...field}
+                        context={context}
+                        inView={tab.name === activeTab}
                         value={state?.[field.handle] || ''}
                         errors={errors?.[field.handle]}
                         onChange={(value: GenericValue) => {

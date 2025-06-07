@@ -373,12 +373,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         return $recipientList;
     }
 
-    private function parseEnvInArray(array $array): array
-    {
-        return array_map(fn ($item) => trim(App::parseEnv($item)), $array);
-    }
-
-    private function compileTwigVariables(Form $form, NotificationTemplate $template, ?Submission $submission = null): array
+    public function compileTwigVariables(Form $form, NotificationTemplate $template, ?Submission $submission = null): array
     {
         $fields = $form->getLayout()->getFields();
 
@@ -423,6 +418,11 @@ class MailerService extends BaseService implements MailHandlerInterface
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
 
         return $renderEvent->getTwigVariables();
+    }
+
+    private function parseEnvInArray(array $array): array
+    {
+        return array_map(fn ($item) => trim(App::parseEnv($item)), $array);
     }
 
     private function notifyAboutEmailSendingError(

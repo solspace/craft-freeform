@@ -139,6 +139,7 @@ class NotificationsController extends BaseApiController
 
         $post = $this->request->post();
         $post['bodyHtml'] = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
+        $post['bodyText'] = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
 
         $notification->setAttributes($post);
         $notification->save();

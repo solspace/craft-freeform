@@ -112,12 +112,12 @@ class FormMonitor extends APIIntegration
 
     public function getEmail(): string
     {
-        return $this->email;
+        return $this->getProcessedValue($this->email);
     }
 
     public function getSiteName(): string
     {
-        return $this->siteName;
+        return $this->getProcessedValue($this->siteName);
     }
 
     public function getTestEmails(): bool

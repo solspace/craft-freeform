@@ -13,6 +13,7 @@ import { camelCase } from 'lodash';
 
 import { AssetsInput } from './inputs/assets';
 import { BooleanInput } from './inputs/boolean';
+import { CheckboxesInput } from './inputs/checkboxes';
 import { DropdownInput } from './inputs/dropdown';
 import { HtmlBodyInput } from './inputs/html-body/html-body';
 import { TemplatePreview } from './inputs/preview/preview';
@@ -202,11 +203,22 @@ export const configuration = [
       ],
       [
         {
-          type: DropdownInput,
-          label: 'PDF Template',
-          handle: 'pdfTemplate',
+          type: CheckboxesInput,
+          label: 'PDF Templates',
+          handle: 'pdfTemplateIds',
           minEdition: Edition.Pro,
-          instructions: `Pick a PDF template to use for this notification. This will be used when the notification is sent as a PDF.`,
+          instructions: `Pick PDF templates to use for this notification.`,
+          optionDefinition: async () => {
+            const templates =
+              await axios.get<{ id: string; name: string }[]>(
+                '/api/templates/pdf'
+              );
+
+            return templates.data.map((template) => ({
+              label: template.name,
+              value: template.id,
+            }));
+          },
         },
       ],
     ],

@@ -60,7 +60,7 @@ export const EditNotificationModal: React.FC<
     return () => {
       setState(undefined);
       setErrors({});
-      queryClient.removeQueries(QKPreview);
+      queryClient.removeQueries(QKPreview.preview);
     };
   }, []);
 

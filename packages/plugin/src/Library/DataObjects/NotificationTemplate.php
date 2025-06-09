@@ -83,6 +83,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template->autoText = $record->autoText;
         $template->includeAttachments = (bool) $record->includeAttachments;
         $template->presetAssets = $record->getPresetAssets() ?? [];
+        $template->pdfTemplateIds = $record->getPdfTemplateIdList();
 
         return $template;
     }

@@ -2,7 +2,10 @@ import type { PropsWithChildren } from 'react';
 import React from 'react';
 import {
   ControlWrapper,
+  ExtraContent,
   FormField,
+  LabelGroup,
+  LabelInstructionsWrapper,
 } from '@components/form-controls/control.styles';
 import FormInstructions from '@components/form-controls/instructions';
 import FormLabel from '@components/form-controls/label';
@@ -24,6 +27,7 @@ export type ControlProps = {
   disabled?: boolean;
   errors?: string[];
   messages?: Message[];
+  extraContent?: React.ReactNode;
 };
 
 export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
@@ -39,21 +43,31 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   children,
   errors,
   messages,
+  extraContent,
 }) => {
   return (
     <ControlWrapper
       className={classes(!!errors && 'errors', disabled && 'disabled')}
       $width={width}
     >
-      <FormLabel
-        label={label}
-        handle={handle}
-        required={required}
-        translatable={translatable}
-        hasTranslation={hasTranslation}
-        removeTranslation={removeTranslation}
-      />
-      <FormInstructions instructions={instructions} />
+      <LabelGroup>
+        <LabelInstructionsWrapper>
+          <FormLabel
+            label={label}
+            handle={handle}
+            required={required}
+            translatable={translatable}
+            hasTranslation={hasTranslation}
+            removeTranslation={removeTranslation}
+          />
+          <FormInstructions instructions={instructions} />
+        </LabelInstructionsWrapper>
+
+        {extraContent !== undefined && (
+          <ExtraContent>{extraContent}</ExtraContent>
+        )}
+      </LabelGroup>
+
       <FormField>{children}</FormField>
       <FormErrorList errors={errors} />
       <FormMessageList messages={messages} />

@@ -1,6 +1,8 @@
 import type { FC } from 'react';
 import React, { useEffect } from 'react';
 import { ControlBlock } from '@components/form-controls/control.block';
+import { spacings } from '@ff-client/styles/variables';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import type { InputControl } from '../../template.modal.types';
@@ -9,7 +11,7 @@ import { Address } from './components/address';
 import { Attachments } from './components/attachments';
 import { IframeBlock } from './components/iframe';
 import { TemplatePreviewLoader } from './preview.loading';
-import { usePreviewQuery } from './preview.queries';
+import { usePreviewQuery, useSendTestEmailMutation } from './preview.queries';
 import {
   Body,
   HeaderRow,
@@ -22,6 +24,7 @@ import {
 export const TemplatePreview: FC<InputControl> = (props) => {
   const { inView } = props;
   const { data, isFetching, refetch } = usePreviewQuery(props.context);
+  const sendTest = useSendTestEmailMutation();
 
   useEffect(() => {
     if (inView) {
@@ -30,7 +33,39 @@ export const TemplatePreview: FC<InputControl> = (props) => {
   }, [inView]);
 
   return (
-    <ControlBlock {...props}>
+    <ControlBlock
+      {...props}
+      extraContent={
+        <div style={{ display: 'flex', gap: spacings.sm }}>
+          <button
+            className={classes(
+              'btn',
+              'small',
+              'submit',
+              isFetching && 'disabled'
+            )}
+            disabled={isFetching}
+            type="button"
+            onClick={() => refetch()}
+          >
+            {translate('Refresh')}
+          </button>
+
+          <button
+            className={classes(
+              'btn',
+              'small',
+              sendTest.isLoading && 'disabled'
+            )}
+            disabled={sendTest.isLoading}
+            type="button"
+            onClick={() => sendTest.mutate(props.context)}
+          >
+            {translate('Send Test Email')}
+          </button>
+        </div>
+      }
+    >
       {isFetching && <TemplatePreviewLoader />}
       {data !== undefined && !isFetching && (
         <PreviewContainer>

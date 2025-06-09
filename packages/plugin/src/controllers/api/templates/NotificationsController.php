@@ -6,9 +6,11 @@ use Faker\Factory;
 use Solspace\Freeform\Bundles\Form\Submissions\FakeDataProvider;
 use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Parsers\Suggestions;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\FileHelper;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\MailerService;
@@ -25,30 +27,17 @@ class NotificationsController extends BaseApiController
         private FormsService $formsService,
         private HtmlTemplateParser $htmlTemplateParser,
         private FakeDataProvider $fakeDataProvider,
+        private NotificationLoggerProvider $notificationLoggerProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
 
     public function actionPreviewTemplate(): Response
     {
-        $form = $this->formsService->getFormByHandle('notifications');
-
-        $post = $this->request->post();
-
-        $fakeData = $this->fakeDataProvider->generate($form, $this->request->getPreferredLanguage());
-        $form->setFieldValues($fakeData);
-
-        $record = new NotificationTemplateRecord();
-        $record->id = 'preview';
-        $record->uid = 'preview';
-        $record->bodyHtml = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
-        $record->bodyText = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
-        $record->setAttributes($post);
-
-        $template = NotificationTemplate::fromRecord($record);
+        [$form, $template, $logger] = $this->extractVariables();
 
         $variables = $this->mailer->compileTwigVariables($form, $template, $form->getSubmission());
-        $message = $this->mailer->compileMessage($template, $variables);
+        $message = $this->mailer->compileMessage($template, $variables, $logger, $form);
 
         $faker = Factory::create();
 
@@ -75,6 +64,33 @@ class NotificationsController extends BaseApiController
         return $this->asSerializedJson($response);
     }
 
+    public function actionSendTest(): Response
+    {
+        [$form, $template, $logger] = $this->extractVariables();
+
+        $recipient = \Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
+        if (!$recipient) {
+            $recipient = \Craft::$app->getProjectConfig()->get('email.fromEmail');
+        }
+
+        $isSent = $this->mailer->sendEmail(
+            $form,
+            RecipientCollection::fromArray([$recipient]),
+            $template,
+            $form->getSubmission(),
+            $logger,
+        );
+
+        if (!$isSent) {
+            return $this->asSerializedJson(
+                ['errors' => ['Failed to send test email']],
+                400
+            );
+        }
+
+        return $this->asEmptyResponse(201);
+    }
+
     protected function get(): array
     {
         $suggestions = new Suggestions();
@@ -85,5 +101,27 @@ class NotificationsController extends BaseApiController
     private function calculateSize(DataPart $attachment): int
     {
         return \strlen((string) $attachment->getBody());
+    }
+
+    private function extractVariables(): array
+    {
+        $post = $this->request->post();
+        $form = $this->formsService->getFormByHandle('notifications');
+
+        $fakeData = $this->fakeDataProvider->generate($form, $this->request->getPreferredLanguage());
+        $form->setFieldValues($fakeData);
+
+        $record = new NotificationTemplateRecord();
+        $record->id = 'preview';
+        $record->uid = 'preview';
+        $record->bodyHtml = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
+        $record->bodyText = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
+        $record->pdfTemplateIds = $post['pdfTemplateIds'] ?? [];
+        $record->setAttributes($post);
+
+        $template = NotificationTemplate::fromRecord($record);
+        $logger = $this->notificationLoggerProvider->getLogger($template, $form);
+
+        return [$form, $template, $logger];
     }
 }

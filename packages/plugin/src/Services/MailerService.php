@@ -101,70 +101,6 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $email = $this->compileMessage($notificationTemplate, $twigVariables, $logger);
                 $email->setTo([$emailAddress]);
 
-                $pdfTemplates = $notificationTemplate->getPdfTemplateRecords();
-                if ($pdfTemplates) {
-                    foreach ($pdfTemplates as $pdfTemplate) {
-                        $fileName = $this->renderString($pdfTemplate->fileName, $twigVariables);
-                        $body = $this->renderString($pdfTemplate->getBody(), $twigVariables);
-
-                        if (!preg_match('/\.pdf$/i', $fileName)) {
-                            $fileName .= '.pdf';
-                        }
-
-                        $domPdf = new Dompdf();
-                        $domPdf->loadHtml($body);
-                        $domPdf->render();
-
-                        $pdfPath = Assets::tempFilePath('pdf');
-                        file_put_contents($pdfPath, $domPdf->output());
-
-                        $email->attach($pdfPath, [
-                            'fileName' => $fileName,
-                            'contentType' => 'application/pdf',
-                        ]);
-
-                        $logger?->debug('Attached PDF to email', ['fileName' => $fileName]);
-
-                        if (file_exists($pdfPath)) {
-                            unset($pdfPath);
-                        }
-                    }
-                }
-
-                if ($notificationTemplate->isIncludeAttachments()) {
-                    $fields = $form->getLayout()->getFields();
-                    foreach ($fields as $field) {
-                        if ($field instanceof SignatureField && $field->getValueAsString()) {
-                            $email->attach($field->getValueAsString(), [
-                                'fileName' => 'signature.png',
-                                'contentType' => 'image/png',
-                            ]);
-
-                            $logger?->debug('Attached signature to email', ['fileName' => 'signature.png']);
-
-                            continue;
-                        }
-
-                        if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
-                            continue;
-                        }
-
-                        $fieldValue = $field->getValue();
-                        $assetIds = $fieldValue;
-                        foreach ($assetIds as $assetId) {
-                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                            if ($asset) {
-                                $email->attach(
-                                    $asset->getCopyOfFile(),
-                                    ['fileName' => $asset->filename]
-                                );
-
-                                $logger?->debug('Attached file to email', ['fileName' => $asset->filename]);
-                            }
-                        }
-                    }
-                }
-
                 $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $twigVariables, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
@@ -230,8 +166,12 @@ class MailerService extends BaseService implements MailHandlerInterface
         ;
     }
 
-    public function compileMessage(NotificationTemplate $notification, array $values, ?LoggerInterface $logger = null): Message
-    {
+    public function compileMessage(
+        NotificationTemplate $notification,
+        array $values,
+        ?LoggerInterface $logger = null,
+        ?Form $form = null
+    ): Message {
         $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $values);
         $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $values);
         $text = $this->renderString($notification->getTextBody(), $values);
@@ -326,6 +266,70 @@ class MailerService extends BaseService implements MailHandlerInterface
                         $asset->getCopyOfFile(),
                         ['fileName' => $asset->filename]
                     );
+                }
+            }
+        }
+
+        $pdfTemplates = $notification->getPdfTemplateRecords();
+        if ($pdfTemplates) {
+            foreach ($pdfTemplates as $pdfTemplate) {
+                $fileName = $this->renderString($pdfTemplate->fileName, $values);
+                $body = $this->renderString($pdfTemplate->getBody(), $values);
+
+                if (!preg_match('/\.pdf$/i', $fileName)) {
+                    $fileName .= '.pdf';
+                }
+
+                $domPdf = new Dompdf();
+                $domPdf->loadHtml($body);
+                $domPdf->render();
+
+                $pdfPath = Assets::tempFilePath('pdf');
+                file_put_contents($pdfPath, $domPdf->output());
+
+                $message->attach($pdfPath, [
+                    'fileName' => $fileName,
+                    'contentType' => 'application/pdf',
+                ]);
+
+                $logger?->debug('Attached PDF to email', ['fileName' => $fileName]);
+
+                if (file_exists($pdfPath)) {
+                    unset($pdfPath);
+                }
+            }
+        }
+
+        if ($notification->isIncludeAttachments() && $form) {
+            $fields = $form->getLayout()->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof SignatureField && $field->getValueAsString()) {
+                    $message->attach($field->getValueAsString(), [
+                        'fileName' => 'signature.png',
+                        'contentType' => 'image/png',
+                    ]);
+
+                    $logger?->debug('Attached signature to email', ['fileName' => 'signature.png']);
+
+                    continue;
+                }
+
+                if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
+                    continue;
+                }
+
+                $fieldValue = $field->getValue();
+                $assetIds = $fieldValue;
+                foreach ($assetIds as $assetId) {
+                    $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                    if ($asset) {
+                        $message->attach(
+                            $asset->getCopyOfFile(),
+                            ['fileName' => $asset->filename]
+                        );
+
+                        $logger?->debug('Attached file to email', ['fileName' => $asset->filename]);
+                    }
                 }
             }
         }

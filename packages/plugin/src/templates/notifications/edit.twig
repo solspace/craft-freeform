@@ -58,7 +58,8 @@
             value: notification.name,
             errors: notification.getErrors('name'),
             autofocus: true,
-            required: true
+            required: true,
+            fieldClass: 'width-50',
         }) }}
 
         {% if notification.fileBasedTemplate %}
@@ -71,7 +72,8 @@
                 name: 'handle',
                 value: notification.handle,
                 errors: notification.getErrors('handle'),
-                required: true
+                required: true,
+                fieldClass: 'width-50',
             }) }}
 
         {% else %}
@@ -84,7 +86,8 @@
                 name: 'handle',
                 value: notification.handle,
                 errors: notification.getErrors('handle'),
-                required: true
+                required: true,
+                fieldClass: 'width-50',
             }) }}
 
         {% endif %}

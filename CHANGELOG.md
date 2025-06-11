@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.10.17 - 2025-06-11
+
+### Changed
+- Updated the `phpoffice/phpspreadsheet` dependency to include `^4.0`.
+
+### Fixed
+- Fixed a bug where any numeric result over `999` would trigger an error in the Calculation field.
+- Fixed an issue where an unnecessary subquery could cause too many table joins when loading the CP Submissions index.
+
 ## 5.10.16.1 - 2025-06-02
 
 ### Fixed

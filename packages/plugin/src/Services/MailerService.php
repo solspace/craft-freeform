@@ -319,7 +319,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 }
 
                 $fieldValue = $field->getValue();
-                $assetIds = $fieldValue;
+                $assetIds = $fieldValue ?? [];
                 foreach ($assetIds as $assetId) {
                     $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                     if ($asset) {

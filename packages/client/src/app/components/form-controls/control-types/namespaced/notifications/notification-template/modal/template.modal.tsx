@@ -147,7 +147,10 @@ export const EditNotificationModal: React.FC<
 
                     let context;
                     if (field.type === TemplatePreview) {
-                      context = state;
+                      context = {
+                        ...state,
+                        formId: formId ? Number(formId) : undefined,
+                      };
                     }
 
                     return (

@@ -133,7 +133,9 @@ class NotificationsController extends BaseApiController
     private function extractVariables(): array
     {
         $post = $this->request->post();
-        $form = $this->formsService->getFormByHandle('notifications');
+        $form = $this->formsService->getFormById($post['formId']);
+
+        unset($post['formId']);
 
         $fakeData = $this->fakeDataProvider->generate($form, $this->request->getPreferredLanguage());
         $form->setFieldValues($fakeData);

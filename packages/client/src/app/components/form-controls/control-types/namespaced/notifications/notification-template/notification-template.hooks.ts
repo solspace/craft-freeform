@@ -16,9 +16,6 @@ type UseNotificationTemplates = (selectedId: string | number) => {
 export const useNotificationTemplates: UseNotificationTemplates = (
   selectedId
 ) => {
-  const isDb = typeof selectedId === 'number';
-  const isFile = typeof selectedId === 'string';
-
   const { formId } = useParams();
 
   const { data, isFetching } = useQueryNotificationTemplates();
@@ -28,16 +25,14 @@ export const useNotificationTemplates: UseNotificationTemplates = (
   const [selectedTemplate, setSelectedTemplate] =
     useState<NotificationTemplate>();
   const [templates, setTemplates] = useState<NotificationTemplateGroups>({
-    database: [],
-    files: [],
+    global: [],
   });
 
   useEffect(() => {
     if (data && !isFetching) {
       setTemplates((prev) => ({
         ...prev,
-        database: data.templates.database,
-        files: data.templates.files,
+        global: data.templates,
       }));
     }
   }, [data, isFetching]);
@@ -52,17 +47,12 @@ export const useNotificationTemplates: UseNotificationTemplates = (
   }, [formTemplates, isFetchingFormTemplates]);
 
   useEffect(() => {
-    if (isDb) {
-      let dbTemplate = templates?.database?.find((t) => t.id === selectedId);
-      if (!dbTemplate) {
-        dbTemplate = templates?.form?.find((t) => t.id === selectedId);
-      }
-
-      setSelectedTemplate(dbTemplate);
-    } else if (isFile) {
-      const fileTemplate = templates?.files?.find((t) => t.id === selectedId);
-      setSelectedTemplate(fileTemplate);
+    let selected = templates?.global?.find((t) => t.id === selectedId);
+    if (!selected) {
+      selected = templates?.form?.find((t) => t.id === selectedId);
     }
+
+    setSelectedTemplate(selected);
   }, [selectedId, templates]);
 
   return {

@@ -1,16 +1,17 @@
 import React from 'react';
-import { useSpring } from 'react-spring';
-import { colors } from '@ff-client/styles/variables';
+import { QKNotifications } from '@ff-client/queries/notifications';
+import type { APIError } from '@ff-client/types/api';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
+import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
+import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
-import EditIcon from '../../icons/edit.svg';
-import SubjectIcon from '../../icons/subject.svg';
 import { useNotificationEditModal } from '../../modal/template.modal.hooks';
 import type { NotificationSelectHandler } from '../../notification-template';
 
-import { EditButton, Id, Name, Subject, TemplateCard } from './item.styles';
+import { Button, ButtonGroup, Name, TemplateCard } from './item.styles';
 
 type Props = {
   active: boolean;
@@ -19,33 +20,21 @@ type Props = {
 };
 
 export const Item: React.FC<Props> = ({ active, template, onClick }) => {
-  const { id, name, description, subject } = template;
+  const { id, name } = template;
 
-  const [hover, setHover] = React.useState(false);
+  const queryClient = useQueryClient();
   const openModal = useNotificationEditModal();
-
-  const cardAnimations = useSpring({
-    borderColor: hover ? colors.gray300 : colors.gray200,
-    background: active ? colors.gray500 : colors.white,
-    color: active ? colors.white : colors.gray300,
-    config: {
-      tension: 500,
-    },
-  });
 
   return (
     <TemplateCard
-      className={classes(active ? 'is-active' : '')}
-      style={cardAnimations}
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      className={classes(active ? 'active' : '')}
       onClick={() => onClick(template)}
     >
-      <Name>
-        {name}
+      <Name title={name}>{name}</Name>
 
-        {!!template.formId && (
-          <EditButton
+      {!!template.formId && (
+        <ButtonGroup>
+          <Button
             title={translate('Edit')}
             onClick={(e) => {
               e.preventDefault();
@@ -56,18 +45,42 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
               return false;
             }}
           >
-            <EditIcon />
-          </EditButton>
-        )}
-      </Name>
-      <Id className="code">
-        {typeof id === 'number' && 'ID: '}
-        {id}
-      </Id>
-      <Subject>
-        <SubjectIcon />
-        {description || subject}
-      </Subject>
+            <i className="fa-solid fa-pencil"></i>
+          </Button>
+          <Button
+            title={translate('Delete')}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+
+              if (
+                confirm(
+                  translate('Are you sure you want to delete this template?')
+                )
+              ) {
+                axios
+                  .post('/api/templates/notifications/delete', {
+                    id,
+                  })
+                  .then(() => {
+                    queryClient.invalidateQueries(QKNotifications.templates());
+                    queryClient.invalidateQueries(
+                      QKNotifications.formTemplates(template.formId)
+                    );
+                  })
+                  .catch((error: APIError) => {
+                    const errors = Object.values(error.errors).join(', ');
+                    notifications.error(errors);
+                  });
+              }
+
+              return false;
+            }}
+          >
+            <i className="fa-solid fa-xmark" />
+          </Button>
+        </ButtonGroup>
+      )}
     </TemplateCard>
   );
 };

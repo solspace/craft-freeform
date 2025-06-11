@@ -20,7 +20,6 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
-use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\SettingsService;
 use Symfony\Component\Serializer\Serializer;
@@ -84,39 +83,15 @@ class NotificationsController extends BaseApiController
             return $this->createNewTemplate($formId);
         }
 
+        $settings = $this->settingsService->getSettingsModel();
         $database = $this->notificationTemplateProvider->getDatabaseTemplates();
         $file = $this->notificationTemplateProvider->getFileTemplates();
 
-        $settings = $this->settingsService->getSettingsModel();
-
-        $allowedTypes = [];
-
-        switch ($settings->emailTemplateStorageType) {
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
-
-                break;
-
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
-
-                break;
-
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH:
-            default:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
-
-                break;
-        }
+        $templates = array_merge($database, $file);
 
         $content = [
-            'allowedTypes' => $allowedTypes,
             'default' => $settings->emailTemplateDefault,
-            'templates' => [
-                'database' => $database,
-                'files' => $file,
-            ],
+            'templates' => $templates,
         ];
 
         $response = new Response();

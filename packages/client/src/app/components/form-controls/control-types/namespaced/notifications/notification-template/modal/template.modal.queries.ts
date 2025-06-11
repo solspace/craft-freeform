@@ -5,7 +5,7 @@ import type { AxiosError } from 'axios';
 import axios from 'axios';
 
 export const QKNotificationTemplates = {
-  all: ['notification-emplates'] as const,
+  all: ['notification-templates'] as const,
   one: (templateId: string | number) =>
     [...QKNotificationTemplates.all, templateId] as const,
 };

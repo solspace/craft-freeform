@@ -86,6 +86,7 @@ return [
     'freeform/api/templates/demo' => 'freeform/api/templates/demo',
     'freeform/api/templates/pdf' => 'freeform/api/templates/pdf',
     'freeform/api/templates/notifications/suggestions' => 'freeform/api/templates/notifications',
+    'freeform/api/templates/notifications/delete' => 'freeform/api/templates/notifications/delete',
     'freeform/api/templates/wrappers' => 'freeform/api/templates/wrappers',
     'freeform/api/templates/preview' => 'freeform/api/templates/notifications/preview-template',
     'freeform/api/templates/send-test' => 'freeform/api/templates/notifications/send-test',

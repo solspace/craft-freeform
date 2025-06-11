@@ -34,6 +34,7 @@ export type RecipientMapping = {
 };
 
 export enum TemplateType {
+  Global = 'global',
   Database = 'database',
   File = 'file',
   Form = 'form',

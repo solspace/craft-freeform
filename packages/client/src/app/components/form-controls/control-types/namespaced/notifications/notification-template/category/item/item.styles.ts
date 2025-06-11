@@ -1,58 +1,38 @@
-import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const TemplateCard = styled(animated.li)`
-  position: relative;
-  cursor: pointer;
-
-  min-width: 100px;
-  max-width: 600px;
-
+export const Name = styled.div`
   padding: ${spacings.sm} ${spacings.md};
 
-  background-color: ${colors.white};
-  border: 1px solid ${colors.gray200};
-  border-radius: ${borderRadius.lg};
+  font-size: 14px;
 
-  &:hover:not(.is-active) {
-    z-index: 1;
-    background-color: ${colors.gray200} !important;
-  }
-
-  &.is-active {
-    color: ${colors.white};
-    background-color: ${colors.gray500};
-    border: 1px solid ${colors.gray300};
-
-    &:hover {
-      z-index: 1;
-    }
-
-    h4,
-    .code,
-    div {
-      color: ${colors.white};
-    }
-
-    button svg {
-      fill: ${colors.white};
-    }
-  }
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `;
 
-export const Name = styled.h4`
-  position: relative;
+export const ButtonGroup = styled.div`
+  display: flex;
+  height: 100%;
 
-  margin: 0;
-  padding: 0;
-  font-size: 12px;
+  white-space: nowrap;
+
+  background-color: #e5ecf6;
+  border-top-right-radius: ${borderRadius.lg};
+  border-bottom-right-radius: ${borderRadius.lg};
 `;
 
-export const EditButton = styled.button`
-  position: absolute;
-  top: 0;
-  right: 0;
+export const Button = styled.button`
+  padding: ${spacings.sm} 10px;
+
+  &:hover {
+    background-color: ${colors.gray200};
+  }
+
+  &:last-child {
+    border-top-right-radius: ${borderRadius.lg};
+    border-bottom-right-radius: ${borderRadius.lg};
+  }
 
   svg {
     width: 14px;
@@ -60,30 +40,46 @@ export const EditButton = styled.button`
   }
 `;
 
-export const Subject = styled.div`
-  position: relative;
+export const TemplateCard = styled.li`
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
-  padding: 0 0 0 24px;
+  width: 100%;
+  min-width: 0;
 
-  font-size: 12px;
-  color: ${colors.gray300};
+  padding: 0;
 
-  max-lines: 1;
-  max-height: 60px;
-  overflow: hidden;
+  background-color: ${colors.gray050};
+  border: 1px solid ${colors.gray200};
+  border-radius: ${borderRadius.lg};
 
-  > svg {
-    position: absolute;
-    left: 0;
-    top: 2px;
+  &.dashed {
+    background-color: transparent;
+    border: 1px dashed ${colors.gray300};
 
-    width: 18px;
-    height: 18px;
+    &:hover {
+      background-color: ${colors.gray100};
+    }
   }
-`;
 
-export const Id = styled.div`
-  padding: 2px 0 1px;
-  font-size: 10px !important;
-  color: ${colors.gray300};
+  &.active {
+    color: ${colors.white};
+    background-color: ${colors.gray500};
+
+    button svg {
+      fill: ${colors.white};
+    }
+
+    ${ButtonGroup} {
+      background-color: #51606c;
+    }
+
+    ${Button} {
+      &:hover {
+        background-color: ${colors.gray800};
+      }
+    }
+  }
 `;

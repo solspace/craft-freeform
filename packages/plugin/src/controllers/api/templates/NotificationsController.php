@@ -8,8 +8,10 @@ use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Parsers\Suggestions;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\FileHelper;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -89,6 +91,31 @@ class NotificationsController extends BaseApiController
         }
 
         return $this->asEmptyResponse(201);
+    }
+
+    public function actionDelete(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
+        $this->requirePostRequest();
+
+        $id = $this->request->post('id');
+        if (!$id) {
+            return $this->asSerializedJson(['errors' => ['No ID provided']], 400);
+        }
+
+        $template = NotificationTemplateRecord::find()
+            ->where(['id' => $id])
+            ->andWhere('formId IS NOT NULL')
+            ->one()
+        ;
+
+        if (!$template) {
+            return $this->asSerializedJson(['errors' => ['Template not found']], 404);
+        }
+
+        $template->delete();
+
+        return $this->asEmptyResponse(204);
     }
 
     protected function get(): array

@@ -1,25 +1,41 @@
 import { breakpoints } from '@ff-client/styles/breakpoints';
+import { scrollBar } from '@ff-client/styles/mixins';
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const TemplateCategoryWrapper = styled.div``;
 
-export const Title = styled.h3`
+export const Title = styled.div`
   cursor: pointer;
+  position: relative;
 
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 2px;
+  gap: ${spacings.sm};
 
   padding: 0;
   margin: 0 0 ${spacings.sm};
 
   user-select: none;
 
-  svg {
-    width: 20px;
-    height: 20px;
+  > span {
+    padding: 0;
+
+    color: ${colors.gray300};
+    font-size: 13px;
+    font-weight: bold;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  &:after {
+    content: '';
+
+    width: 100%;
+    height: 1px;
+
+    background-color: ${colors.gray200};
   }
 `;
 
@@ -30,41 +46,20 @@ export const TemplateList = styled.ul`
   grid-template-columns: repeat(1, 1fr);
   gap: ${spacings.sm};
 
+  max-height: 130px;
+  overflow-y: auto;
+
+  ${scrollBar};
+
+  &.has-scroll {
+    padding-right: 10px;
+  }
+
   ${breakpoints.desktop.sm} {
     grid-template-columns: repeat(2, 1fr);
   }
 
   ${breakpoints.desktop.md} {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  padding-left: 25px;
-
-  &:before {
-    content: '';
-
-    position: absolute;
-    left: 8px;
-    top: -5px;
-    bottom: 0px;
-
-    display: block;
-
-    width: 4px;
-    background-color: ${colors.gray050};
-  }
-`;
-
-export const Collapser = styled.div`
-  display: block;
-  transition: transform 0.2s ease-in-out;
-
-  svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  &.collapsed {
-    transform: rotate(90deg);
+    grid-template-columns: repeat(4, 1fr);
   }
 `;

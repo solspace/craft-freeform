@@ -1,17 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
-import { TemplateType } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
 
-import CollapserIcon from '../icons/collapser.svg';
-import DatabaseIcon from '../icons/database.svg';
-import FilesIcon from '../icons/files.svg';
-import FormIcon from '../icons/form.svg';
 import type { NotificationSelectHandler } from '../notification-template';
 
+import { CreateButton } from './item/CreateButton';
 import { Item } from './item/Item';
 import {
-  Collapser,
   TemplateCategoryWrapper,
   TemplateList,
   Title,
@@ -19,62 +14,60 @@ import {
 
 type Props = {
   value: number | string;
-  category: TemplateType;
+  title: string;
   templates: NotificationTemplate[];
-  collapseByDefault?: boolean;
+  canCreate?: boolean;
   onClick: NotificationSelectHandler;
+  onCreate?: () => void;
 };
 
 export const Category: React.FC<Props> = ({
   value,
-  category,
+  title,
   templates,
-  collapseByDefault,
+  canCreate,
   onClick,
+  onCreate,
 }) => {
-  const [collapsed, setCollapsed] = useState(collapseByDefault);
+  const listRef = useRef<HTMLUListElement>(null);
+  const [hasScroll, setHasScroll] = useState(false);
 
-  if (!templates?.length) {
+  useEffect(() => {
+    const element = listRef.current;
+    if (element) {
+      setHasScroll(element.scrollHeight > element.clientHeight);
+    }
+  }, [templates]);
+
+  if (templates === undefined) {
     return null;
   }
 
-  let title: string, Icon: string;
-  switch (category) {
-    case TemplateType.Database:
-      title = 'Database';
-      Icon = DatabaseIcon;
-      break;
-    case TemplateType.Form:
-      title = 'Form';
-      Icon = FormIcon;
-      break;
-    case TemplateType.File:
-    default:
-      title = 'Files';
-      Icon = FilesIcon;
-      break;
+  if (!templates?.length && !canCreate) {
+    return null;
   }
 
   return (
     <TemplateCategoryWrapper>
-      <Title onClick={() => setCollapsed((prev) => !prev)}>
-        <Icon /> {title}{' '}
-        <Collapser className={classes(collapsed && 'collapsed')}>
-          <CollapserIcon />
-        </Collapser>
+      <Title>
+        <span>{title}</span>
       </Title>
-      {!collapsed && (
-        <TemplateList>
-          {templates.map((template) => (
-            <Item
-              active={value === template.id}
-              key={template.id}
-              template={template}
-              onClick={onClick}
-            />
-          ))}
-        </TemplateList>
-      )}
+
+      <TemplateList
+        ref={listRef}
+        className={classes(hasScroll && 'has-scroll')}
+      >
+        {templates.map((template) => (
+          <Item
+            active={value === template.id}
+            key={template.id}
+            template={template}
+            onClick={onClick}
+          />
+        ))}
+
+        {canCreate && <CreateButton onCreate={onCreate} />}
+      </TemplateList>
     </TemplateCategoryWrapper>
   );
 };

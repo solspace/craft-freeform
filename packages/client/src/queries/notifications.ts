@@ -95,14 +95,12 @@ export const useQueryFormNotifications = (
 
 export type NotificationTemplateGroups = {
   form?: NotificationTemplate[];
-  database: NotificationTemplate[];
-  files: NotificationTemplate[];
+  global: NotificationTemplate[];
 };
 
 type NotificationTemplatePayload = {
-  allowedTypes: TemplateType[];
   default: TemplateType;
-  templates: NotificationTemplateGroups;
+  templates: NotificationTemplate[];
 };
 
 export const useQueryNotificationTemplates = (): UseQueryResult<

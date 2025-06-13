@@ -26,7 +26,7 @@ class FakeDataProvider
 {
     private array $instances;
 
-    public function generate(Form $form, ?string $locale)
+    public function generate(Form $form, ?string $locale): array
     {
         $faker = $this->getFaker($locale);
 
@@ -92,8 +92,12 @@ class FakeDataProvider
                         false
                     );
 
-                    $content = file_get_contents($file);
-                    $signature = 'data:image/png;base64,'.base64_encode($content);
+                    if ($file) {
+                        $content = file_get_contents($file);
+                        $signature = 'data:image/png;base64,'.base64_encode($content);
+                    } else {
+                        $signature = file_get_contents(__DIR__.'/fake-signature.txt');
+                    }
                 }
 
                 $value = $signature;

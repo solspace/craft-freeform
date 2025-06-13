@@ -21,6 +21,7 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
+use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\SettingsService;
 use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
@@ -36,6 +37,7 @@ class NotificationsController extends BaseApiController
         private SettingsService $settingsService,
         private Serializer $serializer,
         private HtmlTemplateParser $htmlTemplateParser,
+        private FormsService $formsService,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -54,7 +56,9 @@ class NotificationsController extends BaseApiController
         }
 
         $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
-        $template->body = $this->htmlTemplateParser->fromTwig($template->getBody());
+        $form = $this->formsService->getFormById($template->getFormId());
+
+        $template->body = $this->htmlTemplateParser->fromTwig($template->getBody(), $form);
 
         return $this->asSerializedJson($template);
     }

@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Parsers\Suggestions;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\FileHelper;
@@ -139,6 +140,21 @@ class NotificationsController extends BaseApiController
 
         $fakeData = $this->fakeDataProvider->generate($form, $this->request->getPreferredLanguage());
         $form->setFieldValues($fakeData);
+
+        $submission = new Submission([
+            'id' => 123456,
+            'incrementalId' => 123,
+            'uid' => '12345678-1234-1234-1234-123456789012',
+            'token' => 'preview-token-'.sha1(uniqid()),
+            'formId' => $form->getId(),
+            'userId' => \Craft::$app->getUser()->getId(),
+            'ip' => '127.0.0.1',
+            'dateCreated' => new \DateTime(),
+            'statusId' => $form->getSettings()->getGeneral()->defaultStatus,
+        ]);
+        $submission->title = Submission::generateTitle($submission, $form);
+        $submission->setFormFieldValues($fakeData, true);
+        $form->setSubmission($submission);
 
         $record = new NotificationTemplateRecord();
         $record->id = 'preview';

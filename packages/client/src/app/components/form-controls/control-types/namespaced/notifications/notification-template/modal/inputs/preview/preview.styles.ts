@@ -5,11 +5,12 @@ export const PreviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 16px;
+
   background-color: ${colors.white};
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-height: 400px;
+
+  overflow: auto;
 `;
 
 export const PreviewContainer = styled.div`
@@ -31,6 +32,7 @@ export const HeaderRow = styled.div`
 export const Row = styled.div`
   display: flex;
   gap: 5px;
+
   padding: 4px 0;
 
   border-bottom: 1px solid ${colors.hairline};
@@ -61,7 +63,6 @@ export const Value = styled.div`
 `;
 
 export const Body = styled.div`
-  flex: 1;
-  min-height: 600px;
-  padding: ${spacings.lg} ${spacings.xl};
+  width: 100%;
+  padding: ${spacings.md} ${spacings.xl};
 `;

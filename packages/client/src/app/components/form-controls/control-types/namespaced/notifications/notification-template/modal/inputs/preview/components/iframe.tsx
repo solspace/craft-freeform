@@ -22,6 +22,7 @@ export const IframeBlock: FC<Props> = ({ body }) => {
           if (iframe && iframe.contentWindow && iframe.contentWindow.document) {
             const height = iframe.contentWindow.document.body.scrollHeight;
             iframe.style.height = `${height}px`;
+            iframe.contentWindow.document.body.style.overflow = 'hidden';
           }
         };
 
@@ -31,12 +32,20 @@ export const IframeBlock: FC<Props> = ({ body }) => {
     }
   }, [body]);
 
-  return <Iframe ref={ref} sandbox="allow-same-origin" title="Email Preview" />;
+  return (
+    <Iframe
+      ref={ref}
+      width="100%"
+      sandbox="allow-same-origin"
+      title="Email Preview"
+    />
+  );
 };
 
 const Iframe = styled.iframe`
   display: block;
   width: 100%;
 
+  overflow: hidden;
   border: none;
 `;

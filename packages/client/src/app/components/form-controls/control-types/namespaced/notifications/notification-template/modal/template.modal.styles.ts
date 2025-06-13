@@ -5,19 +5,16 @@ import styled from 'styled-components';
 
 export const Container = styled(ModalContainer)`
   display: grid;
-  grid-template-rows: min-content min-content auto min-content;
+  grid-template-rows: min-content min-content 70vh min-content;
 
-  width: 66%;
-  height: 66%;
-  max-width: none;
+  max-width: 70vw;
   min-width: 600px;
-  min-height: 400px;
 `;
 
 export const ModalContent = styled.div`
   padding: 1rem 2rem;
 
-  overflow: auto;
+  overflow-y: auto;
   ${scrollBar};
 `;
 

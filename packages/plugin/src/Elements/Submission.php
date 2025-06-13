@@ -27,6 +27,7 @@ use Solspace\Freeform\Events\Submissions\ProcessFieldValueEvent;
 use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Events\Submissions\SetSubmissionFieldValueEvent;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
@@ -148,6 +149,36 @@ class Submission extends Element
         }
 
         return parent::__isset($name);
+    }
+
+    public static function generateTitle(self $submission, Form $form): string
+    {
+        $generalSettings = $form->getSettings()->getGeneral();
+        $fields = $form->getLayout()->getFields()->getStorableFields();
+
+        $data = [];
+        foreach ($fields as $field) {
+            if (!$form->hasFieldBeenSubmitted($field)) {
+                continue;
+            }
+
+            if ($field instanceof FileUploadField && $submission->id && empty($field->getValue())) {
+                continue;
+            }
+
+            $data[$field->getHandle()] = $field->getValue();
+        }
+
+        return \Craft::$app->view->renderString(
+            $generalSettings->submissionTitle,
+            array_merge(
+                $data,
+                [
+                    'dateCreated' => $submission->dateCreated,
+                    'form' => $form,
+                ]
+            )
+        );
     }
 
     public static function find(): SubmissionQuery

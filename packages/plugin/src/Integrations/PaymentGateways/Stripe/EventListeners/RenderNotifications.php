@@ -34,19 +34,23 @@ class RenderNotifications extends FeatureBundle
         /** @var StripeField $field */
         foreach ($fields as $field) {
             $paymentIntentId = $field->getValue();
-            if (!$paymentIntentId) {
+            if (!$paymentIntentId || !str_starts_with($paymentIntentId, 'pi_')) {
                 continue;
             }
 
-            $intent = $field
-                ->getIntegration()
-                ->getStripeClient()
-                ->paymentIntents
-                ->retrieve(
-                    $paymentIntentId,
-                    ['expand' => ['customer', 'payment_method', 'invoice.subscription.plan.product']]
-                )
-            ;
+            try {
+                $intent = $field
+                    ->getIntegration()
+                    ->getStripeClient()
+                    ->paymentIntents
+                    ->retrieve(
+                        $paymentIntentId,
+                        ['expand' => ['customer', 'payment_method', 'invoice.subscription.plan.product']]
+                    )
+                ;
+            } catch (\Exception) {
+                continue;
+            }
 
             if ($intent) {
                 $payments[$field->getHandle()] = $this->paymentService->intentToModel($field, $intent);

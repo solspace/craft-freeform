@@ -16,7 +16,7 @@ const compileStoreSuggestions = (store: Store<RootState>): Suggestion[] => {
     fields.push({
       shortName: field.properties.label,
       name: field.properties.label,
-      token: `field.${field.uid}`,
+      token: `fieldUids['${field.uid}']`,
     });
   });
 

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -40,6 +41,8 @@ class AuthorizationListener extends FeatureBundle
         $event->addConfig([
             'headers' => [
                 'Authorization' => 'Token '.$integration->getApiKey(),
+                'X-Craft-Version' => \Craft::$app->version,
+                'X-Freeform-Version' => Freeform::getInstance()->getVersion(),
             ],
         ]);
     }

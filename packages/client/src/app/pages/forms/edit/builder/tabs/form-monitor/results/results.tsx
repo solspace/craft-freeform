@@ -26,7 +26,9 @@ import {
   ChartContainer,
   DailyTestsContainer,
   DayColumn,
+  DurationBadge,
   FormSubmitStatus,
+  FormSubmitWrapper,
   NoResults,
   NoTestsMessage,
   NotificationStat,
@@ -119,23 +121,40 @@ const TestRow: React.FC<TestRowProps> = ({
         </StatusIndicator>
       </td>
       <td className="no-break">
-        <FormSubmitStatus $status={test.status}>
-          <StatusIcon>{getStatusIcon(test.status)}</StatusIcon>
-        </FormSubmitStatus>
-        {test.screenshot && (
-          <Tooltip title={translate('View Screenshot')} {...tooltipProps}>
-            <ScreenshotButton
-              onClick={() =>
-                onScreenshot({
-                  url: test.screenshot!,
-                  testId: test.id,
-                })
-              }
+        <FormSubmitWrapper>
+          <FormSubmitStatus $status={test.status}>
+            <StatusIcon>{getStatusIcon(test.status)}</StatusIcon>
+          </FormSubmitStatus>
+          {test.screenshot && (
+            <Tooltip title={translate('View Screenshot')} {...tooltipProps}>
+              <ScreenshotButton
+                onClick={() =>
+                  onScreenshot({
+                    url: test.screenshot!,
+                    testId: test.id,
+                  })
+                }
+              >
+                <CameraIcon />
+              </ScreenshotButton>
+            </Tooltip>
+          )}
+          {test.submissionDuration !== 0 && (
+            <Tooltip
+              title={translate(
+                `Submit time is ${test.submissionDuration} seconds`,
+                {
+                  duration: test.submissionDuration.toFixed(2),
+                }
+              )}
+              {...tooltipProps}
             >
-              <CameraIcon />
-            </ScreenshotButton>
-          </Tooltip>
-        )}
+              <DurationBadge>
+                {test.submissionDuration.toFixed(1)}s
+              </DurationBadge>
+            </Tooltip>
+          )}
+        </FormSubmitWrapper>
       </td>
       {showNotifications && (
         <td>

@@ -358,6 +358,11 @@ export const NotificationType = styled.div`
   line-height: 1;
 `;
 
+export const FormSubmitWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const FormSubmitStatus = styled.div<{
   $status: 'success' | 'failed' | 'pending';
 }>`
@@ -382,6 +387,24 @@ export const FormSubmitStatus = styled.div<{
   margin-right: ${spacings.sm};
 `;
 
+export const DurationBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border-radius: ${borderRadius.sm};
+  background-color: ${colors.gray100};
+  color: ${colors.gray700};
+  font-size: 9px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-right: ${spacings.sm};
+  height: 16px;
+  line-height: 1;
+  position: relative;
+  top: -1px;
+`;
+
 export const ScreenshotButton = styled.button`
   display: inline-flex;
   align-items: center;
@@ -396,6 +419,7 @@ export const ScreenshotButton = styled.button`
   color: white;
   opacity: 0.9;
   transition: all 0.2s ease;
+  margin-right: ${spacings.sm};
 
   &:hover {
     opacity: 1;

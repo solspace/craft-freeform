@@ -284,6 +284,8 @@ class Settings extends Model
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
     public string $csrfRefresh = self::CSRF_REFRESH_NONE;
 
+    public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
+
     /**
      * Settings constructor.
      */

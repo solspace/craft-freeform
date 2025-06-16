@@ -37,6 +37,7 @@ export const HtmlBodyInput: FC<InputControl> = (props) => {
   const queryClient = useQueryClient();
 
   const {
+    templates: { toolbar },
     metadata: {
       tinymce: { stylesPath },
     },
@@ -57,7 +58,7 @@ export const HtmlBodyInput: FC<InputControl> = (props) => {
         value={value}
         onEditorChange={onChange}
         plugins={plugins}
-        toolbar={'undo redo | styleselect | bold italic | freeform-tokens'}
+        toolbar={toolbar}
         licenseKey="gpl"
       />
     </ControlBlock>

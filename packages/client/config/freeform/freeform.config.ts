@@ -10,6 +10,7 @@ type Config = {
   templates: {
     native: boolean;
     canCreate: boolean;
+    toolbar: string;
   };
   feed: boolean;
   limits: {

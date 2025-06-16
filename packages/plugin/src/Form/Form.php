@@ -785,12 +785,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $event = new SetFieldValuesEvent($this, $values);
         Event::trigger($this, self::EVENT_SET_FIELD_VALUES, $event);
 
+        $properties = $this->getProperties();
+        $storedValues = $properties->get(self::PROPERTY_STORED_VALUES, []);
+
         foreach ($event->getValues() as $handle => $value) {
             $field = $this->get($handle);
             if ($field instanceof FieldInterface) {
                 $field->setValue($value);
+                $storedValues[$handle] = $value;
             }
         }
+
+        $properties->set(self::PROPERTY_STORED_VALUES, $storedValues);
 
         return $this;
     }

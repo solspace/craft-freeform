@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import React, { useEffect } from 'react';
 import { ControlBlock } from '@components/form-controls/control.block';
 import { spacings } from '@ff-client/styles/variables';
+import type { APIError } from '@ff-client/types/api';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -23,7 +24,7 @@ import {
 
 export const TemplatePreview: FC<InputControl> = (props) => {
   const { inView } = props;
-  const { data, isFetching, refetch } = usePreviewQuery(props.context);
+  const { data, isFetching, refetch, error } = usePreviewQuery(props.context);
   const sendTest = useSendTestEmailMutation();
 
   useEffect(() => {
@@ -67,7 +68,23 @@ export const TemplatePreview: FC<InputControl> = (props) => {
       }
     >
       {isFetching && <TemplatePreviewLoader />}
-      {data !== undefined && !isFetching && (
+
+      {!!error && (
+        <PreviewContainer>
+          <HeaderRow />
+          <Row>
+            <Label>{translate('Error')}:</Label>
+            <Value>
+              <b>{error.message}</b>
+            </Value>
+          </Row>
+          <Row>
+            <Body>{(error as APIError).errors.template.preview}</Body>
+          </Row>
+        </PreviewContainer>
+      )}
+
+      {data !== undefined && !error && !isFetching && (
         <PreviewContainer>
           <HeaderRow />
           <Row>

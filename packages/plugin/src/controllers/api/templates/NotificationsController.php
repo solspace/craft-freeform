@@ -11,6 +11,8 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Exceptions\Api\ApiException;
+use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -37,10 +39,17 @@ class NotificationsController extends BaseApiController
 
     public function actionPreviewTemplate(): Response
     {
-        [$form, $template, $logger] = $this->extractVariables();
+        try {
+            [$form, $template, $logger] = $this->extractVariables();
 
-        $variables = $this->mailer->compileTwigVariables($form, $template, $form->getSubmission());
-        $message = $this->mailer->compileMessage($template, $variables, $logger, $form);
+            $variables = $this->mailer->compileTwigVariables($form, $template, $form->getSubmission());
+            $message = $this->mailer->compileMessage($template, $variables, $logger, $form);
+        } catch (\Exception $exception) {
+            $errors = new ErrorCollection();
+            $errors->add('template', 'preview', ['Failed to compile template: '.$exception->getMessage()]);
+
+            throw new ApiException(400, $errors);
+        }
 
         $faker = Factory::create();
 

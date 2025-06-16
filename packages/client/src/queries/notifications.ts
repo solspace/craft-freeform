@@ -1,4 +1,5 @@
 import { useDispatch } from 'react-redux';
+import config, { TemplateMethod } from '@config/freeform/freeform.config';
 import { notificationActions } from '@editor/store/slices/notifications';
 import type {
   Notification,
@@ -123,6 +124,10 @@ export const useQueryNotificationTemplates = (): UseQueryResult<
 export const useQueryFormNotificationTemplates = (
   formId?: number
 ): UseQueryResult<NotificationTemplate[], AxiosError> => {
+  const {
+    templates: { method },
+  } = config;
+
   return useQuery(
     QKNotifications.formTemplates(formId),
     () =>
@@ -132,6 +137,7 @@ export const useQueryFormNotificationTemplates = (
     {
       staleTime: Infinity,
       cacheTime: Infinity,
+      enabled: method !== TemplateMethod.Global,
     }
   );
 };

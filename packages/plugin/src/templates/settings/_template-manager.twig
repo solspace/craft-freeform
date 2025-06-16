@@ -93,147 +93,163 @@
     <h2>{{ "Email Notification Templates"|t('freeform') }}</h2>
 
     {{ forms.selectField({
-        label: "Template Storage Type"|t('freeform'),
-        id: 'storage-type',
-        instructions: "Choose whether you want to enable email notification templates stored as files, in the database, or have both options available."|t('freeform'),
-        name: "settings[emailTemplateStorageType]",
-        value: settings.emailTemplateStorageType,
-        errors: settings.errors("emailTemplateStorageType"),
+        label: "Template Method"|t('freeform'),
+        id: 'template-method',
+        instructions: "Choose whether you want to use form-specific templates, global templates, or both."|t('freeform'),
+        name: "settings[emailTemplateMethod]",
+        value: settings.emailTemplateMethod,
+        errors: settings.errors("emailTemplateMethod"),
         options: {
-            "files": "File" | t('freeform'),
-            "database": "Database" | t('freeform'),
-            "files_database": "File & Database" | t('freeform'),
+            "form": "Form-specific only" | t('freeform'),
+            "global": "Global only" | t('freeform'),
+            "all": "Form-specific & Global" | t('freeform'),
         },
     }) }}
 
-    {{ forms.lightswitchField({
-        id: "allow-builder-templates",
-        label: "Allow New Templates to be created inside the Form Builder"|t("freeform"),
-        instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
-        name: "settings[allowBuilderTemplateCreation]",
-        value: settings.allowBuilderTemplateCreation,
-        errors: settings.errors("allowBuilderTemplateCreation"),
-        on: settings.allowBuilderTemplateCreation,
-    }) }}
-
-
-    {% set isBuilder = settings.allowBuilderTemplateCreation %}
-    {% set isCombined = settings.emailTemplateStorageType == "files_database" %}
-    <div id="template-default" class="field {{ isBuilder ? 'builder-templates' }} {{ isCombined ? 'combined' }} {{ not isBuilder or not isCombined ? "hidden" }}">
+    <div id="global-email-block" class="{{ settings.emailTemplateMethod == 'form' ? 'hidden' }}">
         {{ forms.selectField({
-            label: "New Template Type for Form Builder"|t('freeform'),
-            instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
-            name: "settings[emailTemplateDefault]",
-            value: settings.emailTemplateDefault,
-            errors: settings.errors("emailTemplateDefault"),
+            label: "Template Storage Type"|t('freeform'),
+            id: 'storage-type',
+            instructions: "Choose whether you want to enable email notification templates stored as files, in the database, or have both options available."|t('freeform'),
+            name: "settings[emailTemplateStorageType]",
+            value: settings.emailTemplateStorageType,
+            errors: settings.errors("emailTemplateStorageType"),
             options: {
                 "files": "File" | t('freeform'),
                 "database": "Database" | t('freeform'),
+                "files_database": "File & Database" | t('freeform'),
             },
         }) }}
-    </div>
-
-    <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
         {{ forms.lightswitchField({
-            label: "Allow File-based Email Templates to be managed inside the Notifications area"|t('freeform'),
-            instructions: "Allowing users to modify or generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
-            name: "settings[allowFileTemplateEdit]",
-            on: settings.allowFileTemplateEdit,
-            errors: settings.errors("allowFileTemplateEdit"),
+            id: "allow-builder-templates",
+            label: "Allow New Templates to be created inside the Form Builder"|t("freeform"),
+            instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
+            name: "settings[allowBuilderTemplateCreation]",
+            value: settings.allowBuilderTemplateCreation,
+            errors: settings.errors("allowBuilderTemplateCreation"),
+            on: settings.allowBuilderTemplateCreation,
         }) }}
 
-        {% set suggestionsData = [] %}
-        {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
-            {% set suggestionsData = suggestionsData|merge([{
-                "name": directory
-            }]) %}
-        {% endfor %}
 
-        {{ forms.autosuggestField({
-            label: "File Directory Path"|t('freeform'),
-            id: "emailTemplateDirectory",
-            class: "code",
-            suggestEnvVars: false,
-            suggestAliases: false,
-            suggestions:[{
-                "label":"Existing Directories",
-                "data": suggestionsData
-            }],
-            tip: null,
-            limit: 10,
-            name: "settings[emailTemplateDirectory]",
-            value: settings.emailTemplateDirectory,
-            errors: settings.getErrors("emailTemplateDirectory"),
-            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
-            placeholder: "e.g. _freeform/notifications",
-        }) }}
+        {% set isBuilder = settings.allowBuilderTemplateCreation %}
+        {% set isCombined = settings.emailTemplateStorageType == "files_database" %}
+        <div id="template-default" class="field {{ isBuilder ? 'builder-templates' }} {{ isCombined ? 'combined' }} {{ not isBuilder or not isCombined ? "hidden" }}">
+            {{ forms.selectField({
+                label: "New Template Type for Form Builder"|t('freeform'),
+                instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
+                name: "settings[emailTemplateDefault]",
+                value: settings.emailTemplateDefault,
+                errors: settings.errors("emailTemplateDefault"),
+                options: {
+                    "files": "File" | t('freeform'),
+                    "database": "Database" | t('freeform'),
+                },
+            }) }}
+        </div>
 
-        {% if settings.absoluteEmailTemplateDirectory %}
+        <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
-            <div id="components-wrapper">
-                <div style="margin: 0;">
-                    <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
-                        {{ "Add Sample"|t('freeform') }}
-                    </button>
+            {{ forms.lightswitchField({
+                label: "Allow File-based Email Templates to be managed inside the Notifications area"|t('freeform'),
+                instructions: "Allowing users to modify or generate template files from inside the CP can potentially cause issues with certain workflows."|t('freeform'),
+                name: "settings[allowFileTemplateEdit]",
+                on: settings.allowFileTemplateEdit,
+                errors: settings.errors("allowFileTemplateEdit"),
+            }) }}
 
-                    {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
+            {% set suggestionsData = [] %}
+            {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+                {% set suggestionsData = suggestionsData|merge([{
+                    "name": directory
+                }]) %}
+            {% endfor %}
 
-                    <ul class="directory-structure">
-                        <li class="dir">
-                            <span>{{ settings.emailTemplateDirectory }}</span>
-                            <ul>
-                                {% for file in templateFiles %}
-                                    <li class="file">
-                                        <span>{{ file }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    </ul>
+            {{ forms.autosuggestField({
+                label: "File Directory Path"|t('freeform'),
+                id: "emailTemplateDirectory",
+                class: "code",
+                suggestEnvVars: false,
+                suggestAliases: false,
+                suggestions:[{
+                    "label":"Existing Directories",
+                    "data": suggestionsData
+                }],
+                tip: null,
+                limit: 10,
+                name: "settings[emailTemplateDirectory]",
+                value: settings.emailTemplateDirectory,
+                errors: settings.getErrors("emailTemplateDirectory"),
+                instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
+                placeholder: "e.g. _freeform/notifications",
+            }) }}
+
+            {% if settings.absoluteEmailTemplateDirectory %}
+
+                <div id="components-wrapper">
+                    <div style="margin: 0;">
+                        <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
+                            {{ "Add Sample"|t('freeform') }}
+                        </button>
+
+                        {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
+
+                        <ul class="directory-structure">
+                            <li class="dir">
+                                <span>{{ settings.emailTemplateDirectory }}</span>
+                                <ul>
+                                    {% for file in templateFiles %}
+                                        <li class="file">
+                                            <span>{{ file }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
-        {% if craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
+            {% if craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
 
-            <hr>
+                <hr>
 
-            <h3>{{ "Migration Utility"|t('freeform') }}</h3>
+                <h3>{{ "Migration Utility"|t('freeform') }}</h3>
 
-            <div class="field" id="notifications-migrator">
-                <div class="heading">
-                    <label>
-                        {{ 'Convert Database email templates to File email templates'|t('freeform') }}
-                    </label>
-                </div>
-                <div class="instructions">
-                    <p>
-                        {{ 'This is a utility that allows you to migrate your existing database email templates over to file-based email templates (you can continue to edit these from the CP). The utility will also update all existing forms to use the new file version of the email template. If you wish to have Freeform clean up and remove the old database email templates after, check the checkbox as well.'|t('freeform') }}
-                    </p>
-                </div>
-                <div class="input">
-                    <div style="margin-bottom: 10px;">
-                        <input
-                                type="checkbox"
-                                class="checkbox"
-                                name="removeFiles"
-                                value="1"
-                                id="remove-files"
-                                checked
-                        />
-                        <label for="remove-files">
-                            {{ "Remove database files after migration"|t('freeform') }}
+                <div class="field" id="notifications-migrator">
+                    <div class="heading">
+                        <label>
+                            {{ 'Convert Database email templates to File email templates'|t('freeform') }}
                         </label>
                     </div>
+                    <div class="instructions">
+                        <p>
+                            {{ 'This is a utility that allows you to migrate your existing database email templates over to file-based email templates (you can continue to edit these from the CP). The utility will also update all existing forms to use the new file version of the email template. If you wish to have Freeform clean up and remove the old database email templates after, check the checkbox as well.'|t('freeform') }}
+                        </p>
+                    </div>
+                    <div class="input">
+                        <div style="margin-bottom: 10px;">
+                            <input
+                                    type="checkbox"
+                                    class="checkbox"
+                                    name="removeFiles"
+                                    value="1"
+                                    id="remove-files"
+                                    checked
+                            />
+                            <label for="remove-files">
+                                {{ "Remove database files after migration"|t('freeform') }}
+                            </label>
+                        </div>
 
-                    <button class="btn" id="migrate">
-                        {{ "Migrate"|t('freeform') }}
-                    </button>
+                        <button class="btn" id="migrate">
+                            {{ "Migrate"|t('freeform') }}
+                        </button>
+                    </div>
                 </div>
-            </div>
-        {% endif %}
+            {% endif %}
 
+        </div>
     </div>
 
     {{ forms.autosuggestField({

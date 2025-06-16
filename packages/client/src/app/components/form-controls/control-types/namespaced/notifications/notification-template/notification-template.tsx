@@ -1,7 +1,7 @@
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
-import config from '@config/freeform/freeform.config';
+import config, { TemplateMethod } from '@config/freeform/freeform.config';
 import { NotificationTemplate } from '@ff-client/types/notifications';
 import type { NotificationTemplateProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
@@ -22,7 +22,7 @@ const NotificationTemplate: React.FC<
   const openModal = useNotificationEditModal();
 
   const {
-    templates: { canCreate },
+    templates: { canCreate, method },
   } = config;
 
   if (isFetching && !templates) {
@@ -54,7 +54,7 @@ const NotificationTemplate: React.FC<
           title={translate('Form Templates')}
           templates={templates.form}
           onClick={handleSelect}
-          canCreate={canCreate}
+          canCreate={canCreate && method !== TemplateMethod.Global}
           onCreate={openModalFunction}
         />
 

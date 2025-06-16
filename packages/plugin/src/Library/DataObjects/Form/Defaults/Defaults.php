@@ -26,9 +26,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
         $this->twigInHtml = (bool) ($config['twigInHtml'] ?? true);
         $this->twigIsolation = (bool) ($config['twigIsolation'] ?? true);
         $this->includeSampleTemplates = (bool) ($config['includeSampleTemplates'] ?? true);
-
         $this->richTextFieldToolbarConfiguration = $config['richTextFieldToolbarConfiguration'] ?? self::DEFAULT_TOOLBAR_CONFIGURATION;
-        $this->emailNotificationToolbarConfiguration = $config['emailNotificationToolbarConfiguration'] ?? self::DEFAULT_TOOLBAR_CONFIGURATION;
 
         $this->notifications = new Notifications($config['notifications'] ?? []);
         $this->settings = new Settings($config['settings'] ?? []);
@@ -67,7 +65,6 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
             'twigInHtml' => $this->twigInHtml,
             'twigIsolation' => $this->twigIsolation,
             'richTextFieldToolbarConfiguration' => $this->richTextFieldToolbarConfiguration,
-            'emailNotificationToolbarConfiguration' => $this->emailNotificationToolbarConfiguration,
             'includeSampleTemplates' => $this->includeSampleTemplates,
             'notifications' => $this->notifications->jsonSerialize(),
             'settings' => $this->settings->jsonSerialize(),

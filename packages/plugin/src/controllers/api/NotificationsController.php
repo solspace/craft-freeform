@@ -20,6 +20,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\SettingsService;
@@ -88,10 +89,15 @@ class NotificationsController extends BaseApiController
         }
 
         $settings = $this->settingsService->getSettingsModel();
-        $database = $this->notificationTemplateProvider->getDatabaseTemplates();
-        $file = $this->notificationTemplateProvider->getFileTemplates();
 
-        $templates = array_merge($database, $file);
+        if (Settings::EMAIL_TEMPLATE_METHOD_FORM === $settings->emailTemplateMethod) {
+            $templates = [];
+        } else {
+            $database = $this->notificationTemplateProvider->getDatabaseTemplates();
+            $file = $this->notificationTemplateProvider->getFileTemplates();
+
+            $templates = array_merge($database, $file);
+        }
 
         $content = [
             'default' => $settings->emailTemplateDefault,

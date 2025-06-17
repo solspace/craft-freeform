@@ -22,6 +22,14 @@ class WrappersController extends BaseController
     public function actionCreate(): Response
     {
         $record = new NotificationWrapperRecord();
+        $record->content = <<<'EOT'
+            <html lang="en">
+                <head></head>
+                <body>
+                    {{ emailBody }}
+                </body>
+            </html>
+            EOT;
 
         return $this->renderEditForm($record, 'New Wrapper');
     }

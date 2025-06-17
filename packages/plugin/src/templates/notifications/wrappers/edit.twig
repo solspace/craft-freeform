@@ -128,6 +128,8 @@
 {% endblock %}
 
 {% js %}
+    {% if not wrapper.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/textmate");
     var textarea = $('textarea[name="content"]').hide();
@@ -139,8 +141,6 @@
 
     editor.getSession().setUseWorker(false);
     editor.getSession().setMode("ace/mode/twig");
-
-    console.log(editor.getSession());
 
     document.getElementById("editor").style.display = "block";
 {% endjs %}

@@ -28,6 +28,12 @@ class NotificationWrapperRecord extends ActiveRecord
         return [
             [['name', 'handle', 'content'], 'required'],
             [['handle'], 'unique'],
+            [
+                ['handle'],
+                'match',
+                'pattern' => '/^[a-z0-9_]+$/',
+                'message' => 'Handle can only contain lowercase letters, numbers, and underscores.',
+            ],
         ];
     }
 

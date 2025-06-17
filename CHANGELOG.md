@@ -3081,7 +3081,7 @@
 - Added ability to populate multi-option field types with Commerce Products.
 - Added options to set the reCAPTCHA 'Theme' (light/dark), 'Size' (normal/compact) and custom 'Error Message'.
 - Added ability to disable reCAPTCHA for forms at template level (use `disableRecaptcha: true`).
-- Added optional 'Reply-to Name' field for email notification templates to apply a name to the Reply-to email address.
+- Added optional 'Reply-To Name' field for email notification templates to apply a name to the Reply-to email address.
 - Added `$form->hasFieldType(string $type);` better field type presence checking in forms.
 
 ### Changed

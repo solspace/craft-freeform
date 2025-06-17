@@ -7,6 +7,7 @@ import type {
   GenericValue,
   OptionCollection,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import transliterate from '@sindresorhus/transliterate';
 import axios from 'axios';
 import { camelCase } from 'lodash';
@@ -44,7 +45,7 @@ export type FieldConfiguration = Tab[];
 
 export const configuration = [
   {
-    name: 'Content',
+    name: translate('Content'),
     rows: [
       [
         {
@@ -74,16 +75,16 @@ export const configuration = [
       [
         {
           type: HtmlBodyInput,
-          label: 'Email Body (HTML)',
+          label: 'Message Body',
           handle: 'body',
           instructions:
-            'The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables.',
+            'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.',
         },
       ],
     ],
   },
   {
-    name: 'Configuration',
+    name: translate('Configuration'),
     rows: [
       [
         {
@@ -135,7 +136,7 @@ export const configuration = [
     ],
   },
   {
-    name: 'Advanced',
+    name: translate('Advanced'),
     rows: [
       [
         {
@@ -164,7 +165,7 @@ export const configuration = [
           label: 'Include Attachments',
           handle: 'includeAttachments',
           instructions:
-            'Whether or not to include attachments in the email notification.',
+            'Include uploaded files as attachments in email notification.',
         },
       ],
       [
@@ -180,7 +181,7 @@ export const configuration = [
     ],
   },
   {
-    name: 'Templates',
+    name: translate('Templates'),
     rows: [
       [
         {
@@ -207,7 +208,7 @@ export const configuration = [
           label: 'PDF Templates',
           handle: 'pdfTemplateIds',
           minEdition: Edition.Pro,
-          instructions: `Pick PDF templates to use for this notification.`,
+          instructions: `Select any PDF templates to use for this notification.`,
           optionDefinition: async () => {
             const templates =
               await axios.get<{ id: string; name: string }[]>(
@@ -224,14 +225,14 @@ export const configuration = [
     ],
   },
   {
-    name: 'Preview',
+    name: translate('Preview'),
     rows: [
       [
         {
           type: TemplatePreview,
           label: 'Preview',
           handle: 'preview',
-          instructions: `Preview your notification template. This will show you how the email will look when sent.`,
+          instructions: `This will give you a rough idea of how your notification will look to the recipient.`,
         },
       ],
     ],

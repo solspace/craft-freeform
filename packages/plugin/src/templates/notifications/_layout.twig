@@ -15,7 +15,7 @@
         <nav>
             <ul>
                 <li class="heading">
-                    <span>Templates</span>
+                    <span>{{ "Templates"|t('freeform') }}</span>
                 </li>
                 <li>
                     <a href="{{ url('freeform/notifications/files') }}" class="{{ segment == "files" ? 'sel' }}">
@@ -27,7 +27,7 @@
                 </li>
 
                 <li class="heading">
-                    <span>Template Wrappers</span>
+                    <span>{{ "Template Wrappers"|t('freeform') }}</span>
                 </li>
                 <li>
                     <a href="{{ url('freeform/notifications/wrappers') }}" class="{{ segment == "wrappers" ? 'sel' }}">

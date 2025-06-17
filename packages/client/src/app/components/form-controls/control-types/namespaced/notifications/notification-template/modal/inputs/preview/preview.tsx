@@ -88,18 +88,18 @@ export const TemplatePreview: FC<InputControl> = (props) => {
         <PreviewContainer>
           <HeaderRow />
           <Row>
-            <Label>{translate('To')}:</Label>
-            <Value>{data.to}</Value>
+            <Label>{translate('From')}:</Label>
+            <Value>
+              <Address address={data.from} />
+            </Value>
           </Row>
           <Row>
             <Label>{translate('Subject')}:</Label>
             <Value>{data.subject}</Value>
           </Row>
           <Row>
-            <Label>{translate('From')}:</Label>
-            <Value>
-              <Address address={data.from} />
-            </Value>
+            <Label>{translate('To')}:</Label>
+            <Value>{data.to}</Value>
           </Row>
           {!!data.cc.length && (
             <Row>

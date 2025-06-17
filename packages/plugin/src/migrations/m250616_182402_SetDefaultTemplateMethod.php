@@ -10,7 +10,7 @@ class m250616_182402_SetDefaultTemplateMethod extends Migration
     {
         \Craft::$app->projectConfig->set(
             'plugins.freeform.settings.emailTemplateMethod',
-            'all'
+            'global'
         );
 
         return true;

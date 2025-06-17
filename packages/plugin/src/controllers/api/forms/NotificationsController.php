@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\controllers\api\forms;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -26,6 +27,7 @@ class NotificationsController extends BaseApiController
         $module,
         $config,
         private NotificationsProvider $formNotificationsProvider,
+        private NotificationTemplateProvider $notificationTemplateProvider,
         private Serializer $serializer,
     ) {
         parent::__construct($id, $module, $config ?? []);
@@ -43,6 +45,23 @@ class NotificationsController extends BaseApiController
         $serialized = $this->serializer->serialize($notifications, 'json', [
             IdentificationNormalizer::NORMALIZE_TO_IDENTIFICATORS => true,
         ]);
+
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $serialized;
+
+        return $this->response;
+    }
+
+    public function actionGetTemplates(int $formId): Response
+    {
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
+            return $this->asJson([]);
+        }
+
+        $templates = $this->notificationTemplateProvider->getFormTemplates($form->getId());
+
+        $serialized = $this->serializer->serialize($templates, 'json');
 
         $this->response->format = Response::FORMAT_JSON;
         $this->response->content = $serialized;

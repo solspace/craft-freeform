@@ -496,6 +496,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $value;
     }
 
+    public function getReadableOutputValue(): Markup|string
+    {
+        return $this->getValueAsString();
+    }
+
     /**
      * Either gets the ID attribute specified in custom attributes
      * or generates a new one: "form-input-{handle}".

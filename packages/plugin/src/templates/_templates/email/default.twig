@@ -7,6 +7,7 @@
 {# bcc: #}
 {# includeAttachments: true #}
 {# presetAssets: #}
+{# templateWrapper: #}
 {# description: New submission email notification template. #}
 
 <h2>New submission on your {{ form.name }} form</h2>
@@ -15,7 +16,7 @@
 <ul>
 {% for field in allFields %}
     <li>
-        {{ field.label }}: 
+        {{ field.label }}:
         {% if field.implements('options') %}
             {{ field.labelsAsString }}
         {% else %}

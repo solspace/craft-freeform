@@ -54,9 +54,9 @@ class Table
         return $this;
     }
 
-    public function addIndex(array $columns, bool $unique = false, ?string $prefix = null): self
+    public function addIndex(array $columns, bool $unique = false, ?string $prefix = null, ?string $name = null): self
     {
-        $this->indexes[] = new Index($columns, $unique, $prefix);
+        $this->indexes[] = new Index($columns, $unique, $prefix, $name);
 
         return $this;
     }
@@ -66,7 +66,8 @@ class Table
         string $refTable,
         string $refColumn,
         ?string $onDelete = null,
-        ?string $onUpdate = null
+        ?string $onUpdate = null,
+        ?string $name = null,
     ): self {
         $this->foreignKeys[] = new ForeignKey(
             $this,
@@ -74,7 +75,8 @@ class Table
             $refTable,
             $refColumn,
             $onDelete,
-            $onUpdate
+            $onUpdate,
+            $name,
         );
 
         return $this;

@@ -88,6 +88,9 @@ abstract class StreamlinedInstallMigration extends Migration
         return $this->afterUninstall();
     }
 
+    /**
+     * @return Table[]
+     */
     abstract protected function defineTableData(): array;
 
     protected function beforeInstall(): bool

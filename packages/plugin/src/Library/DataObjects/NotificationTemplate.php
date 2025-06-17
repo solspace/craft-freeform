@@ -27,6 +27,8 @@ class NotificationTemplate implements IdentificatorInterface
     public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     private int|string $id;
+    private ?int $formId = null;
+    private null|int|string $wrapperId = null;
     private array $pdfTemplateIds = [];
     private string $uid;
 
@@ -50,12 +52,21 @@ class NotificationTemplate implements IdentificatorInterface
     private string $textBody;
     private bool $autoText;
 
+    public function __set(string $name, $value): void
+    {
+        if (property_exists($this, $name)) {
+            $this->{$name} = $value;
+        }
+    }
+
     public static function fromRecord(NotificationTemplateRecord $record): self
     {
         $template = new self();
 
         $template->id = $record->id ?? $record->filepath;
         $template->uid = $record->uid ?? $record->filepath;
+        $template->formId = $record->formId ?? null;
+        $template->wrapperId = $record->wrapperId ?? null;
         $template->pdfTemplateIds = $record->getPdfTemplateIdList();
         $template->handle = $record->handle;
         $template->name = $record->name;
@@ -72,6 +83,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template->autoText = $record->autoText;
         $template->includeAttachments = (bool) $record->includeAttachments;
         $template->presetAssets = $record->getPresetAssets() ?? [];
+        $template->pdfTemplateIds = $record->getPdfTemplateIdList();
 
         return $template;
     }
@@ -171,6 +183,16 @@ class NotificationTemplate implements IdentificatorInterface
     public function getUid(): string
     {
         return $this->uid;
+    }
+
+    public function getFormId(): ?int
+    {
+        return $this->formId;
+    }
+
+    public function getWrapperId(): null|int|string
+    {
+        return $this->wrapperId;
     }
 
     public function getPdfTemplateIds(): array

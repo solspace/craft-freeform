@@ -22,6 +22,7 @@ use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Twig\Markup;
 
 #[Type(
     name: 'HTML',
@@ -60,6 +61,11 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
     public function getType(): string
     {
         return self::TYPE_HTML;
+    }
+
+    public function getReadableOutputValue(): Markup
+    {
+        return new Markup($this->getContent(), 'UTF-8');
     }
 
     public function getInputHtml(): string

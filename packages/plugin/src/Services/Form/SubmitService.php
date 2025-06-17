@@ -55,16 +55,7 @@ class SubmitService extends BaseService
         $submission->formId = $form->getId();
         $submission->dateCreated = $dateCreated;
         $submission->statusId = $generalSettings->defaultStatus;
-        $submission->title = \Craft::$app->view->renderString(
-            $generalSettings->submissionTitle,
-            array_merge(
-                $data,
-                [
-                    'dateCreated' => $dateCreated,
-                    'form' => $form,
-                ]
-            )
-        );
+        $submission->title = Submission::generateTitle($submission, $form);
 
         Freeform::getInstance()->submissions->handleSubmission($form);
     }

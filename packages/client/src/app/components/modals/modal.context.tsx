@@ -8,10 +8,14 @@ import { cloneDeep } from 'lodash';
 import { Modal } from './modal';
 import { useAnimateModals, useAnimateOverlay } from './modal.animations';
 import { ModalHub, ModalOverlay } from './modal.styles';
-import type { ModalType } from './modal.types';
+import type { ModalConfig, ModalType } from './modal.types';
 
 type ContextType = {
-  openModal: (modal: ModalType, modalData?: GenericValue) => void;
+  openModal: (
+    modal: ModalType,
+    modalData?: GenericValue,
+    modalConfig?: ModalConfig
+  ) => void;
   closeModal: () => void;
 };
 
@@ -25,15 +29,22 @@ export const useModal = (): ContextType => useContext(ModalContext);
 export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [data, setData] = useState<GenericValue[]>([]);
   const [modals, setModals] = useState<ModalType[]>([]);
+  const [configs, setConfigs] = useState<ModalConfig[]>([]);
 
-  const openModal = (modal: ModalType, modalData?: GenericValue): void => {
+  const openModal = (
+    modal: ModalType,
+    modalData?: GenericValue,
+    config?: ModalConfig
+  ): void => {
     setData([...data, modalData]);
     setModals([...modals, modal]);
+    setConfigs([...configs, config]);
   };
 
   const closeModal = (): void => {
     setData(data.slice(0, -1));
     setModals(modals.slice(0, -1));
+    setConfigs(configs.slice(0, -1));
   };
 
   useEffect(() => {
@@ -57,7 +68,12 @@ export const ModalProvider: React.FC<PropsWithChildren> = ({ children }) => {
             className={classes(!modals.length && 'inactive')}
           >
             {transitions((style, ModalContent, _, index) => (
-              <Modal key={index} closeModal={closeModal} style={style}>
+              <Modal
+                key={index}
+                closeModal={closeModal}
+                style={style}
+                config={cloneDeep(configs[index])}
+              >
                 <ModalContent
                   closeModal={closeModal}
                   data={cloneDeep(data[index])}

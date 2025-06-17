@@ -111,6 +111,11 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return $indexed;
     }
 
+    public function getFiltered(callable $filterFn): self
+    {
+        return new self(array_filter($this->fields, $filterFn));
+    }
+
     public function add(FieldInterface $field): self
     {
         $this->fields[] = $field;

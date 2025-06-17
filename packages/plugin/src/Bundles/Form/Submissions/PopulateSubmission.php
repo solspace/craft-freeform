@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Submissions;
 
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
@@ -62,15 +63,6 @@ class PopulateSubmission extends FeatureBundle
             $submission->statusId = $generalSettings->defaultStatus;
         }
 
-        $submission->title = \Craft::$app->view->renderString(
-            $generalSettings->submissionTitle,
-            array_merge(
-                $data,
-                [
-                    'dateCreated' => $dateCreated,
-                    'form' => $form,
-                ]
-            )
-        );
+        $submission->title = Submission::generateTitle($submission, $form);
     }
 }

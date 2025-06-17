@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\elements\User;
 use craft\helpers\Template;
+use Solspace\Freeform\Attributes\Form\Type;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
@@ -56,6 +57,7 @@ use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -240,6 +242,14 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     public function getUniqueId(): ?string
     {
         return $this->uniqueId;
+    }
+
+    public function getType(): string
+    {
+        $reflection = new \ReflectionClass($this);
+        $attribute = AttributeHelper::findAttribute($reflection, Type::class);
+
+        return $attribute->name ?? 'Regular';
     }
 
     public function getName(): string
@@ -775,12 +785,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $event = new SetFieldValuesEvent($this, $values);
         Event::trigger($this, self::EVENT_SET_FIELD_VALUES, $event);
 
+        $properties = $this->getProperties();
+        $storedValues = $properties->get(self::PROPERTY_STORED_VALUES, []);
+
         foreach ($event->getValues() as $handle => $value) {
             $field = $this->get($handle);
             if ($field instanceof FieldInterface) {
                 $field->setValue($value);
+                $storedValues[$handle] = $value;
             }
         }
+
+        $properties->set(self::PROPERTY_STORED_VALUES, $storedValues);
 
         return $this;
     }

@@ -6,10 +6,18 @@ export enum Edition {
   Express = 'express',
 }
 
+export enum TemplateMethod {
+  Global = 'global',
+  Form = 'form',
+  All = 'all',
+}
+
 type Config = {
   templates: {
     native: boolean;
     canCreate: boolean;
+    toolbar: string;
+    method: TemplateMethod;
   };
   feed: boolean;
   limits: {

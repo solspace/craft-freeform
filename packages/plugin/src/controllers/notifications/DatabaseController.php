@@ -18,7 +18,11 @@ class DatabaseController extends AbstractNotificationsController
 
         $this->view->registerAssetBundle(NotificationIndexBundle::class);
 
-        $notifications = $this->getService()->getAll();
+        $notifications = NotificationTemplateRecord::find()
+            ->indexBy('id')
+            ->where(['formId' => null])
+            ->all()
+        ;
 
         return $this->renderTemplate(
             'freeform/notifications/database',

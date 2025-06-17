@@ -14,7 +14,10 @@ class NotificationDatabaseService extends BaseService implements NotificationsSe
 {
     public function getAll(bool $indexById = true): array
     {
-        $records = NotificationTemplateRecord::find()->indexBy('id')->all();
+        $records = NotificationTemplateRecord::find()
+            ->indexBy('id')
+            ->all()
+        ;
 
         if (!$indexById) {
             return array_values($records);

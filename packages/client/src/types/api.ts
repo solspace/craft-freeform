@@ -23,4 +23,10 @@ export class APIError extends Error {
     this.status = error.response.status;
     this.errors = error.response.data.errors;
   }
+
+  public getFlatErrors(): string {
+    return Object.values(this.errors)
+      .flatMap((errorList) => Object.values(errorList))
+      .join(', ');
+  }
 }

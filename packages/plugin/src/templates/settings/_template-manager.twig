@@ -121,31 +121,33 @@
             },
         }) }}
 
-        {{ forms.lightswitchField({
-            id: "allow-builder-templates",
-            label: "Allow New Templates to be created inside the Form Builder"|t("freeform"),
-            instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
-            name: "settings[allowBuilderTemplateCreation]",
-            value: settings.allowBuilderTemplateCreation,
-            errors: settings.errors("allowBuilderTemplateCreation"),
-            on: settings.allowBuilderTemplateCreation,
-        }) }}
-
-
-        {% set isBuilder = settings.allowBuilderTemplateCreation %}
-        {% set isCombined = settings.emailTemplateStorageType == "files_database" %}
-        <div id="template-default" class="field {{ isBuilder ? 'builder-templates' }} {{ isCombined ? 'combined' }} {{ not isBuilder or not isCombined ? "hidden" }}">
-            {{ forms.selectField({
-                label: "New Template Type for Form Builder"|t('freeform'),
-                instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
-                name: "settings[emailTemplateDefault]",
-                value: settings.emailTemplateDefault,
-                errors: settings.errors("emailTemplateDefault"),
-                options: {
-                    "files": "File" | t('freeform'),
-                    "database": "Database" | t('freeform'),
-                },
+        <div class="hidden">
+            {{ forms.lightswitchField({
+                id: "allow-builder-templates",
+                label: "Allow New Templates to be created inside the Form Builder"|t("freeform"),
+                instructions: "Choose whether to allow admins to create new email notification templates inside the form builder."|t("freeform"),
+                name: "settings[allowBuilderTemplateCreation]",
+                value: settings.allowBuilderTemplateCreation,
+                errors: settings.errors("allowBuilderTemplateCreation"),
+                on: settings.allowBuilderTemplateCreation,
             }) }}
+
+
+            {% set isBuilder = settings.allowBuilderTemplateCreation %}
+            {% set isCombined = settings.emailTemplateStorageType == "files_database" %}
+            <div id="template-default" class="field {{ isBuilder ? 'builder-templates' }} {{ isCombined ? 'combined' }} {{ not isBuilder or not isCombined ? "hidden" }}">
+                {{ forms.selectField({
+                    label: "New Template Type for Form Builder"|t('freeform'),
+                    instructions: "Select which storage method to use when creating new email notifications from within in the form builder."|t('freeform'),
+                    name: "settings[emailTemplateDefault]",
+                    value: settings.emailTemplateDefault,
+                    errors: settings.errors("emailTemplateDefault"),
+                    options: {
+                        "files": "File" | t('freeform'),
+                        "database": "Database" | t('freeform'),
+                    },
+                }) }}
+            </div>
         </div>
 
         <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">

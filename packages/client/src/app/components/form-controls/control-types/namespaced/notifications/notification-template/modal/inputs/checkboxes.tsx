@@ -6,6 +6,7 @@ import {
   CheckboxesWrapper,
   SelectAllWrapper,
 } from '@components/form-controls/control-types/checkboxes/checkboxes.styles';
+import FormInstructions from '@components/form-controls/instructions';
 import type { Option, OptionCollection } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
@@ -34,26 +35,37 @@ export const CheckboxesInput: FC<InputControl> = (props) => {
 
   return (
     <ControlBlock {...props}>
-      <SelectAllWrapper>
-        <input
-          id={`${handle}-all`}
-          type="checkbox"
-          className="checkbox"
-          checked={isAllSelected}
-          onChange={() => {
-            if (isAllSelected) {
-              onChange([]);
-            } else {
-              onChange(
-                options
-                  .filter((option) => !('children' in option))
-                  .map((option) => (option as Option).value)
-              );
-            }
-          }}
-        />
-        <label htmlFor={`${handle}-all`}>{translate('Select All')}</label>
-      </SelectAllWrapper>
+      {options.length > 0 && (
+        <SelectAllWrapper>
+          <input
+            id={`${handle}-all`}
+            type="checkbox"
+            className="checkbox"
+            checked={isAllSelected}
+            onChange={() => {
+              if (isAllSelected) {
+                onChange([]);
+              } else {
+                onChange(
+                  options
+                    .filter((option) => !('children' in option))
+                    .map((option) => (option as Option).value)
+                );
+              }
+            }}
+          />
+          <label htmlFor={`${handle}-all`}>{translate('Select All')}</label>
+        </SelectAllWrapper>
+      )}
+
+      {!loading && options.length === 0 && (
+        <>
+          <SelectAllWrapper />
+          <FormInstructions
+            instructions={translate('No PDF templates were found')}
+          />
+        </>
+      )}
 
       <CheckboxesWrapper $columns={1}>
         {loading && (

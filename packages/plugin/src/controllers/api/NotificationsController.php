@@ -155,7 +155,9 @@ class NotificationsController extends BaseApiController
         if ($record->getErrors()) {
             $this->response->statusCode = 405;
 
-            return $this->asJson(['errors' => $record->getErrors()]);
+            $errors = (new ErrorCollection())->fromRecord('notification', $record);
+
+            throw new ApiException(405, $errors);
         }
 
         $notification = NotificationTemplate::fromRecord($record);

@@ -448,6 +448,7 @@ return [
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.',
     'No Wrapper' => 'No Wrapper',
     'Select any PDF templates to use for this notification.' => 'Select any PDF templates to use for this notification.',
+    'No PDF templates were found' => 'No PDF templates were found',
     'Preview' => 'Preview',
     'This will give you a rough idea of how your notification will look to the recipient.' => 'This will give you a rough idea of how your notification will look to the recipient.',
     'To' => 'To',

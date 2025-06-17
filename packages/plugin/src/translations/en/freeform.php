@@ -444,6 +444,7 @@ return [
     'Message Body' => 'Message Body',
     'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.' => 'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.',
     'Add an asset' => 'Add an asset',
+    'Unique identifier for this template.' => 'Unique identifier for this template.',
     'Template Wrapper' => 'Template Wrapper',
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.',
     'No Wrapper' => 'No Wrapper',
@@ -456,6 +457,11 @@ return [
     'Attachments' => 'Attachments',
     'Refresh' => 'Refresh',
     'Send Test Email' => 'Send Test Email',
+    'New Wrapper' => 'New Wrapper',
+    'HTML Content' => 'HTML Content',
+    'The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear.' => 'The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear.',
+    'Notification Template Wrapper saved.' => 'Notification Template Wrapper saved.',
+    'Notification Template Wrapper not saved.' => 'Notification Template Wrapper not saved.',
 
     // Form Builder // Rules
     'Rules' => 'Rules',

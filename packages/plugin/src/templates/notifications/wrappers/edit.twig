@@ -51,7 +51,7 @@
         {{ forms.textField({
             first: true,
             label: "Name"|t('freeform'),
-            instructions: "What this notification template wrapper will be called in the CP."|t('freeform'),
+            instructions: "What this template will be called in the control panel."|t('freeform'),
             id: 'name',
             name: 'name',
             value: wrapper.name,
@@ -63,7 +63,7 @@
         {{ forms.textField({
             first: true,
             label: "Handle"|t('freeform'),
-            instructions: "The handle is used to identify this wrapper in the CP and in templates."|t('freeform'),
+            instructions: "Unique identifier for this template."|t('freeform'),
             id: 'handle',
             name: 'handle',
             value: wrapper.handle,
@@ -73,7 +73,7 @@
 
         {{ forms.textareaField({
             label: "Description"|t('freeform'),
-            instructions: "Description of the notification template wrapper."|t('freeform'),
+            instructions: "Description of this template."|t('freeform'),
             id: "description",
             name: "description",
             value: wrapper.description,
@@ -84,7 +84,7 @@
 
         {{ forms.textareaField({
             label: "HTML Content"|t('freeform'),
-            instructions: "The HTML content of the email notification wrapper. Add a `{{ emailBody }}` to  where you want the generated notification template content to appear."|t('freeform'),
+            instructions: "The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear."|t('freeform'),
             id: "content",
             name: "content",
             value: wrapper.content,

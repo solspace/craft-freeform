@@ -31,8 +31,8 @@ class NotificationWrapperRecord extends ActiveRecord
             [
                 ['handle'],
                 'match',
-                'pattern' => '/^[a-z0-9_]+$/',
-                'message' => 'Handle can only contain lowercase letters, numbers, and underscores.',
+                'pattern' => '/^[a-zA-Z0-9_]+$/',
+                'message' => 'Use only letters, numbers, and underscores for the handle.',
             ],
         ];
     }

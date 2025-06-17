@@ -444,6 +444,7 @@ return [
     'Message Body' => 'Berichtinhoud',
     'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.' => 'De inhoud van de e-mailmelding. Gebruik het `@`-symbool om een lijst met beschikbare tokens te genereren. Twig is ook toegestaan.',
     'Add an asset' => 'Voeg een bestand toe',
+    'Unique identifier for this template.' => 'Unieke identificatie voor dit sjabloon.',
     'Template Wrapper' => 'Sjabloonwrapper',
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'De sjabloonwrapper voor de e-mailmelding. Dit is de HTML die om de inhoud van de e-mail heen staat.',
     'No Wrapper' => 'Geen wrapper',
@@ -456,6 +457,11 @@ return [
     'Attachments' => 'Bijlagen',
     'Refresh' => 'Vernieuwen',
     'Send Test Email' => 'Testmail verzenden',
+    'New Wrapper' => 'Nieuwe wrapper',
+    'HTML Content' => 'HTML-inhoud',
+    'The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear.' => 'De HTML-inhoud die rond de e-mailnotificatie wordt geplaatst. Voeg `{{ emailBody }}` toe op de plek waar de melding moet verschijnen.',
+    'Notification Template Wrapper saved.' => 'Meldingswrapper-sjabloon opgeslagen.',
+    'Notification Template Wrapper not saved.' => 'Meldingswrapper-sjabloon niet opgeslagen.',
 
     // Form Builder // Rules
     'Rules' => 'Regels',

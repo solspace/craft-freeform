@@ -31,7 +31,7 @@ class WrappersController extends BaseController
             </html>
             EOT;
 
-        return $this->renderEditForm($record, 'New Wrapper');
+        return $this->renderEditForm($record, Freeform::t('New Wrapper'));
     }
 
     public function actionEdit(int $id): Response

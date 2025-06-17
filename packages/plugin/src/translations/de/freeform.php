@@ -444,6 +444,7 @@ return [
     'Message Body' => 'Nachrichtentext',
     'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.' => 'Der Inhalt der E-Mail-Benachrichtigung. Verwenden Sie das `@`-Symbol, um eine Liste verfügbarer Token zu generieren. Twig ist ebenfalls erlaubt.',
     'Add an asset' => 'Datei hinzufügen',
+    'Unique identifier for this template.' => 'Eindeutiger Bezeichner für diese Vorlage.',
     'Template Wrapper' => 'Vorlagen-Wrapper',
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'Der Vorlagen-Wrapper für die E-Mail-Benachrichtigung. Dies ist das HTML, das den Nachrichtentext umschließt.',
     'No Wrapper' => 'Kein Wrapper',
@@ -456,6 +457,11 @@ return [
     'Attachments' => 'Anhänge',
     'Refresh' => 'Aktualisieren',
     'Send Test Email' => 'Test-E-Mail senden',
+    'New Wrapper' => 'Neuer Wrapper',
+    'HTML Content' => 'HTML-Inhalt',
+    'The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear.' => 'Der HTML-Inhalt, der die E-Mail-Benachrichtigung umschließt. Fügen Sie `{{ emailBody }}` an der Stelle ein, an der der Benachrichtigungstext erscheinen soll.',
+    'Notification Template Wrapper saved.' => 'Benachrichtigungsvorlagen-Wrapper gespeichert.',
+    'Notification Template Wrapper not saved.' => 'Benachrichtigungsvorlagen-Wrapper nicht gespeichert.',
 
     // Form Builder // Rules
     'Rules' => 'Regeln',

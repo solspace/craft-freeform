@@ -143,7 +143,7 @@ export const configuration = [
           type: TextInput,
           label: 'Handle',
           handle: 'handle',
-          instructions: 'Unique identifier for the notification',
+          instructions: 'Unique identifier for this template.',
           required: true,
           onChange: (value: string) => {
             return handle(value);

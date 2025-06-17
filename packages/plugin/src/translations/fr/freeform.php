@@ -444,6 +444,7 @@ return [
     'Message Body' => 'Corps du message',
     'The content of the email notification. Use the `@` symbol to generate a list of tokens you can use. Twig is also allowed.' => 'Contenu de la notification par e-mail. Utilisez le symbole `@` pour générer une liste de jetons disponibles. Twig est également autorisé.',
     'Add an asset' => 'Ajouter une ressource',
+    'Unique identifier for this template.' => 'Identifiant unique pour ce modèle.',
     'Template Wrapper' => 'Enveloppe du modèle',
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'L’enveloppe HTML autour du contenu de la notification par e-mail.',
     'No Wrapper' => 'Pas d’enveloppe',
@@ -456,6 +457,11 @@ return [
     'Attachments' => 'Pièces jointes',
     'Refresh' => 'Rafraîchir',
     'Send Test Email' => 'Envoyer un e-mail test',
+    'New Wrapper' => 'Nouvelle enveloppe',
+    'HTML Content' => 'Contenu HTML',
+    'The HTML content that wraps the email notification. Include `{{ emailBody }}` where you want the notification content to appear.' => 'Le contenu HTML qui entoure la notification par e-mail. Ajoutez `{{ emailBody }}` à l’endroit où vous souhaitez afficher le contenu de la notification.',
+    'Notification Template Wrapper saved.' => 'Enveloppe du modèle de notification enregistrée.',
+    'Notification Template Wrapper not saved.' => 'Enveloppe du modèle de notification non enregistrée.',
 
     // Form Builder // Rules
     'Rules' => 'Règles',

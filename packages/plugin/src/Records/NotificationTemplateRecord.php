@@ -79,6 +79,18 @@ class NotificationTemplateRecord extends ActiveRecord
         return $record;
     }
 
+    public static function createFormSpecific(): self
+    {
+        $record = self::create();
+        $record->bodyText = '';
+        $record->bodyHtml = <<<'EOT'
+            <p>Submitted on: {{ submission.dateCreated.format('F j, Y') }}</p>
+            <p>{{ loops.fields.all }}</p>
+            EOT;
+
+        return $record;
+    }
+
     public static function createFromTemplate(string $filePath, bool $failOnError = true): self
     {
         $template = NotificationTemplate::fromFile($filePath, $failOnError);

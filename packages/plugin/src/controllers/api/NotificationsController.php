@@ -46,12 +46,12 @@ class NotificationsController extends BaseApiController
     public function actionGetOneTemplate(mixed $id = null): Response
     {
         if (null === $id) {
-            $record = NotificationTemplateRecord::create();
+            $record = NotificationTemplateRecord::createFormSpecific();
             $record->name = 'Notification';
             $record->handle = 'notification';
 
             $fields = $record->toArray();
-            $fields['body'] = $this->htmlTemplateParser->toTwig($record->bodyHtml);
+            $fields['body'] = $this->htmlTemplateParser->fromTwig($record->bodyHtml);
 
             return $this->asSerializedJson($fields);
         }
@@ -144,6 +144,8 @@ class NotificationsController extends BaseApiController
     {
         $request = $this->request;
         $post = $request->post();
+        $post['bodyHtml'] = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
+        $post['bodyText'] = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
 
         $record = NotificationTemplateRecord::create();
         $record->formId = $formId;

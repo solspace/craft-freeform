@@ -6,7 +6,7 @@ use Solspace\Freeform\Form\Form;
 
 class HtmlTemplateParser
 {
-    public function fromTwig(string $template, ?Form $form): string
+    public function fromTwig(string $template, ?Form $form = null): string
     {
         $parsedTemplate = $template;
 

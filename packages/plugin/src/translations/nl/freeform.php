@@ -448,6 +448,7 @@ return [
     'The template wrapper for the email notification. This is the HTML that wraps around the body of the email.' => 'De sjabloonwrapper voor de e-mailmelding. Dit is de HTML die om de inhoud van de e-mail heen staat.',
     'No Wrapper' => 'Geen wrapper',
     'Select any PDF templates to use for this notification.' => 'Selecteer de PDF-sjablonen die je wilt gebruiken voor deze melding.',
+    'No PDF templates were found' => 'Er zijn geen PDF-sjablonen gevonden',
     'Preview' => 'Voorbeeld',
     'This will give you a rough idea of how your notification will look to the recipient.' => 'Dit geeft je een globaal idee van hoe de melding eruitziet voor de ontvanger.',
     'To' => 'Aan',

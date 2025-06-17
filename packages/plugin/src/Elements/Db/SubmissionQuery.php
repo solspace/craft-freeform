@@ -183,6 +183,7 @@ class SubmissionQuery extends ElementQuery
                 $contentTable = Submission::getContentTableName($form);
 
                 $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
+                $this->subQuery->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
 
                 $storableFields = $form->getLayout()->getFields()->getExcludedList(NoStorageInterface::class);
                 foreach ($storableFields as $field) {

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.10.17.1 - 2025-06-17
+
+### Fixed
+- Reverted a change in Freeform 5.10.17 that attempted to fix a potential performance issue on larger sites when loading the CP Submissions index.
+
 ## 5.10.17 - 2025-06-11
 
 ### Changed

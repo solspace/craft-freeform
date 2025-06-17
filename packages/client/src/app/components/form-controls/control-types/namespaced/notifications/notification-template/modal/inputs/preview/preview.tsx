@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ControlBlock } from '@components/form-controls/control.block';
 import { spacings } from '@ff-client/styles/variables';
 import type { APIError } from '@ff-client/types/api';
@@ -16,6 +16,7 @@ import { usePreviewQuery, useSendTestEmailMutation } from './preview.queries';
 import {
   Body,
   HeaderRow,
+  Input,
   Label,
   PreviewContainer,
   Row,
@@ -27,11 +28,20 @@ export const TemplatePreview: FC<InputControl> = (props) => {
   const { data, isFetching, refetch, error } = usePreviewQuery(props.context);
   const sendTest = useSendTestEmailMutation();
 
+  const [email, setEmail] = useState<string>();
+
   useEffect(() => {
     if (inView) {
       refetch();
     }
   }, [inView]);
+
+  useEffect(() => {
+    if (email === undefined && data?.from) {
+      const from = Array.isArray(data.from) ? data.from[0] : data.from;
+      setEmail(from.address);
+    }
+  }, [data]);
 
   return (
     <ControlBlock
@@ -52,15 +62,35 @@ export const TemplatePreview: FC<InputControl> = (props) => {
             {translate('Refresh')}
           </button>
 
+          <Input
+            className="small"
+            type="text"
+            placeholder={translate('john@doe.com')}
+            value={email || ''}
+            onChange={(event) => setEmail(event.target.value)}
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
+            inputMode="email"
+            data-lpignore="true"
+            data-1p-ignore
+          />
+
           <button
             className={classes(
               'btn',
               'small',
-              sendTest.isLoading && 'disabled'
+              sendTest.isLoading && 'disabled',
+              !email && 'disabled'
             )}
-            disabled={sendTest.isLoading}
+            disabled={sendTest.isLoading || !email}
             type="button"
-            onClick={() => sendTest.mutate(props.context)}
+            onClick={() =>
+              sendTest.mutate({
+                ...props.context,
+                targetEmail: email || '',
+              })
+            }
           >
             {translate('Send Test Email')}
           </button>

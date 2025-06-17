@@ -80,10 +80,7 @@ class NotificationsController extends BaseApiController
     {
         [$form, $template, $logger] = $this->extractVariables();
 
-        $recipient = \Craft::$app->getConfig()->getGeneral()->testToEmailAddress;
-        if (!$recipient) {
-            $recipient = \Craft::$app->getProjectConfig()->get('email.fromEmail');
-        }
+        $recipient = $this->request->post('targetEmail');
 
         $isSent = $this->mailer->sendEmail(
             $form,

@@ -37,13 +37,17 @@ export const usePreviewQuery = (
   });
 };
 
+type SendTestPayload = PushState & {
+  targetEmail: string;
+};
+
 export const useSendTestEmailMutation = (): UseMutationResult<
   void,
   Error,
-  PushState
+  SendTestPayload
 > => {
   return useMutation({
-    mutationFn: async (state: PushState) =>
-      await axios.post(`/api/templates/send-test`, state),
+    mutationFn: async (payload: SendTestPayload) =>
+      await axios.post(`/api/templates/send-test`, payload),
   });
 };

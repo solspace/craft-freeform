@@ -66,3 +66,12 @@ export const Body = styled.div`
   width: 100%;
   padding: ${spacings.md} ${spacings.xl};
 `;
+
+export const Input = styled.input`
+  padding: 0 ${spacings.xs};
+
+  border: 1px solid rgba(96, 125, 159, 0.25);
+  border-radius: 3px;
+
+  font-size: 12px;
+`;

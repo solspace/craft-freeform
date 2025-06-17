@@ -106,10 +106,12 @@ class IntegrationPersistence extends FeatureBundle
             $record->enabled = (bool) $enabled;
             $record->metadata = $encodedMetadata;
 
-            $record->save();
+            if ($record->validate() && !$event->hasErrors()) {
+                $record->save();
+            }
 
             if ($record->hasErrors()) {
-                $errors[$record->integrationId] = $record->getErrors();
+                $errors[$id] = $record->getErrors();
             }
         }
 

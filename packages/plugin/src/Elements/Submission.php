@@ -68,6 +68,8 @@ class Submission extends Element
     public ?int $incrementalId = null;
     public ?string $token = null;
     public bool $isSpam = false;
+    public bool $isHidden = false;
+    public ?string $requestId = null;
     public ?string $ip = null;
 
     private ?FieldCollection $fieldCollection = null;
@@ -508,6 +510,8 @@ class Submission extends Element
             'token' => $this->token,
             'ip' => $this->ip,
             'isSpam' => $this->isSpam,
+            'isHidden' => $this->isHidden,
+            'requestId' => $this->requestId,
         ];
 
         $contentData = [];

@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
 import './form.persistence';
+import './form-monitor.persistence';
 
 import type {
   FormErrors,
@@ -22,6 +23,9 @@ const initialState: FormState = {
   settings: {},
   errors: {},
   dateArchived: null,
+  formMonitor: {
+    enabled: false,
+  },
 };
 
 export const formSlice = createSlice({

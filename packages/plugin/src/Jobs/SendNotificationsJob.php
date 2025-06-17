@@ -17,24 +17,36 @@ use craft\queue\BaseJob;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
+use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use yii\base\Event;
 
 class SendNotificationsJob extends BaseJob implements NotificationJobInterface
 {
+    public const EVENT_PREPARE_NOTIFICATION_JOB = 'prepare-send-notification';
+
     public ?int $formId = null;
     public ?int $submissionId = null;
     public array $postedData = [];
     public ?RecipientCollection $recipients = null;
     public ?NotificationTemplate $template = null;
     public ?int $siteId = null;
+    public array $headers = [];
+    public ?string $notificationType;
     public ?int $notificationId = null;
 
     public function __construct($config = [])
     {
         parent::__construct($config);
+
+        Event::trigger(
+            $this,
+            self::EVENT_PREPARE_NOTIFICATION_JOB,
+            new PrepareSendNotificationEvent($this)
+        );
 
         $this->siteId = \Craft::$app->getSites()->getCurrentSite()->id;
     }
@@ -78,6 +90,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             $this->recipients,
             $this->template,
             $submission,
+            $this->headers,
             $logger,
         );
 

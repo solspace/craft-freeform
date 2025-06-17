@@ -8,6 +8,10 @@
   margin-bottom: 24px;
 }
 
+.singleton-auth-checker {
+  padding: 0px 0 0;
+}
+
 .integration-stack {
   display: flex;
 
@@ -108,6 +112,16 @@
       img {
         width: 30px;
         height: 30px;
+      }
+    }
+
+    .fm-button {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: var(--s);
+
+      &:hover {
+        background-color: var(--primary-color);
       }
     }
   }

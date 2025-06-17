@@ -70,6 +70,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         RecipientCollection $recipients,
         ?NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null,
+        array $headers = [],
         ?LoggerInterface $logger = null,
     ): int {
         $sentMailCount = 0;
@@ -100,6 +101,74 @@ class MailerService extends BaseService implements MailHandlerInterface
 
                 $email = $this->compileMessage($notificationTemplate, $twigVariables, $logger);
                 $email->setTo([$emailAddress]);
+
+                if ($headers) {
+                    $headers = array_map('strval', $headers);
+                    $email->setHeaders($headers);
+                }
+
+                $pdfTemplates = $notificationTemplate->getPdfTemplateRecords();
+                if ($pdfTemplates) {
+                    foreach ($pdfTemplates as $pdfTemplate) {
+                        $fileName = $this->renderString($pdfTemplate->fileName, $fieldValues);
+                        $body = $this->renderString($pdfTemplate->getBody(), $fieldValues);
+
+                        if (!preg_match('/\.pdf$/i', $fileName)) {
+                            $fileName .= '.pdf';
+                        }
+
+                        $domPdf = new Dompdf();
+                        $domPdf->loadHtml($body);
+                        $domPdf->render();
+
+                        $pdfPath = Assets::tempFilePath('pdf');
+                        file_put_contents($pdfPath, $domPdf->output());
+
+                        $email->attach($pdfPath, [
+                            'fileName' => $fileName,
+                            'contentType' => 'application/pdf',
+                        ]);
+
+                        $logger?->debug('Attached PDF to email', ['fileName' => $fileName]);
+
+                        if (file_exists($pdfPath)) {
+                            unset($pdfPath);
+                        }
+                    }
+                }
+
+                if ($notificationTemplate->isIncludeAttachments()) {
+                    foreach ($fields as $field) {
+                        if ($field instanceof SignatureField && $field->getValueAsString()) {
+                            $email->attach($field->getValueAsString(), [
+                                'fileName' => 'signature.png',
+                                'contentType' => 'image/png',
+                            ]);
+
+                            $logger?->debug('Attached signature to email', ['fileName' => 'signature.png']);
+
+                            continue;
+                        }
+
+                        if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
+                            continue;
+                        }
+
+                        $fieldValue = $field->getValue();
+                        $assetIds = $fieldValue;
+                        foreach ($assetIds as $assetId) {
+                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                            if ($asset) {
+                                $email->attach(
+                                    $asset->getCopyOfFile(),
+                                    ['fileName' => $asset->filename]
+                                );
+
+                                $logger?->debug('Attached file to email', ['fileName' => $asset->filename]);
+                            }
+                        }
+                    }
+                }
 
                 $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $twigVariables, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);

@@ -35,7 +35,10 @@ class ChartsService extends BaseService
                     $rangeStart->toDateTimeString(),
                     $rangeEnd->toDateTimeString(),
                 ])
-                ->andWhere(["{$submissions}.[[formId]]" => $formId])
+                ->andWhere([
+                    "{$submissions}.[[formId]]" => $formId,
+                    "{$submissions}.[[isHidden]]" => false,
+                ])
                 ->innerJoin(
                     $elements,
                     "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
@@ -114,7 +117,7 @@ class ChartsService extends BaseService
                 $query->andWhere(['in', "{$submissions}.[[formId]]", $formIds]);
             } else {
                 $form = $forms[$formId];
-                $query->andWhere(["{$submissions}.[[formId]]" => $formId]);
+                $query->andWhere(["{$submissions}.[[formId]]" => $formId, "{$submissions}.[[isHidden]]" => false]);
             }
 
             if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
@@ -167,6 +170,7 @@ class ChartsService extends BaseService
             ->from($submissions)
             ->where(['between', "{$submissions}.[[dateCreated]]", $rangeStart, $rangeEnd])
             ->andWhere(['IN', "{$submissions}.[[formId]]", $formIds])
+            ->andWhere(["{$submissions}.[[isHidden]]" => false])
             ->groupBy(["{$submissions}.[[formId]]"])
         ;
 

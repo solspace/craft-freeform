@@ -73,6 +73,14 @@ export const LightSwitch = styled.div`
       transform: translateX(12px);
     }
   }
+
+  &.error {
+    background-image: linear-gradient(
+      to right,
+      var(--error-color),
+      var(--error-color)
+    );
+  }
 `;
 
 export const PrettyCheckbox = styled.div`

@@ -70,6 +70,7 @@ class AdminNotifications extends NotificationListener
                     'postedData' => $postedData,
                     'recipients' => $recipients,
                     'template' => $template,
+                    'notificationType' => Admin::class,
                     'notificationId' => $notification->getId(),
                 ])
             );

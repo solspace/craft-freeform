@@ -99,7 +99,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     'template' => $notificationTemplate->getName(),
                 ]);
 
-                $email = $this->compileMessage($notificationTemplate, $twigVariables, $logger);
+                $email = $this->compileMessage($notificationTemplate, $twigVariables, $logger, $form);
                 $email->setTo([$emailAddress]);
 
                 if ($headers) {

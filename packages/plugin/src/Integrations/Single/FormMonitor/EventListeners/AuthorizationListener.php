@@ -54,6 +54,10 @@ class AuthorizationListener extends FeatureBundle
             return;
         }
 
+        if (!$integration->isEnabled()) {
+            return;
+        }
+
         $plugin = \Craft::$app->plugins->getPlugin('freeform');
         $licenseKey = \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
 

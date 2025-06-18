@@ -87,7 +87,7 @@ class NotificationsController extends BaseApiController
             RecipientCollection::fromArray([$recipient]),
             $template,
             $form->getSubmission(),
-            $logger,
+            logger: $logger,
         );
 
         if (!$isSent) {

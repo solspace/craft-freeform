@@ -12,9 +12,9 @@ import {
 import { integrationActions } from '.';
 
 const persistIntegrations: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
+  const { getState, persist } = data;
 
-  persist.integrations = state.integrations.map((integration) => ({
+  persist.integrations = getState().integrations.map((integration) => ({
     id: integration.id,
     enabled: Boolean(integration.enabled),
     values: integration.dirtyValues,

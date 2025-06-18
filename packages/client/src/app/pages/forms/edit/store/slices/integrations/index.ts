@@ -91,7 +91,7 @@ export const integrationsSlice = createSlice({
       action: PayloadAction<{ [uid: string]: Record<string, string[]> }>
     ) => {
       state.forEach((integration) => {
-        const errors = action.payload[integration.id];
+        const errors = action.payload?.[integration.id];
         if (errors) {
           integration.errors = errors;
         }

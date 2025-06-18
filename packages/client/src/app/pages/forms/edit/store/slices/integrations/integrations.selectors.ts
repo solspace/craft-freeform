@@ -13,6 +13,10 @@ interface FieldMappingObject {
 }
 
 export const integrationSelectors = {
+  oneByShortName:
+    (shortName: string) =>
+    (state: RootState): IntegrationEntry | undefined =>
+      state.integrations.find((item) => item.shortName === shortName),
   one:
     (id: number) =>
     (state: RootState): IntegrationEntry | undefined =>

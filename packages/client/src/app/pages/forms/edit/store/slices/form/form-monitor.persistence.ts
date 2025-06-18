@@ -1,19 +1,23 @@
 import type { UpdatedSubscriber } from '@editor/store/middleware/state-persist';
 import { TOPIC_UPSERTED } from '@editor/store/middleware/state-persist';
 
+import { integrationSelectors } from '../integrations/integrations.selectors';
+
 import { formActions } from '.';
 
 const handleFormMonitorState: UpdatedSubscriber = (
   _,
-  { dispatch, response }
+  { getState, dispatch }
 ) => {
-  if (!response.data?.formMonitor) {
+  const state = getState();
+  const formMonitor = integrationSelectors.oneByShortName('FormMonitor')(state);
+  if (!formMonitor) {
     return;
   }
 
   dispatch(
     formActions.update({
-      formMonitor: response.data.formMonitor,
+      formMonitor: formMonitor.enabled,
     })
   );
 };

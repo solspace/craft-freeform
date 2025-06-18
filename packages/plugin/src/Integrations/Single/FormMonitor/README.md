@@ -14,7 +14,7 @@ For Form Monitor to work, your site must:
 
 ### Imposed Limitations
 
-The following limitations have been established for sites during the beta testing period. These may change in the future.
+The following limitations have been set for sites during the beta testing period. These limitations may change in the future.
 
 - Form Monitor can be enabled for up to 3 forms per Craft site.
 - Form Monitor will test each form 3 times per day (every 8 hours).
@@ -28,37 +28,39 @@ The following limitations have been established for sites during the beta testin
 Form Monitor will not work for every form and site setup. Please be aware that Form Monitor may not work for, but not limited to, the following:
 
 - Setups that use complex site layouts, structures, or CSS/JS that may make it harder for Form Monitor to locate and interact with the form correctly.
-- Forms placed inside of modals or popups.
-- Forms using Conditional Rules. Form Monitor is not able to work with conditional rules at this time. Depending on the form setup, it may cause Form Monitor's tests to fail.
+- Forms placed inside of iframes, modals, or popups.
+- Forms using Conditional Rules. Form Monitor is currently unable to work with conditional rules. Depending on the form setup, it may cause Form Monitor's tests to fail.
 - If multiple instances of the same form exist on the same page, the first instance will be tested.
 - Captcha and other Spam Protection measures will be bypassed. This means that if there are any configuration issues with those, Form Monitor will be unable to catch them.
-Integration services, including CRMs, email marketing, webhooks, POST forwarding, and payment forms, will be bypassed. Form Monitor cannot verify the success of submission data successfully making it to an integration (e.g., Salesforce, Mailchimp, etc.).
-- Custom module behavior may affect Form Monitor's testing capabilities. This includes modules, extensions, custom javascript behaviors and client-side validations.
-- Private or restricted sites. Any site using HTTP authentication, password-protected pages, IP-restricted access, and VPN-required sites cannot be tested.
+- Integration services, including CRMs, email marketing, webhooks, POST forwarding, and payment forms, will be bypassed. Form Monitor cannot verify the successful submission of data to an integration (e.g., Salesforce, Mailchimp, etc.).
+- Custom module behavior may impact Form Monitor's testing capabilities. This includes modules, extensions, custom javascript behaviors and client-side validations.
+- Private or restricted sites. Any site that uses HTTP authentication, password-protected pages, IP-restricted access, or VPN-required access cannot be tested.
 
 ## Recommendations
 
-- To ensure that you receive essential alerts from Form Monitor, we strongly recommend whitelisting the email Form Monitor will use: `noreply@formmonitor.com`.
+- To ensure that you receive essential alerts from Form Monitor, we strongly recommend safelisting the email address that Form Monitor will use: `noreply@formmonitor.com`.
 
 ## Privacy
 
-We take your privacy very seriously! Form Monitor collects the least amount of information possible. Form Monitor has absolutely no access to your Craft site control panel, Craft data, and Freeform submission data. Form Monitor does not have and will never have access to previous, current and future submission history. It only has access to the fake testing data it uses to test the form if it's contained inside of an email notification when testing that as well.
+We take your privacy very seriously! Form Monitor collects the least amount of information possible. Form Monitor has absolutely no access to your Craft site control panel, Craft data, and Freeform submission data. Form Monitor does not have, and will never have, access to previous, current, or future submission history. It only has access to the fake testing data it uses to test the form if it's contained inside an email notification when testing that as well.
 
 ### What Form Monitor Has Access To
 
-Form Monitor cannot work on your site and collect any of your data until you expressly enable the feature and opt into authorizing it. Once this happens, Form Monitor collects the following information:
+Form Monitor cannot work on your site or collect any of your data until you expressly enable the feature and opt-in to authorize it. Once this happens, Form Monitor collects the following information:
 
 - The email address(es) you provide in the integration settings.
 - Your Freeform plugin license key to validate your active license.
 - Any website URL(s) you provide to Form Monitor so it can locate and test your form(s).
-- The form name of the form(s) you opt into testing. This allows technical support to more easily assist if there are any issues.
+- The form name of the form(s) you opt into testing. This enables technical support to more easily assist if any issues arise.
+- Your current Craft and Freeform versions to ensure compatibility with Form Monitor and alert you if you need to upgrade Freeform or Craft in the future.
+- Your site's Timezone to provide weekly and monthly digest email notifications at the proper day and time.
 - Screenshots of the page that contains each form. This is to show that the test was successful or where it may have failed.
     - Screenshots are stored on the server for up to 30 days.
-- If testing email notifications, Form Monitor will receive an email notification of the form test (with its fake test data) from any notification(s) you have configured from your form. Form Monitor will see the types of notifications (e.g. Admin, Conditional, etc.) and anything hard-coded in the email notification template(s) (e.g. "Thank you for your submission!", a PDF attachment, etc.).
+- If testing email notifications, Form Monitor will receive an email notification of the form test (with its fake test data) from any notification(s) you have configured from your form. Form Monitor will see the types of notifications (e.g. Admin, Conditional, etc.) and any hard-coded elements in the email notification template(s) (e.g. "Thank you for your submission!", a PDF attachment, etc.).
 
 ### You Are In Control Of Your Data
 
-You also are in complete control of your data. From within the Freeform control panel, you can deactivate and/or remove any or all of Form Monitor's data for your site.
+You also have complete control over your data. From within the Freeform control panel, you can deactivate and/or remove any or all of Form Monitor's data for your site.
 
 - You can remove all or any single test and screenshot from inside the Freeform form builder.
 - You can deactivate or remove data from any form(s) being monitored.
@@ -85,5 +87,5 @@ To use this integration on your form(s), you must configure each form individual
 - Click on **Form Monitor** in the list of available integrations.
 - On the right side of the page:
     - Enable the integration.
-    - Adjust any of the settings as needed.
+    - Adjust any settings as needed.
 - Save the form.

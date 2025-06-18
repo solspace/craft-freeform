@@ -17,7 +17,9 @@ const handleFormMonitorState: UpdatedSubscriber = (
 
   dispatch(
     formActions.update({
-      formMonitor: formMonitor.enabled,
+      formMonitor: {
+        enabled: formMonitor.enabled,
+      },
     })
   );
 };

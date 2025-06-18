@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 5.11.0 - 2025-06-18
+
+### Added
+
+- **Form-Specific Email Templates**
+    - Added Form-specific email template options inside the form builder, complete with Rich Text and tokens for ease of use.
+    - Added Notification Template Wrappers to help with setting common template code in notification templates.
+    - Added a **Template Method** setting to manage your approach for email notification templates. Existing upgrades will default to _Global only_, while new installations will default to _Form-specific only_.
+    - Removed the `allowBuilderTemplateCreation` and `emailTemplateDefault` settings in favor of the new Form-specific templates approach.
+- **Form Monitoring Service** (beta)
+    - Customers with active/valid licenses of the Pro edition of Freeform can opt-in to our new _Form Monitor_ service for no extra cost.
+    - Each install is allowed to monitor up to 3 forms, 3 times a day.
+
+### Changed
+
+- **CSRF Token Auto-Fetch**
+    - The new auto-fetch mechanism for CSRF tokens in AJAX requests that are sent throughout Freeform. These tokens are automatically included as `X-Craft-Csrf` headers in the requests. This new approach functions seamlessly in all scenarios, including for cached templates, eliminating the need for manual fetching and replacing of CSRF tokens for cached pages.
+    - The new CSRF auto-fetch mechanism is enabled only when Craft's `asyncCsrfInputs` setting is set to `true`. If it is set to `false`, a standard hidden input is generated in forms, just like before. However, when it is set to `true`, the input is not added to the form, and the token is automatically fetched upon request. There is an exception: if the form does not have AJAX enabled, the input will still be included in the form.
+    - There is a new setting that allows the user to choose between two options:
+        - The first option fetches the token **Once Per Page View** and reuses it, which reduces the number of additional AJAX requests.
+        - The second option fetches the token **Every Time** an AJAX request is made by Freeform. This ensures that the _unable to verify submission_ error does not appear, as the token is always up to date.
+
 ## 5.10.17.1 - 2025-06-17
 
 ### Fixed

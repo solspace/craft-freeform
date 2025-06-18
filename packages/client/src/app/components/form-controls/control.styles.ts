@@ -1,4 +1,4 @@
-import { colors } from '@ff-client/styles/variables';
+import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 import { Label } from './label.styles';
@@ -93,3 +93,19 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
     }
   }
 `;
+
+export const LabelGroup = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${spacings.md};
+
+  width: 100%;
+  padding-bottom: ${spacings.xs};
+`;
+
+export const LabelInstructionsWrapper = styled.div`
+  flex: 1;
+`;
+
+export const ExtraContent = styled.div``;

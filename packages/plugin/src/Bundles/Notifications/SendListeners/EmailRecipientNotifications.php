@@ -82,6 +82,7 @@ class EmailRecipientNotifications extends NotificationListener
                     'postedData' => $postedData,
                     'recipients' => $recipientCollection,
                     'template' => $notificationTemplate,
+                    'notificationType' => EmailField::class,
                     'notificationId' => $notification->getId(),
                 ])
             );

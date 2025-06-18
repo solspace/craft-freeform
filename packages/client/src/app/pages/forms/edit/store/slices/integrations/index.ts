@@ -7,6 +7,7 @@ import './integrations.persistence';
 
 export type IntegrationEntry = {
   values: { [key: string]: GenericValue };
+  errors?: { [key: string]: string[] };
   dirtyValues: { [key: string]: GenericValue };
 } & Integration;
 
@@ -79,6 +80,22 @@ export const integrationsSlice = createSlice({
     },
     emptyIntegrations: (state) => {
       state.length = 0;
+    },
+    clearErrors: (state) => {
+      state.forEach((integration) => {
+        integration.errors = undefined;
+      });
+    },
+    setErrors: (
+      state,
+      action: PayloadAction<{ [uid: string]: Record<string, string[]> }>
+    ) => {
+      state.forEach((integration) => {
+        const errors = action.payload?.[integration.id];
+        if (errors) {
+          integration.errors = errors;
+        }
+      });
     },
   },
 });

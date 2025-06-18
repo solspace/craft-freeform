@@ -7,16 +7,31 @@
 
 {% block sidebar %}
 
+    {% set segment = craft.app.request.segment(3) %}
+    {% set settings = freeform.settings %}
+
     {% if settings.emailTemplateStorageType == 'files_database' %}
 
         <nav>
             <ul>
+                <li class="heading">
+                    <span>{{ "Templates"|t('freeform') }}</span>
+                </li>
                 <li>
-                    <a href="{{ url('freeform/notifications/files') }}" class="{{ isFiles ? 'sel' }}">
+                    <a href="{{ url('freeform/notifications/files') }}" class="{{ segment == "files" ? 'sel' }}">
                         {{ "File Templates"|t('freeform') }}
                     </a>
-                    <a href="{{ url('freeform/notifications/database') }}" class="{{ not isFiles ? 'sel' }}">
+                    <a href="{{ url('freeform/notifications/database') }}" class="{{ segment == "database" ? 'sel' }}">
                         {{ "Database Templates"|t('freeform') }}
+                    </a>
+                </li>
+
+                <li class="heading">
+                    <span>{{ "Template Wrappers"|t('freeform') }}</span>
+                </li>
+                <li>
+                    <a href="{{ url('freeform/notifications/wrappers') }}" class="{{ segment == "wrappers" ? 'sel' }}">
+                        {{ "Notification Wrappers"|t('freeform') }}
                     </a>
                 </li>
             </ul>

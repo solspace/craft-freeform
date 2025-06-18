@@ -66,6 +66,7 @@ export const PropertyEditor: React.FC = () => {
             type: PropertyType.Boolean,
           }}
           value={enabled}
+          errors={integration?.errors?.enabled}
           updateValue={() => dispatch(integrationActions.toggle(id))}
         />
 

@@ -19,4 +19,8 @@ return [
     // ------------
     'freeform/notifications/send-notification-dialogue' => 'freeform/notifications/sender/dialogue',
     'freeform/notifications/send-notification' => 'freeform/notifications/sender/send',
+    // Wrappers
+    'freeform/notifications/wrappers' => 'freeform/notifications/wrappers',
+    'freeform/notifications/wrappers/new' => 'freeform/notifications/wrappers/create',
+    'freeform/notifications/wrappers/<id:\d+>' => 'freeform/notifications/wrappers/edit',
 ];

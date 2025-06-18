@@ -21,7 +21,7 @@ export const LimitedUsers: React.FC = () => {
   const isPro = config.editions.isAtLeast(Edition.Pro);
   const isCraft5 = config.metadata.craft.is5;
 
-  useSidebarSelect(5);
+  useSidebarSelect('freeform/settings');
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -119,7 +119,7 @@ export const LimitedUsers: React.FC = () => {
               <EmptyBlock
                 lite
                 title={translate(
-                  'Upgrade to the Freeform Pro edition to get access to the Limited Users feature'
+                  'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.'
                 )}
               />
             )}

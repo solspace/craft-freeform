@@ -458,6 +458,7 @@ class DiagnosticsService extends BaseService
     {
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
         $rawScriptInsertLocation = Freeform::getInstance()->settings->getSettingsModel()->scriptInsertLocation;
+        $emailTemplateMethod = Freeform::getInstance()->settings->getSettingsModel()->emailTemplateMethod;
 
         return [
             Freeform::t('General Settings') => [
@@ -468,6 +469,10 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Automatically Scroll to Form on Errors and Multipage forms').'</span>',
                     $this->getSummary()->statistics->settings->autoScroll,
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value == "Never" ? "disabled" : "enabled" }}"></span><span class="item-inline">'.Freeform::t('CSRF Token Refresh Method').'{% if value %}: <b>{{ value }}</b>{% endif %}</span>',
+                    $this->getCsrfRefresh()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Script Insert Location').': <b>{{ value }}</b></span>',
@@ -649,7 +654,7 @@ class DiagnosticsService extends BaseService
                 ),
             ],
 
-            Freeform::t('Template Directories') => [
+            Freeform::t('Templates') => [
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Formatting Templates Directory Path').'{% if value %}: <code>'.Freeform::t('{{ value ? value : "" }}').'</code>{% endif %}</span>',
                     $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
@@ -674,6 +679,16 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t("Include Freeform's Sample Formatting Templates").'</span>',
                     $this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates,
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Template Method').': <b>{{ value }}</b></span>',
+                    Freeform::t(
+                        match (Freeform::getInstance()->settings->getSettingsModel()->emailTemplateMethod) {
+                            Settings::EMAIL_TEMPLATE_METHOD_FORM => Freeform::t('Form-specific only'),
+                            Settings::EMAIL_TEMPLATE_METHOD_GLOBAL => Freeform::t('Global only'),
+                            Settings::EMAIL_TEMPLATE_METHOD_ALL => Freeform::t('Form-specific & Global'),
+                        }
+                    ),
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Email Templates Directory Path').'{% if value %}: <code>'.Freeform::t('{{ value ? value : "" }}').'</code>{% endif %}</span>',
@@ -935,6 +950,20 @@ class DiagnosticsService extends BaseService
         return $blockers;
     }
 
+    private function getCsrfRefresh(): ?string
+    {
+        if (!\Craft::$app->getConfig()->getGeneral()->asyncCsrfInputs) {
+            return null;
+        }
+
+        return match ($this->getSummary()->statistics->settings->csrfRefresh) {
+            Settings::CSRF_REFRESH_NONE => Freeform::t('Never'),
+            Settings::CSRF_REFRESH_ONCE => Freeform::t('Once Per Page View'),
+            Settings::CSRF_REFRESH_ALWAYS => Freeform::t('Always on Each Request'),
+            default => '',
+        };
+    }
+
     private function getJsInsertType(): string
     {
         return match ($this->getSummary()->statistics->settings->jsInsertType) {
@@ -977,7 +1006,7 @@ class DiagnosticsService extends BaseService
                 $version = $type->version ?? JsonHelper::decode($integration['metadata'], true)['version'] ?? null;
 
                 $integrationsByForm[$id] = [
-                    'name' => $type->name,
+                    'name' => $type?->name ?? '',
                     'version' => $version ?? '', // Provide a default value if version is not found
                     'count' => 0,
                 ];

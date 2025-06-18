@@ -13,6 +13,10 @@ interface FieldMappingObject {
 }
 
 export const integrationSelectors = {
+  oneByShortName:
+    (shortName: string) =>
+    (state: RootState): IntegrationEntry | undefined =>
+      state.integrations.find((item) => item.shortName === shortName),
   one:
     (id: number) =>
     (state: RootState): IntegrationEntry | undefined =>
@@ -46,4 +50,16 @@ export const integrationSelectors = {
         );
       }
     ),
+  errors: {
+    any: (state: RootState): boolean => {
+      return state.integrations.some((integration) => {
+        if (!integration.errors) {
+          return false;
+        }
+        return Object.values(integration.errors).some(
+          (errors) => errors.length > 0
+        );
+      });
+    },
+  },
 } as const;

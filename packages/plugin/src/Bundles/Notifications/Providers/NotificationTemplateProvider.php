@@ -11,6 +11,22 @@ class NotificationTemplateProvider
         private NotificationsService $service,
     ) {}
 
+    public function getFormTemplates(?int $formId = null): array
+    {
+        if (!$formId) {
+            return [];
+        }
+
+        $records = $this->service->getAllNotifications();
+
+        return array_values(
+            array_filter(
+                array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
+                fn ($notification) => $notification->isDb() && $notification->getFormId() === $formId,
+            )
+        );
+    }
+
     /**
      * @return NotificationTemplate[]
      */
@@ -21,7 +37,7 @@ class NotificationTemplateProvider
         return array_values(
             array_filter(
                 array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
-                fn ($notification) => $notification->isDb(),
+                fn ($notification) => $notification->isDb() && !$notification->getFormId(),
             )
         );
     }

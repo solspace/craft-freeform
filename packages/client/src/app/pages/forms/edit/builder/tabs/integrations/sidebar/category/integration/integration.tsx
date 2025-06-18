@@ -21,12 +21,19 @@ export const Integration: React.FC<IntegrationType> = ({
     return null;
   }
 
+  const hasErrors =
+    integration.errors &&
+    Object.values(integration.errors).some((errors) => errors.length > 0);
+
   return (
     <Wrapper>
       <NavLink
         onClick={() => setLastTab(`${id}/${handle}`)}
         to={`${id}/${handle}`}
-        className={classes(!integration.enabled && 'inactive')}
+        className={classes(
+          !integration.enabled && 'inactive',
+          hasErrors && 'errors'
+        )}
       >
         <Icon>
           {!!icon && <img src={icon} />}

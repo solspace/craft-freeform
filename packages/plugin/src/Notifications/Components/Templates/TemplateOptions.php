@@ -15,21 +15,16 @@ class TemplateOptions implements OptionsGeneratorInterface
     {
         $collection = new OptionCollection();
 
-        $templates = $this->templateProvider->getDatabaseTemplates();
-        $databaseTemplateCollection = new OptionCollection('Database');
-        foreach ($templates as $template) {
-            $databaseTemplateCollection->add($template->getId(), $template->getName());
+        $global = new OptionCollection('Global');
+        foreach ($this->templateProvider->getDatabaseTemplates() as $template) {
+            $global->add($template->getId(), $template->getName());
         }
 
-        $collection->addCollection($databaseTemplateCollection);
-
-        $templates = $this->templateProvider->getFileTemplates();
-        $fileTemplateCollection = new OptionCollection('Files');
-        foreach ($templates as $template) {
-            $fileTemplateCollection->add($template->getId(), $template->getName());
+        foreach ($this->templateProvider->getFileTemplates() as $template) {
+            $global->add($template->getId(), $template->getName());
         }
 
-        $collection->addCollection($fileTemplateCollection);
+        $collection->addCollection($global);
 
         return $collection;
     }

@@ -88,6 +88,8 @@ interface FieldInterface
 
     public function getValueAsString(): string;
 
+    public function getReadableOutputValue(): Markup|string;
+
     public function getId(): ?int;
 
     public function getUid(): ?string;

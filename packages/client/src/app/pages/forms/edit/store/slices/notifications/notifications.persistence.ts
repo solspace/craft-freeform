@@ -11,7 +11,8 @@ import {
 import { notificationActions } from '.';
 
 const persistNotifications: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
+  const { getState, persist } = data;
+  const state = getState();
 
   let payload = null;
   if (state.notifications.initialized) {

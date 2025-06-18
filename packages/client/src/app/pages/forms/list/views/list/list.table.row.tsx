@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { FlexRow } from '@components/layout/blocks/flex';
@@ -7,7 +7,9 @@ import { Truncate } from '@components/layout/blocks/truncate';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useSiteContext } from '@ff-client/contexts/site/site.context';
 import { QKGroups } from '@ff-client/queries/form-groups';
+import { useFMFormStatsQuery } from '@ff-client/queries/form-monitor';
 import { QKForms } from '@ff-client/queries/forms';
+import type { TestStats } from '@ff-client/types/form-monitor';
 import type { FormWithStats } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 import ArchiveIcon from '@ff-icons/actions/archive.svg';
@@ -18,11 +20,18 @@ import axios from 'axios';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useDeleteFormModal } from '../../modals/hooks/use-delete-form-modal';
+import {
+  FormMonitorStats,
+  getLastTestStatus,
+} from '../grid/card/card.monitor.stats';
+import { ErrorMessage } from '../grid/card/card.monitor.stats.styles';
 import { ControlButton } from '../grid/card/card.styles';
 import {
   useArchiveFormMutation,
   useCloneFormMutation,
 } from '../grid/grid.mutations';
+
+import { SampleSkeleton } from './list.table.row.loading';
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
   position: 'top',
@@ -32,9 +41,10 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
 
 type Props = {
   form: FormWithStats;
+  hasFormMonitor: boolean;
 };
 
-export const ListTableRow: React.FC<Props> = ({ form }) => {
+export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
   const isLiteAndUp = config.editions.isAtLeast(Edition.Lite);
   const archiveMutation = useArchiveFormMutation();
   const cloneMutation = useCloneFormMutation();
@@ -45,7 +55,8 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
 
   const { canDelete } = config.metadata.freeform;
 
-  const { id, name, handle, description, settings, dateArchived } = form;
+  const { id, name, handle, description, settings, dateArchived, formMonitor } =
+    form;
   const color = settings.general.color;
 
   const hasTitleLink = form.links.some(({ type }) => type === 'title');
@@ -53,6 +64,12 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
     (link) => link.handle === 'submissions'
   );
   const spamLink = form.links.find((link) => link.handle === 'spam');
+  const formMonitorLink = form.links.find(({ type }) => type === 'formMonitor');
+
+  const { data: formMonitorStats, isLoading: isStatsLoading } =
+    useFMFormStatsQuery(form.id, {
+      enabled: formMonitor?.enabled === true,
+    });
 
   return (
     <tr>
@@ -103,6 +120,50 @@ export const ListTableRow: React.FC<Props> = ({ form }) => {
           </AreaChart>
         </ResponsiveContainer>
       </td>
+      {hasFormMonitor && (
+        <>
+          <td>
+            {formMonitor?.enabled && formMonitorLink && (
+              <NavLink to={formMonitorLink.url}>
+                {isStatsLoading ? (
+                  <SampleSkeleton />
+                ) : formMonitorStats?.error ? (
+                  <ErrorMessage>{formMonitorStats.error.message}</ErrorMessage>
+                ) : formMonitorStats ? (
+                  <FormMonitorStats
+                    formMonitor={{
+                      ...formMonitorStats,
+                      enabled: formMonitor?.enabled,
+                    }}
+                    align="left"
+                    width="100%"
+                    size="sm"
+                  />
+                ) : null}
+              </NavLink>
+            )}
+          </td>
+          <td>
+            {formMonitor?.enabled && formMonitorLink && (
+              <NavLink to={formMonitorLink.url}>
+                {isStatsLoading ? (
+                  <SampleSkeleton />
+                ) : formMonitorStats?.error ? (
+                  <ErrorMessage>{formMonitorStats.error.message}</ErrorMessage>
+                ) : formMonitorStats ? (
+                  getLastTestStatus(
+                    {
+                      ...formMonitorStats,
+                      enabled: formMonitor?.enabled,
+                    } as TestStats & { enabled: boolean },
+                    'lg'
+                  )
+                ) : null}
+              </NavLink>
+            )}
+          </td>
+        </>
+      )}
       <td>
         {!!submissionLink && (
           <a href={submissionLink.url}>{submissionLink.count}</a>

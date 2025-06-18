@@ -21,6 +21,7 @@ use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Settings\Implementations\Toolbars\RichTextToolbarConfiguration;
+use Twig\Markup;
 
 #[Type(
     name: 'Rich Text',
@@ -66,5 +67,10 @@ class RichTextField extends AbstractField implements InputOnlyInterface, NoStora
     public function includeInGqlSchema(): bool
     {
         return false;
+    }
+
+    public function getReadableOutputValue(): Markup
+    {
+        return new Markup($this->getContent(), 'UTF-8');
     }
 }

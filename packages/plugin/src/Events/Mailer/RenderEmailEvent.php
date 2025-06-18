@@ -9,18 +9,22 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class RenderEmailEvent extends ArrayableEvent
 {
+    private array $fieldValues = [];
+
     public function __construct(
         private Form $form,
         private NotificationTemplate $notification,
-        private array $fieldValues,
+        private array $twigVariables,
         private ?Submission $submission = null
     ) {
+        $this->fieldValues = $this->twigVariables;
+
         parent::__construct();
     }
 
     public function fields(): array
     {
-        return ['form', 'notification', 'fieldValues', 'submission'];
+        return ['form', 'notification', 'fieldValues', 'twigVariables', 'submission'];
     }
 
     public function getForm(): Form
@@ -33,41 +37,79 @@ class RenderEmailEvent extends ArrayableEvent
         return $this->notification;
     }
 
-    public function getFieldValues(): array
+    public function getSubmission(): ?Submission
     {
-        return $this->fieldValues;
+        return $this->submission;
+    }
+
+    public function getTwigVariables(): array
+    {
+        return $this->twigVariables;
+    }
+
+    public function getTwigVariable(string $key): mixed
+    {
+        return $this->twigVariables[$key] ?? null;
+    }
+
+    public function setTwigVariables(array $variables): self
+    {
+        $this->twigVariables = $variables;
+
+        return $this;
+    }
+
+    public function setTwigVariable(string $key, mixed $value): self
+    {
+        $this->twigVariables[$key] = $value;
+
+        return $this;
     }
 
     /**
-     * @return null|mixed
+     * @deprecated in v5.11.0. Use ::getTwigVariables() instead.
+     */
+    public function getFieldValues(): array
+    {
+        return $this->getTwigVariables();
+    }
+
+    /**
+     * @deprecated in v5.11.0. Use ::getTwigVariable() instead.
      */
     public function getFieldValue(string $key): mixed
     {
-        return $this->fieldValues[$key] ?? null;
+        return $this->getTwigVariable($key);
     }
 
+    /**
+     * @deprecated in v5.11.0. Use ::setTwigVariables() instead.
+     */
     public function setFieldValues(array $fieldValues): self
     {
         $this->fieldValues = $fieldValues;
 
-        return $this;
+        return $this->setTwigVariables($fieldValues);
     }
 
+    /**
+     * @deprecated in v5.11.0. Use ::setTwigVariable() instead.
+     */
     public function setFieldValue(string $key, mixed $value): self
     {
         $this->fieldValues[$key] = $value;
 
-        return $this;
+        return $this->setTwigVariable($key, $value);
     }
 
     public function get(string $key): mixed
     {
-        return $this->getFieldValue($key);
+        return $this->getTwigVariable($key);
     }
 
     public function add(string $key, mixed $value): self
     {
-        $this->setFieldValue($key, $value);
+        $this->setTwigVariable($key, $value);
 
         return $this;
     }
@@ -79,10 +121,5 @@ class RenderEmailEvent extends ArrayableEvent
         }
 
         return $this;
-    }
-
-    public function getSubmission(): ?Submission
-    {
-        return $this->submission;
     }
 }

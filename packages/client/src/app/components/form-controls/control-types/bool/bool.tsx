@@ -30,12 +30,14 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
       <CheckboxWrapper>
         <CheckboxItem>
           <LightSwitch
-            className={classes(enabled && 'on')}
+            className={classes(enabled && 'on', errors && 'error')}
             onClick={() => updateValue(!enabled)}
           />
         </CheckboxItem>
         <TextWrapper onClick={() => updateValue(!enabled)}>
-          <label htmlFor={handle}>{translate(label)}</label>
+          <label className={classes(errors && 'error')} htmlFor={handle}>
+            {translate(label)}
+          </label>
           <FormInstructions instructions={property.instructions} />
         </TextWrapper>
       </CheckboxWrapper>

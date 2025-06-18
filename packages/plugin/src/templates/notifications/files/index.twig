@@ -2,7 +2,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-notificationsManage") %}
+    {% if currentUser.can("freeform-notificationsManage") and settings.emailTemplateMethod != 'form' %}
         {% if settings.absoluteEmailTemplateDirectory %}
             {% if settings.allowFileTemplateEdit %}
                 <div class="buttons">
@@ -25,7 +25,7 @@
 
 {% set content %}
 
-    {% if notifications|length %}
+    {% if notifications|length and settings.emailTemplateMethod != 'form' %}
 
         <div class="vue-admin-tablepane tablepane">
             <table data-file-templates class="data fullwidth collapsible">
@@ -67,6 +67,12 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
+
+    {% elseif settings.emailTemplateMethod == 'form' %}
+
+        <div class="zilch">
+            {{ "Freeform is currently set to use only form-specific email notifications. You can create and manage them in each form's Notifications tab."|t('freeform') }}
         </div>
 
     {% else %}

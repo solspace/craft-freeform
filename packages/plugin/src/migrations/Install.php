@@ -113,6 +113,8 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_notification_templates'))
                 ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer())
+                ->addField('wrapperId', $this->integer()->null())
                 ->addField('pdfTemplateIds', $this->text())
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
@@ -129,7 +131,17 @@ class Install extends StreamlinedInstallMigration
                 ->addField('autoText', $this->boolean()->notNull()->defaultValue(true))
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
-                ->addField('sortOrder', $this->integer()),
+                ->addField('sortOrder', $this->integer())
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('wrapperId', 'freeform_notification_template_wrappers', 'id', ForeignKey::SET_NULL, name: 'fk_wrapperId'),
+
+            (new Table('freeform_notification_template_wrappers'))
+                ->addField('id', $this->primaryKey())
+                ->addField('name', $this->string()->notNull())
+                ->addField('handle', $this->string()->notNull())
+                ->addField('description', $this->text())
+                ->addField('content', $this->longText()->notNull())
+                ->addIndex(['name'], true, name: 'name'),
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())
@@ -200,6 +212,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('token', $this->string(100)->notNull())
                 ->addField('ip', $this->string(46)->null())
                 ->addField('isSpam', $this->boolean()->defaultValue(false))
+                ->addField('isHidden', $this->boolean()->defaultValue(false))
+                ->addField('requestId', $this->string(255)->null())
                 ->addIndex(['incrementalId'], true)
                 ->addIndex(['token'], true)
                 ->addForeignKey('id', 'elements', 'id', ForeignKey::CASCADE)

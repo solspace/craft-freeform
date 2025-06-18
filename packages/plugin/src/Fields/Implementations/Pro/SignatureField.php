@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Twig\Markup;
 
 #[Type(
     name: 'Signature',
@@ -105,6 +106,23 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
     public function getPenDotSize(): float
     {
         return $this->penDotSize;
+    }
+
+    public function getReadableOutputValue(): Markup|string
+    {
+        $image = $this->getValue();
+        if (preg_match('/^data:image\/(png|jpeg);base64,(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{4}|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{2}={2})$/', $image)) {
+            return new Markup(
+                \sprintf(
+                    '<img src="%s" alt="%s" />',
+                    $this->getValue(),
+                    $this->getLabel(),
+                ),
+                'UTF-8',
+            );
+        }
+
+        return $image;
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

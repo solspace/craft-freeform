@@ -28,6 +28,11 @@ export const Wrapper = styled.div`
       }
     }
 
+    &.errors {
+      color: ${colors.white};
+      background-color: ${colors.error};
+    }
+
     &:hover:not(.active) {
       background-color: ${colors.gray200};
     }

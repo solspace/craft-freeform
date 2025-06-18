@@ -59,4 +59,12 @@ class FileHelper
 
         return $lineCount;
     }
+
+    public static function readableBytes(int $bytes): string
+    {
+        $i = floor(log($bytes) / log(1024));
+        $units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+        return \sprintf('%.02F', $bytes / 1024 ** $i) * 1 .' '.$units[$i];
+    }
 }

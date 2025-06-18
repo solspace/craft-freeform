@@ -41,6 +41,11 @@ abstract class BaseOptionsField extends AbstractField implements OptionsInterfac
         return $labels;
     }
 
+    public function getReadableOutputValue(): string
+    {
+        return $this->getLabelsAsString();
+    }
+
     public function getLabelsAsString(): string
     {
         return implode(', ', $this->getLabels());

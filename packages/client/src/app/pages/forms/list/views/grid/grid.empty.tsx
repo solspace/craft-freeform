@@ -28,6 +28,9 @@ const generateFormData = (
     submissions,
     spam,
   },
+  formMonitor: {
+    enabled: false,
+  },
   settings: {
     general: {
       namespaceType: 'settings',
@@ -54,7 +57,7 @@ export const GridEmpty: React.FC = () => {
           </p>
 
           <button className="btn submit add icon" onClick={openCreateFormModal}>
-            {translate('New Form')}
+            {translate('Create a new Form')}
           </button>
         </>
       )}

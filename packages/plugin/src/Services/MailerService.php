@@ -110,8 +110,8 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $pdfTemplates = $notificationTemplate->getPdfTemplateRecords();
                 if ($pdfTemplates) {
                     foreach ($pdfTemplates as $pdfTemplate) {
-                        $fileName = $this->renderString($pdfTemplate->fileName, $fieldValues);
-                        $body = $this->renderString($pdfTemplate->getBody(), $fieldValues);
+                        $fileName = $this->renderString($pdfTemplate->fileName, $twigVariables);
+                        $body = $this->renderString($pdfTemplate->getBody(), $twigVariables);
 
                         if (!preg_match('/\.pdf$/i', $fileName)) {
                             $fileName .= '.pdf';
@@ -138,6 +138,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 }
 
                 if ($notificationTemplate->isIncludeAttachments()) {
+                    $fields = $form?->getLayout()?->getFields() ?? [];
                     foreach ($fields as $field) {
                         if ($field instanceof SignatureField && $field->getValueAsString()) {
                             $email->attach($field->getValueAsString(), [

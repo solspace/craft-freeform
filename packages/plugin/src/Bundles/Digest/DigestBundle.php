@@ -23,7 +23,7 @@ class DigestBundle extends FeatureBundle
 
         Event::on(
             Application::class,
-            Application::EVENT_INIT,
+            Application::EVENT_AFTER_REQUEST,
             [$this, 'triggerDigest']
         );
     }
@@ -38,18 +38,31 @@ class DigestBundle extends FeatureBundle
             return;
         }
 
+        $this->loggerProvider->getLogger()->info('DigestBundle triggerDigest - Started processing');
+
         $settings = $this->plugin()->settings;
 
         $devRecipients = $settings->getDigestRecipients();
         $clientRecipients = $settings->getClientDigestRecipients();
 
         if (!$devRecipients->count() && !$clientRecipients->count()) {
+            $this->loggerProvider->getLogger()->info('DigestBundle triggerDigest - Skipped - No recipients', [
+                'devRecipients' => $devRecipients->emailsToArray(),
+                'clientRecipients' => $clientRecipients->emailsToArray(),
+            ]);
+
             return;
         }
 
-        $this->loggerProvider->getLogger()->info('Adding job to queue');
+        $this->loggerProvider->getLogger()->info('DigestBundle triggerDigest - Adding job to queue', [
+            'devRecipients' => $devRecipients->emailsToArray(),
+            'clientRecipients' => $clientRecipients->emailsToArray(),
+        ]);
 
         $job = new SendDigestJob(new Carbon('now'));
         Queue::push($job, $settings->getQueuePriority());
+
+        $this->loggerProvider->getLogger()->info('DigestBundle triggerDigest - Job added to queue');
+        $this->loggerProvider->getLogger()->info('DigestBundle triggerDigest - Finished processing');
     }
 }

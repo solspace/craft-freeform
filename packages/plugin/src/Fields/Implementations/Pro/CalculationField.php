@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 
@@ -22,7 +23,7 @@ use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
     iconPath: __DIR__.'/../Icons/calculation.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/calculation.ejs',
 )]
-class CalculationField extends AbstractField implements DefaultValueInterface, TextInterface
+class CalculationField extends AbstractField implements DefaultValueInterface, TextInterface, ExtraFieldInterface
 {
     use DefaultTextValueTrait;
 

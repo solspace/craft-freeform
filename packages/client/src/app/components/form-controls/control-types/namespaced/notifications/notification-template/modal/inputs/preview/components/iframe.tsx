@@ -36,7 +36,7 @@ export const IframeBlock: FC<Props> = ({ body }) => {
     <Iframe
       ref={ref}
       width="100%"
-      sandbox="allow-same-origin"
+      sandbox="allow-same-origin allow-scripts"
       title="Email Preview"
     />
   );

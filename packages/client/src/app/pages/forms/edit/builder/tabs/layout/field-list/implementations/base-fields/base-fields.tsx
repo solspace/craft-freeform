@@ -65,7 +65,7 @@ export const BaseFields: React.FC = () => {
           onClick: openModal,
         }
       }
-      editionIsPro={config.editions.is(Edition.Pro)}
+      minEdition={Edition.Lite}
       title={translate(title)}
     >
       {data.groups.grouped?.map((group) => (

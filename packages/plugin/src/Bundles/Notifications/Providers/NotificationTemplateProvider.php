@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Notifications\Providers;
 
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\NotificationsService;
 
 class NotificationTemplateProvider
@@ -17,13 +18,14 @@ class NotificationTemplateProvider
             return [];
         }
 
-        $records = $this->service->getAllNotifications();
+        $records = NotificationTemplateRecord::find()
+            ->where(['formId' => $formId])
+            ->all()
+        ;
 
-        return array_values(
-            array_filter(
-                array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
-                fn ($notification) => $notification->isDb() && $notification->getFormId() === $formId,
-            )
+        return array_filter(
+            array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
+            fn ($notification) => $notification->isDb() && $notification->getFormId() === $formId,
         );
     }
 

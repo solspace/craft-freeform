@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.11.1 - 2025-06-19
+
+### Changed
+- Updated the form builder to allow access to the Field Manager for the _Lite_ edition.
+
+### Fixed
+- Fixed a bug where Form-specific email notification templates would not display in the form builder if the _Template Storage Type_ was set to `file`.
+- Fixed a bug where the _Reply-To Name_ wasn't saving data in Form-specific email templates.
+- Fixed a bug that caused some console errors to be logged when rendering an email notification preview in the builder.
+- Fixed a bug where the _Calculation_ field type was showing for non-_Pro_ editions.
+- Fixed a bug where a migration was attempting to write to project config if `allowAdminChanges` was set to `false`.
+- Fixed various visual issues with form cards in the dashboard.
+
 ## 5.11.0 - 2025-06-18
 
 ### Added

@@ -6,6 +6,8 @@ import {
   CardBody,
   CardWrapper,
   FMContainer,
+  FormBody,
+  FormBodyContent,
   LinkList,
   PaddedChartFooter,
 } from './card.styles';
@@ -32,8 +34,13 @@ export const CardLoading: React.FC = () => {
   return (
     <CardWrapper>
       <CardBody>
-        <Skeleton height={20} width="50%" />
-        <Skeleton height={10} width="80%" />
+        <FormBody>
+          <FormBodyContent>
+            <Skeleton height={15} width="90%" />
+            <Skeleton height={8} width="60%" />
+            <Skeleton height={8} width="30%" />
+          </FormBodyContent>
+        </FormBody>
 
         <LinkList>
           <li>

@@ -98,7 +98,7 @@ export const configuration = [
         {
           type: TextInput,
           label: 'Reply-To Name',
-          handle: 'replyTo',
+          handle: 'replyToName',
           instructions:
             'The reply-to name that the email will appear from in your email notification.',
         },

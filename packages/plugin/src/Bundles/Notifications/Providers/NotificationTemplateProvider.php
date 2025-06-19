@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Bundles\Notifications\Providers;
 
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
+use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
 use Solspace\Freeform\Services\NotificationsService;
 
 class NotificationTemplateProvider
 {
     public function __construct(
         private NotificationsService $service,
+        private NotificationDatabaseService $databaseService,
     ) {}
 
     public function getFormTemplates(?int $formId = null): array
@@ -74,7 +76,7 @@ class NotificationTemplateProvider
 
     public function getDatabaseNotificationTemplate(int $id): ?NotificationTemplate
     {
-        $record = $this->service->getTemplateRecordById($id);
+        $record = $this->databaseService->getById($id);
         if (!$record) {
             return null;
         }

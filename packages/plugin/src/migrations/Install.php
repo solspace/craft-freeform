@@ -117,7 +117,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('wrapperId', $this->integer()->null())
                 ->addField('pdfTemplateIds', $this->text())
                 ->addField('name', $this->string(255)->notNull())
-                ->addField('handle', $this->string(255)->notNull()->unique())
+                ->addField('handle', $this->string(255)->notNull())
                 ->addField('subject', $this->string(255)->notNull())
                 ->addField('description', $this->text())
                 ->addField('fromName', $this->string(255)->notNull())

@@ -80,11 +80,14 @@ class SenderController extends BaseController
             $notification = NotificationTemplate::fromRecord($notification);
             $logger = $loggerProvider->getLogger($notification, $form);
 
+            $headers = [];
+
             $this->getMailerService()->sendEmail(
                 $form,
                 $recipients,
                 $notification,
                 $submission,
+                $headers,
                 $logger,
             );
         }

@@ -138,7 +138,12 @@ class NotificationTemplateRecord extends ActiveRecord
     {
         return [
             [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
-            [['handle'], 'unique', 'targetAttribute' => ['handle', 'formId']],
+            [
+                ['handle'],
+                'unique',
+                'targetAttribute' => ['handle', 'formId'],
+                'message' => 'The handle "{value}" has already been taken.',
+            ],
             [
                 'bodyHtml',
                 'required',

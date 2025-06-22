@@ -55,6 +55,7 @@ import {
   TestTooltipContent,
   TestTooltipHeader,
 } from './results.styles';
+import { SubmissionDurationChart } from './results.submit.charts';
 
 type FormMonitorContext = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
@@ -465,6 +466,8 @@ export const FMResults: React.FC = () => {
           <DailyTestsChart groups={formTests.tests} />
         </ChartContainer>
       </StatsContainer>
+
+      <SubmissionDurationChart groups={formTests.tests} />
 
       <TableTestList>
         <TableHeader>

@@ -464,3 +464,100 @@ export const StatusText = styled.span`
   font-size: 13px;
   font-weight: 500;
 `;
+
+export const SubmissionDurationChartContainer = styled.div`
+  padding: ${spacings.lg};
+  background: ${colors.white};
+  border-radius: ${borderRadius.lg};
+  overflow-x: auto;
+  ${scrollBar};
+
+  h4 {
+    font-size: 1.1em;
+    margin-bottom: ${spacings.md};
+    color: ${colors.gray800};
+  }
+`;
+
+export const ChartTooltip = styled.div`
+  background: ${colors.white};
+  border: 1px solid ${colors.gray200};
+  border-radius: ${borderRadius.md};
+  padding: ${spacings.sm};
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+
+  p {
+    margin: 0 0 4px 0;
+
+    &:first-child {
+      font-weight: 600;
+      color: ${colors.gray900};
+    }
+  }
+
+  .test-list {
+    max-height: 100px;
+    overflow-y: auto;
+    margin-top: ${spacings.xs};
+
+    .test-item {
+      font-size: 11px;
+      margin: 2px 0;
+      color: ${colors.gray700};
+    }
+  }
+`;
+
+export const ChartWrapper = styled.div`
+  width: 1800px;
+  min-width: 100%;
+`;
+
+// Chart-specific tooltip styling
+export const ChartTestTooltip = styled.div`
+  overflow: hidden;
+  min-width: 160px;
+  background: ${colors.white};
+  border-radius: ${borderRadius.md};
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+`;
+
+export const ChartTestTooltipHeader = styled.div`
+  padding: ${spacings.xs} ${spacings.md};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const ChartTestTooltipContent = styled.div`
+  font-size: 12px;
+  line-height: 1.4;
+  color: ${colors.gray800};
+  padding: ${spacings.xs} ${spacings.md};
+  text-align: center;
+
+  div {
+    &:not(:last-child) {
+      margin-bottom: 4px;
+    }
+
+    &.test-id {
+      font-weight: 500;
+      color: ${colors.gray900};
+    }
+
+    &.test-date {
+      color: ${colors.gray600};
+      font-size: 11px;
+      padding-bottom: ${spacings.xs};
+    }
+
+    &.test-duration {
+      padding-top: ${spacings.xs};
+      border-top: 1px solid ${colors.gray200};
+      color: ${colors.gray700};
+      font-size: 11px;
+    }
+  }
+`;

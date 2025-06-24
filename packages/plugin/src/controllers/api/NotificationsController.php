@@ -17,6 +17,7 @@ use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
@@ -29,6 +30,18 @@ use yii\web\Response;
 
 class NotificationsController extends BaseApiController
 {
+    private const CONVERSION_MAP = [
+        'bodyHtml' => 'body',
+        'bodyText' => 'text',
+        'subject',
+        'fromName',
+        'fromEmail',
+        'replyToName',
+        'replyToEmail',
+        'cc',
+        'bcc',
+    ];
+
     public function __construct(
         $id,
         $module,
@@ -45,13 +58,14 @@ class NotificationsController extends BaseApiController
 
     public function actionGetOneTemplate(mixed $id = null): Response
     {
+        $record = NotificationTemplateRecord::createFormSpecific();
         if (null === $id) {
-            $record = NotificationTemplateRecord::createFormSpecific();
             $record->name = 'Notification';
             $record->handle = 'notification';
 
             $fields = $record->toArray();
-            $fields['body'] = $this->htmlTemplateParser->fromTwig($record->bodyHtml);
+            $fields = $this->getParsedTwigValues($fields);
+            $fields['body'] = $fields['bodyHtml'];
 
             return $this->asSerializedJson($fields);
         }
@@ -59,7 +73,22 @@ class NotificationsController extends BaseApiController
         $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
         $form = $this->formsService->getFormById($template->getFormId());
 
-        $template->body = $this->htmlTemplateParser->fromTwig($template->getBody(), $form);
+        $convertableValues = [
+            'body' => $template->getBody(),
+            'text' => $template->getTextBody(),
+            'subject' => $template->getSubject(),
+            'fromName' => $template->getFromName(),
+            'fromEmail' => $template->getFromEmail(),
+            'replyToName' => $template->getReplyToName(),
+            'replyToEmail' => $template->getReplyToEmail(),
+            'cc' => $template->getCc(),
+            'bcc' => $template->getBcc(),
+        ];
+
+        $convertableValues = $this->getParsedTwigValues($convertableValues, $form);
+        foreach ($convertableValues as $key => $value) {
+            $template->{$key} = $value;
+        }
 
         return $this->asSerializedJson($template);
     }
@@ -122,9 +151,7 @@ class NotificationsController extends BaseApiController
             throw new ApiException(404, $errors);
         }
 
-        $post = $this->request->post();
-        $post['bodyHtml'] = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
-        $post['bodyText'] = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
+        $post = $this->getParsedPost();
 
         $notification->setAttributes($post);
         $notification->save();
@@ -142,10 +169,7 @@ class NotificationsController extends BaseApiController
 
     private function createNewTemplate(int $formId): Response
     {
-        $request = $this->request;
-        $post = $request->post();
-        $post['bodyHtml'] = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
-        $post['bodyText'] = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
+        $post = $this->getParsedPost();
 
         $record = NotificationTemplateRecord::create();
         $record->formId = $formId;
@@ -166,5 +190,26 @@ class NotificationsController extends BaseApiController
         $this->response->content = $this->serializer->serialize($notification, 'json');
 
         return $this->response;
+    }
+
+    private function getParsedTwigValues(array $values, ?Form $form = null): array
+    {
+        foreach ($values as $key => $value) {
+            $values[$key] = $this->htmlTemplateParser->fromTwig($value, $form);
+        }
+
+        return $values;
+    }
+
+    private function getParsedPost(): array
+    {
+        $post = $this->request->post();
+        foreach (self::CONVERSION_MAP as $convertable => $field) {
+            $key = \is_int($convertable) ? $field : $convertable;
+            $post[$key] = $this->htmlTemplateParser->toTwig($post[$field] ?? '');
+            $post[$key] = trim(str_replace('&nbsp;', ' ', $post[$key]));
+        }
+
+        return $post;
     }
 }

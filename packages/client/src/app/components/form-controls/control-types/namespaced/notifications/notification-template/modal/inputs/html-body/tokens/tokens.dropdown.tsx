@@ -3,15 +3,14 @@ import ReactDOM from 'react-dom/client';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import type { Suggestion } from '@ff-client/types/notifications';
 import translate from '@ff-client/utils/translations';
-import type { Editor } from 'tinymce';
 
 import { Category } from './components/category';
 import { useArrowNavigation } from './listeners/use-arrows';
 import { useKeyboard } from './listeners/use-keyboard';
 import { useFilteredSuggestions } from './operations/filter';
-import { insertToken } from './operations/insert';
 import { usePosition } from './operations/position';
 import { Body, Title, TokenDropdownWrapper } from './tokens.dropdown.styles';
+import type { TokenBackend } from './tokens.types';
 
 export type Position = {
   left: number;
@@ -20,27 +19,25 @@ export type Position = {
 
 export type TokenAPI = {
   close: () => void;
-  updatePosition: (position: Position) => void;
 };
 
 type Props = {
-  editor: Editor;
+  backend: TokenBackend;
   position?: Position;
   close?: () => void;
-  insert: (item: Suggestion, filter: string) => void;
 };
 
-const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
+const TokenDropdown: React.FC<Props> = ({ backend, close }) => {
   const ref = useRef<HTMLDivElement>(null);
   const itemCountRef = useRef<number>(0);
 
   const [index, setIndex] = useState(0);
   const { suggestions, filter, setFilter } = useFilteredSuggestions(
-    editor,
+    backend,
     index
   );
 
-  usePosition(editor, ref);
+  usePosition(backend, ref);
 
   useEffect(() => {
     itemCountRef.current = suggestions.reduce(
@@ -50,26 +47,25 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
   }, [suggestions]);
 
   useClickOutside({ isEnabled: true, callback: close, refObject: ref });
-  useKeyboard({ editor, setFilter, close });
+  useKeyboard({ backend, setFilter, close });
   useArrowNavigation({
-    editor,
+    backend,
     index,
     filter,
     setIndex,
     setFilter,
     itemCountRef,
     suggestions,
-    insert,
     close,
   });
 
   const onInsert = useCallback(
     (item: Suggestion) => {
-      insert(item, filter);
+      backend.insert(item, filter);
       setFilter('');
       close();
     },
-    [filter, insert, close]
+    [filter, backend.insert, close]
   );
 
   return (
@@ -88,13 +84,12 @@ const TokenDropdown: React.FC<Props> = ({ editor, insert, close }) => {
   );
 };
 
-export const renderTokenDropdown = (editor: Editor): TokenAPI => {
+export const renderTokenDropdown = (backend: TokenBackend): TokenAPI => {
   const container = document.createElement('div');
   container.className = 'freeform-tokens-dropdown';
   document.body.appendChild(container);
 
   const root = ReactDOM.createRoot(container);
-  const insert = insertToken(editor);
 
   const close = (): void => {
     root.unmount();
@@ -103,19 +98,7 @@ export const renderTokenDropdown = (editor: Editor): TokenAPI => {
     }
   };
 
-  root.render(<TokenDropdown editor={editor} close={close} insert={insert} />);
+  root.render(<TokenDropdown backend={backend} close={close} />);
 
-  return {
-    close,
-    updatePosition: (position) => {
-      root.render(
-        <TokenDropdown
-          editor={editor}
-          close={close}
-          position={position}
-          insert={insert}
-        />
-      );
-    },
-  };
+  return { close };
 };

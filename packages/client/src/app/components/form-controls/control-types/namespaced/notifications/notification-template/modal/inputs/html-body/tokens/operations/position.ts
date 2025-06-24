@@ -1,22 +1,31 @@
 import type { MutableRefObject } from 'react';
-import type { Editor } from 'tinymce';
+
+import type { TokenBackend } from '../tokens.types';
 
 type PositionHook = (
-  editor: Editor,
+  backend: TokenBackend,
   ref: MutableRefObject<HTMLDivElement>
 ) => {
   left: number;
   top: number;
 };
 
-export const usePosition: PositionHook = (editor, ref) => {
-  const editorRect = editor.getContentAreaContainer().getBoundingClientRect();
-  const selection = editor.selection;
-  const range = selection.getRng();
+export const usePosition: PositionHook = (backend, ref) => {
+  const editorRect = backend.getRect();
+
+  const { getRange } = backend;
+  const range = getRange();
   const rect = range.getBoundingClientRect();
 
-  const left = editorRect.left + rect.left + window.scrollX + 15;
-  const top = editorRect.top + rect.top + window.scrollY + 20;
+  let leftOffset = window.scrollX;
+  let topOffset = window.scrollY;
+  if (editorRect) {
+    leftOffset += editorRect.left;
+    topOffset += editorRect.top;
+  }
+
+  const left = leftOffset + rect.left + 15;
+  const top = topOffset + rect.top + 20;
 
   if (ref.current) {
     ref.current.style.left = `${left}px`;

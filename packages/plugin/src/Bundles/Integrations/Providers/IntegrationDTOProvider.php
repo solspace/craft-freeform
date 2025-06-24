@@ -40,10 +40,7 @@ class IntegrationDTOProvider
     {
         $type = $integration->getTypeDefinition();
 
-        $icon = $type->iconPath;
-        if ($icon) {
-            [$_, $icon] = \Craft::$app->assetManager->publish($icon);
-        }
+        $icon = $type->getIconSvg();
 
         $dto = new Integration();
         $dto->id = $integration->getId();

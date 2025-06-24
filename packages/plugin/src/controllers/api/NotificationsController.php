@@ -195,6 +195,10 @@ class NotificationsController extends BaseApiController
     private function getParsedTwigValues(array $values, ?Form $form = null): array
     {
         foreach ($values as $key => $value) {
+            if (!\is_string($value)) {
+                $value = '';
+            }
+
             $values[$key] = $this->htmlTemplateParser->fromTwig($value, $form);
         }
 

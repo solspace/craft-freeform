@@ -15,7 +15,15 @@ export const usePosition: PositionHook = (backend, ref) => {
 
   const { getRange } = backend;
   const range = getRange();
-  const rect = range.getBoundingClientRect();
+
+  let container: HTMLElement | Range;
+  if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
+    container = range.startContainer as HTMLElement;
+  } else {
+    container = range;
+  }
+
+  const rect = container.getBoundingClientRect();
 
   let leftOffset = window.scrollX;
   let topOffset = window.scrollY;

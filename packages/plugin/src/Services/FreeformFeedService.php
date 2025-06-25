@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\helpers\App;
 use GuzzleHttp\Client;
+use Solspace\Freeform\Bundles\Digest\Providers\DigestLoggerProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformFeed\FeedItem;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
@@ -17,8 +18,14 @@ use yii\base\Component;
 class FreeformFeedService extends Component
 {
     public const FREEFORM_API_FEED_URL = 'https://api.solspace.com/craft/freeform/updates';
+    public const LOCK_KEY_FEED = 'freeform-feed-lock-key';
     public const CACHE_KEY_FEED = 'freeform-feed-cache-key';
     public const CACHE_TTL_FEED = 60 * 60 * 5; // every 5 hours
+
+    public function __construct(private DigestLoggerProvider $loggerProvider)
+    {
+        parent::__construct();
+    }
 
     public function markFeedCategoryAsRead(string $type)
     {
@@ -78,7 +85,7 @@ class FreeformFeedService extends Component
 
     public function fetchFeed(): void
     {
-        if (Freeform::isLocked(self::CACHE_KEY_FEED, self::CACHE_TTL_FEED)) {
+        if (Freeform::isLockedWithGuard(self::CACHE_KEY_FEED, self::LOCK_KEY_FEED, self::CACHE_TTL_FEED)) {
             return;
         }
 
@@ -90,11 +97,17 @@ class FreeformFeedService extends Component
             return;
         }
 
+        $this->loggerProvider->getLogger()->info('FreeformFeedService fetchFeed - Started processing');
+
         $this->parseFeed();
+
+        $this->loggerProvider->getLogger()->info('FreeformFeedService fetchFeed - Finished processing');
     }
 
     public function parseFeed(): void
     {
+        $this->loggerProvider->getLogger()->info('FreeformFeedService parseFeed - Started processing');
+
         $currentVersion = Freeform::getInstance()->getVersion();
         $feed = $this->getFeed();
 
@@ -142,6 +155,8 @@ class FreeformFeedService extends Component
 
             $record->save();
 
+            $this->loggerProvider->getLogger()->info('FreeformFeedService parseFeed - Created new feed record');
+
             if ($record->max && version_compare($currentVersion, $record->max, '>')) {
                 continue;
             }
@@ -182,8 +197,12 @@ class FreeformFeedService extends Component
                 $notificationRecord->seen = false;
                 $notificationRecord->issueDate = $record->issueDate;
                 $notificationRecord->save();
+
+                $this->loggerProvider->getLogger()->info('FreeformFeedService parseFeed - Created new feed notification record');
             }
         }
+
+        $this->loggerProvider->getLogger()->info('FreeformFeedService parseFeed - Finished processing');
     }
 
     /**

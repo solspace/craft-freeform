@@ -1,12 +1,13 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
 import type { SuggestionCategory } from '@ff-client/types/notifications';
-import type { Editor } from 'tinymce';
+
+import type { TokenBackend } from '../tokens.types';
 
 import { useSuggestions } from './suggestions';
 
 type FilteredSuggestions = (
-  editor: Editor,
+  backend: TokenBackend,
   index: number
 ) => {
   suggestions: SuggestionCategory[];
@@ -14,8 +15,8 @@ type FilteredSuggestions = (
   setFilter: Dispatch<SetStateAction<string>>;
 };
 
-export const useFilteredSuggestions: FilteredSuggestions = (editor, index) => {
-  const allSuggestions = useSuggestions(editor);
+export const useFilteredSuggestions: FilteredSuggestions = (backend, index) => {
+  const allSuggestions = useSuggestions(backend);
   const [suggestions, setSuggestions] = useState<SuggestionCategory[]>([]);
   const [filter, setFilter] = useState<string>('');
 

@@ -1,8 +1,8 @@
 import type { FC } from 'react';
 import React from 'react';
-import { useStore } from 'react-redux';
 import { ControlBlock } from '@components/form-controls/control.block';
 import config from '@config/freeform/freeform.config';
+import { useAppStore } from '@editor/store';
 import { useQueryClient } from '@tanstack/react-query';
 import { Editor } from '@tinymce/tinymce-react';
 import tinymce from 'tinymce/tinymce';
@@ -33,7 +33,7 @@ registerFormTokens(tinymce);
 
 export const HtmlBodyInput: FC<InputControl> = (props) => {
   const { value, onChange } = props;
-  const store = useStore();
+  const store = useAppStore();
   const queryClient = useQueryClient();
 
   const {

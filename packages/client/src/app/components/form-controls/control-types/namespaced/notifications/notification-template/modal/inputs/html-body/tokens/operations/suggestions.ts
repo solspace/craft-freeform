@@ -6,7 +6,8 @@ import type {
 } from '@ff-client/types/notifications';
 import axios from 'axios';
 import type { Store } from 'redux';
-import type { Editor } from 'tinymce';
+
+import type { TokenBackend } from '../tokens.types';
 
 let fetchedSuggestions: SuggestionCategory[];
 
@@ -23,8 +24,8 @@ const compileStoreSuggestions = (store: Store<RootState>): Suggestion[] => {
   return fields;
 };
 
-export const useSuggestions = (editor: Editor): SuggestionCategory[] => {
-  const store = editor.getParam('store');
+export const useSuggestions = (backend: TokenBackend): SuggestionCategory[] => {
+  const { store } = backend;
 
   const [compiled, setCompiled] = useState<SuggestionCategory[]>([]);
 

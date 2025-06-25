@@ -4,9 +4,9 @@ namespace Solspace\Freeform\controllers\api\templates;
 
 use Faker\Factory;
 use Solspace\Freeform\Bundles\Form\Submissions\FakeDataProvider;
-use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
 use Solspace\Freeform\Bundles\Notifications\Parsers\Suggestions;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsPostedContentProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
@@ -30,9 +30,9 @@ class NotificationsController extends BaseApiController
         $config,
         private MailerService $mailer,
         private FormsService $formsService,
-        private HtmlTemplateParser $htmlTemplateParser,
         private FakeDataProvider $fakeDataProvider,
         private NotificationLoggerProvider $notificationLoggerProvider,
+        private NotificationsPostedContentProvider $postedContentProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -168,10 +168,11 @@ class NotificationsController extends BaseApiController
         $record = new NotificationTemplateRecord();
         $record->id = 'preview';
         $record->uid = 'preview';
-        $record->bodyHtml = $this->htmlTemplateParser->toTwig($post['body'] ?? '');
-        $record->bodyText = $this->htmlTemplateParser->toTwig($post['text'] ?? '');
         $record->pdfTemplateIds = $post['pdfTemplateIds'] ?? [];
-        $record->setAttributes($post);
+
+        $parsedPostedContent = $this->postedContentProvider->getConvertedPostWithTwigValues();
+
+        $record->setAttributes($parsedPostedContent);
 
         $template = NotificationTemplate::fromRecord($record);
         $logger = $this->notificationLoggerProvider->getLogger($template, $form);

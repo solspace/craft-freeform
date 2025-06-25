@@ -1,39 +1,31 @@
 import type { Dispatch, MutableRefObject, SetStateAction } from 'react';
 import { useEffect } from 'react';
-import type {
-  Suggestion,
-  SuggestionCategory,
-} from '@ff-client/types/notifications';
-import type { Editor } from 'tinymce';
+import type { SuggestionCategory } from '@ff-client/types/notifications';
+
+import type { TokenBackend } from '../tokens.types';
 
 type Props = {
-  editor: Editor;
+  backend: TokenBackend;
   index: number;
   filter: string;
   setIndex: Dispatch<SetStateAction<number>>;
   setFilter: Dispatch<SetStateAction<string>>;
   itemCountRef: MutableRefObject<number>;
   suggestions: SuggestionCategory[];
-  insert: (item: Suggestion, filter: string) => void;
   close: () => void;
 };
 
 export const useArrowNavigation = ({
-  editor,
+  backend,
   index,
   filter,
   setIndex,
   setFilter,
   itemCountRef,
   suggestions,
-  insert,
   close,
 }: Props): void => {
   useEffect(() => {
-    if (!editor) {
-      return;
-    }
-
     const keyDown = (event: KeyboardEvent): void | boolean => {
       switch (event.key) {
         case 'Escape':
@@ -89,7 +81,7 @@ export const useArrowNavigation = ({
               .find((item) => item.active);
 
             if (item) {
-              insert(item, filter);
+              backend.insert(item, filter);
             }
           }
           setFilter('');
@@ -105,10 +97,10 @@ export const useArrowNavigation = ({
       }
     };
 
-    editor.on('keydown', keyDown, true);
+    backend.handlers.on.down(keyDown, true);
 
     return () => {
-      editor.off('keydown', keyDown);
+      backend.handlers.off.down(keyDown);
     };
-  }, [index, close, editor, suggestions]);
+  }, [index, close, backend, suggestions]);
 };

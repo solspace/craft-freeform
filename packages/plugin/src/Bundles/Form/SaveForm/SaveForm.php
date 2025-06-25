@@ -160,16 +160,15 @@ class SaveForm extends FeatureBundle
         }
 
         try {
-            $message = $mailer->compileMessage(
-                $notification,
-                [
-                    'dateCreated' => new Carbon(),
-                    'form' => $form,
-                    'token' => $token,
-                    'key' => $key,
-                ],
-                $logger,
-            );
+            $variables = $mailer->compileTwigVariables($form, $notification, $form->getSubmission());
+            $variables = array_merge($variables, [
+                'dateCreated' => new Carbon(),
+                'form' => $form,
+                'token' => $token,
+                'key' => $key,
+            ]);
+
+            $message = $mailer->compileMessage($notification, $variables, $logger);
 
             $message->setTo($recipients);
 

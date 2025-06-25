@@ -19,6 +19,7 @@ import { DropdownInput } from './inputs/dropdown';
 import { HtmlBodyInput } from './inputs/html-body/html-body';
 import { TemplatePreview } from './inputs/preview/preview';
 import { TextInput } from './inputs/text';
+import { TextTokens } from './inputs/text-tokens/text-tokens';
 import type { PushState } from './template.modal';
 
 export type InputControl = ControlProps & {
@@ -65,7 +66,7 @@ export const configuration = [
       ],
       [
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'Subject',
           handle: 'subject',
           required: true,
@@ -88,7 +89,7 @@ export const configuration = [
     rows: [
       [
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'From Name',
           handle: 'fromName',
           required: true,
@@ -96,7 +97,7 @@ export const configuration = [
             'The name that the email will appear from in your email notification.',
         },
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'Reply-To Name',
           handle: 'replyToName',
           instructions:
@@ -105,7 +106,7 @@ export const configuration = [
       ],
       [
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'From Email',
           handle: 'fromEmail',
           required: true,
@@ -113,7 +114,7 @@ export const configuration = [
             'The email address that the email will appear from in your email notification.',
         },
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'Reply-To Email',
           handle: 'replyToEmail',
           instructions: `The reply-to email address for your email notification. Leave blank to use 'From Email' address.`,
@@ -121,13 +122,13 @@ export const configuration = [
       ],
       [
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'CC',
           handle: 'cc',
           instructions: `The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use.`,
         },
         {
-          type: TextInput,
+          type: TextTokens,
           label: 'BCC',
           handle: 'bcc',
           instructions: `The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use.`,

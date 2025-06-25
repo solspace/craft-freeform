@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import type { NotificationTemplateGroups } from '@ff-client/queries/notifications';
 import {
@@ -6,9 +6,11 @@ import {
   useQueryNotificationTemplates,
 } from '@ff-client/queries/notifications';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
+import type { OptionCollection } from '@ff-client/types/properties';
 
 type UseNotificationTemplates = (selectedId: string | number) => {
   templates: NotificationTemplateGroups;
+  options: OptionCollection;
   selectedTemplate?: NotificationTemplate;
   isFetching: boolean;
 };
@@ -22,6 +24,7 @@ export const useNotificationTemplates: UseNotificationTemplates = (
   const { data: formTemplates, isFetching: isFetchingFormTemplates } =
     useQueryFormNotificationTemplates(Number(formId));
 
+  const [options, setOptions] = useState<OptionCollection>([]);
   const [selectedTemplate, setSelectedTemplate] =
     useState<NotificationTemplate>();
   const [templates, setTemplates] = useState<NotificationTemplateGroups>({
@@ -55,8 +58,37 @@ export const useNotificationTemplates: UseNotificationTemplates = (
     setSelectedTemplate(selected);
   }, [selectedId, templates]);
 
+  useEffect(() => {
+    const collection: OptionCollection = [];
+
+    if (templates.form) {
+      collection.push({
+        label: 'Form',
+        icon: <i className="fa-solid fa-file" />,
+        children: templates.form.map((template) => ({
+          label: template.name,
+          value: String(template.id),
+        })),
+      });
+    }
+
+    if (templates.global) {
+      collection.push({
+        label: 'Global',
+        icon: <i className="fa-solid fa-earth-americas" />,
+        children: templates.global.map((template) => ({
+          label: template.name,
+          value: String(template.id),
+        })),
+      });
+    }
+
+    setOptions(collection);
+  }, [templates]);
+
   return {
     templates,
+    options,
     isFetching,
     selectedTemplate,
   };

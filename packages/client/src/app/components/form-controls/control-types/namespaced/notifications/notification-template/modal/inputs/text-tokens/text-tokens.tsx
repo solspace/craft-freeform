@@ -129,7 +129,10 @@ export const TextTokens: FC<InputControl> = (props) => {
         return;
       }
 
-      if (range.startContainer.nodeType !== Node.TEXT_NODE) {
+      if (
+        range.startContainer.nodeType !== Node.TEXT_NODE &&
+        range.startContainer.nodeType !== Node.ELEMENT_NODE
+      ) {
         return;
       }
 

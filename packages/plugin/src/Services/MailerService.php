@@ -179,6 +179,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         ?Form $form = null
     ): Message {
         $fromName = $this->getSystemDefault('fromName', $notification->getFromName(), $values);
+        $fromName = htmlspecialchars_decode($fromName, \ENT_QUOTES);
         $fromEmail = $this->getSystemDefault('fromEmail', $notification->getFromEmail(), $values);
         $text = $this->renderString($notification->getTextBody(), $values);
         $html = $this->renderString($notification->getBody(), $values);
@@ -241,6 +242,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         if ($notification->getReplyToEmail()) {
             $replyToName = trim(App::parseEnv($this->renderString($notification->getReplyToName() ?? '', $values)));
+            $replyToName = htmlspecialchars_decode($replyToName, \ENT_QUOTES);
             $replyTo = $this->getSystemDefault('replyToEmail', $notification->getReplyToEmail(), $values);
             if (!empty($replyTo)) {
                 if ($replyToName) {

@@ -1,4 +1,6 @@
 import React from 'react';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { useRenderContext } from '@components/form-controls/context/render.context';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import config, { TemplateMethod } from '@config/freeform/freeform.config';
@@ -18,7 +20,8 @@ export type NotificationSelectHandler = (
 const NotificationTemplate: React.FC<
   ControlType<NotificationTemplateProperty>
 > = ({ value, property, errors, updateValue }) => {
-  const { templates, isFetching } = useNotificationTemplates(value);
+  const { size } = useRenderContext();
+  const { templates, options, isFetching } = useNotificationTemplates(value);
   const openModal = useNotificationEditModal();
 
   const {
@@ -48,23 +51,34 @@ const NotificationTemplate: React.FC<
 
   return (
     <Control property={property} errors={errors}>
-      <NotificationTemplateSelector>
-        <Category
-          value={value}
-          title={translate('Form Templates')}
-          templates={templates.form}
-          onClick={handleSelect}
-          canCreate={canCreate && method !== TemplateMethod.Global}
-          onCreate={openModalFunction}
+      {size === 'small' && (
+        <Dropdown
+          emptyOption="Select a template"
+          loading={isFetching}
+          options={options}
+          onChange={(value) => updateValue(value)}
+          value={String(value || '')}
         />
+      )}
+      {size === 'normal' && (
+        <NotificationTemplateSelector>
+          <Category
+            value={value}
+            title={translate('Form Templates')}
+            templates={templates.form}
+            onClick={handleSelect}
+            canCreate={canCreate && method !== TemplateMethod.Global}
+            onCreate={openModalFunction}
+          />
 
-        <Category
-          value={value}
-          title={translate('Global Templates')}
-          templates={templates.global}
-          onClick={handleSelect}
-        />
-      </NotificationTemplateSelector>
+          <Category
+            value={value}
+            title={translate('Global Templates')}
+            templates={templates.global}
+            onClick={handleSelect}
+          />
+        </NotificationTemplateSelector>
+      )}
     </Control>
   );
 };

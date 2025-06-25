@@ -70,9 +70,37 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                 $attributes[$attr] = $value;
             }
 
-            $formHandle = StringHelper::toAscii($form->handle);
-            $formHandle = StringHelper::truncate($formHandle, $maxHandleSize, '');
-            $formHandle = trim($formHandle, '-_');
+            $baseHandle = StringHelper::toAscii($form->handle);
+            $baseHandle = StringHelper::truncate($baseHandle, $maxHandleSize, '');
+            $baseHandle = trim($baseHandle, '-_');
+
+            $formHandle = $baseHandle;
+            $suffix = 1;
+
+            // Keep trying until a unique handle is found
+            while (true) {
+                $checkHandle = $formHandle;
+
+                // Append numeric suffix if not first attempt
+                if ($suffix > 1) {
+                    $checkHandle = StringHelper::truncate($baseHandle, $maxHandleSize - \strlen((string) $suffix), '').$suffix;
+                }
+
+                $handleExists = (new Query())
+                    ->from('{{%freeform_forms}}')
+                    ->where(['handle' => $checkHandle])
+                    ->andWhere(['not', ['id' => $id]]) // Don't conflict with current form
+                    ->exists()
+                ;
+
+                if (!$handleExists) {
+                    break;
+                }
+
+                ++$suffix;
+            }
+
+            $formHandle = $checkHandle;
 
             $propertyProvider->setObjectProperties(
                 $general,

@@ -56,6 +56,7 @@ class NotificationsController extends BaseApiController
             $fields = $record->toArray();
             $fields = $this->getParsedTwigValues($fields);
             $fields['body'] = $fields['bodyHtml'];
+            $fields['autoText'] = true;
 
             return $this->asSerializedJson($fields);
         }
@@ -79,6 +80,8 @@ class NotificationsController extends BaseApiController
         foreach ($convertableValues as $key => $value) {
             $template->{$key} = $value;
         }
+
+        $template->autoText = true;
 
         return $this->asSerializedJson($template);
     }
@@ -187,6 +190,7 @@ class NotificationsController extends BaseApiController
         $record = NotificationTemplateRecord::create();
         $record->formId = $formId;
         $record->setAttributes($post);
+        $record->autoText = (bool) $post['autoText'];
         $record->save();
 
         if ($record->getErrors()) {

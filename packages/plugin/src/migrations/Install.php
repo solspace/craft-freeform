@@ -117,7 +117,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('wrapperId', $this->integer()->null())
                 ->addField('pdfTemplateIds', $this->text())
                 ->addField('name', $this->string(255)->notNull())
-                ->addField('handle', $this->string(255)->notNull()->unique())
+                ->addField('handle', $this->string(255)->notNull())
                 ->addField('subject', $this->string(255)->notNull())
                 ->addField('description', $this->text())
                 ->addField('fromName', $this->string(255)->notNull())
@@ -132,6 +132,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer())
+                ->addIndex(['formId', 'handle'], true, name: 'formId_handle')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('wrapperId', 'freeform_notification_template_wrappers', 'id', ForeignKey::SET_NULL, name: 'fk_wrapperId'),
 

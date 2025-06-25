@@ -64,4 +64,18 @@ class Type
 
         return null;
     }
+
+    #[Ignore]
+    public function getIconSvg(): ?string
+    {
+        if ($this->iconPath && file_exists($this->iconPath)) {
+            if (str_ends_with($this->iconPath, '.svg')) {
+                return file_get_contents($this->iconPath);
+            }
+
+            return null;
+        }
+
+        return null;
+    }
 }

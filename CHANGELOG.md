@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.11.2 - 2025-06-20
+
+### Fixed
+- Fixed a bug that caused a migration to fail when using PostgreSQL.
+- Fixed a bug that could occur when creating a form-specific email template that has a duplicate handle.
+- Fixed an issue that caused incorrect email notification errors to appear in the Freeform error log in some cases.
+
 ## 5.11.1 - 2025-06-19
 
 ### Changed

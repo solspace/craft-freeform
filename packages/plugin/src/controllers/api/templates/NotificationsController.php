@@ -82,11 +82,14 @@ class NotificationsController extends BaseApiController
 
         $recipient = $this->request->post('targetEmail');
 
+        $headers = [];
+
         $isSent = $this->mailer->sendEmail(
             $form,
             RecipientCollection::fromArray([$recipient]),
             $template,
             $form->getSubmission(),
+            $headers,
             logger: $logger,
         );
 

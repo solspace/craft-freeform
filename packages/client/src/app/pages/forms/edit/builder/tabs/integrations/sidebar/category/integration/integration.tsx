@@ -35,10 +35,12 @@ export const Integration: React.FC<IntegrationType> = ({
           hasErrors && 'errors'
         )}
       >
-        <Icon>
-          {!!icon && <img src={icon} />}
-          {!icon && <CogIcon />}
-        </Icon>
+        {!icon && (
+          <Icon>
+            <CogIcon />
+          </Icon>
+        )}
+        {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
         <Name>{name}</Name>
         <Status
           $enabled={integration.enabled}

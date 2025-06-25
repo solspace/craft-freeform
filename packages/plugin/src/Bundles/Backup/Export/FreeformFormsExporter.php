@@ -94,7 +94,7 @@ class FreeformFormsExporter extends BaseExporter
             $dto = new Integration();
             $dto->name = $integration->name;
             $dto->uid = $integration->uid;
-            $dto->icon = $integration->getIntegrationObject()->getTypeDefinition()->getIconUrl();
+            $dto->icon = $integration->getIntegrationObject()->getTypeDefinition()->getIconSvg();
 
             $preview->integrations->add($dto);
         }

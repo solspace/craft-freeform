@@ -43,6 +43,11 @@ export const Icon = styled.div`
   display: block;
   width: 20px;
   height: 20px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Name = styled.div`

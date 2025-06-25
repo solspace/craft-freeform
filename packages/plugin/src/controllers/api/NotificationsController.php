@@ -161,6 +161,29 @@ class NotificationsController extends BaseApiController
     {
         $post = $this->postedContentProvider->getConvertedPostWithTwigValues();
 
+        $handle = $post['handle'] ?? '';
+        if (!empty($handle)) {
+            do {
+                $exists = NotificationTemplateRecord::find()
+                    ->where(['handle' => $handle, 'formId' => $formId])
+                    ->exists()
+                ;
+
+                if ($exists) {
+                    $number = 1;
+                    if (preg_match('/^(.*?)-(\d+)$/', $handle, $matches)) {
+                        $number = (int) $matches[2] + 1;
+                    }
+
+                    $handle = preg_replace('/^(.*?)(-\d+)?$/', '$1-'.$number, $handle);
+                    $post['handle'] = $handle;
+
+                    // replace the $post['name'] as well, but use a space and number
+                    $post['name'] = preg_replace('/^(.*?)( \d+)?$/', '$1 '.$number, $post['name'] ?? '');
+                }
+            } while ($exists);
+        }
+
         $record = NotificationTemplateRecord::create();
         $record->formId = $formId;
         $record->setAttributes($post);

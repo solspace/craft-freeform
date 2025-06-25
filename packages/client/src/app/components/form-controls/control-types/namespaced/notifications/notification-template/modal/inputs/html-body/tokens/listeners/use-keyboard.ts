@@ -1,22 +1,22 @@
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect } from 'react';
-import type { Editor } from 'tinymce';
+
+import type { TokenBackend } from '../tokens.types';
 
 type Props = {
-  editor: Editor;
+  backend: TokenBackend;
   setFilter: Dispatch<SetStateAction<string>>;
   close: () => void;
 };
 
-export const useKeyboard = ({ editor, setFilter, close }: Props): void => {
+export const useKeyboard = ({ backend, setFilter, close }: Props): void => {
   useEffect(() => {
-    if (!editor) {
+    if (backend.extrnalTrigger) {
       return;
     }
 
     const keyUp = (event: KeyboardEvent): void => {
-      const selection = editor.selection;
-      const rng = selection.getRng();
+      const rng = backend.getRange();
       const currentNode = rng.startContainer;
       const currentOffset = rng.startOffset;
 
@@ -48,10 +48,10 @@ export const useKeyboard = ({ editor, setFilter, close }: Props): void => {
       }
     };
 
-    editor.on('keyup', keyUp, true);
+    backend.handlers.on.up(keyUp, true);
 
     return () => {
-      editor.off('keyup', keyUp);
+      backend.handlers.off.up(keyUp);
     };
-  }, [close, editor, setFilter]);
+  }, [close, backend, setFilter]);
 };

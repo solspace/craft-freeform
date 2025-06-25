@@ -26,8 +26,7 @@ export const Item: React.FC<Props> = ({ item, onClick }) => {
       ref={ref}
       className={classes(item?.active && 'active')}
       onClick={() => onClick?.(item)}
-    >
-      {item.shortName}
-    </ItemWrapper>
+      dangerouslySetInnerHTML={{ __html: item.shortName }}
+    />
   );
 };

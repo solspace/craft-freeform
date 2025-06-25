@@ -45,8 +45,8 @@ class DatabaseController extends AbstractNotificationsController
         $record = NotificationTemplateRecord::create();
         $record->name = "New Template on {$date}";
         $record->handle = $name;
-        $record->fromEmail = $settingsModel->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
-        $record->fromName = $settingsModel->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
+        $record->fromEmail = $settingsModel->defaultFromEmail ?: '{{ general.systemEmail }}';
+        $record->fromName = $settingsModel->defaultFromName ?: '{{ general.systemName }}';
 
         $title = Freeform::t('Create a new email notification template');
 

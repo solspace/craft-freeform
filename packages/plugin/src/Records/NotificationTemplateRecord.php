@@ -56,8 +56,8 @@ class NotificationTemplateRecord extends ActiveRecord
         $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
 
         $record = new self();
-        $record->fromEmail = $settingsModel->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
-        $record->fromName = $settingsModel->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
+        $record->fromEmail = $settingsModel->defaultFromEmail ?: '{{ general.systemEmail }}';
+        $record->fromName = $settingsModel->defaultFromName ?: '{{ general.systemName }}';
         $record->subject = 'New submission on your {{ form.name }} form';
         $record->autoText = true;
         $record->bodyHtml = <<<'EOT'

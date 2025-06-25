@@ -34,7 +34,7 @@ export const TextTokens: FC<InputControl> = (props) => {
           return;
         }
 
-        const range = selection.getRangeAt(0);
+        const range = lastRangeRef.current || selection.getRangeAt(0);
         if (range.startContainer.nodeType !== Node.TEXT_NODE) {
           return;
         }
@@ -64,7 +64,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         const span = document.createElement('span');
         span.contentEditable = 'false';
         span.dataset.freeformToken = item.token;
-        span.textContent = item.name;
+        span.innerHTML = item.name;
 
         tokenRange.deleteContents();
         tokenRange.insertNode(span);
@@ -119,7 +119,7 @@ export const TextTokens: FC<InputControl> = (props) => {
       const span = document.createElement('span');
       span.contentEditable = 'false';
       span.dataset.freeformToken = item.token;
-      span.textContent = item.name;
+      span.innerHTML = item.name;
 
       const range = lastRangeRef.current;
       // if no range is selected, we insert at the end of the text

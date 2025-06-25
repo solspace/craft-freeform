@@ -6,6 +6,8 @@ export const TextTokenWrapper = styled.div`
 
 export const TextTokenContainer = styled.div`
   span[data-freeform-token] {
+    display: inline-block;
+
     background-color: #e4edf6;
     border: 1px solid #33404d1a;
     border-radius: 3px;

@@ -9,6 +9,7 @@ import { save } from '@editor/store/actions/form';
 import { State } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
+import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
@@ -19,6 +20,7 @@ import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
 
 import {
+  BetaLabel,
   FormName,
   Heading,
   SaveButton,
@@ -36,6 +38,7 @@ export const Tabs: React.FC = () => {
   const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(fieldSelectors.hasErrors);
   const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
+  const hasIntegrationErrors = useSelector(integrationSelectors.errors.any);
 
   const { getTranslation } = useTranslations({
     ...form.settings.general,
@@ -54,12 +57,12 @@ export const Tabs: React.FC = () => {
     <TabWrapper>
       <Breadcrumb
         id="form-name"
-        label={form.name || 'New Form'}
+        label={form.name || 'Create a new Form'}
         url={`/forms/${form.id}`}
       />
 
       <Heading>
-        <FormName>{formName || translate('New Form')}</FormName>
+        <FormName>{formName || translate('Create a new Form')}</FormName>
       </Heading>
 
       <TabsWrapper className="main-tabs">
@@ -80,8 +83,19 @@ export const Tabs: React.FC = () => {
           </NavLink>
         )}
         {config.limitations.can('integrations.tab') && (
-          <NavLink to="integrations">
+          <NavLink
+            to="integrations"
+            className={classes(hasIntegrationErrors && 'errors')}
+          >
             <span>{translate('Integrations')}</span>
+          </NavLink>
+        )}
+        {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
+          <NavLink to="form-monitor">
+            <span>
+              {translate('Monitoring')}
+              <BetaLabel>BETA</BetaLabel>
+            </span>
           </NavLink>
         )}
         {formSettingsData && config.limitations.can('settings.tab') && (

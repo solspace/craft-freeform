@@ -36,6 +36,10 @@ class Settings extends Model
     public const EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE = 'database';
     public const EMAIL_TEMPLATE_STORAGE_TYPE_BOTH = 'files_database';
 
+    public const EMAIL_TEMPLATE_METHOD_ALL = 'all';
+    public const EMAIL_TEMPLATE_METHOD_FORM = 'form';
+    public const EMAIL_TEMPLATE_METHOD_GLOBAL = 'global';
+
     public const THROTTLING_TIME_FRAME_MINUTES = 'm';
     public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
@@ -52,6 +56,10 @@ class Settings extends Model
     public const CONTEXT_TYPE_PAYLOAD = 'payload';
     public const CONTEXT_TYPE_SESSION = 'session';
     public const CONTEXT_TYPE_DATABASE = 'database';
+
+    public const CSRF_REFRESH_NONE = 'none';
+    public const CSRF_REFRESH_ONCE = 'once';
+    public const CSRF_REFRESH_ALWAYS = 'always';
 
     public const DEFAULT_AJAX = true;
     public const DEFAULT_FORMATTING_TEMPLATE = 'basic-light/index.twig';
@@ -82,6 +90,7 @@ class Settings extends Model
 
     /** @var string */
     public $emailTemplateStorageType;
+    public string $emailTemplateMethod = self::EMAIL_TEMPLATE_METHOD_FORM;
 
     /** @var string */
     public $emailTemplateDefault;
@@ -278,6 +287,9 @@ class Settings extends Model
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
+    public string $csrfRefresh = self::CSRF_REFRESH_NONE;
+
+    public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
     /**
      * Settings constructor.

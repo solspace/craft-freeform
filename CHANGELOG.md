@@ -1,5 +1,47 @@
 # Solspace Freeform Changelog
 
+## 5.11.2 - 2025-06-20
+
+### Fixed
+- Fixed a bug that caused a migration to fail when using PostgreSQL.
+- Fixed a bug that could occur when creating a form-specific email template that has a duplicate handle.
+- Fixed an issue that caused incorrect email notification errors to appear in the Freeform error log in some cases.
+
+## 5.11.1 - 2025-06-19
+
+### Changed
+- Updated the form builder to allow access to the Field Manager for the _Lite_ edition.
+
+### Fixed
+- Fixed a bug where Form-specific email notification templates would not display in the form builder if the _Template Storage Type_ was set to `file`.
+- Fixed a bug where the _Reply-To Name_ wasn't saving data in Form-specific email templates.
+- Fixed a bug that caused some console errors to be logged when rendering an email notification preview in the builder.
+- Fixed a bug where the _Calculation_ field type was showing for non-_Pro_ editions.
+- Fixed a bug where a migration was attempting to write to project config if `allowAdminChanges` was set to `false`.
+- Fixed various visual issues with form cards in the dashboard.
+
+## 5.11.0 - 2025-06-18
+
+### Added
+
+- **Form-Specific Email Templates**
+    - Added Form-specific email template options inside the form builder, complete with Rich Text and tokens for ease of use.
+    - Added Notification Template Wrappers to help with setting common template code in notification templates.
+    - Added a **Template Method** setting to manage your approach for email notification templates. Existing upgrades will default to _Global only_, while new installations will default to _Form-specific only_.
+    - Removed the `allowBuilderTemplateCreation` and `emailTemplateDefault` settings in favor of the new Form-specific templates approach.
+- **Form Monitoring Service** (beta)
+    - Customers with active/valid licenses of the Pro edition of Freeform can opt-in to our new _Form Monitor_ service for no extra cost.
+    - Each install is allowed to monitor up to 3 forms, 3 times a day.
+
+### Changed
+
+- **CSRF Token Auto-Fetch**
+    - The new auto-fetch mechanism for CSRF tokens in AJAX requests that are sent throughout Freeform. These tokens are automatically included as `X-Craft-Csrf` headers in the requests. This new approach functions seamlessly in all scenarios, including for cached templates, eliminating the need for manual fetching and replacing of CSRF tokens for cached pages.
+    - The new CSRF auto-fetch mechanism is enabled only when Craft's `asyncCsrfInputs` setting is set to `true`. If it is set to `false`, a standard hidden input is generated in forms, just like before. However, when it is set to `true`, the input is not added to the form, and the token is automatically fetched upon request. There is an exception: if the form does not have AJAX enabled, the input will still be included in the form.
+    - There is a new setting that allows the user to choose between two options:
+        - The first option fetches the token **Once Per Page View** and reuses it, which reduces the number of additional AJAX requests.
+        - The second option fetches the token **Every Time** an AJAX request is made by Freeform. This ensures that the _unable to verify submission_ error does not appear, as the token is always up to date.
+
 ## 5.10.17.1 - 2025-06-17
 
 ### Fixed
@@ -3086,7 +3128,7 @@
 - Added ability to populate multi-option field types with Commerce Products.
 - Added options to set the reCAPTCHA 'Theme' (light/dark), 'Size' (normal/compact) and custom 'Error Message'.
 - Added ability to disable reCAPTCHA for forms at template level (use `disableRecaptcha: true`).
-- Added optional 'Reply-to Name' field for email notification templates to apply a name to the Reply-to email address.
+- Added optional 'Reply-To Name' field for email notification templates to apply a name to the Reply-to email address.
 - Added `$form->hasFieldType(string $type);` better field type presence checking in forms.
 
 ### Changed

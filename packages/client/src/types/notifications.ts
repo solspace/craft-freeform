@@ -34,12 +34,16 @@ export type RecipientMapping = {
 };
 
 export enum TemplateType {
+  Global = 'global',
   Database = 'database',
   File = 'file',
+  Form = 'form',
 }
 
 export type NotificationTemplate = {
   id: TemplateID;
+  formId?: number;
+
   name: string;
   handle: string;
   description: string;
@@ -58,4 +62,23 @@ export type NotificationTemplate = {
 
   includeAttachments: boolean;
   presetAssets: string[];
+};
+
+export type SuggestionCategory = {
+  name: string;
+  items: Suggestion[];
+};
+
+export type Suggestion = {
+  shortName: string;
+  name: string;
+  token: string;
+  active?: boolean;
+};
+
+export type Wrapper = {
+  id: number;
+  name: string;
+  description?: string;
+  content: string;
 };

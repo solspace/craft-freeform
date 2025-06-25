@@ -21,18 +21,38 @@ const generateFormData = (
   type: '',
   name,
   handle: '',
+  description,
   isNew: true,
   chartData,
-  links: [],
+  links: [
+    {
+      count: submissions,
+      label: translate('{count} Submissions', { count: submissions }),
+      handle: 'submissions',
+      type: 'linkList',
+      url: '',
+      internal: false,
+    },
+    {
+      count: spam,
+      label: translate('{count} Spam', { count: spam }),
+      handle: 'spam',
+      type: 'linkList',
+      url: '',
+      internal: true,
+    },
+  ],
   counters: {
     submissions,
     spam,
+  },
+  formMonitor: {
+    enabled: false,
   },
   settings: {
     general: {
       namespaceType: 'settings',
       namespace: 'general',
-      description,
       color,
     },
   },
@@ -54,7 +74,7 @@ export const GridEmpty: React.FC = () => {
           </p>
 
           <button className="btn submit add icon" onClick={openCreateFormModal}>
-            {translate('New Form')}
+            {translate('Create a new Form')}
           </button>
         </>
       )}

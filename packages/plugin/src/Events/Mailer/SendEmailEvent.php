@@ -45,10 +45,7 @@ class SendEmailEvent extends CancelableArrayableEvent
         return $this->fieldValues;
     }
 
-    /**
-     * @return null|Submission
-     */
-    public function getSubmission()
+    public function getSubmission(): ?Submission
     {
         return $this->submission;
     }

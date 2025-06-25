@@ -26,29 +26,38 @@ class NotificationTemplate implements IdentificatorInterface
 {
     public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
-    private int|string $id;
-    private array $pdfTemplateIds = [];
-    private string $uid;
+    public int|string $id;
+    public ?int $formId = null;
+    public null|int|string $wrapperId = null;
+    public array $pdfTemplateIds = [];
+    public string $uid;
 
-    private string $name;
-    private string $handle;
-    private ?string $description = null;
-    private ?string $templateData = null;
+    public string $name;
+    public string $handle;
+    public ?string $description = null;
+    public ?string $templateData = null;
 
-    private string $fromEmail;
-    private string $fromName;
-    private ?string $replyToName = null;
-    private ?string $replyToEmail = null;
-    private ?string $cc = null;
-    private ?string $bcc = null;
+    public string $fromEmail;
+    public string $fromName;
+    public ?string $replyToName = null;
+    public ?string $replyToEmail = null;
+    public ?string $cc = null;
+    public ?string $bcc = null;
 
-    private bool $includeAttachments;
-    private array|string $presetAssets = [];
+    public bool $includeAttachments;
+    public array|string $presetAssets = [];
 
-    private string $subject;
-    private string $body;
-    private string $textBody;
-    private bool $autoText;
+    public string $subject;
+    public string $body;
+    public string $textBody;
+    public bool $autoText;
+
+    public function __set(string $name, $value): void
+    {
+        if (property_exists($this, $name)) {
+            $this->{$name} = $value;
+        }
+    }
 
     public static function fromRecord(NotificationTemplateRecord $record): self
     {
@@ -56,6 +65,8 @@ class NotificationTemplate implements IdentificatorInterface
 
         $template->id = $record->id ?? $record->filepath;
         $template->uid = $record->uid ?? $record->filepath;
+        $template->formId = $record->formId ?? null;
+        $template->wrapperId = $record->wrapperId ?? null;
         $template->pdfTemplateIds = $record->getPdfTemplateIdList();
         $template->handle = $record->handle;
         $template->name = $record->name;
@@ -72,6 +83,7 @@ class NotificationTemplate implements IdentificatorInterface
         $template->autoText = $record->autoText;
         $template->includeAttachments = (bool) $record->includeAttachments;
         $template->presetAssets = $record->getPresetAssets() ?? [];
+        $template->pdfTemplateIds = $record->getPdfTemplateIdList();
 
         return $template;
     }
@@ -171,6 +183,16 @@ class NotificationTemplate implements IdentificatorInterface
     public function getUid(): string
     {
         return $this->uid;
+    }
+
+    public function getFormId(): ?int
+    {
+        return $this->formId;
+    }
+
+    public function getWrapperId(): null|int|string
+    {
+        return $this->wrapperId;
     }
 
     public function getPdfTemplateIds(): array

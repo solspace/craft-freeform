@@ -1,33 +1,17 @@
 import React from 'react';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
+import { useRenderContext } from '@components/form-controls/context/render.context';
 import { Control } from '@components/form-controls/control';
-import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
-import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import config from '@config/freeform/freeform.config';
-import { useNewNotificationMutation } from '@ff-client/queries/notifications.mutation';
-import { spacings } from '@ff-client/styles/variables';
-import {
-  NotificationTemplate,
-  TemplateType,
-} from '@ff-client/types/notifications';
+import config, { TemplateMethod } from '@config/freeform/freeform.config';
+import { NotificationTemplate } from '@ff-client/types/notifications';
 import type { NotificationTemplateProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import { Category } from './category/category';
-import ChevronIcon from './icons/chevron.svg';
-import {
-  useEditorAnimations,
-  useSelectionAnimations,
-} from './notification-template.animations';
+import { useNotificationEditModal } from './modal/template.modal.hooks';
 import { useNotificationTemplates } from './notification-template.hooks';
-import {
-  Button,
-  ButtonRow,
-  CategorySelectionWrapper,
-  NotificationTemplateSelector,
-  SelectedNotification,
-} from './notification-template.styles';
+import { NotificationTemplateSelector } from './notification-template.styles';
 
 export type NotificationSelectHandler = (
   template: NotificationTemplate
@@ -36,133 +20,65 @@ export type NotificationSelectHandler = (
 const NotificationTemplate: React.FC<
   ControlType<NotificationTemplateProperty>
 > = ({ value, property, errors, updateValue }) => {
-  const [open, setOpen] = React.useState(false);
-  const { templates, isFetching, selectedTemplate } =
-    useNotificationTemplates(value);
+  const { size } = useRenderContext();
+  const { templates, options, isFetching } = useNotificationTemplates(value);
+  const openModal = useNotificationEditModal();
 
   const {
-    templates: { canCreate },
+    templates: { canCreate, method },
   } = config;
-
-  const editorAnimations = useEditorAnimations(
-    open,
-    templates?.database?.length + templates?.files?.length
-  );
-  const selectionAnimations = useSelectionAnimations(open);
-
-  const mutation = useNewNotificationMutation();
 
   if (isFetching && !templates) {
     return (
       <Control property={property} errors={errors}>
-        <NotificationTemplateSelector style={{ height: 36 }}>
-          <SelectedNotification empty>
-            <span>
-              <LoadingText spinner loading instant>
-                {translate('Loading Templates')}
-              </LoadingText>
-            </span>
-            <ChevronIcon />
-          </SelectedNotification>
-        </NotificationTemplateSelector>
+        loading
       </Control>
     );
   }
 
   const handleSelect: NotificationSelectHandler = (template) => {
-    mutation.reset();
     updateValue(template.id);
-    setOpen(false);
+  };
+
+  const openModalFunction = (): void => {
+    openModal({
+      type: 'form',
+      onSuccess: (id: number) => {
+        updateValue(id);
+      },
+    });
   };
 
   return (
     <Control property={property} errors={errors}>
-      <NotificationTemplateSelector style={editorAnimations}>
-        <SelectedNotification
-          onClick={() => setOpen(!open)}
-          className={classes(open && 'open')}
-        >
-          <span>{selectedTemplate?.name}</span>
-          <ChevronIcon />
-        </SelectedNotification>
-
-        <CategorySelectionWrapper style={selectionAnimations}>
+      {size === 'small' && (
+        <Dropdown
+          emptyOption="Select a template"
+          loading={isFetching}
+          options={options}
+          onChange={(value) => updateValue(value)}
+          value={String(value || '')}
+        />
+      )}
+      {size === 'normal' && (
+        <NotificationTemplateSelector>
           <Category
             value={value}
-            category={TemplateType.Database}
-            templates={templates.database}
+            title={translate('Form Templates')}
+            templates={templates.form}
             onClick={handleSelect}
+            canCreate={canCreate && method !== TemplateMethod.Global}
+            onCreate={openModalFunction}
           />
+
           <Category
             value={value}
-            category={TemplateType.File}
-            templates={templates.files}
+            title={translate('Global Templates')}
+            templates={templates.global}
             onClick={handleSelect}
           />
-        </CategorySelectionWrapper>
-
-        <ButtonRow style={{ opacity: selectionAnimations.opacity }}>
-          <Button
-            className={classes('btn', mutation.isLoading && 'disabled')}
-            disabled={mutation.isLoading}
-            onClick={() => {
-              mutation.reset();
-              setOpen(false);
-            }}
-          >
-            {translate('Close')}
-          </Button>
-
-          <Button
-            className={classes('btn', mutation.isLoading && 'disabled')}
-            disabled={mutation.isLoading}
-            onClick={() => {
-              mutation.reset();
-              updateValue(undefined);
-              setOpen(false);
-            }}
-          >
-            {translate('Clear choice')}
-          </Button>
-
-          {canCreate && (
-            <Button
-              className={classes(
-                'btn',
-                'submit',
-                !mutation.isLoading && 'add',
-                !mutation.isLoading && 'icon',
-                mutation.isLoading && 'disabled'
-              )}
-              disabled={mutation.isLoading}
-              onClick={() =>
-                mutation.mutate(
-                  { name: 'New Template' },
-                  {
-                    onSuccess: (data) => {
-                      const template = data.data;
-                      handleSelect(template);
-                    },
-                  }
-                )
-              }
-            >
-              {mutation.isLoading && (
-                <LoadingText>{translate('Creating a template')}</LoadingText>
-              )}
-
-              {!mutation.isLoading && translate('New template')}
-            </Button>
-          )}
-        </ButtonRow>
-
-        {mutation.isError && (
-          <FormErrorList
-            style={{ margin: `0 ${spacings.sm} ${spacings.sm}` }}
-            errors={mutation.error.errors as unknown as string[]}
-          />
-        )}
-      </NotificationTemplateSelector>
+        </NotificationTemplateSelector>
+      )}
     </Control>
   );
 };

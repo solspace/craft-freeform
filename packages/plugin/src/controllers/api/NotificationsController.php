@@ -13,13 +13,18 @@
 
 namespace Solspace\Freeform\controllers\api;
 
+use Solspace\Freeform\Bundles\Notifications\Parsers\HtmlTemplateParser;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsPostedContentProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
-use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
+use Solspace\Freeform\Library\Exceptions\Api\ApiException;
+use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
+use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\SettingsService;
 use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
@@ -34,8 +39,51 @@ class NotificationsController extends BaseApiController
         private NotificationTemplateProvider $notificationTemplateProvider,
         private SettingsService $settingsService,
         private Serializer $serializer,
+        private HtmlTemplateParser $htmlTemplateParser,
+        private FormsService $formsService,
+        private NotificationsPostedContentProvider $postedContentProvider,
     ) {
         parent::__construct($id, $module, $config);
+    }
+
+    public function actionGetOneTemplate(mixed $id = null): Response
+    {
+        $record = NotificationTemplateRecord::createFormSpecific();
+        if (null === $id) {
+            $record->name = 'Notification';
+            $record->handle = 'notification';
+
+            $fields = $record->toArray();
+            $fields = $this->getParsedTwigValues($fields);
+            $fields['body'] = $fields['bodyHtml'];
+            $fields['autoText'] = true;
+
+            return $this->asSerializedJson($fields);
+        }
+
+        $template = $this->notificationTemplateProvider->getNotificationTemplate($id);
+        $form = $this->formsService->getFormById($template->getFormId());
+
+        $convertableValues = [
+            'body' => $template->getBody(),
+            'text' => $template->getTextBody(),
+            'subject' => $template->getSubject(),
+            'fromName' => $template->getFromName(),
+            'fromEmail' => $template->getFromEmail(),
+            'replyToName' => $template->getReplyToName(),
+            'replyToEmail' => $template->getReplyToEmail(),
+            'cc' => $template->getCc(),
+            'bcc' => $template->getBcc(),
+        ];
+
+        $convertableValues = $this->getParsedTwigValues($convertableValues, $form);
+        foreach ($convertableValues as $key => $value) {
+            $template->{$key} = $value;
+        }
+
+        $template->autoText = true;
+
+        return $this->asSerializedJson($template);
     }
 
     public function actionGetTypes(): Response
@@ -52,42 +100,30 @@ class NotificationsController extends BaseApiController
     public function actionGetTemplates(): Response
     {
         if ('POST' === $this->request->method) {
-            return $this->createNewTemplate();
-        }
+            $id = $this->request->post('id');
+            if ($id) {
+                return $this->editTemplate($id);
+            }
 
-        $database = $this->notificationTemplateProvider->getDatabaseTemplates();
-        $file = $this->notificationTemplateProvider->getFileTemplates();
+            $formId = $this->request->post('formId');
+
+            return $this->createNewTemplate($formId);
+        }
 
         $settings = $this->settingsService->getSettingsModel();
 
-        $allowedTypes = [];
+        if (Settings::EMAIL_TEMPLATE_METHOD_FORM === $settings->emailTemplateMethod) {
+            $templates = [];
+        } else {
+            $database = $this->notificationTemplateProvider->getDatabaseTemplates();
+            $file = $this->notificationTemplateProvider->getFileTemplates();
 
-        switch ($settings->emailTemplateStorageType) {
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
-
-                break;
-
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
-
-                break;
-
-            case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH:
-            default:
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
-                $allowedTypes[] = Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
-
-                break;
+            $templates = array_merge($database, $file);
         }
 
         $content = [
-            'allowedTypes' => $allowedTypes,
             'default' => $settings->emailTemplateDefault,
-            'templates' => [
-                'database' => $database,
-                'files' => $file,
-            ],
+            'templates' => $templates,
         ];
 
         $response = new Response();
@@ -97,41 +133,72 @@ class NotificationsController extends BaseApiController
         return $response;
     }
 
-    private function createNewTemplate(): Response
+    private function editTemplate(mixed $id): Response
     {
-        $request = $this->request;
-        $errors = [];
+        $errors = new ErrorCollection();
 
-        $name = $request->post('name');
+        $notification = NotificationTemplateRecord::findOne(['id' => $id]);
+        if (!$notification) {
+            $errors->add('notification', 'name', ['Notification not found']);
 
-        if (!$name) {
-            $errors[] = Freeform::t('Name is required');
+            throw new ApiException(404, $errors);
         }
 
-        $record = null;
-        $iterator = 1;
+        $post = $this->postedContentProvider->getConvertedPostWithTwigValues();
 
-        do {
-            try {
-                $record = $this->getNotificationsService()->create($name);
-            } catch (NotificationException $e) {
-                switch ($e->getCode()) {
-                    case NotificationException::NO_EMAIL_DIR:
-                    case NotificationException::NO_CONTENT:
-                        $errors[] = $e->getMessage();
+        $notification->setAttributes($post);
+        $notification->save();
 
-                        break 2;
-                }
+        if ($notification->hasErrors()) {
+            foreach ($notification->getErrors() as $attribute => $errorList) {
+                $errors->add('notification', $attribute, $errorList);
             }
 
-            $name = preg_replace('/\s\d+$/', '', $name);
-            $name = $name.' '.$iterator++;
-        } while (!$record);
+            throw new ApiException(400, $errors);
+        }
 
-        if ($errors) {
+        return $this->asSerializedJson($notification);
+    }
+
+    private function createNewTemplate(int $formId): Response
+    {
+        $post = $this->postedContentProvider->getConvertedPostWithTwigValues();
+
+        $handle = $post['handle'] ?? '';
+        if (!empty($handle)) {
+            do {
+                $exists = NotificationTemplateRecord::find()
+                    ->where(['handle' => $handle, 'formId' => $formId])
+                    ->exists()
+                ;
+
+                if ($exists) {
+                    $number = 1;
+                    if (preg_match('/^(.*?)-(\d+)$/', $handle, $matches)) {
+                        $number = (int) $matches[2] + 1;
+                    }
+
+                    $handle = preg_replace('/^(.*?)(-\d+)?$/', '$1-'.$number, $handle);
+                    $post['handle'] = $handle;
+
+                    // replace the $post['name'] as well, but use a space and number
+                    $post['name'] = preg_replace('/^(.*?)( \d+)?$/', '$1 '.$number, $post['name'] ?? '');
+                }
+            } while ($exists);
+        }
+
+        $record = NotificationTemplateRecord::create();
+        $record->formId = $formId;
+        $record->setAttributes($post);
+        $record->autoText = (bool) $post['autoText'];
+        $record->save();
+
+        if ($record->getErrors()) {
             $this->response->statusCode = 405;
 
-            return $this->asJson(['errors' => $errors]);
+            $errors = (new ErrorCollection())->fromRecord('notification', $record);
+
+            throw new ApiException(405, $errors);
         }
 
         $notification = NotificationTemplate::fromRecord($record);
@@ -140,5 +207,18 @@ class NotificationsController extends BaseApiController
         $this->response->content = $this->serializer->serialize($notification, 'json');
 
         return $this->response;
+    }
+
+    private function getParsedTwigValues(array $values, ?Form $form = null): array
+    {
+        foreach ($values as $key => $value) {
+            if (!\is_string($value)) {
+                $value = '';
+            }
+
+            $values[$key] = $this->htmlTemplateParser->fromTwig($value, $form);
+        }
+
+        return $values;
     }
 }

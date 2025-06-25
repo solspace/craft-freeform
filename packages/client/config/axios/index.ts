@@ -34,14 +34,7 @@ axios.interceptors.request.use((config) => {
     }
 
     if (global.Craft !== undefined) {
-      if (config.data instanceof FormData) {
-        config.data.append(
-          global.Craft.csrfTokenName,
-          global.Craft.csrfTokenValue
-        );
-      } else {
-        config.data[Craft.csrfTokenName] = Craft.csrfTokenValue;
-      }
+      config.headers['X-CSRF-Token'] = global.Craft.csrfTokenValue;
     }
   }
 

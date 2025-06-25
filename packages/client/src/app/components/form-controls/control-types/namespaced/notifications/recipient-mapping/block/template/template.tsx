@@ -2,8 +2,6 @@ import React from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import type { OptionCollection } from '@ff-client/types/properties';
 
-import FilesIcon from '../../../notification-template/icons/files.svg';
-import DatabaseIcon from '../../../notification-template/icons/files.svg';
 import { useNotificationTemplates } from '../../../notification-template/notification-template.hooks';
 
 import { TemplatesWrapper } from './template.styles';
@@ -23,22 +21,22 @@ export const Template: React.FC<Props> = ({ id, onChange }) => {
 
   const options: OptionCollection = [];
 
-  if (templates?.database) {
+  if (templates?.form) {
     options.push({
-      label: 'Database',
-      icon: <DatabaseIcon />,
-      children: templates.database.map((template) => ({
+      label: 'Form',
+      icon: <i className="fa-regular fa-clipboard-list-check"></i>,
+      children: templates.form.map((template) => ({
         label: template.name,
         value: template.id as string,
       })),
     });
   }
 
-  if (templates?.files) {
+  if (templates?.global) {
     options.push({
-      label: 'Files',
-      icon: <FilesIcon />,
-      children: templates.files.map((template) => ({
+      label: 'Global',
+      icon: <i className="fa-solid fa-earth-americas" />,
+      children: templates.global.map((template) => ({
         label: template.name,
         value: template.id as string,
       })),

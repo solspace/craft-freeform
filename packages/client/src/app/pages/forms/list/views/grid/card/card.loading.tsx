@@ -5,12 +5,24 @@ import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 import {
   CardBody,
   CardWrapper,
+  FMContainer,
+  FormBody,
+  FormBodyContent,
   LinkList,
   PaddedChartFooter,
 } from './card.styles';
 
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
+
+export const FMLoading: React.FC = () => {
+  return (
+    <FMContainer>
+      <Skeleton height={8} width={60} />
+      <Skeleton height={8} width={40} />
+    </FMContainer>
+  );
+};
 
 export const CardLoading: React.FC = () => {
   const color = '#dfdfdf';
@@ -22,8 +34,13 @@ export const CardLoading: React.FC = () => {
   return (
     <CardWrapper>
       <CardBody>
-        <Skeleton height={20} width="50%" />
-        <Skeleton height={10} width="80%" />
+        <FormBody>
+          <FormBodyContent>
+            <Skeleton height={15} width="90%" />
+            <Skeleton height={8} width="60%" />
+            <Skeleton height={8} width="30%" />
+          </FormBodyContent>
+        </FormBody>
 
         <LinkList>
           <li>

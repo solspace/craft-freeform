@@ -4,6 +4,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
 import './form.persistence';
+import './form-monitor.persistence';
 
 import type {
   FormErrors,
@@ -16,12 +17,15 @@ const initialState: FormState = {
   id: null,
   uid: v4(),
   type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-  name: 'New Form',
+  name: 'Create a new Form',
   handle: 'newForm',
   isNew: true,
   settings: {},
   errors: {},
   dateArchived: null,
+  formMonitor: {
+    enabled: false,
+  },
 };
 
 export const formSlice = createSlice({

@@ -203,7 +203,7 @@ class FileExportReader extends BaseExporter
             $integration->metadata = $json['metadata'];
 
             $type = $this->integrationTypeProvider->getTypeDefinition($integration->class);
-            $integration->icon = $type->getIconUrl();
+            $integration->icon = $type->getIconSvg();
 
             $collection->add($integration);
         }

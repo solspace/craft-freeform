@@ -56,6 +56,10 @@ class SubmissionsController extends BaseController
         $this->trigger(self::EVENT_REGISTER_INDEX_ASSETS, $registerAssetsEvent);
 
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_ACCESS_QUICK_EXPORT)) {
+            $view = \Craft::$app->getView();
+            $view->registerTranslations('freeform', [
+                'Quick Export',
+            ]);
             \Craft::$app->view->registerAssetBundle(ExportButtonBundle::class);
         }
 

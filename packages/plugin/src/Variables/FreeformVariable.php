@@ -121,6 +121,11 @@ class FreeformVariable
         );
     }
 
+    public function getSettingsService(): SettingsService
+    {
+        return Freeform::getInstance()->settings;
+    }
+
     public function getSettings(): Settings
     {
         return $this->getSettingsService()->getSettingsModel();
@@ -313,10 +318,5 @@ class FreeformVariable
     private function getFormService(): FormsService
     {
         return Freeform::getInstance()->forms;
-    }
-
-    private function getSettingsService(): SettingsService
-    {
-        return Freeform::getInstance()->settings;
     }
 }

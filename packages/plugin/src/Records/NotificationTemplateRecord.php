@@ -20,6 +20,8 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 /**
  * @property int    $id
+ * @property int    $formId
+ * @property int    $wrapperId
  * @property string $pdfTemplateIds
  * @property string $name
  * @property string $handle
@@ -77,6 +79,18 @@ class NotificationTemplateRecord extends ActiveRecord
         return $record;
     }
 
+    public static function createFormSpecific(): self
+    {
+        $record = self::create();
+        $record->bodyText = '';
+        $record->bodyHtml = <<<'EOT'
+            <p>Submitted on: {{ submission.dateCreated.format('F j, Y') }}</p>
+            <p>{{ loops.fields.all }}</p>
+            EOT;
+
+        return $record;
+    }
+
     public static function createFromTemplate(string $filePath, bool $failOnError = true): self
     {
         $template = NotificationTemplate::fromFile($filePath, $failOnError);
@@ -87,8 +101,19 @@ class NotificationTemplateRecord extends ActiveRecord
             $includeAttachments = $template->isIncludeAttachments();
         }
 
+        $wrapperId = $template->getWrapperId();
+        if (\is_string($wrapperId)) {
+            $wrapperRecord = Freeform::getInstance()->notificationWrappers->getWrapperById($wrapperId);
+            if ($wrapperRecord) {
+                $wrapperId = $wrapperRecord->id;
+            } else {
+                $wrapperId = null;
+            }
+        }
+
         $record = new self();
         $record->filepath = pathinfo($filePath, \PATHINFO_BASENAME);
+        $record->wrapperId = $wrapperId;
         $record->pdfTemplateIds = $template->getPdfTemplateIds();
         $record->name = $template->getName();
         $record->handle = $template->getHandle();
@@ -113,7 +138,12 @@ class NotificationTemplateRecord extends ActiveRecord
     {
         return [
             [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
-            [['handle'], 'unique'],
+            [
+                ['handle'],
+                'unique',
+                'targetAttribute' => ['handle', 'formId'],
+                'message' => 'The handle "{value}" has already been taken.',
+            ],
             [
                 'bodyHtml',
                 'required',
@@ -131,6 +161,34 @@ class NotificationTemplateRecord extends ActiveRecord
                 'message' => 'Either HTML or Text body must be present',
             ],
         ];
+    }
+
+    public function safeAttributes(): array
+    {
+        return [
+            'name',
+            'handle',
+            'description',
+            'wrapperId',
+            'fromName',
+            'fromEmail',
+            'replyToName',
+            'replyToEmail',
+            'cc',
+            'bcc',
+            'subject',
+            'autoText',
+            'bodyHtml',
+            'bodyText',
+            'includeAttachments',
+            'presetAssets',
+            'pdfTemplateIds',
+        ];
+    }
+
+    public function getWrapperId(): ?int
+    {
+        return $this->wrapperId;
     }
 
     public function getHandle(): string

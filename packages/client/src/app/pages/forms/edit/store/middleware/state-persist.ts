@@ -15,15 +15,17 @@ export const TOPIC_CREATED = Symbol('form.save.crated');
 export const TOPIC_UPDATED = Symbol('form.save.updated');
 export const TOPIC_UPSERTED = Symbol('form.save.upserted');
 
-type WithDispatch = { readonly dispatch: AppDispatch };
+type WithStateAndDispatch = {
+  readonly getState: () => RootState;
+  readonly dispatch: AppDispatch;
+};
 
-type SaveData = WithDispatch & {
-  readonly state: RootState;
+type SaveData = WithStateAndDispatch & {
   persist: Record<string, GenericValue>;
 };
 
-type ErrorData = WithDispatch & { response: APIError };
-type CreateData = WithDispatch & { response: AxiosResponse };
+type ErrorData = WithStateAndDispatch & { response: APIError };
+type CreateData = WithStateAndDispatch & { response: AxiosResponse };
 
 export type SaveSubscriber = (message: string | symbol, data: SaveData) => void;
 export type ErrorsSubscriber = (
@@ -38,8 +40,13 @@ export type UpdatedSubscriber = CreatedSubscriber;
 
 PubSub.clearAllSubscriptions();
 
-const publishErrors = (dispatch: AppDispatch, response: APIError): void => {
+const publishErrors = (
+  getState: () => RootState,
+  dispatch: AppDispatch,
+  response: APIError
+): void => {
   PubSub.publish(TOPIC_ERRORS, {
+    getState,
     dispatch,
     response,
   } as ErrorData);
@@ -48,21 +55,39 @@ const publishErrors = (dispatch: AppDispatch, response: APIError): void => {
 };
 
 const publishCreated = (
+  getState: () => RootState,
   dispatch: AppDispatch,
   response: AxiosResponse
 ): void => {
-  PubSub.publish(TOPIC_CREATED, { dispatch, response } as CreateData);
-  PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
+  PubSub.publish(TOPIC_CREATED, {
+    getState,
+    dispatch,
+    response,
+  } as CreateData);
+  PubSub.publish(TOPIC_UPSERTED, {
+    getState,
+    dispatch,
+    response,
+  } as CreateData);
 
   dispatch(contextActions.setState(State.Idle));
 };
 
 const publishUpdated = (
+  getState: () => RootState,
   dispatch: AppDispatch,
   response: AxiosResponse
 ): void => {
-  PubSub.publish(TOPIC_UPDATED, { dispatch, response } as CreateData);
-  PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
+  PubSub.publish(TOPIC_UPDATED, {
+    getState,
+    dispatch,
+    response,
+  } as CreateData);
+  PubSub.publish(TOPIC_UPSERTED, {
+    getState,
+    dispatch,
+    response,
+  } as CreateData);
 
   dispatch(contextActions.setState(State.Idle));
 };
@@ -79,27 +104,28 @@ export const statePersistMiddleware: Middleware =
     }
 
     const dispatch = store.dispatch as AppDispatch;
+    const getState = store.getState as () => RootState;
 
     dispatch(contextActions.setState(State.Processing));
 
     const data: SaveData = {
+      getState,
       dispatch,
-      state: store.getState(),
       persist: {},
     };
 
     PubSub.publishSync(TOPIC_SAVE, data);
 
-    const formId = data.state.form.id;
+    const formId = getState().form.id;
     if (formId) {
       axios
         .post(`/api/forms/${formId}`, data.persist)
-        .then((response) => publishUpdated(dispatch, response))
-        .catch((error: APIError) => publishErrors(dispatch, error));
+        .then((response) => publishUpdated(getState, dispatch, response))
+        .catch((error: APIError) => publishErrors(getState, dispatch, error));
     } else {
       axios
         .post('/api/forms', data.persist)
-        .then((response) => publishCreated(dispatch, response))
-        .catch((error: APIError) => publishErrors(dispatch, error));
+        .then((response) => publishCreated(getState, dispatch, response))
+        .catch((error: APIError) => publishErrors(getState, dispatch, error));
     }
   };

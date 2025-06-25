@@ -1,6 +1,10 @@
 @media print {
-    craft-global-sidebar,
-    #global-header {
-        display: none;
-    }
+  craft-global-sidebar,
+  #global-header {
+    display: none;
+  }
+}
+
+div.elementselectormodal {
+  z-index: 2000;
 }

@@ -28,6 +28,11 @@ export const Wrapper = styled.div`
       }
     }
 
+    &.errors {
+      color: ${colors.white};
+      background-color: ${colors.error};
+    }
+
     &:hover:not(.active) {
       background-color: ${colors.gray200};
     }
@@ -38,6 +43,11 @@ export const Icon = styled.div`
   display: block;
   width: 20px;
   height: 20px;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 export const Name = styled.div`

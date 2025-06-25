@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
-import { TemplateType } from '@ff-client/types/notifications';
+import classes from '@ff-client/utils/classes';
 
-import DatabaseIcon from '../icons/database.svg';
-import FilesIcon from '../icons/files.svg';
 import type { NotificationSelectHandler } from '../notification-template';
 
+import { CreateButton } from './item/CreateButton';
 import { Item } from './item/Item';
 import {
   TemplateCategoryWrapper,
@@ -15,30 +14,49 @@ import {
 
 type Props = {
   value: number | string;
-  category: TemplateType;
+  title: string;
   templates: NotificationTemplate[];
+  canCreate?: boolean;
   onClick: NotificationSelectHandler;
+  onCreate?: () => void;
 };
 
 export const Category: React.FC<Props> = ({
   value,
-  category,
+  title,
   templates,
+  canCreate,
   onClick,
+  onCreate,
 }) => {
-  if (!templates.length) {
+  const listRef = useRef<HTMLUListElement>(null);
+  const [hasScroll, setHasScroll] = useState(false);
+
+  useEffect(() => {
+    const element = listRef.current;
+    if (element) {
+      setHasScroll(element.scrollHeight > element.clientHeight);
+    }
+  }, [templates]);
+
+  if (templates === undefined) {
     return null;
   }
 
-  const title = category === TemplateType.Database ? 'Database' : 'Files';
-  const Icon = category === TemplateType.Database ? DatabaseIcon : FilesIcon;
+  if (!templates?.length && !canCreate) {
+    return null;
+  }
 
   return (
     <TemplateCategoryWrapper>
       <Title>
-        <Icon /> {title}
+        <span>{title}</span>
       </Title>
-      <TemplateList>
+
+      <TemplateList
+        ref={listRef}
+        className={classes(hasScroll && 'has-scroll')}
+      >
         {templates.map((template) => (
           <Item
             active={value === template.id}
@@ -47,6 +65,8 @@ export const Category: React.FC<Props> = ({
             onClick={onClick}
           />
         ))}
+
+        {canCreate && <CreateButton onCreate={onCreate} />}
       </TemplateList>
     </TemplateCategoryWrapper>
   );

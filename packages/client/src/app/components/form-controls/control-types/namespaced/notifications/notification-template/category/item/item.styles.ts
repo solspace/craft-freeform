@@ -1,72 +1,85 @@
-import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const TemplateCard = styled(animated.li)`
-  position: relative;
-  cursor: pointer;
-
-  min-width: 100px;
-  max-width: 600px;
-
+export const Name = styled.div`
   padding: ${spacings.sm} ${spacings.md};
 
-  background-color: ${colors.white};
+  font-size: 14px;
+
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+`;
+
+export const ButtonGroup = styled.div`
+  display: flex;
+  height: 100%;
+
+  white-space: nowrap;
+
+  background-color: #e5ecf6;
+  border-top-right-radius: ${borderRadius.lg};
+  border-bottom-right-radius: ${borderRadius.lg};
+`;
+
+export const Button = styled.button`
+  padding: ${spacings.sm} 10px;
+
+  &:hover {
+    background-color: ${colors.gray200};
+  }
+
+  &:last-child {
+    border-top-right-radius: ${borderRadius.lg};
+    border-bottom-right-radius: ${borderRadius.lg};
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+`;
+
+export const TemplateCard = styled.li`
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  width: 100%;
+  min-width: 0;
+
+  padding: 0;
+
+  background-color: ${colors.gray050};
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
 
-  &:hover:not(.is-active) {
-    z-index: 1;
-    background-color: ${colors.gray200} !important;
-  }
-
-  &.is-active {
-    color: ${colors.white};
-    background-color: ${colors.gray500};
-    border: 1px solid ${colors.gray300};
+  &.dashed {
+    background-color: transparent;
+    border: 1px dashed ${colors.gray300};
 
     &:hover {
-      z-index: 1;
-    }
-
-    h4,
-    .code,
-    div {
-      color: ${colors.white};
+      background-color: ${colors.gray100};
     }
   }
-`;
 
-export const Name = styled.h4`
-  margin: 0;
-  padding: 0;
-  font-size: 12px;
-`;
+  &.active {
+    color: ${colors.white};
+    background-color: ${colors.gray500};
 
-export const Subject = styled.div`
-  position: relative;
+    button svg {
+      fill: ${colors.white};
+    }
 
-  padding: 0 0 0 24px;
+    ${ButtonGroup} {
+      background-color: #51606c;
+    }
 
-  font-size: 12px;
-  color: ${colors.gray300};
-
-  max-lines: 1;
-  max-height: 60px;
-  overflow: hidden;
-
-  > svg {
-    position: absolute;
-    left: 0;
-    top: 2px;
-
-    width: 18px;
-    height: 18px;
+    ${Button} {
+      &:hover {
+        background-color: ${colors.gray800};
+      }
+    }
   }
-`;
-
-export const Id = styled.div`
-  padding: 2px 0 1px;
-  font-size: 10px !important;
-  color: ${colors.gray300};
 `;

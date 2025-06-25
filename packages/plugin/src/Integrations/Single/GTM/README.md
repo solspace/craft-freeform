@@ -51,5 +51,3 @@ Google offers a [Tag Assistant](https://tagassistant.google.com/) tool along wit
 ---
 
 <small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
-
-<style type="text/css">ol{padding-left:20px!important}ol>li{font-weight:600}ol>li>ul>li{font-weight:400}.warning {display:block;padding:10px 15px;border:1px solid var(--warning-color);border-radius:5px;}.tip {color:#1f5fea;display:block;padding:10px 15px;border:1px solid #1f5fea;border-radius:5px;}</style>

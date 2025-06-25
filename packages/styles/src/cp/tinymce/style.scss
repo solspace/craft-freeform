@@ -13,6 +13,7 @@ body {
     'Helvetica Neue',
     sans-serif;
   font-size: 14px;
+  line-height: 24px;
 
   padding: 18px 24px;
 }
@@ -33,4 +34,15 @@ pre {
   border: 1px solid #d9d9d9;
 
   white-space: pre-wrap !important;
+}
+
+span[data-freeform-token] {
+  background-color: #e4edf6;
+  border: 1px solid #33404d1a;
+  border-radius: 3px;
+  padding: 0.0625em 0.25em;
+
+  &[data-mce-selected] {
+    outline: 3px solid #0078d4 !important;
+  }
 }

@@ -45,6 +45,9 @@ export type Form = {
   settings: SettingCollection;
   ownership?: FormOwnership;
   dateArchived: string | null;
+  formMonitor?: {
+    enabled: boolean;
+  };
 };
 
 export type ExtendedFormType = Form & {

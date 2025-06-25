@@ -117,6 +117,11 @@ class SettingsService extends BaseService
     {
         $templates = [];
         $templateDirectoryPath = $this->getSuccessTemplateDirectory();
+
+        if (!$templateDirectoryPath) {
+            return [];
+        }
+
         if (!is_dir($templateDirectoryPath)) {
             return $templates;
         }

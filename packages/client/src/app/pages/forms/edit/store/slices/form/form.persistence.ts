@@ -17,9 +17,9 @@ import type { FormErrors } from './form.types';
 import { formActions } from '.';
 
 const persist: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
+  const { persist, getState } = data;
 
-  const { id, uid, type, settings } = state.form;
+  const { id, uid, type, settings } = getState().form;
 
   persist.form = {
     id,

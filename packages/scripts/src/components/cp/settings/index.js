@@ -1,8 +1,10 @@
 import { loadFormattingTemplatesScript } from './templates.formatting';
+import { loadTemplatesModeScript } from './templates.mode';
 
 // eslint-disable no-undef
 $(() => {
   loadFormattingTemplatesScript();
+  loadTemplatesModeScript();
 
   const sessionTime = $('#session-time');
   const sessionCount = $('#session-count');

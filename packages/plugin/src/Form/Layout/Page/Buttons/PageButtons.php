@@ -20,7 +20,6 @@ use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
-use Solspace\Freeform\Notifications\Components\Templates\TemplateOptions;
 use Twig\Markup;
 use yii\base\Event;
 
@@ -139,11 +138,9 @@ class PageButtons
     #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
-    #[Input\Select(
+    #[Input\NotificationTemplate(
         label: 'Email Notification Template',
         instructions: 'Select an email notification template.',
-        emptyOption: 'Select a template...',
-        options: TemplateOptions::class,
     )]
     private ?NotificationTemplate $notificationTemplate = null;
 

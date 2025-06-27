@@ -281,8 +281,8 @@ class Settings extends Model
     public array $surveys = [];
     public bool $allowDashesInFieldHandles = false;
     public bool $sitesEnabled = false;
-    public string $defaultFromEmail = "{{ craft.app.projectConfig.get('email.fromEmail') }}";
-    public string $defaultFromName = "{{ craft.app.projectConfig.get('email.fromName') }}";
+    public string $defaultFromEmail = '{{ general.systemEmail }}';
+    public string $defaultFromName = '{{ general.systemName }}';
     public Defaults $defaults;
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
@@ -523,8 +523,8 @@ class Settings extends Model
             );
         }
 
-        $email = $this->defaultFromEmail ?: "{{ craft.app.projectConfig.get('email.fromEmail') }}";
-        $name = $this->defaultFromName ?: "{{ craft.app.projectConfig.get('email.fromName') }}";
+        $email = $this->defaultFromEmail ?: '{{ general.systemEmail }}';
+        $name = $this->defaultFromName ?: '{{ general.systemName }}';
 
         return str_replace(
             ['__placeholderFromEmail__', '__placeholderFromName__'],

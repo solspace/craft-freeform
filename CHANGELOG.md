@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.11.3 - 2025-06-25
+
+### Changed
+- Updated the form-specific email notification template settings to include the ability to add tokens.
+
+### Fixed
+- Fixed a bug that could cause the migration from Freeform 4.x to 5.x to fail under rare circumstances due to non-unique form handles.
+- Fixed a race condition issue that caused Digest email notifications to sometimes send multiple duplicates. Added debug and info logging as well.
+- Fixed an encoding issue where the `&` character was converting to `&amp;` for the _From Name_ in notification emails.
+- Fixed a bug where the _Save & Continue Later_ feature was not listing form-specific email notification templates.
+- Fixed a bug where integration icons in the form builder Integrations tab were not showing on Craft Cloud.
+
 ## 5.11.2 - 2025-06-20
 
 ### Fixed

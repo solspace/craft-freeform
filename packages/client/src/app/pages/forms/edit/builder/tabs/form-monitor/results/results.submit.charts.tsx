@@ -91,6 +91,14 @@ export const SubmissionDurationChart: React.FC<
   const chartData = generateChartData();
   const allTestData = chartData.filter((d) => d.status !== 'no-tests');
 
+  // Get unique dates and track which ones to show
+  const uniqueDates = Array.from(new Set(chartData.map((d) => d.date)))
+    .sort()
+    .reverse();
+  const datesToShow = uniqueDates.filter(
+    (_, index) => index === 0 || index % 5 === 0
+  );
+
   const CustomTooltip = ({
     active,
     payload,
@@ -160,12 +168,17 @@ export const SubmissionDurationChart: React.FC<
               textAnchor="end"
               height={60}
               interval={0}
-              tickFormatter={(value) => {
-                const date = new Date(value);
-                return date.toLocaleDateString('en-US', {
-                  month: 'short',
-                  day: 'numeric',
-                });
+              tickFormatter={(value, index) => {
+                // Only show label for the first occurrence of dates in datesToShow
+                const firstIndex = chartData.findIndex((d) => d.date === value);
+                if (index === firstIndex && datesToShow.includes(value)) {
+                  const date = new Date(value);
+                  return date.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                  });
+                }
+                return '';
               }}
             />
             <YAxis

@@ -466,7 +466,7 @@ export const StatusText = styled.span`
 `;
 
 export const SubmissionDurationChartContainer = styled.div`
-  padding: ${spacings.lg};
+  padding: ${spacings.lg} ${spacings.lg} 0 ${spacings.lg};
   background: ${colors.white};
   border-radius: ${borderRadius.lg};
   overflow-x: auto;
@@ -510,7 +510,7 @@ export const ChartTooltip = styled.div`
 `;
 
 export const ChartWrapper = styled.div`
-  width: 1800px;
+  width: 100%;
   min-width: 100%;
 `;
 

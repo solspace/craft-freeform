@@ -458,7 +458,6 @@ export const FMResults: React.FC = () => {
   const last30DaysContent = (
     <StatsContainer>
       <ChartContainer>
-        <h3>{translate('Last 30 Days')}</h3>
         <TestDescription>
           {translate(
             `Of the ${formTests.stats?.total || 0} tests that have occurred in the last 30 days, ` +

@@ -79,6 +79,10 @@ class SubmitController extends BaseController
                 }
             }
 
+            if (Form::SUCCESS_BEHAVIOUR_RELOAD === $form->getSuccessBehaviour()) {
+                return null;
+            }
+
             return $this->redirect($returnUrl);
         }
 

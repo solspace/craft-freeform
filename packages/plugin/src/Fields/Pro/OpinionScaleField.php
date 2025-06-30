@@ -78,7 +78,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         return array_filter($legends);
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

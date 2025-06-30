@@ -52,40 +52,23 @@ class Campaign extends AbstractMailingListIntegration
         Users::class => FieldObject::TYPE_ARRAY,
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isInstallable(): bool
     {
         return \Craft::$app->plugins->isPluginInstalled('campaign');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function checkConnection(): bool
     {
         return self::isInstallable();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
-    /**
-     * {@inheritDoc}
-     */
     public function fetchAccessToken(): string
     {
         return '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
     {
         $mailingListElement = MailingListElement::find()->site('*')->id($mailingList->getId())->one();
@@ -141,9 +124,6 @@ class Campaign extends AbstractMailingListIntegration
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function fetchLists(): array
     {
         $lists = [];
@@ -166,9 +146,6 @@ class Campaign extends AbstractMailingListIntegration
         return $lists;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function fetchFields($listId): array
     {
         if (null === self::$fieldCache) {
@@ -185,7 +162,7 @@ class Campaign extends AbstractMailingListIntegration
 
             /** @var Field $field */
             foreach ($fieldLayout->getCustomFields() as $field) {
-                $fieldClass = \get_class($field);
+                $fieldClass = $field::class;
 
                 if (!\in_array($fieldClass, $allowedFieldTypes, true)) {
                     continue;
@@ -205,9 +182,6 @@ class Campaign extends AbstractMailingListIntegration
         return self::$fieldCache;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getApiRootUrl(): string
     {
         return '';

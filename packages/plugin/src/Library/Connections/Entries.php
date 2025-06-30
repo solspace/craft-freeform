@@ -21,9 +21,6 @@ class Entries extends AbstractConnection
     /** @var bool */
     protected $disabled = false;
 
-    /**
-     * {@inheritDoc}
-     */
     public function isConnectable(): bool
     {
         return null !== $this->getSection() && null !== $this->getEntryType();
@@ -55,7 +52,7 @@ class Entries extends AbstractConnection
         return ['slug'];
     }
 
-    protected function buildElement(array $transformers, ElementInterface $element = null): Element
+    protected function buildElement(array $transformers, ?ElementInterface $element = null): Element
     {
         if ($element instanceof Entry) {
             $entry = $element;
@@ -122,9 +119,7 @@ class Entries extends AbstractConnection
         }
     }
 
-    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers)
-    {
-    }
+    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers) {}
 
     /**
      * @param AbstractFieldTransformer[] $keyValuePairs

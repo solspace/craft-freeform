@@ -21,9 +21,6 @@ class WebsiteConstraint implements ConstraintInterface
         $this->message = $message;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value)
     {
         $violationList = new ConstraintViolationList();

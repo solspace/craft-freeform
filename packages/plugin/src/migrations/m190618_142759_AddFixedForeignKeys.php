@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m190618_142759_AddFixedForeignKeys extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         // =========================
@@ -91,9 +88,6 @@ class m190618_142759_AddFixedForeignKeys extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         echo "m190618_142759_AddFixedForeignKeys cannot be reverted.\n";

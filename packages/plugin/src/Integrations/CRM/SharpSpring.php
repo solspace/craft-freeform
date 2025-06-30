@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -223,9 +224,7 @@ class SharpSpring extends AbstractCRMIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Perform anything necessary before this integration is saved.

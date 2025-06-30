@@ -241,9 +241,6 @@ class ExportProfileModel extends Model
         return $fieldSettings;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function safeAttributes(): array
     {
         return [

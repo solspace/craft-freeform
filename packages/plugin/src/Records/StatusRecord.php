@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -61,9 +62,6 @@ class StatusRecord extends ActiveRecord
         return self::TABLE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

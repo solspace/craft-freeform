@@ -141,10 +141,8 @@ class SubmissionHookHandler
 
     /**
      * Returns html for submission payments column.
-     *
-     * @param PaymentInterface $payment
      */
-    public static function renderColumn(string $attribute, PaymentInterface $payment = null): string
+    public static function renderColumn(string $attribute, ?PaymentInterface $payment = null): string
     {
         $template = self::getTemplatePath($attribute);
 

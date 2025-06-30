@@ -37,7 +37,7 @@ class BlacklistedEmails extends AbstractCheck
                     } else {
                         $event->getForm()->markAsSpam(
                             SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                            sprintf(
+                            \sprintf(
                                 'Email field "%s" contains a blocked email address "%s"',
                                 $field->getHandle(),
                                 $email

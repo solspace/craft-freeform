@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -73,7 +74,7 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
      *
      * @return FieldInterface[]
      */
-    public function getFields(string $implements = null): array
+    public function getFields(?string $implements = null): array
     {
         if (null !== $implements) {
             return array_filter($this->fields, function (AbstractField $field) use ($implements) {
@@ -167,33 +168,21 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
         reset($this->rows);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetExists($offset)
     {
         return isset($this->rows[$offset]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetGet($offset)
     {
         return $this->offsetExists($offset) ? $this->rows[$offset] : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetSet($offset, $value)
     {
         throw new FreeformException('Form Page ArrayAccess does not allow for setting values');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetUnset($offset)
     {
         throw new FreeformException('Form Page ArrayAccess does not allow unsetting values');

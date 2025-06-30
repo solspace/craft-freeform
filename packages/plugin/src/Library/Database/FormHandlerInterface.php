@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -92,7 +93,7 @@ interface FormHandlerInterface
      *
      * @deprecated use Form::EVENT_AFTER_SUBMIT instead
      */
-    public function onAfterSubmit(Form $form, Submission $submission = null);
+    public function onAfterSubmit(Form $form, ?Submission $submission = null);
 
     /**
      * Allows 3rd party scripts to override the page that the form will jump to.
@@ -135,5 +136,5 @@ interface FormHandlerInterface
     /**
      * @deprecated Use Form::EVENT_GENERATE_RETURN_URL. This event will no longer be used in Freeform 4.x
      */
-    public function onAfterGenerateReturnUrl(Form $form, Submission $submission = null, string $returnUrl = null);
+    public function onAfterGenerateReturnUrl(Form $form, ?Submission $submission = null, ?string $returnUrl = null);
 }

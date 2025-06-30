@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Interfaces;
 
-interface RememberPostedValueInterface
-{
-}
+interface RememberPostedValueInterface {}

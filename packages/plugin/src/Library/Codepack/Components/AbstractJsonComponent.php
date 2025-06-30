@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -50,10 +51,8 @@ abstract class AbstractJsonComponent implements ComponentInterface
 
     /**
      * Calls the installation of this component.
-     *
-     * @param string $prefix
      */
-    abstract public function install(string $prefix = null);
+    abstract public function install(?string $prefix = null);
 
     /**
      * This is the method that sets all vital properties

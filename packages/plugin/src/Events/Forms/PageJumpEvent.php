@@ -25,9 +25,6 @@ class PageJumpEvent extends ArrayableEvent
         parent::__construct([]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form'];
@@ -49,7 +46,7 @@ class PageJumpEvent extends ArrayableEvent
     /**
      * @param mixed $jumpToIndex
      */
-    public function setJumpToIndex(int $jumpToIndex = null)
+    public function setJumpToIndex(?int $jumpToIndex = null)
     {
         $totalPages = \count($this->getForm()->getLayout()->getPages());
 

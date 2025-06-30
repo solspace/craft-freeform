@@ -32,7 +32,7 @@ class FormFieldType extends Field
         return Schema::TYPE_INTEGER;
     }
 
-    public function getInputHtml($value, ElementInterface $element = null): string
+    public function getInputHtml($value, ?ElementInterface $element = null): string
     {
         $freeform = Freeform::getInstance();
 
@@ -71,7 +71,7 @@ class FormFieldType extends Field
         );
     }
 
-    public function serializeValue(mixed $value, ElementInterface $element = null): mixed
+    public function serializeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         if ($value instanceof Form) {
             return $value->getId();
@@ -80,7 +80,7 @@ class FormFieldType extends Field
         return parent::serializeValue($value, $element);
     }
 
-    public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
+    public function normalizeValue(mixed $value, ?ElementInterface $element = null): mixed
     {
         if ($value instanceof Form) {
             return $value;
@@ -95,7 +95,7 @@ class FormFieldType extends Field
         return null;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         $gqlType = [
             'name' => $this->handle,

@@ -310,8 +310,6 @@ class Submission extends Element
     }
 
     /**
-     * @param string $fieldColumnHandle - e.g. "field_1" or "field_52", etc
-     *
      * @return null|Asset[]
      */
     public function getAssets(string $fieldHandle): ?array
@@ -421,7 +419,8 @@ class Submission extends Element
                         'required' => true,
                     ],
                 ]
-            );
+            )
+        ;
 
         $html .= parent::getEditorHtml();
 
@@ -462,19 +461,23 @@ class Submission extends Element
 
             \Craft::$app->db->createCommand()
                 ->insert(self::TABLE, $insertData)
-                ->execute();
+                ->execute()
+            ;
 
             \Craft::$app->db->createCommand()
                 ->insert($contentTable, $contentData)
-                ->execute();
+                ->execute()
+            ;
         } else {
             \Craft::$app->db->createCommand()
                 ->update(self::TABLE, $insertData, ['id' => $this->id])
-                ->execute();
+                ->execute()
+            ;
 
             \Craft::$app->db->createCommand()
                 ->update($contentTable, $contentData, ['id' => $this->id])
-                ->execute();
+                ->execute()
+            ;
 
             $notesService = $this->getNotesService();
             $notesService->saveNote($this->id);
@@ -532,17 +535,11 @@ class Submission extends Element
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCurrentRevision(): ?ElementInterface
     {
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function actions(string $source): array
     {
         $actions = static::defineActions($source);
@@ -558,10 +555,7 @@ class Submission extends Element
         return $event->actions;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    protected static function defineSources(string $context = null): array
+    protected static function defineSources(?string $context = null): array
     {
         static $sources;
 
@@ -649,7 +643,7 @@ class Submission extends Element
         return $parent;
     }
 
-    protected static function defineActions(string $source = null): array
+    protected static function defineActions(?string $source = null): array
     {
         if ('*' === $source) {
             $message = Freeform::t('Are you sure you want to delete all submissions?');

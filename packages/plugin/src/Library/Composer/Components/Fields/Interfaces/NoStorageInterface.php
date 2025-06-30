@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -12,6 +13,4 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Interfaces;
 
-interface NoStorageInterface
-{
-}
+interface NoStorageInterface {}

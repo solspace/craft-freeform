@@ -17,7 +17,7 @@ class AfterSubmitEvent extends ArrayableEvent
     /** @var Submission */
     private $submission;
 
-    public function __construct(Form $form, Submission $submission = null)
+    public function __construct(Form $form, ?Submission $submission = null)
     {
         $this->form = $form;
         $this->submission = $submission;
@@ -25,9 +25,6 @@ class AfterSubmitEvent extends ArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'submission'];

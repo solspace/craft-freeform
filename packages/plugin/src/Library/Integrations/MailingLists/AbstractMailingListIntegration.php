@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -64,17 +65,11 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
         $this->mailingListHandler = $mailingListHandler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function isInstallable(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isOAuthConnection(): bool
     {
         return $this instanceof MailingListOAuthConnector;

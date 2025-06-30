@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -66,9 +67,6 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
         $this->paymentGatewayHandler = $paymentGatewayHandler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isOAuthConnection(): bool
     {
         return false;

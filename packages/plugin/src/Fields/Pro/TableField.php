@@ -183,12 +183,12 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         return $this;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::listOf(Type::listOf(Type::string()));
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $layout = [];
         $textValuesInclude = '';

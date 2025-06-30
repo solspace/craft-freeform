@@ -18,7 +18,7 @@ class SessionBag implements \JsonSerializable
     /** @var array */
     private $attributes;
 
-    public function __construct(int $formId, array $properties = [], array $attributes = [], Carbon $lastUpdate = null)
+    public function __construct(int $formId, array $properties = [], array $attributes = [], ?Carbon $lastUpdate = null)
     {
         $this->formId = $formId;
         $this->properties = $properties;

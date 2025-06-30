@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -124,7 +125,7 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response
+    private function toAjaxResponse(Form $form, Submission $submission, ?string $returnUrl = null): Response
     {
         $fieldErrors = [];
         foreach ($form->getLayout()->getFields() as $field) {

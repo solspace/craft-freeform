@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Form\Bags;
 
-class AttributeBag extends AbstractFormBag
-{
-}
+class AttributeBag extends AbstractFormBag {}

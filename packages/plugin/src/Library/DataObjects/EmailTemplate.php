@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -18,7 +19,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 class EmailTemplate
 {
-    public const METADATA_PATTERN = '/{#\\s*__KEY__:\\s*(.*)#}/';
+    public const METADATA_PATTERN = '/{#\s*__KEY__:\s*(.*)#}/';
 
     /** @var string */
     private $name;
@@ -259,7 +260,7 @@ class EmailTemplate
             [$_, $value] = $matches;
             $value = trim($value);
         } elseif ($required) {
-            throw new EmailTemplateException(sprintf("Email template does not contain '%s'", $key));
+            throw new EmailTemplateException(\sprintf("Email template does not contain '%s'", $key));
         }
 
         return $value;

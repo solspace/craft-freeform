@@ -24,7 +24,7 @@ class OptionType extends AbstractObjectType
      * @param mixed  $arguments
      * @param mixed  $context
      */
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): string|int|bool|null
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): null|bool|int|string
     {
         if ('value' === $resolveInfo->fieldName) {
             return $source->getValue() ?? null;

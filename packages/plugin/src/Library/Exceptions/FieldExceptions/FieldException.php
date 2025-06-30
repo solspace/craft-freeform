@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -14,6 +15,4 @@ namespace Solspace\Freeform\Library\Exceptions\FieldExceptions;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class FieldException extends FreeformException
-{
-}
+class FieldException extends FreeformException {}

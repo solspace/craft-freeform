@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -71,7 +72,7 @@ class SelectField extends AbstractExternalOptionsField implements SingleValueInt
         return '';
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

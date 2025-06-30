@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditRulesBundle;
+use yii\base\InvalidConfigException;
 
 class RulesService extends Component
 {
@@ -31,7 +32,7 @@ class RulesService extends Component
     }
 
     /**
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function registerRulesJsAsAssets(RegisterEvent $event)
     {

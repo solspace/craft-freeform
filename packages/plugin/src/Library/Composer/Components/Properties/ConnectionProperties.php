@@ -42,9 +42,6 @@ class ConnectionProperties extends AbstractProperties
         return $this->compiledList;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getPropertyManifest(): array
     {
         return [

@@ -74,14 +74,11 @@ class NumericConstraint implements ConstraintInterface
         $this->messageNegative = $messageNegative;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value)
     {
         $violationList = new ConstraintViolationList();
 
-        $pattern = '/^-?\\d*((?:\\.|,)\\d+)?$/';
+        $pattern = '/^-?\d*((?:\.|,)\d+)?$/';
 
         if (!preg_match($pattern, $value, $matches)) {
             $violationList->addError($this->message);
@@ -105,7 +102,7 @@ class NumericConstraint implements ConstraintInterface
         }
 
         $numericValue = str_replace(',', '.', $value);
-        $numericValue = preg_replace('/[^0-9\\-\\.]/', '', $numericValue);
+        $numericValue = preg_replace('/[^0-9\-\.]/', '', $numericValue);
 
         if (!$this->allowNegativeNumbers && $numericValue < 0) {
             $violationList->addError($this->messageNegative);

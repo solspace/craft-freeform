@@ -8,7 +8,7 @@ use craft\fields\BaseRelationField;
 
 class CheckboxTransformer extends AbstractFieldTransformer
 {
-    public function transformValueFor(Field $targetCraftField = null)
+    public function transformValueFor(?Field $targetCraftField = null)
     {
         $hasOptions = $targetCraftField instanceof BaseOptionsField;
         $hasRelations = $targetCraftField instanceof BaseRelationField;

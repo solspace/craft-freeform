@@ -19,11 +19,8 @@ class ReturnUrlEvent extends ArrayableEvent
 
     /**
      * ReturnUrlEvent constructor.
-     *
-     * @param Submission $submission
-     * @param string     $returnUrl
      */
-    public function __construct(Form $form, Submission $submission = null, string $returnUrl = null)
+    public function __construct(Form $form, ?Submission $submission = null, ?string $returnUrl = null)
     {
         $this->form = $form;
         $this->submission = $submission;
@@ -32,9 +29,6 @@ class ReturnUrlEvent extends ArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'submission', 'returnUrl'];
@@ -61,10 +55,7 @@ class ReturnUrlEvent extends ArrayableEvent
         return $this->returnUrl;
     }
 
-    /**
-     * @param string $returnUrl
-     */
-    public function setReturnUrl(string $returnUrl = null): self
+    public function setReturnUrl(?string $returnUrl = null): self
     {
         $this->returnUrl = $returnUrl;
 

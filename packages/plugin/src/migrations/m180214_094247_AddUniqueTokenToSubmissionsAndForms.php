@@ -13,9 +13,6 @@ class m180214_094247_AddUniqueTokenToSubmissionsAndForms extends Migration
 {
     public const TOKEN_LENGTH = 100;
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->addColumn('{{%freeform_forms}}', 'optInDataStorageTargetHash', $this->string(20)->null());
@@ -38,9 +35,6 @@ class m180214_094247_AddUniqueTokenToSubmissionsAndForms extends Migration
         $this->createIndex('token_unq_idx', '{{%freeform_submissions}}', ['token'], true);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropIndex('token_unq_idx', '{{%freeform_submissions}}');

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -73,12 +74,12 @@ class MultipleSelectField extends AbstractExternalOptionsField implements Multip
         return implode(', ', $labels);
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::listOf(Type::string());
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Multiple option values allowed.';

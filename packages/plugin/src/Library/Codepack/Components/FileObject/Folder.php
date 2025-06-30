@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -58,7 +59,7 @@ class Folder extends FileObject implements \Iterator
      *
      * @throws FileObjectException
      */
-    public function copy(string $target, string $prefix = null, callable $callable = null, string $filePrefix = null)
+    public function copy(string $target, ?string $prefix = null, ?callable $callable = null, ?string $filePrefix = null)
     {
         $target = rtrim($target, '/');
         $targetFolderPath = $target.'/'.$filePrefix.$this->name;
@@ -67,7 +68,7 @@ class Folder extends FileObject implements \Iterator
 
             if (!file_exists($targetFolderPath)) {
                 throw new FileObjectException(
-                    sprintf(
+                    \sprintf(
                         'Permissions denied. Could not create a folder in "%s".<br>Check how to solve this problem <a href="%s">here</a>',
                         $targetFolderPath,
                         Freeform::PERMISSIONS_HELP_LINK

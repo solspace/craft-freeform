@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -20,10 +21,8 @@ class RoutesComponent extends AbstractJsonComponent
 {
     /**
      * Calls the installation of this component.
-     *
-     * @param string $prefix
      */
-    public function install(string $prefix = null)
+    public function install(?string $prefix = null)
     {
         $routeService = \Craft::$app->routes;
 
@@ -47,7 +46,7 @@ class RoutesComponent extends AbstractJsonComponent
 
                 $urlParts[0] = $demoFolder.$urlParts[0];
 
-                $pattern = '/(\\/?)(.*)/';
+                $pattern = '/(\/?)(.*)/';
                 $template = preg_replace($pattern, "$1{$demoFolder}$2", $route->template, 1);
 
                 // Compile the URI parts into a regex pattern
@@ -110,7 +109,7 @@ class RoutesComponent extends AbstractJsonComponent
     /**
      * @return null|int|string
      */
-    private function findExistingRoute(array $uriParts, array $existingRoutes = null)
+    private function findExistingRoute(array $uriParts, ?array $existingRoutes = null)
     {
         if (!$existingRoutes) {
             return null;

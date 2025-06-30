@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -40,11 +41,11 @@ class AssetsFileComponent extends AbstractFileComponent
      *
      * @throws FileNotFoundException
      */
-    public function postFileCopyAction(string $newFilePath, string $prefix = null)
+    public function postFileCopyAction(string $newFilePath, ?string $prefix = null)
     {
         if (!file_exists($newFilePath)) {
             throw new FileNotFoundException(
-                sprintf('Could not find file: %s', $newFilePath)
+                \sprintf('Could not find file: %s', $newFilePath)
             );
         }
 

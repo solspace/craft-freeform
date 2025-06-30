@@ -8,5 +8,5 @@ interface TransformerInterface
 {
     public function getCraftFieldHandle(): string;
 
-    public function transformValueFor(Field $targetCraftField = null);
+    public function transformValueFor(?Field $targetCraftField = null);
 }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -110,33 +111,21 @@ class Row implements \JsonSerializable, \Iterator, \ArrayAccess, \Countable
         return \count($this->fields);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetExists($offset)
     {
         return isset($this->fields[$offset]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetGet($offset)
     {
         return $this->offsetExists($offset) ? $this->fields[$offset] : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetSet($offset, $value)
     {
         throw new FreeformException('Form Page Row ArrayAccess does not allow unsetting values');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function offsetUnset($offset)
     {
         throw new FreeformException('Form Page Row ArrayAccess does not allow unsetting values');

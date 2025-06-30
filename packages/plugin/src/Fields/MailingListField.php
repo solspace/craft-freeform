@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -99,12 +100,12 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
         return 'mailingList_'.$this->getHash();
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::int();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Used by '.$this->getLabel().' field.';

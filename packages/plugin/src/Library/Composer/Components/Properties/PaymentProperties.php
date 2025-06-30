@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -137,9 +138,6 @@ class PaymentProperties extends IntegrationProperties
         return $this->customerFieldMapping;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getPropertyManifest(): array
     {
         $props = parent::getPropertyManifest();

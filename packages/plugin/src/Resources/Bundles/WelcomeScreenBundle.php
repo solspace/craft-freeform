@@ -4,9 +4,6 @@ namespace Solspace\Freeform\Resources\Bundles;
 
 class WelcomeScreenBundle extends AbstractFreeformAssetBundle
 {
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         return [
@@ -15,9 +12,6 @@ class WelcomeScreenBundle extends AbstractFreeformAssetBundle
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getStylesheets(): array
     {
         return [];

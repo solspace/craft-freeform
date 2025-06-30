@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -134,13 +135,9 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
     /**
      * @param null|string $code
      */
-    protected function onBeforeFetchAccessToken(&$code = null)
-    {
-    }
+    protected function onBeforeFetchAccessToken(&$code = null) {}
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
-    {
-    }
+    protected function onAfterFetchAccessToken(\stdClass $responseData) {}
 
     protected function getClientId(): string
     {

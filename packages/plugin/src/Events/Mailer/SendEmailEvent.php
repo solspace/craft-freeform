@@ -30,7 +30,7 @@ class SendEmailEvent extends CancelableArrayableEvent
         Form $form,
         NotificationInterface $notification,
         array $fieldValues,
-        Submission $submission = null
+        ?Submission $submission = null
     ) {
         $this->message = $message;
         $this->form = $form;
@@ -41,9 +41,6 @@ class SendEmailEvent extends CancelableArrayableEvent
         parent::__construct([]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['message', 'form', 'notification', 'fieldValues', 'submission']);

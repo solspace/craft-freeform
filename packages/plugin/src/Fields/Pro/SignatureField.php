@@ -90,7 +90,7 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
         return (float) ($this->penDotSize ?? self::DEFAULT_PEN_DOT_SIZE);
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Expects the contents of the file in Base64 format.';
@@ -114,7 +114,7 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
         $hasMarginStyle = false;
         foreach ($this->getInputAttributes() as $attribute) {
             if ('style' === strtolower($attribute['attribute'])) {
-                if (false !== strpos($attribute['value'], 'margin')) {
+                if (str_contains($attribute['value'], 'margin')) {
                     $hasMarginStyle = true;
                 }
             }

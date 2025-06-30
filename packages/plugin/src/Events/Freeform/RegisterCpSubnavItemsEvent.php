@@ -19,9 +19,6 @@ class RegisterCpSubnavItemsEvent extends ArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['subnavItems'];
@@ -30,7 +27,7 @@ class RegisterCpSubnavItemsEvent extends ArrayableEvent
     /**
      * @return $this
      */
-    public function addSubnavItem(string $handle, string $label, string $url, string $afterHandle = null)
+    public function addSubnavItem(string $handle, string $label, string $url, ?string $afterHandle = null)
     {
         $item = [
             'label' => $label,

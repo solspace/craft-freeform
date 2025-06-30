@@ -9,11 +9,9 @@ use craft\fields\BaseRelationField;
 class ArrayTransformer extends AbstractFieldTransformer
 {
     /**
-     * @param Field $targetCraftField
-     *
      * @return string
      */
-    public function transformValueFor(Field $targetCraftField = null)
+    public function transformValueFor(?Field $targetCraftField = null)
     {
         $value = $this->getField()->getValue();
 

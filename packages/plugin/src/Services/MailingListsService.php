@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -71,7 +72,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                         'resourceId' => $resourceId,
                     ]
                 )
-                ->execute();
+                ->execute()
+            ;
         }
 
         foreach ($mailingLists as $mailingList) {
@@ -101,7 +103,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                             'resourceId' => $mailingList->getId(),
                         ]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
         }
 
@@ -116,7 +119,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                 ['forceUpdate' => 0],
                 ['id' => $id]
             )
-            ->execute();
+            ->execute()
+        ;
 
         return true;
     }
@@ -289,17 +293,11 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
         throw new IntegrationException('Could not get Email Marketing settings');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getIntegrationType(): string
     {
         return IntegrationRecord::TYPE_MAILING_LIST;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function afterSaveHandler(IntegrationModel $model)
     {
         try {
@@ -362,7 +360,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                             'handle' => $handle,
                         ]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
 
             foreach ($fields as $field) {
@@ -395,7 +394,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                                 'handle' => $field->getHandle(),
                             ]
                         )
-                        ->execute();
+                        ->execute()
+                    ;
                 }
             }
         }

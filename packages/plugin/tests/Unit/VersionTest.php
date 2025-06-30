@@ -11,6 +11,14 @@ use PHPUnit\Framework\TestCase;
  */
 class VersionTest extends TestCase
 {
+    /**
+     * @dataProvider versionDataProvider
+     */
+    public function testVersions(string $version, string $operator)
+    {
+        $this->assertTrue(version_compare($version, '2.0.0-dev', $operator));
+    }
+
     public function versionDataProvider()
     {
         return [
@@ -19,14 +27,6 @@ class VersionTest extends TestCase
             ['2.0.0-alpha.1', '>'],
             ['2.0.0-beta.1', '>'],
         ];
-    }
-
-    /**
-     * @dataProvider versionDataProvider
-     */
-    public function testVersions(string $version, string $operator)
-    {
-        $this->assertTrue(version_compare($version, '2.0.0-dev', $operator));
     }
 
     public function testCraft31BetaCheck()

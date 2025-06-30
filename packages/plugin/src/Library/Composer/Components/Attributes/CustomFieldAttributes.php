@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -82,8 +83,8 @@ class CustomFieldAttributes extends AbstractAttributes
      */
     public function __construct(
         AbstractField $field,
-        array $attributes = null,
-        PropertyBag $formPropertyBag = null
+        ?array $attributes = null,
+        ?PropertyBag $formPropertyBag = null
     ) {
         parent::__construct($attributes);
 
@@ -308,7 +309,7 @@ class CustomFieldAttributes extends AbstractAttributes
     /**
      * Takes a two class strings, explodes them into arrays, merges, then returns a glued string.
      */
-    private function combineClassStrings(string $classStringA = null, string $classStringB = null): string
+    private function combineClassStrings(?string $classStringA = null, ?string $classStringB = null): string
     {
         $classListA = explode(' ', $classStringA ?: '');
         $classListB = explode(' ', $classStringB ?: '');

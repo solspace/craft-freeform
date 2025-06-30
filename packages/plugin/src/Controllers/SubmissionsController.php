@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -44,7 +45,7 @@ class SubmissionsController extends BaseController
     public const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
     public const EVENT_REGISTER_EDIT_ASSETS = 'registerEditAssets';
 
-    public function actionIndex(string $formHandle = null): Response
+    public function actionIndex(?string $formHandle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
@@ -113,7 +114,7 @@ class SubmissionsController extends BaseController
         }
 
         $exporter = new ExportCsv($form->getForm(), $submissions, $this->getExportProfileService()->getExportSettings());
-        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
+        $fileName = \sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }

@@ -31,9 +31,6 @@ class PhoneConstraint implements ConstraintInterface
         $this->pattern = !empty($pattern) ? $pattern : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value)
     {
         $violationList = new ConstraintViolationList();
@@ -41,7 +38,7 @@ class PhoneConstraint implements ConstraintInterface
 
         if (null !== $pattern) {
             $compiledPattern = $pattern;
-            $compiledPattern = preg_replace('/([\[\](){}$+_\-+])/', '\\\\$1', $compiledPattern);
+            $compiledPattern = preg_replace('/([\[\](){}$+_\-+])/', '\\\$1', $compiledPattern);
             preg_match_all('/(0+)/', $compiledPattern, $matches);
 
             if (isset($matches[1])) {

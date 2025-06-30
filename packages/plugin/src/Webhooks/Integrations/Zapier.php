@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Webhooks\Integrations;
 
-class Zapier extends Generic
-{
-}
+class Zapier extends Generic {}

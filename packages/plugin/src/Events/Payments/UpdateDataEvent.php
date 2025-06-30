@@ -59,9 +59,6 @@ class UpdateDataEvent extends ArrayableEvent
         return array_replace_recursive($paymentData, $this->mandatoryData);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['submission', 'form']);

@@ -166,7 +166,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     /**
      * @return null|string
      */
-    public function getGeneratedMinDate(string $format = null)
+    public function getGeneratedMinDate(?string $format = null)
     {
         if (!$this->minDate) {
             return null;
@@ -178,7 +178,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     /**
      * @return null|string
      */
-    public function getGeneratedMaxDate(string $format = null)
+    public function getGeneratedMaxDate(?string $format = null)
     {
         if (!$this->maxDate) {
             return null;
@@ -253,9 +253,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -371,7 +368,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
                 break;
         }
 
-        return sprintf(
+        return \sprintf(
             '%s%s%s%s%s',
             $first,
             $this->getDateSeparator(),
@@ -396,12 +393,12 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return $hours.$this->getClockSeparator().$minutes.$ampm;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return DateTimeType::getType();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Format: "'.$this->getHumanReadableFormat().'".';

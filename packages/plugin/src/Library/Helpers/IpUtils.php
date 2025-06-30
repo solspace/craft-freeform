@@ -23,9 +23,7 @@ class IpUtils
     /**
      * This class should not be instantiated.
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Checks if an IPv4 or IPv6 address is contained in the list of given IPs or subnets.
@@ -72,7 +70,7 @@ class IpUtils
             return self::$checkedIps[$cacheKey] = false;
         }
 
-        if (false !== strpos($ip, '/')) {
+        if (str_contains($ip, '/')) {
             [$address, $netmask] = explode('/', $ip, 2);
 
             if ('0' === $netmask) {
@@ -91,7 +89,7 @@ class IpUtils
             return self::$checkedIps[$cacheKey] = false;
         }
 
-        return self::$checkedIps[$cacheKey] = 0 === substr_compare(sprintf('%032b', ip2long($requestIp)), sprintf('%032b', ip2long($address)), 0, $netmask);
+        return self::$checkedIps[$cacheKey] = 0 === substr_compare(\sprintf('%032b', ip2long($requestIp)), \sprintf('%032b', ip2long($address)), 0, $netmask);
     }
 
     /**
@@ -120,7 +118,7 @@ class IpUtils
             throw new \RuntimeException('Unable to check Ipv6. Check that PHP was not compiled with option "disable-ipv6".');
         }
 
-        if (false !== strpos($ip, '/')) {
+        if (str_contains($ip, '/')) {
             [$address, $netmask] = explode('/', $ip, 2);
 
             if ('0' === $netmask) {

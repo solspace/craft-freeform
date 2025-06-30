@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -67,7 +68,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, 'Create new mailing list');
     }
 
-    public function actionEdit($id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, ?IntegrationModel $model = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -88,7 +89,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    public function actionHandleOAuthRedirect(string $handle = null): Response
+    public function actionHandleOAuthRedirect(?string $handle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
         $model = $this->getMailingListsService()->getIntegrationByHandle($handle);

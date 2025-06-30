@@ -15,7 +15,7 @@ class FieldCollection implements \IteratorAggregate
         $this->fields = $fields;
     }
 
-    public function getList(string $implements = null): array
+    public function getList(?string $implements = null): array
     {
         if (null !== $implements) {
             return array_values(

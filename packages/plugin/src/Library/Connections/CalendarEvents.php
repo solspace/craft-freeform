@@ -22,9 +22,6 @@ class CalendarEvents extends AbstractConnection
     /** @var bool */
     protected $allDay;
 
-    /**
-     * {@inheritDoc}
-     */
     public function isConnectable(): bool
     {
         return null !== $this->getCalendar();
@@ -62,7 +59,7 @@ class CalendarEvents extends AbstractConnection
     /**
      * @param TransformerInterface[] $transformers
      */
-    protected function buildElement(array $transformers, ElementInterface $element = null): Element
+    protected function buildElement(array $transformers, ?ElementInterface $element = null): Element
     {
         if ($element instanceof Event) {
             $event = $element;
@@ -119,9 +116,7 @@ class CalendarEvents extends AbstractConnection
         }
     }
 
-    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers)
-    {
-    }
+    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers) {}
 
     /**
      * @param AbstractFieldTransformer[] $keyValuePairs

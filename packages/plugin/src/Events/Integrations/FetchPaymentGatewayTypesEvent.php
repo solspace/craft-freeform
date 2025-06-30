@@ -21,9 +21,6 @@ class FetchPaymentGatewayTypesEvent extends ArrayableEvent
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['types'];

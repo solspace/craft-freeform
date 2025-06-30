@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -76,12 +77,12 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
         return implode(', ', $labels);
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::listOf(Type::string());
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Multiple option values allowed.';
@@ -105,17 +106,11 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() ? '</div>' : '';

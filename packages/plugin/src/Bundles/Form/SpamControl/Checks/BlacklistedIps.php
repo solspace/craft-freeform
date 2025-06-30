@@ -24,7 +24,7 @@ class BlacklistedIps extends AbstractCheck
             } else {
                 $event->getForm()->markAsSpam(
                     SpamReason::TYPE_BLOCKED_IP,
-                    sprintf(
+                    \sprintf(
                         'Form submitted by a blocked IP "%s"',
                         $remoteIp
                     )

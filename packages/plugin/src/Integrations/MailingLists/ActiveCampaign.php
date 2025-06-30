@@ -236,9 +236,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Perform anything necessary before this integration is saved.
@@ -248,9 +246,6 @@ class ActiveCampaign extends AbstractMailingListIntegration
         $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function fetchLists(): array
     {
         $client = $this->generateAuthorizedClient();

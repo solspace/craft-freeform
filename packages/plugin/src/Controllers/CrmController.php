@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -64,7 +65,7 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $title);
     }
 
-    public function actionEdit($id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, ?IntegrationModel $model = null): Response
     {
         if (null === $model) {
             if (is_numeric($id)) {
@@ -249,7 +250,7 @@ class CrmController extends Controller
         return Freeform::getInstance()->crm;
     }
 
-    private function getNewOrExistingIntegration(int $id = null): IntegrationModel
+    private function getNewOrExistingIntegration(?int $id = null): IntegrationModel
     {
         if (null === $id) {
             $model = null;

@@ -255,7 +255,7 @@ class PredefinedOptionsFactory
     /**
      * @return Option[]
      */
-    private function getProvinceOptions(string $source = null): array
+    private function getProvinceOptions(?string $source = null): array
     {
         switch ($source) {
             case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
@@ -379,7 +379,7 @@ class PredefinedOptionsFactory
         return $this->configuration;
     }
 
-    private static function getMonthFormatFromType(string $type = null): string
+    private static function getMonthFormatFromType(?string $type = null): string
     {
         $format = 'F';
 
@@ -403,7 +403,7 @@ class PredefinedOptionsFactory
         return $format;
     }
 
-    private static function getDayFormatFromType(string $type = null): string
+    private static function getDayFormatFromType(?string $type = null): string
     {
         $format = 'd';
 
@@ -418,7 +418,7 @@ class PredefinedOptionsFactory
         return $format;
     }
 
-    private static function getDayOfTheWeekFormatFromType(string $type = null): string
+    private static function getDayOfTheWeekFormatFromType(?string $type = null): string
     {
         $format = 'l';
 

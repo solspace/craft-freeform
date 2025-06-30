@@ -39,9 +39,6 @@ class ConstraintViolationList implements \Countable
         return $this->errors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function count()
     {
         return \count($this->errors);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -164,9 +165,7 @@ class SalesforceLead extends AbstractSalesforceIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Authorizes the application
@@ -510,8 +509,8 @@ class SalesforceLead extends AbstractSalesforceIntegration
         $instance = $this->getSetting(self::SETTING_INSTANCE);
         $usingCustomUrls = $this->getSetting(self::SETTING_CUSTOM_URL);
 
-        if (0 !== strpos($instance, 'https://')) {
-            return sprintf(
+        if (!str_starts_with($instance, 'https://')) {
+            return \sprintf(
                 'https://%s%s.salesforce.com/services/data/v44.0/',
                 $instance,
                 $usingCustomUrls ? '.my' : ''

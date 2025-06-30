@@ -90,14 +90,14 @@ class Freshdesk extends AbstractCRMIntegration
             if (\is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $value)) {
                 $value = new Carbon($value, 'UTC');
 
-                if (0 === strpos($key, 'cf_')) {
+                if (str_starts_with($key, 'cf_')) {
                     $value = $value->toDateString();
                 } else {
                     $value = $value->toIso8601ZuluString();
                 }
             }
 
-            if (0 === strpos($key, 'cf_')) {
+            if (str_starts_with($key, 'cf_')) {
                 if (!empty($value)) {
                     $customValues[$key] = $value;
                 }
@@ -295,9 +295,7 @@ class Freshdesk extends AbstractCRMIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Perform anything necessary before this integration is saved.
@@ -309,7 +307,7 @@ class Freshdesk extends AbstractCRMIntegration
 
     protected function getApiRootUrl(): string
     {
-        return sprintf('https://%s.freshdesk.com/api/v2/', $this->getSubdomain());
+        return \sprintf('https://%s.freshdesk.com/api/v2/', $this->getSubdomain());
     }
 
     /**

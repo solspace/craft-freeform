@@ -46,7 +46,7 @@ abstract class AbstractSalesforceIntegration extends AbstractCRMIntegration
         $client = $this->generateAuthorizedClient();
 
         $params = array_map([$this, 'soqlEscape'], $params);
-        $query = sprintf($query, ...$params);
+        $query = \sprintf($query, ...$params);
 
         try {
             $response = $client->get(

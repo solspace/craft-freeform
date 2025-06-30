@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m200825_124009_SplitPipedriveIntegrationIntoDealsAndLeads extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->update(
@@ -23,9 +20,6 @@ class m200825_124009_SplitPipedriveIntegrationIntoDealsAndLeads extends Migratio
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->update(

@@ -31,7 +31,7 @@ class DiagnosticItem
 
     private array $notices = [];
 
-    public function __construct(?string $markup, mixed $value, array $validators = [], callable $colorOverride = null)
+    public function __construct(?string $markup, mixed $value, array $validators = [], ?callable $colorOverride = null)
     {
         $this->label = $markup;
         $this->value = $value;
@@ -106,7 +106,7 @@ class DiagnosticItem
 
                 $notificationItem = new NotificationItem($heading, $message, $reflection->getShortName());
 
-                switch (\get_class($validator)) {
+                switch ($validator::class) {
                     case WarningValidator::class:
                         $this->warnings[] = $notificationItem;
 

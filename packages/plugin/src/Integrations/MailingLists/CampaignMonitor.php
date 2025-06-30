@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -156,9 +157,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Authorizes the application

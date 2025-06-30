@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -244,7 +245,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return new FileUploadResponse(null, $errors);
     }
 
-    public function extractBase64String(array $fileUpload): array|null
+    public function extractBase64String(array $fileUpload): ?array
     {
         $fileDataString = ArrayHelper::remove($fileUpload, 'fileData');
 
@@ -408,7 +409,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      *
      * @param mixed $assetId
      */
-    public function markAssetUnfinalized($assetId, FileUploadField $field = null, string $formToken = null)
+    public function markAssetUnfinalized($assetId, ?FileUploadField $field = null, ?string $formToken = null)
     {
         $record = new UnfinalizedFileRecord();
         $record->assetId = $assetId;
@@ -463,7 +464,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                             UnfinalizedFileRecord::TABLE,
                             ['assetId' => $assetId]
                         )
-                        ->execute();
+                        ->execute()
+                    ;
                 } catch (\Exception $e) {
                 }
             }
@@ -566,7 +568,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             if (
                 '' === $renderedSubpath
                 || trim($renderedSubpath, '/') != $renderedSubpath
-                || false !== strpos($renderedSubpath, '//')
+                || str_contains($renderedSubpath, '//')
             ) {
                 throw new InvalidSubpathException($subpath);
             }

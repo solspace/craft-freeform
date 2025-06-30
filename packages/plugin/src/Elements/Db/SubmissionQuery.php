@@ -342,7 +342,7 @@ class SubmissionQuery extends ElementQuery
 
         $prefixedOrderList = [];
         foreach ($this->orderBy as $key => $sortDirection) {
-            if (preg_match('/\\(\\)$/', $key)) {
+            if (preg_match('/\(\)$/', $key)) {
                 $prefixedOrderList[$key] = $sortDirection;
 
                 continue;

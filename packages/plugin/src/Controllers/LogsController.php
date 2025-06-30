@@ -5,6 +5,8 @@ namespace Solspace\Freeform\Controllers;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\LogBundle;
+use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class LogsController extends BaseController
@@ -39,8 +41,8 @@ class LogsController extends BaseController
     }
 
     /**
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
      */
     public function actionClear(): Response
     {

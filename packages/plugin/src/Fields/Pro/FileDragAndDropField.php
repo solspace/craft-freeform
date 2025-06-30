@@ -91,9 +91,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         return $output;
     }
 
-    public function uploadFile()
-    {
-    }
+    public function uploadFile() {}
 
     public function includeInGqlSchema(): bool
     {

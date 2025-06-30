@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -57,7 +58,7 @@ class Composer
      */
     public function __construct(
         FormModel $formModel,
-        array $composerState = null,
+        ?array $composerState,
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
@@ -69,10 +70,7 @@ class Composer
         $this->validateComposerData();
     }
 
-    /**
-     * @return Form
-     */
-    public function getForm(): Components\Form
+    public function getForm(): Form
     {
         return $this->form;
     }

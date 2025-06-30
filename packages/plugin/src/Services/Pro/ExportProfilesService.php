@@ -216,7 +216,8 @@ class ExportProfilesService extends Component
                 ->getDb()
                 ->createCommand()
                 ->delete(ExportProfileRecord::TABLE, ['id' => $model->id])
-                ->execute();
+                ->execute()
+            ;
 
             if (null !== $transaction) {
                 $transaction->commit();
@@ -260,7 +261,7 @@ class ExportProfilesService extends Component
 
     public function export(ExportInterface $exporter, Form $form)
     {
-        $fileName = sprintf(
+        $fileName = \sprintf(
             '%s submissions %s.%s',
             $form->getName(),
             date('Y-m-d H:i', time()),

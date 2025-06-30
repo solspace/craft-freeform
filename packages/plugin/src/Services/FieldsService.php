@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -266,7 +267,8 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->delete(FieldRecord::TABLE, ['id' => $model->id])
-                ->execute();
+                ->execute()
+            ;
 
             $this->deleteFieldFromForms($model);
 
@@ -296,9 +298,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         $this->trigger(self::EVENT_AFTER_VALIDATE, new ValidateEvent($field, $form));
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOptionsFromSource(string $source, $target, array $configuration = [], $selectedValues = []): array
     {
         $hash = sha1(json_encode([$source, $target, $configuration, $selectedValues]));

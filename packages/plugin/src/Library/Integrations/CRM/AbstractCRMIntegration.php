@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -58,9 +59,6 @@ abstract class AbstractCRMIntegration extends AbstractIntegration implements CRM
         $this->crmHandler = $crmHandler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function isOAuthConnection(): bool
     {
         return $this instanceof CRMOAuthConnector;

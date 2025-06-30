@@ -19,9 +19,6 @@ class WebsiteField extends TextField implements ExtraFieldInterface
         return self::TYPE_WEBSITE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();

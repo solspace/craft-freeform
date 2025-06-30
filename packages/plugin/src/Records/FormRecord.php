@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -13,7 +14,6 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Freeform;
 
 /**
  * Class Freeform_FormRecord.
@@ -61,9 +61,6 @@ class FormRecord extends ActiveRecord
         return $form;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [

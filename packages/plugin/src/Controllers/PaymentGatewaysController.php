@@ -61,7 +61,7 @@ class PaymentGatewaysController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit(?int $id = null, ?IntegrationModel $model = null): Response
     {
         if (null === $model) {
             $model = $this->getPaymentGatewaysService()->getIntegrationById($id);

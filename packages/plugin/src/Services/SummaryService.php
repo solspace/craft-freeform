@@ -47,8 +47,8 @@ class SummaryService extends Component
         $system->phpVersion = \PHP_VERSION;
         $system->craftVersion = $craft->version;
         $system->craftEdition = strtolower($craft->getEditionName());
-        $system->formFieldType = ArrayHelper::some($craftFields, fn ($item) => FormFieldType::class === \get_class($item));
-        $system->submissionsFieldType = ArrayHelper::some($craftFields, fn ($item) => SubmissionFieldType::class === \get_class($item));
+        $system->formFieldType = ArrayHelper::some($craftFields, fn ($item) => FormFieldType::class === $item::class);
+        $system->submissionsFieldType = ArrayHelper::some($craftFields, fn ($item) => SubmissionFieldType::class === $item::class);
         $system->userGroups = $craft->userGroups->getAllGroups() > 1;
         $system->multiSite = $craft->sites->getAllSiteIds() > 1;
         $system->languages = $this->hasLanguages();

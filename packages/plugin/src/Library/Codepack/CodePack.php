@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -53,7 +54,7 @@ class CodePack
 
         if (!$fs->exists($location)) {
             throw new CodepackException(
-                sprintf(
+                \sprintf(
                     "Codepack folder does not exist in '%s'",
                     $location
                 )
@@ -69,7 +70,7 @@ class CodePack
 
     public static function getCleanPrefix(string $prefix): string
     {
-        $prefix = preg_replace('/\\/+/', '/', $prefix);
+        $prefix = preg_replace('/\/+/', '/', $prefix);
 
         return trim($prefix, '/');
     }

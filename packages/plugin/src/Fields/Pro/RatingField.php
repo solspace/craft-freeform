@@ -30,9 +30,6 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     /** @var string */
     protected $colorSelected;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_RATING;
@@ -88,9 +85,6 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         return $this->colorSelected;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -110,12 +104,12 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         return $constraints;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return Type::int();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';
@@ -139,9 +133,6 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();

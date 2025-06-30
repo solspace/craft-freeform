@@ -68,6 +68,17 @@ class SanitizeHelperTest extends TestCase
         $this->assertEquals($sanitized, SanitizeHelper::recursiveHtmlSpecialChars($obj));
     }
 
+    /**
+     * @dataProvider sanitizeDataProvider
+     *
+     * @param mixed $condition
+     * @param mixed $expected
+     */
+    public function testSanitize($condition, $expected)
+    {
+        $this->assertSame($expected, SanitizeHelper::cleanUpTwigCondition($condition));
+    }
+
     public function sanitizeDataProvider()
     {
         return [
@@ -79,16 +90,5 @@ class SanitizeHelperTest extends TestCase
             ['some.craft = "test"|test(craft.submit)', 'some.craft = "test"|testsubmit)'],
             ['some.craft = "test"|craft', 'some.craft = "test"'],
         ];
-    }
-
-    /**
-     * @dataProvider sanitizeDataProvider
-     *
-     * @param mixed $condition
-     * @param mixed $expected
-     */
-    public function testSanitize($condition, $expected)
-    {
-        $this->assertSame($expected, SanitizeHelper::cleanUpTwigCondition($condition));
     }
 }

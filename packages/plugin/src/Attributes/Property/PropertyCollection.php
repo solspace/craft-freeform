@@ -2,10 +2,8 @@
 
 namespace Solspace\Freeform\Attributes\Property;
 
-use IteratorAggregate;
-
 /**
- * @extends IteratorAggregate<int, Property>
+ * @extends \IteratorAggregate<int, Property>
  */
 class PropertyCollection implements \IteratorAggregate
 {

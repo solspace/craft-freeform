@@ -9,7 +9,7 @@ class Integration
     public string $handle;
     public string $type;
     public string $class;
-    public string $icon;
+    public ?string $icon;
     public bool $enabled;
     public array $metadata;
 }

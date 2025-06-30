@@ -489,6 +489,15 @@ class FreeformImporter
                 $record->uid = $notification->uid;
             }
 
+            if ($notification->formUid) {
+                $formId = $this->formsByUid[$notification->formUid] ?? null;
+                if (!$formId) {
+                    continue;
+                }
+
+                $record->formId = $formId;
+            }
+
             $record->name = $notification->name;
             $record->handle = $notification->handle;
             $record->description = $notification->description;

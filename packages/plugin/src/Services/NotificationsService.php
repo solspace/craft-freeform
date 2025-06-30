@@ -87,6 +87,14 @@ class NotificationsService extends BaseService
         return self::$notificationCache;
     }
 
+    public function getAllFormNotifications(): array
+    {
+        return NotificationTemplateRecord::find()
+            ->where(['not', ['formUid' => null]])
+            ->all()
+        ;
+    }
+
     public function getTemplateRecordById(int $id): ?NotificationTemplateRecord
     {
         $notifications = $this->getAllNotifications();

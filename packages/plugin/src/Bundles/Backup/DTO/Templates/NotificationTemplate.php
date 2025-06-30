@@ -6,6 +6,7 @@ class NotificationTemplate
 {
     public null|int|string $uid = null;
     public null|int|string $id = null;
+    public ?string $formUid = null;
     public bool $isFile = false;
 
     public string $name;

@@ -24,6 +24,7 @@ type Props = {
   templates: TemplateCollection;
   options: TemplateValues;
   onUpdate: (templates: TemplateValues) => void;
+  formNames: Record<string, string>;
 };
 
 const isAllChecked = (
@@ -39,6 +40,7 @@ export const PreviewTemplates: React.FC<Props> = ({
   templates,
   options,
   onUpdate,
+  formNames,
 }) => {
   if (
     !templates.pdf.length &&
@@ -93,6 +95,7 @@ export const PreviewTemplates: React.FC<Props> = ({
         templates={templates.notification}
         values={options.notification}
         onUpdate={(values) => onUpdate({ ...options, notification: values })}
+        formNames={formNames}
       />
 
       <FileTemplates

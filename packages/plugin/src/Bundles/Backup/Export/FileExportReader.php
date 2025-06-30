@@ -203,6 +203,9 @@ class FileExportReader extends BaseExporter
             $integration->metadata = $json['metadata'];
 
             $type = $this->integrationTypeProvider->getTypeDefinition($integration->class);
+            if (!$type) {
+                continue;
+            }
             $integration->icon = $type->getIconSvg();
 
             $collection->add($integration);
@@ -223,6 +226,7 @@ class FileExportReader extends BaseExporter
             $template = new NotificationTemplate();
             $template->uid = $json['uid'];
             $template->id = $json['id'];
+            $template->formUid = $json['formUid'] ?? null;
             $template->isFile = $json['isFile'];
 
             $template->name = $json['name'];

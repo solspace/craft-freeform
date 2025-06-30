@@ -56,6 +56,7 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -293,7 +294,19 @@ class FreeformFormsExporter extends BaseExporter
     protected function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
-        $notifications = Freeform::getInstance()->notifications->getAllNotifications();
+
+        $formIdToUidMap = (new Query())
+            ->select(['uid'])
+            ->from(FormRecord::TABLE)
+            ->indexBy('id')
+            ->column()
+        ;
+
+        /** @var NotificationTemplateRecord[] $notifications */
+        $notifications = array_merge(
+            NotificationTemplateRecord::find()->where(['not', ['formId' => null]])->all(),
+            Freeform::getInstance()->notifications->getAllNotifications(),
+        );
 
         foreach ($notifications as $notification) {
             $uid = $notification->uid ?? $notification->filepath;
@@ -304,6 +317,7 @@ class FreeformFormsExporter extends BaseExporter
             $exported = new NotificationTemplate();
             $exported->uid = $uid;
             $exported->id = $notification->id;
+            $exported->formUid = $formIdToUidMap[$notification->formId] ?? null;
             $exported->isFile = (bool) $notification->filepath;
 
             $exported->name = $notification->name;

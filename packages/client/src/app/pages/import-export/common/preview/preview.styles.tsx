@@ -100,9 +100,12 @@ export const Icon = styled.i`
 
   text-align: center;
 
-  img {
-    width: 18px;
-    height: 18px;
+  width: 18px;
+  height: 18px;
+
+  svg {
+    width: 100%;
+    height: 100%;
   }
 `;
 

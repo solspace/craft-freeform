@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Property;
 
 /**
- * @extends Property<string|int|null>
+ * @extends Property<null|int|string>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class NotificationTemplate extends Property

@@ -32,7 +32,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
 
 /**
- * @extends AbstractField<boolean>
+ * @extends AbstractField<bool>
  */
 #[Type(
     name: 'Checkbox',

@@ -49,10 +49,12 @@ class FreeformImporter
 {
     private const BATCH_SIZE = 100;
 
+    /** @var FormRecord[] */
     private array $formsByUid = [];
     private array $notificationTransferIdMap = [];
     private array $pdfTemplateTransferIdMap = [];
     private array $integrationRecords = [];
+
     private FreeformDataset $dataset;
     private SSE $sse;
 
@@ -73,6 +75,8 @@ class FreeformImporter
         $this->announceTotals();
 
         $this->importSettings();
+        $this->importFormBase();
+
         $this->importPdfTemplates();
         $this->importNotifications();
         $this->importFormattingTemplates();
@@ -100,7 +104,7 @@ class FreeformImporter
         );
     }
 
-    private function importForms(): void
+    private function importFormBase(): void
     {
         $forms = $this->dataset->getForms();
         $isStrategySkip = ImportStrategy::TYPE_SKIP === $this->dataset->getStrategy()->forms;
@@ -113,6 +117,7 @@ class FreeformImporter
             $formRecord = FormRecord::findOne(['uid' => $form->uid]);
             if ($formRecord) {
                 if ($isStrategySkip) {
+                    $this->formsByUid[$form->uid] = $formRecord;
                     $this->sse->message('progress', 1);
 
                     continue;
@@ -143,6 +148,27 @@ class FreeformImporter
             }
 
             $this->formsByUid[$form->uid] = $formRecord;
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importForms(): void
+    {
+        $forms = $this->dataset->getForms();
+        $isStrategySkip = ImportStrategy::TYPE_SKIP === $this->dataset->getStrategy()->forms;
+
+        $this->sse->message('reset', $forms->count());
+
+        foreach ($forms as $form) {
+            $this->sse->message('info', 'Importing form details: '.$form->name);
+
+            $formRecord = $this->formsByUid[$form->uid] ?? null;
+            if (!$formRecord) {
+                $this->sse->message('err', 'Form record not found for UID: '.$form->uid);
+                $this->sse->message('progress', 1);
+
+                continue;
+            }
 
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
 
@@ -465,6 +491,11 @@ class FreeformImporter
             $notificationsByIdentificator[$notification->uid ?? $notification->filepath] = $notification;
         }
 
+        $existingFormNotifications = $this->notificationsService->getAllFormNotifications();
+        foreach ($existingFormNotifications as $notification) {
+            $notificationsByIdentificator[$notification->uid] = $notification;
+        }
+
         foreach ($collection as $notification) {
             $this->sse->message('info', 'Importing notification: '.$notification->name);
 
@@ -490,12 +521,12 @@ class FreeformImporter
             }
 
             if ($notification->formUid) {
-                $formId = $this->formsByUid[$notification->formUid] ?? null;
-                if (!$formId) {
+                $form = $this->formsByUid[$notification->formUid] ?? null;
+                if (!$form) {
                     continue;
                 }
 
-                $record->formId = $formId;
+                $record->formId = $form->id;
             }
 
             $record->name = $notification->name;

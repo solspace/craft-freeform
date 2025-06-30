@@ -90,7 +90,7 @@ class NotificationsService extends BaseService
     public function getAllFormNotifications(): array
     {
         return NotificationTemplateRecord::find()
-            ->where(['not', ['formUid' => null]])
+            ->where(['not', ['formId' => null]])
             ->all()
         ;
     }

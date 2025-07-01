@@ -55,6 +55,8 @@ import {
   TestTooltipContent,
   TestTooltipHeader,
 } from './results.styles';
+import { SubmissionDurationChart } from './results.submit.charts';
+import { ResultsTabs } from './results.tabs';
 
 type FormMonitorContext = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
@@ -399,6 +401,7 @@ export const FMResults: React.FC = () => {
     React.useState<ScreenshotModalState>(null);
   const [testToDelete, setTestToDelete] =
     React.useState<DeleteModalState>(null);
+  const [activeTab, setActiveTab] = React.useState<string>('testResults');
 
   const { data: formTests, isLoading, isFetching, refetch } = formTestsQuery;
 
@@ -451,20 +454,43 @@ export const FMResults: React.FC = () => {
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const paginatedTests = allTests.slice(startIndex, endIndex);
 
+  // Create tab content
+  const last30DaysContent = (
+    <StatsContainer>
+      <ChartContainer>
+        <TestDescription>
+          {translate(
+            `Of the ${formTests.stats?.total || 0} tests that have occurred in the last 30 days, ` +
+              `${formTests.stats?.failed || 0} ${formTests.stats?.failed === 1 ? 'test has' : 'tests have'} failed for this form.`
+          )}
+        </TestDescription>
+        <DailyTestsChart groups={formTests.tests} />
+      </ChartContainer>
+    </StatsContainer>
+  );
+
+  const submitTimes = <SubmissionDurationChart groups={formTests.tests} />;
+
+  const tabs = [
+    {
+      id: 'testResults',
+      label: 'Test Results',
+      content: last30DaysContent,
+    },
+    {
+      id: 'submitTimes',
+      label: 'Form Submit Times',
+      content: submitTimes,
+    },
+  ];
+
   return (
     <ResultsWrapper>
-      <StatsContainer>
-        <ChartContainer>
-          <h3>{translate('Last 30 Days')}</h3>
-          <TestDescription>
-            {translate(
-              `Of the ${formTests.stats?.total || 0} tests that have occurred in the last 30 days, ` +
-                `${formTests.stats?.failed || 0} ${formTests.stats?.failed === 1 ? 'test has' : 'tests have'} failed for this form.`
-            )}
-          </TestDescription>
-          <DailyTestsChart groups={formTests.tests} />
-        </ChartContainer>
-      </StatsContainer>
+      <ResultsTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
 
       <TableTestList>
         <TableHeader>

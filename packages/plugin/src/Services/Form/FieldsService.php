@@ -73,9 +73,13 @@ class FieldsService extends BaseService
                 ->all()
             ;
 
-            $fields = [];
             foreach ($records as $record) {
-                $field = $this->createField($record, $forms[$record->formId]);
+                $form = $forms[$record->formId] ?? null;
+                if (!$form) {
+                    continue;
+                }
+
+                $field = $this->createField($record, $form);
 
                 if ($field) {
                     $this->allFieldCache[] = $field;

@@ -7,7 +7,6 @@ import {
   AreaChart,
   CartesianGrid,
   ResponsiveContainer,
-  Scatter,
   Tooltip as RechartsTooltip,
   XAxis,
   YAxis,
@@ -30,7 +29,6 @@ type SubmissionDurationChartProps = {
 export const SubmissionDurationChart: React.FC<
   SubmissionDurationChartProps
 > = ({ groups }) => {
-  // Create data for all 30 days, with individual test points
   const generateChartData = (): Array<{
     date: string;
     duration: number;
@@ -47,17 +45,14 @@ export const SubmissionDurationChart: React.FC<
       dateAttempted: string;
     }> = [];
 
-    // Generate 30 days of data (recent days on the left)
     for (let i = 0; i < 30; i++) {
       const date = new Date(today);
-      date.setDate(date.getDate() - i); // This makes recent days appear first
+      date.setDate(date.getDate() - i);
       const dateString = date.toISOString().split('T')[0];
 
-      // Find tests for this date
       const dayGroup = groups.find((group) => group.date === dateString);
       const testsForDay = dayGroup?.tests || [];
 
-      // Add individual test points for this day
       testsForDay.forEach((test) => {
         if (
           test.submissionDuration !== undefined &&
@@ -73,7 +68,6 @@ export const SubmissionDurationChart: React.FC<
         }
       });
 
-      // If no tests for this day, add a zero point to maintain the line
       if (testsForDay.length === 0) {
         chartData.push({
           date: dateString,
@@ -89,12 +83,11 @@ export const SubmissionDurationChart: React.FC<
   };
 
   const chartData = generateChartData();
-  const allTestData = chartData.filter((d) => d.status !== 'no-tests');
 
-  // Get unique dates and track which ones to show
   const uniqueDates = Array.from(new Set(chartData.map((d) => d.date)))
     .sort()
     .reverse();
+
   const datesToShow = uniqueDates.filter(
     (_, index) => index === 0 || index % 5 === 0
   );
@@ -143,7 +136,7 @@ export const SubmissionDurationChart: React.FC<
   const hasData = chartData.some((d) => d.duration >= 0);
 
   if (!hasData) {
-    return null; // Don't render the component at all if no data
+    return null;
   }
 
   return (
@@ -169,7 +162,6 @@ export const SubmissionDurationChart: React.FC<
               height={60}
               interval={0}
               tickFormatter={(value, index) => {
-                // Only show label for the first occurrence of dates in datesToShow
                 const firstIndex = chartData.findIndex((d) => d.date === value);
                 if (index === firstIndex && datesToShow.includes(value)) {
                   const date = new Date(value);
@@ -184,7 +176,8 @@ export const SubmissionDurationChart: React.FC<
             <YAxis
               tick={{ fontSize: 12 }}
               domain={[0, maxDuration * 1.1]}
-              tickFormatter={(value) => `${value.toFixed(2)}s`}
+              ticks={[1, 2, 3, 4, 5]}
+              tickFormatter={(value) => `${value}s`}
               label={{
                 value: translate('Submit Time'),
                 angle: -90,
@@ -202,25 +195,6 @@ export const SubmissionDurationChart: React.FC<
               isAnimationActive={false}
               connectNulls={true}
             />
-            {/* Render each test point individually with explicit styling */}
-            {allTestData.map((testPoint, index) => (
-              <Scatter
-                key={`test-${testPoint.testId}-${index}`}
-                data={[testPoint]}
-                dataKey="duration"
-                fill={
-                  testPoint.status === 'success'
-                    ? '#10b981'
-                    : testPoint.status === 'failed'
-                      ? '#ef4444'
-                      : '#6b7280'
-                }
-                shape="circle"
-                r={testPoint.status === 'failed' ? 8 : 4}
-                stroke={testPoint.status === 'failed' ? '#dc2626' : 'none'}
-                strokeWidth={testPoint.status === 'failed' ? 2 : 0}
-              />
-            ))}
           </AreaChart>
         </ResponsiveContainer>
       </ChartWrapper>

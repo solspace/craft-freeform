@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -149,9 +150,7 @@ class Dotmailer extends AbstractMailingListIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     /**
      * Authorizes the application
@@ -199,7 +198,7 @@ class Dotmailer extends AbstractMailingListIntegration
      * Builds ListObject objects based on the results
      * And returns them.
      *
-     * @return \Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject[]
+     * @return ListObject[]
      *
      * @throws IntegrationException
      */

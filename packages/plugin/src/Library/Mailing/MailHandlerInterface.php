@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -28,7 +29,7 @@ interface MailHandlerInterface
         array|string $recipients,
         NotificationRecord $notification,
         array $fields,
-        Submission $submission = null
+        ?Submission $submission = null
     ): int;
 
     /**

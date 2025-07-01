@@ -22,16 +22,13 @@ class MinDateConstraint implements ConstraintInterface
     public function __construct(
         string $message,
         string $format,
-        string $minDate = null
+        ?string $minDate = null
     ) {
         $this->message = $message;
         $this->format = $format;
         $this->minDate = $minDate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value): ConstraintViolationList
     {
         $violationList = new ConstraintViolationList();

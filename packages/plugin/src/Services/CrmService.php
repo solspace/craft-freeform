@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -179,7 +180,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                         'handle' => $handle,
                     ]
                 )
-                ->execute();
+                ->execute()
+            ;
         }
 
         foreach ($fields as $field) {
@@ -211,7 +213,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                             'handle' => $field->getHandle(),
                         ]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
         }
 
@@ -224,7 +227,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 ['forceUpdate' => 0],
                 ['id' => $id]
             )
-            ->execute();
+            ->execute()
+        ;
 
         return true;
     }
@@ -348,9 +352,6 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getIntegrationType(): string
     {
         return IntegrationRecord::TYPE_CRM;

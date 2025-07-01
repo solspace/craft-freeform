@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -169,7 +170,7 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         return null;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         if ($this->isShowAsCheckboxes()) {
             return Type::listOf(Type::string());
@@ -178,7 +179,7 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         return Type::string();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
 
@@ -207,17 +208,11 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onBeforeInputHtml(): string
     {
         return $this->isOneLine() && !$this->isShowAsSelect() ? '<div class="input-group-one-line">' : '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function onAfterInputHtml(): string
     {
         return $this->isOneLine() && !$this->isShowAsSelect() ? '</div>' : '';

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -29,6 +30,7 @@ use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
+use yii\db\Exception;
 
 class FreeformVariable
 {
@@ -39,7 +41,7 @@ class FreeformVariable
      *
      * @return null|Form
      */
-    public function form($handleOrId, array $properties = null)
+    public function form($handleOrId, ?array $properties = null)
     {
         $form = $this->getFormService()->getFormByHandleOrId($handleOrId);
 
@@ -70,7 +72,7 @@ class FreeformVariable
         return Freeform::getInstance()->submissions->getSubmissionCount([$form->getId()]);
     }
 
-    public function submissions(array $attributes = null): SubmissionQuery
+    public function submissions(?array $attributes = null): SubmissionQuery
     {
         $query = Submission::find();
 
@@ -90,7 +92,7 @@ class FreeformVariable
     }
 
     /**
-     * @throws \yii\db\Exception
+     * @throws Exception
      */
     public function deleteSubmissionByToken(string $token): bool
     {
@@ -147,7 +149,7 @@ class FreeformVariable
         return $this->loadFreeformPlugin();
     }
 
-    public function loadFreeformPlugin(string $attributes = null, string $styleAttributes = null): Markup
+    public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup
     {
         $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
         $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
@@ -181,7 +183,7 @@ class FreeformVariable
         return Freeform::getInstance()->isPro();
     }
 
-    public function getVersion(int $marks = null): string
+    public function getVersion(?int $marks = null): string
     {
         $version = Freeform::getInstance()->version;
 

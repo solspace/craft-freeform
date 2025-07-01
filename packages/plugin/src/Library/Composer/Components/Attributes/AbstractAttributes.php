@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -14,6 +15,7 @@ namespace Solspace\Freeform\Library\Composer\Components\Attributes;
 
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use yii\base\Exception;
 
 abstract class AbstractAttributes
 {
@@ -22,14 +24,14 @@ abstract class AbstractAttributes
      *
      * @throws FreeformException
      */
-    public function __construct(array $attributes = null)
+    public function __construct(?array $attributes = null)
     {
         if ($attributes) {
             foreach ($attributes as $key => $value) {
                 if (property_exists($this, $key)) {
                     $this->{$key} = $value;
                 } else {
-                    throw new FreeformException(sprintf("Invalid attribute '%s' provided", $key));
+                    throw new FreeformException(\sprintf("Invalid attribute '%s' provided", $key));
                 }
             }
         }
@@ -39,7 +41,7 @@ abstract class AbstractAttributes
      * @param null $templateObject
      *
      * @throws \Throwable
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public static function extractAttributes(array $attributes, $templateObject = null, array $templateVars = []): array
     {
@@ -78,7 +80,7 @@ abstract class AbstractAttributes
      * @param null $templateObject
      *
      * @throws \Throwable
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     public static function extractAttributeString(array $attributes, $templateObject = null, array $templateVars = []): string
     {
@@ -99,7 +101,7 @@ abstract class AbstractAttributes
     /**
      * Merges the passed attributes into the existing ones.
      */
-    public function mergeAttributes(array $attributes = null)
+    public function mergeAttributes(?array $attributes = null)
     {
         if ($attributes) {
             foreach ($attributes as $key => $value) {

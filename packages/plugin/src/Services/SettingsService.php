@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -48,7 +49,7 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->customErrorMessage;
     }
 
-    public function isFreeformHoneypotEnabled(Form $form = null): bool
+    public function isFreeformHoneypotEnabled(?Form $form = null): bool
     {
         $enabled = $this->getSettingsModel()->freeformHoneypot;
         if (!$enabled) {

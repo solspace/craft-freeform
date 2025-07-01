@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -21,8 +22,6 @@ interface ComponentInterface
 
     /**
      * Calls the installation of this component.
-     *
-     * @param string $prefix
      */
-    public function install(string $prefix = null);
+    public function install(?string $prefix = null);
 }

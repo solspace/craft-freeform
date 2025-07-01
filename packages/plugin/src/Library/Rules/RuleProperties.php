@@ -113,9 +113,6 @@ class RuleProperties extends AbstractProperties
         return null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getPropertyManifest(): array
     {
         return [

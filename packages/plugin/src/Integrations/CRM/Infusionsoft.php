@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -398,7 +399,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             }
 
             // Deal with simple default - just rip off the fieldType (default:)
-            if (0 === strpos($fieldName, 'default:')) {
+            if (str_starts_with($fieldName, 'default:')) {
                 $processedFieldName = preg_replace('/^'.preg_quote('default:', '/').'/', '', $fieldName);
 
                 $resultData[$processedFieldName] = $fieldValue;
@@ -407,7 +408,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             }
 
             // Custom fields, we rip off the fieldHandle and insert as a 2d array into $resultData['customFields']
-            if (0 === strpos($fieldName, 'custom:')) {
+            if (str_starts_with($fieldName, 'custom:')) {
                 $processedFieldName = preg_replace('/^'.preg_quote('custom:', '/').'/', '', $fieldName);
 
                 $resultData['custom_fields'][] = [

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * Date: 30/08/2017
@@ -105,11 +106,9 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     }
 
     /**
-     * @param string $handle
-     *
      * @return null|IntegrationModel
      */
-    public function getIntegrationByHandle(string $handle = null)
+    public function getIntegrationByHandle(?string $handle = null)
     {
         $data = $this->getQuery()->andWhere(['handle' => $handle])->one();
 
@@ -133,7 +132,8 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 ['forceUpdate' => true],
                 'id = :id',
                 ['id' => $integration->getId()]
-            );
+            )
+        ;
     }
 
     /**
@@ -263,7 +263,8 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
             $affectedRows = \Craft::$app->getDb()
                 ->createCommand()
                 ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
-                ->execute();
+                ->execute()
+            ;
 
             if (null !== $transaction) {
                 $transaction->commit();
@@ -281,9 +282,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onAfterResponse(AbstractIntegration $integration, ResponseInterface $response)
     {
         $event = new IntegrationResponseEvent($integration, $response);
@@ -293,9 +291,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     /**
      * Perform necessary actions after the integration has been saved.
      */
-    protected function afterSaveHandler(IntegrationModel $model)
-    {
-    }
+    protected function afterSaveHandler(IntegrationModel $model) {}
 
     /**
      * Return the integration type

@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m190502_155557_AddCCAndBCCToEmailNotifications extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp()
     {
         $this->addColumn(
@@ -29,9 +26,6 @@ class m190502_155557_AddCCAndBCCToEmailNotifications extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown()
     {
         $this->dropColumn('{{%freeform_notifications}}', 'cc');

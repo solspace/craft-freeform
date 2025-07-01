@@ -55,9 +55,6 @@ class FieldCriteria implements \JsonSerializable
         return $this->value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize()
     {
         return [

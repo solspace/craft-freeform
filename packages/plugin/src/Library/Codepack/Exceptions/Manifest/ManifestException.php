@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -14,6 +15,4 @@ namespace Solspace\Freeform\Library\Codepack\Exceptions\Manifest;
 
 use Solspace\Freeform\Library\Codepack\Exceptions\CodepackException;
 
-class ManifestException extends CodepackException
-{
-}
+class ManifestException extends CodepackException {}

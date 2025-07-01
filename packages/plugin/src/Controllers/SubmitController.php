@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -78,6 +79,10 @@ class SubmitController extends BaseController
                 }
             }
 
+            if (Form::SUCCESS_BEHAVIOUR_RELOAD === $form->getSuccessBehaviour()) {
+                return null;
+            }
+
             return $this->redirect($returnUrl);
         }
 
@@ -124,7 +129,7 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response
+    private function toAjaxResponse(Form $form, Submission $submission, ?string $returnUrl = null): Response
     {
         $fieldErrors = [];
         foreach ($form->getLayout()->getFields() as $field) {

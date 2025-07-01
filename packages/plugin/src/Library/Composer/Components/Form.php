@@ -863,7 +863,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
-    public function registerContext(array $renderProperties = null)
+    public function registerContext(?array $renderProperties = null)
     {
         $this->setProperties($renderProperties);
 
@@ -873,11 +873,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /**
      * Render a predefined template.
      *
-     * @param array $renderProperties
-     *
      * @return null|Markup
      */
-    public function render(array $renderProperties = null)
+    public function render(?array $renderProperties = null)
     {
         $this->setProperties($renderProperties);
         $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);
@@ -892,7 +890,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function json(array $renderProperties = null): Markup
+    public function json(?array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
@@ -957,7 +955,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
     }
 
-    public function renderTag(array $renderProperties = null): Markup
+    public function renderTag(?array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
 
@@ -1065,7 +1063,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return new Relations($this->getPropertyBag()->get(self::DATA_RELATIONS));
     }
 
-    public function setProperties(array $properties = null): self
+    public function setProperties(?array $properties = null): self
     {
         $this->propertyBag->merge($properties ?? []);
 
@@ -1081,7 +1079,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /**
      * @deprecated Use ::setProperties() instead. Will be removed in Freeform 4.x
      */
-    public function setAttributes(array $attributes = null): self
+    public function setAttributes(?array $attributes = null): self
     {
         $event = new UpdateAttributesEvent($this, $attributes ?? []);
         Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $event);
@@ -1141,8 +1139,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @return Properties\ValidationProperties
-     *
      * @throws ComposerException
      */
     public function getValidationProperties(): ValidationProperties
@@ -1199,8 +1195,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     /**
      * Returns form CRM integration properties.
-     *
-     * @return Properties\IntegrationProperties
      */
     public function getIntegrationProperties(): IntegrationProperties
     {
@@ -1219,8 +1213,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     /**
      * Returns form CRM integration properties.
-     *
-     * @return Properties\ConnectionProperties
      */
     public function getConnectionProperties(): ConnectionProperties
     {
@@ -1317,25 +1309,16 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $currentPageIndex === (\count($this->getPages()) - 1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields()
     {
         return array_keys($this->jsonSerialize());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function extraFields()
     {
         return [];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         return $this->jsonSerialize();

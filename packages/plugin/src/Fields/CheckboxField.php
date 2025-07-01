@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -77,14 +78,14 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             .'/>';
     }
 
-    public function renderSingleInput(array $customAttributes = null): Markup
+    public function renderSingleInput(?array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
         return $this->renderRaw($this->getSingleInputHtml());
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

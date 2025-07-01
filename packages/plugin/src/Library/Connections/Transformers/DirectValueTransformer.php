@@ -24,7 +24,7 @@ class DirectValueTransformer implements TransformerInterface
         return $this->craftFieldHandle;
     }
 
-    public function transformValueFor(Field $targetCraftField = null)
+    public function transformValueFor(?Field $targetCraftField = null)
     {
         $hasOptions = $targetCraftField instanceof BaseOptionsField;
         $hasRelations = $targetCraftField instanceof BaseRelationField;

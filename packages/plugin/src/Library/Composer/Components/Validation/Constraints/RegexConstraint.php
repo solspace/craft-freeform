@@ -24,9 +24,6 @@ class RegexConstraint implements ConstraintInterface
         $this->pattern = $pattern ?: null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value)
     {
         $violationList = new ConstraintViolationList();

@@ -2,9 +2,7 @@
 
 namespace Solspace\Freeform\Commands;
 
-use Craft;
 use craft\db\Query;
-use Solspace\Freeform\Freeform;
 use yii\console\Controller;
 use yii\helpers\Console;
 
@@ -12,12 +10,12 @@ class FindUnusedFieldsController extends Controller
 {
     public function actionIndex(): int
     {
-        $db = Craft::$app->getDb();
+        $db = \Craft::$app->getDb();
 
         $fieldIds = $db->createCommand('SELECT id FROM {{%freeform_fields}}')->queryColumn();
 
         $submissionTables = array_filter($db->schema->getTableNames(), function ($tableName) {
-            return str_starts_with($tableName, Craft::$app->getDb()->tablePrefix . 'freeform_submissions_');
+            return str_starts_with($tableName, \Craft::$app->getDb()->tablePrefix.'freeform_submissions_');
         });
 
         $usedFieldIds = [];
@@ -38,6 +36,7 @@ class FindUnusedFieldsController extends Controller
 
         if (empty($unusedFieldIds)) {
             $this->stdout("No unused fields found.\n", Console::FG_GREEN);
+
             return Controller::EXIT_CODE_NORMAL;
         }
 

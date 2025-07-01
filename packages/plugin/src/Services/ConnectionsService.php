@@ -63,7 +63,7 @@ class ConnectionsService extends BaseService
             if (!$result->isSuccessful()) {
                 Freeform::getInstance()->logger
                     ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
-                    ->error($result->getAllErrorJson(), ['connection' => \get_class($connection)])
+                    ->error($result->getAllErrorJson(), ['connection' => $connection::class])
                 ;
             }
         }

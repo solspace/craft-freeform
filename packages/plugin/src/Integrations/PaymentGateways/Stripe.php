@@ -23,12 +23,14 @@ use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
+use Stripe\ApiResource;
 use Stripe as StripeAPI;
 use Stripe\Charge;
 use Stripe\Customer;
 use Stripe\Exception\ApiErrorException;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
+use Stripe\StripeObject;
 use Stripe\Subscription;
 use yii\base\Event;
 
@@ -195,7 +197,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         try {
-            $charges = StripeAPI\Charge::all(['limit' => 1]);
+            $charges = Charge::all(['limit' => 1]);
         } catch (\Exception $e) {
             throw new IntegrationException($e->getMessage(), $e->getCode(), $e->getPrevious());
         }
@@ -219,9 +221,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * A method that initiates the authentication.
      */
-    public function initiateAuthentication()
-    {
-    }
+    public function initiateAuthentication() {}
 
     public function fetchFields(): array
     {
@@ -344,7 +344,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $submission = $subscriptionDetails->getSubmission();
         $submissionId = $submission->getId();
 
-        if (0 === strpos($token, 'declined:')) {
+        if (str_starts_with($token, 'declined:')) {
             $this->lastError = new \Exception($token);
 
             return false;
@@ -454,7 +454,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         try {
-            $subscription = StripeAPI\Subscription::retrieve($resourceId);
+            $subscription = Subscription::retrieve($resourceId);
             $subscription->cancel();
         } catch (\Exception $e) {
             $this->processError($e);
@@ -465,9 +465,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function fetchPlans(): array
     {
         $planHandler = $this->getPlanHandler();
@@ -489,7 +486,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             foreach ($response->autoPagingIterator() as $data) {
                 $name = $data['nickname'];
                 if (!$name) {
-                    $name = sprintf(
+                    $name = \sprintf(
                         '%s - %d%s/%s',
                         $data->product->name,
                         $data->amount / 100,
@@ -515,9 +512,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         return $plans;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function fetchPlan(string $id)
     {
         $planHandler = $this->getPlanHandler();
@@ -602,14 +596,14 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @return array|bool|\Stripe\StripeObject
+     * @return array|bool|StripeObject
      *
      * @throws \Exception
      */
     public function getChargeDetails($id)
     {
         try {
-            $charge = StripeAPI\Charge::retrieve($id);
+            $charge = Charge::retrieve($id);
         } catch (\Exception $e) {
             return $this->processError($e);
         }
@@ -624,7 +618,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @return array|bool|\Stripe\StripeObject
+     * @return array|bool|StripeObject
      *
      * @throws \Exception
      */
@@ -633,7 +627,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         try {
-            $subscription = StripeAPI\Subscription::retrieve($id);
+            $subscription = Subscription::retrieve($id);
         } catch (\Exception $e) {
             return $this->processError($e);
         }
@@ -649,7 +643,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @return bool|\Stripe\PaymentIntent
+     * @return bool|PaymentIntent
      *
      * @throws \Exception
      */
@@ -658,7 +652,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         try {
-            $paymentIntent = StripeAPI\PaymentIntent::retrieve($id);
+            $paymentIntent = PaymentIntent::retrieve($id);
         } catch (\Exception $e) {
             return $this->processError($e);
         }
@@ -731,9 +725,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     public function prepareApi()
     {
         StripeAPI\Stripe::setApiKey($this->getAccessToken());
-        StripeApi\Stripe::setApiVersion('2019-08-14');
+        StripeAPI\Stripe::setApiVersion('2019-08-14');
 
-        StripeApi\Stripe::setAppInfo(
+        StripeAPI\Stripe::setAppInfo(
             'solspace/craft-freeform',
             Freeform::getInstance()->getVersion(),
             'https://docs.solspace.com/craft/freeform'
@@ -844,7 +838,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * Saves payment data to db.
      *
-     * @param array|\Stripe\ApiResource $data
+     * @param ApiResource|array $data
      *
      * @return false|PaymentModel
      */
@@ -903,7 +897,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * Saves submission data to DB.
      *
-     * @param array|\Stripe\ApiResource $data
+     * @param ApiResource|array $data
      *
      * @return false|SubscriptionModel
      */
@@ -967,7 +961,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $this->lastError = $exception;
 
-        switch (\get_class($exception)) {
+        switch ($exception::class) {
             case 'Stripe\Exception\CardException':
                 return false;
 

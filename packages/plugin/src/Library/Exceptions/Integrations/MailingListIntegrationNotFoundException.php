@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -12,6 +13,4 @@
 
 namespace Solspace\Freeform\Library\Exceptions\Integrations;
 
-class MailingListIntegrationNotFoundException extends IntegrationException
-{
-}
+class MailingListIntegrationNotFoundException extends IntegrationException {}

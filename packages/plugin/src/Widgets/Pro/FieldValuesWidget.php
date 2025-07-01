@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -27,7 +28,7 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 {
     public ?string $title = null;
 
-    public array|string|null $formId = null;
+    public null|array|string $formId = null;
 
     public ?string $fieldId = null;
 
@@ -219,8 +220,8 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 
             $labels[] = $columnValue ?: 'Empty';
             $data[] = $count;
-            $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
-            $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));
+            $backgroundColors[] = \sprintf('rgba(%s,0.8)', implode(',', $color));
+            $hoverBackgroundColors[] = \sprintf('rgba(%s,1)', implode(',', $color));
         }
 
         return [

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -46,9 +47,6 @@ class DynamicNotificationAttributes extends AbstractAttributes implements \JsonS
         return $this->template;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize()
     {
         return [

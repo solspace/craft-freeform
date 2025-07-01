@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -131,7 +132,7 @@ class FormModel extends Model
         $form = $composer->getForm();
         $this->name = $form->getName();
         $this->handle = $form->getHandle();
-        $this->type = \get_class($form);
+        $this->type = $form::class;
         $this->submissionTitleFormat = $form->getSubmissionTitleFormat();
         $this->description = $form->getDescription();
         $this->defaultStatus = $form->getDefaultStatus();

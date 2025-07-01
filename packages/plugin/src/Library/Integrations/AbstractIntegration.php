@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -164,9 +165,7 @@ abstract class AbstractIntegration implements IntegrationInterface
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-    }
+    public function onBeforeSave(IntegrationStorageInterface $model) {}
 
     final public function getSettings(): array
     {

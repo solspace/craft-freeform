@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -237,9 +238,6 @@ class Freeform extends Plugin
         return self::getInstance()->lock->isLocked($key, $seconds);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function editions(): array
     {
         return [
@@ -248,10 +246,7 @@ class Freeform extends Plugin
         ];
     }
 
-    /**
-     * @param string $language
-     */
-    public static function t(string $message, array $params = [], string $language = null): string
+    public static function t(string $message, array $params = [], ?string $language = null): string
     {
         return \Craft::t(self::TRANSLATION_CATEGORY, $message, $params, $language);
     }
@@ -335,7 +330,8 @@ class Freeform extends Plugin
                 ->db
                 ->createCommand()
                 ->dropTableIfExists(Submission::getContentTableName($form))
-                ->execute();
+                ->execute()
+            ;
         }
     }
 
@@ -472,7 +468,7 @@ class Freeform extends Plugin
     private function initControllerMap()
     {
         if (\Craft::$app->request->isConsoleRequest) {
-            $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
+            $this->controllerNamespace = 'Solspace\Freeform\Commands';
         } else {
             $this->controllerMap = [
                 'dashboard' => DashboardController::class,

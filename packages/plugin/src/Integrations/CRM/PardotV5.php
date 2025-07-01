@@ -129,9 +129,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-    }
+    public function onBeforeSave(IntegrationStorageInterface $model) {}
 
     /**
      * Push objects to the CRM.

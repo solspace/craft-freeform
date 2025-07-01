@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -690,10 +691,8 @@ class Settings extends Model
     /**
      * Takes a comma or newline (or both) separated string
      * and returns a cleaned up, unique value array.
-     *
-     * @param string $value
      */
-    private function getArrayFromDelimitedText(string $value = null): array
+    private function getArrayFromDelimitedText(?string $value = null): array
     {
         if (empty($value)) {
             return [];
@@ -728,13 +727,10 @@ class Settings extends Model
      */
     private function isFolderAbsolute($path): bool
     {
-        return preg_match('/^(?:\/|\\\\|\w\:\\\\).*$/', $path);
+        return preg_match('/^(?:\/|\\\|\w\:\\\).*$/', $path);
     }
 
-    /**
-     * @param string $templateDirectoryPath
-     */
-    private function getTemplatesInDirectory(string $templateDirectoryPath = null): array
+    private function getTemplatesInDirectory(?string $templateDirectoryPath = null): array
     {
         if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath) || !is_dir($templateDirectoryPath)) {
             return [];

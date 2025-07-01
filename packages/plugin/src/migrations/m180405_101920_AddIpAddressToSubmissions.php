@@ -9,9 +9,6 @@ use craft\db\Migration;
  */
 class m180405_101920_AddIpAddressToSubmissions extends Migration
 {
-    /**
-     * {@inheritdoc}
-     */
     public function safeUp(): bool
     {
         $this->addColumn(
@@ -23,9 +20,6 @@ class m180405_101920_AddIpAddressToSubmissions extends Migration
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function safeDown(): bool
     {
         $this->dropColumn('{{%freeform_submissions}}', 'ip');

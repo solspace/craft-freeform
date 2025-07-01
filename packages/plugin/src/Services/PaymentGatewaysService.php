@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -149,7 +150,8 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                         'resourceId' => $handle,
                     ]
                 )
-                ->execute();
+                ->execute()
+            ;
         }
 
         foreach ($plans as $plan) {
@@ -177,7 +179,8 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                             'resourceId' => $plan->getId(),
                         ]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
         }
 
@@ -190,7 +193,8 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                 ['forceUpdate' => 0],
                 ['id' => $id]
             )
-            ->execute();
+            ->execute()
+        ;
 
         return true;
     }
@@ -215,9 +219,6 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
         return IntegrationRecord::TYPE_PAYMENT_GATEWAY;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function afterSaveHandler(IntegrationModel $model)
     {
         try {

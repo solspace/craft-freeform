@@ -45,7 +45,7 @@ class WebhooksController extends BaseController
         return $this->renderEditForm(new WebhookModel(), Freeform::t('Create a new Webhook'));
     }
 
-    public function actionEdit(int $id = null): Response
+    public function actionEdit(?int $id = null): Response
     {
         $webhook = $this->getWebhooksService()->getById($id);
         if (!$webhook) {

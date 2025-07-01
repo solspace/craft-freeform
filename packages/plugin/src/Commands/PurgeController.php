@@ -130,7 +130,7 @@ class PurgeController extends Controller
         $days = (int) $days;
         if ($days <= 0) {
             $this->stderr(
-                sprintf("--age-in-days [-d] must be greater than 0. You specified %d\n", $this->ageInDays),
+                \sprintf("--age-in-days [-d] must be greater than 0. You specified %d\n", $this->ageInDays),
                 Console::FG_RED
             );
 
@@ -152,7 +152,7 @@ class PurgeController extends Controller
         $minutes = (int) $minutes;
         if ($minutes <= 0) {
             $this->stderr(
-                sprintf("--age-in-minutes [-m] must be greater than 0. You specified %d\n", $this->ageInMinutes),
+                \sprintf("--age-in-minutes [-m] must be greater than 0. You specified %d\n", $this->ageInMinutes),
                 Console::FG_RED
             );
 

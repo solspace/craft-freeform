@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -33,9 +34,6 @@ class Option implements \JsonSerializable
         $this->checked = $checked;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __toString(): string
     {
         return $this->getLabel();
@@ -59,9 +57,6 @@ class Option implements \JsonSerializable
         return $this->checked;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize()
     {
         return [

@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Webhooks\WebhookInterface;
 use Solspace\Freeform\Models\Pro\WebhookModel;
 use Solspace\Freeform\Records\Pro\WebhookRecord;
 use Solspace\Freeform\Services\BaseService;
+use yii\db\StaleObjectException;
 
 class WebhooksService extends BaseService
 {
@@ -79,7 +80,7 @@ class WebhooksService extends BaseService
      * @param int $id
      *
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws StaleObjectException
      */
     public function deleteById($id): bool
     {
@@ -99,7 +100,7 @@ class WebhooksService extends BaseService
      * @param int $id
      *
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws StaleObjectException
      */
     public function delete($id): bool
     {

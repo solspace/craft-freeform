@@ -2,6 +2,4 @@
 
 namespace Solspace\Freeform\Services;
 
-class DashboardService extends BaseService
-{
-}
+class DashboardService extends BaseService {}

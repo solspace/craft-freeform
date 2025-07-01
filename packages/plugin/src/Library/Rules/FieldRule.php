@@ -36,9 +36,6 @@ class FieldRule extends BaseRule implements \JsonSerializable
         return !$this->isShown();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function jsonSerialize()
     {
         return [

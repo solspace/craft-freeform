@@ -12,9 +12,6 @@ class FormIndexBundle extends AbstractFreeformAssetBundle
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getScripts(): array
     {
         return ['js/scripts/cp/forms/index.js'];

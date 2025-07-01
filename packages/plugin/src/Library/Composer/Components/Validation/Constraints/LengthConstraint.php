@@ -44,9 +44,6 @@ class LengthConstraint implements ConstraintInterface
         $this->messageMinMax = $messageMinMax;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value): ConstraintViolationList
     {
         $violationList = new ConstraintViolationList();

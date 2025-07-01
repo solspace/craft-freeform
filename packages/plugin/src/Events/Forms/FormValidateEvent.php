@@ -21,9 +21,6 @@ class FormValidateEvent extends ArrayableEvent implements FormEventInterface
         parent::__construct([]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form'];

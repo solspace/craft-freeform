@@ -10,11 +10,9 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInter
 class StringTransformer extends AbstractFieldTransformer
 {
     /**
-     * @param Field $targetCraftField
-     *
      * @return array|string
      */
-    public function transformValueFor(Field $targetCraftField = null)
+    public function transformValueFor(?Field $targetCraftField = null)
     {
         $hasOptions = $targetCraftField instanceof BaseOptionsField;
         $hasRelations = $targetCraftField instanceof BaseRelationField;

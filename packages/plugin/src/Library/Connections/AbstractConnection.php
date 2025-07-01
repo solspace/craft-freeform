@@ -4,9 +4,11 @@ namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
 use craft\base\ElementInterface;
+use craft\errors\ElementNotFoundException;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
 use Solspace\Commons\Configurations\BaseConfiguration;
+use Solspace\Commons\Exceptions\Configurations\ConfigurationException;
 use Solspace\Freeform\Bundles\Form\ElementEdit\ElementEditBundle;
 use Solspace\Freeform\Events\Connections\ConnectEvent;
 use Solspace\Freeform\Events\Connections\ValidateEvent;
@@ -18,6 +20,7 @@ use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
 use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
+use yii\base\Exception;
 
 abstract class AbstractConnection extends BaseConfiguration implements ConnectionInterface
 {
@@ -40,7 +43,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
      *
      * @throws ConnectionException
      * @throws \ReflectionException
-     * @throws \Solspace\Commons\Exceptions\Configurations\ConfigurationException
+     * @throws ConfigurationException
      */
     public static function create(array $configuration)
     {
@@ -100,8 +103,8 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
 
     /**
      * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
+     * @throws ElementNotFoundException
+     * @throws Exception
      */
     public function connect(Form $form, array $transformers): ConnectionResult
     {
@@ -153,17 +156,11 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
         return [];
     }
 
-    protected function beforeValidate(Element $element, array $transformers)
-    {
-    }
+    protected function beforeValidate(Element $element, array $transformers) {}
 
-    protected function afterConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
-    {
-    }
+    protected function afterConnect(Element $element, ConnectionResult $result, array $keyValuePairs) {}
 
-    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers)
-    {
-    }
+    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers) {}
 
     protected function attachErrors(ConnectionResult $result, Element $element)
     {
@@ -203,7 +200,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
         }
     }
 
-    abstract protected function buildElement(array $keyValueMap, ElementInterface $element = null): Element;
+    abstract protected function buildElement(array $keyValueMap, ?ElementInterface $element = null): Element;
 
     /**
      * @return null|ElementInterface

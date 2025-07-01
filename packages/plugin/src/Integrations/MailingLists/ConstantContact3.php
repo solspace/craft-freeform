@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -204,11 +205,9 @@ class ConstantContact3 extends MailingListOAuthConnector
     }
 
     /**
-     * @param string $refreshToken
-     *
      * @throws IntegrationException
      */
-    public function setRefreshToken(string $refreshToken = null): self
+    public function setRefreshToken(?string $refreshToken = null): self
     {
         $this->setSetting(self::SETTING_REFRESH_TOKEN, $refreshToken);
 

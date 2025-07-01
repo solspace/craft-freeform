@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -103,7 +104,7 @@ class PaymentsService implements PaymentHandlerInterface
      *
      * @return null|PaymentModel|SubscriptionModel
      */
-    public function getPaymentDetails(int $submissionId, Form $form = null)
+    public function getPaymentDetails(int $submissionId, ?Form $form = null)
     {
         if (null === $form) {
             $submission = Freeform::getInstance()->submissions->getSubmissionById($submissionId);

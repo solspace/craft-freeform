@@ -54,7 +54,7 @@ class BlacklistedKeywords extends AbstractCheck implements BundleInterface
                             } else {
                                 $form->markAsSpam(
                                     SpamReason::TYPE_BLOCKED_KEYWORDS,
-                                    sprintf(
+                                    \sprintf(
                                         'Field "%s" contains a blocked keyword "%s" in the string "%s"',
                                         $field->getHandle(),
                                         $keyword,

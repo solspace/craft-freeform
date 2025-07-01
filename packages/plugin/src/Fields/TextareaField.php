@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -52,9 +53,6 @@ class TextareaField extends AbstractField implements SingleValueInterface, Place
         return $this->maxLength;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -92,7 +90,7 @@ class TextareaField extends AbstractField implements SingleValueInterface, Place
             .'</textarea>';
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
 

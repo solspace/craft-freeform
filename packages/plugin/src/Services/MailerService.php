@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -52,7 +53,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function sendEmail(
         Form $form,
         array|string $recipients,
-        NotificationRecord $notification = null,
+        ?NotificationRecord $notification = null,
         array $fields = [],
         ?Submission $submission = null
     ): int {
@@ -173,7 +174,8 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         return \Craft::$app->view->getTwig()
             ->createTemplate($template)
-            ->render($variables);
+            ->render($variables)
+        ;
     }
 
     public function compileMessage(NotificationInterface $notification, array $values): Message
@@ -303,9 +305,8 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     /**
      * @param FieldInterface[] $fields
-     * @param Submission       $submission
      */
-    private function getFieldValues(array $fields, Form $form, Submission $submission = null): array
+    private function getFieldValues(array $fields, Form $form, ?Submission $submission = null): array
     {
         $postedValues = [];
         $usableFields = [];

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -34,11 +35,9 @@ class PlanDetails
 
     /**
      * PaymentDetails constructor.
-     *
-     * @param string $name
      */
     public function __construct(
-        string $name = null,
+        ?string $name,
         float $amount,
         string $currency,
         string $interval,

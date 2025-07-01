@@ -47,9 +47,6 @@ class NumberField extends TextField
         return $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_NUMBER;
@@ -101,9 +98,6 @@ class NumberField extends TextField
         return $this->step;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -130,12 +124,12 @@ class NumberField extends TextField
         return $constraints;
     }
 
-    public function getContentGqlType(): Type|array
+    public function getContentGqlType(): array|Type
     {
         return NumberType::getType();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
 

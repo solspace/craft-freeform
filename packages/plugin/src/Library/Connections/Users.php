@@ -28,7 +28,7 @@ class Users extends AbstractConnection
         return true;
     }
 
-    protected function buildElement(array $transformers, ElementInterface $element = null): Element
+    protected function buildElement(array $transformers, ?ElementInterface $element = null): Element
     {
         $currentUser = \Craft::$app->getUser();
 
@@ -135,7 +135,8 @@ class Users extends AbstractConnection
                             'app',
                             'User saved, but couldn’t send verification email. Check your email settings.'
                         )
-                    );
+                    )
+                ;
             }
         }
 

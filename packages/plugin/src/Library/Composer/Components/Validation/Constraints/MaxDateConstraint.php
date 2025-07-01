@@ -22,16 +22,13 @@ class MaxDateConstraint implements ConstraintInterface
     public function __construct(
         string $message,
         string $format,
-        string $maxDate = null
+        ?string $maxDate = null
     ) {
         $this->message = $message;
         $this->format = $format;
         $this->maxDate = $maxDate;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value): ConstraintViolationList
     {
         $violationList = new ConstraintViolationList();

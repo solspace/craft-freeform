@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -80,9 +81,6 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         return $model;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function safeAttributes()
     {
         return [
@@ -112,9 +110,6 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         $this->settings = $settings;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function setForceUpdate(bool $value)
     {
         $this->forceUpdate = $value;
@@ -172,7 +167,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         $className = $this->class;
 
         if (!class_exists($className)) {
-            throw new IntegrationNotFoundException(sprintf('"%s" class does not exist', $className));
+            throw new IntegrationNotFoundException(\sprintf('"%s" class does not exist', $className));
         }
 
         /** @var AbstractIntegration $integration */

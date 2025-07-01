@@ -116,7 +116,8 @@ class SubmissionsController extends Controller
                 true,
                 true,
                 $this->updateSearchIndex
-            );
+            )
+        ;
 
         $label = 'resaving';
         $this->stdout("Done {$label} {$elementsText}.".\PHP_EOL.\PHP_EOL, Console::FG_YELLOW);

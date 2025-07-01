@@ -31,7 +31,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         return $this->targetFieldHash;
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
 
@@ -67,9 +67,6 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         return $errors;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();

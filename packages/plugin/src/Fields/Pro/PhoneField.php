@@ -40,9 +40,6 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         return !empty($this->pattern) ? $this->pattern : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -72,7 +69,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         return parent::getInputHtml();
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
 

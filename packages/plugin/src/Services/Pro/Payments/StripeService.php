@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -31,6 +32,8 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Models\IntegrationModel;
 use Stripe\Customer;
+use Stripe\Exception\ApiErrorException;
+use Stripe\Exception\CardException;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Plan;
@@ -61,7 +64,7 @@ class StripeService extends Component
         }
 
         $integration->prepareApi();
-        if (0 === strpos($token, 'pm_')) {
+        if (str_starts_with($token, 'pm_')) {
             $currency = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();
             $amount = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
 
@@ -97,13 +100,13 @@ class StripeService extends Component
                 $paymentIntentProperties['customer'] = $customer->id;
 
                 $paymentIntent = PaymentIntent::create($paymentIntentProperties);
-            } catch (\Stripe\Exception\CardException $e) {
+            } catch (CardException $e) {
                 $form->addError(Freeform::t($e->getMessage()));
 
                 $paymentField->setValue('declined: '.$e->getMessage().' code: '.$e->getStripeCode().'. decline_code: '.$e->getDeclineCode());
 
                 return;
-            } catch (\Stripe\Exception\ApiErrorException $e) {
+            } catch (ApiErrorException $e) {
                 $paymentField->setValue('declined: '.$e->getMessage());
 
                 return;
@@ -157,13 +160,13 @@ class StripeService extends Component
 
         try {
             $subscription = $this->getSubscription($token, $plan, $dynamicValues);
-        } catch (\Stripe\Exception\CardException $e) {
+        } catch (CardException $e) {
             $form->addError(Freeform::t($e->getMessage()));
 
             $paymentField->setValue('declined: '.$e->getMessage());
 
             return;
-        } catch (\Stripe\Exception\ApiErrorException $e) {
+        } catch (ApiErrorException $e) {
             $paymentField->setValue('declined: '.$e->getMessage());
 
             return;
@@ -410,7 +413,7 @@ class StripeService extends Component
         $subscription = $customer = null;
 
         // If we get a card token, we have to create the customer and subscription
-        if (0 === strpos($token, 'tok_')) {
+        if (str_starts_with($token, 'tok_')) {
             $customerData = CustomerDetails::fromArray($dynamicValues)->toStripeConstructArray();
             $customerData['source'] = $token;
 
@@ -424,7 +427,7 @@ class StripeService extends Component
         }
 
         // If it's a subscription
-        if (0 === strpos($token, 'sub_')) {
+        if (str_starts_with($token, 'sub_')) {
             $subscription = Subscription::retrieve(
                 $token,
                 ['expand' => ['latest_invoice.payment_intent']]

@@ -25,7 +25,7 @@ class RenderEmailEvent extends ArrayableEvent
         Form $form,
         NotificationInterface $notification,
         array $fieldValues,
-        Submission $submission = null
+        ?Submission $submission = null
     ) {
         $this->form = $form;
         $this->notification = $notification;
@@ -35,9 +35,6 @@ class RenderEmailEvent extends ArrayableEvent
         parent::__construct([]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'notification', 'fieldValues', 'submission'];

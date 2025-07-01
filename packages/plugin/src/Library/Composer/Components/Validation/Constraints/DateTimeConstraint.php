@@ -26,9 +26,6 @@ class DateTimeConstraint implements ConstraintInterface
         $this->format = $format;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function validate($value)
     {
         $violationList = new ConstraintViolationList();

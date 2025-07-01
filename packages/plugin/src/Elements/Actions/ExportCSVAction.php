@@ -17,7 +17,7 @@ class ExportCSVAction extends ElementAction
         return Freeform::t('Export to CSV');
     }
 
-    public function getTriggerHtml(): null|string
+    public function getTriggerHtml(): ?string
     {
         $type = Json::encode(static::class);
 
@@ -105,7 +105,7 @@ class ExportCSVAction extends ElementAction
             $submissions,
             Freeform::getInstance()->exportProfiles->getExportSettings()
         );
-        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));
+        $fileName = \sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));
 
         Freeform::getInstance()->exportProfiles->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
 

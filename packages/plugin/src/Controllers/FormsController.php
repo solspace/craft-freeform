@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -80,7 +81,7 @@ class FormsController extends BaseController
         return $this->renderEditForm($title, $model);
     }
 
-    public function actionEdit(int $id = null): Response
+    public function actionEdit(?int $id = null): Response
     {
         $this->requireFormManagePermission($id);
         $model = $this->getFormService()->getFormById($id);
@@ -252,7 +253,8 @@ class FormsController extends BaseController
                     ['spamBlockCount' => 0],
                     ['id' => $formId]
                 )
-                ->execute();
+                ->execute()
+            ;
         } catch (\Exception $e) {
             return $this->asErrorJson($e->getMessage());
         }
@@ -274,7 +276,8 @@ class FormsController extends BaseController
                         ['order' => $index + 1],
                         ['id' => $id]
                     )
-                    ->execute();
+                    ->execute()
+                ;
             }
 
             return $this->asJson(['success' => true]);
@@ -725,7 +728,7 @@ class FormsController extends BaseController
                 'id' => (int) $field->id,
                 'name' => $field->name,
                 'handle' => $field->handle,
-                'type' => \get_class($field),
+                'type' => $field::class,
             ];
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -22,10 +23,8 @@ class FileUploadResponse
 
     /**
      * FileUploadResponse constructor.
-     *
-     * @param array $assetIds
      */
-    public function __construct(array $assetIds = null, array $errors = [])
+    public function __construct(?array $assetIds = null, array $errors = [])
     {
         $this->assetIds = $assetIds ?? [];
         $this->errors = $errors;

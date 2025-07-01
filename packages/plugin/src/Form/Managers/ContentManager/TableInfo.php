@@ -7,8 +7,7 @@ class TableInfo
     public function __construct(
         private string $tableName,
         private array $columns
-    ) {
-    }
+    ) {}
 
     public function getTableName(): string
     {

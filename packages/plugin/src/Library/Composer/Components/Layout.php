@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -109,12 +110,12 @@ class Layout implements \JsonSerializable, \Iterator
         return $errorCount;
     }
 
-    public function getFields(string $implements = null): array
+    public function getFields(?string $implements = null): array
     {
         return $this->fieldCollection->getList($implements);
     }
 
-    public function getStorableFields(string $implements = null): array
+    public function getStorableFields(?string $implements = null): array
     {
         return array_filter(
             $this->getFields($implements),

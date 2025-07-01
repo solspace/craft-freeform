@@ -8,10 +8,7 @@ use craft\fields\BaseRelationField;
 
 class EmailTransformer extends AbstractFieldTransformer
 {
-    /**
-     * @param Field $targetCraftField
-     */
-    public function transformValueFor(Field $targetCraftField = null): string
+    public function transformValueFor(?Field $targetCraftField = null): string
     {
         $value = $this->getField()->getValue();
 

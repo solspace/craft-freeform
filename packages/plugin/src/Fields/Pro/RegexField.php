@@ -33,9 +33,6 @@ class RegexField extends TextField implements ExtraFieldInterface
         return $this->message;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();
@@ -47,7 +44,7 @@ class RegexField extends TextField implements ExtraFieldInterface
         return $constraints;
     }
 
-    public function getContentGqlMutationArgumentType(): Type|array
+    public function getContentGqlMutationArgumentType(): array|Type
     {
         $description = $this->getContentGqlDescription();
 

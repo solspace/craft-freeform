@@ -56,7 +56,7 @@ class CheckboxFieldBundle extends FeatureBundle
             $event->setValue($field->getDefaultValue());
         } else {
             $field->setChecked(false);
-            $event->setValue(null);
+            $event->setValue('');
         }
     }
 

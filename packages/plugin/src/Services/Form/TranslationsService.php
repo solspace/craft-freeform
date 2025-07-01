@@ -125,6 +125,10 @@ class TranslationsService extends BaseService
 
         if (null === $siteId) {
             $request = \Craft::$app->getRequest();
+            if ($request->getIsConsoleRequest()) {
+                return \Craft::$app->getSites()->getPrimarySite()->id;
+            }
+
             $currentSite = \Craft::$app->getSites()->getCurrentSite();
 
             $siteId = $request->get('siteId');

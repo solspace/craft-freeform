@@ -29,17 +29,13 @@ class CsrfInput extends FeatureBundle
     {
         $isCSRFEnabled = $this->isCSRFEnabled();
         $isAsyncCSRFEnabled = $this->isAsyncCSRFEnabled();
-        $isFormAJAX = $event->getForm()->getSettings()->getBehavior()->ajax;
 
         if (!$isCSRFEnabled) {
             return;
         }
 
         if ($isAsyncCSRFEnabled) {
-            $refresh = $this->plugin()->settings->getSettingsModel()->csrfRefresh ?? Settings::CSRF_REFRESH_NONE;
-            if ($isFormAJAX && Settings::CSRF_REFRESH_NONE !== $refresh) {
-                return;
-            }
+            return;
         }
 
         $this->setNoCacheHeaders();

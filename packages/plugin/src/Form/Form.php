@@ -856,7 +856,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     {
         $storedValues = $this->getProperties()->get(self::PROPERTY_STORED_VALUES, []);
 
-        return array_key_exists($field->getHandle(), $storedValues);
+        return \array_key_exists($field->getHandle(), $storedValues);
     }
 
     public function reset(): void

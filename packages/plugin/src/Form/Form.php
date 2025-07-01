@@ -854,7 +854,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     public function hasFieldBeenSubmitted(AbstractField $field): bool
     {
-        return isset($this->getProperties()->get(self::PROPERTY_STORED_VALUES, [])[$field->getHandle()]);
+        $storedValues = $this->getProperties()->get(self::PROPERTY_STORED_VALUES, []);
+
+        return array_key_exists($field->getHandle(), $storedValues);
     }
 
     public function reset(): void

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.1.27 - 2025-06-30
+
+### Fixed
+- Fixed a bug where changing the form's **Success Behavior** from _Return URL_ to _Reload Form with Success Message_ still resulted in the configured return URL being used when AJAX is disabled.
+- Fixed a bug where `composer.lock` was included in the Freeform package, potentially causing false security warnings from security scanners.
+
 ## 4.1.26 - 2025-04-15
 
 ### Added

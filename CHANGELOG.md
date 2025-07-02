@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 5.11.4 - 2025-07-02
+
+### Added
+- Added **v3** of the **Dotdigital** integration with support for importing contacts and resubscribe options.
+- Confirmed compatibility with Craft **5.8.x**.
+
+### Changed
+- Enhanced the **Form Monitoring** tab in the form builder to include a graph for **Submit Times**.
+- Updated the Import/Export utility to include form-specific email notification templates with forms.
+
+### Fixed
+- Fixed an issue where unchecking a single **Checkbox** field was not saving correctly.
+- Fixed a bug where `TranslationsService` did not account for console requests.
+- Fixed an issue where `noCacheHeaders` was triggered when `asyncCsrfInput` was enabled.
+- Fixed a favicon loading issue in the demo templates.
+
 ## 5.11.3 - 2025-06-25
 
 ### Changed

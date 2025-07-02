@@ -18,12 +18,14 @@ type Props = {
   templates: NotificationTemplate[];
   values: Array<string | number>;
   onUpdate: (values: Array<string | number>) => void;
+  formNames: Record<string, string>;
 };
 
 export const Notification: React.FC<Props> = ({
   templates,
   values,
   onUpdate,
+  formNames,
 }) => {
   if (!templates.length) {
     return null;
@@ -77,7 +79,10 @@ export const Notification: React.FC<Props> = ({
               <Spacer $dash $width={2} />
               <NotificationIcon />
               <Label $light htmlFor={`notification-template-${template.uid}`}>
-                {template.name}
+                {template.name}{' '}
+                {!!template.formUid && (
+                  <small>({formNames[template.formUid]})</small>
+                )}
               </Label>
             </Blocks>
           </ListItem>

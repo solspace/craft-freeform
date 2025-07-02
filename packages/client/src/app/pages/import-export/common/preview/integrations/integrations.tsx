@@ -71,9 +71,10 @@ export const PreviewIntegrations: React.FC<Props> = ({
                 />
               </BlockItem>
               <Spacer $dash />
-              <Icon>
-                <img src={integration.icon} />
-              </Icon>
+              {!!integration.icon && (
+                <Icon dangerouslySetInnerHTML={{ __html: integration.icon }} />
+              )}
+              {!integration.icon && <Icon className="fa-duotone fa-gear" />}
               <Label $light htmlFor={`integration-${integration.uid}`}>
                 {integration.name}
               </Label>

@@ -56,14 +56,17 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use Solspace\Freeform\Services\NotificationsService;
 
 class FreeformFormsExporter extends BaseExporter
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
+        private NotificationsService $notificationsService,
         private PropertyProvider $propertyProvider,
         private RuleProvider $ruleProvider,
         private FormsService $forms,
@@ -202,6 +205,17 @@ class FreeformFormsExporter extends BaseExporter
                 $exported->notifications->add($exportNotification);
             }
 
+            /** @var NotificationTemplateRecord[] $notificationTemplates */
+            $notificationTemplates = $this->notificationsService
+                ->getQuery()
+                ->where(['formId' => $form->getId()])
+                ->all()
+            ;
+            foreach ($notificationTemplates as $templateRecord) {
+                $exportedTemplate = $this->templateRecordToDto($templateRecord);
+                $exported->notificationTemplates->add($exportedTemplate);
+            }
+
             $integrationUids = (new Query())
                 ->from(IntegrationRecord::TABLE)
                 ->indexBy('id')
@@ -293,6 +307,8 @@ class FreeformFormsExporter extends BaseExporter
     protected function collectNotifications(?array $ids = null): NotificationTemplateCollection
     {
         $collection = new NotificationTemplateCollection();
+
+        /** @var NotificationTemplateRecord[] $notifications */
         $notifications = Freeform::getInstance()->notifications->getAllNotifications();
 
         foreach ($notifications as $notification) {
@@ -301,29 +317,7 @@ class FreeformFormsExporter extends BaseExporter
                 continue;
             }
 
-            $exported = new NotificationTemplate();
-            $exported->uid = $uid;
-            $exported->id = $notification->id;
-            $exported->isFile = (bool) $notification->filepath;
-
-            $exported->name = $notification->name;
-            $exported->handle = $notification->handle;
-            $exported->description = $notification->description;
-
-            $exported->fromName = $notification->fromName ?? '{{ craft.app.projectConfig.get("email.fromName") }}';
-            $exported->fromEmail = $notification->fromEmail ?? '{{ craft.app.projectConfig.get("email.fromEmail") }}';
-            $exported->replyToName = $notification->replyToName ?? null;
-            $exported->replyToEmail = $notification->replyToEmail ?? null;
-            $exported->cc = FreeformStringHelper::extractSeparatedValues($notification->cc ?? '');
-            $exported->bcc = FreeformStringHelper::extractSeparatedValues($notification->bcc ?? '');
-
-            $exported->includeAttachments = $notification->isIncludeAttachmentsEnabled();
-            $exported->pdfTemplateIds = array_map('intval', json_decode($notification->pdfTemplateIds ?: '[]', true));
-
-            $exported->subject = $notification->subject ?? '';
-            $exported->body = $notification->bodyHtml ?? '';
-            $exported->textBody = $notification->bodyText ?? '';
-            $exported->autoText = $notification->isAutoText();
+            $exported = $this->templateRecordToDto($notification);
 
             $collection->add($exported);
         }
@@ -417,6 +411,37 @@ class FreeformFormsExporter extends BaseExporter
         }
 
         return Freeform::getInstance()->settings->getSettingsModel();
+    }
+
+    private function templateRecordToDto(NotificationTemplateRecord $notification): NotificationTemplate
+    {
+        $uid = $notification->uid ?? $notification->filepath;
+
+        $exported = new NotificationTemplate();
+        $exported->uid = $uid;
+        $exported->id = $notification->id;
+        $exported->isFile = (bool) $notification->filepath;
+
+        $exported->name = $notification->name;
+        $exported->handle = $notification->handle;
+        $exported->description = $notification->description;
+
+        $exported->fromName = $notification->fromName ?? '{{ craft.app.projectConfig.get("email.fromName") }}';
+        $exported->fromEmail = $notification->fromEmail ?? '{{ craft.app.projectConfig.get("email.fromEmail") }}';
+        $exported->replyToName = $notification->replyToName ?? null;
+        $exported->replyToEmail = $notification->replyToEmail ?? null;
+        $exported->cc = FreeformStringHelper::extractSeparatedValues($notification->cc ?? '');
+        $exported->bcc = FreeformStringHelper::extractSeparatedValues($notification->bcc ?? '');
+
+        $exported->includeAttachments = $notification->isIncludeAttachmentsEnabled();
+        $exported->pdfTemplateIds = array_map('intval', json_decode($notification->pdfTemplateIds ?: '[]', true));
+
+        $exported->subject = $notification->subject ?? '';
+        $exported->body = $notification->bodyHtml ?? '';
+        $exported->textBody = $notification->bodyText ?? '';
+        $exported->autoText = $notification->isAutoText();
+
+        return $exported;
     }
 
     private function collectRules(FreeformForm $form): RulesCollection

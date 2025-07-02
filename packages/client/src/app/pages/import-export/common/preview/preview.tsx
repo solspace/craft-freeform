@@ -1,4 +1,5 @@
 import React from 'react';
+import { indexedColumn } from '@ff-client/utils/arrays';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -88,6 +89,7 @@ export const Preview: React.FC<Props> = ({
             templates={data.templates}
             options={options.templates}
             onUpdate={(templates) => onUpdate({ ...options, templates })}
+            formNames={indexedColumn(data.forms, 'uid', 'name')}
           />
 
           <PreviewIntegrations

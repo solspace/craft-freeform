@@ -199,6 +199,10 @@ class RuleProvider
                 }
             }
 
+            if (!$notificationInstance) {
+                continue;
+            }
+
             $rule->setNotification($notificationInstance);
 
             $array[] = $rule;

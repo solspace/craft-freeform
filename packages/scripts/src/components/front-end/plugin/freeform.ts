@@ -13,6 +13,7 @@ import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { ajax } from '@lib/plugin/helpers/ajax';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { getClassQuery } from '@lib/plugin/helpers/classes';
+import { fetchCsrf } from '@lib/plugin/helpers/csrf';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { Callback, FreeformResponseWithToken } from 'types/events';
@@ -385,6 +386,19 @@ export default class Freeform {
       this._onSubmitAjax(event);
 
       return false;
+    }
+
+    const csrf = await fetchCsrf();
+    if (csrf) {
+      let csrfInput = this.form.querySelector<HTMLInputElement>(`input[name="${csrf.name}"]`);
+      if (!csrfInput) {
+        csrfInput = document.createElement('input');
+        csrfInput.type = 'hidden';
+        csrfInput.name = csrf.name;
+        this.form.appendChild(csrfInput);
+      }
+
+      csrfInput.value = csrf.value;
     }
 
     this.form.submit();

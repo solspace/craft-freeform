@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\db\ActiveQuery;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -93,6 +94,11 @@ class NotificationsService extends BaseService
             ->where(['not', ['formId' => null]])
             ->all()
         ;
+    }
+
+    public function getQuery(): ActiveQuery
+    {
+        return NotificationTemplateRecord::find();
     }
 
     public function getTemplateRecordById(int $id): ?NotificationTemplateRecord

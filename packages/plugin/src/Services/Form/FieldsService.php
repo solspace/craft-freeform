@@ -76,7 +76,7 @@ class FieldsService extends BaseService
             foreach ($records as $record) {
                 $form = $forms[$record->formId] ?? null;
                 if (!$form) {
-                    continue;
+                    continue; // Form no longer exists, skip this field
                 }
 
                 $field = $this->createField($record, $form);

@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RulesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\SitesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TranslationCollection;
 use Solspace\Freeform\Form\Settings\Settings;
 
@@ -20,6 +21,7 @@ class Form
     public Settings $settings;
 
     public NotificationCollection $notifications;
+    public NotificationTemplateCollection $notificationTemplates;
     public FormIntegrationCollection $integrations;
     public RulesCollection $rules;
     public PageCollection $pages;
@@ -30,6 +32,7 @@ class Form
     public function __construct()
     {
         $this->notifications = new NotificationCollection();
+        $this->notificationTemplates = new NotificationTemplateCollection();
         $this->integrations = new FormIntegrationCollection();
         $this->rules = new RulesCollection();
         $this->pages = new PageCollection();

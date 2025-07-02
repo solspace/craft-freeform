@@ -10,6 +10,8 @@ use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
@@ -34,6 +36,7 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
@@ -49,15 +52,18 @@ class FreeformImporter
 {
     private const BATCH_SIZE = 100;
 
+    /** @var FormRecord[] */
     private array $formsByUid = [];
     private array $notificationTransferIdMap = [];
     private array $pdfTemplateTransferIdMap = [];
     private array $integrationRecords = [];
+
     private FreeformDataset $dataset;
     private SSE $sse;
 
     public function __construct(
         private NotificationsService $notificationsService,
+        private NotificationsProvider $notificationsProvider,
         private PropertyProvider $propertyProvider,
         private IntegrationsService $integrationsService,
         private FreeformSerializer $serializer,
@@ -73,6 +79,8 @@ class FreeformImporter
         $this->announceTotals();
 
         $this->importSettings();
+        $this->importFormBase();
+
         $this->importPdfTemplates();
         $this->importNotifications();
         $this->importFormattingTemplates();
@@ -100,7 +108,7 @@ class FreeformImporter
         );
     }
 
-    private function importForms(): void
+    private function importFormBase(): void
     {
         $forms = $this->dataset->getForms();
         $isStrategySkip = ImportStrategy::TYPE_SKIP === $this->dataset->getStrategy()->forms;
@@ -113,6 +121,7 @@ class FreeformImporter
             $formRecord = FormRecord::findOne(['uid' => $form->uid]);
             if ($formRecord) {
                 if ($isStrategySkip) {
+                    $this->formsByUid[$form->uid] = $formRecord;
                     $this->sse->message('progress', 1);
 
                     continue;
@@ -143,6 +152,27 @@ class FreeformImporter
             }
 
             $this->formsByUid[$form->uid] = $formRecord;
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importForms(): void
+    {
+        $forms = $this->dataset->getForms();
+        $isStrategySkip = ImportStrategy::TYPE_SKIP === $this->dataset->getStrategy()->forms;
+
+        $this->sse->message('reset', $forms->count());
+
+        foreach ($forms as $form) {
+            $this->sse->message('info', 'Importing form details: '.$form->name);
+
+            $formRecord = $this->formsByUid[$form->uid] ?? null;
+            if (!$formRecord) {
+                $this->sse->message('err', 'Form record not found for UID: '.$form->uid);
+                $this->sse->message('progress', 1);
+
+                continue;
+            }
 
             $formInstance = Freeform::getInstance()->forms->getFormById($formRecord->id);
 
@@ -218,6 +248,38 @@ class FreeformImporter
                 $translationRecord->save();
             }
 
+            // ===========================
+            // Form Notification Templates
+            // ===========================
+            $existingTemplates = $this->notificationsService->getQuery()
+                ->where(['formId' => $formRecord->id])
+                ->indexBy('uid')
+                ->all()
+            ;
+
+            foreach ($form->notificationTemplates as $template) {
+                $record = $existingTemplates[$template->uid] ?? null;
+                if ($record) {
+                    if ($isStrategySkip) {
+                        $this->notificationTransferIdMap[$template->id] = $record->id;
+
+                        continue;
+                    }
+                } else {
+                    $record = new NotificationTemplateRecord();
+                }
+
+                $record->formId = $formRecord->id;
+
+                $record = $this->notificationTemplateToRecord($template, $record);
+                $record->save();
+
+                $this->notificationTransferIdMap[$template->id] = $record->id;
+            }
+
+            // ===========================
+            // Form Notifications
+            // ===========================
             foreach ($form->notifications as $notification) {
                 $notificationRecord = FormNotificationRecord::findOne(['uid' => $notification->uid]);
                 if (!$notificationRecord) {
@@ -465,6 +527,11 @@ class FreeformImporter
             $notificationsByIdentificator[$notification->uid ?? $notification->filepath] = $notification;
         }
 
+        $existingFormNotifications = $this->notificationsService->getAllFormNotifications();
+        foreach ($existingFormNotifications as $notification) {
+            $notificationsByIdentificator[$notification->uid] = $notification;
+        }
+
         foreach ($collection as $notification) {
             $this->sse->message('info', 'Importing notification: '.$notification->name);
 
@@ -485,42 +552,7 @@ class FreeformImporter
                 );
             }
 
-            if (!$notification->isFile) {
-                $record->uid = $notification->uid;
-            }
-
-            $record->name = $notification->name;
-            $record->handle = $notification->handle;
-            $record->description = $notification->description;
-
-            $record->fromEmail = $notification->fromEmail;
-            $record->fromName = $notification->fromName;
-            $record->replyToName = $notification->replyToName;
-            $record->replyToEmail = $notification->replyToEmail;
-            $record->cc = implode(', ', $notification->cc ?? []);
-            $record->bcc = implode(', ', $notification->bcc ?? []);
-
-            $record->subject = $notification->subject;
-            $record->bodyHtml = $notification->body;
-            $record->bodyText = $notification->textBody;
-            $record->autoText = $notification->autoText;
-
-            $record->includeAttachments = $notification->includeAttachments;
-            $record->presetAssets = implode(', ', $notification->presetAssets ?? []);
-
-            if ($notification->pdfTemplateIds) {
-                $mappedTransferIdList = [];
-                foreach ($notification->pdfTemplateIds as $pdfTemplateId) {
-                    $mappedId = $this->pdfTemplateTransferIdMap[$pdfTemplateId] ?? null;
-                    if ($mappedId) {
-                        $mappedTransferIdList[] = (int) $mappedId;
-                    }
-                }
-
-                if ($mappedTransferIdList) {
-                    $record->pdfTemplateIds = json_encode($mappedTransferIdList);
-                }
-            }
+            $record = $this->notificationTemplateToRecord($notification, $record);
 
             $this->notificationsService->save($record);
             $this->notificationTransferIdMap[$notification->id] = $record->id;
@@ -781,5 +813,49 @@ class FreeformImporter
 
             $this->sse->message('progress', 1);
         }
+    }
+
+    private function notificationTemplateToRecord(NotificationTemplate $template, ?NotificationTemplateRecord $reference = null): NotificationTemplateRecord
+    {
+        $record = $reference ?? new NotificationTemplateRecord();
+
+        if (!$template->isFile) {
+            $record->uid = $template->uid;
+        }
+
+        $record->name = $template->name;
+        $record->handle = $template->handle;
+        $record->description = $template->description;
+
+        $record->fromEmail = $template->fromEmail;
+        $record->fromName = $template->fromName;
+        $record->replyToName = $template->replyToName;
+        $record->replyToEmail = $template->replyToEmail;
+        $record->cc = implode(', ', $template->cc ?? []);
+        $record->bcc = implode(', ', $template->bcc ?? []);
+
+        $record->subject = $template->subject;
+        $record->bodyHtml = $template->body;
+        $record->bodyText = $template->textBody;
+        $record->autoText = $template->autoText;
+
+        $record->includeAttachments = $template->includeAttachments;
+        $record->presetAssets = implode(', ', $template->presetAssets ?? []);
+
+        if ($template->pdfTemplateIds) {
+            $mappedTransferIdList = [];
+            foreach ($template->pdfTemplateIds as $pdfTemplateId) {
+                $mappedId = $this->pdfTemplateTransferIdMap[$pdfTemplateId] ?? null;
+                if ($mappedId) {
+                    $mappedTransferIdList[] = (int) $mappedId;
+                }
+            }
+
+            if ($mappedTransferIdList) {
+                $record->pdfTemplateIds = json_encode($mappedTransferIdList);
+            }
+        }
+
+        return $record;
     }
 }

@@ -115,6 +115,13 @@ class FileExportReader extends BaseExporter
                 }
             }
 
+            $templates = $json['notificationTemplates'] ?? [];
+            foreach ($templates as $templateJson) {
+                $template = $this->jsonToTemplate($templateJson);
+
+                $form->notificationTemplates->add($template);
+            }
+
             foreach ($json['notifications'] as $notificationJson) {
                 $notification = new Notification();
                 $notification->id = $notificationJson['id'];
@@ -203,6 +210,9 @@ class FileExportReader extends BaseExporter
             $integration->metadata = $json['metadata'];
 
             $type = $this->integrationTypeProvider->getTypeDefinition($integration->class);
+            if (!$type) {
+                continue;
+            }
             $integration->icon = $type->getIconSvg();
 
             $collection->add($integration);
@@ -220,29 +230,7 @@ class FileExportReader extends BaseExporter
                 continue;
             }
 
-            $template = new NotificationTemplate();
-            $template->uid = $json['uid'];
-            $template->id = $json['id'];
-            $template->isFile = $json['isFile'];
-
-            $template->name = $json['name'];
-            $template->handle = $json['handle'];
-            $template->description = $json['description'];
-
-            $template->fromName = $json['fromName'] ?? '{{ craft.app.projectConfig.get("email.fromName") }}';
-            $template->fromEmail = $json['fromEmail'] ?? '{{ craft.app.projectConfig.get("email.fromEmail") }}';
-            $template->replyToName = $json['replyToName'] ?? null;
-            $template->replyToEmail = $json['replyToEmail'] ?? null;
-            $template->cc = $json['cc'] ?? [];
-            $template->bcc = $json['bcc'] ?? [];
-
-            $template->includeAttachments = $json['includeAttachments'];
-            $template->pdfTemplateIds = $json['pdfTemplateIds'] ?? [];
-
-            $template->subject = $json['subject'] ?? '';
-            $template->body = $json['body'] ?? '';
-            $template->textBody = $json['textBody'] ?? '';
-            $template->autoText = $json['autoText'] ?? false;
+            $template = $this->jsonToTemplate($json);
 
             $collection->add($template);
         }
@@ -353,6 +341,35 @@ class FileExportReader extends BaseExporter
         $settings->defaults = new Defaults($defaults);
 
         return $settings;
+    }
+
+    private function jsonToTemplate(array $json): NotificationTemplate
+    {
+        $template = new NotificationTemplate();
+        $template->uid = $json['uid'];
+        $template->id = $json['id'];
+        $template->isFile = $json['isFile'];
+
+        $template->name = $json['name'];
+        $template->handle = $json['handle'];
+        $template->description = $json['description'];
+
+        $template->fromName = $json['fromName'] ?? '{{ craft.app.projectConfig.get("email.fromName") }}';
+        $template->fromEmail = $json['fromEmail'] ?? '{{ craft.app.projectConfig.get("email.fromEmail") }}';
+        $template->replyToName = $json['replyToName'] ?? null;
+        $template->replyToEmail = $json['replyToEmail'] ?? null;
+        $template->cc = $json['cc'] ?? [];
+        $template->bcc = $json['bcc'] ?? [];
+
+        $template->includeAttachments = $json['includeAttachments'];
+        $template->pdfTemplateIds = $json['pdfTemplateIds'] ?? [];
+
+        $template->subject = $json['subject'] ?? '';
+        $template->body = $json['body'] ?? '';
+        $template->textBody = $json['textBody'] ?? '';
+        $template->autoText = $json['autoText'] ?? false;
+
+        return $template;
     }
 
     /**

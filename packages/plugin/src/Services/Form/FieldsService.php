@@ -17,13 +17,6 @@ use yii\base\Event;
 class FieldsService extends BaseService
 {
     private array $fieldCache = [];
-    private array $fieldRowUidCache = [];
-
-    /** @var array<string, FieldInterface[]> */
-    private array $fieldsByFormCache = [];
-
-    /** @var FieldInterface[] */
-    private array $allFieldCache = [];
 
     public function __construct(
         $config,
@@ -47,53 +40,39 @@ class FieldsService extends BaseService
 
     public function getFieldByFormAndUid(Form $form, string $fieldUid): ?FieldInterface
     {
-        $fields = $this->getFields($form);
+        $records = $this->getAllFieldRecords($form);
 
-        foreach ($fields as $field) {
-            if ($field->getUid() === $fieldUid) {
-                return $field;
+        foreach ($records as $record) {
+            if ($record->uid === $fieldUid) {
+                return $this->createField($record, $form);
             }
         }
 
         return null;
     }
 
-    /**
-     * @return FieldInterface[]
-     */
     public function getAllFields(): array
     {
-        if (empty($this->allFieldCache)) {
+        static $fields;
+
+        if (null === $fields) {
             $forms = $this->formsService->getAllForms();
 
             /** @var FormFieldRecord[] $records */
             $records = FormFieldRecord::find()
                 ->with('row')
-                ->orderBy(['order' => \SORT_ASC])
                 ->all()
             ;
 
             foreach ($records as $record) {
-                $form = $forms[$record->formId] ?? null;
-                if (!$form) {
-                    continue;
-                }
-
-                $field = $this->createField($record, $form);
-
+                $field = $this->createField($record, $forms[$record->formId]);
                 if ($field) {
-                    $this->allFieldCache[] = $field;
-
-                    if (!\array_key_exists($record->formId, $this->fieldsByFormCache)) {
-                        $this->fieldsByFormCache[$record->formId] = [];
-                    }
-
-                    $this->fieldsByFormCache[$record->formId][] = $field;
+                    $fields[] = $field;
                 }
             }
         }
 
-        return $this->allFieldCache;
+        return $fields;
     }
 
     public function getFieldCollection(Form $form): FieldCollection
@@ -101,28 +80,25 @@ class FieldsService extends BaseService
         return new FieldCollection($this->getFields($form));
     }
 
-    /**
-     * @return FieldInterface[]
-     */
     public function getFields(Form $form): array
     {
-        $this->getAllFields();
+        $fields = [];
+        foreach ($this->getAllFieldRecords($form) as $record) {
+            $field = $this->createField($record, $form);
+            if ($field) {
+                $fields[] = $field;
+            }
+        }
 
-        return $this->fieldsByFormCache[$form->getId()] ?? [];
+        return $fields;
     }
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
-        $fieldCacheKey = $record->id.$form->getUniqueId();
-        if (isset($this->fieldCache[$fieldCacheKey])) {
-            return $this->fieldCache[$fieldCacheKey];
+        $key = $record->id.$form->getUniqueId();
+        if (isset($this->fieldCache[$key])) {
+            return $this->fieldCache[$key];
         }
-
-        $rowCacheKey = $record->rowId.$form->getUniqueId();
-        if (empty($this->fieldRowUidCache[$rowCacheKey])) { // Don't cache null values
-            $this->fieldRowUidCache[$rowCacheKey] = $record->getRow()->one()?->uid;
-        }
-        $fieldRowUid = $this->fieldRowUidCache[$rowCacheKey];
 
         $type = $record->type;
 
@@ -132,7 +108,7 @@ class FieldsService extends BaseService
                 'id' => $record->id,
                 'uid' => $record->uid,
                 'rowId' => $record->rowId,
-                'rowUid' => $fieldRowUid,
+                'rowUid' => $record->getRow()->one()?->uid,
                 'order' => $record->order,
             ],
             $metadata,
@@ -146,7 +122,7 @@ class FieldsService extends BaseService
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);
 
-        $this->fieldCache[$fieldCacheKey] = $field;
+        $this->fieldCache[$key] = $field;
 
         Event::trigger(
             FieldInterface::class,
@@ -165,5 +141,25 @@ class FieldsService extends BaseService
     public function getFavoriteFieldCount(): int
     {
         return FavoriteFieldRecord::find()->count();
+    }
+
+    /**
+     * @return array|FormFieldRecord[]
+     */
+    private function getAllFieldRecords(Form $form): array
+    {
+        static $records = [];
+
+        $id = $form->getId();
+        if (!\array_key_exists($id, $records)) {
+            $records[$id] = FormFieldRecord::find()
+                ->with('row')
+                ->where(['formId' => $id])
+                ->orderBy(['order' => \SORT_ASC])
+                ->all()
+            ;
+        }
+
+        return $records[$id];
     }
 }

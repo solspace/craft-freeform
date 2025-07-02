@@ -650,8 +650,5 @@ class Freeform extends Plugin
     private function initBundles(): void
     {
         BundleLoader::loadBundles(__DIR__.'/Bundles');
-        \Craft::$container->setSingleton('craft\services\Sites');
-        \Craft::$container->setSingleton('Solspace\Freeform\Services\Form\FieldsService');
-        \Craft::$container->setSingleton('Solspace\Freeform\Services\Integrations\IntegrationsService');
     }
 }

@@ -49,10 +49,6 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
-    private $cacheByUid = [];
-    private $cacheById = [];
-    private $cacheByHandle = [];
-
     public function __construct(
         $config,
         protected IntegrationClientProvider $clientProvider,
@@ -128,53 +124,32 @@ class IntegrationsService extends BaseService
 
     public function getById(int $id): ?IntegrationModel
     {
-        if (!empty($this->cacheById[$id])) {
-            return $this->cacheById[$id];
-        }
-
         $result = $this->getQuery()->where(['id' => $id])->one();
         if (!$result) {
             return null;
         }
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
-
-        return $model;
+        return $this->createIntegrationModel($result);
     }
 
     public function getByUid(string $uid): ?IntegrationModel
     {
-        if (!empty($this->cacheByUid[$uid])) {
-            return $this->cacheByUid[$uid];
-        }
-
         $result = $this->getQuery()->where(['uid' => $uid])->one();
         if (!$result) {
             return null;
         }
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
-
-        return $model;
+        return $this->createIntegrationModel($result);
     }
 
     public function getByHandle(string $handle): ?IntegrationModel
     {
-        if (!empty($this->cacheByHandle[$handle])) {
-            return $this->cacheByHandle[$handle];
-        }
-
         $result = $this->getQuery()->where(['handle' => $handle])->one();
         if (!$result) {
             return null;
         }
 
-        $model = $this->createIntegrationModel($result);
-        $this->cacheIntegrationModel($model);
-
-        return $model;
+        return $this->createIntegrationModel($result);
     }
 
     public function getIntegrationObjectById(int $id): IntegrationInterface
@@ -257,8 +232,6 @@ class IntegrationsService extends BaseService
                     $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $integration, $isNew));
                 }
 
-                $this->cacheIntegrationModel($model);
-
                 return true;
             } catch (\Exception $e) {
                 $transaction?->rollBack();
@@ -296,8 +269,6 @@ class IntegrationsService extends BaseService
             $transaction?->commit();
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
-
-            $this->clearIntegrationModelCache();
 
             return (bool) $affectedRows;
         } catch (\Exception $exception) {
@@ -605,20 +576,6 @@ class IntegrationsService extends BaseService
     protected function createIntegrationModel(array $data): IntegrationModel
     {
         return new IntegrationModel($data);
-    }
-
-    private function cacheIntegrationModel(IntegrationModel $model): void
-    {
-        $this->cacheById[$model->id] = $model;
-        $this->cacheByUid[$model->uid] = $model;
-        $this->cacheByHandle[$model->handle] = $model;
-    }
-
-    private function clearIntegrationModelCache(): void
-    {
-        $this->cacheById = [];
-        $this->cacheByUid = [];
-        $this->cacheByHandle = [];
     }
 
     private function getCacheKey(?Form $form, ?string $type, ?bool $enabled, ?callable $filter = null): string

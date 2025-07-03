@@ -5,17 +5,24 @@ namespace Solspace\Freeform\Bundles\Backup\Collections;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 
 class TemplateCollection
 {
     private ?NotificationTemplateCollection $notification = null;
     private ?PdfTemplateCollection $pdf = null;
+    private ?WrapperTemplateCollection $wrapper = null;
     private ?FileTemplateCollection $formatting = null;
     private ?FileTemplateCollection $success = null;
 
     public function count(): int
     {
-        return $this->notification?->count() + $this->formatting?->count() + $this->success?->count();
+        return
+            $this->notification?->count()
+            + $this->pdf?->count()
+            + $this->wrapper?->count()
+            + $this->formatting?->count()
+            + $this->success?->count();
     }
 
     public function getNotification(): ?NotificationTemplateCollection
@@ -38,6 +45,18 @@ class TemplateCollection
     public function setPdf(?PdfTemplateCollection $pdf): self
     {
         $this->pdf = $pdf;
+
+        return $this;
+    }
+
+    public function getWrapper(): ?WrapperTemplateCollection
+    {
+        return $this->wrapper;
+    }
+
+    public function setWrapper(?WrapperTemplateCollection $wrapper): self
+    {
+        $this->wrapper = $wrapper;
 
         return $this;
     }

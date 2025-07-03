@@ -11,7 +11,6 @@ use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
-use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Form\Managers\ContentManager;
@@ -36,6 +35,7 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
@@ -56,6 +56,7 @@ class FreeformImporter
     private array $formsByUid = [];
     private array $notificationTransferIdMap = [];
     private array $pdfTemplateTransferIdMap = [];
+    private array $wrapperTemplateTransferIdMap = [];
     private array $integrationRecords = [];
 
     private FreeformDataset $dataset;
@@ -63,7 +64,6 @@ class FreeformImporter
 
     public function __construct(
         private NotificationsService $notificationsService,
-        private NotificationsProvider $notificationsProvider,
         private PropertyProvider $propertyProvider,
         private IntegrationsService $integrationsService,
         private FreeformSerializer $serializer,
@@ -74,6 +74,7 @@ class FreeformImporter
         $this->sse = $sse;
         $this->notificationTransferIdMap = [];
         $this->pdfTemplateTransferIdMap = [];
+        $this->wrapperTemplateTransferIdMap = [];
         $this->dataset = $dataset;
 
         $this->announceTotals();
@@ -82,6 +83,7 @@ class FreeformImporter
         $this->importFormBase();
 
         $this->importPdfTemplates();
+        $this->importWrapperTemplates();
         $this->importNotifications();
         $this->importFormattingTemplates();
         $this->importSuccessTemplates();
@@ -599,7 +601,51 @@ class FreeformImporter
 
             $record->save();
 
-            $this->pdfTemplateTransferIdMap[$template->id] = $record->id;
+            $this->pdfTemplateTransferIdMap[$template->uid] = $record->id;
+
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importWrapperTemplates(): void
+    {
+        $this->wrapperTemplateTransferIdMap = [];
+
+        $collection = $this->dataset->getTemplates()?->getWrapper();
+        if (!$collection) {
+            return;
+        }
+
+        $strategy = $this->dataset->getStrategy()->templates;
+
+        $this->sse->message('reset', $collection->count());
+
+        /** @var NotificationWrapperRecord[] $existingTemplates */
+        $existingTemplates = NotificationWrapperRecord::find()->indexBy('uid')->all();
+
+        foreach ($collection as $template) {
+            $this->sse->message('info', 'Importing wrapper template: '.$template->name);
+
+            $record = $existingTemplates[$template->uid] ?? null;
+            if ($record) {
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->wrapperTemplateTransferIdMap[$template->uid] = $record->id;
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+            } else {
+                $record = new NotificationWrapperRecord(['uid' => $template->uid]);
+            }
+
+            $record->name = $template->name;
+            $record->handle = $template->handle;
+            $record->content = $template->content;
+            $record->description = $template->description;
+
+            $record->save();
+
+            $this->wrapperTemplateTransferIdMap[$template->uid] = $record->id;
 
             $this->sse->message('progress', 1);
         }
@@ -842,18 +888,17 @@ class FreeformImporter
         $record->includeAttachments = $template->includeAttachments;
         $record->presetAssets = implode(', ', $template->presetAssets ?? []);
 
-        if ($template->pdfTemplateIds) {
-            $mappedTransferIdList = [];
-            foreach ($template->pdfTemplateIds as $pdfTemplateId) {
-                $mappedId = $this->pdfTemplateTransferIdMap[$pdfTemplateId] ?? null;
-                if ($mappedId) {
-                    $mappedTransferIdList[] = (int) $mappedId;
-                }
-            }
+        $record->wrapperId = $this->wrapperTemplateTransferIdMap[$template->wrapperId] ?? null;
 
-            if ($mappedTransferIdList) {
-                $record->pdfTemplateIds = json_encode($mappedTransferIdList);
-            }
+        if ($template->pdfTemplateIds) {
+            $record->pdfTemplateIds = json_encode(
+                array_filter(
+                    array_map(
+                        fn (string $uid) => (int) $this->pdfTemplateTransferIdMap[$uid] ?: null,
+                        $template->pdfTemplateIds
+                    )
+                )
+            );
         }
 
         return $record;

@@ -20,6 +20,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
@@ -61,6 +62,7 @@ class ExpressFormsExporter extends BaseExporter
         $preview->settings = (bool) $this->collectSettings(true);
         $preview->templates = (new TemplateCollection())
             ->setPdf($this->collectPdfTemplates())
+            ->setWrapper($this->collectWrapperTemplates())
             ->setNotification($this->collectNotifications())
             ->setFormatting($this->collectFormattingTemplates())
             ->setSuccess($this->collectSuccessTemplates())
@@ -313,6 +315,11 @@ class ExpressFormsExporter extends BaseExporter
     protected function collectPdfTemplates(?array $ids = null): PdfTemplateCollection
     {
         return new PdfTemplateCollection();
+    }
+
+    protected function collectWrapperTemplates(?array $ids = null): WrapperTemplateCollection
+    {
+        return new WrapperTemplateCollection();
     }
 
     protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection

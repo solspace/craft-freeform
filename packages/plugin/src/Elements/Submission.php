@@ -323,7 +323,7 @@ class Submission extends Element
     {
         if (null === $this->spamReasons) {
             $data = (new Query())
-                ->select(['reasonType', 'reasonMessage'])
+                ->select(['reasonType', 'reasonMessage', 'reasonValue'])
                 ->from(SpamReasonRecord::TABLE)
                 ->where(['submissionId' => $this->id])
                 ->all()
@@ -331,7 +331,7 @@ class Submission extends Element
 
             $reasons = [];
             foreach ($data as $item) {
-                $reasons[] = new SpamReason($item['reasonType'], $item['reasonMessage']);
+                $reasons[] = new SpamReason($item['reasonType'], $item['reasonMessage'], $item['reasonValue']);
             }
 
             $this->spamReasons = $reasons;

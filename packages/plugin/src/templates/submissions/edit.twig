@@ -190,7 +190,12 @@
 			</legend>
 			<ul class="spam-reasons">
 				{% for reason in submission.spamReasons %}
-					<li>{{ reason.message|t('freeform') }}</li>
+					<li>
+						{{ reason.message|t('freeform') }}
+						{% if reason.value %}
+							<br><br><i>{{ reason.value|t('freeform') }}</i>
+						{% endif %}
+					</li>
 				{% endfor %}
 			</ul>
 		</fieldset>

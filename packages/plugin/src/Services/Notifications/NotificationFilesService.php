@@ -136,6 +136,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         $output .= "{# includeAttachments: {$includeAttachments} #}".\PHP_EOL;
         $output .= "{# presetAssets: {$presetAssets} #}".\PHP_EOL;
         $output .= "{# pdfTemplates: {$pdfTemplateIds} #}".\PHP_EOL;
+        $output .= "{# wrapperId: {$record->getWrapperId()} #}".\PHP_EOL;
         $output .= "{# templateName: {$record->name} #}".\PHP_EOL;
         $output .= "{# description: {$record->description} #}".\PHP_EOL;
         $output .= \PHP_EOL;
@@ -152,7 +153,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
 
         $newName = $record->handle.'.twig';
         if ($newName !== $record->filepath) {
-            unlink($filepath);
+            @unlink($filepath);
             $filepath = $emailDirectory.'/'.$newName;
         }
 

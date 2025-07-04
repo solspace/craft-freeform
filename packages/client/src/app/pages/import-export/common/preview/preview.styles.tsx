@@ -133,6 +133,10 @@ export const PdfTemplateIcon: React.FC = () => {
   return <Icon className="fa-light fa-file-pdf" />;
 };
 
+export const WrapperTemplateIcon: React.FC = () => {
+  return <Icon className="fa-light fa-file-half-dashed" />;
+};
+
 export const FormattingIcon: React.FC = () => {
   return <Icon className="fa-light fa-file-code" />;
 };

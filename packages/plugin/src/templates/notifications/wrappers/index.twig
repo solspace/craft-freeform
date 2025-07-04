@@ -53,9 +53,9 @@
                         <td class="thin">
                             <div class='action-buttons'>
                                 {% if currentUser.can("freeform-notificationsManage") %}
-                                    <a class="clone icon" data-id="{{ wrapper.id }}"
+                                    <a class="clone icon" data-type="wrappers" data-id="{{ wrapper.id }}"
                                        title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
-                                    <a class="delete icon" data-id="{{ wrapper.id }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                    <a class="delete icon" data-type="wrappers" data-id="{{ wrapper.id }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                                 {% endif %}
                             </div>
                         </td>
@@ -68,7 +68,7 @@
     {% else %}
 
         <div class="zilch">
-            {{ "No notification template wrappers exist yet."|t('freeform') }}
+            {{ "No email template wrappers exist yet."|t('freeform') }}
         </div>
 
     {% endif %}
@@ -77,14 +77,5 @@
 
 
 {% js %}
-    var confirmDeleteMessage = '{{ "Are you sure you want to delete this notification?"|t('freeform') }}';
-
-    var adminTable = new Craft.AdminTable({
-    tableSelector: '#emailnotifications',
-    noObjectsSelector: '#nonotifications',
-    newObjectBtnSelector: '#newnotificationcontainer',
-    deleteAction: 'freeform/notifications/files/delete',
-    confirmDeleteMessage: confirmDeleteMessage,
-    });
-
+    var confirmDeleteMessage = '{{ "Are you sure you want to delete this email template wrapper?"|t('freeform') }}';
 {% endjs %}

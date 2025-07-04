@@ -106,9 +106,20 @@ class FieldsService extends BaseService
      */
     public function getFields(Form $form): array
     {
-        $this->getAllFields();
+        $records = FormFieldRecord::find()
+            ->where(['formId' => $form->getId()])
+            ->with('row')
+            ->orderBy(['order' => \SORT_ASC])
+            ->all()
+        ;
 
-        return $this->fieldsByFormCache[$form->getId()] ?? [];
+        $fields = [];
+
+        foreach ($records as $record) {
+            $fields[]= $this->createField($record, $form);
+        }
+
+        return $fields;
     }
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface

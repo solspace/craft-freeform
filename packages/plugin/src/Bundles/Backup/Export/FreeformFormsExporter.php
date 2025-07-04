@@ -18,6 +18,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TranslationCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
@@ -36,6 +37,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\PdfTemplate;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\WrapperTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Translation;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Bundles\Rules\RuleProvider;
@@ -56,6 +58,7 @@ use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -81,6 +84,7 @@ class FreeformFormsExporter extends BaseExporter
         $preview->settings = (bool) $this->collectSettings(true);
         $preview->templates = (new TemplateCollection())
             ->setPdf($this->collectPdfTemplates())
+            ->setWrapper($this->collectWrapperTemplates())
             ->setNotification($this->collectNotifications())
             ->setFormatting($this->collectFormattingTemplates())
             ->setSuccess($this->collectSuccessTemplates())
@@ -352,6 +356,33 @@ class FreeformFormsExporter extends BaseExporter
         return $collection;
     }
 
+    protected function collectWrapperTemplates(?array $ids = null): WrapperTemplateCollection
+    {
+        $collection = new WrapperTemplateCollection();
+        $templates = NotificationWrapperRecord::find()->all();
+
+        /** @var NotificationWrapperRecord $template */
+        foreach ($templates as $template) {
+            $uid = $template->uid;
+            if (null !== $ids && !\in_array($uid, $ids, true)) {
+                continue;
+            }
+
+            $exported = new WrapperTemplate();
+            $exported->uid = $uid;
+            $exported->id = $template->id;
+
+            $exported->name = $template->name;
+            $exported->handle = $template->handle;
+            $exported->content = $template->content;
+            $exported->description = $template->description;
+
+            $collection->add($exported);
+        }
+
+        return $collection;
+    }
+
     protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
     {
         return $this->collectFileTemplates(
@@ -434,7 +465,13 @@ class FreeformFormsExporter extends BaseExporter
         $exported->bcc = FreeformStringHelper::extractSeparatedValues($notification->bcc ?? '');
 
         $exported->includeAttachments = $notification->isIncludeAttachmentsEnabled();
-        $exported->pdfTemplateIds = array_map('intval', json_decode($notification->pdfTemplateIds ?: '[]', true));
+        $exported->wrapperId = $this->getWrapperTemplateUid($notification->wrapperId);
+        $exported->pdfTemplateIds = array_filter(
+            array_map(
+                [$this, 'getPdfTemplateUid'],
+                json_decode($notification->pdfTemplateIds ?: '[]', true)
+            )
+        );
 
         $exported->subject = $notification->subject ?? '';
         $exported->body = $notification->bodyHtml ?? '';
@@ -442,6 +479,36 @@ class FreeformFormsExporter extends BaseExporter
         $exported->autoText = $notification->isAutoText();
 
         return $exported;
+    }
+
+    private function getPdfTemplateUid(?int $id): ?string
+    {
+        static $idToUidMap;
+        if (null === $idToUidMap) {
+            $idToUidMap = (new Query())
+                ->from(PdfTemplateRecord::TABLE)
+                ->select(['uid'])
+                ->indexBy('id')
+                ->column()
+            ;
+        }
+
+        return $idToUidMap[$id] ?? null;
+    }
+
+    private function getWrapperTemplateUid(?int $id): ?string
+    {
+        static $idToUidMap;
+        if (null === $idToUidMap) {
+            $idToUidMap = (new Query())
+                ->from(NotificationWrapperRecord::TABLE)
+                ->select(['uid'])
+                ->indexBy('id')
+                ->column()
+            ;
+        }
+
+        return $idToUidMap[$id] ?? null;
     }
 
     private function collectRules(FreeformForm $form): RulesCollection

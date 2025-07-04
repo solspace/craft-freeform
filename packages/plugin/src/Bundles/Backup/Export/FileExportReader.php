@@ -15,6 +15,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
 use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
@@ -32,6 +33,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\FileTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\PdfTemplate;
+use Solspace\Freeform\Bundles\Backup\DTO\Templates\WrapperTemplate;
 use Solspace\Freeform\Bundles\Backup\DTO\Translation;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
@@ -57,6 +59,7 @@ class FileExportReader extends BaseExporter
         $preview->settings = (bool) $this->collectSettings(true);
         $preview->templates = (new TemplateCollection())
             ->setPdf($this->collectPdfTemplates())
+            ->setWrapper($this->collectWrapperTemplates())
             ->setNotification($this->collectNotifications())
             ->setFormatting($this->collectFormattingTemplates())
             ->setSuccess($this->collectSuccessTemplates())
@@ -262,6 +265,30 @@ class FileExportReader extends BaseExporter
         return $collection;
     }
 
+    protected function collectWrapperTemplates(?array $ids = null): WrapperTemplateCollection
+    {
+        $collection = new WrapperTemplateCollection();
+
+        foreach ($this->readLineData('wrapper-templates.jsonl') as $json) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
+                continue;
+            }
+
+            $template = new WrapperTemplate();
+            $template->uid = $json['uid'];
+            $template->id = $json['id'];
+
+            $template->name = $json['name'];
+            $template->handle = $json['handle'];
+            $template->content = $json['content'] ?? '';
+            $template->description = $json['description'] ?? '';
+
+            $collection->add($template);
+        }
+
+        return $collection;
+    }
+
     protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection
     {
         return $this->collectFileTemplates('formatting', $ids);
@@ -363,6 +390,7 @@ class FileExportReader extends BaseExporter
 
         $template->includeAttachments = $json['includeAttachments'];
         $template->pdfTemplateIds = $json['pdfTemplateIds'] ?? [];
+        $template->wrapperId = $json['wrapperId'] ?? null;
 
         $template->subject = $json['subject'] ?? '';
         $template->body = $json['body'] ?? '';

@@ -103,7 +103,7 @@ class NotificationTemplateRecord extends ActiveRecord
 
         $wrapperId = $template->getWrapperId();
         if (\is_string($wrapperId)) {
-            $wrapperRecord = Freeform::getInstance()->notificationWrappers->getWrapperById($wrapperId);
+            $wrapperRecord = Freeform::getInstance()->notificationWrappers->getById((int) $wrapperId);
             if ($wrapperRecord) {
                 $wrapperId = $wrapperRecord->id;
             } else {

@@ -41,6 +41,7 @@ export const ExportFreeform: React.FC = () => {
     formSubmissions: [],
     templates: {
       pdf: [],
+      wrapper: [],
       notification: [],
       formatting: [],
       success: [],
@@ -121,6 +122,8 @@ export const ExportFreeform: React.FC = () => {
             'submit',
             isCurrentlyActive && 'disabled',
             !options.forms.length &&
+              !options.templates.pdf.length &&
+              !options.templates.wrapper.length &&
               !options.templates.notification.length &&
               !options.templates.formatting.length &&
               !options.templates.success.length &&

@@ -153,7 +153,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
 
         $newName = $record->handle.'.twig';
         if ($newName !== $record->filepath) {
-            unlink($filepath);
+            @unlink($filepath);
             $filepath = $emailDirectory.'/'.$newName;
         }
 

@@ -38,6 +38,14 @@ const events = {
   saveAndContinue: {
     saveFormhandleToken: 'freeform-save-form-handle-token',
   } as const,
+  scripts: {
+    beforeLoad: 'freeform:script:before-load',
+    afterLoad: 'freeform:script:after-load',
+  },
+  stylesheets: {
+    beforeLoad: 'freeform:stylesheet:before-load',
+    afterLoad: 'freeform:stylesheet:after-load',
+  },
 } as const;
 
 export default events;

@@ -1,9 +1,9 @@
 import type Freeform from '@components/front-end/plugin/freeform';
+import { createScript } from '@lib/plugin/helpers/html';
 import type { FreeformHandler } from 'types/form';
 
 class Signature implements FreeformHandler {
   freeform: Freeform;
-  scriptAdded = false;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -11,18 +11,7 @@ class Signature implements FreeformHandler {
       return;
     }
 
-    if (!this.scriptAdded) {
-      const script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js';
-      script.async = false;
-      script.defer = false;
-      script.addEventListener('load', () => {
-        this.reload();
-      });
-      document.body.appendChild(script);
-
-      this.scriptAdded = true;
-    }
+    createScript('//cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js', { onLoad: this.reload });
   }
 
   reload = () => {

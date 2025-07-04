@@ -537,10 +537,10 @@ class FreeformImporter
         foreach ($collection as $notification) {
             $this->sse->message('info', 'Importing notification: '.$notification->name);
 
-            $record = $notificationsByIdentificator[$notification->uid] ?? null;
+            $record = $notificationsByIdentificator[$notification->id ?? $notification->uid] ?? null;
             if ($record) {
                 if (ImportStrategy::TYPE_SKIP === $strategy) {
-                    $this->notificationTransferIdMap[$notification->id] = $record->id;
+                    $this->notificationTransferIdMap[$notification->id ?? $notification->uid] = $record->id ?? $record->filepath;
                     $this->sse->message('progress', 1);
 
                     continue;
@@ -557,7 +557,7 @@ class FreeformImporter
             $record = $this->notificationTemplateToRecord($notification, $record);
 
             $this->notificationsService->save($record);
-            $this->notificationTransferIdMap[$notification->id] = $record->id;
+            $this->notificationTransferIdMap[$notification->id ?? $notification->uid] = $record->id ?? $record->filepath;
 
             $this->sse->message('progress', 1);
         }

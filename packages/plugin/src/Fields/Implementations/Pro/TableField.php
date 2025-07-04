@@ -396,7 +396,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $type = $column->type;
                 $defaultValue = $column->value;
                 $value = $row[$index] ?? $defaultValue;
-                $value = htmlentities($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
+                $value = htmlspecialchars($value, \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
 
                 $output .= '<td'.$columnAttributes.'>';
 

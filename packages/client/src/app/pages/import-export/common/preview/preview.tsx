@@ -30,6 +30,7 @@ export const Preview: React.FC<Props> = ({
     options.forms.length === data.forms?.length &&
     options.integrations.length === data.integrations?.length &&
     options.templates.pdf.length === data.templates.pdf?.length &&
+    options.templates.wrapper.length === data.templates.wrapper?.length &&
     options.templates.notification.length ===
       data.templates.notification?.length &&
     options.templates.formatting.length === data.templates.formatting?.length &&
@@ -41,6 +42,7 @@ export const Preview: React.FC<Props> = ({
     forms: [],
     templates: {
       pdf: [],
+      wrapper: [],
       notification: [],
       formatting: [],
       success: [],
@@ -54,6 +56,7 @@ export const Preview: React.FC<Props> = ({
     forms: data.forms.map((form) => form.uid),
     templates: {
       pdf: data.templates.pdf.map((template) => template.uid),
+      wrapper: data.templates.wrapper.map((template) => template.uid),
       notification: data.templates.notification.map((template) => template.uid),
       formatting: data.templates.formatting.map(
         (template) => template.fileName

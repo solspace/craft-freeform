@@ -133,6 +133,8 @@ class NotificationTemplate implements IdentificatorInterface
         $includeAttachments = $template->getMetadata('includeAttachments');
         $template->includeAttachments = $includeAttachments && 'true' === strtolower($includeAttachments);
 
+        $template->wrapperId = $template->getMetadata('wrapperId') ?? '';
+
         $presetAssets = $template->getMetadata('presetAssets');
         if ($presetAssets) {
             $isTwigValue = TwigHelper::isTwigValue($presetAssets);

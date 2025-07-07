@@ -19,6 +19,7 @@ import {
 import { FileTemplates } from './file-templates/file-templates';
 import { Notification } from './notification/notification';
 import { PdfTemplates } from './pdf-templates/pdf-templates';
+import { WrapperTemplates } from './wrapper-templates/wrapper-templates';
 
 type Props = {
   templates: TemplateCollection;
@@ -32,6 +33,7 @@ const isAllChecked = (
   values: TemplateValues
 ): boolean =>
   values.pdf.length === templates.pdf.length &&
+  values.wrapper.length === templates.wrapper.length &&
   values.notification.length === templates.notification.length &&
   values.formatting.length === templates.formatting.length &&
   values.success.length === templates.success.length;
@@ -44,6 +46,7 @@ export const PreviewTemplates: React.FC<Props> = ({
 }) => {
   if (
     !templates.pdf.length &&
+    !templates.wrapper.length &&
     !templates.notification.length &&
     !templates.formatting.length &&
     !templates.success.length
@@ -62,12 +65,14 @@ export const PreviewTemplates: React.FC<Props> = ({
               isAllChecked(templates, options)
                 ? onUpdate({
                     pdf: [],
+                    wrapper: [],
                     notification: [],
                     formatting: [],
                     success: [],
                   })
                 : onUpdate({
                     pdf: templates.pdf.map((template) => template.uid),
+                    wrapper: templates.wrapper.map((template) => template.uid),
                     notification: templates.notification.map(
                       (template) => template.uid
                     ),
@@ -89,6 +94,12 @@ export const PreviewTemplates: React.FC<Props> = ({
         templates={templates.pdf}
         values={options.pdf}
         onUpdate={(values) => onUpdate({ ...options, pdf: values })}
+      />
+
+      <WrapperTemplates
+        templates={templates.wrapper}
+        values={options.wrapper}
+        onUpdate={(values) => onUpdate({ ...options, wrapper: values })}
       />
 
       <Notification

@@ -92,6 +92,8 @@ class HoneypotBundle extends FeatureBundle
             return;
         }
 
+        $postedValue = \Craft::$app->request->post($honeypotName);
+
         if ($form->isGraphQLPosted()) {
             $arguments = $form->getGraphQLArguments();
 
@@ -105,7 +107,6 @@ class HoneypotBundle extends FeatureBundle
                 return;
             }
         } else {
-            $postedValue = \Craft::$app->request->post($honeypotName);
             if ('' === $postedValue) {
                 $logger->debug('Honeypot check passed successfully for POST request');
 
@@ -117,8 +118,8 @@ class HoneypotBundle extends FeatureBundle
             $form->addError(Freeform::t($integration->getErrorMessage()));
         }
 
-        $form->markAsSpam(SpamReason::TYPE_HONEYPOT, 'Honeypot check failed');
-        $logger->debug('Honeypot check failed. Form marked as spam.', ['error' => $integration->getErrorMessage()]);
+        $form->markAsSpam(SpamReason::TYPE_HONEYPOT, 'Honeypot check failed', $postedValue);
+        $logger->debug('Honeypot check failed. Form marked as spam.', ['error' => $integration->getErrorMessage(), 'value' => $postedValue]);
     }
 
     public function getHoneypotInput(Form $form): string

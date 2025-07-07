@@ -31,8 +31,11 @@ class FormTemplate implements \JsonSerializable
             $name = pathinfo(\dirname($filePath), \PATHINFO_FILENAME);
         }
 
-        $this->name = str_replace(['-', '_'], ' ', $name);
-        $this->name = StringHelper::titleize($this->name);
+        $name = preg_replace('/(?<!^)([A-Z])/', ' $1', $name);
+        $name = str_replace(['-', '_'], ' ', $name);
+        $name = StringHelper::titleize($name);
+
+        $this->name = $name;
     }
 
     public function getFilePath(): string

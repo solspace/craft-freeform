@@ -14,19 +14,20 @@ class SpamReason
     public const TYPE_MINIMUM_SUBMIT_TIME = 'minimum_submit_time';
     public const TYPE_MAXIMUM_SUBMIT_TIME = 'maximum_submit_time';
 
-    /** @var string */
-    private $type;
+    private string $type;
 
-    /** @var string */
-    private $message;
+    private string $message;
+
+    private ?string $value;
 
     /**
      * SpamReason constructor.
      */
-    public function __construct(string $type, string $message)
+    public function __construct(string $type, string $message, ?string $value = null)
     {
         $this->type = $type;
         $this->message = $message;
+        $this->value = $value;
     }
 
     public static function getReasons(): array
@@ -52,5 +53,10 @@ class SpamReason
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    public function getValue(): ?string
+    {
+        return $this->value;
     }
 }

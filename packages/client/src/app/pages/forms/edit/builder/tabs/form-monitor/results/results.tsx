@@ -18,7 +18,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 
 import { FormMonitorDetailsLoader } from '../form-monitor.loader';
-import { ScreenshotModal } from '../form-monitor.screenshot.modal';
+import { useScreenshotModal } from '../form-monitor.screenshot.modal.hooks';
 import { DeleteTestModal } from '../form-monitor.test.delete';
 import { ErrorMessage, StatusDot, StatusIndicator } from '../monitor.styles';
 
@@ -62,11 +62,6 @@ type FormMonitorContext = {
   formTestsQuery: UseQueryResult<FormTestsResponse, AxiosError>;
 };
 
-type ScreenshotModalState = {
-  url: string;
-  testId: number;
-} | null;
-
 type DeleteModalState = {
   formId: number;
   testId: number;
@@ -76,7 +71,6 @@ type TestRowProps = {
   test: FormTest;
   formId: number;
   onDelete: (data: DeleteModalState) => void;
-  onScreenshot: (data: ScreenshotModalState) => void;
   showNotifications: boolean;
 };
 
@@ -103,9 +97,13 @@ const TestRow: React.FC<TestRowProps> = ({
   test,
   formId,
   onDelete,
-  onScreenshot,
   showNotifications,
 }) => {
+  const openScreenshotModal = useScreenshotModal({
+    screenshot: test.screenshot,
+    beforeSubmitScreenshot: test.beforeSubmitScreenshot,
+    testId: test.id,
+  });
   const rowRef = useRef<HTMLTableRowElement>(null);
   const isHovering = useHover(rowRef);
   const dateString = test.dateAttempted;
@@ -129,14 +127,7 @@ const TestRow: React.FC<TestRowProps> = ({
           </FormSubmitStatus>
           {test.screenshot && (
             <Tooltip title={translate('View Screenshot')} {...tooltipProps}>
-              <ScreenshotButton
-                onClick={() =>
-                  onScreenshot({
-                    url: test.screenshot!,
-                    testId: test.id,
-                  })
-                }
-              >
+              <ScreenshotButton onClick={openScreenshotModal}>
                 <CameraIcon />
               </ScreenshotButton>
             </Tooltip>
@@ -397,8 +388,6 @@ export const FMResults: React.FC = () => {
   const { formTestsQuery } = useOutletContext<FormMonitorContext>();
   const [searchParams, setSearchParams] = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
-  const [selectedScreenshot, setSelectedScreenshot] =
-    React.useState<ScreenshotModalState>(null);
   const [testToDelete, setTestToDelete] =
     React.useState<DeleteModalState>(null);
   const [activeTab, setActiveTab] = React.useState<string>('testResults');
@@ -523,7 +512,6 @@ export const FMResults: React.FC = () => {
                 test={test}
                 formId={formTests.formId}
                 onDelete={setTestToDelete}
-                onScreenshot={setSelectedScreenshot}
                 showNotifications={formTests.notifications?.enabled}
               />
             ))}
@@ -553,14 +541,6 @@ export const FMResults: React.FC = () => {
             {translate('tests')}
           </PageInfo>
         </PaginationContainer>
-      )}
-
-      {selectedScreenshot && (
-        <ScreenshotModal
-          imageUrl={selectedScreenshot.url}
-          testId={selectedScreenshot.testId}
-          onClose={() => setSelectedScreenshot(null)}
-        />
       )}
 
       {testToDelete && (

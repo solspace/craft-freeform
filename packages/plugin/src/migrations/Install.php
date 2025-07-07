@@ -142,7 +142,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('handle', $this->string()->notNull())
                 ->addField('description', $this->text())
                 ->addField('content', $this->longText()->notNull())
-                ->addIndex(['name'], true, name: 'name'),
+                ->addIndex(['handle'], true, name: 'handle'),
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())
@@ -294,6 +294,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('submissionId', $this->integer()->notNull())
                 ->addField('reasonType', $this->string(100)->notNull())
                 ->addField('reasonMessage', $this->text())
+                ->addField('reasonValue', $this->longText())
                 ->addIndex(['submissionId', 'reasonType'])
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
 

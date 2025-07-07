@@ -41,7 +41,7 @@ class DiagnosticsService extends BaseService
         $trueOrFalse = function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
-        $maxCraftVersion = '5.8.0';
+        $maxCraftVersion = '5.9.0';
         $minPhpVersion = '8.0.2';
         $maxPhpVersion = '8.4.0';
         $latestVersion = $this->getLatestFreeformVersion();
@@ -85,7 +85,7 @@ class DiagnosticsService extends BaseService
                     new SuggestionValidator(
                         fn ($value) => version_compare($value['version'], $maxCraftVersion, '<'),
                         'Potential Craft Compatibility issue',
-                        'This version of Freeform may not be fully compatible with this version of Craft and may encounter issues. Please check if there are any updates available.'
+                        'This version of Freeform may not be fully compatible with your version of Craft CMS and could cause issues. Please check for available updates.'
                     ),
                 ]
             ),

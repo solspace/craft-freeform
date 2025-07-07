@@ -1,28 +1,28 @@
-const fs = require('fs');
-const path = require('path');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const ReactRefreshTypeScript = require('react-refresh-typescript').default;
+import { existsSync, readFileSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const { merge } = require('webpack-merge');
-const baseConfig = require('./base.config.js');
+import ReactRefreshTypeScript from 'react-refresh-typescript';
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+import createStyledComponentsTransformer from 'typescript-plugin-styled-components';
+import { merge } from 'webpack-merge';
 
-const createStyledComponentsTransformer =
-  require('typescript-plugin-styled-components').default;
+import baseConfig from './base.config.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 let serverOptions;
-if (fs.existsSync(path.resolve(__dirname, 'certs/key.pem'))) {
+if (existsSync(resolve(__dirname, 'certs/key.pem'))) {
   serverOptions = {
-    key: fs.readFileSync(path.resolve(__dirname, 'certs/key.pem')),
-    cert: fs.readFileSync(path.resolve(__dirname, 'certs/cert.pem')),
+    key: readFileSync(resolve(__dirname, 'certs/key.pem')),
+    cert: readFileSync(resolve(__dirname, 'certs/cert.pem')),
   };
 }
 
-const clientDir = path.resolve(
-  __dirname,
-  '../../../plugin/src/Resources/js/client'
-);
+const clientDir = resolve(__dirname, '../../../plugin/src/Resources/js/client');
 
-module.exports = merge(baseConfig, {
+export default merge(baseConfig, {
   mode: 'development',
 
   output: {
@@ -68,7 +68,7 @@ module.exports = merge(baseConfig, {
               getCustomTransformers: () => ({
                 before: [
                   ReactRefreshTypeScript(),
-                  createStyledComponentsTransformer(),
+                  createStyledComponentsTransformer.default(),
                 ],
               }),
               transpileOnly: true,

@@ -54,14 +54,12 @@ export const ScreenshotModal: React.FC<
         {hasBothScreenshots && <ScreenshotTitle>{title}</ScreenshotTitle>}
         <ImageContainer>
           <TransformWrapper
-            initialScale={1.95}
+            initialScale={1}
             minScale={0.5}
             maxScale={3}
             wheel={{ step: 0.1 }}
             pinch={{ step: 5 }}
             doubleClick={{ step: 0.5 }}
-            centerOnInit
-            centerZoomedOut
           >
             {({ zoomIn, zoomOut, resetTransform, instance }) => (
               <>

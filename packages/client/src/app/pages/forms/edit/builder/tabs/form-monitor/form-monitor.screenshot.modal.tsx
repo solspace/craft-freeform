@@ -1,5 +1,9 @@
 import React from 'react';
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import {
+  MiniMap,
+  TransformComponent,
+  TransformWrapper,
+} from 'react-zoom-pan-pinch';
 import {
   ModalContainer,
   ModalFooter,
@@ -10,6 +14,7 @@ import { spacings } from '@ff-client/styles/variables';
 import translate from '@ff-client/utils/translations';
 
 import {
+  Controls,
   ImageContainer,
   NoImageMessage,
   ScreenshotImage,
@@ -18,7 +23,7 @@ import {
   ScreenshotTitle,
   SingleScreenshotContainer,
   ZoomButton,
-  ZoomControls,
+  ZoomButtons,
 } from './form-monitor.screenshot.modal.styles';
 
 interface ScreenshotModalData {
@@ -49,12 +54,14 @@ export const ScreenshotModal: React.FC<
         {hasBothScreenshots && <ScreenshotTitle>{title}</ScreenshotTitle>}
         <ImageContainer>
           <TransformWrapper
-            initialScale={1}
+            initialScale={1.95}
             minScale={0.5}
             maxScale={3}
             wheel={{ step: 0.1 }}
             pinch={{ step: 5 }}
             doubleClick={{ step: 0.5 }}
+            centerOnInit
+            centerZoomedOut
           >
             {({ zoomIn, zoomOut, resetTransform, instance }) => (
               <>
@@ -81,30 +88,38 @@ export const ScreenshotModal: React.FC<
                     draggable={false}
                   />
                 </TransformComponent>
-
-                {/* Zoom Controls */}
-                <ZoomControls>
-                  <ZoomButton
-                    onClick={() => zoomOut()}
-                    disabled={instance.transformState.scale <= 0.5}
-                    title={translate('Zoom Out')}
+                <Controls>
+                  <ZoomButtons>
+                    <ZoomButton
+                      onClick={() => zoomOut()}
+                      disabled={instance.transformState.scale <= 0.5}
+                      title={translate('Zoom Out')}
+                    >
+                      −
+                    </ZoomButton>
+                    <ZoomButton
+                      onClick={() => resetTransform()}
+                      title={translate('Reset Zoom')}
+                    >
+                      ↺
+                    </ZoomButton>
+                    <ZoomButton
+                      onClick={() => zoomIn()}
+                      disabled={instance.transformState.scale >= 3}
+                      title={translate('Zoom In')}
+                    >
+                      +
+                    </ZoomButton>
+                  </ZoomButtons>
+                  {/* MiniMap */}
+                  <MiniMap
+                    width={104}
+                    height={108}
+                    borderColor="rgba(255, 255, 255, 0.8)"
                   >
-                    −
-                  </ZoomButton>
-                  <ZoomButton
-                    onClick={() => resetTransform()}
-                    title={translate('Reset Zoom')}
-                  >
-                    ↺
-                  </ZoomButton>
-                  <ZoomButton
-                    onClick={() => zoomIn()}
-                    disabled={instance.transformState.scale >= 3}
-                    title={translate('Zoom In')}
-                  >
-                    +
-                  </ZoomButton>
-                </ZoomControls>
+                    <img src={imageUrl} alt="Minimap" />
+                  </MiniMap>
+                </Controls>
               </>
             )}
           </TransformWrapper>

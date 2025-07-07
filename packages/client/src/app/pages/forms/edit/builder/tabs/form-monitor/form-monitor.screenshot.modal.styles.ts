@@ -56,18 +56,28 @@ export const ScreenshotImage = styled.img`
   pointer-events: none;
 `;
 
-export const ZoomControls = styled.div`
+export const Controls = styled.div`
   position: absolute;
   top: ${spacings.sm};
   right: ${spacings.sm};
   display: flex;
-  gap: ${spacings.xs};
+  flex-direction: column;
+  gap: ${spacings.sm};
   background: rgba(255, 255, 255, 0.95);
   padding: ${spacings.xs};
   border-radius: 6px;
   backdrop-filter: blur(4px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   z-index: 10;
+
+  .rzpp-mini-map {
+    border-radius: 4px;
+  }
+`;
+
+export const ZoomButtons = styled.div`
+  display: flex;
+  gap: ${spacings.xs};
 `;
 
 export const ZoomButton = styled.button`

@@ -9,6 +9,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
 use Solspace\Freeform\Models\Settings;
@@ -34,6 +35,7 @@ abstract class BaseExporter implements ExporterInterface
         $formIds = $this->getOption('forms', []);
         $notificationIds = $this->getOption('templates', [])['notification'] ?? [];
         $pdfTemplateIds = $this->getOption('templates', [])['pdf'] ?? [];
+        $wrapperTemplateIds = $this->getOption('templates', [])['wrapper'] ?? [];
         $formattingTemplateIds = $this->getOption('templates', [])['formatting'] ?? [];
         $successTemplateIds = $this->getOption('templates', [])['success'] ?? [];
         $integrationIds = $this->getOption('integrations', []);
@@ -49,6 +51,7 @@ abstract class BaseExporter implements ExporterInterface
         $dataset->setTemplates(
             (new TemplateCollection())
                 ->setPdf($this->collectPdfTemplates($pdfTemplateIds))
+                ->setWrapper($this->collectWrapperTemplates($wrapperTemplateIds))
                 ->setNotification($this->collectNotifications($notificationIds))
                 ->setFormatting($this->collectFormattingTemplates($formattingTemplateIds))
                 ->setSuccess($this->collectSuccessTemplates($successTemplateIds))
@@ -66,6 +69,8 @@ abstract class BaseExporter implements ExporterInterface
     abstract protected function collectNotifications(?array $ids = null): NotificationTemplateCollection;
 
     abstract protected function collectPdfTemplates(?array $ids = null): PdfTemplateCollection;
+
+    abstract protected function collectWrapperTemplates(?array $ids = null): WrapperTemplateCollection;
 
     abstract protected function collectFormattingTemplates(?array $ids = null): FileTemplateCollection;
 

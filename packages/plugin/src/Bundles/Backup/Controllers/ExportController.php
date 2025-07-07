@@ -111,6 +111,7 @@ class ExportController extends BaseApiController
             'forms.jsonl' => $collection->getForms(),
             'notifications.jsonl' => $collection->getTemplates()->getNotification(),
             'pdf-templates.jsonl' => $collection->getTemplates()->getPdf(),
+            'wrapper-templates.jsonl' => $collection->getTemplates()->getWrapper(),
             'formatting-templates.jsonl' => $collection->getTemplates()->getFormatting(),
             'success-templates.jsonl' => $collection->getTemplates()->getSuccess(),
             'integrations.jsonl' => $collection->getIntegrations(),

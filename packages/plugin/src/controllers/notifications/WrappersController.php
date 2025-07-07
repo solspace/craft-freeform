@@ -7,6 +7,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
+use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -14,6 +15,8 @@ class WrappersController extends BaseController
 {
     public function actionIndex(): Response
     {
+        $this->view->registerAssetBundle(NotificationIndexBundle::class);
+
         return $this->renderTemplate('freeform/notifications/wrappers', [
             'list' => NotificationWrapperRecord::find()->all(),
         ]);
@@ -42,6 +45,60 @@ class WrappersController extends BaseController
         }
 
         return $this->renderEditForm($record, $record->name);
+    }
+
+    public function actionDelete(): Response
+    {
+        $this->requirePostRequest();
+
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
+
+        $request = \Craft::$app->request;
+        $id = $request->post('id');
+
+        $record = NotificationWrapperRecord::findOne(['id' => $id]);
+        $record?->delete();
+
+        return $this->asJson(['success' => true]);
+    }
+
+    public function actionDuplicate(): Response
+    {
+        $this->requirePostRequest();
+
+        $id = $this->request->post('id');
+        $record = NotificationWrapperRecord::findOne(['id' => $id]);
+        if (!$record) {
+            return $this->asJson(['success' => false, 'errors' => ['Wrapper doesn\'t exist']]);
+        }
+
+        $clone = new NotificationWrapperRecord();
+
+        $clone->setAttributes($record->getAttributes(), false);
+        $clone->id = null;
+        $clone->dateCreated = null;
+        $clone->dateUpdated = null;
+        $clone->uid = null;
+
+        while (true) {
+            $handle = $clone->handle;
+            if (preg_match('/-(\d+)$/', $handle, $matches)) {
+                $number = (int) $matches[1];
+                $handle = preg_replace('/-\d+$/', '-'.($number + 1), $handle);
+            } else {
+                $handle .= '-1';
+            }
+
+            $clone->handle = $handle;
+
+            if (!NotificationWrapperRecord::findOne(['handle' => $handle])) {
+                break;
+            }
+        }
+
+        $clone->save();
+
+        return $this->asJson(['success' => true]);
     }
 
     public function actionSave(): Response

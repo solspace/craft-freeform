@@ -1,4 +1,5 @@
 import React from 'react';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import { ControlWrapper } from '@components/form-controls/control.styles';
 import { FormErrorList } from '@components/form-controls/error-list';
 import FormInstructions from '@components/form-controls/instructions';
@@ -7,12 +8,7 @@ import type { BooleanProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import {
-  CheckboxItem,
-  CheckboxWrapper,
-  LightSwitch,
-  TextWrapper,
-} from './bool.styles';
+import { CheckboxItem, CheckboxWrapper, TextWrapper } from './bool.styles';
 
 const Bool: React.FC<ControlType<BooleanProperty>> = ({
   value: enabled,
@@ -30,8 +26,9 @@ const Bool: React.FC<ControlType<BooleanProperty>> = ({
       <CheckboxWrapper>
         <CheckboxItem>
           <LightSwitch
-            className={classes(enabled && 'on', errors && 'error')}
-            onClick={() => updateValue(!enabled)}
+            enabled={enabled}
+            onClick={(enabled) => updateValue(enabled)}
+            errors={errors}
           />
         </CheckboxItem>
         <TextWrapper onClick={() => updateValue(!enabled)}>

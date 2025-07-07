@@ -22,5 +22,7 @@ return [
     // Wrappers
     'freeform/notifications/wrappers' => 'freeform/notifications/wrappers',
     'freeform/notifications/wrappers/new' => 'freeform/notifications/wrappers/create',
+    'freeform/notifications/wrappers/delete' => 'freeform/notifications/wrappers/delete',
+    'freeform/notifications/wrappers/duplicate' => 'freeform/notifications/wrappers/duplicate',
     'freeform/notifications/wrappers/<id:\d+>' => 'freeform/notifications/wrappers/edit',
 ];

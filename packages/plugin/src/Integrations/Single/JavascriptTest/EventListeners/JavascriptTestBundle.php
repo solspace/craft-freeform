@@ -128,8 +128,8 @@ class JavascriptTestBundle extends FeatureBundle
             $form->addError(Freeform::t($errorMessage));
         }
 
-        $form->markAsSpam(SpamReason::TYPE_JS_TEST, 'Javascript Test failed');
-        $logger->debug('Javascript Test failed.');
+        $form->markAsSpam(SpamReason::TYPE_JS_TEST, 'Javascript Test failed', $postedValue);
+        $logger->debug('Javascript Test failed.', ['value' => $postedValue]);
     }
 
     public function getJavascriptTestInput(Form $form): string

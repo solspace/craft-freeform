@@ -19,10 +19,11 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 /**
  * Class SpamReasonRecord.
  *
- * @property int    $id
- * @property int    $submissionId
- * @property string $reasonType
- * @property string $reasonMessage
+ * @property int         $id
+ * @property int         $submissionId
+ * @property string      $reasonType
+ * @property string      $reasonMessage
+ * @property null|string $reasonValue
  */
 class SpamReasonRecord extends ActiveRecord
 {
@@ -36,6 +37,6 @@ class SpamReasonRecord extends ActiveRecord
 
     public function getSpamReasonObject(): SpamReason
     {
-        return new SpamReason($this->reasonType, $this->reasonMessage);
+        return new SpamReason($this->reasonType, $this->reasonMessage, $this->reasonValue);
     }
 }

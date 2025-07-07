@@ -26,6 +26,7 @@
         <div class="vue-admin-tablepane tablepane">
             <table data-file-templates class="data fullwidth collapsible">
                 <thead>
+                <th scope="col">{{ "ID"|t('freeform') }}</th>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
                 <th scope="col">{{ "Handle"|t('freeform') }}</th>
                 <th scope="col">{{ "Description"|t('freeform') }}</th>
@@ -35,6 +36,7 @@
                 {# File based templates #}
                 {% for wrapper in list %}
                     <tr data-id="{{ wrapper.id }}" data-name="{{ wrapper.name|t('freeform') }}">
+                        <td class="thin">{{ wrapper.id }}</td>
                         <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                             {% if currentUser.can("freeform-notificationsManage") %}
                                 <a href="{{ url('freeform/notifications/wrappers/' ~ wrapper.id) }}">

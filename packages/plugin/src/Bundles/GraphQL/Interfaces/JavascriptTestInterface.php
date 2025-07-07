@@ -6,6 +6,9 @@ use Solspace\Freeform\Bundles\GraphQL\Arguments\JavascriptTestArguments;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\JavascriptTestGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\JavascriptTestType;
 
+/**
+ * @coversNothing
+ */
 class JavascriptTestInterface extends AbstractInterface
 {
     public static function getName(): string

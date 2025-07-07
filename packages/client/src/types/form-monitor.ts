@@ -9,6 +9,7 @@ export interface FormTest {
   responseCode: number;
   customerId?: number;
   screenshot?: string;
+  beforeSubmitScreenshot?: string;
   submissionDuration?: number;
   notifications?: {
     type?: string;

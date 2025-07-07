@@ -49,6 +49,7 @@
     "react-router-dom": "^6.15.0",
     "react-spring": "^9.7.5",
     "react-tippy": "^1.4.0",
+    "react-zoom-pan-pinch": "^3.7.0",
     "recharts": "^2.15.0",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",

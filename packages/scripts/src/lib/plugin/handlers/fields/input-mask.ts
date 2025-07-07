@@ -1,9 +1,9 @@
 import type Freeform from '@components/front-end/plugin/freeform';
+import { createScript } from '@lib/plugin/helpers/html';
 import type { FreeformHandler } from 'types/form';
 
 class InputMask implements FreeformHandler {
   freeform: Freeform;
-  scriptAdded = false;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -12,18 +12,9 @@ class InputMask implements FreeformHandler {
       return;
     }
 
-    if (!this.scriptAdded) {
-      const script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/imask/6.0.7/imask.min.js';
-      script.async = false;
-      script.defer = false;
-      script.addEventListener('load', () => {
-        this.reload();
-      });
-      document.body.appendChild(script);
-
-      this.scriptAdded = true;
-    }
+    createScript('https://cdnjs.cloudflare.com/ajax/libs/imask/6.0.7/imask.min.js', {
+      onLoad: () => this.reload(),
+    });
   }
 
   reload = () => {

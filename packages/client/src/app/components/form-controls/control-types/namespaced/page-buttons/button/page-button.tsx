@@ -1,12 +1,10 @@
 import React from 'react';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import {
   ControlWrapper,
   FormField,
 } from '@components/form-controls/control.styles';
-import {
-  CheckboxWrapper,
-  LightSwitch,
-} from '@components/form-controls/control-types/bool/bool.styles';
+import { CheckboxWrapper } from '@components/form-controls/control-types/bool/bool.styles';
 import { Label } from '@components/form-controls/label.styles';
 import type { ControlType } from '@components/form-controls/types';
 import type { PageButtonProperty } from '@ff-client/types/properties';
@@ -26,8 +24,8 @@ const PageButton: React.FC<ControlType<PageButtonProperty>> = ({
         <CheckboxWrapper>
           {property.togglable && (
             <LightSwitch
-              className={classes(value.enabled && 'on')}
-              onClick={() => updateValue({ ...value, enabled: !value.enabled })}
+              enabled={value.enabled}
+              onClick={(enabled) => updateValue({ ...value, enabled })}
             />
           )}
 

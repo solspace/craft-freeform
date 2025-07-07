@@ -1,14 +1,13 @@
 import type { FC } from 'react';
 import React from 'react';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import { ControlBlock } from '@components/form-controls/control.block';
 import {
   CheckboxItem,
   CheckboxWrapper,
-  LightSwitch,
   TextWrapper,
 } from '@components/form-controls/control-types/bool/bool.styles';
 import FormInstructions from '@components/form-controls/instructions';
-import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import type { InputControl } from '../template.modal.types';
@@ -21,8 +20,8 @@ export const BooleanInput: FC<InputControl> = (props) => {
       <CheckboxWrapper>
         <CheckboxItem>
           <LightSwitch
-            className={classes(value && 'on')}
-            onClick={() => onChange(!value)}
+            enabled={value}
+            onClick={(enabled) => onChange(enabled)}
           />
         </CheckboxItem>
         <TextWrapper onClick={() => onChange(!value)}>

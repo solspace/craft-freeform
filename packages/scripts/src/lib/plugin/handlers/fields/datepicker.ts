@@ -1,11 +1,10 @@
 import type Freeform from '@components/front-end/plugin/freeform';
+import { createLink, createScript } from '@lib/plugin/helpers/html';
 import type { FreeformHandler } from 'types/form';
 
 class DatePicker implements FreeformHandler {
   loadedLocales: Record<string, HTMLScriptElement> = {};
   freeform: Freeform;
-
-  scriptAdded = false;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -14,23 +13,8 @@ class DatePicker implements FreeformHandler {
       return;
     }
 
-    if (!this.scriptAdded) {
-      const script = document.createElement('script');
-      script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js';
-      script.async = false;
-      script.defer = false;
-      script.addEventListener('load', () => {
-        this.reload();
-      });
-      document.body.appendChild(script);
-
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css';
-      document.body.appendChild(style);
-
-      this.scriptAdded = true;
-    }
+    createScript('//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js', { onLoad: this.reload });
+    createLink('//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css');
   }
 
   reload = () => {
@@ -68,18 +52,13 @@ class DatePicker implements FreeformHandler {
       this.freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
 
       if (!this.loadedLocales[locale]) {
-        const script = document.createElement('script');
-        script.src = `//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`;
-        script.async = false;
-        script.defer = false;
-        script.dataset.loaded = '';
-        script.addEventListener('load', () => {
-          instance.set('locale', locale);
-          script.dataset.loaded = 'true';
+        createScript(`//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/l10n/${locale}.js`, {
+          onLoad: (script) => {
+            instance.set('locale', locale);
+            script.dataset.loaded = 'true';
+            this.loadedLocales[locale] = script;
+          },
         });
-        document.body.appendChild(script);
-
-        this.loadedLocales[locale] = script;
       } else {
         this.loadedLocales[locale].addEventListener('load', () => {
           instance.set('locale', locale);

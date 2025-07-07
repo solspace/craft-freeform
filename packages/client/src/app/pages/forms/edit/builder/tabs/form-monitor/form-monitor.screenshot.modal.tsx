@@ -1,104 +1,162 @@
 import React from 'react';
-import { colors, spacings } from '@ff-client/styles/variables';
-import styled, { keyframes } from 'styled-components';
+import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch';
+import {
+  ModalContainer,
+  ModalFooter,
+  ModalHeader,
+} from '@components/modals/modal.styles';
+import type { ModalContainerProps } from '@components/modals/modal.types';
+import { spacings } from '@ff-client/styles/variables';
+import translate from '@ff-client/utils/translations';
 
-const fadeIn = keyframes`
-  from { opacity: 0; }
-  to { opacity: 1; }
-`;
+import {
+  ImageContainer,
+  NoImageMessage,
+  ScreenshotImage,
+  ScreenshotsContainer,
+  ScreenshotSection,
+  ScreenshotTitle,
+  SingleScreenshotContainer,
+  ZoomButton,
+  ZoomControls,
+} from './form-monitor.screenshot.modal.styles';
 
-const scaleIn = keyframes`
-  from { transform: scale(0.95); opacity: 0; }
-  to { transform: scale(1); opacity: 1; }
-`;
-
-export const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: ${fadeIn} 0.2s ease-in;
-`;
-
-export const ModalContent = styled.div`
-  background: ${colors.white};
-  padding: ${spacings.lg};
-  border-radius: 8px;
-  max-width: 90vw;
-  max-height: 90vh;
-  animation: ${scaleIn} 0.2s ease-out;
-
-  img {
-    max-width: 100%;
-    max-height: 80vh;
-    border-radius: 4px;
-  }
-`;
-
-export const CloseButton = styled.button`
-  position: fixed;
-  top: ${spacings.md};
-  right: ${spacings.md};
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.2);
-  }
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    width: 16px;
-    height: 1px;
-    background: ${colors.white};
-  }
-
-  &::before {
-    transform: rotate(45deg);
-  }
-
-  &::after {
-    transform: rotate(-45deg);
-  }
-`;
-
-interface ScreenshotModalProps {
-  imageUrl: string;
+interface ScreenshotModalData {
+  screenshot?: string;
+  beforeSubmitScreenshot?: string;
   testId: number;
-  onClose: () => void;
 }
 
-export const ScreenshotModal: React.FC<ScreenshotModalProps> = ({
-  imageUrl,
-  testId,
-  onClose,
-}) => {
+export const ScreenshotModal: React.FC<
+  ModalContainerProps<ScreenshotModalData>
+> = ({ data, closeModal }) => {
+  if (!data) {
+    return null;
+  }
+
+  const { screenshot, beforeSubmitScreenshot, testId } = data;
+
+  const hasAfterScreenshot = !!screenshot;
+  const hasBeforeScreenshot = !!beforeSubmitScreenshot;
+  const hasBothScreenshots = hasAfterScreenshot && hasBeforeScreenshot;
+
+  const renderScreenshot = (
+    imageUrl: string,
+    title: string
+  ): React.JSX.Element => {
+    return (
+      <ScreenshotSection>
+        {hasBothScreenshots && <ScreenshotTitle>{title}</ScreenshotTitle>}
+        <ImageContainer>
+          <TransformWrapper
+            initialScale={1}
+            minScale={0.5}
+            maxScale={3}
+            wheel={{ step: 0.1 }}
+            pinch={{ step: 5 }}
+            doubleClick={{ step: 0.5 }}
+          >
+            {({ zoomIn, zoomOut, resetTransform, instance }) => (
+              <>
+                <TransformComponent
+                  wrapperStyle={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  contentStyle={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <ScreenshotImage
+                    src={imageUrl}
+                    alt={title}
+                    loading="lazy"
+                    draggable={false}
+                  />
+                </TransformComponent>
+
+                {/* Zoom Controls */}
+                <ZoomControls>
+                  <ZoomButton
+                    onClick={() => zoomOut()}
+                    disabled={instance.transformState.scale <= 0.5}
+                    title={translate('Zoom Out')}
+                  >
+                    −
+                  </ZoomButton>
+                  <ZoomButton
+                    onClick={() => resetTransform()}
+                    title={translate('Reset Zoom')}
+                  >
+                    ↺
+                  </ZoomButton>
+                  <ZoomButton
+                    onClick={() => zoomIn()}
+                    disabled={instance.transformState.scale >= 3}
+                    title={translate('Zoom In')}
+                  >
+                    +
+                  </ZoomButton>
+                </ZoomControls>
+              </>
+            )}
+          </TransformWrapper>
+        </ImageContainer>
+      </ScreenshotSection>
+    );
+  };
+
+  const renderNoScreenshot = (title: string): React.JSX.Element => (
+    <ScreenshotSection>
+      <ScreenshotTitle>{title}</ScreenshotTitle>
+      <ImageContainer>
+        <NoImageMessage>{translate('No screenshot available')}</NoImageMessage>
+      </ImageContainer>
+    </ScreenshotSection>
+  );
+
   return (
-    <Overlay onClick={onClose}>
-      <ModalContent onClick={(e) => e.stopPropagation()}>
-        <CloseButton onClick={onClose} aria-label="Close screenshot" />
-        <img
-          src={imageUrl}
-          alt={`Screenshot for test #${testId}`}
-          loading="lazy"
-        />
-      </ModalContent>
-    </Overlay>
+    <ModalContainer style={{ maxWidth: '90vw', width: '1200px' }}>
+      <ModalHeader>
+        <h1>{translate('Screenshots for Test', { testId })}</h1>
+      </ModalHeader>
+
+      <div style={{ padding: `${spacings.lg} ${spacings.xl}` }}>
+        {hasBothScreenshots ? (
+          <ScreenshotsContainer>
+            {renderScreenshot(
+              beforeSubmitScreenshot!,
+              translate('Before Submit')
+            )}
+            {renderScreenshot(screenshot!, translate('After Submit'))}
+          </ScreenshotsContainer>
+        ) : hasBeforeScreenshot ? (
+          <SingleScreenshotContainer>
+            {renderScreenshot(beforeSubmitScreenshot!, '')}
+          </SingleScreenshotContainer>
+        ) : hasAfterScreenshot ? (
+          <SingleScreenshotContainer>
+            {renderScreenshot(screenshot!, '')}
+          </SingleScreenshotContainer>
+        ) : (
+          <SingleScreenshotContainer>
+            {renderNoScreenshot(translate('Screenshots'))}
+          </SingleScreenshotContainer>
+        )}
+      </div>
+
+      <ModalFooter>
+        <button className="btn cancel" onClick={closeModal}>
+          {translate('Close')}
+        </button>
+      </ModalFooter>
+    </ModalContainer>
   );
 };

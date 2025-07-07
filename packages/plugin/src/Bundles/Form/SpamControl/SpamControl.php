@@ -67,6 +67,7 @@ class SpamControl extends FeatureBundle
             $record->submissionId = $submission->getId();
             $record->reasonType = $reason['type'];
             $record->reasonMessage = $reason['message'];
+            $record->reasonValue = $reason['value'];
             $record->save();
         }
     }

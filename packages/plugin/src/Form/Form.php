@@ -442,19 +442,19 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->disableAjaxReset;
     }
 
-    public function markAsSpam(string $type, string $message): self
+    public function markAsSpam(string $type, string $message, ?string $value = null): self
     {
         $bag = $this->getProperties();
 
         $reasons = $this->getSpamReasons();
 
         foreach ($reasons as $reason) {
-            if ($reason['type'] === $type && $reason['message'] === $message) {
+            if ($reason['type'] === $type && $reason['message'] === $message && $reason['value'] === $value) {
                 return $this;
             }
         }
 
-        $reasons[] = ['type' => $type, 'message' => $message];
+        $reasons[] = ['type' => $type, 'message' => $message, 'value' => $value];
 
         $bag->set(self::PROPERTY_SPAM_REASONS, $reasons);
 

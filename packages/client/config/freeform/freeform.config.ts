@@ -1,4 +1,8 @@
 import type { Site } from '@ff-client/types/sites';
+import {
+  createSemverCompare,
+  type SemverCompare,
+} from '@ff-client/utils/comparison';
 
 export enum Edition {
   Pro = 'pro',
@@ -28,6 +32,7 @@ type Config = {
     craft: {
       is5: boolean;
       version: string;
+      is: SemverCompare;
     };
     freeform: {
       version: string;
@@ -63,6 +68,13 @@ const baseConfig = JSON.parse(element?.innerHTML || '[]') as Config;
 
 const config: Config = {
   ...baseConfig,
+  metadata: {
+    ...baseConfig.metadata,
+    craft: {
+      ...baseConfig.metadata?.craft,
+      is: createSemverCompare(baseConfig?.metadata?.craft?.version || '0.0.0'),
+    },
+  },
   editions: {
     ...baseConfig.editions,
 

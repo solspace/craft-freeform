@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
-import { LightSwitch } from '@components/form-controls/control-types/bool/bool.styles';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -38,8 +38,8 @@ const Boolean: React.FC<Props<BooleanItem, boolean>> = ({
     <Block>
       <Control>
         <LightSwitch
-          className={classes(item.enabled && 'on')}
-          onClick={() => updateValue(!item.enabled)}
+          enabled={item.enabled}
+          onClick={(enabled) => updateValue(enabled)}
         />
       </Control>
       <TitleBlock>

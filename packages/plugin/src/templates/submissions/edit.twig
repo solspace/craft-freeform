@@ -193,7 +193,7 @@
 					<li>
 						{{ reason.message|t('freeform') }}
 						{% if reason.value %}
-							<br><br><i>{{ reason.value|t('freeform') }}</i>
+							<br>{{ 'Value'|t('freeform') }}: <i>{{ reason.value|t('freeform') }}</i>
 						{% endif %}
 					</li>
 				{% endfor %}

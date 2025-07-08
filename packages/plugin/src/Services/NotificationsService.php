@@ -34,7 +34,7 @@ class NotificationsService extends BaseService
 
     private static bool $allNotificationsLoaded = false;
 
-    public function getAllNotifications(bool $indexById = true): array
+    public function getAllNotifications(bool $indexById = true, bool $skipStorageCheck = false): array
     {
         $cacheIsNull = null === self::$notificationCache;
 
@@ -43,26 +43,30 @@ class NotificationsService extends BaseService
                 self::$notificationCache = [];
             }
 
-            $storageType = $this->getSettingsService()->getSettingsModel()->emailTemplateStorageType;
+            if ($skipStorageCheck) {
+                $isFile = $isDb = true;
+            } else {
+                $storageType = $this->getSettingsService()->getSettingsModel()->emailTemplateStorageType;
 
-            $isFile = $isDb = false;
+                $isFile = $isDb = false;
 
-            switch ($storageType) {
-                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
-                    $isDb = true;
+                switch ($storageType) {
+                    case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
+                        $isDb = true;
 
-                    break;
+                        break;
 
-                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
-                    $isFile = true;
+                    case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
+                        $isFile = true;
 
-                    break;
+                        break;
 
-                default:
-                    $isDb = true;
-                    $isFile = true;
+                    default:
+                        $isDb = true;
+                        $isFile = true;
 
-                    break;
+                        break;
+                }
             }
 
             $databaseNotifications = $isDb ? $this->getDatabaseService()->getAll($indexById) : [];

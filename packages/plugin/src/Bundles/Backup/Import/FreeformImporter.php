@@ -523,7 +523,7 @@ class FreeformImporter
 
         $this->sse->message('reset', $collection->count());
 
-        $existingNotifications = $this->notificationsService->getAllNotifications();
+        $existingNotifications = $this->notificationsService->getAllNotifications(skipStorageCheck: true);
         $notificationsByIdentificator = [];
         foreach ($existingNotifications as $notification) {
             $notificationsByIdentificator[$notification->uid ?? $notification->filepath] = $notification;
@@ -537,7 +537,7 @@ class FreeformImporter
         foreach ($collection as $notification) {
             $this->sse->message('info', 'Importing notification: '.$notification->name);
 
-            $record = $notificationsByIdentificator[$notification->id ?? $notification->uid] ?? null;
+            $record = $notificationsByIdentificator[$notification->uid] ?? null;
             if ($record) {
                 if (ImportStrategy::TYPE_SKIP === $strategy) {
                     $this->notificationTransferIdMap[$notification->id ?? $notification->uid] = $record->id ?? $record->filepath;
@@ -894,7 +894,7 @@ class FreeformImporter
             $record->pdfTemplateIds = json_encode(
                 array_filter(
                     array_map(
-                        fn (string $uid) => (int) $this->pdfTemplateTransferIdMap[$uid] ?: null,
+                        fn (string $uid) => isset($this->pdfTemplateTransferIdMap[$uid]) ? (int) $this->pdfTemplateTransferIdMap[$uid] : null,
                         $template->pdfTemplateIds
                     )
                 )

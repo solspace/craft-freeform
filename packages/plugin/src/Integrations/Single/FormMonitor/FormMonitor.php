@@ -54,6 +54,10 @@ class FormMonitor extends APIIntegration
     #[Input\Hidden]
     private string $requestToken = '';
 
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Input\Hidden]
+    private string $storedLicenseKey = '';
+
     #[Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Text(
@@ -359,6 +363,16 @@ class FormMonitor extends APIIntegration
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/tests/all');
         $client->delete($endpoint);
+    }
+
+    public function getStoredLicenseKey(): string
+    {
+        return $this->storedLicenseKey;
+    }
+
+    public function setStoredLicenseKey(string $key): void
+    {
+        $this->storedLicenseKey = $key;
     }
 
     protected function getProcessableFields(string $category): array

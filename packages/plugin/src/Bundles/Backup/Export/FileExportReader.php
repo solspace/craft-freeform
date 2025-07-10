@@ -4,10 +4,14 @@ namespace Solspace\Freeform\Bundles\Backup\Export;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\FileLineProcessor;
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupEntriesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RuleConditionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\SitesCollection;
@@ -16,13 +20,17 @@ use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollectio
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
+use Solspace\Freeform\Bundles\Backup\DTO\Favorite;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
+use Solspace\Freeform\Bundles\Backup\DTO\FormGroup;
+use Solspace\Freeform\Bundles\Backup\DTO\FormGroupEntry;
 use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
+use Solspace\Freeform\Bundles\Backup\DTO\LimitedUsers;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
@@ -55,6 +63,9 @@ class FileExportReader extends BaseExporter
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
+        $preview->favorites = $this->collectFavorites();
+        $preview->formGroups = $this->collectFormGroups();
+        $preview->limitedUsers = $this->collectLimitedUsers();
         $preview->integrations = $this->collectIntegrations();
         $preview->settings = (bool) $this->collectSettings(true);
         $preview->templates = (new TemplateCollection())
@@ -189,6 +200,79 @@ class FileExportReader extends BaseExporter
             }
 
             $collection->add($form);
+        }
+
+        return $collection;
+    }
+
+    protected function collectFavorites(?array $ids = null): FavoritesCollection
+    {
+        $collection = new FavoritesCollection();
+
+        foreach ($this->readLineData('favorites.jsonl') as $json) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
+                continue;
+            }
+
+            $favorite = new Favorite();
+            $favorite->uid = $json['uid'];
+            $favorite->label = $json['label'];
+            $favorite->type = $json['type'];
+            $favorite->metadata = (object) $json['metadata'];
+
+            $collection->add($favorite);
+        }
+
+        return $collection;
+    }
+
+    protected function collectFormGroups(?array $ids = null): FormGroupsCollection
+    {
+        $collection = new FormGroupsCollection();
+
+        foreach ($this->readLineData('form-groups.jsonl') as $json) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
+                continue;
+            }
+
+            $group = new FormGroup();
+            $group->uid = $json['uid'];
+            $group->siteId = $json['siteId'];
+            $group->label = $json['label'];
+            $group->order = $json['order'];
+            $group->entries = new FormGroupEntriesCollection();
+
+            $entries = $json['entries'] ?? [];
+            foreach ($entries as $entryJson) {
+                $entry = new FormGroupEntry();
+                $entry->formUid = $entryJson['formUid'];
+                $entry->order = $entryJson['order'];
+
+                $group->entries->add($entry);
+            }
+
+            $collection->add($group);
+        }
+
+        return $collection;
+    }
+
+    protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection
+    {
+        $collection = new LimitedUsersCollection();
+
+        foreach ($this->readLineData('limited-users.jsonl') as $json) {
+            if (null !== $ids && !\in_array($json['uid'], $ids)) {
+                continue;
+            }
+
+            $limitedUser = new LimitedUsers();
+            $limitedUser->uid = $json['uid'];
+            $limitedUser->name = $json['name'];
+            $limitedUser->description = $json['description'];
+            $limitedUser->settings = (object) $json['settings'];
+
+            $collection->add($limitedUser);
         }
 
         return $collection;

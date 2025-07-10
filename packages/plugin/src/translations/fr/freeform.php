@@ -22,6 +22,7 @@ return [
     'Move this Form Card' => 'Déplacer cette carte de formulaire',
     'Duplicate this Form' => 'Dupliquer ce formulaire',
     'Delete this Form' => 'Supprimer ce formulaire',
+    'Delete this Form and its Submissions' => 'Supprimer ce formulaire et supprimer ses soumissions',
     'Are you sure you want to delete this form?' => 'Êtes-vous sûr de vouloir supprimer ce formulaire ?',
     'Add new Form' => 'Ajouter un nouveau formulaire',
     'Create a new Form' => 'Créer un nouveau formulaire',

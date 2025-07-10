@@ -22,6 +22,7 @@ return [
     'Move this Form Card' => 'Sposta questa scheda modulo',
     'Duplicate this Form' => 'Duplica questo modulo',
     'Delete this Form' => 'Elimina questo modulo',
+    'Delete this Form and its Submissions' => 'Elimina questo modulo e i relativi invii',
     'Are you sure you want to delete this form?' => 'Sei sicuro di voler eliminare questo modulo?',
     'Add new Form' => 'Aggiungi nuovo modulo',
     'Create a new Form' => 'Crea un nuovo modulo',

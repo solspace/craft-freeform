@@ -22,6 +22,7 @@ return [
     'Move this Form Card' => 'Move this Form Card',
     'Duplicate this Form' => 'Duplicate this Form',
     'Delete this Form' => 'Delete this Form',
+    'Delete this Form and its Submissions' => 'Delete this Form and its Submissions',
     'Are you sure you want to delete this form?' => 'Are you sure you want to delete this form?',
     'Add new Form' => 'Add new Form',
     'Create a new Form' => 'Create a new Form',

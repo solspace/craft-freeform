@@ -116,7 +116,7 @@ class FieldsService extends BaseService
         $fields = [];
 
         foreach ($records as $record) {
-            $fields[]= $this->createField($record, $form);
+            $fields[] = $this->createField($record, $form);
         }
 
         return $fields;

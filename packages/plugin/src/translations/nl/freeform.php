@@ -22,6 +22,7 @@ return [
     'Move this Form Card' => 'Verplaats deze formulierkaart',
     'Duplicate this Form' => 'Dupliceer dit formulier',
     'Delete this Form' => 'Verwijder dit formulier',
+    'Delete this Form and its Submissions' => 'Verwijder dit formulier en verwijder de inzendingen',
     'Are you sure you want to delete this form?' => 'Weet u zeker dat u dit formulier wilt verwijderen?',
     'Add new Form' => 'Nieuw formulier toevoegen',
     'Create a new Form' => 'Maak een nieuw formulier aan',

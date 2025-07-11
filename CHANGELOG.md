@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.11.5 - 2025-07-07
+
+### Added
+- Added support for modifying generated `<script>` tags for external scripts loaded by Freeform.
+- Added the ability to import and export notification template wrappers.
+
+### Changed
+- Enhanced the **Monitoring** tab in the form builder to include an additional screenshot taken just before form submission.
+- Updated the **Honeypot** and **JavaScript Test** spam prevention methods to record input values for debugging when a failure occurs.
+- Updated lightswitch toggle settings to match the new Craft 5.8+ control panel styles.
+- Added an **ID** column to the Notification Template Wrapper index in the control panel.
+
+### Fixed
+- Fixed an issue where _camelCase_ formatting template names were not properly titleized in the control panel.
+- Fixed a bug that prevented global database email notifications from being imported.
+- Fixed an issue where some special characters were being unnecessarily escaped in **Table** field inputs.
+
 ## 5.11.4 - 2025-07-02
 
 ### Added

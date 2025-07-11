@@ -52,6 +52,7 @@ Form Monitor cannot work on your site or collect any of your data until you expr
 - Your Freeform plugin license key to validate your active license.
 - Any website URL(s) you provide to Form Monitor so it can locate and test your form(s).
 - The form name of the form(s) you opt into testing. This enables technical support to more easily assist if any issues arise.
+- The form layout and configuration so that Form Monitor can provide correct testing data to accurately test the form.
 - Your current Craft and Freeform versions to ensure compatibility with Form Monitor and alert you if you need to upgrade Freeform or Craft in the future.
 - Your site's Timezone to provide weekly and monthly digest email notifications at the proper day and time.
 - Screenshots of the page that contains each form. This is to show that the test was successful or where it may have failed.

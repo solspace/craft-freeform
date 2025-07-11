@@ -22,6 +22,7 @@ return [
     'Move this Form Card' => 'Diese Formular-Karte verschieben',
     'Duplicate this Form' => 'Dieses Formular duplizieren',
     'Delete this Form' => 'Dieses Formular löschen',
+    'Delete this Form and its Submissions' => 'Dieses Formular löschen und seine Einsendungen löschen',
     'Are you sure you want to delete this form?' => 'Sind Sie sicher, dass Sie dieses Formular löschen möchten?',
     'Add new Form' => 'Neues Formular hinzufügen',
     'Create a new Form' => 'Ein neues Formular erstellen',

@@ -314,10 +314,10 @@ class PropertyProvider
 
     private function processValue(\ReflectionProperty $property, Property $attribute, $referenceObject): void
     {
-        $this->processDefaultValue($property, $attribute);
+        $hasDefaultValue = $this->processDefaultValue($property, $attribute);
 
         $value = $attribute->value ?? $property->getDefaultValue();
-        if (null === $referenceObject && $attribute->valueGenerator) {
+        if (!$hasDefaultValue && null === $referenceObject && $attribute->valueGenerator) {
             $value = $attribute->valueGenerator->generateValue($referenceObject);
         }
 
@@ -332,7 +332,7 @@ class PropertyProvider
         $attribute->value = $value;
     }
 
-    private function processDefaultValue(\ReflectionProperty $property, Property $attribute): void
+    private function processDefaultValue(\ReflectionProperty $property, Property $attribute): bool
     {
         $defaultValue = AttributeHelper::findAttribute($property, DefaultValue::class);
         if (!$defaultValue) {
@@ -341,7 +341,7 @@ class PropertyProvider
                 $attribute->disabled = !$this->defaultsProvider->isLocked($lock->path);
             }
 
-            return;
+            return false;
         }
 
         $isLocked = $this->defaultsProvider->isLocked($defaultValue->path);
@@ -350,6 +350,8 @@ class PropertyProvider
         }
 
         $attribute->value = $this->defaultsProvider->getValue($defaultValue->path);
+
+        return true;
     }
 
     private function processValueGenerator(\ReflectionProperty $property, Property $attribute): void

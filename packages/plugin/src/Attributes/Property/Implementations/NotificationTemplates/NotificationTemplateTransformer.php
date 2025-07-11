@@ -4,13 +4,14 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\NotificationTemp
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTemplateProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class NotificationTemplateTransformer implements TransformerInterface
 {
     public function __construct(private NotificationTemplateProvider $provider) {}
 
-    public function transform($value): ?NotificationTemplate
+    public function transform($value, ?Form $form = null): ?NotificationTemplate
     {
         if (is_numeric($value)) {
             return $this->provider->getDatabaseNotificationTemplate((int) $value);

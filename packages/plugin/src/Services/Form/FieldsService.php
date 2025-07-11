@@ -33,11 +33,11 @@ class FieldsService extends BaseService
         parent::__construct($config);
     }
 
-    public function getFieldByUid(string $fieldUid): ?FieldInterface
+    public function getFieldByUid(string $fieldUid, ?Form $form = null): ?FieldInterface
     {
         $record = FormFieldRecord::findOne(['uid' => $fieldUid]);
         if ($record) {
-            $form = $this->formsService->getFormById($record->formId);
+            $form = $form ?? $this->formsService->getFormById($record->formId);
 
             return $this->createField($record, $form);
         }
@@ -155,7 +155,7 @@ class FieldsService extends BaseService
 
         /** @var FieldInterface $field */
         $field = new $type($form);
-        $this->propertyProvider->setObjectProperties($field, $properties);
+        $this->propertyProvider->setObjectProperties($field, $properties, null, $form);
 
         $this->fieldCache[$fieldCacheKey] = $field;
 

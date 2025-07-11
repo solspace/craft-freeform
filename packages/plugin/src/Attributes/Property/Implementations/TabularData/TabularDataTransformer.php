@@ -5,10 +5,11 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\TabularData;
 use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
+use Solspace\Freeform\Form\Form;
 
 class TabularDataTransformer extends Transformer
 {
-    public function transform($value): TabularData
+    public function transform($value, ?Form $form = null): TabularData
     {
         return new TabularData($value ?? []);
     }

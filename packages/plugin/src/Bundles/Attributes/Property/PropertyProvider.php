@@ -34,6 +34,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
@@ -51,9 +52,10 @@ class PropertyProvider
     ) {}
 
     public function setObjectProperties(
-        object $object,
-        array $properties,
-        ?callable $valueUpdateCallback = null
+        object    $object,
+        array     $properties,
+        ?callable $valueUpdateCallback = null,
+        ?Form $form = null
     ): void {
         $editableProperties = $this->getEditableProperties($object);
 
@@ -68,7 +70,7 @@ class PropertyProvider
             $editableProperty = $editableProperties->get($key);
 
             if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
-                $value = $editableProperty->transformer->transform($value);
+                $value = $editableProperty->transformer->transform($value, $form);
             }
 
             if ($valueUpdateCallback) {

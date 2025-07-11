@@ -4,10 +4,11 @@ namespace Solspace\Freeform\Attributes\Property\Input\Special\Properties;
 
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 
 class FieldMappingTransformer implements TransformerInterface
 {
-    public function transform($value): FieldMapping
+    public function transform($value, ?Form $form = null): FieldMapping
     {
         $mapping = new FieldMapping();
 

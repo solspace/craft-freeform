@@ -4,10 +4,11 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Date;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 
 class DateTimeTransformer implements TransformerInterface
 {
-    public function transform($value): ?Carbon
+    public function transform($value, ?Form $form = null): ?Carbon
     {
         if (!$value) {
             return null;

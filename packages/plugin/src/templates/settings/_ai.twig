@@ -1,0 +1,107 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+] %}
+
+{% set title = "AI Settings"|t("freeform") %}
+
+{% block content %}
+    <div class="freeform-ai-settings">
+        <form method="post" accept-charset="UTF-8">
+            <input type="hidden" name="action" value="freeform/settings/save-settings">
+            {{ redirectInput('freeform/settings/ai') }}
+            {{ csrfInput() }}
+
+            {{ forms.lightswitchField({
+                label: "Enable AI Features"|t('freeform'),
+                instructions: "Enable AI-powered features like automatic form submission categorization. These settings serve as global defaults for all AI features."|t('freeform'),
+                name: 'settings[aiEnabled]',
+                on: settings.aiEnabled,
+                toggle: "ai-settings",
+                errors: settings.errors("aiEnabled"),
+            }) }}
+
+            <div id="ai-settings" class="field {{ not settings.aiEnabled ? 'hidden' }}">
+                {{ forms.selectField({
+                    label: "Default AI Provider"|t('freeform'),
+                    instructions: "Select the default AI provider to use for processing. Individual AI fields can override this setting if needed."|t('freeform'),
+                    name: 'settings[aiProvider]',
+                    value: settings.aiProvider,
+                    errors: settings.errors("aiProvider"),
+                    options: {
+                        'openai': 'OpenAI (GPT)',
+                        'gemini': 'Google Gemini',
+                    }
+                }) }}
+
+                {{ forms.textField({
+                    label: "API Key"|t('freeform'),
+                    instructions: "Enter your AI provider API key. This will be stored securely."|t('freeform'),
+                    name: 'settings[aiApiKey]',
+                    value: settings.aiApiKey,
+                    type: 'password',
+                    placeholder: 'sk-... or your API key',
+                    errors: settings.errors("aiApiKey"),
+                }) }}
+
+                {{ forms.textField({
+                    label: "Default AI Model"|t('freeform'),
+                    instructions: "The default AI model to use (e.g., gpt-3.5-turbo, gemini-pro). Individual AI fields can override this setting if needed."|t('freeform'),
+                    name: 'settings[aiModel]',
+                    value: settings.aiModel,
+                    placeholder: 'gpt-3.5-turbo',
+                    errors: settings.errors("aiModel"),
+                }) }}
+
+                {{ forms.textField({
+                    label: "Default Max Tokens"|t('freeform'),
+                    instructions: "Default maximum number of tokens for AI responses. Individual AI fields can override this setting if needed."|t('freeform'),
+                    name: 'settings[aiMaxTokens]',
+                    value: settings.aiMaxTokens,
+                    type: 'number',
+                    min: 10,
+                    max: 1000,
+                    errors: settings.errors("aiMaxTokens"),
+                }) }}
+
+                {{ forms.textField({
+                    label: "Default Temperature"|t('freeform'),
+                    instructions: "Default temperature for AI responses (0.0 = deterministic, 1.0 = creative). Individual AI fields can override this setting if needed."|t('freeform'),
+                    name: 'settings[aiTemperature]',
+                    value: settings.aiTemperature,
+                    type: 'number',
+                    min: 0.0,
+                    max: 1.0,
+                    step: 0.1,
+                    errors: settings.errors("aiTemperature"),
+                }) }}
+
+                {{ forms.lightswitchField({
+                    label: "Default Caching"|t('freeform'),
+                    instructions: "Default caching setting for AI responses. Individual AI fields can override this setting if needed."|t('freeform'),
+                    name: 'settings[aiCacheEnabled]',
+                    on: settings.aiCacheEnabled,
+                    toggle: "ai-cache-ttl",
+                    errors: settings.errors("aiCacheEnabled"),
+                }) }}
+
+                <div id="ai-cache-ttl" class="field {{ not settings.aiCacheEnabled ? 'hidden' }}">
+                    {{ forms.textField({
+                        label: "Cache TTL (seconds)"|t('freeform'),
+                        instructions: "How long to cache AI responses in seconds."|t('freeform'),
+                        name: 'settings[aiCacheTtl]',
+                        value: settings.aiCacheTtl,
+                        type: 'number',
+                        min: 60,
+                        max: 86400,
+                        errors: settings.errors("aiCacheTtl"),
+                    }) }}
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %} 

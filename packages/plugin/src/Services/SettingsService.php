@@ -255,6 +255,8 @@ class SettingsService extends BaseService
             'statuses' => ['title' => Freeform::t('Statuses')],
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'spam' => ['title' => Freeform::t('Spam Protection')],
+            'hdai' => ['heading' => Freeform::t('AI')],
+            'ai' => ['title' => Freeform::t('AI Settings')],
             'hdapi' => ['heading' => Freeform::t('Integrations')],
             'integrations/email-marketing' => ['title' => Freeform::t('Email Marketing')],
             'integrations/crm' => ['title' => Freeform::t('CRM')],

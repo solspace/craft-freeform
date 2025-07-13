@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2025, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
+
+namespace Solspace\Freeform\Jobs;
+
+use craft\queue\BaseJob;
+use Solspace\Freeform\Fields\Implementations\Pro\AiSummaryField;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
+
+class ProcessAiSummaryJob extends BaseJob
+{
+    public ?int $formId = null;
+    public ?int $submissionId = null;
+    public array $postedData = [];
+    public ?int $siteId = null;
+
+    public function __construct($config = [])
+    {
+        parent::__construct($config);
+        $this->siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+    }
+
+    public function execute($queue): void
+    {
+        $freeform = Freeform::getInstance();
+
+        $form = $freeform->forms->getFormById($this->formId);
+        if (!$form) {
+            return;
+        }
+
+        $submission = $freeform->submissions->getSubmissionById($this->submissionId);
+        if (!$submission) {
+            return;
+        }
+
+        // Set the form values from the posted data
+        $form->valuesFromArray($this->postedData);
+
+        // Get AI Summary fields
+        $fields = $form->getLayout()->getFields();
+        $aiSummaryFields = [];
+
+        foreach ($fields as $field) {
+            if ($field instanceof AiSummaryField) {
+                $aiSummaryFields[] = $field;
+            }
+        }
+
+        if (empty($aiSummaryFields)) {
+            return;
+        }
+
+        $aiSummaryService = $freeform->aiSummary;
+        $submissionsService = $freeform->submissions;
+
+        foreach ($aiSummaryFields as $field) {
+            try {
+                // Skip if already processed
+                if (!empty($field->getValue())) {
+                    continue;
+                }
+
+                $aiResult = $aiSummaryService->processAiSummaryField($form, $field);
+                if (null !== $aiResult) {
+                    // Update the submission with the AI result
+                    $fieldCollection = $submission->getFieldCollection();
+                    if ($fieldCollection && $fieldCollection->has($field->getHandle())) {
+                        $fieldCollection->get($field->getHandle())->setValue($aiResult);
+                        $submissionsService->storeSubmission($form, $submission);
+                    }
+                }
+            } catch (\Exception $e) {
+                // Log the error but don't fail the entire job
+                $freeform->logger->getLogReader()->log(
+                    'error',
+                    'Failed to process AI summary for field: '.$field->getHandle().' - '.$e->getMessage(),
+                    [
+                        'form' => $form->getHandle(),
+                        'submission' => $submission->getId(),
+                        'field' => $field->getHandle(),
+                    ]
+                );
+            }
+        }
+    }
+
+    protected function defaultDescription(): ?string
+    {
+        return Freeform::t('Freeform: Processing AI Summary');
+    }
+}

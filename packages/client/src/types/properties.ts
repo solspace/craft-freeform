@@ -22,6 +22,8 @@ export enum PropertyType {
   DateTime = 'dateTime',
   Field = 'field',
   FieldMapping = 'fieldMapping',
+  FieldSelection = 'fieldSelection',
+  AiSummary = 'aiSummary',
   FieldType = 'fieldType',
   Hidden = 'hidden',
   Integer = 'int',
@@ -182,6 +184,17 @@ export type CalculationProperty = BaseProperty<
 > & {
   availableFieldTypes: string[];
 };
+
+export type FieldSelectionProperty = BaseProperty<
+  string,
+  PropertyType.FieldSelection
+> & {
+  availableFieldTypes: string[];
+};
+
+export type AiSummaryProperty = BaseProperty<string, PropertyType.AiSummary> & {
+  availableFieldTypes: string[];
+};
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
   dateFormat?: string;
   minDate?: string;
@@ -286,6 +299,8 @@ export type Property =
   | DynamicSelectProperty
   | AppStateSelectProperty
   | FieldMappingProperty
+  | FieldSelectionProperty
+  | AiSummaryProperty
   | FieldTypeProperty
   | FieldProperty
   | HiddenProperty

@@ -291,6 +291,16 @@ class Settings extends Model
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
+    // AI Configuration
+    public bool $aiEnabled = false;
+    public string $aiProvider = 'openai';
+    public string $aiApiKey = '';
+    public string $aiModel = 'gpt-3.5-turbo';
+    public int $aiMaxTokens = 150;
+    public float $aiTemperature = 0.7;
+    public bool $aiCacheEnabled = true;
+    public int $aiCacheTtl = 3600; // 1 hour
+
     /**
      * Settings constructor.
      */

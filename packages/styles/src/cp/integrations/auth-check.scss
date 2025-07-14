@@ -1,3 +1,5 @@
+@use 'sass:map';
+
 #auth-checker {
   display: grid;
   grid-template-columns: min-content auto;
@@ -74,11 +76,11 @@
 
     @each $status, $props in $statuses {
       &[data-status='#{$status}'] {
-        background-color: map-get($props, 'background');
+        background-color: map.get($props, 'background');
 
         .status-dot {
-          background: map-get($props, 'status');
-          border: 1px solid map-get($props, 'status');
+          background: map.get($props, 'status');
+          border: 1px solid map.get($props, 'status');
         }
       }
     }

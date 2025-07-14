@@ -8,7 +8,7 @@ use Solspace\Freeform\Freeform;
 
 class SuccessBehaviorValueGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(?object $referenceObject): string
+    public function generateValue(?object $referenceObject, ?object $context): string
     {
         $successTemplates = Freeform::getInstance()->settings->getSuccessTemplates();
         if (empty($successTemplates)) {

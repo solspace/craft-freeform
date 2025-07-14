@@ -51,7 +51,7 @@
   .markdown-container {
     position: relative;
 
-    max-height: 150px;
+    max-height: 0;
 
     background: #f3f7fc;
     border-radius: 3px;
@@ -132,20 +132,22 @@
     }
 
     p {
-
-      + ul, + ol {
+      + ul,
+      + ol {
         margin-top: -10px;
       }
     }
 
-    ul, ol {
+    ul,
+    ol {
       padding-left: 20px;
 
       li {
-        margin-top: .15em;
+        margin-top: 0.15em;
 
-        > ul, > ol {
-          margin-top: .15em;
+        > ul,
+        > ol {
+          margin-top: 0.15em;
         }
       }
     }
@@ -169,8 +171,8 @@
       }
     }
 
-    ul li, ol li {
-
+    ul li,
+    ol li {
       .note {
         margin-top: 5px;
         margin-bottom: 5px;
@@ -200,6 +202,5 @@
     hr {
       height: 1px;
     }
-
   }
 }

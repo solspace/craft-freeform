@@ -206,6 +206,8 @@ class IntegrationsService extends BaseService
         }
 
         $record->enabled = $model->enabled;
+        $record->legacy = $model->legacy;
+        $record->connectionEstablished = $model->connectionEstablished;
         $record->name = $model->name;
         $record->handle = $model->handle;
         $record->type = $model->type;
@@ -286,7 +288,7 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $properties = $this->propertyProvider->getEditableProperties($model->class);
+        $properties = $this->propertyProvider->getEditableProperties($model->class, $model);
         foreach ($properties as $property) {
             if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
                 continue;
@@ -555,6 +557,8 @@ class IntegrationsService extends BaseService
                     'integration.id',
                     'integration.uid',
                     'integration.enabled',
+                    'integration.legacy',
+                    'integration.connectionEstablished',
                     'integration.name',
                     'integration.handle',
                     'integration.type',

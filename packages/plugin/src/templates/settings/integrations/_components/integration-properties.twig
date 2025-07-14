@@ -4,6 +4,8 @@
 
     {% if type.readme %}
         {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
+
+        <hr>
     {% endif %}
 
     <div class="property-editor" data-class="{{ type.class }}">

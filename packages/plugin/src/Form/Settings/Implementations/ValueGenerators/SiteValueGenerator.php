@@ -9,7 +9,7 @@ class SiteValueGenerator implements ValueGeneratorInterface
 {
     public function __construct(private Sites $sites) {}
 
-    public function generateValue(?object $referenceObject): ?array
+    public function generateValue(?object $referenceObject, ?object $context): ?array
     {
         $sites = $this->sites->getEditableSites();
 

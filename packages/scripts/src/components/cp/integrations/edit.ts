@@ -6,7 +6,7 @@ export const EVENT_INTEGRATION_UPDATE = 'integration-update';
 
 $(() => {
   const $propertyEditor = $('.property-editor');
-  const $classSelect = $('select[name="class"]');
+  const $classSelect = $('[name="class"]');
 
   $classSelect.on('change', function () {
     $(this).trigger(EVENT_INTEGRATION_UPDATE);
@@ -27,7 +27,9 @@ $(() => {
   const updateFieldVisibility = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const values: Record<string, any> = {
-      values: {},
+      values: {
+        enabled: true,
+      },
     };
 
     let currentClass: string;

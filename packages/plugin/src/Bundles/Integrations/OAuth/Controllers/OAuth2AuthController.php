@@ -1,12 +1,13 @@
 <?php
 
-namespace Solspace\Freeform\controllers\integrations;
+namespace Solspace\Freeform\Bundles\Integrations\OAuth\Controllers;
 
-use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use JetBrains\PhpStorm\NoReturn;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Events\Integrations\OAuth2\FetchTokenEvent;
+use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -15,9 +16,71 @@ use yii\base\Event;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class OAuthController extends BaseController
+class OAuth2AuthController extends BaseController
 {
-    public function actionAuthorize(): Response
+    protected array|bool|int $allowAnonymous = ['callback'];
+
+    #[NoReturn]
+    public function actionAuthorize(int $id): void
+    {
+        $integration = $this->getIntegrationsService()->getIntegrationObjectById($id);
+        if (!$integration instanceof OAuth2ConnectorInterface) {
+            throw new NotFoundHttpException('No authorization flow available');
+        }
+
+        $payload = [
+            'response_type' => 'code',
+            'client_id' => $integration->getClientId(),
+            'redirect_uri' => $integration->getRedirectUri(),
+            'state' => $integration->getId(),
+        ];
+
+        $event = new InitiateAuthenticationFlowEvent($integration, $payload);
+        Event::trigger(
+            OAuth2ConnectorInterface::class,
+            OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
+            $event
+        );
+
+        $queryString = http_build_query($event->getPayload());
+
+        header('Location: '.$integration->getAuthorizeUrl().'?'.$queryString);
+
+        exit;
+    }
+
+    public function actionCallback(): Response
+    {
+        $this->initAccessTokenFlow();
+
+        return $this->closeWindowResponse();
+    }
+
+    /**
+     * @deprecated will be removed in Freeform 6.0
+     */
+    public function actionFirewallCallback(): Response
+    {
+        $this->initAccessTokenFlow();
+
+        return $this->closeWindowResponse();
+    }
+
+    private function closeWindowResponse(): Response
+    {
+        $this->response->format = Response::FORMAT_HTML;
+        $this->response->statusCode = 200;
+        $this->response->content = <<<'HTML'
+                <script>
+                  window.opener && window.opener.postMessage({ type: 'oauth2' }, window.location.origin);
+                  window.close();
+                </script>
+            HTML;
+
+        return $this->response;
+    }
+
+    private function initAccessTokenFlow(): void
     {
         $integrationsService = $this->getIntegrationsService();
 
@@ -70,14 +133,8 @@ class OAuthController extends BaseController
             new TokenPayloadEvent($integration, $responsePayload)
         );
 
-        if ($integrationsService->save($model, $integration)) {
-            \Craft::$app->session->setSuccess(Freeform::t('Integration saved.'));
-        } else {
-            \Craft::$app->session->setError(Freeform::t('Integration not saved.'));
-        }
+        $model->connectionEstablished = true;
 
-        $type = $integration->getTypeDefinition()->type;
-
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/integrations/'.$type.'/'.$integration->getId()));
+        $integrationsService->save($model, $integration);
     }
 }

@@ -2,6 +2,9 @@
 
 <div class="markdown-instructions markdown-body">
     <input type="checkbox" id="{{ id }}" class="markdown-toggle" />
+    <button type="button" onclick="document.getElementById('{{ id }}').click()">
+        <span>{{ "Show Setup Instructions"|t('freeform') }}</span>
+    </button>
 
     <div class="markdown-container">
         <button type="button" class="markdown-collapse" onclick="document.getElementById('{{ id }}').click()">
@@ -10,9 +13,5 @@
         <div class="markdown-content">
             {{ content|raw }}
         </div>
-    </div>
-
-    <div class="markdown-blur" onclick="document.getElementById('{{ id }}').click()">
-        <span>{{ "Click to expand"|t('freeform') }}</span>
     </div>
 </div>

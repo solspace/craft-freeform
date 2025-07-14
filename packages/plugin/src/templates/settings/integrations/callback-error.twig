@@ -1,0 +1,50 @@
+<html lang="{{ craft.app.language }}">
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+
+            padding: 0;
+            margin: 0;
+            background-color: #f9f9f9;
+        }
+
+        header {
+            background-color: #0388FE;
+
+            padding: 20px 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #d9534f;
+        }
+        p {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img alt="Freeform 5 for Craft CMS" src="https://docs.solspace.com/assets/ideal-img/freeform-dark.b82391a.1929.png" style="width: 100%; height: auto; max-width: 100%;">
+    </header>
+
+    <div class="container">
+        <h1>
+            {{ "An Error Occurred"|t('freeform') }}
+        </h1>
+        <p>
+            {{ message|t('freeform') }}
+        </p>
+        <p>
+            {{ "Please check your credentials and try again, or contact support."|t('freeform') }}
+        </p>
+    </div>
+</body>
+</html>

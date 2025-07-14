@@ -89,7 +89,7 @@ class OAuth2Bundle extends FeatureBundle
          */
         $event->rules[] = new UrlRule([
             'pattern' => 'freeform/oauth/authorize',
-            'route' => 'freeform/oauth2-auth/firewall-callback',
+            'route' => 'freeform/oauth2-auth/callback',
             'verb' => ['GET'],
         ]);
 

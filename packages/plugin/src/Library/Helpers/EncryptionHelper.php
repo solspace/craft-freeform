@@ -8,12 +8,12 @@ class EncryptionHelper
 {
     private const ENCRYPTION_PREFIX = 'encrypted:';
 
-    public static function getKey(string $formUid): string
+    public static function getKey(string $suffix = ''): string
     {
         $secret = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextSecret();
 
         $key = $secret ?: \Craft::$app->getConfig()->getGeneral()->securityKey;
-        $key .= $formUid;
+        $key .= $suffix;
 
         return $key;
     }

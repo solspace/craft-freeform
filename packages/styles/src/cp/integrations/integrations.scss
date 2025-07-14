@@ -2,6 +2,10 @@
 @use '../../shared/variables';
 @use '../../shared/alerts';
 
+hr {
+  margin-inline: calc(var(--xl) * -1);
+}
+
 table#integrations {
   th {
     &:first-child {

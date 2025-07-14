@@ -20,6 +20,7 @@
     {% if integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
         {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
     {% endif %}
+
 </div>
 <ul id="auth-errors"></ul>
 
@@ -55,17 +56,17 @@
     </ul>
 {% endif %}
 
+{% if typeDefinition.readme %}
+
+    {{ include('freeform/settings/components/markdown', {
+        content: typeDefinition.readmeContent|markdown('gfm-comment')
+    }) }}
+
+    <hr>
+
+{% endif %}
+
 <div class="propertiesWrapper">
-
-    {% if typeDefinition.readme %}
-
-        {{ include('freeform/settings/components/markdown', {
-            content: typeDefinition.readmeContent|markdown('gfm-comment')
-        }) }}
-
-        <hr>
-
-    {% endif %}
 
     <div class="property-editor" data-class="{{ typeDefinition.class }}">
         {% for property in typeDefinition.properties | filter((prop) => not prop.hasFlag('internal', 'instance')) %}

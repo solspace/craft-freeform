@@ -5,7 +5,7 @@
     {% if type.readme %}
         {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
 
-        <hr>
+        <hr style="margin-inline: calc(var(--xl)*-1);" />
     {% endif %}
 
     <div class="property-editor" data-class="{{ type.class }}">

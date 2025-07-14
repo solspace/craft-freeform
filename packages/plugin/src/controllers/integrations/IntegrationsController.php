@@ -93,8 +93,22 @@ class IntegrationsController extends BaseController
         $post['metadata'] = $properties ?: null;
         unset($post['properties']);
 
-        $model->setAttributes($post);
-        $this->integrationsService->parsePostedModelData($model);
+        foreach ($post as $key => $value) {
+            if (!$model->isAttributeSafe($key)) {
+                continue;
+            }
+
+            if ('metadata' === $key) {
+                $model->metadata = array_merge(
+                    $model->metadata ?? [],
+                    $value ?: []
+                );
+            } else {
+                $model->{$key} = $value;
+            }
+        }
+
+        $this->integrationsService->parsePostedModelData($model, array_keys($post['metadata']));
 
         $integration = $model->getIntegrationObject();
 

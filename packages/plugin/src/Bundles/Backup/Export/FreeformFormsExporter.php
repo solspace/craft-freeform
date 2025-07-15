@@ -284,7 +284,7 @@ class FreeformFormsExporter extends BaseExporter
         $collection = new FavoritesCollection();
 
         /** @var FavoriteFieldRecord[] $fields */
-        $fields = FavoriteFieldRecord::find()->all();
+        $fields = FavoriteFieldRecord::find()->where(['uid' => $ids])->all();
         foreach ($fields as $field) {
             $favorite = new Favorite();
             $favorite->uid = $field->uid;
@@ -304,6 +304,7 @@ class FreeformFormsExporter extends BaseExporter
 
         /** @var FormGroupsRecord[] $groups */
         $groups = FormGroupsRecord::find()
+            ->where(['uid' => $ids])
             ->orderBy(['siteId' => \SORT_ASC, 'order' => \SORT_ASC])
             ->with('entries')
             ->all()
@@ -338,7 +339,7 @@ class FreeformFormsExporter extends BaseExporter
         $collection = new LimitedUsersCollection();
 
         /** @var LimitedUsersRecord[] $records */
-        $records = LimitedUsersRecord::find()->all();
+        $records = LimitedUsersRecord::find()->where(['uid' => $ids])->all();
         foreach ($records as $record) {
             $limitedUser = new LimitedUsers();
             $limitedUser->uid = $record->uid;

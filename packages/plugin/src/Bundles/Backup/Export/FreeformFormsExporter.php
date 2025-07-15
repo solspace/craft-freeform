@@ -315,7 +315,7 @@ class FreeformFormsExporter extends BaseExporter
             $group->uid = $record->uid;
             $group->label = $record->label;
             $group->order = $record->order;
-            $group->siteId = $record->siteId;
+            $group->site = \Craft::$app->sites->getSiteById($record->siteId)->handle;
             $group->entries = new FormGroupEntriesCollection();
 
             /** @var FormGroupsEntriesRecord[] $entryRecords */

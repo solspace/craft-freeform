@@ -7,7 +7,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormGroupEntriesCollection;
 class FormGroup
 {
     public string $uid;
-    public string $siteId;
+    public string $site;
     public string $label;
     public int $order;
 

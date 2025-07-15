@@ -237,7 +237,7 @@ class FileExportReader extends BaseExporter
 
             $group = new FormGroup();
             $group->uid = $json['uid'];
-            $group->siteId = $json['siteId'];
+            $group->site = $json['site'] ?? '';
             $group->label = $json['label'];
             $group->order = $json['order'];
             $group->entries = new FormGroupEntriesCollection();

@@ -758,9 +758,17 @@ class FreeformImporter
                 $record = new FormGroupsRecord();
             }
 
+            $site = \Craft::$app->getSites()->getSiteByHandle($group->site);
+            if (!$site) {
+                $this->sse->message('err', 'Form Group "'.$group->label.'": site "'.$group->site.'" not found');
+                $this->sse->message('progress', 1);
+
+                continue;
+            }
+
             $record->uid = $group->uid;
             $record->label = $group->label;
-            $record->siteId = $group->siteId;
+            $record->siteId = $site->id;
             $record->order = $group->order;
             $record->save();
 

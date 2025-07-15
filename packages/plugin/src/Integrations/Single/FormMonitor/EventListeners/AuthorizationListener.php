@@ -4,12 +4,13 @@ namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
-use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
@@ -26,9 +27,9 @@ class AuthorizationListener extends FeatureBundle
         );
 
         Event::on(
-            IntegrationsService::class,
-            IntegrationsService::EVENT_AFTER_SAVE,
-            [$this, 'onSave']
+            APIIntegrationInterface::class,
+            APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZE,
+            [$this, 'onAuthorize']
         );
     }
 
@@ -66,7 +67,7 @@ class AuthorizationListener extends FeatureBundle
         ]);
     }
 
-    public function onSave(SaveEvent $event): void
+    public function onAuthorize(AuthorizeIntegrationEvent $event): void
     {
         $integration = $event->getIntegration();
         if (!$integration instanceof FormMonitor) {

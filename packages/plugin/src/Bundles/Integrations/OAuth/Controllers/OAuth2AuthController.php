@@ -4,61 +4,30 @@ namespace Solspace\Freeform\Bundles\Integrations\OAuth\Controllers;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use JetBrains\PhpStorm\NoReturn;
+use Solspace\Freeform\Bundles\Integrations\OAuth\Providers\OAuth2StateProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\controllers\PopUpTrait;
 use Solspace\Freeform\Events\Integrations\OAuth2\FetchTokenEvent;
-use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
-use Solspace\Freeform\Library\Helpers\CryptoHelper;
-use Solspace\Freeform\Library\Helpers\EncryptionHelper;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
-use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class OAuth2AuthController extends BaseController
 {
+    use PopUpTrait;
+
     protected array|bool|int $allowAnonymous = ['callback'];
 
     public function __construct(
         $id,
         $module,
         $config,
-        private IntegrationLoggerProvider $loggerProvider
+        private IntegrationLoggerProvider $loggerProvider,
+        private OAuth2StateProvider $stateProvider,
     ) {
         parent::__construct($id, $module, $config);
-    }
-
-    #[NoReturn]
-    public function actionAuthorize(int $id): void
-    {
-        $integration = $this->getIntegrationsService()->getIntegrationObjectById($id);
-        if (!$integration instanceof OAuth2ConnectorInterface) {
-            throw new NotFoundHttpException('No authorization flow available');
-        }
-
-        $token = CryptoHelper::getUniqueToken(6);
-
-        $payload = [
-            'response_type' => 'code',
-            'client_id' => $integration->getClientId(),
-            'redirect_uri' => $integration->getRedirectUri(),
-            'state' => $this->encryptState($integration->getId(), $token),
-        ];
-
-        $event = new InitiateAuthenticationFlowEvent($integration, $payload);
-        Event::trigger(
-            OAuth2ConnectorInterface::class,
-            OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
-            $event
-        );
-
-        $queryString = http_build_query($event->getPayload());
-
-        header('Location: '.$integration->getAuthorizeUrl().'?'.$queryString);
-
-        exit;
     }
 
     public function actionCallback(): Response
@@ -67,27 +36,27 @@ class OAuth2AuthController extends BaseController
 
         $code = $this->request->get('code');
         if (!$code) {
-            return $this->renderError('Code not present');
+            return $this->renderPopUpError('Code not present');
         }
 
         $state = $this->request->get('state');
         if (!$state) {
-            return $this->renderError('State not present');
+            return $this->renderPopUpError('State not present');
         }
 
-        $integrationId = $this->extractIntegrationIdFromState($state);
+        $integrationId = $this->stateProvider->extractIntegrationIdFromState($state);
         if (!$integrationId) {
-            return $this->renderError('State is invalid or expired');
+            return $this->renderPopUpError('State is invalid or expired');
         }
 
         $model = $integrationsService->getById($integrationId);
         if (!$model) {
-            return $this->renderError('Integration not found');
+            return $this->renderPopUpError('Integration not found');
         }
 
         $integration = $model->getIntegrationObject();
         if (!$integration instanceof OAuth2ConnectorInterface) {
-            return $this->renderError('Integration does not implement OAuth2ConnectorInterface');
+            return $this->renderPopUpError('Integration does not implement OAuth2ConnectorInterface');
         }
 
         $client = new Client();
@@ -128,7 +97,7 @@ class OAuth2AuthController extends BaseController
                 ],
             ]);
 
-            return $this->renderError($errorMessage);
+            return $this->renderPopUpError($errorMessage);
         }
 
         $responsePayload = json_decode((string) $response->getBody());
@@ -143,73 +112,6 @@ class OAuth2AuthController extends BaseController
 
         $integrationsService->save($model, $integration);
 
-        return $this->closeWindowResponse();
-    }
-
-    private function encryptState(int $integrationId, string $token): string
-    {
-        $cacheKey = $this->createKey($integrationId, $token);
-        \Craft::$app->cache->set($cacheKey, true, 60 * 5); // Cache for 5 minutes
-
-        $encryptionKey = EncryptionHelper::getKey();
-        $data = json_encode([
-            'integrationId' => $integrationId,
-            'token' => $token,
-        ]);
-
-        return EncryptionHelper::encryptByKey($encryptionKey, $data);
-    }
-
-    private function extractIntegrationIdFromState(string $state): ?int
-    {
-        $encryptionKey = EncryptionHelper::getKey();
-        $json = EncryptionHelper::decryptByKey($encryptionKey, $state);
-        if (!$json) {
-            return null;
-        }
-
-        $data = json_decode($json, false);
-        if (\JSON_ERROR_NONE !== json_last_error()) {
-            return null;
-        }
-
-        $id = $data->integrationId ?? null;
-        $token = $data->token ?? null;
-
-        $cacheKey = $this->createKey($id, $token);
-        if (\Craft::$app->cache->exists($cacheKey)) {
-            \Craft::$app->cache->delete($cacheKey);
-
-            return $id;
-        }
-
-        return null;
-    }
-
-    private function closeWindowResponse(): Response
-    {
-        $this->response->format = Response::FORMAT_HTML;
-        $this->response->statusCode = 200;
-        $this->response->content = <<<'HTML'
-                <script>
-                  window.opener && window.opener.postMessage({ type: 'oauth2' }, window.location.origin);
-                  window.close();
-                </script>
-            HTML;
-
-        return $this->response;
-    }
-
-    private function createKey(int $integrationId, string $token): string
-    {
-        return 'oauth2_auth_flow_'.$integrationId.'_'.$token;
-    }
-
-    private function renderError(string $message): Response
-    {
-        return $this->renderTemplate(
-            'freeform/settings/integrations/callback-error',
-            ['message' => $message],
-        );
+        return $this->closePopUpWindowResponse();
     }
 }

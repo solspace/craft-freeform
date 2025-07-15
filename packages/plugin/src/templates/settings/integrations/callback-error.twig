@@ -12,8 +12,15 @@
 
         header {
             background-color: #0388FE;
+            height: 50px;
 
             padding: 20px 40px;
+        }
+
+        header img {
+            width: auto;
+            height: 100%;
+            max-width: 100%;
         }
 
         .container {
@@ -22,27 +29,39 @@
             padding: 20px;
         }
 
+        .errors {
+            color: #d9534f;
+        }
+
         h1 {
             color: #d9534f;
         }
         p {
             font-size: 16px;
         }
+
+        .info {
+            font-size: 14px;
+            color: #555;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <img alt="Freeform 5 for Craft CMS" src="https://docs.solspace.com/assets/ideal-img/freeform-dark.b82391a.1929.png" style="width: 100%; height: auto; max-width: 100%;">
+        <img alt="Freeform 5 for Craft CMS" src="https://docs.solspace.com/assets/ideal-img/freeform-dark.b82391a.1929.png">
     </header>
 
     <div class="container">
         <h1>
             {{ "An Error Occurred"|t('freeform') }}
         </h1>
-        <p>
-            {{ message|t('freeform') }}
-        </p>
-        <p>
+        <div class="errors">
+            {% for message in messages %}
+                <p>{{ message|t('freeform') }}</p>
+            {% endfor %}
+        </div>
+        <p class="info">
             {{ "Please check your credentials and try again, or contact support."|t('freeform') }}
         </p>
     </div>

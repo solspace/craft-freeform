@@ -9,5 +9,5 @@ return [
     'freeform/settings/integrations/<type:[a-zA-Z\-]+>/<id:\d+>' => 'freeform/integrations/integrations/edit',
     'freeform/settings/integrations/<type:[a-zA-Z\-]+>/<id:[a-zA-Z0-9\-_]+>' => 'freeform/integrations/integrations/edit',
 
-    'freeform/integrations/<id:\d+>/authorize' => 'freeform/integrations/integrations/force-authorization',
+    'freeform/integrations/<id:\d+>/authorize' => 'freeform/integrations/integrations/authorize',
 ];

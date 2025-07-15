@@ -15,7 +15,7 @@ $(function () {
   $('a[data-action="authorize"]', $actions).on('click', (e) => {
     e.preventDefault();
 
-    const url = Craft.getCpUrl(`freeform/integrations/${id}/oauth2/authorize`);
+    const url = Craft.getCpUrl(`freeform/integrations/${id}/authorize`);
     const width = 600;
     const height = 700;
 

@@ -4,17 +4,24 @@ namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\StringHelper;
 use Solspace\Freeform\controllers\BaseController;
+use Solspace\Freeform\controllers\PopUpTrait;
+use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use yii\base\Event;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class IntegrationsController extends BaseController
 {
+    use PopUpTrait;
+
     public function __construct(
         $id,
         $module,
@@ -47,6 +54,32 @@ class IntegrationsController extends BaseController
                 'providers' => $this->getServiceProviderTypes($type),
             ]
         );
+    }
+
+    public function actionAuthorize(int $id): Response
+    {
+        $integration = $this->integrationsService->getIntegrationObjectById($id);
+        if (!$integration) {
+            throw new NotFoundHttpException();
+        }
+
+        $event = new AuthorizeIntegrationEvent($integration);
+
+        try {
+            Event::trigger(
+                APIIntegrationInterface::class,
+                APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZE,
+                $event
+            );
+        } catch (\Exception $e) {
+            $event->addError($e->getMessage());
+        }
+
+        if ($event->hasErrors()) {
+            return $this->renderPopUpError($event->getErrors());
+        }
+
+        return $this->closePopUpWindowResponse();
     }
 
     public function actionCreate(string $type): Response

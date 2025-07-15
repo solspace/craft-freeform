@@ -6,20 +6,32 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\web\UrlManager;
 use craft\web\UrlRule;
 use Solspace\Freeform\Bundles\Integrations\OAuth\Controllers\OAuth2AuthController;
+use Solspace\Freeform\Bundles\Integrations\OAuth\Providers\OAuth2StateProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
+use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
 class OAuth2Bundle extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private OAuth2StateProvider $stateProvider,
+    ) {
         $this->registerController('oauth2-auth', OAuth2AuthController::class);
+
+        Event::on(
+            APIIntegrationInterface::class,
+            APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZE,
+            [$this, 'onAuthorize'],
+        );
 
         Event::on(
             OAuth2ConnectorInterface::class,
@@ -44,6 +56,36 @@ class OAuth2Bundle extends FeatureBundle
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             [$this, 'registerRoutes'],
         );
+    }
+
+    public function onAuthorize(AuthorizeIntegrationEvent $event): void
+    {
+        $integration = $event->getIntegration();
+        if (!$integration instanceof OAuth2ConnectorInterface) {
+            return;
+        }
+
+        $token = CryptoHelper::getUniqueToken(6);
+
+        $payload = [
+            'response_type' => 'code',
+            'client_id' => $integration->getClientId(),
+            'redirect_uri' => $integration->getRedirectUri(),
+            'state' => $this->stateProvider->encryptState($integration->getId(), $token),
+        ];
+
+        $event = new InitiateAuthenticationFlowEvent($integration, $payload);
+        Event::trigger(
+            OAuth2ConnectorInterface::class,
+            OAuth2ConnectorInterface::EVENT_INITIATE_AUTHENTICATION_FLOW,
+            $event
+        );
+
+        $queryString = http_build_query($event->getPayload());
+
+        header('Location: '.$integration->getAuthorizeUrl().'?'.$queryString);
+
+        exit;
     }
 
     public function onAfterAuthorize(TokenPayloadEvent $event): void
@@ -90,12 +132,6 @@ class OAuth2Bundle extends FeatureBundle
         $event->rules[] = new UrlRule([
             'pattern' => 'freeform/oauth/authorize',
             'route' => 'freeform/oauth2-auth/callback',
-            'verb' => ['GET'],
-        ]);
-
-        $event->rules[] = new UrlRule([
-            'pattern' => 'freeform/integrations/<id:\d+>/oauth2/authorize',
-            'route' => 'freeform/oauth2-auth/authorize',
             'verb' => ['GET'],
         ]);
     }

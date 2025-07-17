@@ -4,10 +4,11 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Table;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
+use Solspace\Freeform\Form\Form;
 
 class TableTransformer extends Transformer
 {
-    public function transform($value): TableLayout
+    public function transform($value, ?Form $form = null): TableLayout
     {
         return new TableLayout($value ?? []);
     }

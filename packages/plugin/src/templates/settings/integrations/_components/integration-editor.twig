@@ -2,7 +2,7 @@
 {% set typeDefinition = integration.typeDefinition %}
 
 {{ csrfInput() }}
-{{ redirectInput('freeform/settings/integrations/'~typeDefinition.shortName) }}
+{{ redirectInput('freeform/settings/integrations/'~typeDefinition.type) }}
 
 <input type="hidden" name="id" value="{{ integration.id }}" />
 <input type="hidden" name="class" value="{{ integration.class }}" />

@@ -10,7 +10,6 @@ interface TransformerInterface
      * Transform a serialized value into a field value.
      *
      * @param mixed $value
-     * @param Form|null $form
      */
     public function transform($value, ?Form $form = null): mixed;
 

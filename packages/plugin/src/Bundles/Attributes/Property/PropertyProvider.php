@@ -52,8 +52,8 @@ class PropertyProvider
     ) {}
 
     public function setObjectProperties(
-        object    $object,
-        array     $properties,
+        object $object,
+        array $properties,
         ?callable $valueUpdateCallback = null,
         ?Form $form = null
     ): void {

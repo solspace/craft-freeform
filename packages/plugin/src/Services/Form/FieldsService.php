@@ -37,7 +37,7 @@ class FieldsService extends BaseService
     {
         $record = FormFieldRecord::findOne(['uid' => $fieldUid]);
         if ($record) {
-            $form = $form ?? $this->formsService->getFormById($record->formId);
+            $form ??= $this->formsService->getFormById($record->formId);
 
             return $this->createField($record, $form);
         }

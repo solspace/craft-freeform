@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Integrations;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class IntegrationTransformer implements TransformerInterface
@@ -12,7 +13,7 @@ class IntegrationTransformer implements TransformerInterface
         private FormIntegrationsProvider $integrationsProvider,
     ) {}
 
-    public function transform($value): ?IntegrationInterface
+    public function transform($value, ?Form $form = null): ?IntegrationInterface
     {
         return $this->integrationsProvider->getByUid($value);
     }

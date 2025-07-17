@@ -3,12 +3,13 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 class RecipientTransformer implements TransformerInterface
 {
-    public function transform($value): RecipientCollection
+    public function transform($value, ?Form $form = null): RecipientCollection
     {
         $collection = new RecipientCollection();
 

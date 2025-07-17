@@ -262,9 +262,9 @@ export default class Freeform {
   triggerSubmit = (): void => {
     this.unlockSubmit();
 
-    const submitButtons = this._getSubmitButtons();
-    if (submitButtons.length) {
-      submitButtons[0].click();
+    const submitButton = this._getMainSubmitButton();
+    if (submitButton) {
+      submitButton.click();
     }
   };
 
@@ -302,7 +302,6 @@ export default class Freeform {
   _attachListeners = (): void => {
     const form = this.form;
     const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
-
     const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
 
     if (actionInput) {
@@ -320,6 +319,20 @@ export default class Freeform {
     }
 
     form.addEventListener('submit', this._onSubmit);
+
+    form.addEventListener('keydown', (event: KeyboardEvent) => {
+      const isEnter = event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+      const isInput = event.target instanceof HTMLInputElement;
+      if (isEnter && isInput) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const submitButton = this._getMainSubmitButton();
+        if (submitButton) {
+          this.triggerSubmit();
+        }
+      }
+    });
 
     const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
     inputs.forEach((input) =>
@@ -768,6 +781,9 @@ export default class Freeform {
       this.unlockSubmit();
     });
   };
+
+  _getMainSubmitButton = (): HTMLButtonElement | HTMLInputElement | undefined =>
+    this.form.querySelector<HTMLButtonElement | HTMLInputElement>(`*[type=submit][data-freeform-action="submit"]`);
 
   _getSubmitButtons = (): NodeListOf<HTMLButtonElement | HTMLInputElement> => {
     const buttons = this.form.querySelectorAll<HTMLButtonElement | HTMLInputElement>(

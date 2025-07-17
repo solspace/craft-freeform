@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Layout;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Layout;
 
 class GroupFieldLayoutTransformer extends Transformer
 {
-    public function transform($value): Layout
+    public function transform($value, ?Form $form = null): Layout
     {
         return new Layout($value);
     }

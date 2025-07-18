@@ -46,6 +46,7 @@ return [
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
+    'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
 
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',

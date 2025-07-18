@@ -5,8 +5,15 @@ type Filter = {
 export const EVENT_INTEGRATION_UPDATE = 'integration-update';
 
 $(() => {
+  const $markdownToggle = $('.markdown-toggle-checkbox');
+  $markdownToggle.on('change', function () {
+    const $container = $(this).parent();
+    $($container).toggleClass('inactive');
+    $($container).siblings('.markdown-show').toggleClass('active');
+  });
+
   const $propertyEditor = $('.property-editor');
-  const $classSelect = $('select[name="class"]');
+  const $classSelect = $('[name="class"]');
 
   $classSelect.on('change', function () {
     $(this).trigger(EVENT_INTEGRATION_UPDATE);
@@ -24,9 +31,16 @@ $(() => {
     }
   });
 
+  $('button.lightswitch', $propertyEditor).on('mouseup', function () {
+    setTimeout(() => {
+      $(this).trigger(EVENT_INTEGRATION_UPDATE);
+    }, 10);
+  });
+
   const updateFieldVisibility = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const values: Record<string, any> = {
+      enabled: true,
       values: {},
     };
 
@@ -71,7 +85,7 @@ $(() => {
       filters.forEach((filter) => {
         const { expression } = filter;
 
-        const fn = new Function(...Object.keys(values.values), `return ${expression};`);
+        const fn = new Function(...Object.keys(values), `return ${expression};`);
 
         if (fn(...Object.values(values))) {
           $field.show();

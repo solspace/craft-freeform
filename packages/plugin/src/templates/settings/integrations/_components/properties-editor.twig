@@ -7,10 +7,6 @@
     <input type="hidden" name="action" value="{{ action }}" />
     <input type="hidden" name="type" value="{{ type }}" />
 
-    {% if integration.id %}
-        <input type="hidden" name="id" value="{{ integration.id }}" />
-    {% endif %}
-
     {{ forms.selectField({
         first: true,
         label: "Service Provider"|t('freeform'),
@@ -22,6 +18,9 @@
         required: true,
         disabled: integration.id > 0
     }) }}
+
+
+    <hr style="margin-inline: calc(var(--xl)*-1);" />
 
     {{ forms.textField({
         label: "Name"|t('freeform'),
@@ -45,11 +44,9 @@
         required: true
     }) }}
 
-    <hr>
+    <hr style="margin-inline: calc(var(--xl)*-1);" />
 
-    {% if integration.id and integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
-        {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
-    {% elseif integration.errors('integration') %}
+    {% if integration.errors('integration') %}
         <ul class="errors field">
             {% for error in integration.errors('integration') %}
                 <li>{{ error }}</li>

@@ -188,8 +188,6 @@ class OAuth2RefreshTokenBundle extends FeatureBundle
             $responseBody = (string) $e->getResponse()->getBody();
 
             Freeform::getInstance()->logger->getLogger(FreeformLogger::INTEGRATION)->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw $e;
         }
     }
 }

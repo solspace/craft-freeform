@@ -10,6 +10,8 @@ declare const Craft: {
   csrfTokenName: string;
   csrfTokenValue: string;
   getCpUrl: (url: string) => string;
+  asciiString: (value: string) => string;
+  filterArray: <T>(array: T[]) => T[];
 };
 
 interface CraftGlobal {

@@ -7,7 +7,7 @@ use Solspace\Freeform\Library\Helpers\ColorHelper;
 
 class RandomColorGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(?object $referenceObject): string
+    public function generateValue(?object $referenceObject, ?object $context): string
     {
         return ColorHelper::randomColor();
     }

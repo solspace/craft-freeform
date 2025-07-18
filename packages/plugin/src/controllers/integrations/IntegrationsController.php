@@ -3,34 +3,30 @@
 namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\StringHelper;
-use craft\helpers\UrlHelper;
-use GuzzleHttp\Exception\BadResponseException;
-use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
-use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
+use Solspace\Freeform\controllers\PopUpTrait;
+use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Integrations\APIIntegration;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class IntegrationsController extends BaseController
 {
+    use PopUpTrait;
+
     public function __construct(
         $id,
         $module,
         $config,
         private IntegrationsService $integrationsService,
-        private OAuth2Bundle $OAuth2Bundle,
-        private IntegrationClientProvider $clientProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -58,6 +54,32 @@ class IntegrationsController extends BaseController
                 'providers' => $this->getServiceProviderTypes($type),
             ]
         );
+    }
+
+    public function actionAuthorize(int $id): Response
+    {
+        $integration = $this->integrationsService->getIntegrationObjectById($id);
+        if (!$integration) {
+            throw new NotFoundHttpException();
+        }
+
+        $event = new AuthorizeIntegrationEvent($integration);
+
+        try {
+            Event::trigger(
+                APIIntegrationInterface::class,
+                APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZE,
+                $event
+            );
+        } catch (\Exception $e) {
+            $event->addError($e->getMessage());
+        }
+
+        if ($event->hasErrors()) {
+            return $this->renderPopUpError($event->getErrors());
+        }
+
+        return $this->closePopUpWindowResponse();
     }
 
     public function actionCreate(string $type): Response
@@ -104,8 +126,22 @@ class IntegrationsController extends BaseController
         $post['metadata'] = $properties ?: null;
         unset($post['properties']);
 
-        $model->setAttributes($post);
-        $this->integrationsService->parsePostedModelData($model);
+        foreach ($post as $key => $value) {
+            if (!$model->isAttributeSafe($key)) {
+                continue;
+            }
+
+            if ('metadata' === $key) {
+                $model->metadata = array_merge(
+                    $model->metadata ?? [],
+                    $value ?: []
+                );
+            } else {
+                $model->{$key} = $value;
+            }
+        }
+
+        $this->integrationsService->parsePostedModelData($model, array_keys($post['metadata']));
 
         $integration = $model->getIntegrationObject();
 
@@ -134,57 +170,6 @@ class IntegrationsController extends BaseController
         return $this->renderEditForm($model);
     }
 
-    public function actionCheckIntegrationConnection(): Response
-    {
-        $id = \Craft::$app->request->post('id');
-
-        $integration = $this->getIntegrationsService()->getById((int) $id);
-        $integrationObject = $integration->getIntegrationObject();
-
-        if (!$integrationObject instanceof APIIntegration) {
-            return $this->asJson(['success' => true]);
-        }
-
-        try {
-            $client = $this->clientProvider->getAuthorizedClient($integrationObject);
-        } catch (\Exception $exception) {
-            return $this->asJson(['success' => false, 'errors' => [$exception->getMessage()]]);
-        }
-
-        try {
-            if ($integrationObject->checkConnection($client)) {
-                return $this->asJson(['success' => true]);
-            }
-
-            return $this->asJson(['success' => false]);
-        } catch (\Exception $exception) {
-            $event = new FailedRequestEvent(null, $integrationObject, $exception);
-            Event::trigger(
-                IntegrationInterface::class,
-                IntegrationInterface::EVENT_ON_FAILED_REQUEST,
-                $event,
-            );
-
-            if ($event->isRetry()) {
-                $client = $this->clientProvider->getAuthorizedClient($integrationObject);
-
-                try {
-                    if ($integrationObject->checkConnection($client)) {
-                        return $this->asJson(['success' => true]);
-                    }
-                } catch (\Exception $exception) {
-                }
-            }
-
-            $message = $exception->getMessage();
-            if ($exception instanceof BadResponseException) {
-                $message = (string) $exception->getResponse()->getBody();
-            }
-
-            return $this->asJson(['success' => false, 'errors' => [$message]]);
-        }
-    }
-
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -194,20 +179,6 @@ class IntegrationsController extends BaseController
         $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
-    }
-
-    public function actionForceAuthorization(int $id): Response
-    {
-        $integration = $this->getIntegrationsService()->getIntegrationObjectById($id);
-        $type = $integration->getTypeDefinition()->type;
-        if (!$integration instanceof OAuth2ConnectorInterface) {
-            return $this->redirect(
-                UrlHelper::cpUrl('freeform/settings/integrations/'.$type.'/'.$integration->getId())
-            );
-        }
-
-        // TODO: move into an event listener flow
-        $this->OAuth2Bundle->initiateAuthenticationFlow($integration);
     }
 
     protected function renderEditForm(IntegrationModel $model): Response

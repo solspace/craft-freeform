@@ -2,6 +2,10 @@
 @use '../../shared/variables';
 @use '../../shared/alerts';
 
+hr {
+  margin-inline: calc(var(--xl) * -1);
+}
+
 table#integrations {
   th {
     &:first-child {
@@ -17,10 +21,10 @@ table#integrations {
 .integration-version {
   font-size: 12px;
   font-family: monospace;
-  color: #AAA;
+  color: #aaa;
 
   .prefix-v {
-    color: #BBB;
+    color: #bbb;
   }
 
   .version-number {
@@ -36,49 +40,20 @@ table#integrations {
   }
 }
 
-#auth-checker {
-  margin-bottom: 10px;
+#integration-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 
-  > div {
-    display: none;
-
-    &:before {
-      content: '';
-      position: relative;
-      top: 1px;
-
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-
-      margin-right: 5px;
-
-      background: #ccd1d6;
-      border: 1px solid #ccd1d6;
-      border-radius: 10px;
-    }
+  > img {
+    width: 30px;
+    height: 30px;
   }
 
-  .authorized {
-    &:before {
-      border-color: #27ae60;
-      background: #27ae60;
-    }
-  }
-
-  .not-authorized {
-    &:before {
-      border-color: #d0021b;
-      background: #d0021b;
-    }
-
-    .errors {
-      color: #d0021b;
-    }
-  }
-
-  .pending-status-check {
-    display: block;
+  > span {
+    font-size: 20px;
+    font-weight: bold;
+    color: #414141;
   }
 }
 

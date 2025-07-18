@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.11.6 - 2025-07-18
+
+### Changed
+- Refined the integration settings page and OAuth flow for a smoother setup experience and comaptibility with `sameSite` strict session cookies.
+- Improved performance of submission queries across the control panel and front end.
+- Updated the Archived Forms list to support permanent deletion of forms.
+
+### Fixed
+- Fixed an issue where nested conditional rules did not trigger on initial load in the Submissions detail view.
+- Fixed a translation issue affecting Multi-Select field options.
+- Fixed a bug that prevented the default Success template from being properly assigned to new forms.
+- Fixed a potential issue that could occur when re-importing database-based notification templates.
+
 ## 5.11.5 - 2025-07-07
 
 ### Added

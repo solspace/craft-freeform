@@ -47,18 +47,21 @@
                     <h1>
                         <img src="{{ type.iconUrl }}" alt="{{ type.name }}" />
                         <span>{{ type.name }}</span>
+
+                        {% if integration and integration.enabled %}
+                            {% if integration.id and integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
+                                {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
+                            {% endif %}
+                        {% endif %}
                     </h1>
 
-                    {% if integration and integration.enabled %}
-                        {% if integration.id and integration.integrationObject|implementsClass('Solspace\\Freeform\\Library\\Integrations\\APIIntegrationInterface') %}
-                            <div class="singleton-auth-checker">
-                                {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
-                            </div>
-                        {% endif %}
-                    {% endif %}
+                    <hr />
 
                     {% if type.readme %}
+
                         {{ include('freeform/settings/components/markdown', { content: type.readmeContent|markdown('gfm-comment') }) }}
+
+                        <hr>
                     {% endif %}
 
                     <div class="enabled-switch" data-name="{{ type.shortName }}">
@@ -79,7 +82,7 @@
                     </div>
 
                     {% if integration and integration.enabled and type.class == 'Solspace\\Freeform\\Integrations\\Single\\FormMonitor\\FormMonitor' %}
-                        {% include "freeform/settings/integrations/_components/monitor-actions" with { 
+                        {% include "freeform/settings/integrations/_components/monitor-actions" with {
                             integration: integration,
                         } %}
                     {% endif %}

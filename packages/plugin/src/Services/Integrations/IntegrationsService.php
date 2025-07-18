@@ -49,6 +49,10 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
+    private $cacheByUid = [];
+    private $cacheById = [];
+    private $cacheByHandle = [];
+
     public function __construct(
         $config,
         protected IntegrationClientProvider $clientProvider,
@@ -124,32 +128,53 @@ class IntegrationsService extends BaseService
 
     public function getById(int $id): ?IntegrationModel
     {
+        if (!empty($this->cacheById[$id])) {
+            return $this->cacheById[$id];
+        }
+
         $result = $this->getQuery()->where(['id' => $id])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getByUid(string $uid): ?IntegrationModel
     {
+        if (!empty($this->cacheByUid[$uid])) {
+            return $this->cacheByUid[$uid];
+        }
+
         $result = $this->getQuery()->where(['uid' => $uid])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getByHandle(string $handle): ?IntegrationModel
     {
+        if (!empty($this->cacheByHandle[$handle])) {
+            return $this->cacheByHandle[$handle];
+        }
+
         $result = $this->getQuery()->where(['handle' => $handle])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getIntegrationObjectById(int $id): IntegrationInterface
@@ -206,6 +231,8 @@ class IntegrationsService extends BaseService
         }
 
         $record->enabled = $model->enabled;
+        $record->legacy = $model->legacy;
+        $record->connectionEstablished = $model->connectionEstablished;
         $record->name = $model->name;
         $record->handle = $model->handle;
         $record->type = $model->type;
@@ -231,6 +258,8 @@ class IntegrationsService extends BaseService
                 if ($triggerEvents) {
                     $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $integration, $isNew));
                 }
+
+                $this->cacheIntegrationModel($model);
 
                 return true;
             } catch (\Exception $e) {
@@ -270,6 +299,8 @@ class IntegrationsService extends BaseService
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
 
+            $this->clearIntegrationModelCache();
+
             return (bool) $affectedRows;
         } catch (\Exception $exception) {
             $transaction?->rollBack();
@@ -286,7 +317,7 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $properties = $this->propertyProvider->getEditableProperties($model->class);
+        $properties = $this->propertyProvider->getEditableProperties($model->class, $model);
         foreach ($properties as $property) {
             if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
                 continue;
@@ -302,7 +333,7 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function parsePostedModelData(IntegrationModel $model): void
+    public function parsePostedModelData(IntegrationModel $model, ?array $modifiedValues = null): void
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
 
@@ -310,6 +341,10 @@ class IntegrationsService extends BaseService
         foreach ($editableProperties as $property) {
             $handle = $property->handle;
             $value = $model->metadata[$handle] ?? null;
+
+            if (null !== $modifiedValues && !\in_array($handle, $modifiedValues, true)) {
+                continue;
+            }
 
             $isEncrypted = $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED);
             $isEnvVariable = StringHelper::isEnvVariable($value);
@@ -555,6 +590,8 @@ class IntegrationsService extends BaseService
                     'integration.id',
                     'integration.uid',
                     'integration.enabled',
+                    'integration.legacy',
+                    'integration.connectionEstablished',
                     'integration.name',
                     'integration.handle',
                     'integration.type',
@@ -576,6 +613,20 @@ class IntegrationsService extends BaseService
     protected function createIntegrationModel(array $data): IntegrationModel
     {
         return new IntegrationModel($data);
+    }
+
+    private function cacheIntegrationModel(IntegrationModel $model): void
+    {
+        $this->cacheById[$model->id] = $model;
+        $this->cacheByUid[$model->uid] = $model;
+        $this->cacheByHandle[$model->handle] = $model;
+    }
+
+    private function clearIntegrationModelCache(): void
+    {
+        $this->cacheById = [];
+        $this->cacheByUid = [];
+        $this->cacheByHandle = [];
     }
 
     private function getCacheKey(?Form $form, ?string $type, ?bool $enabled, ?callable $filter = null): string

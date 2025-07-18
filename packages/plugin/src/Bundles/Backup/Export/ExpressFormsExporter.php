@@ -129,7 +129,7 @@ class ExpressFormsExporter extends BaseExporter
             $general->handle = $exported->handle;
             $general->description = $form['description'] ?? '';
             $general->submissionTitle = $form['submissionTitle'] ?? '{{ dateCreated|date("Y-m-d H:i:s") }}';
-            $general->color = $form['color'] ?? $colorGenerator->generateValue($form);
+            $general->color = $form['color'] ?? $colorGenerator->generateValue($form, null);
             $general->defaultStatus = $defaultStatus;
             $general->storeData = (bool) $form['saveSubmissions'] ?? true;
             $general->formattingTemplate = 'flexbox/index.twig';

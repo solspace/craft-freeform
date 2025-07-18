@@ -34,6 +34,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
@@ -53,7 +54,8 @@ class PropertyProvider
     public function setObjectProperties(
         object $object,
         array $properties,
-        ?callable $valueUpdateCallback = null
+        ?callable $valueUpdateCallback = null,
+        ?Form $form = null
     ): void {
         $editableProperties = $this->getEditableProperties($object);
 
@@ -68,7 +70,7 @@ class PropertyProvider
             $editableProperty = $editableProperties->get($key);
 
             if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
-                $value = $editableProperty->transformer->transform($value);
+                $value = $editableProperty->transformer->transform($value, $form);
             }
 
             if ($valueUpdateCallback) {
@@ -109,7 +111,7 @@ class PropertyProvider
         }
     }
 
-    public function getEditableProperties(object|string $object): PropertyCollection
+    public function getEditableProperties(object|string $object, ?object $context = null): PropertyCollection
     {
         $class = \is_string($object) ? $object : $object::class;
         $referenceObject = \is_string($object) ? null : $object;
@@ -144,7 +146,7 @@ class PropertyProvider
             $this->processLimitations($property, $attribute);
             $this->processMessages($property, $attribute);
 
-            $this->processValue($property, $attribute, $referenceObject);
+            $this->processValue($property, $attribute, $referenceObject, $context);
 
             /** @var Section $section */
             $fallbackLabel = Stringy::create($property->getName())
@@ -310,13 +312,13 @@ class PropertyProvider
         $attribute->transformer = $transformer;
     }
 
-    private function processValue(\ReflectionProperty $property, Property $attribute, $referenceObject): void
+    private function processValue(\ReflectionProperty $property, Property $attribute, $referenceObject, ?object $context): void
     {
         $hasDefaultValue = $this->processDefaultValue($property, $attribute);
 
         $value = $attribute->value ?? $property->getDefaultValue();
         if (!$hasDefaultValue && null === $referenceObject && $attribute->valueGenerator) {
-            $value = $attribute->valueGenerator->generateValue($referenceObject);
+            $value = $attribute->valueGenerator->generateValue($referenceObject, $context);
         }
 
         if ($referenceObject && $property->isInitialized($referenceObject)) {

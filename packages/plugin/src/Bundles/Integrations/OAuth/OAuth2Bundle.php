@@ -2,27 +2,35 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\OAuth;
 
-use JetBrains\PhpStorm\NoReturn;
+use craft\events\RegisterUrlRulesEvent;
+use craft\web\UrlManager;
+use craft\web\UrlRule;
+use Solspace\Freeform\Bundles\Integrations\OAuth\Controllers\OAuth2AuthController;
+use Solspace\Freeform\Bundles\Integrations\OAuth\Providers\OAuth2StateProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
+use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\InitiateAuthenticationFlowEvent;
 use Solspace\Freeform\Events\Integrations\OAuth2\TokenPayloadEvent;
-use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
-use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class OAuth2Bundle extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private OAuth2StateProvider $stateProvider,
+    ) {
+        $this->registerController('oauth2-auth', OAuth2AuthController::class);
+
         Event::on(
-            IntegrationsService::class,
-            IntegrationsService::EVENT_AFTER_SAVE,
-            [$this, 'onSave']
+            APIIntegrationInterface::class,
+            APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZE,
+            [$this, 'onAuthorize'],
         );
 
         Event::on(
@@ -36,26 +44,34 @@ class OAuth2Bundle extends FeatureBundle
             IntegrationClientProvider::EVENT_GET_CLIENT,
             [$this, 'configureClient']
         );
+
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            [$this, 'registerCpRoutes'],
+        );
+
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            [$this, 'registerRoutes'],
+        );
     }
 
-    public function onSave(SaveEvent $event): void
+    public function onAuthorize(AuthorizeIntegrationEvent $event): void
     {
         $integration = $event->getIntegration();
         if (!$integration instanceof OAuth2ConnectorInterface) {
             return;
         }
 
-        $this->initiateAuthenticationFlow($integration);
-    }
+        $token = CryptoHelper::getUniqueToken(6);
 
-    #[NoReturn]
-    public function initiateAuthenticationFlow(OAuth2ConnectorInterface $integration): void
-    {
         $payload = [
             'response_type' => 'code',
             'client_id' => $integration->getClientId(),
             'redirect_uri' => $integration->getRedirectUri(),
-            'state' => $integration->getId(),
+            'state' => $this->stateProvider->encryptState($integration->getId(), $token),
         ];
 
         $event = new InitiateAuthenticationFlowEvent($integration, $payload);
@@ -104,5 +120,28 @@ class OAuth2Bundle extends FeatureBundle
                 ],
             ]
         );
+    }
+
+    public function registerCpRoutes(RegisterUrlRulesEvent $event): void
+    {
+        /*
+         * Legacy URL for OAuth2 redirect callback
+         *
+         * @deprecated will be removed in Freeform 6.0
+         */
+        $event->rules[] = new UrlRule([
+            'pattern' => 'freeform/oauth/authorize',
+            'route' => 'freeform/oauth2-auth/callback',
+            'verb' => ['GET'],
+        ]);
+    }
+
+    public function registerRoutes(RegisterUrlRulesEvent $event): void
+    {
+        $event->rules[] = new UrlRule([
+            'pattern' => 'freeform/oauth/callback',
+            'route' => 'freeform/oauth2-auth/callback',
+            'verb' => ['GET'],
+        ]);
     }
 }

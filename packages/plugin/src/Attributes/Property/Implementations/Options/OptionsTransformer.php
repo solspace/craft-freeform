@@ -8,12 +8,13 @@ use Solspace\Freeform\Fields\Properties\Options\Custom\Custom;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Elements;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Predefined;
+use Solspace\Freeform\Form\Form;
 
 class OptionsTransformer extends Transformer
 {
     public function __construct(private PropertyProvider $propertyProvider) {}
 
-    public function transform($value): OptionsConfigurationInterface
+    public function transform($value, ?Form $form = null): OptionsConfigurationInterface
     {
         $source = $value['source'] ?? null;
 

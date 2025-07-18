@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\Notifications\Re
 
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientMapping;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollection;
 
@@ -14,14 +15,14 @@ class RecipientMappingTransformer implements TransformerInterface
         private NotificationTemplateTransformer $templateTransformer,
     ) {}
 
-    public function transform($value): ?RecipientMappingCollection
+    public function transform($value, ?Form $form = null): ?RecipientMappingCollection
     {
         $collection = new RecipientMappingCollection();
 
         if (\is_array($value)) {
             foreach ($value as $mapping) {
-                $template = $this->templateTransformer->transform($mapping['template'] ?? null);
-                $recipientCollection = $this->recipientTransformer->transform($mapping['recipients']);
+                $template = $this->templateTransformer->transform($mapping['template'] ?? null, $form);
+                $recipientCollection = $this->recipientTransformer->transform($mapping['recipients'], $form);
 
                 $mapping = new RecipientMapping(
                     $mapping['value'] ?? '',

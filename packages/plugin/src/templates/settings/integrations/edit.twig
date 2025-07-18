@@ -48,7 +48,15 @@
 
     {% else %}
 
-        {% include 'freeform/settings/integrations/_components/properties-editor' %}
+        {% if integration.id %}
+
+            {% include 'freeform/settings/integrations/_components/integration-editor' %}
+
+        {% else %}
+
+            {% include 'freeform/settings/integrations/_components/properties-editor' %}
+
+        {% endif %}
 
     {% endif %}
 

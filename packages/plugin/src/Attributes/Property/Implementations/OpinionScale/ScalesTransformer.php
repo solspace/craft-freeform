@@ -4,10 +4,11 @@ namespace Solspace\Freeform\Attributes\Property\Implementations\OpinionScale;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
+use Solspace\Freeform\Form\Form;
 
 class ScalesTransformer extends Transformer
 {
-    public function transform($value): array
+    public function transform($value, ?Form $form = null): array
     {
         $scales = [];
         if (!\is_array($value)) {

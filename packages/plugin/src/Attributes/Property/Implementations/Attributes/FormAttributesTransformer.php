@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Attributes;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 
 class FormAttributesTransformer implements TransformerInterface
 {
-    public function transform($value): FormAttributesCollection
+    public function transform($value, ?Form $form = null): FormAttributesCollection
     {
         return new FormAttributesCollection($value);
     }

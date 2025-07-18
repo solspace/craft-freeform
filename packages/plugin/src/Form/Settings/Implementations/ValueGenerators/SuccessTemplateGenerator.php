@@ -9,7 +9,7 @@ class SuccessTemplateGenerator implements ValueGeneratorInterface
 {
     public function __construct(private SettingsService $settingsService) {}
 
-    public function generateValue(?object $referenceObject): ?string
+    public function generateValue(?object $referenceObject, ?object $context): ?string
     {
         $success = $this->settingsService->getSuccessTemplates();
         if (\count($success)) {

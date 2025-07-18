@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Attributes\Property;
 
+use Solspace\Freeform\Form\Form;
+
 interface TransformerInterface
 {
     /**
@@ -9,7 +11,7 @@ interface TransformerInterface
      *
      * @param mixed $value
      */
-    public function transform($value): mixed;
+    public function transform($value, ?Form $form = null): mixed;
 
     /**
      * Transform a field value into a serialized value.

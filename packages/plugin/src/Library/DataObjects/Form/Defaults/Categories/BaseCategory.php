@@ -52,7 +52,7 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                 if ($valueGeneratorAttribute) {
                     $generator = \Craft::$container->get($valueGeneratorAttribute->className);
                     if ($generator instanceof ValueGeneratorInterface) {
-                        $defaultValue = $generator->generateValue($this);
+                        $defaultValue = $generator->generateValue($this, $this);
                     }
                 } else {
                     $defaultValueAttribute = AttributeHelper::findAttribute($property, SetDefaultValue::class);

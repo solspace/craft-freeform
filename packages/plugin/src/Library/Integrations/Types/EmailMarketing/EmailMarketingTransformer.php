@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Integrations\Types\EmailMarketing;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 use Solspace\Freeform\Services\Integrations\EmailMarketingService;
 
@@ -12,7 +13,7 @@ class EmailMarketingTransformer implements TransformerInterface
         private EmailMarketingService $emailMarketingService
     ) {}
 
-    public function transform($value): ?ListObject
+    public function transform($value, ?Form $form = null): ?ListObject
     {
         return $this->emailMarketingService->getListObjectById((int) $value);
     }

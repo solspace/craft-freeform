@@ -301,6 +301,11 @@ export default class Freeform {
    */
   _attachListeners = (): void => {
     const form = this.form;
+    const hasFormListeners = form.dataset.formListenersAttached === '1';
+    if (!hasFormListeners) {
+      form.dataset.formListenersAttached = '1';
+    }
+
     const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
     const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
 
@@ -311,28 +316,30 @@ export default class Freeform {
           actionInput.value = button.getAttribute('data-freeform-action');
         })
       );
-
-      // Reset the action-input after each submit
-      form.addEventListener(events.form.ajaxAfterSubmit, () => {
-        actionInput.value = 'submit';
-      });
     }
 
-    form.addEventListener('submit', this._onSubmit);
-
-    form.addEventListener('keydown', (event: KeyboardEvent) => {
-      const isEnter = event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey;
-      const isInput = event.target instanceof HTMLInputElement;
-      if (isEnter && isInput) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        const submitButton = this._getMainSubmitButton();
-        if (submitButton) {
-          this.triggerSubmit();
-        }
+    if (!hasFormListeners) {
+      if (actionInput) {
+        form.addEventListener(events.form.ajaxAfterSubmit, () => {
+          actionInput.value = 'submit';
+        });
       }
-    });
+
+      form.addEventListener('submit', this._onSubmit);
+      form.addEventListener('keydown', (event: KeyboardEvent) => {
+        const isEnter = event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+        const isInput = event.target instanceof HTMLInputElement;
+        if (isEnter && isInput) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const submitButton = this._getMainSubmitButton();
+          if (submitButton) {
+            this.triggerSubmit();
+          }
+        }
+      });
+    }
 
     const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
     inputs.forEach((input) =>

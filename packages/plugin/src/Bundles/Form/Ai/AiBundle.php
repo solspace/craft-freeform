@@ -1,32 +1,32 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\AiSummary;
+namespace Solspace\Freeform\Bundles\Form\Ai;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
-use Solspace\Freeform\Fields\Implementations\Pro\AiSummaryField;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Jobs\ProcessAiSummaryJob;
+use Solspace\Freeform\Integrations\AI\Fields\AiField;
+use Solspace\Freeform\Jobs\ProcessAiJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Services\AiSummaryService;
+use Solspace\Freeform\Services\AiService;
 use yii\base\Event;
 
-class AiSummaryBundle extends FeatureBundle
+class AiBundle extends FeatureBundle
 {
     public function __construct(
-        private AiSummaryService $aiSummaryService
+        private AiService $aiService
     ) {
         Event::on(
             Form::class,
             Form::EVENT_SUBMIT,
-            [$this, 'queueAiSummaryProcessing']
+            [$this, 'queueAiProcessing']
         );
 
         Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
-            [$this, 'queueAiSummaryProcessingOnSubmission']
+            [$this, 'queueAiProcessingOnSubmission']
         );
     }
 
@@ -40,32 +40,32 @@ class AiSummaryBundle extends FeatureBundle
         return true;
     }
 
-    public function queueAiSummaryProcessing(SubmitEvent $event): void
+    public function queueAiProcessing(SubmitEvent $event): void
     {
         $form = $event->getForm();
-        $this->queueAiSummaryProcessingForForm($form);
+        $this->queueAiProcessingForForm($form);
     }
 
-    public function queueAiSummaryProcessingOnSubmission(ProcessSubmissionEvent $event): void
+    public function queueAiProcessingOnSubmission(ProcessSubmissionEvent $event): void
     {
         $form = $event->getForm();
-        $this->queueAiSummaryProcessingForForm($form);
+        $this->queueAiProcessingForForm($form);
     }
 
-    private function queueAiSummaryProcessingForForm(Form $form): void
+    private function queueAiProcessingForForm(Form $form): void
     {
         $fields = $form->getLayout()->getFields();
-        $hasAiSummaryFields = false;
+        $hasAiFields = false;
 
         foreach ($fields as $field) {
-            if ($field instanceof AiSummaryField) {
-                $hasAiSummaryFields = true;
+            if ($field instanceof AiField) {
+                $hasAiFields = true;
 
                 break;
             }
         }
 
-        if (!$hasAiSummaryFields) {
+        if (!$hasAiFields) {
             return;
         }
 
@@ -80,8 +80,8 @@ class AiSummaryBundle extends FeatureBundle
             $postedValues[$field->getHandle()] = $field->getValue();
         }
 
-        // Queue the AI summary processing job
-        $job = new ProcessAiSummaryJob([
+        // Queue the AI processing job
+        $job = new ProcessAiJob([
             'formId' => $form->getId(),
             'submissionId' => $submission->getId(),
             'postedData' => $postedValues,

@@ -1,0 +1,27 @@
+<div class="field-preview">
+  <% if (fieldsToAnalyze) { %>
+    <div class="field-preview__fields">
+      <strong>Fields:</strong> 
+      <% if (fieldsToAnalyze.trim() === '@') { %>
+        All fields
+      <% } else { %>
+        <% 
+          // Extract field handles from the raw format
+          const fieldHandles = fieldsToAnalyze.match(/field:([a-zA-Z0-9_]+)/g);
+          if (fieldHandles) {
+            const cleanHandles = fieldHandles.map(f => f.replace('field:', ''));
+            const displayText = cleanHandles.length > 3 ? 
+              cleanHandles.slice(0, 3).join(', ') + ' (+' + (cleanHandles.length - 3) + ' more)' :
+              cleanHandles.join(', ');
+        %>
+          <%= displayText %>
+        <% } else { %>
+          <%= fieldsToAnalyze.length > 30 ? fieldsToAnalyze.substring(0, 30) + '...' : fieldsToAnalyze %>
+        <% } %>
+      <% } %>
+    </div>
+  <% } %>
+  <div class="field-preview__status">
+    <em>AI processing field (hidden from frontend)</em>
+  </div>
+</div> 

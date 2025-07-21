@@ -11,7 +11,6 @@ return [
     'freeform/settings/limited-users/<id:\d+>' => 'freeform/forms',
     'freeform/settings/limited-users/new' => 'freeform/forms',
     'freeform/settings/spam' => 'freeform/settings/provide-setting',
-    'freeform/settings/ai' => 'freeform/settings/provide-setting',
     'freeform/settings/add-demo-template' => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template' => 'freeform/settings/add-email-template',
     'freeform/settings/add-success-template' => 'freeform/settings/add-success-template',

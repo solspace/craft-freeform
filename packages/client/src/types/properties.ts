@@ -23,7 +23,7 @@ export enum PropertyType {
   Field = 'field',
   FieldMapping = 'fieldMapping',
   FieldSelection = 'fieldSelection',
-  AiSummary = 'aiSummary',
+  Ai = 'ai',
   FieldType = 'fieldType',
   Hidden = 'hidden',
   Integer = 'int',
@@ -192,7 +192,7 @@ export type FieldSelectionProperty = BaseProperty<
   availableFieldTypes: string[];
 };
 
-export type AiSummaryProperty = BaseProperty<string, PropertyType.AiSummary> & {
+export type AiProperty = BaseProperty<string, PropertyType.Ai> & {
   availableFieldTypes: string[];
 };
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime> & {
@@ -300,7 +300,7 @@ export type Property =
   | AppStateSelectProperty
   | FieldMappingProperty
   | FieldSelectionProperty
-  | AiSummaryProperty
+  | AiProperty
   | FieldTypeProperty
   | FieldProperty
   | HiddenProperty

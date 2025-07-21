@@ -68,7 +68,7 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
-use Solspace\Freeform\Services\AiSummaryService;
+use Solspace\Freeform\Services\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
@@ -144,7 +144,7 @@ use yii\db\Query;
  * @property SummaryService              $summary
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
- * @property AiSummaryService            $aiSummary
+ * @property AiService                   $ai
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
  * @property TypesService                $formTypes
@@ -443,7 +443,7 @@ class Freeform extends Plugin
                 'crm' => CrmService::class,
                 'diagnostics' => DiagnosticsService::class,
                 'digest' => DigestService::class,
-                'aiSummary' => AiSummaryService::class,
+                'ai' => AiService::class,
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,

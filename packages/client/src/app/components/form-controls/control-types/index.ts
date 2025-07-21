@@ -1,3 +1,4 @@
+export { default as aiBox } from './ai-box/ai-box';
 export { default as appStateSelect } from './app-state-select/app-state-select';
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
@@ -9,8 +10,6 @@ export { default as colorPicker } from './color-picker/color-picker';
 export { default as datePicker } from './date-picker/date-picker';
 export { default as dynamicSelect } from './dynamic-select/dynamic-select';
 export { default as field } from './field/field';
-export { default as aiSummaryBox } from './field-selection/ai-summary-box';
-export { default as fieldSelection } from './field-selection/field-selection.editor';
 export { default as fieldType } from './field-type/field-type';
 export { default as hidden } from './hidden/hidden';
 export { default as int } from './int/int';

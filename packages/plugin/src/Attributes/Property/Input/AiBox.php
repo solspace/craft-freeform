@@ -8,9 +8,9 @@ use Solspace\Freeform\Attributes\Property\Property;
  * @extends Property<string>
  */
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class AiSummaryBox extends Property
+class AiBox extends Property
 {
-    public ?string $type = 'aiSummaryBox';
+    public ?string $type = 'aiBox';
 
     public function __construct(
         ?string $label = null,

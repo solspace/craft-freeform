@@ -79,25 +79,6 @@ class SettingsController extends BaseController
         return $this->returnSuccess();
     }
 
-    public function actionAi(): Response
-    {
-        $this->requirePostRequest();
-        $this->saveSettings(
-            [
-                'aiEnabled' => $this->getRequest()->getBodyParam('aiEnabled', false),
-                'aiProvider' => $this->getRequest()->getBodyParam('aiProvider', 'openai'),
-                'aiApiKey' => $this->getRequest()->getBodyParam('aiApiKey', ''),
-                'aiModel' => $this->getRequest()->getBodyParam('aiModel', 'gpt-3.5-turbo'),
-                'aiMaxTokens' => (int) $this->getRequest()->getBodyParam('aiMaxTokens', 150),
-                'aiTemperature' => (float) $this->getRequest()->getBodyParam('aiTemperature', 0.7),
-                'aiCacheEnabled' => $this->getRequest()->getBodyParam('aiCacheEnabled', true),
-                'aiCacheTtl' => (int) $this->getRequest()->getBodyParam('aiCacheTtl', 3600),
-            ]
-        );
-
-        return $this->returnSuccess();
-    }
-
     private function saveSettings(array $settings): bool
     {
         $plugin = Freeform::getInstance();

@@ -1,39 +1,33 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
-import type { FieldSelectionProperty } from '@ff-client/types/properties';
+import type { AiProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import type Tagify from '@yaireo/tagify';
 import { MixedTags } from '@yaireo/tagify/dist/react.tagify.jsx';
 
+import { useAiFieldHandles } from './ai-box.hooks';
 import {
   FieldSelectionWrapper,
   PreviewTitle,
   TagMenu,
 } from './field-selection.editor.styles';
-import {
-  generateValue,
-  useFieldSelectionHandles,
-} from './field-selection.hooks';
+import { generateValue } from './field-selection.hooks';
 
 import '@yaireo/tagify/dist/tagify.css';
 
 type Props = {
   value: string;
-  property: FieldSelectionProperty;
+  property: AiProperty;
   updateValue: (value: string) => void;
 };
 
 type TagifyChangeEvent = CustomEvent<Tagify.ChangeEventData<Tagify.TagData>>;
 
-const FieldSelectionEditor: React.FC<Props> = ({
-  value,
-  property,
-  updateValue,
-}) => {
+const AiBoxEditor: React.FC<Props> = ({ value, property, updateValue }) => {
   const [fieldSelectionValue, setFieldSelectionValue] = useState('');
 
-  const handles = useFieldSelectionHandles(property);
+  const handles = useAiFieldHandles(property);
   const tagifyRef = useRef<Tagify>(null);
 
   const onChange = useCallback((event: TagifyChangeEvent): void => {
@@ -126,4 +120,4 @@ const FieldSelectionEditor: React.FC<Props> = ({
   );
 };
 
-export default FieldSelectionEditor;
+export default AiBoxEditor;

@@ -27,7 +27,13 @@ export const useFieldSelectionHandles = (
 ): string[] => {
   const allFields = useSelector(fieldSelectors.all);
   const handles = allFields
-    .filter((item) => property.availableFieldTypes.includes(item.typeClass))
+    .filter((item) => {
+      // Handle wildcard case
+      if (property.availableFieldTypes.includes('*')) {
+        return true; // Include all fields
+      }
+      return property.availableFieldTypes.includes(item.typeClass);
+    })
     .map((item) => item.properties.handle);
 
   return handles;

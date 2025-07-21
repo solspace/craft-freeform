@@ -1,14 +1,14 @@
 import React from 'react';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import type { ControlType } from '@components/form-controls/types';
-import type { FieldSelectionProperty } from '@ff-client/types/properties';
+import type { AiProperty } from '@ff-client/types/properties';
 
 import { Control } from '../../control';
 
-import { AiSummaryBoxPreview } from './ai-summary-box.preview';
-import FieldSelectionEditor from './field-selection.editor';
+import AiBoxEditor from './ai-box.editor';
+import { AiBoxPreview } from './ai-box.preview';
 
-const AiSummaryBox: React.FC<ControlType<FieldSelectionProperty>> = ({
+const AiBox: React.FC<ControlType<AiProperty>> = ({
   value,
   property,
   errors,
@@ -16,8 +16,8 @@ const AiSummaryBox: React.FC<ControlType<FieldSelectionProperty>> = ({
 }) => {
   return (
     <Control property={property} errors={errors}>
-      <PreviewableComponent preview={<AiSummaryBoxPreview value={value} />}>
-        <FieldSelectionEditor
+      <PreviewableComponent preview={<AiBoxPreview value={value} />}>
+        <AiBoxEditor
           value={value}
           property={property}
           updateValue={updateValue}
@@ -27,4 +27,4 @@ const AiSummaryBox: React.FC<ControlType<FieldSelectionProperty>> = ({
   );
 };
 
-export default AiSummaryBox;
+export default AiBox;

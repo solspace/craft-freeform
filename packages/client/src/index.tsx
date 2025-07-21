@@ -22,6 +22,9 @@ import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
 import { ImportExpressForms } from './app/pages/import-export/import/express-forms/express-forms';
 import { ImportFreeformData } from './app/pages/import-export/import/freeform-data/freeform-data';
+import { Integrations } from './app/pages/integrations';
+import { StandardIntegrations } from './app/pages/integrations/categories/standard/standard';
+import { SinglesIntegrations } from './app/pages/integrations/types/singles/singles';
 import { LimitedUsers } from './app/pages/limited-users/limited-users';
 import { LimitedUsersDetail } from './app/pages/limited-users/limited-users.detail';
 import { SurveyResults } from './app/pages/surveys/results/results';
@@ -75,6 +78,21 @@ root.render(
                             element={<SurveyResults />}
                           />
                           <Route path="welcome" element={<Welcome />} />
+                          <Route path="integrations" element={<Integrations />}>
+                            <Route index element={<StandardIntegrations />} />
+                            <Route
+                              path="singles/:integration"
+                              element={<SinglesIntegrations />}
+                            />
+                            <Route
+                              path=":type"
+                              element={<StandardIntegrations />}
+                            />
+                            <Route
+                              path=":type/:integration"
+                              element={<StandardIntegrations />}
+                            />
+                          </Route>
                           <Route path="import" element={<ImportExport />}>
                             <Route
                               path="forms"

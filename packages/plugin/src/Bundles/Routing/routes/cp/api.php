@@ -45,8 +45,10 @@ return [
 
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',
-    'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
-    'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
+    'freeform/api/integrations/navigation' => 'freeform/api/integrations/navigation',
+    'freeform/api/integrations/<type:[a-zA-Z\-]+>' => 'freeform/api/integrations/list',
+    'freeform/api/integrations/<type:[a-zA-Z\-]+>/<id:\d+>' => 'freeform/api/integrations/one',
+    'freeform/api/integrations/<type:[a-zA-Z\-]+>/<id:\d+>/status' => 'freeform/api/integrations/status-check',
 
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',

@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\controllers\api;
 
 use GuzzleHttp\Exception\BadResponseException;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
@@ -35,6 +37,8 @@ class IntegrationsController extends BaseApiController
         private IntegrationDTOProvider $integrationDTOProvider,
         private IntegrationClientProvider $clientProvider,
         private IntegrationTypeProvider $typeProvider,
+        private PropertyProvider $propertyProvider,
+        private ImplementationProvider $implementationProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -47,6 +51,56 @@ class IntegrationsController extends BaseApiController
     public function actionOne(): Response
     {
         return $this->asSerializedJson(['one']);
+    }
+
+    public function actionProperties(?string $id = null, ?string $type = null, ?string $integration = null): Response
+    {
+        if ($id) {
+            $model = $this->getIntegrationsService()->getIntegrationObjectById($id);
+
+            $properties = $this->propertyProvider->getEditableProperties($model);
+            $properties->removeFlagged(
+                IntegrationInterface::FLAG_INSTANCE_ONLY,
+                IntegrationInterface::FLAG_INTERNAL,
+            );
+
+            return $this->asSerializedJson([
+                'id' => $model->getId(),
+                'uid' => $model->getUid(),
+                'name' => $model->getName(),
+                'handle' => $model->getHandle(),
+                'enabled' => $model->isEnabled(),
+                'type' => $model->getTypeDefinition(),
+                'implements' => $this->implementationProvider->getImplementations($model::class),
+                'properties' => $properties,
+            ]);
+        }
+
+        $allTypes = $this->typeProvider->getAllTypeDefinitions();
+        $type = array_find(
+            $allTypes,
+            fn ($definition) => $definition->shortName === $integration && $definition->type === $type,
+        );
+
+        if (!$type) {
+            throw new NotFoundHttpException('Integration type not found');
+        }
+
+        $properties = $this->propertyProvider->getEditableProperties($type->class);
+        $properties->removeFlagged(
+            IntegrationInterface::FLAG_INSTANCE_ONLY,
+            IntegrationInterface::FLAG_INTERNAL,
+        );
+
+        return $this->asSerializedJson([
+            'id' => null,
+            'name' => '',
+            'handle' => '',
+            'enabled' => true,
+            'type' => $type,
+            'implements' => $this->implementationProvider->getImplementations($type->class),
+            'properties' => $properties,
+        ]);
     }
 
     public function actionNavigation(): Response
@@ -62,14 +116,7 @@ class IntegrationsController extends BaseApiController
             }
 
             $data = [
-                'type' => [
-                    'class' => $type->class,
-                    'type' => $type->type,
-                    'name' => $type->name,
-                    'shortName' => $type->shortName,
-                    'version' => $type->version,
-                    'icon' => $type->getIconSvg(),
-                ],
+                'type' => $type,
                 'instances' => array_values(
                     array_map(
                         fn ($integration) => [

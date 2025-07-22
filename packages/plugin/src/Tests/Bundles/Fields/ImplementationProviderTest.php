@@ -15,7 +15,7 @@ class ImplementationProviderTest extends TestCase
         $result = $provider->getImplementations(TestThis::class);
 
         $this->assertSame(
-            ['testInterface1', 'anotherMultiWord'],
+            ['testInterface1', 'anotherMultiWord', 'abrrTest'],
             $result,
         );
     }
@@ -26,10 +26,11 @@ class ImplementationProviderTest extends TestCase
         $result = $provider->getFromArray([
             TestInterface1::class,
             AnotherMultiWordInterface::class,
+            ABRRTestInterface::class,
         ]);
 
         $this->assertSame(
-            ['testInterface1', 'anotherMultiWord'],
+            ['testInterface1', 'anotherMultiWord', 'abrrTest'],
             $result,
         );
     }
@@ -37,5 +38,6 @@ class ImplementationProviderTest extends TestCase
 
 interface TestInterface1 {}
 interface AnotherMultiWordInterface {}
+interface ABRRTestInterface {}
 
-class TestThis implements TestInterface1, AnotherMultiWordInterface {}
+class TestThis implements TestInterface1, AnotherMultiWordInterface, ABRRTestInterface {}

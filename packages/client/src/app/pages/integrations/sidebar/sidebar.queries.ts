@@ -1,15 +1,9 @@
+import { QKIntegrations } from '@ff-client/queries/integrations';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-type IntegrationType = {
-  name: string;
-  shortName: string;
-  version: string;
-  class: string;
-  type: string;
-  icon: string;
-};
+import type { TypeDefinition } from '../integration.types';
 
 type Instance = {
   id: string;
@@ -19,7 +13,7 @@ type Instance = {
 };
 
 type Entry = {
-  type: IntegrationType;
+  type: TypeDefinition;
   instances: Instance[];
 };
 
@@ -31,11 +25,14 @@ type Category = {
 
 type NavigationResponse = Category[];
 
-export const useNavigation = (): UseQueryResult<NavigationResponse> => {
-  return useQuery<NavigationResponse>(['integrations', 'navigation'], {
-    queryFn: () =>
-      axios
-        .get<NavigationResponse>('/api/integrations/navigation')
-        .then((res) => res.data),
-  });
-};
+export const useIntegrationNavigation =
+  (): UseQueryResult<NavigationResponse> => {
+    return useQuery<NavigationResponse>(QKIntegrations.navigation, {
+      cacheTime: Infinity,
+      staleTime: Infinity,
+      queryFn: () =>
+        axios
+          .get<NavigationResponse>('/api/integrations/navigation')
+          .then((res) => res.data),
+    });
+  };

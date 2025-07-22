@@ -1,8 +1,8 @@
-import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { NavLink, useLocation, useNavigate, useParams } from 'react-router-dom';
 import classes from '@ff-client/utils/classes';
 
-import { useNavigation } from './sidebar.queries';
+import { useIntegrationNavigation } from './sidebar.queries';
 import {
   Category,
   CategoryList,
@@ -17,8 +17,34 @@ import {
 } from './sidebar.styles';
 
 export const Sidebar: React.FC = () => {
+  const params = useParams();
+  const navigate = useNavigate();
+
   const { pathname: currentUrl } = useLocation();
-  const { data, isFetching } = useNavigation();
+  const { data, isFetching } = useIntegrationNavigation();
+
+  // go to the first integration url available
+  useEffect(() => {
+    if (isFetching || !data) {
+      return;
+    }
+
+    if (!params.type) {
+      const firstCategory = data?.[0];
+      const firstEntry = firstCategory?.entries?.[0];
+      if (firstEntry) {
+        const instance = firstEntry.instances?.[0];
+        const type = firstEntry.type;
+
+        let url = `${type.type}/${type.shortName}`;
+        if (instance) {
+          url += `/${instance.id}`;
+        }
+
+        navigate(url);
+      }
+    }
+  }, [data, isFetching, params]);
 
   if (isFetching && !data) {
     return <SidebarNavigation />;
@@ -58,12 +84,14 @@ export const Sidebar: React.FC = () => {
                         {indicatorText}
                       </StatusIndicator>
 
-                      {entry.type.icon && (
+                      {entry.type.iconSvg && (
                         <Icon
-                          dangerouslySetInnerHTML={{ __html: entry.type.icon }}
+                          dangerouslySetInnerHTML={{
+                            __html: entry.type.iconSvg,
+                          }}
                         />
                       )}
-                      {!entry.type.icon && (
+                      {!entry.type.iconSvg && (
                         <Icon>
                           <i className="fa-solid fa-cog" />
                         </Icon>

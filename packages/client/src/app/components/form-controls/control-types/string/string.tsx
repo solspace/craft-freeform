@@ -21,6 +21,9 @@ const String: React.FC<ControlType<StringProperty>> = ({
     }
   }, [autoFocus]);
 
+  const isCode = property.flags?.includes('code');
+  const isReadonly = property.flags?.includes('readonly');
+
   return (
     <Control property={property} errors={errors} context={context}>
       <input
@@ -29,10 +32,12 @@ const String: React.FC<ControlType<StringProperty>> = ({
         type="text"
         autoComplete="off"
         data-1p-ignore
+        readOnly={isReadonly}
         className={classes(
           'text',
           'fullwidth',
-          property?.flags?.includes('code') && 'code'
+          isCode && 'code',
+          isReadonly && 'readonly'
         )}
         value={value ?? ''}
         placeholder={property.placeholder}

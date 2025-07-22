@@ -1,5 +1,16 @@
 import type { Property } from './properties';
 
+export enum IntegrationType {
+  EmailMarketing = 'email-marketing',
+  Crm = 'crm',
+  Elements = 'elements',
+  Captchas = 'captchas',
+  PaymentGateways = 'payment-gateways',
+  Webhooks = 'webhooks',
+  Signles = 'singles',
+  Other = 'other',
+}
+
 export enum TargetFieldType {
   Relation = 'relation',
   Custom = 'custom',

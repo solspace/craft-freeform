@@ -11,6 +11,7 @@ export const SidebarNavigation = styled.nav`
   padding: ${spacings.xl} ${spacings.sm} 0;
   box-sizing: border-box;
 
+  border-right: 1px solid ${colors.inputBorder};
   border-radius: ${borderRadius.lg} 0 0 ${borderRadius.lg};
   background: ${colors.gray050};
   box-shadow: inset -1px 0 0 0 rgb(154 165 177 / 25%);

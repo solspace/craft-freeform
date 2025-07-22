@@ -46,11 +46,23 @@ class ImplementationProvider
     private function cleanUpInterfaceNames(array $interfaces): array
     {
         return array_map(
-            fn ($interface) => preg_replace(
-                '/Interface$/',
-                '',
-                Stringy::create($interface->getShortName())->camelize()
-            ),
+            function ($interface) {
+                $name = $interface->getShortName();
+                $name = preg_replace(
+                    '/Interface$/',
+                    '',
+                    $name,
+                );
+
+                preg_match('/^([A-Z]+)(?=[A-Z][a-z])/', $name, $matches);
+
+                if (!empty($matches)) {
+                    $match = $matches[1];
+                    $name = str_replace($match, Stringy::create($match)->toLowerCase(), $name);
+                }
+
+                return Stringy::create($name)->camelize()->toString();
+            },
             $interfaces
         );
     }

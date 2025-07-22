@@ -22,6 +22,7 @@ export type ControlProps = {
   instructions?: string;
   translatable?: boolean;
   hasTranslation?: boolean;
+  isEncrypted?: boolean;
   removeTranslation?: () => void;
   width?: number;
   disabled?: boolean;
@@ -43,6 +44,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   children,
   errors,
   messages,
+  isEncrypted,
   extraContent,
 }) => {
   return (
@@ -58,6 +60,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
             required={required}
             translatable={translatable}
             hasTranslation={hasTranslation}
+            isEncrypted={isEncrypted}
             removeTranslation={removeTranslation}
           />
           <FormInstructions instructions={instructions} />

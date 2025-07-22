@@ -11,7 +11,7 @@ use yii\base\Component;
 
 class AiService extends Component
 {
-    public function processAiField(Form $form, FieldInterface $aiField): ?string
+    public function processAiField(Form $form, FieldInterface $aiField, ?int $timeout = null): ?string
     {
         if (!$aiField instanceof AiField) {
             return null;
@@ -19,31 +19,15 @@ class AiService extends Component
 
         $integration = $aiField->getIntegration();
         if (!$integration || !$integration instanceof AiIntegrationInterface) {
-            Freeform::getInstance()->logger->getLogger('ai')->warning(
-                'AI field processing skipped - no valid AI integration selected',
-                [
-                    'form' => $form->getHandle(),
-                    'field' => $aiField->getHandle(),
-                ]
-            );
-
             return null;
         }
 
         if (!$integration->isEnabled()) {
-            Freeform::getInstance()->logger->getLogger('ai')->warning(
-                'AI field processing skipped - AI integration is disabled',
-                [
-                    'form' => $form->getHandle(),
-                    'field' => $aiField->getHandle(),
-                ]
-            );
-
             return null;
         }
 
         try {
-            return $this->callAiApi($form, $aiField, $integration);
+            return $this->callAiApi($form, $aiField, $integration, $timeout);
         } catch (\Exception $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
                 'AI processing failed: '.$e->getMessage(),
@@ -58,7 +42,7 @@ class AiService extends Component
         }
     }
 
-    private function callAiApi(Form $form, AiField $aiField, AiIntegrationInterface $integration): string
+    private function callAiApi(Form $form, AiField $aiField, AiIntegrationInterface $integration, ?int $timeout = null): string
     {
         $content = $this->prepareContentForAnalysis($form, $aiField);
         $systemPrompt = $this->prepareSystemPrompt($aiField);
@@ -68,6 +52,9 @@ class AiService extends Component
             'max_tokens' => $aiField->getMaxTokens(),
             'temperature' => $aiField->getTemperature(),
         ];
+        if (null !== $timeout) {
+            $options['timeout'] = $timeout;
+        }
 
         return $integration->processAiRequest($systemPrompt, $content, $options);
     }

@@ -79,16 +79,7 @@ class ProcessAiJob extends BaseJob
                     $submissionsService->storeSubmission($form, $submission);
                 }
             } catch (\Exception $e) {
-                // Log the error but don't fail the entire job
-                $freeform->logger->getLogReader()->log(
-                    'error',
-                    'Failed to process AI for field: '.$field->getHandle().' - '.$e->getMessage(),
-                    [
-                        'form' => $form->getHandle(),
-                        'submission' => $submission->getId(),
-                        'field' => $field->getHandle(),
-                    ]
-                );
+                // Continue processing, do not throw
             }
         }
     }

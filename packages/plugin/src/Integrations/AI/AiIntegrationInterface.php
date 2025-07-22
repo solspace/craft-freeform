@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Integrations\AI;
 
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 
-interface AiIntegrationInterface extends IntegrationInterface
+interface AiIntegrationInterface extends APIIntegrationInterface
 {
     public function getApiKey(): string;
 

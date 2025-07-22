@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\AI;
 
-use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
@@ -11,9 +10,8 @@ use yii\base\Event;
 
 class AiBundle extends FeatureBundle
 {
-    public function __construct(
-        private FormIntegrationsProvider $formIntegrationsProvider,
-    ) {
+    public function __construct()
+    {
         Event::on(
             IntegrationsService::class,
             IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,

@@ -16,7 +16,7 @@ class Option
 
     public function getValue(): string
     {
-        return $this->value;
+        return trim($this->value);
     }
 
     public function getLabel(): string

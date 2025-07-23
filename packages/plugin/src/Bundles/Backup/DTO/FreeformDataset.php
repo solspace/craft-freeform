@@ -2,9 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Backup\DTO;
 
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Models\Settings;
 
@@ -13,6 +16,9 @@ class FreeformDataset
     private ?FormCollection $forms = null;
     private ?IntegrationCollection $integrations = null;
     private ?TemplateCollection $templates = null;
+    private ?FavoritesCollection $favorites = null;
+    private ?FormGroupsCollection $formGroups = null;
+    private ?LimitedUsersCollection $limitedUsers = null;
     private ?FormSubmissionCollection $formSubmissions = null;
     private ?Settings $settings = null;
 
@@ -50,6 +56,42 @@ class FreeformDataset
     public function setTemplates(?TemplateCollection $templates): self
     {
         $this->templates = $templates;
+
+        return $this;
+    }
+
+    public function getFavorites(): ?FavoritesCollection
+    {
+        return $this->favorites;
+    }
+
+    public function setFavorites(?FavoritesCollection $favorites): self
+    {
+        $this->favorites = $favorites;
+
+        return $this;
+    }
+
+    public function getFormGroups(): ?FormGroupsCollection
+    {
+        return $this->formGroups;
+    }
+
+    public function setFormGroups(?FormGroupsCollection $formGroups): self
+    {
+        $this->formGroups = $formGroups;
+
+        return $this;
+    }
+
+    public function getLimitedUsers(): ?LimitedUsersCollection
+    {
+        return $this->limitedUsers;
+    }
+
+    public function setLimitedUsers(?LimitedUsersCollection $limitedUsers): self
+    {
+        $this->limitedUsers = $limitedUsers;
 
         return $this;
     }

@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\Backup\Import;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
-use Solspace\Freeform\Bundles\Backup\DTO\Form as FormDTO;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\FreeformDataset;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportStrategy;
@@ -25,6 +24,7 @@ use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Library\ServerSentEvents\SSE;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
@@ -32,9 +32,12 @@ use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
+use Solspace\Freeform\Records\FormGroupsEntriesRecord;
+use Solspace\Freeform\Records\FormGroupsRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\LimitedUsersRecord;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
@@ -89,6 +92,9 @@ class FreeformImporter
         $this->importSuccessTemplates();
         $this->importIntegrations();
         $this->importForms();
+        $this->importFavorites();
+        $this->importFormGroups();
+        $this->importLimitedUsers();
         $this->importSubmissions();
     }
 
@@ -724,22 +730,135 @@ class FreeformImporter
         }
     }
 
-    private function getFormByUid(string $uid): null|FormDTO|FormRecord
+    private function importFormGroups(): void
     {
-        static $formsByUid;
+        $collection = $this->dataset->getFormGroups();
+        if (!$collection) {
+            return;
+        }
 
-        if (null === $formsByUid) {
-            $formsByUid = true;
-            foreach (FormRecord::find()->all() as $form) {
-                if (isset($this->formsByUid[$form->uid])) {
+        $strategy = $this->dataset->getStrategy()->forms;
+
+        $this->sse->message('reset', $collection->count());
+
+        $groupRecords = FormGroupsRecord::find()->indexBy('uid')->all();
+        foreach ($collection as $group) {
+            $this->sse->message('info', 'Importing Form Group: '.$group->label);
+
+            /** @var FormGroupsRecord $record */
+            $record = $groupRecords[$group->uid] ?? null;
+            if ($record) {
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+                FormGroupsEntriesRecord::deleteAll(['groupId' => $record->id]);
+            } else {
+                $record = new FormGroupsRecord();
+            }
+
+            $site = \Craft::$app->getSites()->getSiteByHandle($group->site);
+            if (!$site) {
+                $this->sse->message('err', 'Form Group "'.$group->label.'": site "'.$group->site.'" not found');
+                $this->sse->message('progress', 1);
+
+                continue;
+            }
+
+            $record->uid = $group->uid;
+            $record->label = $group->label;
+            $record->siteId = $site->id;
+            $record->order = $group->order;
+            $record->save();
+
+            foreach ($group->entries as $entry) {
+                $form = $this->formsByUid[$entry->formUid] ?? null;
+                if (!$form) {
                     continue;
                 }
 
-                $this->formsByUid[$form->uid] = $form;
+                $entryRecord = new FormGroupsEntriesRecord();
+                $entryRecord->formId = $form->id;
+                $entryRecord->groupId = $record->id;
+                $entryRecord->order = $entry->order;
+                $entryRecord->save();
             }
+
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importFavorites(): void
+    {
+        $collection = $this->dataset->getFavorites();
+        if (!$collection) {
+            return;
         }
 
-        return $this->formsByUid[$uid] ?? null;
+        $strategy = $this->dataset->getStrategy()->forms;
+
+        $this->sse->message('reset', $collection->count());
+
+        $records = FavoriteFieldRecord::find()->indexBy('uid')->all();
+        foreach ($collection as $favorite) {
+            $this->sse->message('info', 'Importing Favorite Field: '.strip_tags($favorite->label));
+
+            $record = $records[$favorite->uid] ?? null;
+            if ($record) {
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+            } else {
+                $record = new FavoriteFieldRecord();
+            }
+
+            $record->uid = $favorite->uid;
+            $record->label = $favorite->label;
+            $record->type = $favorite->type;
+            $record->metadata = $favorite->metadata;
+            $record->save();
+
+            $this->sse->message('progress', 1);
+        }
+    }
+
+    private function importLimitedUsers(): void
+    {
+        $collection = $this->dataset->getLimitedUsers();
+        if (!$collection) {
+            return;
+        }
+
+        $strategy = $this->dataset->getStrategy()->forms;
+
+        $this->sse->message('reset', $collection->count());
+
+        $records = LimitedUsersRecord::find()->indexBy('uid')->all();
+        foreach ($collection as $limitedUser) {
+            $this->sse->message('info', 'Importing Limited Users: '.strip_tags($limitedUser->name));
+
+            $record = $records[$limitedUser->uid] ?? null;
+            if ($record) {
+                if (ImportStrategy::TYPE_SKIP === $strategy) {
+                    $this->sse->message('progress', 1);
+
+                    continue;
+                }
+            } else {
+                $record = new LimitedUsersRecord();
+            }
+
+            $record->uid = $limitedUser->uid;
+            $record->name = $limitedUser->name;
+            $record->description = $limitedUser->description;
+            $record->settings = $limitedUser->settings;
+            $record->save();
+
+            $this->sse->message('progress', 1);
+        }
     }
 
     private function importSubmissions(): void
@@ -751,7 +870,7 @@ class FreeformImporter
         foreach ($collection as $formSubmissions) {
             $batchProcessor = $formSubmissions->submissionBatchProcessor;
 
-            $form = $this->getFormByUid($formSubmissions->formUid);
+            $form = $this->formsByUid[$formSubmissions->formUid] ?? null;
             if (!$form) {
                 continue;
             }

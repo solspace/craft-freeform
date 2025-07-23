@@ -14,7 +14,8 @@ import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
-import type { ExportOptions } from '../../export.types';
+import { isAllOptionsEmpty } from '../../export.operations';
+import { createExportOptions, type ExportOptions } from '../../export.types';
 
 import { useFormsDataQuery, useFormsExportMutation } from './freeform.queries';
 
@@ -36,20 +37,7 @@ export const ExportFreeform: React.FC = () => {
   });
 
   const [active] = useState(false);
-  const [options, setOptions] = useState<ExportOptions>({
-    forms: [],
-    formSubmissions: [],
-    templates: {
-      pdf: [],
-      wrapper: [],
-      notification: [],
-      formatting: [],
-      success: [],
-    },
-    integrations: [],
-    settings: false,
-    password: '',
-  });
+  const [options, setOptions] = useState<ExportOptions>(createExportOptions());
 
   useEffect(() => {
     attachListener('file-token', async (event) => {
@@ -121,16 +109,7 @@ export const ExportFreeform: React.FC = () => {
             'btn',
             'submit',
             isCurrentlyActive && 'disabled',
-            !options.forms.length &&
-              !options.templates.pdf.length &&
-              !options.templates.wrapper.length &&
-              !options.templates.notification.length &&
-              !options.templates.formatting.length &&
-              !options.templates.success.length &&
-              !options.integrations.length &&
-              !options.formSubmissions.length &&
-              !options.settings &&
-              'disabled'
+            isAllOptionsEmpty(options) && 'disabled'
           )}
           disabled={isCurrentlyActive}
           onClick={onClick}

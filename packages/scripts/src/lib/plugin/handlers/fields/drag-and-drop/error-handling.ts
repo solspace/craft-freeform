@@ -2,6 +2,8 @@ import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { addDnDClass } from '@lib/plugin/helpers/classes';
 
+import type { FreeformEventWithContainer } from './types';
+
 type RenderErrorContainerEvent = Event & {
   container: HTMLElement;
 };
@@ -46,4 +48,25 @@ export const addFieldErrors = (
   previewContainer.setAttribute('data-has-errors', '');
   errorContainer.setAttribute('aria-label', errors.join('; '));
   errorContainer.setAttribute('title', errors.join('. '));
+};
+
+export const handleFormLock = (event: FreeformEventWithContainer<{ messages: string[] }>): void => {
+  const messages = event.messages;
+  const container = event.container;
+
+  if (messages && messages.length > 0) {
+    event.freeform.disableSubmit(`file-upload-errors-${getContainerId(container)}`);
+  }
+};
+
+export const clearFormLock = (event: FreeformEventWithContainer): void => {
+  const container = event.container;
+  const fieldsWithErrors = container.querySelectorAll('[data-has-errors]');
+  if (fieldsWithErrors.length === 0) {
+    event.freeform.enableSubmit(`file-upload-errors-${getContainerId(container)}`);
+  }
+};
+
+const getContainerId = (container: HTMLElement): string => {
+  return container.dataset.freeformFileUpload || 'unknown';
 };

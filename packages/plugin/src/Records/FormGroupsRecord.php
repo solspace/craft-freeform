@@ -13,11 +13,13 @@
 
 namespace Solspace\Freeform\Records;
 
+use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 
 /**
  * @property int    $id
  * @property string $siteId
+ * @property int    $order
  * @property string $label
  */
 class FormGroupsRecord extends ActiveRecord
@@ -30,5 +32,13 @@ class FormGroupsRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function getEntries(): ActiveQuery
+    {
+        return $this
+            ->hasMany(FormGroupsEntriesRecord::class, ['groupId' => 'id'])
+            ->orderBy(['order' => \SORT_ASC])
+        ;
     }
 }

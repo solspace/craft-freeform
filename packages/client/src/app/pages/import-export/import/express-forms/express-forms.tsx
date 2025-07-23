@@ -12,29 +12,14 @@ import { Preview } from '../../common/preview/preview';
 import { Progress } from '../../common/progress/progress';
 import { useProgressEvent } from '../../common/progress/progress.hooks';
 import { Strategy } from '../../common/strategy/strategy';
-import type { ImportOptions } from '../import.types';
+import { isAllOptionsEmpty } from '../../export/export.operations';
 import type { StrategyCollection } from '../import.types';
+import { createImportOptions, type ImportOptions } from '../import.types';
 
 import { useExpressFormsDataQuery } from './express-forms.queries';
 
 export const ImportExpressForms: React.FC = () => {
-  const [options, setOptions] = useState<ImportOptions>({
-    forms: [],
-    formSubmissions: [],
-    templates: {
-      pdf: [],
-      wrapper: [],
-      notification: [],
-      formatting: [],
-      success: [],
-    },
-    integrations: [],
-    strategy: {
-      forms: 'skip',
-      templates: 'skip',
-    },
-    settings: false,
-  });
+  const [options, setOptions] = useState<ImportOptions>(createImportOptions());
 
   const progressEvent = useProgressEvent();
   const active = progressEvent.progress.active;
@@ -105,14 +90,7 @@ export const ImportExpressForms: React.FC = () => {
           'field btn',
           'submit',
           active && 'disabled',
-          !options.forms.length &&
-            !options.templates.pdf.length &&
-            !options.templates.wrapper.length &&
-            !options.templates.notification.length &&
-            !options.templates.formatting.length &&
-            !options.templates.success.length &&
-            !options.formSubmissions.length &&
-            'disabled'
+          isAllOptionsEmpty(options) && 'disabled'
         )}
         disabled={active}
         onClick={onClick}

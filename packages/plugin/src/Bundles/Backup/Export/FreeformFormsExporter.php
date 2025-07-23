@@ -5,10 +5,14 @@ namespace Solspace\Freeform\Bundles\Backup\Export;
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\ElementQueryProcessor;
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupEntriesCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
@@ -20,13 +24,17 @@ use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateC
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\PdfTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TranslationCollection;
+use Solspace\Freeform\Bundles\Backup\DTO\Favorite;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Form;
+use Solspace\Freeform\Bundles\Backup\DTO\FormGroup;
+use Solspace\Freeform\Bundles\Backup\DTO\FormGroupEntry;
 use Solspace\Freeform\Bundles\Backup\DTO\FormIntegration;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\DTO\Integration;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
+use Solspace\Freeform\Bundles\Backup\DTO\LimitedUsers;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
@@ -52,12 +60,16 @@ use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Rules\RuleInterface;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\FavoriteFieldRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
+use Solspace\Freeform\Records\FormGroupsEntriesRecord;
+use Solspace\Freeform\Records\FormGroupsRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\LimitedUsersRecord;
 use Solspace\Freeform\Records\Notifications\NotificationWrapperRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
@@ -81,6 +93,9 @@ class FreeformFormsExporter extends BaseExporter
         $preview = new ImportPreview();
 
         $preview->forms = $this->collectForms();
+        $preview->favorites = $this->collectFavorites();
+        $preview->formGroups = $this->collectFormGroups();
+        $preview->limitedUsers = $this->collectLimitedUsers();
         $preview->settings = (bool) $this->collectSettings(true);
         $preview->templates = (new TemplateCollection())
             ->setPdf($this->collectPdfTemplates())
@@ -259,6 +274,87 @@ class FreeformFormsExporter extends BaseExporter
             }
 
             $collection->add($exported);
+        }
+
+        return $collection;
+    }
+
+    protected function collectFavorites(?array $ids = null): FavoritesCollection
+    {
+        $collection = new FavoritesCollection();
+
+        /** @var FavoriteFieldRecord[] $fields */
+        $fields = FavoriteFieldRecord::find()
+            ->where(null !== $ids ? ['uid' => $ids] : null)
+            ->all()
+        ;
+
+        foreach ($fields as $field) {
+            $favorite = new Favorite();
+            $favorite->uid = $field->uid;
+            $favorite->label = $field->label;
+            $favorite->type = $field->type;
+            $favorite->metadata = json_decode($field->metadata, false);
+
+            $collection->add($favorite);
+        }
+
+        return $collection;
+    }
+
+    protected function collectFormGroups(?array $ids = null): FormGroupsCollection
+    {
+        $collection = new FormGroupsCollection();
+
+        /** @var FormGroupsRecord[] $groups */
+        $groups = FormGroupsRecord::find()
+            ->where(null !== $ids ? ['uid' => $ids] : null)
+            ->orderBy(['siteId' => \SORT_ASC, 'order' => \SORT_ASC])
+            ->with('entries')
+            ->all()
+        ;
+
+        foreach ($groups as $record) {
+            $group = new FormGroup();
+            $group->uid = $record->uid;
+            $group->label = $record->label;
+            $group->order = $record->order;
+            $group->site = \Craft::$app->sites->getSiteById($record->siteId)->handle;
+            $group->entries = new FormGroupEntriesCollection();
+
+            /** @var FormGroupsEntriesRecord[] $entryRecords */
+            $entryRecords = $record->getEntries()->with('form')->all();
+            foreach ($entryRecords as $entryRecord) {
+                $entry = new FormGroupEntry();
+                $entry->formUid = $entryRecord->getForm()->one()->uid;
+                $entry->order = $entryRecord->order;
+
+                $group->entries->add($entry);
+            }
+
+            $collection->add($group);
+        }
+
+        return $collection;
+    }
+
+    protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection
+    {
+        $collection = new LimitedUsersCollection();
+
+        /** @var LimitedUsersRecord[] $records */
+        $records = LimitedUsersRecord::find()
+            ->where(null !== $ids ? ['uid' => $ids] : null)
+            ->all()
+        ;
+        foreach ($records as $record) {
+            $limitedUser = new LimitedUsers();
+            $limitedUser->uid = $record->uid;
+            $limitedUser->name = $record->name;
+            $limitedUser->description = $record->description;
+            $limitedUser->settings = json_decode($record->settings, false);
+
+            $collection->add($limitedUser);
         }
 
         return $collection;

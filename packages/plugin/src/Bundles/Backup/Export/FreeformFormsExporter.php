@@ -285,7 +285,7 @@ class FreeformFormsExporter extends BaseExporter
 
         /** @var FavoriteFieldRecord[] $fields */
         $fields = FavoriteFieldRecord::find()
-            ->where($ids !== null ? ['uid' => $ids] : null)
+            ->where(null !== $ids ? ['uid' => $ids] : null)
             ->all()
         ;
 
@@ -308,7 +308,7 @@ class FreeformFormsExporter extends BaseExporter
 
         /** @var FormGroupsRecord[] $groups */
         $groups = FormGroupsRecord::find()
-            ->where($ids !== null ? ['uid' => $ids] : null)
+            ->where(null !== $ids ? ['uid' => $ids] : null)
             ->orderBy(['siteId' => \SORT_ASC, 'order' => \SORT_ASC])
             ->with('entries')
             ->all()
@@ -344,7 +344,7 @@ class FreeformFormsExporter extends BaseExporter
 
         /** @var LimitedUsersRecord[] $records */
         $records = LimitedUsersRecord::find()
-            ->where($ids !== null ? ['uid' => $ids] : null)
+            ->where(null !== $ids ? ['uid' => $ids] : null)
             ->all()
         ;
         foreach ($records as $record) {

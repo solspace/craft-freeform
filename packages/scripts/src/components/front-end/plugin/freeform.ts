@@ -183,6 +183,8 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = true;
+      submit.ariaDisabled = 'true';
+      submit.dataset.disabled = 'true';
     }
   };
 
@@ -209,13 +211,8 @@ export default class Freeform {
 
     const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
 
-    const submitButtons = this._getSubmitButtons();
-    for (let i = 0; i < submitButtons.length; i++) {
-      const submit = submitButtons[i];
-
-      if (disableSubmit) {
-        submit.disabled = true;
-      }
+    if (disableSubmit) {
+      this.disableSubmit(id);
     }
 
     let lastButton: HTMLButtonElement | undefined = this._lastButtonPressed;
@@ -236,12 +233,11 @@ export default class Freeform {
 
   unlockSubmit = (id: string = 'freeform'): void => {
     this._lockList.delete(id);
-
     if (this._lockList.size > 0) {
       return;
     }
 
-    this._unlockSubmitButtons();
+    this._unlockSubmitButtons(id);
   };
 
   forceUnlockSubmit = (): void => {
@@ -268,16 +264,16 @@ export default class Freeform {
     }
   };
 
-  _unlockSubmitButtons = (): void => {
+  _unlockSubmitButtons = (id?: string): void => {
     const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
+
+    if (disableSubmit) {
+      this.enableSubmit(id);
+    }
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
-
-      if (disableSubmit) {
-        submit.disabled = false;
-      }
 
       if (showProcessingSpinner) {
         submit.classList.remove('freeform-processing');

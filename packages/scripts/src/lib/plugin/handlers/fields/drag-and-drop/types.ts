@@ -1,3 +1,5 @@
+import type { FreeformEvent } from 'types/events';
+
 export type FileMetadata = {
   id?: string;
   name: string;
@@ -27,6 +29,11 @@ export type UploadProgress = {
 };
 
 export type UploadProgressEvent = Event & UploadProgress;
+
+export type FreeformEventWithContainer<T = unknown> = FreeformEvent &
+  T & {
+    container: HTMLElement;
+  };
 
 const imageExtensions = ['png', 'jpg', 'jpeg', 'gif'];
 export const isImage = (extension: string): boolean => imageExtensions.includes(extension.toLowerCase());

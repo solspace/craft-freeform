@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.11.7 - 2025-07-23
+
+### Added
+- Added support for exporting and importing form groups, favorite fields, and limited users in the Import/Export utility.
+
+### Changed
+- Trailing spaces in field option values are now automatically trimmed to avoid unexpected issues.
+- Improved Table field text inputs in the CP Submissions edit page to display overflow content more clearly.
+- The form submit button is now locked when an invalid file type is added to a File Upload Drag & Drop field, and remains locked until the file is removed.
+
+### Fixed
+- Fixed a bug where certain migrations were incompatible with PostgreSQL.
+- Fixed an issue where pressing `Enter` on the keyboard didn't consistently trigger the submit button, and could navigate back if a "Back" button was present.
+
 ## 5.11.6 - 2025-07-18
 
 ### Changed

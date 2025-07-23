@@ -3,15 +3,27 @@ import { indexedColumn } from '@ff-client/utils/arrays';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import type { ExportOptions } from '../../export/export.types';
+import { isAllOptionsSelected } from '../../export/export.operations';
+import {
+  createExportOptions,
+  createFilledExportOptions,
+  type ExportOptions,
+} from '../../export/export.types';
 import type { FormImportData } from '../../import/import.types';
 
-import { PreviewForms } from './forms/forms';
-import { PreviewIntegrations } from './integrations/integrations';
 import { PreviewSettings } from './settings/settings';
 import { PreviewSubmissionsTemplates } from './submissions/submissions';
 import { PreviewTemplates } from './templates/templates';
-import { FileList, PreviewWrapper, SelectAll } from './preview.styles';
+import { PreviewGenericList } from './preview.generic-list';
+import {
+  FavoritesIcon,
+  FileList,
+  FormGroupIcon,
+  FormIcon,
+  Icon,
+  PreviewWrapper,
+  SelectAll,
+} from './preview.styles';
 
 type Props = {
   data?: FormImportData;
@@ -26,49 +38,9 @@ export const Preview: React.FC<Props> = ({
   disabled,
   onUpdate,
 }) => {
-  const isAllSelected =
-    options.forms.length === data.forms?.length &&
-    options.integrations.length === data.integrations?.length &&
-    options.templates.pdf.length === data.templates.pdf?.length &&
-    options.templates.wrapper.length === data.templates.wrapper?.length &&
-    options.templates.notification.length ===
-      data.templates.notification?.length &&
-    options.templates.formatting.length === data.templates.formatting?.length &&
-    options.templates.success.length === data.templates.success?.length &&
-    options.formSubmissions.length === data.formSubmissions?.length &&
-    options.settings;
-
-  const emptyOptions: ExportOptions = {
-    forms: [],
-    templates: {
-      pdf: [],
-      wrapper: [],
-      notification: [],
-      formatting: [],
-      success: [],
-    },
-    integrations: [],
-    formSubmissions: [],
-    settings: false,
-  };
-
-  const filledOptions: ExportOptions = {
-    forms: data.forms.map((form) => form.uid),
-    templates: {
-      pdf: data.templates.pdf.map((template) => template.uid),
-      wrapper: data.templates.wrapper.map((template) => template.uid),
-      notification: data.templates.notification.map((template) => template.uid),
-      formatting: data.templates.formatting.map(
-        (template) => template.fileName
-      ),
-      success: data.templates.success.map((template) => template.fileName),
-    },
-    integrations: data.integrations.map((integration) => integration.uid),
-    formSubmissions: data.formSubmissions.map(
-      (submission) => submission.form.uid
-    ),
-    settings: true,
-  };
+  const isAllSelected = isAllOptionsSelected(options, data);
+  const emptyOptions: ExportOptions = createExportOptions();
+  const filledOptions: ExportOptions = createFilledExportOptions(data);
 
   return (
     <PreviewWrapper className={classes(disabled && 'disabled')}>
@@ -82,10 +54,41 @@ export const Preview: React.FC<Props> = ({
         </SelectAll>
 
         <ul>
-          <PreviewForms
-            forms={data.forms}
-            options={options.forms}
+          <PreviewGenericList
+            label={translate('Forms')}
+            icon={<FormIcon />}
+            labelKey="name"
+            selectionKey="uid"
+            items={data.forms}
+            selection={options.forms}
             onUpdate={(forms) => onUpdate({ ...options, forms })}
+            labelExtras={(form) =>
+              form.pages.length > 1 && (
+                <small>
+                  ({translate('{count} pages', { count: form.pages.length })})
+                </small>
+              )
+            }
+          />
+
+          <PreviewGenericList
+            label={translate('Form Groups')}
+            icon={<FormGroupIcon />}
+            labelKey="label"
+            selectionKey="uid"
+            items={data.formGroups}
+            selection={options.formGroups}
+            onUpdate={(formGroups) => onUpdate({ ...options, formGroups })}
+          />
+
+          <PreviewGenericList
+            label={translate('Favorite Fields')}
+            icon={<FavoritesIcon />}
+            labelKey="label"
+            selectionKey="uid"
+            items={data.favorites}
+            selection={options.favorites}
+            onUpdate={(favorites) => onUpdate({ ...options, favorites })}
           />
 
           <PreviewTemplates
@@ -95,10 +98,26 @@ export const Preview: React.FC<Props> = ({
             formNames={indexedColumn(data.forms, 'uid', 'name')}
           />
 
-          <PreviewIntegrations
-            integrations={data.integrations}
-            options={options.integrations}
+          <PreviewGenericList
+            label={translate('Integrations')}
+            labelKey="name"
+            selectionKey="uid"
+            items={data.integrations}
+            selection={options.integrations}
             onUpdate={(integrations) => onUpdate({ ...options, integrations })}
+            itemIcon={(integration) => {
+              if (!integration.icon) {
+                return <Icon className="fa-duotone fa-gear" />;
+              }
+
+              return (
+                <Icon
+                  dangerouslySetInnerHTML={{
+                    __html: integration.icon,
+                  }}
+                />
+              );
+            }}
           />
 
           <PreviewSubmissionsTemplates
@@ -107,6 +126,16 @@ export const Preview: React.FC<Props> = ({
             onUpdate={(formSubmissions) =>
               onUpdate({ ...options, formSubmissions })
             }
+          />
+
+          <PreviewGenericList
+            label={translate('Limited Users')}
+            icon={<Icon className="fa-regular fa-user-shield" />}
+            labelKey="name"
+            selectionKey="uid"
+            items={data.limitedUsers}
+            selection={options.limitedUsers}
+            onUpdate={(limitedUsers) => onUpdate({ ...options, limitedUsers })}
           />
 
           {data.settings && (

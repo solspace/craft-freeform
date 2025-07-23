@@ -32,6 +32,7 @@ const events = {
     showGlobalMessage: 'freeform-field-dnd-show-global-message',
     appendErrors: 'freeform-field-dnd-append-errors',
     clearErrors: 'freeform-field-dnd-clear-errors',
+    afterErrors: 'freeform-field-dnd-after-errors',
     onChange: 'freeform-field-dnd-on-change',
     onUploadProgress: 'freeform-field-dnd-on-upload-progress',
   } as const,

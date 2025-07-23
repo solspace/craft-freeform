@@ -183,6 +183,8 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = true;
+      submit.ariaDisabled = 'true';
+      submit.dataset.disabled = 'true';
     }
   };
 
@@ -209,13 +211,8 @@ export default class Freeform {
 
     const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
 
-    const submitButtons = this._getSubmitButtons();
-    for (let i = 0; i < submitButtons.length; i++) {
-      const submit = submitButtons[i];
-
-      if (disableSubmit) {
-        submit.disabled = true;
-      }
+    if (disableSubmit) {
+      this.disableSubmit(id);
     }
 
     let lastButton: HTMLButtonElement | undefined = this._lastButtonPressed;
@@ -236,12 +233,11 @@ export default class Freeform {
 
   unlockSubmit = (id: string = 'freeform'): void => {
     this._lockList.delete(id);
-
     if (this._lockList.size > 0) {
       return;
     }
 
-    this._unlockSubmitButtons();
+    this._unlockSubmitButtons(id);
   };
 
   forceUnlockSubmit = (): void => {
@@ -262,22 +258,22 @@ export default class Freeform {
   triggerSubmit = (): void => {
     this.unlockSubmit();
 
-    const submitButtons = this._getSubmitButtons();
-    if (submitButtons.length) {
-      submitButtons[0].click();
+    const submitButton = this._getMainSubmitButton();
+    if (submitButton) {
+      submitButton.click();
     }
   };
 
-  _unlockSubmitButtons = (): void => {
+  _unlockSubmitButtons = (id?: string): void => {
     const { disableSubmit, showProcessingSpinner, showProcessingText } = this.options;
+
+    if (disableSubmit) {
+      this.enableSubmit(id);
+    }
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
-
-      if (disableSubmit) {
-        submit.disabled = false;
-      }
 
       if (showProcessingSpinner) {
         submit.classList.remove('freeform-processing');
@@ -301,8 +297,12 @@ export default class Freeform {
    */
   _attachListeners = (): void => {
     const form = this.form;
-    const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
+    const hasFormListeners = form.dataset.formListenersAttached === '1';
+    if (!hasFormListeners) {
+      form.dataset.formListenersAttached = '1';
+    }
 
+    const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
     const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
 
     if (actionInput) {
@@ -312,14 +312,30 @@ export default class Freeform {
           actionInput.value = button.getAttribute('data-freeform-action');
         })
       );
-
-      // Reset the action-input after each submit
-      form.addEventListener(events.form.ajaxAfterSubmit, () => {
-        actionInput.value = 'submit';
-      });
     }
 
-    form.addEventListener('submit', this._onSubmit);
+    if (!hasFormListeners) {
+      if (actionInput) {
+        form.addEventListener(events.form.ajaxAfterSubmit, () => {
+          actionInput.value = 'submit';
+        });
+      }
+
+      form.addEventListener('submit', this._onSubmit);
+      form.addEventListener('keydown', (event: KeyboardEvent) => {
+        const isEnter = event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.metaKey;
+        const isInput = event.target instanceof HTMLInputElement;
+        if (isEnter && isInput) {
+          event.preventDefault();
+          event.stopPropagation();
+
+          const submitButton = this._getMainSubmitButton();
+          if (submitButton) {
+            this.triggerSubmit();
+          }
+        }
+      });
+    }
 
     const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
     inputs.forEach((input) =>
@@ -768,6 +784,9 @@ export default class Freeform {
       this.unlockSubmit();
     });
   };
+
+  _getMainSubmitButton = (): HTMLButtonElement | HTMLInputElement | undefined =>
+    this.form.querySelector<HTMLButtonElement | HTMLInputElement>(`*[type=submit][data-freeform-action="submit"]`);
 
   _getSubmitButtons = (): NodeListOf<HTMLButtonElement | HTMLInputElement> => {
     const buttons = this.form.querySelectorAll<HTMLButtonElement | HTMLInputElement>(

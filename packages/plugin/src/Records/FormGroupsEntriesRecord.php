@@ -13,12 +13,14 @@
 
 namespace Solspace\Freeform\Records;
 
+use craft\db\ActiveQuery;
 use craft\db\ActiveRecord;
 
 /**
  * @property int    $id
  * @property string $formId
  * @property string $groupId
+ * @property int    $order
  */
 class FormGroupsEntriesRecord extends ActiveRecord
 {
@@ -30,5 +32,10 @@ class FormGroupsEntriesRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function getForm(): ActiveQuery
+    {
+        return $this->hasOne(FormRecord::class, ['id' => 'formId']);
     }
 }

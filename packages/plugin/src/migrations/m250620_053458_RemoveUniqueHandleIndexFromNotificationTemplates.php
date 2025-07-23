@@ -13,7 +13,17 @@ class m250620_053458_RemoveUniqueHandleIndexFromNotificationTemplates extends Mi
         $indexes = $this->db->getSchema()->getTableIndexes($this->tableName);
         foreach ($indexes as $index) {
             if ($index->isUnique && 1 === \count($index->columnNames) && 'handle' === $index->columnNames[0]) {
-                $this->dropIndex($index->name, $this->tableName);
+                if ('pgsql' === $this->db->driverName) {
+                    $this->execute(
+                        \sprintf(
+                            'ALTER TABLE %s DROP CONSTRAINT IF EXISTS %s',
+                            $this->tableName,
+                            $index->name
+                        )
+                    );
+                } else {
+                    $this->dropIndex($index->name, $this->tableName);
+                }
 
                 break;
             }

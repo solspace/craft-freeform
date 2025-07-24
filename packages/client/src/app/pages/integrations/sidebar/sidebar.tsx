@@ -68,16 +68,14 @@ export const Sidebar: React.FC = () => {
                 const indicatorText = instances > 1 ? instances : '';
 
                 let url = `${type.type}/${type.shortName}`;
+                const isActive = currentUrl.includes(url);
                 if (instances > 0) {
                   url += `/${entry.instances[0].id}`;
                 }
 
                 return (
                   <Integration key={key}>
-                    <NavLink
-                      to={url}
-                      className={classes(currentUrl === url && 'active')}
-                    >
+                    <NavLink to={url} className={classes(isActive && 'active')}>
                       <StatusIndicator
                         className={classes(isStatusActive && 'active')}
                       >

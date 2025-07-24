@@ -63,7 +63,8 @@ export const Instructions = styled.div`
   border-radius: 3px;
   border: 1px solid #cbd6e2;
 
-  overflow-y: auto;
+  overflow-y: hidden;
+  overflow-x: hidden;
   opacity: 0;
   transition: all 0.3s ease-out;
 
@@ -74,7 +75,7 @@ export const Instructions = styled.div`
     max-height: 500px;
 
     opacity: 1;
-    overflow: auto;
+    overflow-y: auto;
 
     .markdown-collapse {
       opacity: 1;

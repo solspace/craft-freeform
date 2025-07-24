@@ -18,6 +18,11 @@ export const Icon = styled.div`
     width: 30px;
     height: 30px;
   }
+
+  &.spinning {
+    animation: spin 2s linear infinite;
+    fill: ${colors.gray300};
+  }
 `;
 
 export const AuthChecker = styled.div`

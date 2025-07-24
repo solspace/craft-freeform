@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Services\Pro;
 
 use Carbon\Carbon;
-use craft\helpers\Db;
 use craft\web\View;
 use Solspace\Freeform\Bundles\Digest\Providers\DigestLoggerProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\FeedMessageRecord;
+use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use yii\base\Component;
 
@@ -37,11 +37,19 @@ class DigestService extends Component
 
     public function triggerDigest(Carbon $refDate): void
     {
-        $this->loggerProvider->getLogger()->info('DigestService triggerDigest - Started processing');
+        if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+            return;
+        }
+
+        if (Freeform::isLockedWithGuard(self::CACHE_KEY_DIGEST, self::LOCK_KEY_DIGEST, self::CACHE_TTL_DIGEST)) {
+            return;
+        }
 
         if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
             return;
         }
+
+        $this->loggerProvider->getLogger()->info('DigestService triggerDigest - Started processing');
 
         $freeform = Freeform::getInstance();
         $settingsService = $freeform->settings;
@@ -136,6 +144,17 @@ class DigestService extends Component
         $this->loggerProvider->getLogger()->info("DigestService sendDigest - {$type} - Finished processing");
     }
 
+    public function purgeNotificationLogs(): void
+    {
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
+        $cutoff = (new \DateTime())->modify('-8 days')->format('Y-m-d');
+
+        NotificationLogRecord::deleteAll(['<', 'digestDate', $cutoff]);
+    }
+
     private function parseDigest(string $type, RecipientCollection $recipients, int $frequency, Carbon $refDate): void
     {
         $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Started processing");
@@ -155,24 +174,24 @@ class DigestService extends Component
             return;
         }
 
-        $record = NotificationLogRecord::find()
-            ->where(Db::parseDateParam('dateCreated', $lookupStart, '>='))
-            ->andWhere(Db::parseDateParam('dateCreated', $lookupEnd, '<='))
-            ->andWhere(['type' => $type])
-            ->one()
+        $exists = NotificationLogRecord::find()
+            ->where([
+                'type' => $type,
+                'digestDate' => $lookupStart->toDateString(),
+            ])
+            ->exists()
         ;
 
-        if ($record) {
-            $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Skipped - Notification Log Record already exists");
+        if ($exists) {
+            $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Skipped - Already sent for {$lookupStart->toDateString()}");
 
             return;
         }
 
-        if (-1 === $frequency) {
-            $rangeStart = $lookupStart->copy()->subDay();
-        } else {
-            $rangeStart = $lookupStart->copy()->subWeek();
-        }
+        // Time range for actual digest data
+        $rangeStart = (-1 === $frequency)
+            ? $lookupStart->copy()->subDay()
+            : $lookupStart->copy()->subWeek();
 
         $rangeEnd = $lookupStart->copy()->subDay()->endOfDay();
 
@@ -181,13 +200,37 @@ class DigestService extends Component
             'rangeEnd' => $rangeEnd,
         ]);
 
-        $this->sendDigest($recipients, $type, $rangeStart, $rangeEnd);
+        $db = \Craft::$app->getDb();
+        $transaction = $db->beginTransaction();
 
-        $record = new NotificationLogRecord();
-        $record->type = $type;
-        $record->save();
+        try {
+            // Try to write log record to block duplicates
+            $record = new NotificationLogRecord();
+            $record->type = $type;
+            $record->digestDate = $lookupStart->toDateString(); // e.g. '2025-07-24'
+            $record->save(false); // skip validation
 
-        $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Notification Log Record created");
+            $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Notification log record created");
+
+            $this->sendDigest($recipients, $type, $rangeStart, $rangeEnd);
+
+            $transaction->commit();
+        } catch (\Throwable $exception) {
+            $transaction->rollBack();
+
+            if (str_contains($exception->getMessage(), 'UNIQUE') || str_contains($exception->getMessage(), 'duplicate')) {
+                // Someone else already sent it
+                $this->loggerProvider->getLogger()->warning("DigestService parseDigest - {$type} - Skipped - Already sent (duplicate record)");
+
+                return;
+            }
+
+            $this->loggerProvider->getLogger()->error("DigestService parseDigest - {$type} - Failed: {$exception->getMessage()}");
+
+            // Re-throw so the queue knows it failed
+            throw $exception;
+        }
+
         $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Finished processing");
     }
 

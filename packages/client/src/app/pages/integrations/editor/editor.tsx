@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
 import type {
   APIError,
   ErrorCollection,
@@ -106,6 +107,8 @@ export const IntegrationsEditor: FC = () => {
   const saveHandler = (): void => {
     mutate(values);
   };
+
+  useSaveShortcut(saveHandler);
 
   const currentIntegrationInstances = navData
     ?.find((category) => category.handle === type)

@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { QKIntegrations } from '@ff-client/queries/integrations';
 import type { APIError } from '@ff-client/types/api';
 import type { IntegrationType } from '@ff-client/types/integrations';
+import { notifications } from '@ff-client/utils/notifications';
+import translate from '@ff-client/utils/translations';
 import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
@@ -48,6 +50,8 @@ export const useIntegrationMutation = (
     },
     onSuccess: (response) => {
       const { id, type, integration } = response;
+
+      notifications.success(translate('Integration saved successfully'));
 
       queryClient.invalidateQueries(QKIntegrations.navigation);
       queryClient.invalidateQueries(QKIntegrations.single(id));

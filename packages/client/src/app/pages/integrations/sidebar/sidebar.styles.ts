@@ -3,26 +3,33 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const SidebarNavigation = styled.nav`
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 
   flex-basis: 250px;
   flex-shrink: 0;
   width: 300px;
-  padding: ${spacings.xl} ${spacings.sm} 0;
+  padding: 0;
   box-sizing: border-box;
 
   border-radius: ${borderRadius.lg} 0 0 ${borderRadius.lg};
   background: ${colors.gray050};
   box-shadow: inset -1px 0 0 0 rgb(154 165 177 / 25%);
+`;
 
-  overflow-y: auto;
-  ${scrollBar};
+export const SearchWrapper = styled.div`
+  padding: ${spacings.lg} ${spacings.md};
+  border-bottom: 1px solid ${colors.hairline};
 `;
 
 export const CategoryList = styled.ul`
   list-style: none;
-  padding: 0;
+  padding: ${spacings.lg} ${spacings.sm} 0;
   margin: 0;
+
+  overflow-y: auto;
+  ${scrollBar};
 `;
 
 export const Category = styled.li`

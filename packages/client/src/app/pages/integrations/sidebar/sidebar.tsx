@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { Search } from '@components/search/search';
 import classes from '@ff-client/utils/classes';
 
 import { useIntegrationNavigation } from './sidebar.queries';
@@ -11,6 +12,7 @@ import {
   Integration,
   IntegrationList,
   IntegrationTitle,
+  SearchWrapper,
   SidebarNavigation,
   StatusIndicator,
   Version,
@@ -20,14 +22,33 @@ export const Sidebar: React.FC = () => {
   const { pathname: currentUrl } = useLocation();
   const { data, isFetching } = useIntegrationNavigation();
 
+  const [query, setQuery] = useState('');
+
   if (isFetching && !data) {
     return <SidebarNavigation />;
   }
 
+  const filteredData = data
+    .map((category) => ({
+      ...category,
+      entries: category.entries.filter(
+        (entry) =>
+          entry.type.name.toLowerCase().includes(query.toLowerCase()) ||
+          entry.instances.some((instance) =>
+            instance.name.toLowerCase().includes(query.toLowerCase())
+          )
+      ),
+    }))
+    .filter((category) => category.entries.length > 0);
+
   return (
     <SidebarNavigation>
+      <SearchWrapper>
+        <Search query={query} setQuery={setQuery} />
+      </SearchWrapper>
+
       <CategoryList>
-        {data.map((category) => (
+        {filteredData.map((category) => (
           <Category key={category.handle}>
             <CategoryTitle>{category.title}</CategoryTitle>
             <IntegrationList>

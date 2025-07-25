@@ -100,6 +100,16 @@ export const Indicator = styled.div`
   }
 `;
 
+export const RemoveButtonWrapper = styled.button`
+  margin-left: auto;
+
+  > button,
+  svg {
+    width: 30px;
+    height: 30px;
+  }
+`;
+
 export const Actions = styled.div`
   display: flex;
   gap: 5px;
@@ -111,10 +121,11 @@ export const Action = styled.a`
 
   font-size: 12px;
 
-  i {
+  i,
+  svg {
     font-size: 14px;
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
   }
 `;
 

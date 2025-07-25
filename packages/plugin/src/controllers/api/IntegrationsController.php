@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers\api;
 
 use GuzzleHttp\Exception\BadResponseException;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
@@ -10,8 +11,14 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Exceptions\Api\ApiException;
+use Solspace\Freeform\Library\Exceptions\Api\FlatErrorCollection;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Models\IntegrationModel;
 use yii\base\Event;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -43,18 +50,10 @@ class IntegrationsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-    public function actionList(): Response
-    {
-        return $this->asSerializedJson(['list']);
-    }
-
-    public function actionOne(): Response
-    {
-        return $this->asSerializedJson(['one']);
-    }
-
     public function actionProperties(?string $id = null, ?string $type = null, ?string $integration = null): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
         if ($id) {
             $model = $this->getIntegrationsService()->getIntegrationObjectById($id);
 
@@ -77,6 +76,8 @@ class IntegrationsController extends BaseApiController
         }
 
         $allTypes = $this->typeProvider->getAllTypeDefinitions();
+
+        /** @var Type $type */
         $type = array_find(
             $allTypes,
             fn ($definition) => $definition->shortName === $integration && $definition->type === $type,
@@ -94,8 +95,8 @@ class IntegrationsController extends BaseApiController
 
         return $this->asSerializedJson([
             'id' => null,
-            'name' => '',
-            'handle' => '',
+            'name' => $type->name,
+            'handle' => StringHelper::toHandle($type->name),
             'enabled' => true,
             'type' => $type,
             'implements' => $this->implementationProvider->getImplementations($type->class),
@@ -105,6 +106,8 @@ class IntegrationsController extends BaseApiController
 
     public function actionNavigation(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
         $types = $this->typeProvider->getAllTypeDefinitions();
         $integrations = $this->getIntegrationsService()->getAllIntegrations();
 
@@ -157,6 +160,8 @@ class IntegrationsController extends BaseApiController
 
     public function actionStatusCheck(int $id): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
         $integration = $this->getIntegrationsService()->getById($id);
         if (!$integration) {
             throw new NotFoundHttpException('Integration not found');
@@ -234,6 +239,64 @@ class IntegrationsController extends BaseApiController
         }
 
         return $this->asJson($response);
+    }
+
+    public function actionDelete(int $id): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_MANAGE);
+
+        $this->getIntegrationsService()->delete($id);
+
+        return $this->asEmptyResponse(204);
+    }
+
+    protected function post(null|int|string $id = null): null|array|object
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_MANAGE);
+
+        $class = $this->request->post('class');
+        $values = $this->request->post('values', []);
+        $metadata = $values['metadata'] ?? [];
+        unset($values['metadata']);
+
+        $type = $this->typeProvider->getTypeDefinition($class);
+        if (!$type) {
+            throw new NotFoundHttpException('Integration type not found');
+        }
+
+        if ($id) {
+            $model = $this->getIntegrationsService()->getById($id);
+        } else {
+            $model = IntegrationModel::create($type->type);
+            $model->class = $class;
+        }
+
+        $model->metadata = array_merge($model->metadata ?? [], $metadata);
+        $model->setAttributes($values);
+
+        $this->getIntegrationsService()->parsePostedModelData($model, array_keys($metadata));
+        $integration = $model->getIntegrationObject();
+
+        try {
+            $integration->onBeforeSave();
+        } catch (\Exception $e) {
+            $model->addError('integration', $e->getMessage());
+        }
+
+        if ($this->getIntegrationsService()->save($model, $integration, true)) {
+            $this->response->statusCode = $id ? 200 : 201;
+            if (!$id) {
+                return [
+                    'id' => $model->id,
+                    'type' => $type->type,
+                    'integration' => $type->shortName,
+                ];
+            }
+
+            return null;
+        }
+
+        throw new ApiException(400, FlatErrorCollection::fromModel($model));
     }
 
     protected function get(): array

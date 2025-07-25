@@ -1,9 +1,17 @@
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { RemoveButton } from '@components/elements/remove-button/remove';
+import { QKIntegrations } from '@ff-client/queries/integrations';
+import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
+import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 
 import type { AuthState, Integration } from '../../integration.types';
 
+import IconRefresh from './icon.refresh.svg';
+import IconShield from './icon.shield.svg';
 import { showAuthWindow } from './titlebar.actions';
 import { useAuthCheck } from './titlebar.queries';
 import {
@@ -15,6 +23,7 @@ import {
   Icon,
   Indicator,
   MessageBox,
+  RemoveButtonWrapper,
   Title,
 } from './titlebar.styles.ts';
 
@@ -26,6 +35,8 @@ const showAuth: Array<AuthState> = ['authorized', 'unauthorized', 'error'];
 const showRefresh: Array<AuthState> = ['authorized', 'error'];
 
 export const Titlebar: FC<Props> = ({ integration }) => {
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [state, setState] = useState<AuthState>('pending');
   const [errors, setErrors] = useState<string[]>([]);
   const { data, isFetching, refetch } = useAuthCheck(integration);
@@ -39,6 +50,20 @@ export const Titlebar: FC<Props> = ({ integration }) => {
       setErrors(data.errors || []);
     }
   }, [data, isFetching]);
+
+  const onDelete = (): void => {
+    if (
+      confirm(translate('Are you sure you want to remove this integration?'))
+    ) {
+      axios.post(`/api/integrations/${integration.id}/delete`).then(() => {
+        queryClient.invalidateQueries(QKIntegrations.navigation);
+        queryClient.invalidateQueries(QKIntegrations.single(integration.id));
+        navigate('/integrations');
+
+        notifications.success(translate('Integration deleted successfully.'));
+      });
+    }
+  };
 
   const showAuthChecker =
     integration.id && integration.implements.includes('apiIntegration');
@@ -58,7 +83,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
             <Actions>
               {showRefresh.includes(state) && (
                 <Action className="btn small" onClick={() => refetch()}>
-                  <i className="fa-solid fa-rotate-right" />
+                  <IconRefresh />
                 </Action>
               )}
 
@@ -67,12 +92,18 @@ export const Titlebar: FC<Props> = ({ integration }) => {
                   className="btn small"
                   onClick={() => showAuthWindow(integration.id, refetch)}
                 >
-                  <i className="fa-solid fa-shield-halved" />
+                  <IconShield />
                   <span>{translate('Authorize')}</span>
                 </Action>
               )}
             </Actions>
           </AuthChecker>
+        )}
+
+        {!!integration.id && (
+          <RemoveButtonWrapper>
+            <RemoveButton active={true} onClick={onDelete} />
+          </RemoveButtonWrapper>
         )}
       </Title>
 

@@ -20,11 +20,11 @@ export const ImportExport: React.FC = () => {
       break;
 
     case '/import/forms':
-      title = 'Import Freeform Data (beta)';
+      title = 'Import Freeform Data';
       break;
 
     case '/export/forms':
-      title = 'Export Freeform Data (beta)';
+      title = 'Export Freeform Data';
       break;
   }
 

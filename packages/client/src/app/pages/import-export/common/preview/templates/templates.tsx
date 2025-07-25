@@ -6,6 +6,7 @@ import type {
 } from '@ff-client/app/pages/import-export/import/import.types';
 import translate from '@ff-client/utils/translations';
 
+import { PreviewGenericList } from '../preview.generic-list';
 import {
   BlockItem,
   Blocks,
@@ -13,13 +14,11 @@ import {
   FormattingIcon,
   Label,
   ListItem,
+  NotificationIcon,
+  PdfTemplateIcon,
   SuccessIcon,
+  WrapperTemplateIcon,
 } from '../preview.styles';
-
-import { FileTemplates } from './file-templates/file-templates';
-import { Notification } from './notification/notification';
-import { PdfTemplates } from './pdf-templates/pdf-templates';
-import { WrapperTemplates } from './wrapper-templates/wrapper-templates';
 
 type Props = {
   templates: TemplateCollection;
@@ -42,7 +41,6 @@ export const PreviewTemplates: React.FC<Props> = ({
   templates,
   options,
   onUpdate,
-  formNames,
 }) => {
   if (
     !templates.pdf.length &&
@@ -90,40 +88,62 @@ export const PreviewTemplates: React.FC<Props> = ({
         <Label htmlFor="templates-all">{translate('Templates')}</Label>
       </Blocks>
 
-      <PdfTemplates
-        templates={templates.pdf}
-        values={options.pdf}
-        onUpdate={(values) => onUpdate({ ...options, pdf: values })}
-      />
+      <ul>
+        <PreviewGenericList
+          nested
+          label={translate('PDF')}
+          labelKey={'name'}
+          icon={<PdfTemplateIcon />}
+          items={templates.pdf}
+          selection={options.pdf}
+          selectionKey="uid"
+          onUpdate={(pdf) => onUpdate({ ...options, pdf })}
+        />
 
-      <WrapperTemplates
-        templates={templates.wrapper}
-        values={options.wrapper}
-        onUpdate={(values) => onUpdate({ ...options, wrapper: values })}
-      />
+        <PreviewGenericList
+          nested
+          label={translate('Wrapper')}
+          labelKey={'name'}
+          icon={<WrapperTemplateIcon />}
+          items={templates.wrapper}
+          selection={options.wrapper}
+          selectionKey="uid"
+          onUpdate={(wrapper) => onUpdate({ ...options, wrapper })}
+        />
 
-      <Notification
-        templates={templates.notification}
-        values={options.notification}
-        onUpdate={(values) => onUpdate({ ...options, notification: values })}
-        formNames={formNames}
-      />
+        <PreviewGenericList
+          nested
+          label={translate('Notification')}
+          labelKey={'name'}
+          icon={<NotificationIcon />}
+          items={templates.notification}
+          selection={options.notification}
+          selectionKey="uid"
+          onUpdate={(notification) => onUpdate({ ...options, notification })}
+        />
 
-      <FileTemplates
-        groupTitle={translate('Formatting')}
-        icon={<FormattingIcon />}
-        templates={templates.formatting}
-        values={options.formatting}
-        onUpdate={(values) => onUpdate({ ...options, formatting: values })}
-      />
+        <PreviewGenericList
+          nested
+          label={translate('Formatting')}
+          labelKey={'name'}
+          icon={<FormattingIcon />}
+          items={templates.formatting}
+          selection={options.formatting}
+          selectionKey="fileName"
+          onUpdate={(formatting) => onUpdate({ ...options, formatting })}
+        />
 
-      <FileTemplates
-        groupTitle={translate('Success')}
-        icon={<SuccessIcon />}
-        templates={templates.success}
-        values={options.success}
-        onUpdate={(values) => onUpdate({ ...options, success: values })}
-      />
+        <PreviewGenericList
+          nested
+          label={translate('Success')}
+          labelKey={'name'}
+          icon={<SuccessIcon />}
+          items={templates.success}
+          selection={options.success}
+          selectionKey="fileName"
+          onUpdate={(success) => onUpdate({ ...options, success })}
+        />
+      </ul>
     </ListItem>
   );
 };

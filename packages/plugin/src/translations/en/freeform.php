@@ -860,8 +860,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade to the Pro edition of Freeform to get access to Export Notifications.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Export Freeform Data (beta)',
-    'Import Freeform Data (beta)' => 'Import Freeform Data (beta)',
+    'Export Freeform Data' => 'Export Freeform Data',
+    'Import Freeform Data' => 'Import Freeform Data',
     'Select Data to Export' => 'Select Data to Export',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.',
     'Password-protect the Export File (optional)' => 'Password-protect the Export File (optional)',

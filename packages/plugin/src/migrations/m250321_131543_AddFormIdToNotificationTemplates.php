@@ -29,9 +29,10 @@ class m250321_131543_AddFormIdToNotificationTemplates extends Migration
                         'freeform_notification_templates_handle_key'
                     )
                 );
+            } else {
+                $this->dropIndexIfExists(self::TABLE, 'handle', true);
             }
 
-            $this->dropIndexIfExists(self::TABLE, 'handle', true);
             $this->createIndex('formId_handle', self::TABLE, ['formId', 'handle'], true);
         }
 
@@ -51,7 +52,18 @@ class m250321_131543_AddFormIdToNotificationTemplates extends Migration
                 }
             }
 
-            $this->dropIndexIfExists(self::TABLE, ['formId', 'handle'], true);
+            if ('pgsql' === $this->db->driverName) {
+                $this->execute(
+                    \sprintf(
+                        'ALTER TABLE %s DROP CONSTRAINT IF EXISTS %s',
+                        self::TABLE,
+                        'freeform_notification_templates_formId_handle_key'
+                    )
+                );
+            } else {
+                $this->dropIndexIfExists(self::TABLE, ['formId', 'handle'], true);
+            }
+
             $this->createIndex('handle', self::TABLE, ['handle'], true);
             $this->dropColumn(self::TABLE, 'formId');
         }

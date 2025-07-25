@@ -860,8 +860,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade naar de Pro-editie van Freeform om toegang te krijgen tot exportmeldingen.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
-    'Import Freeform Data (beta)' => 'Freeform-gegevens importeren (bèta)',
+    'Export Freeform Data' => 'Freeform-gegevens exporteren',
+    'Import Freeform Data' => 'Freeform-gegevens importeren',
     'Select Data to Export' => 'Selecteer gegevens om te exporteren',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Kies welke Freeform-gegevens u in de export wilt opnemen. Als u inzendingen exporteert zonder het bijbehorende formulier, worden de inzendingen niet meegenomen.',
     'Password-protect the Export File (optional)' => 'Beveilig het exportbestand met een wachtwoord (optioneel)',

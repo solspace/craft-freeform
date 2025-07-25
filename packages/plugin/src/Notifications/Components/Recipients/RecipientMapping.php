@@ -14,7 +14,7 @@ class RecipientMapping
 
     public function getValue(): string
     {
-        return $this->value;
+        return trim($this->value);
     }
 
     public function getTemplate(): ?NotificationTemplate

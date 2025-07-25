@@ -110,3 +110,11 @@ label.required:after {
 #content {
   border-radius: 0 5px 5px 5px;
 }
+
+[data-field-type="table"] {
+  textarea {
+    resize: vertical !important;
+    overflow-y: auto !important;
+    min-height: 34px !important;
+  }
+}

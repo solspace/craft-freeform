@@ -11,6 +11,7 @@ import type {
 import type { IntegrationType } from '@ff-client/types/integrations';
 import type { GenericValue } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
+import { generateHandle } from '@ff-client/utils/strings';
 import translate from '@ff-client/utils/translations';
 
 import { useIntegrationNavigation } from '../sidebar/sidebar.queries';
@@ -203,32 +204,15 @@ export const IntegrationsEditor: FC = () => {
             setValues((prev) => ({
               ...prev,
               name: value,
+              handle: generateHandle(value, {
+                transliterate: true,
+                camelize: true,
+              }),
             }));
           }}
           value={values.name}
-          errors={errors?.name}
-          autoFocus
-        />
-
-        <String
-          property={{
-            handle: 'handle',
-            label: 'Handle',
-            required: true,
-            flags: ['code'],
-            instructions: translate(
-              'The unique name used to identify this integration.'
-            ),
-            type: PropertyType.String,
-          }}
-          updateValue={(value) => {
-            setValues((prev) => ({
-              ...prev,
-              handle: value,
-            }));
-          }}
-          value={values.handle}
           errors={errors?.handle}
+          autoFocus
         />
 
         <hr />

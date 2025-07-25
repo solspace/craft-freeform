@@ -38,7 +38,12 @@ export const EditorInput: React.FC<Props> = ({
 
   const context = {
     ...integration,
-    values,
+    values: {
+      name: values.name,
+      handle: values.handle,
+      enabled: values.enabled,
+      ...values.metadata,
+    },
   };
 
   return (

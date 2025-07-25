@@ -7,7 +7,7 @@ export enum IntegrationType {
   Captchas = 'captchas',
   PaymentGateways = 'payment-gateways',
   Webhooks = 'webhooks',
-  Signles = 'singles',
+  Singles = 'single',
   Other = 'other',
 }
 

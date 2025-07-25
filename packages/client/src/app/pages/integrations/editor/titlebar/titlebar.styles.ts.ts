@@ -100,7 +100,7 @@ export const Indicator = styled.div`
   }
 `;
 
-export const RemoveButtonWrapper = styled.button`
+export const RemoveButtonWrapper = styled.div`
   margin-left: auto;
 
   > button,

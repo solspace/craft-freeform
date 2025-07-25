@@ -8,7 +8,7 @@ import type {
   ErrorCollection,
   ErrorList,
 } from '@ff-client/types/api';
-import type { IntegrationType } from '@ff-client/types/integrations';
+import { IntegrationType } from '@ff-client/types/integrations';
 import type { GenericValue } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
 import { generateHandle } from '@ff-client/utils/strings';
@@ -111,9 +111,8 @@ export const IntegrationsEditor: FC = () => {
     ?.find((category) => category.handle === type)
     ?.entries?.find((entry) => entry.type.shortName === integration)?.instances;
 
-  const showTabs =
-    (currentIntegrationInstances && currentIntegrationInstances.length > 1) ||
-    isAddNew;
+  const instanceCount = currentIntegrationInstances?.length || 0;
+  const showTabs = instanceCount > 1 || isAddNew;
 
   if (!type || !integration) {
     return null;
@@ -136,7 +135,17 @@ export const IntegrationsEditor: FC = () => {
         )}
 
         <ActionsWrapper>
-          <button className="btn submit">{translate('Save')}</button>
+          <div className="btngroup">
+            {instanceCount > 0 && type !== IntegrationType.Singles && (
+              <button
+                className="btn"
+                title={translate('Add new integration of the same type')}
+              >
+                +
+              </button>
+            )}
+            <button className="btn submit">{translate('Save')}</button>
+          </div>
         </ActionsWrapper>
 
         <EditorLoader />
@@ -166,13 +175,17 @@ export const IntegrationsEditor: FC = () => {
 
       <ActionsWrapper>
         <div className="btngroup">
-          <button
-            className="btn"
-            onClick={() => navigate(`/integrations/${type}/${integration}/new`)}
-            title={translate('Add new integration of the same type')}
-          >
-            +
-          </button>
+          {instanceCount > 0 && type !== IntegrationType.Singles && (
+            <button
+              className="btn"
+              onClick={() =>
+                navigate(`/integrations/${type}/${integration}/new`)
+              }
+              title={translate('Add new integration of the same type')}
+            >
+              +
+            </button>
+          )}
           <button className="btn submit" onClick={saveHandler}>
             <LoadingText
               loading={isMutating}

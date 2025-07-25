@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.1.28 - 2025-07-25
+
+### Added
+- Verified support for Craft 4.16.x.
+
+### Changed
+- Updated Axios package version.
+
 ## 4.1.27 - 2025-06-30
 
 ### Fixed

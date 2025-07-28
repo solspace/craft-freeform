@@ -49,6 +49,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
         placeholder: 'Enter your site key',
@@ -58,6 +59,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Secret Key',
         placeholder: 'Enter your secret key',

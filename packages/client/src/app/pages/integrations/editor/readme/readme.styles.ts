@@ -15,7 +15,7 @@ export const Instructions = styled.div`
   position: relative;
 
   margin: 0 -24px;
-  padding: 0 24px;
+  padding: 0;
 
   max-height: 0;
   margin-top: 0;
@@ -44,7 +44,7 @@ export const Instructions = styled.div`
 `;
 
 export const Content = styled.div`
-  padding: 16px;
+  padding: 12px 24px;
 
   font-size: 14px;
 

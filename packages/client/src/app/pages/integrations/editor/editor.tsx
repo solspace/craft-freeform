@@ -18,7 +18,6 @@ import translate from '@ff-client/utils/translations';
 
 import { useIntegrationNavigation } from '../sidebar/sidebar.queries';
 
-import { Readme } from './readme/readme';
 import { Titlebar } from './titlebar/titlebar';
 import { EditorInput } from './editor.input';
 import { EditorLoader } from './editor.loader';
@@ -162,6 +161,7 @@ export const IntegrationsEditor: FC = () => {
         label={data.name}
         url={`integrations/${type}/${integration}${id ? `/${id}` : ''}`}
       />
+
       {showTabs && (
         <EditorTabsWrapper>
           {currentIntegrationInstances.map((instance) => (
@@ -206,8 +206,6 @@ export const IntegrationsEditor: FC = () => {
       <EditorWrapper>
         <Titlebar integration={data} />
 
-        <hr />
-
         <String
           property={{
             handle: 'name',
@@ -233,8 +231,6 @@ export const IntegrationsEditor: FC = () => {
           autoFocus
         />
 
-        <hr />
-        <Readme content={data.type.readmeContent} />
         <hr />
 
         {data.properties.map((property) => (

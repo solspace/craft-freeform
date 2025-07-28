@@ -130,6 +130,14 @@ export const Action = styled.a`
 
   font-size: 12px;
 
+  &.info-button {
+    background-color: ${colors.blue100};
+
+    &:hover {
+      background-color: ${colors.blue200};
+    }
+  }
+
   i,
   svg {
     font-size: 14px;

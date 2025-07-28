@@ -2,66 +2,25 @@ import { scrollBar } from '@ff-client/styles/mixins';
 import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const MarkdownToggler = styled.button`
-  display: flex;
-  align-items: center;
-  gap: 5px;
+export const MarkdownWrapper = styled.div`
+  margin: 0 -24px;
+  padding: 0 24px;
 
-  color: ${colors.blue500};
-  font-weight: 600;
+  background-color: #f3f7fc;
 
-  svg {
-    width: 14px;
-    height: 14px;
-
-    transition: transform 0.3s ease;
-  }
-
-  &:hover {
-    color: var(--blue-600);
-    text-decoration: underline;
-  }
-
-  &.active {
-    svg {
-      transform: rotate(90deg);
-    }
-  }
-`;
-
-export const MarkdownCollapser = styled.button`
-  position: absolute;
-  right: 15px;
-  top: 15px;
-
-  opacity: 0;
-  padding: 5px 10px;
-
-  border: 1px solid var(--gray-300);
-  border-radius: 30px;
-  background: transparent;
-
-  font-size: 12px;
-  line-height: 12px;
-  color: var(--gray-300);
-
-  transition: all 0.3s ease;
-
-  &:hover {
-    background: var(--gray-300);
-    color: white;
-  }
+  border-top: 1px solid ${colors.hr};
 `;
 
 export const Instructions = styled.div`
   position: relative;
 
+  margin: 0 -24px;
+  padding: 0 24px;
+
   max-height: 0;
   margin-top: 0;
 
-  background: #f3f7fc;
-  border-radius: 3px;
-  border: 1px solid #cbd6e2;
+  background-color: #f3f7fc;
 
   overflow-y: hidden;
   overflow-x: hidden;
@@ -71,8 +30,9 @@ export const Instructions = styled.div`
   ${scrollBar};
 
   &.active {
-    margin-top: 20px;
     max-height: 500px;
+
+    border-bottom: 1px solid ${colors.hr};
 
     opacity: 1;
     overflow-y: auto;

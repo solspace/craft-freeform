@@ -17,8 +17,6 @@ export const EditorLoader: FC = () => {
         <Skeleton width={200} />
       </Title>
 
-      <hr />
-
       <div>
         <Skeleton width={100} />
         <Skeleton width={250} height={10} />

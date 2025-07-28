@@ -9,7 +9,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
 import type { AuthState, Integration } from '../../integration.types';
+import { Readme } from '../readme/readme';
 
+import IconInfo from './icon.info.svg';
 import IconRefresh from './icon.refresh.svg';
 import IconShield from './icon.shield.svg';
 import { showAuthWindow } from './titlebar.actions';
@@ -40,6 +42,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
   const navigate = useNavigate();
   const [state, setState] = useState<AuthState>('pending');
   const [errors, setErrors] = useState<string[]>([]);
+  const [activeReadme, setActiveReadme] = useState(false);
   const { data, isFetching, refetch } = useAuthCheck(integration);
 
   useEffect(() => {
@@ -66,6 +69,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
     }
   };
 
+  const hasReadme = !!integration.type.readmeContent;
   const showAuthChecker =
     integration.id && integration.implements.includes('apiIntegration');
 
@@ -105,6 +109,18 @@ export const Titlebar: FC<Props> = ({ integration }) => {
           </AuthChecker>
         )}
 
+        {hasReadme && (
+          <Actions>
+            <Action
+              className="btn small info-button"
+              onClick={() => setActiveReadme(!activeReadme)}
+            >
+              <IconInfo />
+              <span>{translate('Show Instructions')}</span>
+            </Action>
+          </Actions>
+        )}
+
         {!!integration.id && (
           <RemoveButtonWrapper>
             <RemoveButton active={true} onClick={onDelete} />
@@ -132,6 +148,8 @@ export const Titlebar: FC<Props> = ({ integration }) => {
           })}
         </ErrorList>
       )}
+
+      <Readme active={activeReadme} content={integration.type.readmeContent} />
     </>
   );
 };

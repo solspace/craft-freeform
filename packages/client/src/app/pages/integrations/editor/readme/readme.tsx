@@ -1,44 +1,29 @@
 import type { FC } from 'react';
-import React, { useState } from 'react';
+import React from 'react';
 import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
 import { marked } from 'marked';
 
-import {
-  Content,
-  Instructions,
-  MarkdownCollapser,
-  MarkdownToggler,
-} from './readme.styles';
-import TogglerIcon from './toggler.icon.svg';
+import { Content, Instructions, MarkdownWrapper } from './readme.styles';
 
 import './markdown.css';
 
 type Props = {
+  active?: boolean;
   content: string;
 };
 
-export const Readme: FC<Props> = ({ content }) => {
-  const [open, setOpen] = useState(false);
+export const Readme: FC<Props> = ({ active, content }) => {
   const parsedContent = marked.parse(content, { gfm: true });
 
+  if (!content) {
+    return <MarkdownWrapper />;
+  }
+
   return (
-    <div>
-      <MarkdownToggler
-        className={classes(open && 'active')}
-        onClick={() => setOpen(!open)}
-      >
-        <TogglerIcon />
-        <span>{translate('Show Setup Instructions')}</span>
-      </MarkdownToggler>
-
-      <Instructions className={classes('markdown-body', open && 'active')}>
-        <MarkdownCollapser onClick={() => setOpen(!open)}>
-          {translate('Collapse')}
-        </MarkdownCollapser>
-
+    <MarkdownWrapper>
+      <Instructions className={classes('markdown-body', active && 'active')}>
         <Content dangerouslySetInnerHTML={{ __html: parsedContent }} />
       </Instructions>
-    </div>
+    </MarkdownWrapper>
   );
 };

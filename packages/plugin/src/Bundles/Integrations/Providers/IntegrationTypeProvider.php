@@ -69,7 +69,7 @@ class IntegrationTypeProvider
             'spam-blocking' => Freeform::t('Spam Blocking'),
             'payment-gateways' => Freeform::t('Payment Gateways'),
             'webhooks' => Freeform::t('Webhooks'),
-            'single' => Freeform::t('Single'),
+            'single' => Freeform::t('General'),
             'other' => Freeform::t('Other'),
             default => $handle,
         };

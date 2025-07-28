@@ -26,6 +26,7 @@ use yii\web\Response;
 class IntegrationsController extends BaseApiController
 {
     private const NAVIGATION_ORDER = [
+        'single' => 0,
         'email-marketing' => 10,
         'crm' => 20,
         'elements' => 30,
@@ -33,8 +34,7 @@ class IntegrationsController extends BaseApiController
         'spam-blocking' => 50,
         'payment-gateways' => 60,
         'webhooks' => 70,
-        'singles' => 80,
-        'other' => 90,
+        'other' => 80,
     ];
 
     public function __construct(

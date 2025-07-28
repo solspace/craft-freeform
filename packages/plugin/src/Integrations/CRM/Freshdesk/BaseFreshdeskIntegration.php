@@ -28,6 +28,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your API Key here.',
@@ -37,6 +38,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         instructions: 'Enter your Domain (e.g. "https://yourcompany.freshdesk.com").',
         order: 2,
@@ -44,6 +46,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     protected string $domain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Type (Optional)',
         instructions: "Set the default Type for tickets, e.g. 'Question'.",
@@ -52,6 +55,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     protected ?string $defaultType = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Priority (Optional)',
         instructions: "Set the default Priority for tickets, e.g. '1' (Low), '2' (Medium), '3' (High), '4' (Urgent).",
@@ -60,6 +64,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     protected ?string $defaultPriority = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Status (Optional)',
         instructions: "Set the default Status for tickets, e.g. '2' (Open), '3' (Pending), '4' (Resolved), '5' (Closed).",
@@ -68,6 +73,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     protected ?string $defaultStatus = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Source (Optional)',
         instructions: "Set the default Source for tickets, e.g. '1' (Email), '2' (Portal), '3' (Phone), '7' (Chat), '9' (Feedback Widget), '10' (Outbound Email).",

@@ -33,6 +33,7 @@ class NavigationBundle extends FeatureBundle
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
         $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -57,6 +58,10 @@ class NavigationBundle extends FeatureBundle
 
         if ($canAccessNotifications) {
             $event->addSubnavItem('notifications', Freeform::t('Notifications'), 'freeform/notifications');
+        }
+
+        if ($canAccessIntegrations) {
+            $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
         if ($canAccessExportProfiles) {

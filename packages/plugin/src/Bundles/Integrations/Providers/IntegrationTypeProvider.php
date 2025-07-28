@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
@@ -48,5 +49,29 @@ class IntegrationTypeProvider
         }
 
         return self::$types[$integrationClass];
+    }
+
+    /**
+     * @return Type[]
+     */
+    public function getAllTypeDefinitions(): array
+    {
+        return Freeform::getInstance()->integrations->getAllIntegrationTypes();
+    }
+
+    public function getTypeTitle(string $handle): string
+    {
+        return match ($handle) {
+            'crm' => Freeform::t('CRM'),
+            'email-marketing' => Freeform::t('Email Marketing'),
+            'captchas' => Freeform::t('CAPTCHAs'),
+            'elements' => Freeform::t('Elements'),
+            'spam-blocking' => Freeform::t('Spam Blocking'),
+            'payment-gateways' => Freeform::t('Payment Gateways'),
+            'webhooks' => Freeform::t('Webhooks'),
+            'single' => Freeform::t('General'),
+            'other' => Freeform::t('Other'),
+            default => $handle,
+        };
     }
 }

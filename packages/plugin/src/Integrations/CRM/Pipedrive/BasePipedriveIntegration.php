@@ -44,6 +44,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
     protected string $apiDomain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'User ID',
         instructions: 'Enter the Pipedrive User ID you want to assign to new objects.',

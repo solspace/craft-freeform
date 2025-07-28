@@ -55,7 +55,6 @@ class SingleController extends BaseController
         $properties = \Craft::$app->request->post('properties', []);
         $integrationsService = Freeform::getInstance()->integrations;
 
-        /** @var Type[] $types */
         $types = $integrationsService->getAllServiceProviders(Type::TYPE_SINGLE);
         $models = $integrationsService->getAllIntegrations(Type::TYPE_SINGLE);
         foreach ($models as $index => $model) {

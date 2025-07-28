@@ -393,7 +393,7 @@ class IntegrationsService extends BaseService
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(
-                    $model->class.$handle,
+                    'metadata.'.$handle,
                     Freeform::t('{key} is required', ['key' => $property->label])
                 );
 

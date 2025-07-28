@@ -42,6 +42,7 @@ class Stripe extends PaymentGatewayIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Public Key',
@@ -51,6 +52,7 @@ class Stripe extends PaymentGatewayIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Secret Key',
@@ -68,6 +70,7 @@ class Stripe extends PaymentGatewayIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Webhook Secret',
         instructions: 'Enter your Stripe webhook secret here.',

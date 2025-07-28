@@ -18,4 +18,6 @@ declare namespace Craft {
       onSelect: (elements: Array<CraftElement>) => void;
     }
   ): any;
+
+  function getCpUrl(path: string): string;
 }

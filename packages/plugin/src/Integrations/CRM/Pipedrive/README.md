@@ -84,21 +84,17 @@ Maps data to the following field types:
 <p>The stage ID is unique, so Pipedrive will automatically know which pipeline you're referring to when you specify the stage ID.</p>
 </div>
 
-### 6. Finish the Integration
+### 6. Finish & Verify the Integration
 
 - Click the **Save** button.
-- You will be redirected to a Pipedrive OAuth page to allow permissions.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- A popup will load a Pipedrive OAuth page to allow permissions.
     - If not currently logged in, fill in your credentials.
     - Click **Allow & Install** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
-### 7. Verify Authorization
-
-- After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
-
-### 8. Configure the Form
+### 7. Configure the Form
 
 To use this integration on your form(s), you'll need to configure each form individually.
 

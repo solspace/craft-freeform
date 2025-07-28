@@ -33,6 +33,11 @@ abstract class BaseIntegration implements IntegrationInterface
         protected LoggerInterface $logger,
     ) {}
 
+    public static function isInstallable(): bool
+    {
+        return true;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

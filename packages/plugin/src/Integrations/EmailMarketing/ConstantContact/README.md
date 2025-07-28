@@ -56,14 +56,15 @@ If a duplicate email address is found in _Constant Contact_, the profile data wi
 - Paste the `API Key` value from Constant Contact into the the **Client ID** field in Freeform.
 - Paste the `Application Secret` value from Constant Contact into the the **Client Secret** field in Freeform.
 
-### 4. Finish the Connection
+### 4. Finish & Verify the Integration
 
 - Click the **Save** button.
-- You will be redirected to a Constant Contact OAuth page to allow permissions.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- A popup will load a Constant Contact OAuth page to allow permissions.
     - If not currently logged in, fill in your credentials.
     - Click **Allow Access** when asked for permissions.
-- You will then be redirected back to the **Freeform Email Marketing Integration** page.
-- Confirm that there is a green circle with **Authorized** in the middle of the page.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
 ### 5. Configure the Form
 

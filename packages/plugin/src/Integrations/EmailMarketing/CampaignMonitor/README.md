@@ -41,9 +41,9 @@ Maps data to the following field types:
 
 ### 3. Verify Authorization
 
-- After the integration is saved, it'll return you to the list of Email Marketing integrations.
-- Click on the newly created integration.
-- Confirm that there is a green circle with **Authorized** in the middle of the page.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
 ### 4. Configure the Form
 

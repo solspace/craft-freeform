@@ -20,8 +20,6 @@ use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\List
 
 interface EmailMarketingIntegrationInterface extends IntegrationInterface, PushableInterface
 {
-    public static function isInstallable(): bool;
-
     public function fetchLists(Client $client): array;
 
     public function fetchFields(ListObject $list, string $category, Client $client): array;

@@ -46,6 +46,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Key',
         placeholder: 'Enter your site key',
@@ -55,6 +56,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Secret Key',
         placeholder: 'Enter your secret key',
@@ -101,6 +103,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.failureBehavior !== "send-to-spam"')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
         instructions: 'The error message to display when the Captcha validation fails.',
@@ -109,6 +112,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private string $errorMessage = 'Please verify that you are not a robot.';
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Locale',
         instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',

@@ -34,6 +34,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API User Email',
@@ -44,6 +45,7 @@ abstract class BaseDotdigitalIntegration extends EmailMarketingIntegration imple
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API User Password',

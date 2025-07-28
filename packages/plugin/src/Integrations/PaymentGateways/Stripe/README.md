@@ -55,8 +55,9 @@ Consider using an **Environment Variable** for these settings instead. Then, sto
 
 - Switch back to the Payment integration inside Freeform, and paste the Stripe **Signing secret** token into the **Webhook Secret** setting.
 - Click the **Save** button.
-- You will then be redirected back to the **Freeform Integration** page.
-- Confirm that there is a green circle with **Authorized** in the middle of the page.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
 ### 5. Configure the Form
 

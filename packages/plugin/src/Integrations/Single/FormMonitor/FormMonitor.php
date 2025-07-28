@@ -60,6 +60,7 @@ class FormMonitor extends APIIntegration
 
     #[Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'URL the Form Monitor should access to check the form',
         instructions: 'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.',
@@ -69,6 +70,7 @@ class FormMonitor extends APIIntegration
 
     #[Required]
     #[ValueGenerator(EmailValueGenerator::class)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Notification Email',
         instructions: 'Email address to receive email alerts and other notifications for the form.',
@@ -79,6 +81,7 @@ class FormMonitor extends APIIntegration
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[ValueGenerator(SiteNameValueGenerator::class)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Site Name',
         instructions: 'The name of your Craft site. Form Monitor will use this in email notifications.',

@@ -35,6 +35,12 @@ export const EditorInput: React.FC<Props> = ({
 
   const handle = property.handle;
   const value = values.metadata[handle] ?? property.value;
+  const updatedProperty: Property = {
+    ...property,
+    flags: (property.flags || [])?.filter(
+      (flag) => flag !== 'as-readonly-in-instance'
+    ),
+  };
 
   const context = {
     ...integration,
@@ -50,8 +56,8 @@ export const EditorInput: React.FC<Props> = ({
     <FormComponent
       autoFocus={autoFocus}
       value={value}
-      property={property}
-      updateValue={generateUpdateHandler(property)}
+      property={updatedProperty}
+      updateValue={generateUpdateHandler(updatedProperty)}
       errors={errors?.metadata?.[handle]}
       context={context}
     />

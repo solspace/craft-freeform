@@ -25,6 +25,7 @@ import {
   MessageBox,
   RemoveButtonWrapper,
   Title,
+  VersionString,
 } from './titlebar.styles.ts';
 
 type Props = {
@@ -73,6 +74,10 @@ export const Titlebar: FC<Props> = ({ integration }) => {
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: integration.type.iconSvg }} />
         <span>{integration.name || integration.type.name}</span>
+
+        {integration.type.version && (
+          <VersionString>{integration.type.version}</VersionString>
+        )}
 
         {showAuthChecker && (
           <AuthChecker>

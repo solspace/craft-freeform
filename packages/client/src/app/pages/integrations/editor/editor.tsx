@@ -142,11 +142,9 @@ export const IntegrationsEditor: FC = () => {
           <div className="btngroup">
             {instanceCount > 0 && type !== IntegrationType.Singles && (
               <button
-                className="btn"
+                className="btn add icon"
                 title={translate('Add new integration of the same type')}
-              >
-                +
-              </button>
+              />
             )}
             <button className="btn submit">{translate('Save')}</button>
           </div>
@@ -186,14 +184,12 @@ export const IntegrationsEditor: FC = () => {
         <div className="btngroup">
           {instanceCount > 0 && type !== IntegrationType.Singles && (
             <button
-              className="btn"
+              className="btn add icon"
               onClick={() =>
                 navigate(`/integrations/${type}/${integration}/new`)
               }
               title={translate('Add new integration of the same type')}
-            >
-              +
-            </button>
+            />
           )}
           <button className="btn submit" onClick={saveHandler}>
             <LoadingText

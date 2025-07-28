@@ -19,7 +19,7 @@ export const SidebarNavigation = styled.nav`
 `;
 
 export const SearchWrapper = styled.div`
-  padding: ${spacings.lg} ${spacings.md};
+  padding: 22px ${spacings.md};
   border-bottom: 1px solid ${colors.hairline};
 `;
 
@@ -43,6 +43,10 @@ export const CategoryTitle = styled.h3`
 `;
 
 export const IntegrationList = styled.ul`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
   list-style: none;
   padding: 0 8px;
   margin: 0;
@@ -77,7 +81,7 @@ export const Integration = styled.li`
     align-items: center;
 
     padding: 3px 10px;
-    margin: 0 0 2px;
+    margin: 0;
 
     color: ${colors.gray700};
     text-decoration: none;
@@ -87,6 +91,19 @@ export const Integration = styled.li`
     &.active {
       cursor: pointer;
       color: ${colors.white};
+
+      svg,
+      i {
+        path:not([fill='none']) {
+          fill: ${colors.gray100} !important;
+          color: ${colors.gray100};
+
+          &.inverted {
+            fill: ${colors.gray700} !important;
+            color: ${colors.gray700};
+          }
+        }
+      }
     }
 
     &:hover {
@@ -122,20 +139,6 @@ export const Integration = styled.li`
         &.active {
           background-color: ${colors.teal500};
           color: ${colors.gray700};
-        }
-      }
-
-      svg,
-      i,
-      svg {
-        path:not([fill='none']) {
-          fill: ${colors.gray100} !important;
-          color: ${colors.gray100};
-
-          &.inverted {
-            fill: ${colors.gray700} !important;
-            color: ${colors.gray700};
-          }
         }
       }
     }

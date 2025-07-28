@@ -1,6 +1,6 @@
 import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
 import { scrollBar } from '@ff-client/styles/mixins';
-import { spacings } from '@ff-client/styles/variables';
+import { borderRadius, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const EditorContainer = styled.div`
@@ -22,6 +22,9 @@ export const EditorWrapper = styled.div`
   overflow-y: auto;
 
   background: white;
+
+  border-top-right-radius: ${borderRadius.lg};
+  border-bottom-right-radius: ${borderRadius.lg};
 
   ${scrollBar};
 

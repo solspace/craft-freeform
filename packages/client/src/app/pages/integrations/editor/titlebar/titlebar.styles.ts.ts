@@ -13,6 +13,15 @@ export const Title = styled.div`
   }
 `;
 
+export const VersionString = styled.small`
+  margin-top: 6px;
+
+  font-size: 12px;
+  font-weight: normal;
+  font-family: monospace;
+  color: ${colors.gray300};
+`;
+
 export const Icon = styled.div`
   svg {
     width: 30px;

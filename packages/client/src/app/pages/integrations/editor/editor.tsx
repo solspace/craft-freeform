@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
@@ -158,6 +159,11 @@ export const IntegrationsEditor: FC = () => {
 
   return (
     <EditorContainer>
+      <Breadcrumb
+        id="integration-edit"
+        label={data.name}
+        url={`integrations/${type}/${integration}${id ? `/${id}` : ''}`}
+      />
       {showTabs && (
         <EditorTabsWrapper>
           {currentIntegrationInstances.map((instance) => (

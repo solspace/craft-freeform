@@ -34,6 +34,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Token',
@@ -44,6 +45,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API URL',

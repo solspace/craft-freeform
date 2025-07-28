@@ -52,6 +52,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected bool $useCustomUrl = false;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[VisibilityFilter('Boolean(values.useCustomUrl)')]
     #[Input\Text(
         label: 'Custom URL',

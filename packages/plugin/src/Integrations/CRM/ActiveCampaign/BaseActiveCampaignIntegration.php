@@ -32,6 +32,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Token',
@@ -42,6 +43,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API URL',
@@ -51,6 +53,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
     protected string $apiUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Pipeline',
         instructions: 'Enter the name or ID of the desired Pipeline.',
@@ -59,6 +62,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
     protected string $pipeline = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Stage',
         instructions: 'Enter the name or ID of the desired Stage.',
@@ -67,6 +71,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
     protected string $stage = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Owner (Optional if auto-assign enabled in AC)',
         instructions: "Enter the username or ID of the user you wish to assign as the deal owner. If you don't specify an owner, Active Campaign will auto-assign an owner if it is set up.",

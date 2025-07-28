@@ -30,6 +30,7 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
@@ -40,6 +41,7 @@ abstract class BaseCampaignMonitorIntegration extends EmailMarketingIntegration 
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Client ID',

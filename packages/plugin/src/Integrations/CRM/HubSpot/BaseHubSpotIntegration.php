@@ -27,6 +27,7 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements HubSpotI
     protected const CATEGORY_COMPANY = 'Company';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Text(
         label: 'Access Token',

@@ -24,6 +24,7 @@ class GTM extends BaseIntegration implements SingletonIntegrationInterface
 
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Text(
         label: 'Container ID',
         instructions: 'Add this if you want Google Tag Manager scripts added to your page by Freeform. Leave blank if you are adding your own GTM scripts.',
@@ -32,6 +33,7 @@ class GTM extends BaseIntegration implements SingletonIntegrationInterface
     protected string $containerId = '';
 
     #[VisibilityFilter('enabled')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Middleware('handle')]
     #[Text(
         label: 'Event Name',

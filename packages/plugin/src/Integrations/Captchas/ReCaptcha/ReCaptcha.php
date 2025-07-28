@@ -85,6 +85,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.failureBehavior === "display-error"')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
         instructions: 'The error message to display when the Captcha validation fails.',
@@ -135,6 +136,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "v3"')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Middleware('regex', ['pattern' => '[^a-zA-Z0-9_]'])]
     #[Input\Text(
         instructions: 'The action to use when validating the Captcha.',
@@ -143,6 +145,7 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private string $action = 'submit';
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Locale',
         instructions: 'The locale to use for the Captcha as the language ID, e.g. `en`, `de`, etc. If left blank, the locale will be auto-detected.',

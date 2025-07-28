@@ -114,6 +114,10 @@ class IntegrationsController extends BaseApiController
         $sections = [];
 
         foreach ($types as $type) {
+            if (!$type->class::isInstallable()) {
+                continue;
+            }
+
             if (!\array_key_exists($type->type, $sections)) {
                 $sections[$type->type] = [];
             }

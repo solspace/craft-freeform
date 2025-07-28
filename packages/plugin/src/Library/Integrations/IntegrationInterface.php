@@ -47,4 +47,6 @@ interface IntegrationInterface
     public function getServiceProvider(): string;
 
     public function getTypeDefinition(): Type;
+
+    public static function isInstallable(): bool;
 }

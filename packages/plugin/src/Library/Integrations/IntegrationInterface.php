@@ -27,6 +27,7 @@ interface IntegrationInterface
     public const FLAG_INTERNAL = 'internal';
     public const FLAG_ENCRYPTED = 'encrypted';
     public const FLAG_READONLY = 'readonly';
+    public const FLAG_ENV_SUGGEST = 'env-suggest';
 
     public function getId(): ?int;
 

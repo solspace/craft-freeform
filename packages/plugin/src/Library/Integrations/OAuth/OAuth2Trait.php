@@ -28,6 +28,7 @@ trait OAuth2Trait
 
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(IntegrationInterface::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'Client ID',
@@ -37,6 +38,7 @@ trait OAuth2Trait
 
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
     #[Flag(IntegrationInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(IntegrationInterface::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         instructions: 'Enter the Client Secret of your app here.',

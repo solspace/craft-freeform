@@ -98,4 +98,7 @@ return [
 
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
+
+    // AUTOSUGGEST
+    'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',
 ];

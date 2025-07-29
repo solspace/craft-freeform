@@ -27,7 +27,7 @@ trait PopUpTrait
         }
 
         return $this->renderTemplate(
-            'freeform/settings/integrations/callback-error',
+            'freeform/integrations/callback-error',
             ['messages' => $messages],
         );
     }

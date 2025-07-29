@@ -48,6 +48,28 @@ export const IntegrationsEditor: FC = () => {
   const { data, isFetching } = useIntegrationProperties(type, integration, id);
   const { data: navData } = useIntegrationNavigation();
 
+  useEffect(() => {
+    if (navData && integration && !id) {
+      const category = navData.find((cat) => cat.handle === type);
+      if (!category) {
+        return;
+      }
+
+      const entry = category.entries.find(
+        (entry) => entry.type.shortName === integration
+      );
+
+      if (entry) {
+        const firstInstance = entry.instances?.[0];
+        if (firstInstance) {
+          navigate(`/integrations/${type}/${integration}/${firstInstance.id}`);
+
+          return;
+        }
+      }
+    }
+  }, [navData]);
+
   const [values, setValues] = useState<IntegrationState>({
     name: '',
     handle: '',
@@ -130,7 +152,7 @@ export const IntegrationsEditor: FC = () => {
       <EditorContainer>
         {showTabs && (
           <EditorTabsWrapper>
-            {currentIntegrationInstances.map((instance) => (
+            {currentIntegrationInstances?.map((instance) => (
               <NavLink
                 to={`../${type}/${integration}/${instance.id}`}
                 key={instance.id}

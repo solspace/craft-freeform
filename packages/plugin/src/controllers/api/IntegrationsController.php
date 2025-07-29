@@ -306,14 +306,4 @@ class IntegrationsController extends BaseApiController
 
         throw new ApiException(400, FlatErrorCollection::fromModel($model));
     }
-
-    protected function get(): array
-    {
-        return $this->integrationDTOProvider->getByCategory();
-    }
-
-    protected function getOne(int|string $id): null|array|object
-    {
-        return $this->integrationDTOProvider->getById($id);
-    }
 }

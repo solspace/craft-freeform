@@ -49,9 +49,9 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
-    private $cacheByUid = [];
-    private $cacheById = [];
-    private $cacheByHandle = [];
+    private array $cacheByUid = [];
+    private array $cacheById = [];
+    private array $cacheByHandle = [];
 
     public function __construct(
         $config,

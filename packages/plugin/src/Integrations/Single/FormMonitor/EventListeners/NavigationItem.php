@@ -26,15 +26,12 @@ class NavigationItem extends FeatureBundle
 
         $this->registerController('form-monitor', FormMonitorController::class);
 
-        // Add Form Monitor shortcut to settings nav for PRO edition only
+        // Add Form Monitor shortcut to settings nav
         Event::on(
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
             function (RegisterSettingsNavigationEvent $event) {
                 $freeform = Freeform::getInstance();
-                if (!$freeform->isPro()) {
-                    return;
-                }
 
                 $event->addNavigationItem(
                     '../integrations/single/FormMonitor',

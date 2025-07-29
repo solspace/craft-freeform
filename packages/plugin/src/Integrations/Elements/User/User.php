@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Elements\User;
 use craft\base\Element;
 use craft\elements\User as CraftUser;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -15,6 +16,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'User',
     type: Type::TYPE_ELEMENTS,

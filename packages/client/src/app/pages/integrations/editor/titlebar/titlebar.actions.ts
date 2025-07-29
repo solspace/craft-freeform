@@ -23,14 +23,17 @@ export const showAuthWindow: AuthWindow = (id, callback) => {
 
   const popup = window.open(url, 'OAuthFlow', optionsString);
 
-  window.addEventListener('message', (event) => {
+  const listener = (event: MessageEvent): void => {
     if (event.origin !== window.location.origin) {
       return;
     }
 
     if (event.data.type === 'oauth2') {
-      popup.close();
+      popup?.close();
       callback();
+      window.removeEventListener('message', listener);
     }
-  });
+  };
+
+  window.addEventListener('message', listener);
 };

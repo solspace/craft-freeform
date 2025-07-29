@@ -71,7 +71,9 @@ export const Titlebar: FC<Props> = ({ integration }) => {
 
   const hasReadme = !!integration.type.readmeContent;
   const showAuthChecker =
-    integration.id && integration.implements.includes('apiIntegration');
+    integration.id &&
+    integration.supported &&
+    integration.implements.includes('apiIntegration');
 
   return (
     <>
@@ -121,7 +123,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
           </Actions>
         )}
 
-        {!!integration.id && (
+        {!!integration.id && integration.supported && (
           <RemoveButtonWrapper>
             <RemoveButton active={true} onClick={onDelete} />
           </RemoveButtonWrapper>

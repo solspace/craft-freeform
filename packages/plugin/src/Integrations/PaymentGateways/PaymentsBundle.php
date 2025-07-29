@@ -19,11 +19,6 @@ class PaymentsBundle extends FeatureBundle
         );
     }
 
-    public static function isProOnly(): bool
-    {
-        return true;
-    }
-
     public static function getPriority(): int
     {
         return 900;

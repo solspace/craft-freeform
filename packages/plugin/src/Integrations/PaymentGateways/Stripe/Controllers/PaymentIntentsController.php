@@ -104,15 +104,19 @@ class PaymentIntentsController extends BaseStripeController
             )
         ;
 
+        $type = $integration->getTypeDefinition();
+        $shortName = $type->shortName;
+        $id = $integration->getId();
+
+        $url = 'freeform/integrations/payment-gateways/'.$shortName.'/'.$id;
+
         $metadataPayload = [
             'hash' => $hash,
             'form' => $form->getName(),
             'formLink' => UrlHelper::cpUrl('freeform/forms/'.$form->getId()),
             'fieldName' => $field->getLabel(),
             'integrationName' => $integration->getName(),
-            'integrationLink' => UrlHelper::cpUrl(
-                'freeform/settings/integrations/payment-gateways/'.$integration->getId()
-            ),
+            'integrationLink' => UrlHelper::cpUrl($url),
         ];
 
         $event = new UpdateMetadataEvent($form, $integration, $metadataPayload);

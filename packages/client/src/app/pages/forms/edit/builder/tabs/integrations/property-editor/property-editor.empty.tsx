@@ -1,8 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { EmptyBlock } from '@components/empty-block/empty-block';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-import { generateUrl } from '@ff-client/utils/urls';
 
 import EmptyIcon from './empty.icon.svg';
 import { PropertyEditorWrapper } from './property-editor.styles';
@@ -15,12 +15,9 @@ export const EmptyEditor: React.FC = () => {
         subtitle={translate('To add an integration, click the button below')}
         icon={<EmptyIcon />}
       >
-        <a
-          className={classes('btn add icon')}
-          href={generateUrl('settings/integrations/crm')}
-        >
+        <Link className={classes('btn add icon')} to="/integrations">
           {translate('Add integration')}
-        </a>
+        </Link>
       </EmptyBlock>
     </PropertyEditorWrapper>
   );

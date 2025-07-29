@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Search } from '@components/search/search';
+import config from '@config/freeform/freeform.config';
 import classes from '@ff-client/utils/classes';
 
 import { useIntegrationNavigation } from './sidebar.queries';
@@ -19,6 +20,7 @@ import {
 } from './sidebar.styles';
 
 export const Sidebar: React.FC = () => {
+  const edition = config.editions.edition;
   const { pathname: currentUrl } = useLocation();
   const { data, isFetching } = useIntegrationNavigation();
 
@@ -58,6 +60,9 @@ export const Sidebar: React.FC = () => {
                 const title = entry.type.name;
 
                 const isStatusActive = entry.instances.length > 0;
+                const isUnsupportedEdition =
+                  entry.type.editions.length > 0 &&
+                  !entry.type.editions.includes(edition);
 
                 const instances = entry.instances.length;
                 const indicatorText = instances > 1 ? instances : '';
@@ -70,9 +75,18 @@ export const Sidebar: React.FC = () => {
 
                 return (
                   <Integration key={key}>
-                    <NavLink to={url} className={classes(isActive && 'active')}>
+                    <NavLink
+                      to={url}
+                      className={classes(
+                        isActive && 'active',
+                        isUnsupportedEdition && 'unsupported'
+                      )}
+                    >
                       <StatusIndicator
-                        className={classes(isStatusActive && 'active')}
+                        className={classes(
+                          isStatusActive && !isUnsupportedEdition && 'active',
+                          isUnsupportedEdition && 'unsupported'
+                        )}
                       >
                         {indicatorText}
                       </StatusIndicator>

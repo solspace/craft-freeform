@@ -49,9 +49,9 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
-    private $cacheByUid = [];
-    private $cacheById = [];
-    private $cacheByHandle = [];
+    private array $cacheByUid = [];
+    private array $cacheById = [];
+    private array $cacheByHandle = [];
 
     public function __construct(
         $config,
@@ -69,6 +69,7 @@ class IntegrationsService extends BaseService
     public function getAllIntegrationTypes(): array
     {
         static $types;
+
         if (null === $types) {
             $event = new RegisterIntegrationTypesEvent();
             Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
@@ -199,6 +200,17 @@ class IntegrationsService extends BaseService
         throw new IntegrationException(
             Freeform::t('Integration with UID {uid} not found', ['uid' => $uid])
         );
+    }
+
+    public function setConnectionEstablished(IntegrationInterface $integration): void
+    {
+        $record = IntegrationRecord::findOne(['id' => $integration->getId()]);
+        if (!$record) {
+            return;
+        }
+
+        $record->connectionEstablished = true;
+        $record->save();
     }
 
     public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
@@ -517,14 +529,7 @@ class IntegrationsService extends BaseService
 
             $eligibleIntegrationObjects = array_filter(
                 $integrationObjects,
-                function (IntegrationInterface $integration) use ($freeformEdition) {
-                    $editions = $integration->getTypeDefinition()->editions;
-                    if (!$editions) {
-                        return true;
-                    }
-
-                    return \in_array($freeformEdition, $editions, true);
-                }
+                fn (IntegrationInterface $integration) => $integration->getTypeDefinition()->editionCheck($freeformEdition),
             );
 
             $cache[$key] = $eligibleIntegrationObjects;
@@ -536,6 +541,7 @@ class IntegrationsService extends BaseService
     public function processIntegrationJob(int $formId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
+        $edition = $freeform->edition;
 
         $form = $freeform->forms->getFormById($formId);
         if (!$form) {
@@ -548,6 +554,10 @@ class IntegrationsService extends BaseService
         $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             if (!$integration instanceof PushableInterface) {
+                continue;
+            }
+
+            if (!$integration->getTypeDefinition()->editionCheck($edition)) {
                 continue;
             }
 

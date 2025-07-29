@@ -77,17 +77,21 @@ class IntegrationsController extends BaseApiController
 
         $allTypes = $this->typeProvider->getAllTypeDefinitions();
 
-        /** @var Type $type */
-        $type = array_find(
-            $allTypes,
-            fn ($definition) => $definition->shortName === $integration && $definition->type === $type,
-        );
+        /** @var Type $typeDefinition */
+        $typeDefinition = null;
+        foreach ($allTypes as $definition) {
+            if ($definition->shortName === $integration && $definition->type === $type) {
+                $typeDefinition = $definition;
 
-        if (!$type) {
+                break;
+            }
+        }
+
+        if (!$typeDefinition) {
             throw new NotFoundHttpException('Integration type not found');
         }
 
-        $properties = $this->propertyProvider->getEditableProperties($type->class);
+        $properties = $this->propertyProvider->getEditableProperties($typeDefinition->class);
         $properties->removeFlagged(
             IntegrationInterface::FLAG_INSTANCE_ONLY,
             IntegrationInterface::FLAG_INTERNAL,
@@ -95,11 +99,11 @@ class IntegrationsController extends BaseApiController
 
         return $this->asSerializedJson([
             'id' => null,
-            'name' => $type->name,
-            'handle' => StringHelper::toHandle($type->name),
+            'name' => $typeDefinition->name,
+            'handle' => StringHelper::toHandle($typeDefinition->name),
             'enabled' => true,
-            'type' => $type,
-            'implements' => $this->implementationProvider->getImplementations($type->class),
+            'type' => $typeDefinition,
+            'implements' => $this->implementationProvider->getImplementations($typeDefinition->class),
             'properties' => $properties,
         ]);
     }
@@ -108,7 +112,7 @@ class IntegrationsController extends BaseApiController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
-        $types = $this->typeProvider->getAllTypeDefinitions();
+        $types = $this->typeProvider->getAllTypeDefinitions(false);
         $integrations = $this->getIntegrationsService()->getAllIntegrations();
 
         $sections = [];
@@ -301,15 +305,5 @@ class IntegrationsController extends BaseApiController
         }
 
         throw new ApiException(400, FlatErrorCollection::fromModel($model));
-    }
-
-    protected function get(): array
-    {
-        return $this->integrationDTOProvider->getByCategory();
-    }
-
-    protected function getOne(int|string $id): null|array|object
-    {
-        return $this->integrationDTOProvider->getById($id);
     }
 }

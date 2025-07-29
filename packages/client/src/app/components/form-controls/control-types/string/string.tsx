@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { Suggestions } from './suggestions/suggestions';
+import { EnvLine } from './env.line';
 
 const String: React.FC<ControlType<StringProperty>> = ({
   value,
@@ -59,12 +60,15 @@ const String: React.FC<ControlType<StringProperty>> = ({
         onChange={(event) => updateValue(event.target.value)}
       />
       {isEnvSuggest && !!data && (
-        <Suggestions
-          inputRef={ref}
-          filter={value}
-          suggestions={data}
-          update={(value) => updateValue(value)}
-        />
+        <>
+          <Suggestions
+            inputRef={ref}
+            filter={value}
+            suggestions={data}
+            update={(value) => updateValue(value)}
+          />
+          <EnvLine />
+        </>
       )}
     </Control>
   );

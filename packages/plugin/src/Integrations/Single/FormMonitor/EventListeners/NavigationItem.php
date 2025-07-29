@@ -37,9 +37,9 @@ class NavigationItem extends FeatureBundle
                 }
 
                 $event->addNavigationItem(
-                    'integrations/single/FormMonitor',
+                    '../integrations/single/FormMonitor',
                     Freeform::t('Form Monitor'),
-                    'integrations/single'
+                    'notices-and-alerts'
                 );
             }
         );

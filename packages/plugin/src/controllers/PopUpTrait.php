@@ -30,7 +30,7 @@ trait PopUpTrait
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         return $this->renderTemplate(
-            'freeform/settings/integrations/callback-error',
+            'freeform/integrations/callback-error',
             ['messages' => $messages],
         );
     }

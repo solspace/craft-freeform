@@ -18,6 +18,7 @@ export type Integration = {
   name: string;
   handle: string;
   enabled: boolean;
+  supported?: boolean;
   type: TypeDefinition;
   implements: string[];
   properties: Property[];

@@ -48,22 +48,22 @@
     </style>
 </head>
 <body>
-    <header>
-        <img alt="Freeform 5 for Craft CMS" src="https://docs.solspace.com/img/intro/freeform-dark.png">
-    </header>
+<header>
+    <img alt="Freeform for Craft CMS" src="https://docs.solspace.com/img/intro/freeform-dark.png">
+</header>
 
-    <div class="container">
-        <h1>
-            {{ "An Error Occurred"|t('freeform') }}
-        </h1>
-        <div class="errors">
-            {% for message in messages %}
-                <p>{{ message|t('freeform') }}</p>
-            {% endfor %}
-        </div>
-        <p class="info">
-            {{ "Please check your credentials and try again, or contact support."|t('freeform') }}
-        </p>
+<div class="container">
+    <h1>
+        {{ "An Error Occurred"|t('freeform') }}
+    </h1>
+    <div class="errors">
+        {% for message in messages %}
+            <p>{{ message|t('freeform') }}</p>
+        {% endfor %}
     </div>
+    <p class="info">
+        {{ "Please check your credentials and try again, or contact support."|t('freeform') }}
+    </p>
+</div>
 </body>
 </html>

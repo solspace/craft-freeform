@@ -4,11 +4,13 @@ namespace Solspace\Freeform\Integrations\Webhooks\Generic;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Generic Webhook',
     type: Type::TYPE_WEBHOOKS,

@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import config from '@config/freeform/freeform.config';
 import { QKIntegrations } from '@ff-client/queries/integrations';
 import type { APIError } from '@ff-client/types/api';
 import type { IntegrationType } from '@ff-client/types/integrations';
@@ -17,6 +18,8 @@ export const useIntegrationProperties = (
   integration: string,
   id: string
 ): UseQueryResult<Integration | null> => {
+  const edition = config.editions.edition;
+
   let url = `/api/integrations/properties/`;
   if (id && id !== 'new') {
     url += id;
@@ -25,7 +28,17 @@ export const useIntegrationProperties = (
   }
 
   return useQuery(QKIntegrations.properties(type, integration, id), () =>
-    axios.get(url).then((response) => response.data)
+    axios
+      .get(url)
+      .then((response) => response.data)
+      .then((data) => {
+        return {
+          ...data,
+          supported:
+            data.type.editions.length === 0 ||
+            data.type.editions.includes(edition),
+        };
+      })
   );
 };
 

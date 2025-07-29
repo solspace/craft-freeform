@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Webhooks\Slack;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\Webhooks\WebhookIntegration;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Slack',
     type: Type::TYPE_WEBHOOKS,

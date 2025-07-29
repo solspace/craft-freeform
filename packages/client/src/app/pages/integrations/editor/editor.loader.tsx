@@ -17,22 +17,12 @@ export const EditorLoader: FC = () => {
         <Skeleton width={200} />
       </Title>
 
-      <div>
-        <Skeleton width={100} />
-        <Skeleton width={250} height={10} />
-        <Skeleton width={'100%'} height={30} />
-      </div>
+      <hr />
 
       <div>
         <Skeleton width={80} />
         <Skeleton width={270} height={10} />
         <Skeleton width={'100%'} height={30} />
-      </div>
-
-      <hr />
-
-      <div>
-        <Skeleton width={200} baseColor="var(--blue-200)" />
       </div>
 
       <hr />

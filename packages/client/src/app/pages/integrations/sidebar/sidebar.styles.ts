@@ -72,6 +72,13 @@ export const StatusIndicator = styled.span`
     background-color: ${colors.teal500};
     color: ${colors.white};
   }
+
+  &.unsupported {
+    border-style: dashed;
+    border-width: 2px;
+    border-color: ${colors.gray200};
+    color: ${colors.gray300};
+  }
 `;
 
 export const Integration = styled.li`
@@ -86,6 +93,10 @@ export const Integration = styled.li`
     color: ${colors.gray700};
     text-decoration: none;
     border-radius: 4px;
+
+    &.unsupported {
+      opacity: 0.5;
+    }
 
     &:hover,
     &.active {

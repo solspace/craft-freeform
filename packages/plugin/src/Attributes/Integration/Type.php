@@ -53,6 +53,15 @@ class Type
         return null;
     }
 
+    public function editionCheck(string $edition): bool
+    {
+        if (empty($this->editions)) {
+            return true;
+        }
+
+        return \in_array($edition, $this->editions, true);
+    }
+
     public function implements(string $interface): bool
     {
         return (new \ReflectionClass($this->class))->implementsInterface($interface);

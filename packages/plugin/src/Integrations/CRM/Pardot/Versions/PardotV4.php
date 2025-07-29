@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\CRM\Pardot\Versions;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -13,6 +14,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pardot\BasePardotIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Pardot',
     type: Type::TYPE_CRM,

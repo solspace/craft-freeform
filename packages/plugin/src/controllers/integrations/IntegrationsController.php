@@ -79,6 +79,8 @@ class IntegrationsController extends BaseController
             return $this->renderPopUpError($event->getErrors());
         }
 
+        $this->integrationsService->setConnectionEstablished($integration);
+
         return $this->closePopUpWindowResponse();
     }
 

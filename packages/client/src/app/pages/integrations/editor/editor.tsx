@@ -13,6 +13,7 @@ import type {
 import { IntegrationType } from '@ff-client/types/integrations';
 import type { GenericValue } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
+import classes from '@ff-client/utils/classes';
 import { generateHandle } from '@ff-client/utils/strings';
 import translate from '@ff-client/utils/translations';
 
@@ -21,6 +22,7 @@ import { useIntegrationNavigation } from '../sidebar/sidebar.queries';
 import { Titlebar } from './titlebar/titlebar';
 import { EditorInput } from './editor.input';
 import { EditorLoader } from './editor.loader';
+import { VersionUpgradeOverlay } from './editor.overlay';
 import {
   useIntegrationMutation,
   useIntegrationProperties,
@@ -105,7 +107,9 @@ export const IntegrationsEditor: FC = () => {
   const isLoading = isFetching || !data;
 
   const saveHandler = (): void => {
-    mutate(values);
+    if (data?.supported) {
+      mutate(values);
+    }
   };
 
   useSaveShortcut(saveHandler);
@@ -141,11 +145,19 @@ export const IntegrationsEditor: FC = () => {
           <div className="btngroup">
             {instanceCount > 0 && type !== IntegrationType.Singles && (
               <button
-                className="btn add icon"
+                className={classes('btn', 'add', 'icon', 'disabled')}
                 title={translate('Add new integration of the same type')}
               />
             )}
-            <button className="btn submit">{translate('Save')}</button>
+            <button
+              className={classes(
+                'btn',
+                data?.supported && 'submit',
+                'disabled'
+              )}
+            >
+              {translate('Save')}
+            </button>
           </div>
         </ActionsWrapper>
 
@@ -161,6 +173,8 @@ export const IntegrationsEditor: FC = () => {
         label={data.name}
         url={`integrations/${type}/${integration}${id ? `/${id}` : ''}`}
       />
+
+      <VersionUpgradeOverlay integration={data} />
 
       {showTabs && (
         <EditorTabsWrapper>
@@ -184,14 +198,22 @@ export const IntegrationsEditor: FC = () => {
         <div className="btngroup">
           {instanceCount > 0 && type !== IntegrationType.Singles && (
             <button
-              className="btn add icon"
+              className={classes(
+                'btn',
+                'add',
+                'icon',
+                !data.supported && 'disabled'
+              )}
               onClick={() =>
                 navigate(`/integrations/${type}/${integration}/new`)
               }
               title={translate('Add new integration of the same type')}
             />
           )}
-          <button className="btn submit" onClick={saveHandler}>
+          <button
+            className={classes('btn', data.supported ? 'submit' : 'disabled')}
+            onClick={saveHandler}
+          >
             <LoadingText
               loading={isMutating}
               loadingText={translate('Saving')}
@@ -228,7 +250,7 @@ export const IntegrationsEditor: FC = () => {
           }}
           value={values.name}
           errors={errors?.handle}
-          autoFocus
+          autoFocus={data.supported}
         />
 
         <hr />

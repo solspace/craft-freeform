@@ -47,6 +47,7 @@
   },
   "scripts": {
     "test:unit": "vendor/bin/phpunit --configuration ./phpunit.xml",
+    "compat:check": "vendor/bin/phpcs -p ./packages/plugin --extensions=php",
     "fix": "vendor/bin/php-cs-fixer fix --diff --config=./.php-cs-fixer.dist.php",
     "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php",
     "post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/phpcompatibility/php-compatibility",

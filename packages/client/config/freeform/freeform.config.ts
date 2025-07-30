@@ -16,6 +16,8 @@ export enum TemplateMethod {
   All = 'all',
 }
 
+export type Permission = 'access' | 'manage' | 'none';
+
 type Config = {
   templates: {
     native: boolean;
@@ -55,6 +57,9 @@ type Config = {
     enabled: boolean;
     current: number;
     list: Site[];
+  };
+  permissions: {
+    integrations: Permission;
   };
   limitations: {
     items: null | Record<string, boolean | string | string[]>;

@@ -14,6 +14,6 @@ class PurgeNotificationLogsJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Purging Old Notification Logs');
+        return 'Freeform: Purging Old Notification Logs';
     }
 }

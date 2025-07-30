@@ -311,6 +311,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return $this->getCurrentPage()->getRows();
     }
 
+    public function getStopSubmissionsAfter(): ?\DateTime
+    {
+        return $this->getSettings()->getBehavior()->stopSubmissionsAfter;
+    }
+
     public function getFields(): FieldCollection
     {
         return $this->getCurrentPage()->getFields();

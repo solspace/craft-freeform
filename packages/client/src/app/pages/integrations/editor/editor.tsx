@@ -4,6 +4,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import String from '@components/form-controls/control-types/string/string';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config from '@config/freeform/freeform.config';
 import { useSaveShortcut } from '@ff-client/hooks/use-save-shortcut';
 import type {
   APIError,
@@ -125,6 +126,7 @@ export const IntegrationsEditor: FC = () => {
     }
   }, [data]);
 
+  const canManage = config.permissions.integrations === 'manage';
   const isAddNew = id === 'new';
   const isLoading = isFetching || !data;
 
@@ -163,25 +165,27 @@ export const IntegrationsEditor: FC = () => {
           </EditorTabsWrapper>
         )}
 
-        <ActionsWrapper>
-          <div className="btngroup">
-            {instanceCount > 0 && type !== IntegrationType.Singles && (
-              <button
-                className={classes('btn', 'add', 'icon', 'disabled')}
-                title={translate('Add new integration of the same type')}
-              />
-            )}
-            <button
-              className={classes(
-                'btn',
-                data?.supported && 'submit',
-                'disabled'
+        {canManage && (
+          <ActionsWrapper>
+            <div className="btngroup">
+              {instanceCount > 0 && type !== IntegrationType.Singles && (
+                <button
+                  className={classes('btn', 'add', 'icon', 'disabled')}
+                  title={translate('Add new integration of the same type')}
+                />
               )}
-            >
-              {translate('Save')}
-            </button>
-          </div>
-        </ActionsWrapper>
+              <button
+                className={classes(
+                  'btn',
+                  data?.supported && 'submit',
+                  'disabled'
+                )}
+              >
+                {translate('Save')}
+              </button>
+            </div>
+          </ActionsWrapper>
+        )}
 
         <EditorLoader />
       </EditorContainer>
@@ -216,36 +220,38 @@ export const IntegrationsEditor: FC = () => {
         </EditorTabsWrapper>
       )}
 
-      <ActionsWrapper>
-        <div className="btngroup">
-          {instanceCount > 0 && type !== IntegrationType.Singles && (
+      {canManage && (
+        <ActionsWrapper>
+          <div className="btngroup">
+            {instanceCount > 0 && type !== IntegrationType.Singles && (
+              <button
+                className={classes(
+                  'btn',
+                  'add',
+                  'icon',
+                  !data.supported && 'disabled'
+                )}
+                onClick={() =>
+                  navigate(`/integrations/${type}/${integration}/new`)
+                }
+                title={translate('Add new integration of the same type')}
+              />
+            )}
             <button
-              className={classes(
-                'btn',
-                'add',
-                'icon',
-                !data.supported && 'disabled'
-              )}
-              onClick={() =>
-                navigate(`/integrations/${type}/${integration}/new`)
-              }
-              title={translate('Add new integration of the same type')}
-            />
-          )}
-          <button
-            className={classes('btn', data.supported ? 'submit' : 'disabled')}
-            onClick={saveHandler}
-          >
-            <LoadingText
-              loading={isMutating}
-              loadingText={translate('Saving')}
-              spinner
+              className={classes('btn', data.supported ? 'submit' : 'disabled')}
+              onClick={saveHandler}
             >
-              {translate('Save')}
-            </LoadingText>
-          </button>
-        </div>
-      </ActionsWrapper>
+              <LoadingText
+                loading={isMutating}
+                loadingText={translate('Saving')}
+                spinner
+              >
+                {translate('Save')}
+              </LoadingText>
+            </button>
+          </div>
+        </ActionsWrapper>
+      )}
 
       <EditorWrapper>
         <Titlebar integration={data} />

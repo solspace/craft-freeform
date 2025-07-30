@@ -1746,6 +1746,14 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.28 - 2025-07-25
+
+### Added
+- Verified support for Craft 4.16.x.
+
+### Changed
+- Updated Axios package version.
+
 ## 4.1.27 - 2025-06-30
 
 ### Fixed

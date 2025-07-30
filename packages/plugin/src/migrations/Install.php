@@ -132,7 +132,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer())
-                ->addIndex(['formId', 'handle'], true, name: 'formId_handle')
+                ->addIndex(['formId'], false, name: 'formId')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('wrapperId', 'freeform_notification_template_wrappers', 'id', ForeignKey::SET_NULL, name: 'fk_wrapperId'),
 

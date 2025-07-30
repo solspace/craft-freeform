@@ -5,6 +5,7 @@ import { CancelToken } from '@lib/plugin/helpers/ajax/ajax.classes';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import { filesize } from 'filesize';
 
+import { askForConfirmation } from './confirm';
 import { addFieldErrors } from './error-handling';
 import { createInput, createPreviewContainer } from './preview';
 import type { FieldError, FileMetadata } from './types';
@@ -133,8 +134,9 @@ export const handleFileUpload = (
       deleteFormData.append('id', response.data.id);
 
       removeButton.removeEventListener('click', handleCancelRequest);
-      removeButton.addEventListener('click', () => {
-        if (confirm('Are you sure?')) {
+      removeButton.addEventListener('click', async () => {
+        const isConfirmed = await askForConfirmation(container);
+        if (isConfirmed) {
           ajax
             .post(`${baseUrl}/files/delete`, deleteFormData)
             .then(() => {

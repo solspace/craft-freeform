@@ -2,6 +2,7 @@ import type { FC } from 'react';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { RemoveButton } from '@components/elements/remove-button/remove';
+import config from '@config/freeform/freeform.config';
 import { QKIntegrations } from '@ff-client/queries/integrations';
 import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
@@ -69,8 +70,11 @@ export const Titlebar: FC<Props> = ({ integration }) => {
     }
   };
 
+  const canManage = config.permissions.integrations === 'manage';
+  const canRemove = canManage && integration.id && integration.supported;
   const hasReadme = !!integration.type.readmeContent;
   const showAuthChecker =
+    canManage &&
     integration.id &&
     integration.supported &&
     integration.implements.includes('apiIntegration');
@@ -123,7 +127,7 @@ export const Titlebar: FC<Props> = ({ integration }) => {
           </Actions>
         )}
 
-        {!!integration.id && integration.supported && (
+        {canRemove && (
           <RemoveButtonWrapper>
             <RemoveButton active={true} onClick={onDelete} />
           </RemoveButtonWrapper>

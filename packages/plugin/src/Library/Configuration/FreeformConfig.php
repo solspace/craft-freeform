@@ -73,6 +73,12 @@ class FreeformConfig implements \JsonSerializable
                     $sites,
                 ),
             ],
+            'permissions' => [
+                'integrations' => $this->getPermission(
+                    Freeform::PERMISSION_INTEGRATIONS_ACCESS,
+                    Freeform::PERMISSION_INTEGRATIONS_MANAGE,
+                ),
+            ],
             'limitations' => [
                 'items' => $limitedUserChecker->getAll(),
             ],
@@ -82,5 +88,17 @@ class FreeformConfig implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return $this->config;
+    }
+
+    private function getPermission(string $access, string $manage): string
+    {
+        if (PermissionHelper::checkPermission($manage)) {
+            return 'manage';
+        }
+        if (PermissionHelper::checkPermission($access)) {
+            return 'access';
+        }
+
+        return 'none';
     }
 }

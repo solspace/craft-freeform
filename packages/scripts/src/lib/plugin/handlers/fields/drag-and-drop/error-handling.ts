@@ -59,11 +59,11 @@ export const handleFormLock = (event: FreeformEventWithContainer<{ messages: str
   }
 };
 
-export const clearFormLock = (event: FreeformEventWithContainer): void => {
+export const clearFormLock = (event: FreeformEventWithContainer, freeform: Freeform): void => {
   const container = event.container;
   const fieldsWithErrors = container.querySelectorAll('[data-has-errors]');
   if (fieldsWithErrors.length === 0) {
-    event.freeform.enableSubmit(`file-upload-errors-${getContainerId(container)}`);
+    freeform.enableSubmit(`file-upload-errors-${getContainerId(container)}`);
   }
 };
 

@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.11.8 - 2025-07-31
+
+### Added
+- Added support for customizing the delete confirmation message for File Upload Drag & Drop fields, including the option to use a custom confirmation dialog.
+- Added a `stopSubmissionsAfter` alias on the `Form` object for use in template conditionals to check if a form has passed its close date.
+
+### Fixed
+- Fixed a race condition that could cause Digest email notifications to send multiple duplicates.
+- Fixed a bug where an `enableSubmit` error appeared in the browser console on forms using File Upload Drag & Drop fields.
+- Fixed a bug where a recent migration could trigger a duplicate key name error.
+- Fixed a bug that caused an error when uninstalling Freeform on PostgreSQL.
+
 ## 5.11.7 - 2025-07-23
 
 ### Added

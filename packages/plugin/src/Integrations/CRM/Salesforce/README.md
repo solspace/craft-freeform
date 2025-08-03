@@ -102,21 +102,17 @@ An alternate duplicate check on records is also available. When the **Check Cont
 - Paste the Salesforce **Consumer Key** value into the **Client ID** field in Freeform.
 - Paste the Salesforce **Consumer Secret** value into the **Client Secret** field in Freeform.
 
-### 4. Finish the Integration
+### 4. Finish & Verify the Integration
 
 - Click the **Save** button.
-- You will be redirected to a Salesforce OAuth page to allow permissions.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- A popup will load a Salesforce OAuth page to allow permissions.
     - If not currently logged in, fill in your credentials.
     - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
-### 5. Verify Authorization
-
-- After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
-
-### 6. Configure the Form
+### 5. Configure the Form
 
 To use this integration on your form(s), you'll need to configure each form individually.
 
@@ -128,7 +124,7 @@ To use this integration on your form(s), you'll need to configure each form indi
     - Select the API endpoints you wish to map to.
     - Map Freeform fields to the Salesforce fields as needed.
 
-### 7. Additional Configuration
+### 6. Additional Configuration
 
 - **LEADS**
     - **Assign Lead Owner?** - Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules in Salesforce.
@@ -141,32 +137,6 @@ To use this integration on your form(s), you'll need to configure each form indi
     - **Append checkboxes field values on Contact update?** - If a Contact already exists in Salesforce, enabling this will append additional checkboxes field values to the Contact inside Salesforce, instead of overwriting the options.
     - **Append checkboxes field values on Account update?** - If an Account already exists in Salesforce, enabling this will append additional checkboxes field values to the Account inside Salesforce, instead of overwriting the options.
     - **Check Contact email address and Account website when checking for Duplicates** - By default, Freeform checks the Contact's first name, last name, email address, and Account name. If enabled, it will check only the Contact's email address and the Account's website. If no website is provided, Freeform will use the domain from the Contact's email address.
-
-### 5. Finish the Integration
-
-- Click the **Save** button.
-- You will be redirected to a Salesforce OAuth page to allow permissions.
-    - If not currently logged in, fill in your credentials.
-    - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
-
-### 6. Verify Authorization
-
-- After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
-
-### 7. Configure the Form
-
-To use this integration on your form(s), you'll need to configure each form individually.
-
-- Visit the form inside the form builder.
-- Click on the **Integrations** tab.
-- Click on **Salesforce** in the list of available integrations.
-- On the right side of the page:
-    - Enable the integration.
-    - Select the API endpoints you wish to map to.
-    - Map Freeform fields to the Salesforce fields as needed.
 
 <span class="note warning"><b>Important:</b> Please note that if you set this up initially on a development environment, you will need to update your callback URL and reauthorize the connection on your production environment. However, your settings and field mappings will remain intact.</span>
 

@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
@@ -28,6 +29,8 @@ class IntegrationModel extends Model
     public ?int $id = null;
     public ?string $uid = null;
     public bool $enabled = false;
+    public bool $legacy = false;
+    public bool $connectionEstablished = false;
     public ?string $name = null;
     public ?string $handle = null;
     public ?string $type = null;
@@ -39,6 +42,7 @@ class IntegrationModel extends Model
         $model = new self();
         $model->type = $type;
         $model->enabled = true;
+        $model->legacy = false;
 
         return $model;
     }
@@ -47,6 +51,8 @@ class IntegrationModel extends Model
     {
         return [
             'enabled',
+            'legacy',
+            'connectionEstablished',
             'name',
             'handle',
             'class',
@@ -60,6 +66,18 @@ class IntegrationModel extends Model
         $type = $this->type;
 
         return UrlHelper::cpUrl("freeform/settings/{$type}/{$id}");
+    }
+
+    public function getTypeDefinition(): Type
+    {
+        $object = $this->getIntegrationObject();
+        $type = $object->getTypeDefinition();
+
+        $propertyProvider = \Craft::$container->get(PropertyProvider::class);
+
+        $type->properties = $propertyProvider->getEditableProperties($object, $object);
+
+        return $type;
     }
 
     public function getIntegrationObject(): IntegrationInterface
@@ -79,7 +97,8 @@ class IntegrationModel extends Model
         $object = new $className(
             $this->id,
             $this->uid,
-            (bool) $this->enabled,
+            $this->enabled,
+            $this->legacy,
             $this->handle ?? '',
             $this->name ?? '',
             $type,
@@ -90,7 +109,7 @@ class IntegrationModel extends Model
         $properties = $propertyProvider->getEditableProperties($object);
         foreach ($properties as $property) {
             if ($property->hasFlag(IntegrationInterface::FLAG_READONLY) && $property->valueGenerator) {
-                $value = $property->valueGenerator->generateValue(null);
+                $value = $property->valueGenerator->generateValue(null, $this);
                 $propertyProvider->setObjectValue($object, $property->handle, $value);
             }
         }

@@ -62,14 +62,15 @@ Maps Freeform submission data as new rows in a Google Sheets spreadsheet.
     - **Row Insert Behavior**
         - Choose how new data rows should be inserted into the Google Sheet. **Insert New Row** will add a new row to the spreadsheet directly before the first empty row. **Replace Next Empty Row** will find the first empty row and write the new content into it. Neither option will overwrite existing data.
 
-### 4. Finish the Connection
+### 4. Finish & Verify the Integration
 
 - Click the **Save** button.
-- You will be redirected to a Google OAuth page to allow permissions.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- A popup will load a Google OAuth page to allow permissions.
     - If not currently logged in, fill in your credentials.
     - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform Integration** page.
-- Confirm that there is a green circle with **Authorized** in the middle of the page.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
 ### 5. Configure the Form
 

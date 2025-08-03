@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\Attributes\Property\ValueTransformers;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 
 class SeparatedStringToArrayTransformer implements TransformerInterface
 {
-    public function transform($value): array
+    public function transform($value, ?Form $form = null): array
     {
         if (\is_array($value)) {
             return $value;

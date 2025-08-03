@@ -32,7 +32,6 @@ class EncryptionBundle extends FeatureBundle
     public function encrypt(ProcessFieldValueEvent $event): void
     {
         $field = $event->getField();
-
         $value = $event->getValue();
 
         if ($this->plugin()->edition()->isBelow(Freeform::EDITION_PRO) || !$field instanceof EncryptionInterface || !$field->isEncrypted() || !$value) {
@@ -40,7 +39,6 @@ class EncryptionBundle extends FeatureBundle
         }
 
         $key = EncryptionHelper::getKey($field->getForm()->getUid());
-
         $value = EncryptionHelper::encrypt($key, $value);
 
         $event->setValue($value);

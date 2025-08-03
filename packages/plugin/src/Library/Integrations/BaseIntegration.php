@@ -26,11 +26,17 @@ abstract class BaseIntegration implements IntegrationInterface
         private ?int $id,
         private ?string $uid,
         private bool $enabled,
+        private bool $legacy,
         private string $handle,
         private string $name,
         private Type $typeDefinition,
         protected LoggerInterface $logger,
     ) {}
+
+    public static function isInstallable(): bool
+    {
+        return true;
+    }
 
     public function getId(): ?int
     {
@@ -52,6 +58,11 @@ abstract class BaseIntegration implements IntegrationInterface
     public function isEnabled(): bool
     {
         return $this->enabled;
+    }
+
+    public function isLegacy(): bool
+    {
+        return $this->legacy;
     }
 
     public function getHandle(): string

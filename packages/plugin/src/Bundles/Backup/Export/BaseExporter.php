@@ -2,9 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export;
 
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
@@ -33,6 +36,9 @@ abstract class BaseExporter implements ExporterInterface
         $dataset = new FreeformDataset();
 
         $formIds = $this->getOption('forms', []);
+        $favoriteIds = $this->getOption('favorites', []);
+        $formGroupIds = $this->getOption('formGroups', []);
+        $limitedUserIds = $this->getOption('limitedUsers', []);
         $notificationIds = $this->getOption('templates', [])['notification'] ?? [];
         $pdfTemplateIds = $this->getOption('templates', [])['pdf'] ?? [];
         $wrapperTemplateIds = $this->getOption('templates', [])['wrapper'] ?? [];
@@ -43,11 +49,18 @@ abstract class BaseExporter implements ExporterInterface
         $strategy = $this->getOption('strategy', []);
         $settings = $this->getOption('settings', false);
 
+        $dataset->setStrategy(new ImportStrategy($strategy));
+
         $dataset->setForms($this->collectForms($formIds));
+        $dataset->setFavorites($this->collectFavorites($favoriteIds));
+        $dataset->setFormGroups($this->collectFormGroups($formGroupIds));
+
         $dataset->setFormSubmissions($this->collectSubmissions($formSubmissions));
         $dataset->setIntegrations($this->collectIntegrations($integrationIds));
+
+        $dataset->setLimitedUsers($this->collectLimitedUsers($limitedUserIds));
         $dataset->setSettings($this->collectSettings($settings));
-        $dataset->setStrategy(new ImportStrategy($strategy));
+
         $dataset->setTemplates(
             (new TemplateCollection())
                 ->setPdf($this->collectPdfTemplates($pdfTemplateIds))
@@ -63,6 +76,12 @@ abstract class BaseExporter implements ExporterInterface
     public function destruct(): void {}
 
     abstract protected function collectForms(?array $ids = null): FormCollection;
+
+    abstract protected function collectFavorites(?array $ids = null): FavoritesCollection;
+
+    abstract protected function collectFormGroups(?array $ids = null): FormGroupsCollection;
+
+    abstract protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection;
 
     abstract protected function collectIntegrations(?array $ids = null): IntegrationCollection;
 

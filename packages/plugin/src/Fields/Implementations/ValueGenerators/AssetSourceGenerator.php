@@ -17,7 +17,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 
 class AssetSourceGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(?object $referenceObject): ?int
+    public function generateValue(?object $referenceObject, ?object $context): ?int
     {
         $volumes = \Craft::$app->getVolumes()->getViewableVolumes();
 

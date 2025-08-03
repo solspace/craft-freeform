@@ -11,16 +11,7 @@ export const useFreeformNavigation = (): void => {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    // Craft 5
-    let link = document.querySelector(
-      `ul.nav-item__subnav li a[href*="/freeform/forms"]`
-    );
-
-    if (!link) {
-      // Craft 4
-      link = document.querySelector(`ul.subnav li a[href*="/freeform/forms"]`);
-    }
-
+    const link = findLink('/freeform/forms');
     const onClick = (event: MouseEvent): boolean => {
       event.preventDefault();
 
@@ -44,5 +35,41 @@ export const useFreeformNavigation = (): void => {
         link.removeEventListener('click', onClick);
       }
     };
-  });
+  }, [formId, navigate, queryClient]);
+
+  useEffect(() => {
+    const link = findLink('/freeform/integrations');
+    const onClick = (event: MouseEvent): boolean => {
+      event.preventDefault();
+      navigate('/integrations');
+
+      return false;
+    };
+
+    if (link) {
+      link.addEventListener('click', onClick);
+    }
+
+    return () => {
+      if (link) {
+        link.removeEventListener('click', onClick);
+      }
+    };
+  }, [navigate]);
+};
+
+const findLink = (path: string): HTMLAnchorElement | null => {
+  // Craft 5
+  let link = document.querySelector<HTMLAnchorElement>(
+    `ul.nav-item__subnav li a[href*="${path}"]`
+  );
+
+  if (!link) {
+    // Craft 4
+    link = document.querySelector<HTMLAnchorElement>(
+      `ul.subnav li a[href*="${path}"]`
+    );
+  }
+
+  return link;
 };

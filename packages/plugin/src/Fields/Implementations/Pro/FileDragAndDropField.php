@@ -6,6 +6,7 @@ use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
@@ -22,6 +23,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public const DEFAULT_ACCENT = '#3a85ee';
     public const DEFAULT_THEME = 'light';
     public const DEFAULT_PLACEHOLDER = 'Upload a file or drag and drop';
+    private const DEFAULT_CONFIRM_MESSAGE = 'Are you sure?';
 
     #[Input\ColorPicker(
         label: 'Accent Color',
@@ -47,6 +49,30 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;
 
+    #[Input\Text(
+        label: 'Remove File Confirmation Message',
+        instructions: 'Enter a custom message that will be shown when removing a file from the upload field.',
+        order: 70,
+        placeholder: 'Are you sure?',
+    )]
+    protected string $removeFileMessage = '';
+
+    #[Input\Boolean(
+        label: 'Use a Dialog element?',
+        instructions: 'If enabled, a dialog element will be used to confirm file removal.',
+        order: 80,
+    )]
+    protected bool $useCustomDialog = false;
+
+    #[VisibilityFilter('Boolean(properties.useCustomDialog)')]
+    #[Input\Text(
+        label: 'Custom Confirm Dialog Selector',
+        instructions: 'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.',
+        order: 90,
+        placeholder: '#my-confirm-dialog',
+    )]
+    protected string $confirmDialogSelector = '';
+
     public function getAccent(): string
     {
         return $this->accent;
@@ -60,6 +86,21 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function getPlaceholder(): string
     {
         return $this->placeholder;
+    }
+
+    public function isUseCustomDialog(): bool
+    {
+        return $this->useCustomDialog;
+    }
+
+    public function getRemoveFileMessage(): string
+    {
+        return $this->removeFileMessage ?: self::DEFAULT_CONFIRM_MESSAGE;
+    }
+
+    public function getConfirmDialogSelector(): string
+    {
+        return $this->confirmDialogSelector;
     }
 
     public function getType(): string
@@ -99,6 +140,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->setIfEmpty('data-accent', $this->getAccent())
             ->setIfEmpty('data-base-url', UrlHelper::siteUrl('/freeform'))
         ;
+
+        $attributes->set('data-confirm-message', $this->getRemoveFileMessage());
+        if ($this->isUseCustomDialog()) {
+            $attributes->set('data-dialog-selector', $this->getConfirmDialogSelector());
+        }
 
         $output = '<div data-placeholder class="freeform-file-dnd__placeholder">';
         $output .= $this->translate('placeholder', $this->getPlaceholder());

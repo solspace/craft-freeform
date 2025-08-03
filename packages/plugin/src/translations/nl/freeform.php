@@ -37,6 +37,7 @@ return [
     'archived' => 'gearchiveerde',
     'Manage Form Groups' => 'Beheer Formuliergroepen',
     'Form Group Manager' => 'Formulier Groepsmanager',
+    'Form Groups' => 'Formuliergroepen',
     'Display as cards' => 'Weergeven als kaarten',
     'Display as list' => 'Toon als lijst',
     'Chart' => 'Grafiek',
@@ -273,6 +274,12 @@ return [
     'Select accent color' => 'Selecteer accentkleur',
     'Select theme' => 'Selecteer thema',
     'Light' => 'Licht',
+    'Remove File Confirmation Message' => 'Bevestigingsbericht voor bestand verwijderen',
+    'Enter a custom message that will be shown when removing a file from the upload field.' => 'Voer een aangepast bericht in dat wordt getoond bij het verwijderen van een bestand uit het uploadveld.',
+    'Use a Dialog element?' => 'Dialoogvenster gebruiken?',
+    'If enabled, a dialog element will be used to confirm file removal.' => 'Als ingeschakeld, wordt een dialoogvenster gebruikt om het verwijderen van bestanden te bevestigen.',
+    'Custom Confirm Dialog Selector' => 'Aangepaste selector voor bevestigingsdialoog',
+    'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.' => 'Om een aangepast dialoogvenster te gebruiken, geef hier de CSS-selector op. Indien leeg, genereert Freeform automatisch een dialoogvenster.',
     'Target field' => 'Doelveld',
     'The field that should be matched and validated against.' => 'Het veld dat moet worden vergeleken en gevalideerd.',
     'Select a field' => 'Selecteer een veld',
@@ -860,8 +867,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade naar de Pro-editie van Freeform om toegang te krijgen tot exportmeldingen.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
-    'Import Freeform Data (beta)' => 'Freeform-gegevens importeren (bèta)',
+    'Export Freeform Data' => 'Freeform-gegevens exporteren',
+    'Import Freeform Data' => 'Freeform-gegevens importeren',
     'Select Data to Export' => 'Selecteer gegevens om te exporteren',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Kies welke Freeform-gegevens u in de export wilt opnemen. Als u inzendingen exporteert zonder het bijbehorende formulier, worden de inzendingen niet meegenomen.',
     'Password-protect the Export File (optional)' => 'Beveilig het exportbestand met een wachtwoord (optioneel)',
@@ -871,6 +878,9 @@ return [
     'Upload a Freeform Export zip file' => 'Upload een Freeform Export zip-bestand',
     'Accepts `.zip` files. Only upload files that you trust.' => 'Accepteert `.zip`-bestanden. Upload alleen bestanden die je vertrouwt.',
     'Please select the data you want to import.' => 'Selecteer de gegevens die u wilt importeren.',
+    'Wrapper' => 'Wrapper',
+    'Formatting' => 'Opmaak',
+    'Success' => 'Succes',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importeren uit Express Forms',
@@ -1309,7 +1319,11 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade naar de Freeform Pro-editie om toegang te krijgen tot integraties.',
     'What this integration will be called in the CP.' => 'Hoe deze integratie in de CP zal worden genoemd.',
     'The unique name used to identify this integration.' => 'De unieke naam die wordt gebruikt om deze integratie te identificeren.',
+    'Show Setup Instructions' => 'Installatie-instructies tonen',
     'Authorized' => 'Geautoriseerd',
+    'Unauthorized' => 'Niet geautoriseerd',
+    'Checking...' => 'Bezig met controleren...',
+    'Authorize' => 'Autoriseren',
     'Not able to authorize.' => 'Niet in staat om autorisatie te geven.',
     'Click here to re-authorize' => 'Klik hier om opnieuw te autoriseren',
     'Checking credentials...' => 'Inloggegevens controleren...',
@@ -1643,6 +1657,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Oude spaminzendingen opschonen',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Niet-gefinaliseerde bestanden opschonen',
     'Freeform: Sending Digest Email' => 'Freeform: Samenvatting-e-mail verzenden',
+    'Freeform: Purging Old Notification Logs' => 'Freeform: Oude notificatielogs opschonen',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Dit veld is verplicht',

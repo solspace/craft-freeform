@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\CRM\Insightly\Versions;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Delimiter;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -14,6 +15,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Insightly\BaseInsightlyIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Insightly',
     type: Type::TYPE_CRM,

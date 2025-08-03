@@ -44,11 +44,6 @@ class CrmBundle extends FeatureBundle
         );
     }
 
-    public static function isProOnly(): bool
-    {
-        return true;
-    }
-
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $path = \Craft::getAlias('@freeform/Integrations/CRM');

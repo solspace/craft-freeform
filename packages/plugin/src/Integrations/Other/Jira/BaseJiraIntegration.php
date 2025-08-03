@@ -18,6 +18,7 @@ abstract class BaseJiraIntegration extends CRMIntegration implements JiraIntegra
     use OAuth2Trait;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Instance URL',
         instructions: 'Enter your Jira instance URL (optional). If you do not enter a value, the first available resource URL is going to be used.',

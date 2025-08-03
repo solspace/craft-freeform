@@ -1,5 +1,4 @@
-import transliterateFn from '@sindresorhus/transliterate';
-import { camelCase } from 'lodash';
+import { generateHandle } from '@ff-client/utils/strings';
 
 import type { MiddlewareImplementation } from '../middleware';
 
@@ -27,16 +26,7 @@ const injectInto: MiddlewareImplementation<string, Args> = (
     }
   }
 
-  let targetValue = value;
-
-  if (transliterate) {
-    targetValue = transliterateFn(targetValue);
-  }
-
-  if (camelize) {
-    targetValue = camelCase(targetValue);
-  }
-
+  const targetValue = generateHandle(value, { transliterate, camelize });
   updateCallback?.(target, targetValue);
 
   return value;

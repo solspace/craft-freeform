@@ -1,3 +1,5 @@
+import type { GenericValue } from '@ff-client/types/properties';
+
 type Field = {
   uid: string;
   type: string;
@@ -32,6 +34,31 @@ export type Form = {
   pages: Page[];
 };
 
+export type FormGroup = {
+  uid: string;
+  label: string;
+  order: number;
+  siteId: string;
+  entries: Array<{
+    formUid: string;
+    order: number;
+  }>;
+};
+
+export type Favorite = {
+  uid: string;
+  label: string;
+  type: string;
+  metadata: GenericValue;
+};
+
+export type LimitedUser = {
+  uid: string;
+  name: string;
+  description: string;
+  metadata: GenericValue;
+};
+
 export type Submissions = {
   form: {
     uid: string;
@@ -41,7 +68,7 @@ export type Submissions = {
 };
 
 export type NotificationTemplate = {
-  uid: number | string;
+  uid: string;
   id: number | string;
   formUid?: string;
   name: string;
@@ -88,6 +115,9 @@ export type TemplateCollection = {
 
 export type FormImportData = {
   forms: Form[];
+  favorites: Favorite[];
+  formGroups: FormGroup[];
+  limitedUsers: LimitedUser[];
   formSubmissions: Submissions[];
   templates: TemplateCollection;
   integrations: Integration[];
@@ -104,13 +134,16 @@ export type StrategyCollection = {
 export type TemplateValues = {
   pdf: string[];
   wrapper: string[];
-  notification: Array<string | number>;
+  notification: string[];
   formatting: string[];
   success: string[];
 };
 
 export type ImportOptions = {
   forms: string[];
+  favorites: string[];
+  formGroups: string[];
+  limitedUsers: string[];
   formSubmissions: string[];
   templates: TemplateValues;
   integrations: string[];
@@ -118,3 +151,24 @@ export type ImportOptions = {
   settings: boolean;
   password?: string;
 };
+
+export const createImportOptions = (): ImportOptions => ({
+  forms: [],
+  favorites: [],
+  formGroups: [],
+  limitedUsers: [],
+  formSubmissions: [],
+  templates: {
+    pdf: [],
+    wrapper: [],
+    notification: [],
+    formatting: [],
+    success: [],
+  },
+  integrations: [],
+  strategy: {
+    forms: 'skip',
+    templates: 'skip',
+  },
+  settings: false,
+});

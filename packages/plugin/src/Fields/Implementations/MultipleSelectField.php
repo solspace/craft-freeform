@@ -119,7 +119,7 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
 
             $output .= Html::tag(
                 $optionAttributes->getTag('option'),
-                $this->translate('label', $option->getLabel()),
+                $this->translateOptionLabel($option),
                 $optionAttributes->toHtmlTagArray([
                     'i' => $index,
                     'index' => $index,

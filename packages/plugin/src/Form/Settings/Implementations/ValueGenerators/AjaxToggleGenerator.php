@@ -9,7 +9,7 @@ class AjaxToggleGenerator implements ValueGeneratorInterface
 {
     public function __construct(private SettingsService $settingsService) {}
 
-    public function generateValue(?object $referenceObject): bool
+    public function generateValue(?object $referenceObject, ?object $context): bool
     {
         return $this->settingsService->isAjaxEnabledByDefault();
     }

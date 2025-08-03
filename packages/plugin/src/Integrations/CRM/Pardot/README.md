@@ -60,21 +60,17 @@ Maps data to the following field types:
 - Enter your Pardot Business ID into the **Pardot Business Unit ID** field.
     - To find the Pardot Business Unit ID, go to *Marketing Setup*, in the *Quick Find* box, enter `Pardot`, and then select *Pardot Account Setup*. Copy the business unit ID for the Pardot instance you want to use.
 
-### 4. Finish the Integration
+### 4. Finish & Verify the Integration
 
 - Click the **Save** button.
-- You will be redirected to a Salesforce OAuth page to allow permissions.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click the **Authorize** button.
+- A popup will load a Salesforce OAuth page to allow permissions.
     - If not currently logged in, fill in your credentials.
     - Click **Allow** when asked for permissions.
-- You will then be redirected back to the **Freeform CRM Integration** page.
+- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
 
-### 5. Verify Authorization
-
-- After the integration is saved, it'll return you to the list of CRM integrations.
-- Click into the newly created integration.
-- Confirm that there is green circle with **Authorized** in the middle of the page.
-
-### 6. Configure the Form
+### 5. Configure the Form
 
 To use this integration on your form(s), you'll need to configure each form individually.
 

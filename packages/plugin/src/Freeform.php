@@ -178,6 +178,8 @@ class Freeform extends Plugin
     public const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
     public const PERMISSION_SUBMISSIONS_MANAGE = 'freeform-submissionsManage';
     public const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
+    public const PERMISSION_INTEGRATIONS_ACCESS = 'freeform-integrationsAccess';
+    public const PERMISSION_INTEGRATIONS_MANAGE = 'freeform-integrationsManage';
     public const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
     public const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
     public const PERMISSION_PDF_TEMPLATES_ACCESS = 'freeform-pdfTemplatesAccess';
@@ -653,5 +655,8 @@ class Freeform extends Plugin
     private function initBundles(): void
     {
         BundleLoader::loadBundles(__DIR__.'/Bundles');
+        \Craft::$container->setSingleton('craft\services\Sites');
+        \Craft::$container->setSingleton('Solspace\Freeform\Services\Form\FieldsService');
+        \Craft::$container->setSingleton('Solspace\Freeform\Services\Integrations\IntegrationsService');
     }
 }

@@ -15,10 +15,11 @@ import { Preview } from '../../common/preview/preview';
 import { Progress } from '../../common/progress/progress';
 import { useProgressEvent } from '../../common/progress/progress.hooks';
 import { Strategy } from '../../common/strategy/strategy';
-import type {
-  FormImportData,
-  ImportOptions,
-  StrategyCollection,
+import {
+  createImportOptions,
+  type FormImportData,
+  type ImportOptions,
+  type StrategyCollection,
 } from '../import.types';
 
 import { FileInput, FileWrapper } from './freeform-data.styles';
@@ -30,23 +31,7 @@ export const ImportFreeformData: React.FC = () => {
   const [errors, setErrors] = useState<string[]>();
   const password = useRef<string>(undefined);
 
-  const [options, setOptions] = useState<ImportOptions>({
-    forms: [],
-    formSubmissions: [],
-    templates: {
-      pdf: [],
-      wrapper: [],
-      notification: [],
-      formatting: [],
-      success: [],
-    },
-    integrations: [],
-    strategy: {
-      forms: 'skip',
-      templates: 'skip',
-    },
-    settings: false,
-  });
+  const [options, setOptions] = useState<ImportOptions>(createImportOptions());
 
   const progressEvent = useProgressEvent();
 

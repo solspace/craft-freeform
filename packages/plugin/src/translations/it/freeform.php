@@ -37,6 +37,7 @@ return [
     'archived' => 'archiviato',
     'Manage Form Groups' => 'Gestisci gruppi di moduli',
     'Form Group Manager' => 'Gestore gruppi di moduli',
+    'Form Groups' => 'Gruppi di moduli',
     'Display as cards' => 'Visualizza come schede',
     'Display as list' => 'Visualizza come elenco',
     'Chart' => 'Grafico',
@@ -273,6 +274,12 @@ return [
     'Select accent color' => 'Seleziona il colore accento',
     'Select theme' => 'Seleziona tema',
     'Light' => 'Chiaro',
+    'Remove File Confirmation Message' => 'Messaggio di conferma per la rimozione del file',
+    'Enter a custom message that will be shown when removing a file from the upload field.' => 'Inserisci un messaggio personalizzato da mostrare quando si rimuove un file dal campo di caricamento.',
+    'Use a Dialog element?' => 'Usare un elemento di dialogo?',
+    'If enabled, a dialog element will be used to confirm file removal.' => 'Se abilitato, verrà utilizzato un elemento di dialogo per confermare la rimozione del file.',
+    'Custom Confirm Dialog Selector' => 'Selettore personalizzato per il dialogo di conferma',
+    'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.' => 'Per usare un elemento di dialogo personalizzato, specifica qui il suo selettore CSS. Se lasciato vuoto, Freeform ne genererà uno automaticamente.',
     'Target field' => 'Campo di destinazione',
     'The field that should be matched and validated against.' => 'Il campo che deve essere confrontato e validato.',
     'Select a field' => 'Seleziona un campo',
@@ -860,8 +867,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Passa all’edizione Pro di Freeform per accedere alle notifiche di esportazione.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Esporta Dati Freeform (beta)',
-    'Import Freeform Data (beta)' => 'Importa Dati Freeform (beta)',
+    'Export Freeform Data' => 'Esporta Dati Freeform',
+    'Import Freeform Data' => 'Importa Dati Freeform',
     'Select Data to Export' => 'Seleziona Dati da Esportare',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Scegli quali dati Freeform includere nell’esportazione. Se esporti sottomissioni senza il modulo corrispondente, le sottomissioni non saranno incluse.',
     'Password-protect the Export File (optional)' => 'Proteggi con Password il File di Esportazione (opzionale)',
@@ -871,6 +878,9 @@ return [
     'Upload a Freeform Export zip file' => 'Carica un file zip di Esportazione Freeform',
     'Accepts `.zip` files. Only upload files that you trust.' => 'Accetta file `.zip`. Carica solo file di cui ti fidi.',
     'Please select the data you want to import.' => 'Seleziona i dati che desideri importare.',
+    'Wrapper' => 'Wrapper',
+    'Formatting' => 'Formattazione',
+    'Success' => 'Successo',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importa da Express Forms',
@@ -1309,7 +1319,11 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Aggiorna alla versione Freeform Pro per avere accesso alle integrazioni.',
     'What this integration will be called in the CP.' => 'Come verrà chiamata questa integrazione nel CP.',
     'The unique name used to identify this integration.' => 'Il nome univoco utilizzato per identificare questa integrazione.',
+    'Show Setup Instructions' => 'Mostra istruzioni di configurazione',
     'Authorized' => 'Autorizzato',
+    'Unauthorized' => 'Non autorizzato',
+    'Checking...' => 'Verifica in corso...',
+    'Authorize' => 'Autorizza',
     'Not able to authorize.' => 'Impossibile autorizzare.',
     'Click here to re-authorize' => 'Fai clic qui per autorizzare nuovamente',
     'Checking credentials...' => 'Verifica credenziali...',
@@ -1643,6 +1657,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Eliminazione dei vecchi invii di spam',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: eliminazione delle risorse non finalizzate',
     'Freeform: Sending Digest Email' => 'Freeform: invio di email riassuntiva',
+    'Freeform: Purging Old Notification Logs' => 'Freeform: Pulizia dei vecchi log di notifica',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Questo campo è obbligatorio',

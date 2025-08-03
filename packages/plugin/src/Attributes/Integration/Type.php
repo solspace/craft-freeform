@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Attributes\Integration;
 
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
@@ -28,7 +29,9 @@ class Type
         public string $name,
         public string $type,
         public ?string $version = null,
+        #[Ignore]
         public ?string $readme = null,
+        #[Ignore]
         public ?string $iconPath = null,
     ) {}
 
@@ -51,6 +54,15 @@ class Type
         return null;
     }
 
+    public function editionCheck(string $edition): bool
+    {
+        if (empty($this->editions)) {
+            return true;
+        }
+
+        return \in_array($edition, $this->editions, true);
+    }
+
     public function implements(string $interface): bool
     {
         return (new \ReflectionClass($this->class))->implementsInterface($interface);
@@ -66,7 +78,7 @@ class Type
         return null;
     }
 
-    #[Ignore]
+    #[Groups(['integration-edit'])]
     public function getIconSvg(): ?string
     {
         if ($this->iconPath && file_exists($this->iconPath)) {

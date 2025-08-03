@@ -21,6 +21,7 @@ import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';
 import { ExportFreeform } from './app/pages/import-export/export/views/freeform/freeform';
 import { ImportExpressForms } from './app/pages/import-export/import/express-forms/express-forms';
+import { ImportFormie } from './app/pages/import-export/import/formie3/formie';
 import { ImportFreeformData } from './app/pages/import-export/import/freeform-data/freeform-data';
 import { LimitedUsers } from './app/pages/limited-users/limited-users';
 import { LimitedUsersDetail } from './app/pages/limited-users/limited-users.detail';
@@ -84,6 +85,7 @@ root.render(
                               path="express-forms"
                               element={<ImportExpressForms />}
                             />
+                            <Route path="formie3" element={<ImportFormie />} />
                           </Route>
                           <Route path="export" element={<ImportExport />}>
                             <Route path="forms" element={<ExportFreeform />} />

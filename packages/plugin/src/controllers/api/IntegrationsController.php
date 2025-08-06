@@ -34,7 +34,8 @@ class IntegrationsController extends BaseApiController
         'spam-blocking' => 50,
         'payment-gateways' => 60,
         'webhooks' => 70,
-        'other' => 80,
+        'ai' => 80,
+        'other' => 90,
     ];
 
     public function __construct(

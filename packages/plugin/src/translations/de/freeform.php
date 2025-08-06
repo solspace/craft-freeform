@@ -1560,6 +1560,7 @@ return [
 
     // Integrations // AI
     'ai' => 'KI',
+    'AI' => 'KI',
     'Enter your API key here.' => 'Geben Sie hier Ihren API-Schlüssel ein.',
     'Model' => 'Modell',
     'The OpenAI model to use for AI processing.' => 'Das OpenAI-Modell, das für die KI-Verarbeitung verwendet wird.',

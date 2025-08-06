@@ -1560,6 +1560,7 @@ return [
 
     // Integrations // AI
     'ai' => 'AI',
+    'AI' => 'AI',
     'Enter your API key here.' => 'Voer hier je API-sleutel in.',
     'Model' => 'Model',
     'The OpenAI model to use for AI processing.' => 'Het OpenAI-model dat wordt gebruikt voor AI-verwerking.',

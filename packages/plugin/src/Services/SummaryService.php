@@ -102,6 +102,7 @@ class SummaryService extends Component
         $general->integrations->elements = $this->getIntegrations(Type::TYPE_ELEMENTS);
         $general->integrations->captchas = $this->getIntegrations(Type::TYPE_CAPTCHAS);
         $general->integrations->single = $this->getIntegrations(Type::TYPE_SINGLE);
+        $general->integrations->ai = $this->getIntegrations(Type::TYPE_AI);
         $general->integrations->other = $this->getIntegrations(Type::TYPE_OTHER);
 
         $general->payments->single = $composer->paymentsSingle;

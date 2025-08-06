@@ -11,5 +11,6 @@ class Integrations
     public array $elements = [];
     public array $captchas = [];
     public array $single = [];
+    public array $ai = [];
     public array $other = [];
 }

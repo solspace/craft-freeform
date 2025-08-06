@@ -402,6 +402,20 @@ return [
     'Email Notification Template' => 'Modèle de notification par e-mail',
     'Select an email notification template.' => 'Sélectionnez un modèle de notification par e-mail.',
     'Remove translation' => 'Supprimer la traduction',
+    'AI Configuration' => 'Configuration IA',
+    'AI Integration' => 'Intégration IA',
+    'Select an AI integration to use for this field.' => 'Sélectionnez une intégration IA à utiliser pour ce champ.',
+    'System Prompt' => 'Invite système',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Instructions pour l’IA sur la manière de traiter les données du formulaire. Cela peut être utilisé pour la catégorisation, le résumé, l’analyse de sentiment, la génération de contenu ou toute autre tâche IA. Soyez précis sur le format de sortie souhaité.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'Ex.: Analysez les données fournies et classez cette soumission dans l’une des catégories suivantes: Pre-sales Questions, Support Issue, Account Help. Répondez uniquement avec le nom de la catégorie.',
+    'Fields to Process' => 'Champs à traiter',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Sélectionnez les champs du formulaire à envoyer à l’IA pour traitement. Utilisez la liste déroulante ou tapez @ pour rechercher des champs.',
+    'Include Field Labels' => 'Inclure les étiquettes de champs',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'Si activé, les étiquettes de champs seront incluses dans le contenu envoyé à l’IA (par ex. "Name: John Doe" au lieu de simplement "John Doe").',
+    'Max Tokens Override' => 'Remplacer le nombre max. de jetons',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laissez vide pour utiliser les paramètres de l’intégration. Remplacez uniquement si vous avez besoin d’un nombre différent de jetons pour ce champ.',
+    'Temperature Override' => 'Remplacer la température',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laissez vide pour utiliser les paramètres de l’intégration. Remplacez uniquement si vous avez besoin d’une température différente pour ce champ. Entrez une valeur entre 0.0 et 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
@@ -1546,6 +1560,18 @@ return [
     "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data." => "Choisissez comment les nouvelles lignes de données doivent être insérées dans le tableau Google. 'Insérer une nouvelle ligne' ajoutera une nouvelle ligne à la feuille de calcul directement avant la première ligne vide. 'Remplacer la prochaine ligne vide' trouvera la première ligne vide et y écrira le nouveau contenu. Aucune option n'écrasera les données existantes.",
     'Insert New Row' => 'Insérer une nouvelle ligne',
     'Replace Next Empty Row' => 'Remplacer la prochaine ligne vide',
+
+    // Integrations // AI
+    'ai' => 'IA',
+    'AI' => 'IA',
+    'Enter your API key here.' => 'Entrez votre clé API ici.',
+    'Model' => 'Modèle',
+    'The OpenAI model to use for AI processing.' => 'Le modèle OpenAI à utiliser pour le traitement IA.',
+    'The Google Gemini model to use for AI processing.' => 'Le modèle Google Gemini à utiliser pour le traitement IA.',
+    'Max Tokens' => 'Jetons max.',
+    'Maximum number of tokens to generate.' => 'Nombre maximal de jetons à générer.',
+    'Temperature' => 'Température',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Contrôle l’aléatoire de la réponse (0.0 = déterministe, 1.0 = très aléatoire). Entrez une valeur entre 0.0 et 1.0.',
 
     // Element Types
     'Freeform Form' => 'Formulaire Freeform',

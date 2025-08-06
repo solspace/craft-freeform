@@ -2,7 +2,9 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
-class StringHelper
+use craft\helpers\StringHelper as CraftStringHelper;
+
+class StringHelper extends CraftStringHelper
 {
     public static function incrementStringWithNumber(string $string, bool $hasSpacedNumber = false): string
     {

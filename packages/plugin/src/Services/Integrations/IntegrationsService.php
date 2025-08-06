@@ -49,6 +49,10 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
+    private array $cacheByUid = [];
+    private array $cacheById = [];
+    private array $cacheByHandle = [];
+
     public function __construct(
         $config,
         protected IntegrationClientProvider $clientProvider,
@@ -65,6 +69,7 @@ class IntegrationsService extends BaseService
     public function getAllIntegrationTypes(): array
     {
         static $types;
+
         if (null === $types) {
             $event = new RegisterIntegrationTypesEvent();
             Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
@@ -124,32 +129,53 @@ class IntegrationsService extends BaseService
 
     public function getById(int $id): ?IntegrationModel
     {
+        if (!empty($this->cacheById[$id])) {
+            return $this->cacheById[$id];
+        }
+
         $result = $this->getQuery()->where(['id' => $id])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getByUid(string $uid): ?IntegrationModel
     {
+        if (!empty($this->cacheByUid[$uid])) {
+            return $this->cacheByUid[$uid];
+        }
+
         $result = $this->getQuery()->where(['uid' => $uid])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getByHandle(string $handle): ?IntegrationModel
     {
+        if (!empty($this->cacheByHandle[$handle])) {
+            return $this->cacheByHandle[$handle];
+        }
+
         $result = $this->getQuery()->where(['handle' => $handle])->one();
         if (!$result) {
             return null;
         }
 
-        return $this->createIntegrationModel($result);
+        $model = $this->createIntegrationModel($result);
+        $this->cacheIntegrationModel($model);
+
+        return $model;
     }
 
     public function getIntegrationObjectById(int $id): IntegrationInterface
@@ -174,6 +200,17 @@ class IntegrationsService extends BaseService
         throw new IntegrationException(
             Freeform::t('Integration with UID {uid} not found', ['uid' => $uid])
         );
+    }
+
+    public function setConnectionEstablished(IntegrationInterface $integration): void
+    {
+        $record = IntegrationRecord::findOne(['id' => $integration->getId()]);
+        if (!$record) {
+            return;
+        }
+
+        $record->connectionEstablished = true;
+        $record->save();
     }
 
     public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
@@ -206,6 +243,8 @@ class IntegrationsService extends BaseService
         }
 
         $record->enabled = $model->enabled;
+        $record->legacy = $model->legacy;
+        $record->connectionEstablished = $model->connectionEstablished;
         $record->name = $model->name;
         $record->handle = $model->handle;
         $record->type = $model->type;
@@ -231,6 +270,8 @@ class IntegrationsService extends BaseService
                 if ($triggerEvents) {
                     $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $integration, $isNew));
                 }
+
+                $this->cacheIntegrationModel($model);
 
                 return true;
             } catch (\Exception $e) {
@@ -270,6 +311,8 @@ class IntegrationsService extends BaseService
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
 
+            $this->clearIntegrationModelCache();
+
             return (bool) $affectedRows;
         } catch (\Exception $exception) {
             $transaction?->rollBack();
@@ -286,7 +329,7 @@ class IntegrationsService extends BaseService
             return;
         }
 
-        $properties = $this->propertyProvider->getEditableProperties($model->class);
+        $properties = $this->propertyProvider->getEditableProperties($model->class, $model);
         foreach ($properties as $property) {
             if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
                 continue;
@@ -302,7 +345,7 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function parsePostedModelData(IntegrationModel $model): void
+    public function parsePostedModelData(IntegrationModel $model, ?array $modifiedValues = null): void
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
 
@@ -310,6 +353,10 @@ class IntegrationsService extends BaseService
         foreach ($editableProperties as $property) {
             $handle = $property->handle;
             $value = $model->metadata[$handle] ?? null;
+
+            if (null !== $modifiedValues && !\in_array($handle, $modifiedValues, true)) {
+                continue;
+            }
 
             $isEncrypted = $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED);
             $isEnvVariable = StringHelper::isEnvVariable($value);
@@ -347,7 +394,7 @@ class IntegrationsService extends BaseService
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(
-                    $model->class.$handle,
+                    'metadata.'.$handle,
                     Freeform::t('{key} is required', ['key' => $property->label])
                 );
 
@@ -482,14 +529,7 @@ class IntegrationsService extends BaseService
 
             $eligibleIntegrationObjects = array_filter(
                 $integrationObjects,
-                function (IntegrationInterface $integration) use ($freeformEdition) {
-                    $editions = $integration->getTypeDefinition()->editions;
-                    if (!$editions) {
-                        return true;
-                    }
-
-                    return \in_array($freeformEdition, $editions, true);
-                }
+                fn (IntegrationInterface $integration) => $integration->getTypeDefinition()->editionCheck($freeformEdition),
             );
 
             $cache[$key] = $eligibleIntegrationObjects;
@@ -501,6 +541,7 @@ class IntegrationsService extends BaseService
     public function processIntegrationJob(int $formId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
+        $edition = $freeform->edition;
 
         $form = $freeform->forms->getFormById($formId);
         if (!$form) {
@@ -513,6 +554,10 @@ class IntegrationsService extends BaseService
         $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             if (!$integration instanceof PushableInterface) {
+                continue;
+            }
+
+            if (!$integration->getTypeDefinition()->editionCheck($edition)) {
                 continue;
             }
 
@@ -555,6 +600,8 @@ class IntegrationsService extends BaseService
                     'integration.id',
                     'integration.uid',
                     'integration.enabled',
+                    'integration.legacy',
+                    'integration.connectionEstablished',
                     'integration.name',
                     'integration.handle',
                     'integration.type',
@@ -576,6 +623,20 @@ class IntegrationsService extends BaseService
     protected function createIntegrationModel(array $data): IntegrationModel
     {
         return new IntegrationModel($data);
+    }
+
+    private function cacheIntegrationModel(IntegrationModel $model): void
+    {
+        $this->cacheById[$model->id] = $model;
+        $this->cacheByUid[$model->uid] = $model;
+        $this->cacheByHandle[$model->handle] = $model;
+    }
+
+    private function clearIntegrationModelCache(): void
+    {
+        $this->cacheById = [];
+        $this->cacheByUid = [];
+        $this->cacheByHandle = [];
     }
 
     private function getCacheKey(?Form $form, ?string $type, ?bool $enabled, ?callable $filter = null): string

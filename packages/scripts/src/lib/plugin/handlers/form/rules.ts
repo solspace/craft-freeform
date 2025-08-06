@@ -21,6 +21,8 @@ export const enum Operator {
   IsNotOneOf = 'isNotOneOf',
 }
 
+type FormSnapshot = Record<string, string>;
+
 type FieldValue = string | string[] | number | boolean;
 
 type RulesData = {
@@ -150,9 +152,10 @@ class RuleHandler implements FreeformHandler {
       });
     });
 
-    // Trigger all rules on load
-    rules.fields.forEach((rule) => this.applyRule(rule));
-    rules.buttons.forEach((rule) => this.applyRule(rule));
+    triggerUntilStateSettled(this.form, () => {
+      rules.fields.forEach((rule) => this.applyRule(rule));
+      rules.buttons.forEach((rule) => this.applyRule(rule));
+    });
   };
 
   applyRule = (rule: FieldRule | ButtonRule) => {
@@ -335,3 +338,28 @@ class RuleHandler implements FreeformHandler {
 }
 
 export default RuleHandler;
+
+const triggerUntilStateSettled = (form: HTMLFormElement, callback: () => void) => {
+  let prevSnapshot: FormSnapshot;
+  let currSnapshot: FormSnapshot = {};
+  let iterations = 0;
+  const maxIterations = 10;
+
+  do {
+    prevSnapshot = { ...currSnapshot };
+    callback();
+
+    currSnapshot = getVisibilitySnapshot(form);
+    iterations++;
+  } while (JSON.stringify(prevSnapshot) !== JSON.stringify(currSnapshot) && iterations < maxIterations);
+};
+
+const getVisibilitySnapshot = (form: HTMLFormElement): FormSnapshot => {
+  const snapshot: FormSnapshot = {};
+  form.querySelectorAll('[data-field-container], [data-button-container]').forEach((el) => {
+    const key = el.getAttribute('data-field-container') || el.getAttribute('data-button-container');
+    snapshot[key!] = (el as HTMLElement).style.display || '';
+  });
+
+  return snapshot;
+};

@@ -37,6 +37,7 @@ return [
     'archived' => 'archiviert',
     'Manage Form Groups' => 'Formulargruppen verwalten',
     'Form Group Manager' => 'Formulargruppen-Manager',
+    'Form Groups' => 'Formulargruppen',
     'Display as cards' => 'Als Karten anzeigen',
     'Display as list' => 'Als Liste anzeigen',
     'Chart' => 'Diagramm',
@@ -273,6 +274,12 @@ return [
     'Select accent color' => 'Akzentfarbe auswählen',
     'Select theme' => 'Thema auswählen',
     'Light' => 'Hell',
+    'Remove File Confirmation Message' => 'Bestätigungsnachricht zum Entfernen der Datei',
+    'Enter a custom message that will be shown when removing a file from the upload field.' => 'Geben Sie eine benutzerdefinierte Nachricht ein, die beim Entfernen einer Datei aus dem Upload-Feld angezeigt wird.',
+    'Use a Dialog element?' => 'Dialogelement verwenden?',
+    'If enabled, a dialog element will be used to confirm file removal.' => 'Wenn aktiviert, wird ein Dialogelement zur Bestätigung der Dateientfernung verwendet.',
+    'Custom Confirm Dialog Selector' => 'Benutzerdefinierter Dialog-Selector',
+    'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.' => 'Um ein benutzerdefiniertes Dialogelement zu verwenden, geben Sie hier dessen CSS-Selector an. Wenn leer, erzeugt Freeform automatisch ein Dialogelement.',
     'Target field' => 'Zielfeld',
     'The field that should be matched and validated against.' => 'Das Feld, das abgeglichen und validiert werden soll.',
     'Select a field' => 'Ein Feld auswählen',
@@ -395,6 +402,20 @@ return [
     'Email Notification Template' => 'Vorlage für E-Mail-Benachrichtigung',
     'Select an email notification template.' => 'Wählen Sie eine Vorlage für E-Mail-Benachrichtigungen aus.',
     'Remove translation' => 'Übersetzung entfernen',
+    'AI Configuration' => 'KI-Konfiguration',
+    'AI Integration' => 'KI-Integration',
+    'Select an AI integration to use for this field.' => 'Wählen Sie eine KI-Integration für dieses Feld aus.',
+    'System Prompt' => 'System-Prompt',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Anweisungen für die KI, wie die Formulardaten verarbeitet werden sollen. Sie können dies für Kategorisierung, Zusammenfassung, Sentiment-Analyse, Inhaltserstellung oder andere KI-Aufgaben verwenden. Geben Sie das gewünschte Ausgabeformat genau an.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'Beispiel: Analysieren Sie die übermittelten Felddaten und ordnen Sie diese Einsendung einer der folgenden Kategorien zu: Pre-sales Questions, Support Issue, Account Help. Antworten Sie nur mit dem Kategorienamen.',
+    'Fields to Process' => 'Zu verarbeitende Felder',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Wählen Sie aus, welche Formularfelder an die KI zur Verarbeitung gesendet werden sollen. Verwenden Sie das Dropdown-Menü oder geben Sie @ ein, um Felder zu suchen.',
+    'Include Field Labels' => 'Feldbezeichnungen einschließen',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'Wenn aktiviert, werden Feldbezeichnungen in den an die KI gesendeten Inhalt einbezogen (z.B. "Name: John Doe" statt nur "John Doe").',
+    'Max Tokens Override' => 'Maximale Tokens überschreiben',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Leer lassen, um die Integrationseinstellungen zu verwenden. Nur überschreiben, wenn Sie eine andere Token-Grenze für dieses Feld benötigen.',
+    'Temperature Override' => 'Temperatur überschreiben',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Leer lassen, um die Integrationseinstellungen zu verwenden. Nur überschreiben, wenn Sie eine andere Temperatur für dieses Feld benötigen. Geben Sie einen Wert zwischen 0.0 und 1.0 ein.',
 
     // Form Builder // Notifications
     'Notifications' => 'Benachrichtigungen',
@@ -860,8 +881,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade auf die Pro-Edition von Freeform, um auf Exportbenachrichtigungen zuzugreifen.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Freeform-Daten exportieren (Beta)',
-    'Import Freeform Data (beta)' => 'Freeform-Daten importieren (Beta)',
+    'Export Freeform Data' => 'Freeform-Daten exportieren',
+    'Import Freeform Data' => 'Freeform-Daten importieren',
     'Select Data to Export' => 'Daten zum Export auswählen',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Wählen Sie aus, welche Freeform-Daten im Export enthalten sein sollen. Wenn Sie Einreichungen ohne das entsprechende Formular exportieren, werden die Einreichungen nicht enthalten sein.',
     'Password-protect the Export File (optional)' => 'Exportdatei mit Passwort schützen (optional)',
@@ -871,6 +892,9 @@ return [
     'Upload a Freeform Export zip file' => 'Laden Sie eine Freeform-Export-ZIP-Datei hoch',
     'Accepts `.zip` files. Only upload files that you trust.' => 'Akzeptiert `.zip`-Dateien. Laden Sie nur Dateien hoch, denen Sie vertrauen.',
     'Please select the data you want to import.' => 'Bitte wählen Sie die Daten aus, die Sie importieren möchten.',
+    'Wrapper' => 'Wrapper',
+    'Formatting' => 'Formatierung',
+    'Success' => 'Erfolg',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Von Express Forms importieren',
@@ -1309,7 +1333,11 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade auf die Freeform Pro Edition, um Zugriff auf Integrationen zu erhalten.',
     'What this integration will be called in the CP.' => 'Wie diese Integration im Kontrollpanel genannt wird.',
     'The unique name used to identify this integration.' => 'Der eindeutige Name, der zur Identifizierung dieser Integration verwendet wird.',
+    'Show Setup Instructions' => 'Einrichtungsanleitung anzeigen',
     'Authorized' => 'Autorisierte',
+    'Unauthorized' => 'Nicht autorisiert',
+    'Checking...' => 'Überprüfung läuft...',
+    'Authorize' => 'Autorisieren',
     'Not able to authorize.' => 'Kann nicht autorisiert werden.',
     'Click here to re-authorize' => 'Hier klicken, um erneut zu autorisieren',
     'Checking credentials...' => 'Anmeldedaten werden überprüft...',
@@ -1530,6 +1558,18 @@ return [
     'Insert New Row' => 'Neue Zeile einfügen',
     'Replace Next Empty Row' => 'Nächste leere Zeile ersetzen',
 
+    // Integrations // AI
+    'ai' => 'KI',
+    'AI' => 'KI',
+    'Enter your API key here.' => 'Geben Sie hier Ihren API-Schlüssel ein.',
+    'Model' => 'Modell',
+    'The OpenAI model to use for AI processing.' => 'Das OpenAI-Modell, das für die KI-Verarbeitung verwendet wird.',
+    'The Google Gemini model to use for AI processing.' => 'Das Google Gemini-Modell, das für die KI-Verarbeitung verwendet wird.',
+    'Max Tokens' => 'Max. Tokens',
+    'Maximum number of tokens to generate.' => 'Maximale Anzahl an zu generierenden Tokens.',
+    'Temperature' => 'Temperatur',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Steuert die Zufälligkeit der Antwort (0.0 = deterministisch, 1.0 = sehr zufällig). Geben Sie einen Wert zwischen 0.0 und 1.0 ein.',
+
     // Element Types
     'Freeform Form' => 'Freeform-Formular',
     'Select a form' => 'Formular auswählen',
@@ -1643,6 +1683,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Alte Spam-Einsendungen löschen',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Unfertige Dateien löschen',
     'Freeform: Sending Digest Email' => 'Freeform: Sende Digest-E-Mail',
+    'Freeform: Purging Old Notification Logs' => 'Freeform: Alte Benachrichtigungsprotokolle löschen',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Dieses Feld ist erforderlich',

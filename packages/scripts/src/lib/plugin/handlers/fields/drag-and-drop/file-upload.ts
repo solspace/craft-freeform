@@ -5,6 +5,7 @@ import { CancelToken } from '@lib/plugin/helpers/ajax/ajax.classes';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import { filesize } from 'filesize';
 
+import { askForConfirmation } from './confirm';
 import { addFieldErrors } from './error-handling';
 import { createInput, createPreviewContainer } from './preview';
 import type { FieldError, FileMetadata } from './types';
@@ -49,7 +50,7 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
                 .post(`${baseUrl}/files/delete`, deleteFormData)
                 .then(() => {
                   previewZone.removeChild(previewContainer);
-                  dispatchChange(container);
+                  dispatchChange(container, freeform);
                 })
                 .catch((error) => {
                   alert(error.message);
@@ -62,7 +63,7 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
           previewZone.appendChild(previewContainer);
         });
 
-        dispatchChange(container);
+        dispatchChange(container, freeform);
       })
       .catch(console.error);
   }
@@ -100,7 +101,7 @@ export const handleFileUpload = (
 
   previewZone.appendChild(previewContainer);
   removeButton.addEventListener('click', handleCancelRequest);
-  dispatchChange(container);
+  dispatchChange(container, freeform);
 
   const formData = new FormData(freeform.form as HTMLFormElement);
   formData.delete('action');
@@ -133,13 +134,14 @@ export const handleFileUpload = (
       deleteFormData.append('id', response.data.id);
 
       removeButton.removeEventListener('click', handleCancelRequest);
-      removeButton.addEventListener('click', () => {
-        if (confirm('Are you sure?')) {
+      removeButton.addEventListener('click', async () => {
+        const isConfirmed = await askForConfirmation(container);
+        if (isConfirmed) {
           ajax
             .post(`${baseUrl}/files/delete`, deleteFormData)
             .then(() => {
               previewZone.removeChild(previewContainer);
-              dispatchChange(container);
+              dispatchChange(container, freeform);
             })
             .catch((error) => {
               alert(error.message);
@@ -153,26 +155,30 @@ export const handleFileUpload = (
     .catch((error) => {
       if (error.message === 'Request aborted') {
         previewZone.removeChild(previewContainer);
-        dispatchChange(container);
+        dispatchChange(container, freeform);
         return;
       }
 
       removeButton.removeEventListener('click', handleCancelRequest);
       removeButton.addEventListener('click', () => {
         previewZone.removeChild(previewContainer);
-        dispatchChange(container);
+        dispatchChange(container, freeform);
       });
 
+      let messages: string[];
       if (error?.response?.data?.type === ErrorTypes.FieldError) {
-        const { messages } = error?.response?.data as FieldError;
+        const { messages: errorMessages } = error?.response?.data as FieldError;
+        messages = errorMessages;
 
-        addFieldErrors(container, previewContainer, messages, freeform);
+        addFieldErrors(container, previewContainer, errorMessages, freeform);
       } else {
         console.warn(error);
       }
+
+      freeform._dispatchEvent(events.dragAndDrop.afterErrors, { container, messages }, container);
     });
 };
 
-const dispatchChange = (container: HTMLElement) => {
-  dispatchCustomEvent(events.dragAndDrop.onChange, { container }, container);
+const dispatchChange = (container: HTMLElement, freeform: Freeform) => {
+  dispatchCustomEvent(events.dragAndDrop.onChange, { freeform, container }, container);
 };

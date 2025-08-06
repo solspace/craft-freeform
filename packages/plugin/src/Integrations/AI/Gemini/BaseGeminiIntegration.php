@@ -19,7 +19,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
-        instructions: 'Enter your Google AI API key here.',
+        instructions: 'Enter your API key here.',
     )]
     protected string $apiKey = '';
 

@@ -18,6 +18,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
+use Solspace\Freeform\Form\Form;
 use yii\di\Container;
 
 #[CoversClass(PropertyProvider::class)]
@@ -235,7 +236,7 @@ class PropertyProviderTest extends TestCase
 
 class TestTransformer implements TransformerInterface
 {
-    public function transform(mixed $value): string
+    public function transform(mixed $value, ?Form $form = null): string
     {
         return implode(',', $value);
     }

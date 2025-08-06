@@ -19,6 +19,8 @@ class FreeformSerializer extends Serializer
 {
     public function __construct()
     {
+        AnnotationReader::addGlobalIgnoredName('mixin');
+
         $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
 
         $metadataAwareNameConverter = new MetadataAwareNameConverter($classMetadataFactory);

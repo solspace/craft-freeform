@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Attributes;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Page\Buttons\ButtonAttributesCollection;
 
 class PageButtonAttributesTransformer implements TransformerInterface
 {
-    public function transform($value): ButtonAttributesCollection
+    public function transform($value, ?Form $form = null): ButtonAttributesCollection
     {
         return new ButtonAttributesCollection($value ?? []);
     }

@@ -18,9 +18,10 @@ use craft\db\ActiveRecord;
 /**
  * Class Freeform_NotificationRecord.
  *
- * @property int    $id
- * @property string $type
- * @property string $name
+ * @property int       $id
+ * @property string    $type
+ * @property \DateTime $digestDate
+ * @property string    $name
  */
 class NotificationLogRecord extends ActiveRecord
 {
@@ -32,5 +33,13 @@ class NotificationLogRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function rules(): array
+    {
+        return [
+            [['type', 'digestDate'], 'required'],
+            ['digestDate', 'date', 'format' => 'php:Y-m-d'],
+        ];
     }
 }

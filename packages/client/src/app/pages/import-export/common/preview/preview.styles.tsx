@@ -121,6 +121,14 @@ export const FormIcon: React.FC = () => {
   return <Icon className="fa-duotone fa-clipboard-list" />;
 };
 
+export const FormGroupIcon: React.FC = () => {
+  return <Icon className="fa-light fa-folder-bookmark" />;
+};
+
+export const FavoritesIcon: React.FC = () => {
+  return <Icon className="fa-light fa-file-heart" />;
+};
+
 export const SubmissionIcon: React.FC = () => {
   return <Icon className="fa-duotone fa-inbox-in" />;
 };

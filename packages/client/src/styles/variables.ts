@@ -27,6 +27,7 @@ export const shadows = {
   top: 'inset 0 1px 0 0 rgb(154 165 177 / 25%)',
   left: 'inset 1px 0 0 0 rgb(154 165 177 / 25%)',
   right: 'inset -1px 0 0 0 rgb(154 165 177 / 25%)',
+  autosuggest: '0 1px 5px -1px rgba(31,41,51,.2)',
   container:
     '0 0 0 1px rgba(31, 41, 51, 0.1), 0 5px 20px rgba(31, 41, 51, 0.25)',
 };
@@ -42,6 +43,7 @@ export const beziers = {
 
 export const colors = {
   hairline: 'rgba(51,64,77,.1)',
+  hr: 'rgb(from var(--gray-800) r g b/10%)',
   inputBorder: 'rgba(96,125,159,0.25)',
   barelyVisible: 'rgb(154 165 177 / 75%)',
   link: '#1f5fea',

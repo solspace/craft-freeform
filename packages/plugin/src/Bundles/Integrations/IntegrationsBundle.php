@@ -36,7 +36,7 @@ class IntegrationsBundle extends FeatureBundle
         BundleLoader::loadBundles($path);
     }
 
-    public function processValue(ProcessValueEvent $event)
+    public function processValue(ProcessValueEvent $event): void
     {
         $integrationField = $event->getIntegrationField();
         $freeformField = $event->getFreeformField();

@@ -36,6 +36,7 @@ class BlockKeywords extends SpamBlockingIntegration
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',
         instructions: 'The message shown to users when blocked keywords are submitted. Can use `{value}` and `{keyword}` variables.',

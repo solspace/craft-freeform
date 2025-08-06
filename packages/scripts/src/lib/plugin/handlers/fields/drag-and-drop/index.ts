@@ -3,9 +3,11 @@ import events from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { FreeformHandler } from 'types/form';
 
+import { clearFormLock, handleFormLock } from './error-handling';
 import { handleFileUpload, loadExistingUploads } from './file-upload';
 import { showError } from './messaging';
 import type { ChangeEvent } from './types';
+import type { FreeformEventWithContainer } from './types';
 
 class DragAndDropFile implements FreeformHandler {
   freeform;
@@ -30,6 +32,10 @@ class DragAndDropFile implements FreeformHandler {
       fileUpload.addEventListener('drop', this.handleDrop(fileUpload));
       fileUpload.addEventListener('click', this.handleClick(fileUpload));
       fileUpload.addEventListener(events.dragAndDrop.onChange, this.handleChanges);
+      fileUpload.addEventListener(events.dragAndDrop.onChange, (event) => {
+        clearFormLock(event as FreeformEventWithContainer, this.freeform);
+      });
+      fileUpload.addEventListener(events.dragAndDrop.afterErrors, handleFormLock);
 
       loadExistingUploads(fileUpload, this.freeform);
       form.addEventListener(events.form.reset, this.handleReset(fileUpload));

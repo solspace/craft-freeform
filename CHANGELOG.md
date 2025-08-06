@@ -1,5 +1,44 @@
 # Solspace Freeform Changelog
 
+## 5.11.8 - 2025-07-31
+
+### Added
+- Added support for customizing the delete confirmation message for File Upload Drag & Drop fields, including the option to use a custom confirmation dialog.
+- Added a `stopSubmissionsAfter` alias on the `Form` object for use in template conditionals to check if a form has passed its close date.
+
+### Fixed
+- Fixed a race condition that could cause Digest email notifications to send multiple duplicates.
+- Fixed a bug where an `enableSubmit` error appeared in the browser console on forms using File Upload Drag & Drop fields.
+- Fixed a bug where a recent migration could trigger a duplicate key name error.
+- Fixed a bug that caused an error when uninstalling Freeform on PostgreSQL.
+
+## 5.11.7 - 2025-07-23
+
+### Added
+- Added support for exporting and importing form groups, favorite fields, and limited users in the Import/Export utility.
+
+### Changed
+- Trailing spaces in field option values are now automatically trimmed to avoid unexpected issues.
+- Improved Table field text inputs in the CP Submissions edit page to display overflow content more clearly.
+- The form submit button is now locked when an invalid file type is added to a File Upload Drag & Drop field, and remains locked until the file is removed.
+
+### Fixed
+- Fixed a bug where certain migrations were incompatible with PostgreSQL.
+- Fixed an issue where pressing `Enter` on the keyboard didn't consistently trigger the submit button, and could navigate back if a "Back" button was present.
+
+## 5.11.6 - 2025-07-18
+
+### Changed
+- Refined the integration settings page and OAuth flow for a smoother setup experience and comaptibility with `sameSite` strict session cookies.
+- Improved performance of submission queries across the control panel and front end.
+- Updated the Archived Forms list to support permanent deletion of forms.
+
+### Fixed
+- Fixed an issue where nested conditional rules did not trigger on initial load in the Submissions detail view.
+- Fixed a translation issue affecting Multi-Select field options.
+- Fixed a bug that prevented the default Success template from being properly assigned to new forms.
+- Fixed a potential issue that could occur when re-importing database-based notification templates.
+
 ## 5.11.5 - 2025-07-07
 
 ### Added
@@ -1718,6 +1757,14 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.28 - 2025-07-25
+
+### Added
+- Verified support for Craft 4.16.x.
+
+### Changed
+- Updated Axios package version.
 
 ## 4.1.27 - 2025-06-30
 

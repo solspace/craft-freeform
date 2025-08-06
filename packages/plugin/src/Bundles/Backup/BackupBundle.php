@@ -24,13 +24,13 @@ class BackupBundle extends FeatureBundle
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['freeform/api/import/prepare'] = 'freeform/backup-import/prepare-import';
                 $event->rules['freeform/api/import'] = 'freeform/backup-import/import';
-                $event->rules['freeform/import/forms'] = 'freeform/forms';
-                $event->rules['freeform/import/express-forms'] = 'freeform/forms';
+                $event->rules['freeform/import/forms'] = 'freeform/app';
+                $event->rules['freeform/import/express-forms'] = 'freeform/app';
                 $event->rules['freeform/import/express-forms/data'] = 'freeform/backup-import/express-forms';
                 $event->rules['freeform/import/formie3'] = 'freeform/forms';
                 $event->rules['freeform/import/formie3/data'] = 'freeform/backup-import/formie3';
 
-                $event->rules['freeform/export/forms'] = 'freeform/forms';
+                $event->rules['freeform/export/forms'] = 'freeform/app';
                 $event->rules['freeform/export/forms/data'] = 'freeform/backup-export/freeform';
                 $event->rules['freeform/export/forms/init'] = 'freeform/backup-export/export-init';
 

@@ -27,6 +27,7 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'API Token',
         instructions: 'Enter your API Token here.',
@@ -36,6 +37,7 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'API URL',
         instructions: 'Enter your API specific URL (e.g. "https://api.na1.insightly.com").',

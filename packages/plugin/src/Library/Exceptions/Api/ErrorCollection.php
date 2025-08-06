@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Exceptions\Api;
 
 use yii\db\ActiveRecord;
 
-class ErrorCollection
+class ErrorCollection implements ApiErrorCollectionInterface
 {
     private array $errors = [];
 

@@ -6,7 +6,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 
 class EmailValueGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(?object $referenceObject): mixed
+    public function generateValue(?object $referenceObject, ?object $context): mixed
     {
         $currentUser = \Craft::$app->getUser()->getIdentity();
         if (!$currentUser) {

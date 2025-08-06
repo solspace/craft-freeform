@@ -106,6 +106,16 @@ class PurgeController extends Controller
         return ExitCode::OK;
     }
 
+    public function actionNotificationLogs(): int
+    {
+        $string = $this->ansiFormat('days old...', Console::FG_BLUE);
+        $this->stdout("Purging notification logs which are at least 8 {$string}\n\n", Console::FG_BLUE);
+
+        Freeform::getInstance()->digest->purgeNotificationLogs();
+
+        return ExitCode::OK;
+    }
+
     private function echoSubmissionCount(int $count)
     {
         $count = $this->ansiFormat($count, Console::FG_YELLOW);

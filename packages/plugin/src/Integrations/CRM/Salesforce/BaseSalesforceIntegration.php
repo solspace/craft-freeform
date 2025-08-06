@@ -16,6 +16,7 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -51,16 +52,18 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected bool $useCustomUrl = false;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[VisibilityFilter('Boolean(values.useCustomUrl)')]
     #[Input\Text(
         label: 'Custom URL',
-        instructions: 'Enter the custom URL, e.g. <code>https:&#47;&#47;mycompany.develop.my.salesforce.com</code>',
+        instructions: 'Enter the custom URL, e.g. `https://mycompany.develop.my.salesforce.com`',
         order: 2,
     )]
     protected ?string $customUrl = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com" or "mycompany.my.salesforce.com").',
+        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to `test.salesforce.com` instead of `login.salesforce.com` or `mycompany.my.salesforce.com`).',
         order: 3,
     )]
     protected bool $sandboxMode = false;

@@ -9,10 +9,13 @@ use Solspace\ExpressForms\ExpressForms;
 use Solspace\ExpressForms\records\FormRecord;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\BatchProcessing\ElementQueryProcessor;
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\PageCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
@@ -126,7 +129,7 @@ class ExpressFormsExporter extends BaseExporter
             $general->handle = $exported->handle;
             $general->description = $form['description'] ?? '';
             $general->submissionTitle = $form['submissionTitle'] ?? '{{ dateCreated|date("Y-m-d H:i:s") }}';
-            $general->color = $form['color'] ?? $colorGenerator->generateValue($form);
+            $general->color = $form['color'] ?? $colorGenerator->generateValue($form, null);
             $general->defaultStatus = $defaultStatus;
             $general->storeData = (bool) $form['saveSubmissions'] ?? true;
             $general->formattingTemplate = 'flexbox/index.twig';
@@ -253,6 +256,21 @@ class ExpressFormsExporter extends BaseExporter
         }
 
         return $collection;
+    }
+
+    protected function collectFavorites(?array $handles = null): FavoritesCollection
+    {
+        return new FavoritesCollection();
+    }
+
+    protected function collectFormGroups(?array $ids = null): FormGroupsCollection
+    {
+        return new FormGroupsCollection();
+    }
+
+    protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection
+    {
+        return new LimitedUsersCollection();
     }
 
     protected function collectIntegrations(?array $ids = null): IntegrationCollection

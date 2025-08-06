@@ -9,7 +9,7 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 {
     public function __construct(private StatusesService $statusesService) {}
 
-    public function generateValue(?object $referenceObject): int
+    public function generateValue(?object $referenceObject, ?object $context): int
     {
         try {
             $statuses = $this->statusesService->getAllStatuses();

@@ -37,6 +37,7 @@ return [
     'archived' => 'archived',
     'Manage Form Groups' => 'Manage Form Groups',
     'Form Group Manager' => 'Form Group Manager',
+    'Form Groups' => 'Form Groups',
     'Display as cards' => 'Display as cards',
     'Display as list' => 'Display as list',
     'Chart' => 'Chart',
@@ -273,6 +274,12 @@ return [
     'Select accent color' => 'Select accent color',
     'Select theme' => 'Select theme',
     'Light' => 'Light',
+    'Remove File Confirmation Message' => 'Remove File Confirmation Message',
+    'Enter a custom message that will be shown when removing a file from the upload field.' => 'Enter a custom message that will be shown when removing a file from the upload field.',
+    'Use a Dialog element?' => 'Use a Dialog element?',
+    'If enabled, a dialog element will be used to confirm file removal.' => 'If enabled, a dialog element will be used to confirm file removal.',
+    'Custom Confirm Dialog Selector' => 'Custom Confirm Dialog Selector',
+    'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.' => 'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.',
     'Target field' => 'Target field',
     'The field that should be matched and validated against.' => 'The field that should be matched and validated against.',
     'Select a field' => 'Select a field',
@@ -395,6 +402,20 @@ return [
     'Email Notification Template' => 'Email Notification Template',
     'Select an email notification template.' => 'Select an email notification template.',
     'Remove translation' => 'Remove translation',
+    'AI Configuration' => 'AI Configuration',
+    'AI Integration' => 'AI Integration',
+    'Select an AI integration to use for this field.' => 'Select an AI integration to use for this field.',
+    'System Prompt' => 'System Prompt',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.',
+    'Fields to Process' => 'Fields to Process',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.',
+    'Include Field Labels' => 'Include Field Labels',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").',
+    'Max Tokens Override' => 'Max Tokens Override',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Leave empty to use integration settings. Override only if you need different max tokens for this field.',
+    'Temperature Override' => 'Temperature Override',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
@@ -860,8 +881,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade to the Pro edition of Freeform to get access to Export Notifications.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Export Freeform Data (beta)',
-    'Import Freeform Data (beta)' => 'Import Freeform Data (beta)',
+    'Export Freeform Data' => 'Export Freeform Data',
+    'Import Freeform Data' => 'Import Freeform Data',
     'Select Data to Export' => 'Select Data to Export',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.',
     'Password-protect the Export File (optional)' => 'Password-protect the Export File (optional)',
@@ -871,6 +892,9 @@ return [
     'Upload a Freeform Export zip file' => 'Upload a Freeform Export zip file',
     'Accepts `.zip` files. Only upload files that you trust.' => 'Accepts `.zip` files. Only upload files that you trust.',
     'Please select the data you want to import.' => 'Please select the data you want to import.',
+    'Wrapper' => 'Wrapper',
+    'Formatting' => 'Formatting',
+    'Success' => 'Success',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Import from Express Forms',
@@ -1309,7 +1333,11 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade to the Freeform Pro edition to get access to integrations.',
     'What this integration will be called in the CP.' => 'What this integration will be called in the CP.',
     'The unique name used to identify this integration.' => 'The unique name used to identify this integration.',
+    'Show Setup Instructions' => 'Show Setup Instructions',
     'Authorized' => 'Authorized',
+    'Unauthorized' => 'Unauthorized',
+    'Checking...' => 'Checking...',
+    'Authorize' => 'Authorize',
     'Not able to authorize.' => 'Not able to authorize.',
     'Click here to re-authorize' => 'Click here to re-authorize',
     'Checking credentials...' => 'Checking credentials...',
@@ -1530,6 +1558,18 @@ return [
     'Insert New Row' => 'Insert New Row',
     'Replace Next Empty Row' => 'Replace Next Empty Row',
 
+    // Integrations // AI
+    'ai' => 'AI',
+    'AI' => 'AI',
+    'Enter your API key here.' => 'Enter your API key here.',
+    'Model' => 'Model',
+    'The OpenAI model to use for AI processing.' => 'The OpenAI model to use for AI processing.',
+    'The Google Gemini model to use for AI processing.' => 'The Google Gemini model to use for AI processing.',
+    'Max Tokens' => 'Max Tokens',
+    'Maximum number of tokens to generate.' => 'Maximum number of tokens to generate.',
+    'Temperature' => 'Temperature',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.',
+
     // Element Types
     'Freeform Form' => 'Freeform Form',
     'Select a form' => 'Select a form',
@@ -1643,6 +1683,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Purging Old Spam Submissions',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Purging Unfinalized Assets',
     'Freeform: Sending Digest Email' => 'Freeform: Sending Digest Email',
+    'Freeform: Purging Old Notification Logs' => 'Freeform: Purging Old Notification Logs',
 
     // Front End Form Errors // Fields
     'This field is required' => 'This field is required',

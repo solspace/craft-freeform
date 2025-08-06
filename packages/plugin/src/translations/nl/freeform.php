@@ -37,6 +37,7 @@ return [
     'archived' => 'gearchiveerde',
     'Manage Form Groups' => 'Beheer Formuliergroepen',
     'Form Group Manager' => 'Formulier Groepsmanager',
+    'Form Groups' => 'Formuliergroepen',
     'Display as cards' => 'Weergeven als kaarten',
     'Display as list' => 'Toon als lijst',
     'Chart' => 'Grafiek',
@@ -273,6 +274,12 @@ return [
     'Select accent color' => 'Selecteer accentkleur',
     'Select theme' => 'Selecteer thema',
     'Light' => 'Licht',
+    'Remove File Confirmation Message' => 'Bevestigingsbericht voor bestand verwijderen',
+    'Enter a custom message that will be shown when removing a file from the upload field.' => 'Voer een aangepast bericht in dat wordt getoond bij het verwijderen van een bestand uit het uploadveld.',
+    'Use a Dialog element?' => 'Dialoogvenster gebruiken?',
+    'If enabled, a dialog element will be used to confirm file removal.' => 'Als ingeschakeld, wordt een dialoogvenster gebruikt om het verwijderen van bestanden te bevestigen.',
+    'Custom Confirm Dialog Selector' => 'Aangepaste selector voor bevestigingsdialoog',
+    'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.' => 'Om een aangepast dialoogvenster te gebruiken, geef hier de CSS-selector op. Indien leeg, genereert Freeform automatisch een dialoogvenster.',
     'Target field' => 'Doelveld',
     'The field that should be matched and validated against.' => 'Het veld dat moet worden vergeleken en gevalideerd.',
     'Select a field' => 'Selecteer een veld',
@@ -395,6 +402,20 @@ return [
     'Email Notification Template' => 'Sjabloon voor e-mailmelding',
     'Select an email notification template.' => 'Selecteer een sjabloon voor e-mailmeldingen.',
     'Remove translation' => 'Vertaling verwijderen',
+    'AI Configuration' => 'AI-configuratie',
+    'AI Integration' => 'AI-integratie',
+    'Select an AI integration to use for this field.' => 'Selecteer een AI-integratie voor dit veld.',
+    'System Prompt' => 'Systeemprompt',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Instructies voor de AI over hoe de formuliergegevens verwerkt moeten worden. Dit kan worden gebruikt voor categorisatie, samenvatting, sentimentanalyse, contentgeneratie of andere AI-taken. Wees specifiek over het gewenste uitvoerformaat.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'Bijv. Analyseer de ingevoerde veldgegevens en categoriseer deze inzending in een van de volgende categorieën: Pre-sales Questions, Support Issue, Account Help. Geef alleen de categorienaam terug.',
+    'Fields to Process' => 'Velden om te verwerken',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Selecteer welke formuliervelden naar de AI worden gestuurd voor verwerking. Gebruik het dropdownmenu of typ @ om te zoeken naar velden.',
+    'Include Field Labels' => 'Veldlabels opnemen',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'Indien ingeschakeld, worden veldlabels opgenomen in de inhoud die naar de AI wordt gestuurd (bijv. "Name: John Doe" in plaats van alleen "John Doe").',
+    'Max Tokens Override' => 'Max tokens overschrijven',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een ander maximum aantal tokens voor dit veld nodig hebt.',
+    'Temperature Override' => 'Temperatuur overschrijven',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een andere temperatuur voor dit veld nodig hebt. Voer een waarde in tussen 0.0 en 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',
@@ -860,8 +881,8 @@ return [
     'Upgrade to the Pro edition of Freeform to get access to Export Notifications.' => 'Upgrade naar de Pro-editie van Freeform om toegang te krijgen tot exportmeldingen.',
 
     // Import / Export // Freeform Data
-    'Export Freeform Data (beta)' => 'Freeform-gegevens exporteren (bèta)',
-    'Import Freeform Data (beta)' => 'Freeform-gegevens importeren (bèta)',
+    'Export Freeform Data' => 'Freeform-gegevens exporteren',
+    'Import Freeform Data' => 'Freeform-gegevens importeren',
     'Select Data to Export' => 'Selecteer gegevens om te exporteren',
     'Choose which Freeform data to include in the export. If you export submissions without the corresponding form, the submissions will not be included.' => 'Kies welke Freeform-gegevens u in de export wilt opnemen. Als u inzendingen exporteert zonder het bijbehorende formulier, worden de inzendingen niet meegenomen.',
     'Password-protect the Export File (optional)' => 'Beveilig het exportbestand met een wachtwoord (optioneel)',
@@ -871,6 +892,9 @@ return [
     'Upload a Freeform Export zip file' => 'Upload een Freeform Export zip-bestand',
     'Accepts `.zip` files. Only upload files that you trust.' => 'Accepteert `.zip`-bestanden. Upload alleen bestanden die je vertrouwt.',
     'Please select the data you want to import.' => 'Selecteer de gegevens die u wilt importeren.',
+    'Wrapper' => 'Wrapper',
+    'Formatting' => 'Opmaak',
+    'Success' => 'Succes',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importeren uit Express Forms',
@@ -1309,7 +1333,11 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade naar de Freeform Pro-editie om toegang te krijgen tot integraties.',
     'What this integration will be called in the CP.' => 'Hoe deze integratie in de CP zal worden genoemd.',
     'The unique name used to identify this integration.' => 'De unieke naam die wordt gebruikt om deze integratie te identificeren.',
+    'Show Setup Instructions' => 'Installatie-instructies tonen',
     'Authorized' => 'Geautoriseerd',
+    'Unauthorized' => 'Niet geautoriseerd',
+    'Checking...' => 'Bezig met controleren...',
+    'Authorize' => 'Autoriseren',
     'Not able to authorize.' => 'Niet in staat om autorisatie te geven.',
     'Click here to re-authorize' => 'Klik hier om opnieuw te autoriseren',
     'Checking credentials...' => 'Inloggegevens controleren...',
@@ -1530,6 +1558,18 @@ return [
     'Insert New Row' => 'Nieuwe rij invoegen',
     'Replace Next Empty Row' => 'Vervang volgende lege rij',
 
+    // Integrations // AI
+    'ai' => 'AI',
+    'AI' => 'AI',
+    'Enter your API key here.' => 'Voer hier je API-sleutel in.',
+    'Model' => 'Model',
+    'The OpenAI model to use for AI processing.' => 'Het OpenAI-model dat wordt gebruikt voor AI-verwerking.',
+    'The Google Gemini model to use for AI processing.' => 'Het Google Gemini-model dat wordt gebruikt voor AI-verwerking.',
+    'Max Tokens' => 'Max. tokens',
+    'Maximum number of tokens to generate.' => 'Maximum aantal te genereren tokens.',
+    'Temperature' => 'Temperatuur',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Bepaalt de willekeurigheid van de reactie (0.0 = deterministisch, 1.0 = zeer willekeurig). Voer een waarde in tussen 0.0 en 1.0.',
+
     // Element Types
     'Freeform Form' => 'Freeform-formulier',
     'Select a form' => 'Selecteer een formulier',
@@ -1643,6 +1683,7 @@ return [
     'Freeform: Purging Old Spam Submissions' => 'Freeform: Oude spaminzendingen opschonen',
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Niet-gefinaliseerde bestanden opschonen',
     'Freeform: Sending Digest Email' => 'Freeform: Samenvatting-e-mail verzenden',
+    'Freeform: Purging Old Notification Logs' => 'Freeform: Oude notificatielogs opschonen',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Dit veld is verplicht',

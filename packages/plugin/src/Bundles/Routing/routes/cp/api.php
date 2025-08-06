@@ -46,6 +46,11 @@ return [
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
+    'freeform/api/integrations/<id:\d+>/delete' => 'freeform/api/integrations/delete',
+    'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
+    'freeform/api/integrations/navigation' => 'freeform/api/integrations/navigation',
+    'freeform/api/integrations/properties/<id:\d+>' => 'freeform/api/integrations/properties',
+    'freeform/api/integrations/properties/<type:[a-zA-Z0-9\-]+>/<integration:[a-zA-Z0-9\-_]+>' => 'freeform/api/integrations/properties',
 
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',
@@ -93,4 +98,7 @@ return [
 
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
+
+    // AUTOSUGGEST
+    'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',
 ];

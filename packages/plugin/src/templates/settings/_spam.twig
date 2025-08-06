@@ -19,32 +19,32 @@
         <p class="first">{{ "Spam protection features are configured in the <b>Integrations</b> settings area:"|t('freeform')|raw }}</p>
         <ul class="freeform-settings-list">
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/single/Honeypot") }}'>
+                <a href='{{ cpUrl("freeform/integrations/single/Honeypot") }}'>
                     {{ "Freeform Honeypot"|t('freeform') }}
                 </a>
             </li>
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/single/JavascriptTest") }}'>
+                <a href='{{ cpUrl("freeform/integrations/single/JavascriptTest") }}'>
                     {{ "Freeform Javascript Test"|t('freeform') }}
                 </a>
             </li>
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/captchas") }}'>
+                <a href='{{ cpUrl("freeform/integrations/captchas/ReCaptcha") }}'>
                     {{ "Captchas"|t('freeform') }}
                 </a>
             </li>
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/spam-blocking/new?serviceProvider=Solspace\\Freeform\\Integrations\\SpamBlocking\\Keywords\\BlockKeywords") }}'>
+                <a href='{{ cpUrl("freeform/integrations/spam-blocking/BlockKeywords") }}'>
                     {{ "Keyword Blocking"|t('freeform') }}
                 </a>
             </li>
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/spam-blocking/new?serviceProvider=Solspace\\Freeform\\Integrations\\SpamBlocking\\Emails\\BlockEmailAddresses") }}'>
+                <a href='{{ cpUrl("freeform/integrations/spam-blocking/BlockEmailAddresses") }}'>
                     {{ "Email Address Blocking"|t('freeform') }}
                 </a>
             </li>
             <li>
-                <a href='{{ cpUrl("freeform/settings/integrations/spam-blocking/new?serviceProvider=Solspace\\Freeform\\Integrations\\SpamBlocking\\IpAddresses\\BlockIpAddresses") }}'>
+                <a href='{{ cpUrl("freeform/integrations/spam-blocking/BlockIpAddresses") }}'>
                     {{ "IP Address Blocking"|t('freeform') }}
                 </a>
             </li>

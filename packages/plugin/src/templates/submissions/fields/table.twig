@@ -81,7 +81,7 @@
                         {% set colValue = row[index]|default("") %}
                         {% set colType = column.type|default("text") %}
                         {% set colClass = "" %}
-                        {% if colType == "text" %}
+                        {% if colType == "text" or colType == "textarea" %}
                             {% set colClass = "textual" %}
                         {% elseif colType == "select" %}
                             {% set colClass = "thin" %}
@@ -122,8 +122,8 @@
                                           data-default-value="{{ column.value|default("") }}"
                                           rows="{{ colType == 'textarea' ? 4 : 1 }}"
                                 >
-                                                                            {{- colValue -}}
-                                                                        </textarea>
+                                    {{- colValue -}}
+                                </textarea>
                             {% endswitch %}
                         </td>
                     {% endfor %}

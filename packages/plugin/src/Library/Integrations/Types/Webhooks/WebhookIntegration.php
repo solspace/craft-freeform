@@ -13,6 +13,7 @@ abstract class WebhookIntegration extends BaseIntegration implements WebhookInte
 
     #[Required]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Webhook URL',
         instructions: 'The URL to send the POST request to.',

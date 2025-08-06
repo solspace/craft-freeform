@@ -20,6 +20,8 @@ use craft\db\ActiveRecord;
  *
  * @property int    $id
  * @property bool   $enabled
+ * @property bool   $legacy
+ * @property bool   $connectionEstablished
  * @property string $name
  * @property string $handle
  * @property string $type

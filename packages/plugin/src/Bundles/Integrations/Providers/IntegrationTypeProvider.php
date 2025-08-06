@@ -71,6 +71,7 @@ class IntegrationTypeProvider
             'webhooks' => Freeform::t('Webhooks'),
             'single' => Freeform::t('General'),
             'other' => Freeform::t('Other'),
+            'ai' => Freeform::t('AI'),
             default => $handle,
         };
     }

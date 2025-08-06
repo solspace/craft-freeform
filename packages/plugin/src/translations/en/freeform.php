@@ -402,6 +402,20 @@ return [
     'Email Notification Template' => 'Email Notification Template',
     'Select an email notification template.' => 'Select an email notification template.',
     'Remove translation' => 'Remove translation',
+    'AI Configuration' => 'AI Configuration',
+    'AI Integration' => 'AI Integration',
+    'Select an AI integration to use for this field.' => 'Select an AI integration to use for this field.',
+    'System Prompt' => 'System Prompt',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.',
+    'Fields to Process' => 'Fields to Process',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.',
+    'Include Field Labels' => 'Include Field Labels',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").',
+    'Max Tokens Override' => 'Max Tokens Override',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Leave empty to use integration settings. Override only if you need different max tokens for this field.',
+    'Temperature Override' => 'Temperature Override',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
@@ -1543,6 +1557,18 @@ return [
     "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data." => "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data.",
     'Insert New Row' => 'Insert New Row',
     'Replace Next Empty Row' => 'Replace Next Empty Row',
+
+    // Integrations // AI
+    'ai' => 'AI',
+    'AI' => 'AI',
+    'Enter your API key here.' => 'Enter your API key here.',
+    'Model' => 'Model',
+    'The OpenAI model to use for AI processing.' => 'The OpenAI model to use for AI processing.',
+    'The Google Gemini model to use for AI processing.' => 'The Google Gemini model to use for AI processing.',
+    'Max Tokens' => 'Max Tokens',
+    'Maximum number of tokens to generate.' => 'Maximum number of tokens to generate.',
+    'Temperature' => 'Temperature',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.',
 
     // Element Types
     'Freeform Form' => 'Freeform Form',

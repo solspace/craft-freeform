@@ -51,7 +51,7 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
     #[Input\TextArea(
         label: 'System Prompt',
         instructions: 'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.',
-        placeholder: 'You are an AI assistant that analyzes form submissions. Based on the provided content, categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.',
+        placeholder: 'e.g. Analyze the provided fields and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.',
         rows: 6,
     )]
     protected string $systemPrompt = '';

@@ -402,6 +402,20 @@ return [
     'Email Notification Template' => 'Template Notifica Email',
     'Select an email notification template.' => 'Seleziona un template per la notifica email.',
     'Remove translation' => 'Rimuovi traduzione',
+    'AI Configuration' => 'Configurazione AI',
+    'AI Integration' => 'Integrazione AI',
+    'Select an AI integration to use for this field.' => 'Seleziona un’integrazione AI da usare per questo campo.',
+    'System Prompt' => 'Prompt di sistema',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Istruzioni per l’AI su come elaborare i dati del modulo. Può essere utilizzato per categorizzazione, sintesi, analisi del sentiment, generazione di contenuti o altre attività AI. Specifica chiaramente il formato di output desiderato.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'Ad esempio: analizza i dati forniti e classifica questa richiesta in una delle seguenti categorie: Pre-sales Questions, Support Issue, Account Help. Rispondi solo con il nome della categoria.',
+    'Fields to Process' => 'Campi da elaborare',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Seleziona i campi del modulo da inviare all’AI per l’elaborazione. Usa il menu a discesa o digita @ per cercare i campi.',
+    'Include Field Labels' => 'Includi etichette dei campi',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'Se abilitato, le etichette dei campi verranno incluse nel contenuto inviato all’AI (es. "Name: John Doe" invece di solo "John Doe").',
+    'Max Tokens Override' => 'Sovrascrivi Max Tokens',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Lascia vuoto per usare le impostazioni dell’integrazione. Sovrascrivi solo se hai bisogno di un numero diverso di token per questo campo.',
+    'Temperature Override' => 'Sovrascrivi Temperatura',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Lascia vuoto per usare le impostazioni dell’integrazione. Sovrascrivi solo se ti serve una temperatura diversa per questo campo. Inserisci un valore compreso tra 0.0 e 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifiche',
@@ -1543,6 +1557,17 @@ return [
     "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data." => "Scegli come inserire le nuove righe di dati nel foglio Google. 'Inserisci nuova riga' aggiungerà una nuova riga al foglio di calcolo direttamente prima della prima riga vuota. 'Sostituisci riga vuota successiva' troverà la prima riga vuota e scriverà il nuovo contenuto al suo interno. Nessuna delle due opzioni sovrascriverà i dati esistenti.",
     'Insert New Row' => 'Inserisci nuova riga',
     'Replace Next Empty Row' => 'Sostituisci riga vuota successiva',
+
+    // Integrations // AI
+    'ai' => 'AI',
+    'Enter your API key here.' => 'Inserisci qui la tua chiave API.',
+    'Model' => 'Modello',
+    'The OpenAI model to use for AI processing.' => 'Il modello OpenAI da utilizzare per l’elaborazione AI.',
+    'The Google Gemini model to use for AI processing.' => 'Il modello Google Gemini da utilizzare per l’elaborazione AI.',
+    'Max Tokens' => 'Token massimi',
+    'Maximum number of tokens to generate.' => 'Numero massimo di token da generare.',
+    'Temperature' => 'Temperatura',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Controlla la casualità nella risposta (0.0 = deterministico, 1.0 = molto casuale). Inserisci un valore tra 0.0 e 1.0.',
 
     // Element Types
     'Freeform Form' => 'Modulo Freeform',

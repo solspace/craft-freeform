@@ -402,6 +402,20 @@ return [
     'Email Notification Template' => 'Sjabloon voor e-mailmelding',
     'Select an email notification template.' => 'Selecteer een sjabloon voor e-mailmeldingen.',
     'Remove translation' => 'Vertaling verwijderen',
+    'AI Configuration' => 'AI-configuratie',
+    'AI Integration' => 'AI-integratie',
+    'Select an AI integration to use for this field.' => 'Selecteer een AI-integratie voor dit veld.',
+    'System Prompt' => 'Systeemprompt',
+    'Instructions for the AI on how to process the form data. You can use this for categorization, summarization, sentiment analysis, content generation, or any other AI task. Be specific about the desired output format.' => 'Instructies voor de AI over hoe de formuliergegevens verwerkt moeten worden. Dit kan worden gebruikt voor categorisatie, samenvatting, sentimentanalyse, contentgeneratie of andere AI-taken. Wees specifiek over het gewenste uitvoerformaat.',
+    'e.g. Analyze the provided field data and categorize this submission into one of these categories: Pre-sales Questions, Support Issue, Account Help. Respond with only the category name.' => 'Bijv. Analyseer de ingevoerde veldgegevens en categoriseer deze inzending in een van de volgende categorieën: Pre-sales Questions, Support Issue, Account Help. Geef alleen de categorienaam terug.',
+    'Fields to Process' => 'Velden om te verwerken',
+    'Select which form fields to send to the AI for processing. Use the dropdown or type @ to search for fields.' => 'Selecteer welke formuliervelden naar de AI worden gestuurd voor verwerking. Gebruik het dropdownmenu of typ @ om te zoeken naar velden.',
+    'Include Field Labels' => 'Veldlabels opnemen',
+    'When enabled, field labels will be included in the content sent to AI (e.g., "Name: John Doe" instead of just "John Doe").' => 'Indien ingeschakeld, worden veldlabels opgenomen in de inhoud die naar de AI wordt gestuurd (bijv. "Name: John Doe" in plaats van alleen "John Doe").',
+    'Max Tokens Override' => 'Max tokens overschrijven',
+    'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een ander maximum aantal tokens voor dit veld nodig hebt.',
+    'Temperature Override' => 'Temperatuur overschrijven',
+    'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een andere temperatuur voor dit veld nodig hebt. Voer een waarde in tussen 0.0 en 1.0.',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',
@@ -1543,6 +1557,17 @@ return [
     "Choose how new data rows should be inserted into the Google Sheet. 'Insert New Row' will add a new row to the spreadsheet directly before the first empty row. 'Replace Next Empty Row' will find the first empty row and write the new content into it. Neither option will overwrite existing data." => "Kies hoe nieuwe gegevensrijen in het Google-spreadsheet moeten worden ingevoegd. 'Nieuwe rij invoegen' voegt een nieuwe rij aan de spreadsheet toe direct vóór de eerste lege rij. 'Vervang volgende lege rij' zoekt de eerste lege rij en schrijft de nieuwe inhoud erin. Geen van beide opties zal bestaande gegevens overschrijven.",
     'Insert New Row' => 'Nieuwe rij invoegen',
     'Replace Next Empty Row' => 'Vervang volgende lege rij',
+
+    // Integrations // AI
+    'ai' => 'AI',
+    'Enter your API key here.' => 'Voer hier je API-sleutel in.',
+    'Model' => 'Model',
+    'The OpenAI model to use for AI processing.' => 'Het OpenAI-model dat wordt gebruikt voor AI-verwerking.',
+    'The Google Gemini model to use for AI processing.' => 'Het Google Gemini-model dat wordt gebruikt voor AI-verwerking.',
+    'Max Tokens' => 'Max. tokens',
+    'Maximum number of tokens to generate.' => 'Maximum aantal te genereren tokens.',
+    'Temperature' => 'Temperatuur',
+    'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.' => 'Bepaalt de willekeurigheid van de reactie (0.0 = deterministisch, 1.0 = zeer willekeurig). Voer een waarde in tussen 0.0 en 1.0.',
 
     // Element Types
     'Freeform Form' => 'Freeform-formulier',

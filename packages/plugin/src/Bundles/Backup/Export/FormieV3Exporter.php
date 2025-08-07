@@ -4,9 +4,12 @@ namespace Solspace\Freeform\Bundles\Backup\Export;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Backup\Collections\FavoritesCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\FormGroupsCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\IntegrationCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\LimitedUsersCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\TemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\FileTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
@@ -167,5 +170,20 @@ class FormieV3Exporter extends BaseExporter
     protected function collectSettings(bool $collect): ?Settings
     {
         return null;
+    }
+
+    protected function collectFavorites(?array $ids = null): FavoritesCollection
+    {
+        // TODO: Implement collectFavorites() method.
+    }
+
+    protected function collectFormGroups(?array $ids = null): FormGroupsCollection
+    {
+        // TODO: Implement collectFormGroups() method.
+    }
+
+    protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection
+    {
+        // TODO: Implement collectLimitedUsers() method.
     }
 }

@@ -8,7 +8,9 @@ if (!class_exists(Craft::class)) {
     class Craft
     {
         public static $container;
-        public static function t($category, $string, $variables) {
+
+        public static function t($category, $string, $variables = [], $language = null)
+        {
             return $string;
         }
     }

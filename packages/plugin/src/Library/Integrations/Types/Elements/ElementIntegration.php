@@ -66,7 +66,7 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
 
             $craftField = null;
             foreach ($customFields as $field) {
-                if ((int) $field->id === (int) $item->getSource()) {
+                if ($field->handle === $item->getSource()) {
                     $craftField = $field;
 
                     break;

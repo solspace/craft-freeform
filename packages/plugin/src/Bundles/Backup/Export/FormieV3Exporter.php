@@ -18,6 +18,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\Templates\WrapperTemplateCollec
 use Solspace\Freeform\Bundles\Backup\DTO\ImportPreview;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\FormProcessor;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\SubmissionProcessor;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Settings;
 use verbb\formie\elements\Form as FormieForm;
 
@@ -34,6 +35,7 @@ class FormieV3Exporter extends BaseExporter
             $submissionProcessor = new SubmissionProcessor();
 
             $preview->forms = $formProcessor->collectForms();
+
             $preview->integrations = $this->collectIntegrations();
             $preview->settings = (bool) $this->collectSettings(true);
             $preview->templates = (new TemplateCollection())
@@ -174,16 +176,16 @@ class FormieV3Exporter extends BaseExporter
 
     protected function collectFavorites(?array $ids = null): FavoritesCollection
     {
-        // TODO: Implement collectFavorites() method.
+        return new FavoritesCollection();
     }
 
     protected function collectFormGroups(?array $ids = null): FormGroupsCollection
     {
-        // TODO: Implement collectFormGroups() method.
+        return new FormGroupsCollection();
     }
 
     protected function collectLimitedUsers(?array $ids = null): LimitedUsersCollection
     {
-        // TODO: Implement collectLimitedUsers() method.
+        return new LimitedUsersCollection();
     }
 }

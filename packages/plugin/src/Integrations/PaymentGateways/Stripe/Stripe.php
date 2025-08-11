@@ -17,6 +17,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Properties\WebhookUrlGenerator;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Stripe as StripeAPI;
@@ -224,7 +225,12 @@ class Stripe extends PaymentGatewayIntegration
     {
         static $clients = [];
         if (!isset($clients[$this->getId()])) {
-            $clients[$this->getId()] = new StripeClient($this->getSecretKey());
+            $secretKey = $this->getSecretKey();
+            if (empty($secretKey)) {
+                throw new IntegrationException('Stripe secret key is not set correctly.');
+            }
+
+            $clients[$this->getId()] = new StripeClient($secretKey);
 
             StripeAPI\Stripe::setAppInfo(
                 'solspace/craft-freeform',

@@ -1,5 +1,6 @@
 export { default as aiBox } from './ai-box/ai-box';
 export { default as appStateSelect } from './app-state-select/app-state-select';
+export { default as assetPicker } from './asset-picker/asset-picker';
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
 export { default as buttonGroup } from './button-group/button-group';

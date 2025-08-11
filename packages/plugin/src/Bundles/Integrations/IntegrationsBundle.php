@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\Integrations;
 
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
-use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
@@ -14,7 +13,6 @@ use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
-use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class IntegrationsBundle extends FeatureBundle
@@ -32,12 +30,6 @@ class IntegrationsBundle extends FeatureBundle
             IntegrationInterface::class,
             IntegrationInterface::EVENT_ON_FAILED_REQUEST,
             [$this, 'logException']
-        );
-
-        Event::on(
-            APIIntegrationInterface::class,
-            APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZED,
-            [$this, 'triggerAuthorized']
         );
 
         $path = \Craft::getAlias('@freeform/Integrations');
@@ -171,19 +163,5 @@ class IntegrationsBundle extends FeatureBundle
             ->getLogger(FreeformLogger::INTEGRATION)
             ->error($integration->getTypeDefinition()->name.': '.$message, $context)
         ;
-    }
-
-    public function triggerAuthorized(AuthorizeIntegrationEvent $event): void
-    {
-        $integration = $event->getIntegration();
-        if (!$integration instanceof APIIntegrationInterface) {
-            return;
-        }
-
-        $record = IntegrationRecord::findOne(['id' => $integration->getId()]);
-        if ($record) {
-            $record->connectionEstablished = true;
-            $record->save();
-        }
     }
 }

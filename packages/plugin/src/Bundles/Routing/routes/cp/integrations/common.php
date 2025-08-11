@@ -7,5 +7,4 @@ return [
     'freeform/integrations/<type:[a-zA-Z\-]+>/<class:[a-zA-Z0-9]+>/new' => 'freeform/app',
     'freeform/integrations/<type:[a-zA-Z\-]+>/<class:[a-zA-Z0-9]+>/<id:\d+>' => 'freeform/app',
     'freeform/integrations/<id:\d+>/authorize' => 'freeform/integrations/integrations/authorize',
-    'freeform/integrations/<id:\d+>/check' => 'freeform/integrations/integrations/check-integration-connection',
 ];

@@ -87,6 +87,11 @@ class AiService extends Component
                 continue;
             }
 
+            // Convert array values to string
+            if (\is_array($value)) {
+                $value = implode(', ', $value);
+            }
+
             if ($includeLabels) {
                 $content[] = $field->getLabel().': '.$value;
             } else {

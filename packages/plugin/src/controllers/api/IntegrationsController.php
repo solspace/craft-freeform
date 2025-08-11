@@ -7,7 +7,6 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
@@ -42,7 +41,6 @@ class IntegrationsController extends BaseApiController
         $id,
         $module,
         $config,
-        private IntegrationDTOProvider $integrationDTOProvider,
         private IntegrationClientProvider $clientProvider,
         private IntegrationTypeProvider $typeProvider,
         private PropertyProvider $propertyProvider,

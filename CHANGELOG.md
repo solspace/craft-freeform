@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.11.9 - 2025-08-07
+
+### Fixed
+- Fixed a bug where some integrations were not authorizing correctly.
+
 ## 5.11.8 - 2025-07-31
 
 ### Added

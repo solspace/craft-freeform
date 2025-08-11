@@ -14,6 +14,7 @@ export type GenericValue = any;
 
 export enum PropertyType {
   Attributes = 'attributes',
+  AssetPicker = 'assetPicker',
   Boolean = 'bool',
   Checkboxes = 'checkboxes',
   Color = 'color',
@@ -109,6 +110,17 @@ export type AttributeProperty = BaseProperty<
   PropertyType.Attributes
 > & {
   tabs: AttributeTab[];
+};
+
+export type AssetPickerProperty = BaseProperty<
+  number[],
+  PropertyType.AssetPicker
+> & {
+  actionLabel?: string;
+  multiSelect: boolean;
+  criteria: Record<string, unknown>;
+  allSites: boolean;
+  limit?: number;
 };
 
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
@@ -290,6 +302,7 @@ export type CodeEditorProperty = BaseProperty<
 
 export type Property =
   | AttributeProperty
+  | AssetPickerProperty
   | BooleanProperty
   | CheckboxesProperty
   | ColorProperty

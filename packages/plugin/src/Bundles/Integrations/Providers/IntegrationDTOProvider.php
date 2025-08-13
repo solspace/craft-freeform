@@ -11,7 +11,6 @@ class IntegrationDTOProvider
 {
     public function __construct(
         private PropertyProvider $propertyProvider,
-        private IntegrationTypeProvider $typeProvider,
     ) {}
 
     public function convertOne(IntegrationModel $model): ?Integration

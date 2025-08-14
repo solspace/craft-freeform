@@ -146,7 +146,7 @@ class FormMonitor extends APIIntegration
 
             return 200 === $response->getStatusCode();
         } catch (\Exception $exception) {
-            return false;
+            throw $exception;
         }
     }
 

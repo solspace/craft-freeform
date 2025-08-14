@@ -135,7 +135,6 @@ class AuthorizationListener extends FeatureBundle
         $integration->setRequestToken($json->requestToken);
         $integration->setStoredLicenseKey($licenseKey);
 
-        $model = $event->getModel();
-        $this->integrationsService->save($model, $integration);
+        $event->setTriggerSave(true);
     }
 }

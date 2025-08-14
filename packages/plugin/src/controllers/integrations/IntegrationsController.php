@@ -60,12 +60,14 @@ class IntegrationsController extends BaseController
 
     public function actionAuthorize(int $id): Response
     {
-        $integration = $this->integrationsService->getIntegrationObjectById($id);
-        if (!$integration) {
+        $model = $this->integrationsService->getById($id);
+        if (!$model) {
             throw new NotFoundHttpException();
         }
 
-        $event = new AuthorizeIntegrationEvent($integration);
+        $integration = $model->getIntegrationObject();
+
+        $event = new AuthorizeIntegrationEvent($model, $integration);
 
         try {
             Event::trigger(
@@ -79,6 +81,10 @@ class IntegrationsController extends BaseController
 
         if ($event->hasErrors()) {
             return $this->renderPopUpError($event->getErrors());
+        }
+
+        if ($event->isTriggerSave()) {
+            $this->integrationsService->save($model, $integration);
         }
 
         $this->integrationsService->setConnectionEstablished($integration);

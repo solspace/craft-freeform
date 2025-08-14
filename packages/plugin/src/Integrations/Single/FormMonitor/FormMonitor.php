@@ -141,13 +141,9 @@ class FormMonitor extends APIIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/me'));
+        $response = $client->get($this->getEndpoint('/me'));
 
-            return 200 === $response->getStatusCode();
-        } catch (\Exception $exception) {
-            throw $exception;
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function disableMe(Client $client): void

@@ -103,8 +103,6 @@ class OAuth2Bundle extends FeatureBundle
         }
 
         $integration->setAccessToken($payload->access_token);
-
-        // FIXME - Do we need to call AuthorizeIntegrationEvent here?
     }
 
     public function configureClient(GetAuthorizedClientEvent $event): void

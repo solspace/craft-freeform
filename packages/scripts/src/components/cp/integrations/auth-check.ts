@@ -48,11 +48,6 @@ $(function () {
       }
     });
   });
-
-  $('a[data-action="check"]', $actions).on('click', (e) => {
-    e.preventDefault();
-    checkConnection();
-  });
 });
 
 const checkAuth = (): void => {
@@ -89,105 +84,15 @@ const checkAuth = (): void => {
             message = $status.data('message-authorized');
             actions.push('refresh');
             actions.push('authorize');
-            actions.push('check');
             break;
           case 'unauthorized':
             message = $status.data('message-unauthorized');
             actions.push('authorize');
-            actions.push('check');
             break;
           case 'error':
             message = $status.data('message-error');
             actions.push('refresh');
             actions.push('authorize');
-            actions.push('check');
-            break;
-          default:
-            message = $status.data('message-pending');
-        }
-
-        actions.forEach((action) => {
-          $(`a[data-action="${action}"]`, $actions).css('display', 'flex');
-        });
-
-        $message.html(message);
-        if (errors) {
-          errors.forEach((error) => {
-            let $li: JQuery;
-            try {
-              const json = JSON.parse(error);
-              const $pre = $('<pre>').text(JSON.stringify(json, null, 2));
-              $li = $('<li>').append($pre);
-            } catch {
-              $li = $('<li>').text(error);
-            }
-
-            $errors.append($li);
-          });
-
-          $errors.show();
-        }
-      },
-      error: (response) => {
-        $status.data('status', 'error');
-        $message.html($status.data('message-error'));
-
-        const $li = $('<li>').text(
-          response.responseJSON?.message || 'An error occurred while checking the integration status.'
-        );
-        $errors.append($li);
-        $errors.show();
-      },
-    });
-  }
-};
-
-const checkConnection = (): void => {
-  const $authChecker = $('#auth-checker');
-
-  const $status = $('.status-indicator', $authChecker);
-  const $actions = $('.actions', $authChecker);
-  const $message = $('.status-message', $status);
-  const $errors = $('#auth-errors');
-
-  const id = $status.data('id');
-
-  $('a[data-action]', $actions).hide();
-  $status.attr('data-status', 'pending');
-  $message.html($status.data('message-pending'));
-  $errors.hide();
-  $errors.html('');
-
-  if (id) {
-    $.ajax({
-      url: Craft.getCpUrl(`freeform/integrations/${id}/check`),
-      type: 'get',
-      dataType: 'json',
-      success: (response): void => {
-        const status = response.status || 'pending';
-        const errors: string[] = response.errors || undefined;
-
-        $status.attr('data-status', status);
-
-        const actions: string[] = [];
-        let message: string;
-        switch (status) {
-          case 'authorized':
-            message = $status.data('message-authorized');
-            actions.push('refresh');
-            actions.push('authorize');
-            actions.push('check');
-            break;
-          case 'unauthorized':
-            message = $status.data('message-unauthorized');
-            actions.push('authorize');
-            actions.push('check');
-            break;
-          case 'error':
-            message = $status.data('message-error');
-            actions.push('refresh');
-            actions.push('authorize');
-            actions.push('check');
             break;
           default:
             message = $status.data('message-pending');

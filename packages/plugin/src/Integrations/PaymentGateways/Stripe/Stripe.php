@@ -111,17 +111,17 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected string $webhookUrl = '';
 
-    public function getPublicKey(): string
+    public function getPublicKey(): ?string
     {
         return $this->getProcessedValue($this->publicKey);
     }
 
-    public function getSecretKey(): string
+    public function getSecretKey(): ?string
     {
         return $this->getProcessedValue($this->secretKey);
     }
 
-    public function getWebhookSecret(): string
+    public function getWebhookSecret(): ?string
     {
         return $this->getProcessedValue($this->webhookSecret);
     }

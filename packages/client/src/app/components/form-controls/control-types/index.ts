@@ -16,6 +16,7 @@ export { default as hidden } from './hidden/hidden';
 export { default as int } from './int/int';
 export { default as label } from './label/label';
 export { default as minMax } from './min-max/min-max';
+export { default as cards } from './namespaced/cards/cards';
 export { default as fieldMapping } from './namespaced/field-mapping/mapping';
 export { default as conditionalNotificationRule } from './namespaced/notifications/conditional-rules/conditional-rules';
 export { default as notificationTemplate } from './namespaced/notifications/notification-template/notification-template';

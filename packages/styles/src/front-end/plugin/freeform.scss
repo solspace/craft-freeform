@@ -1,7 +1,8 @@
+@use '../fields/cards';
 @use '../fields/opinion-scale';
 @use '../fields/drag-and-drop-file';
 @use '../fields/rating';
-@use "../components/visual";
+@use '../components/visual';
 
 [data-freeform-controls] {
   display: flex;

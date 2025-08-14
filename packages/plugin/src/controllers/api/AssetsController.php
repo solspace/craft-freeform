@@ -4,9 +4,33 @@ namespace Solspace\Freeform\controllers\api;
 
 use craft\elements\Asset;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Helpers\PermissionHelper;
+use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class AssetsController extends BaseApiController
 {
+    public function actionCardThumbnail(int $assetId): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        /** @var Asset $asset */
+        $asset = Asset::find()->id($assetId)->one();
+        if (!$asset) {
+            throw new NotFoundHttpException('Asset not found');
+        }
+
+        $stream = $asset->getStream();
+
+        $response = \Craft::$app->getResponse();
+        $response->headers->set('Content-Type', $asset->getMimeType());
+        $response->format = Response::FORMAT_RAW;
+        $response->stream = $stream;
+
+        return $response->send();
+    }
+
     protected function get(): array
     {
         $ids = $this->request->get('ids');

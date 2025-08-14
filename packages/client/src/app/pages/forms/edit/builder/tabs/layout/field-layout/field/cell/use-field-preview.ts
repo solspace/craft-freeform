@@ -25,6 +25,8 @@ export const useFieldPreview = (
   });
 
   data.generatedOptions = generatedOptions;
+  data.getCraftAssetThumbUrl = (assetId: number): string =>
+    assetId ? Craft.getCpUrl(`freeform/api/assets/thumb/card/${assetId}`) : '';
 
   const compiledTemplate = useMemo(() => {
     if (

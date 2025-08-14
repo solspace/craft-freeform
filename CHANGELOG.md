@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.11.10 - 2025-08-14
+
+### Fixed
+- Fixed a bug where the _Form Monitor_ integration was not authorizing new sites correctly.
+
 ## 5.11.9 - 2025-08-07
 
 ### Fixed

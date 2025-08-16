@@ -7,7 +7,8 @@ import translate from '@ff-client/utils/translations';
 
 import type { Card } from '../cards.types';
 
-import { Item, TextArea } from './card.item.styles';
+import { DragHandle, Item, TextArea } from './card.item.styles';
+import GripIcon from './grip.icon.svg';
 
 type Props = {
   card: Card;
@@ -20,6 +21,10 @@ export const CardItem: FC<Props> = ({ card, updateCard, removeCard }) => {
 
   return (
     <Item>
+      <DragHandle className="drag-handle">
+        <GripIcon />
+      </DragHandle>
+
       <RemoveButton
         style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}
         active

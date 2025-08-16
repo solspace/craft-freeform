@@ -24,3 +24,23 @@ export const TextArea = styled.textarea`
   // prevent resize of text area
   resize: none;
 `;
+
+export const DragHandle = styled.div`
+  cursor: pointer;
+  position: absolute;
+  top: 14px;
+  right: 40px;
+  z-index: 2;
+
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    fill: ${colors.gray400};
+  }
+`;

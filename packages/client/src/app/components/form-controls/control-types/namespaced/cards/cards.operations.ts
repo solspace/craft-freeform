@@ -1,10 +1,11 @@
+import { generateRandomHash } from '@ff-client/utils/hash';
 import update from 'immutability-helper';
 
 import type { Card } from './cards.types';
 
 export const addCard = (cards: Card[], atIndex: number): Card[] => [
   ...cards.slice(0, atIndex + 1),
-  { label: '' },
+  { id: generateRandomHash(6), label: '' },
   ...cards.slice(atIndex + 1),
 ];
 

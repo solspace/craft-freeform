@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\Cards\Card;
 use Solspace\Freeform\Fields\Properties\Cards\CardCollection;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\CryptoHelper;
 
 class CardsTransformer extends Transformer
 {
@@ -19,6 +20,7 @@ class CardsTransformer extends Transformer
 
         foreach ($value as $item) {
             $card = new Card();
+            $card->id = $item['id'] ?? CryptoHelper::getUniqueToken(6);
             $card->label = $item['label'] ?? '';
             $card->value = $item['value'] ?? '';
             $card->assetId = $item['assetId'] ?? null;
@@ -43,6 +45,7 @@ class CardsTransformer extends Transformer
 
         foreach ($value as $card) {
             $serialized[] = [
+                'id' => $card->id,
                 'label' => $card->label,
                 'value' => $card->value,
                 'assetId' => $card->assetId,

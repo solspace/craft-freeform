@@ -57,7 +57,7 @@ class ExportService extends BaseService
         if ($formieInstalled && $formieEnabled) {
             $navigation[] = [
                 'title' => Freeform::t('Formie v3'),
-                'url' => 'freeform/import/formie3',
+                'url' => 'freeform/import/formie/v3',
             ];
         }
 

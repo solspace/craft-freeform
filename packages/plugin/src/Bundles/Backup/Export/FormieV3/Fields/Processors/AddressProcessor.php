@@ -36,7 +36,7 @@ class AddressProcessor extends AbstractFieldProcessor
         $field->required = $formField->required ?? false;
         $field->metadata = $this->getFieldMetadata($formField);
 
-        // Create layout for the GroupField
+        // Create layout for the GroupField with proper nested field structure
         $field->layout = $this->createLayout($formField, $formUid, $index);
 
         return $field;
@@ -67,9 +67,9 @@ class AddressProcessor extends AbstractFieldProcessor
         $fields->add($this->createSubfield(
             $formField,
             'address1',
-            'Address Line 1',
+            $formField->address1Label ?? 'Address Line 1',
             $formField->address1Placeholder ?? '',
-            $formField->address1Required ?? false,
+            $formField->address1Required ?? true,
             'text',
             $formUid,
             $index,
@@ -192,7 +192,9 @@ class AddressProcessor extends AbstractFieldProcessor
     private function createSubfield($formField, string $handle, string $label, string $placeholder, bool $required, string $type, string $formUid, int $parentIndex, int $fieldIndex, array $options = []): Field
     {
         $subfield = new Field();
-        $subfield->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex, 32);
+        // Create a unique UID for each nested field that can be used as a database record
+        // Use a more unique pattern to avoid conflicts with existing fields
+        $subfield->uid = HashHelper::sha1($formUid.'nested'.$parentIndex.$fieldIndex.$handle, 32);
         $subfield->name = $label;
         $subfield->handle = $handle;
         $subfield->type = $this->getFieldTypeClass($type);

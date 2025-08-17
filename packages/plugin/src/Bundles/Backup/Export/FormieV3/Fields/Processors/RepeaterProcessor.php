@@ -8,7 +8,17 @@ use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Interfaces\FieldProcessorInterface;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Implementations\DateField;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
+use Solspace\Freeform\Fields\Implementations\EmailField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Fields\Implementations\RadiosField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
@@ -77,7 +87,7 @@ class RepeaterProcessor extends AbstractFieldProcessor
         $field->required = $formField->required ?? false;
         $field->metadata = $this->getFieldMetadata($formField);
 
-        // Create layout for the GroupField
+        // Create layout for the GroupField with proper nested field structure
         $field->layout = $this->createLayout($formField, $formUid, $index);
 
         return $field;
@@ -120,16 +130,13 @@ class RepeaterProcessor extends AbstractFieldProcessor
 
         if (!empty($nestedFields)) {
             foreach ($nestedFields as $nestedField) {
-                // Use the nested field processors to process each nested field
-                $mappedField = $this->mapNestedField($nestedField, $formUid, $fieldIndex);
+                // Create a simple nested field that can be saved to database
+                $mappedField = $this->createNestedField($nestedField, $formUid, $index, $fieldIndex);
 
                 if ($mappedField) {
-                    // Update the UID to be unique within the repeater context
-                    $mappedField->uid = HashHelper::sha1($formUid.'subfield'.$index.$fieldIndex, 32);
                     $fields->add($mappedField);
+                    ++$fieldIndex;
                 }
-
-                ++$fieldIndex;
             }
         } else {
             // If no nested fields found, create a default text field
@@ -147,15 +154,47 @@ class RepeaterProcessor extends AbstractFieldProcessor
         return $layout;
     }
 
-    private function mapNestedField($nestedField, string $formUid, int $index): ?Field
+    private function createNestedField($nestedField, string $formUid, int $parentIndex, int $fieldIndex): ?Field
     {
-        $processor = $this->findNestedFieldProcessor($nestedField);
+        // Create a simple nested field that can be saved to database
+        $field = new Field();
+        $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex, 32);
+        $field->name = $nestedField->label ?? 'Field';
+        $field->handle = $nestedField->handle ?? 'field'.$fieldIndex;
+        $field->type = $this->getFieldTypeClass($nestedField);
+        $field->required = $nestedField->required ?? false;
 
-        if (!$processor) {
-            return null; // Skip unsupported field types
-        }
+        $metadata = [
+            'label' => $nestedField->label ?? 'Field',
+            'handle' => $nestedField->handle ?? 'field'.$fieldIndex,
+            'required' => $nestedField->required ?? false,
+        ];
 
-        return $processor->process($nestedField, $formUid, $index);
+        $field->metadata = $metadata;
+
+        return $field;
+    }
+
+    private function getFieldTypeClass($nestedField): string
+    {
+        // Map Formie field types to Freeform field types
+        $typeMap = [
+            'verbb\formie\fields\SingleLineText' => TextField::class,
+            'verbb\formie\fields\MultiLineText' => TextareaField::class,
+            'verbb\formie\fields\Email' => EmailField::class,
+            'verbb\formie\fields\Number' => NumberField::class,
+            'verbb\formie\fields\Checkboxes' => CheckboxesField::class,
+            'verbb\formie\fields\Dropdown' => DropdownField::class,
+            'verbb\formie\fields\Radio' => RadiosField::class,
+            'verbb\formie\fields\Checkbox' => CheckboxField::class,
+            'verbb\formie\fields\FileUpload' => FileUploadField::class,
+            'verbb\formie\fields\Date' => DateField::class,
+            'verbb\formie\fields\Hidden' => HiddenField::class,
+        ];
+
+        $formieType = $nestedField::class;
+
+        return $typeMap[$formieType] ?? TextField::class;
     }
 
     private function findNestedFieldProcessor($nestedField): ?FieldProcessorInterface
@@ -221,6 +260,37 @@ class RepeaterProcessor extends AbstractFieldProcessor
             'placeholder' => 'Enter item',
             'required' => false,
         ];
+
+        $subfield->metadata = $metadata;
+
+        return $subfield;
+    }
+
+    private function createSubfield($formField, string $handle, string $label, string $placeholder, bool $required, string $type, string $formUid, int $parentIndex, int $fieldIndex, array $options = []): Field
+    {
+        $subfield = new Field();
+        // Create a unique UID for each nested field that can be used as a database record
+        // Use a more unique pattern to avoid conflicts with existing fields
+        $subfield->uid = HashHelper::sha1($formUid.'nested'.$parentIndex.$fieldIndex.$handle, 32);
+        $subfield->name = $label;
+        $subfield->handle = $handle;
+        $subfield->type = $this->getFieldTypeClass($type);
+        $subfield->required = $required;
+
+        $metadata = [
+            'label' => $label,
+            'handle' => $handle,
+            'placeholder' => $placeholder,
+            'required' => $required,
+        ];
+
+        if (!empty($options)) {
+            $metadata['optionConfiguration'] = [
+                'source' => 'custom',
+                'useCustomValues' => true,
+                'options' => $options,
+            ];
+        }
 
         $subfield->metadata = $metadata;
 

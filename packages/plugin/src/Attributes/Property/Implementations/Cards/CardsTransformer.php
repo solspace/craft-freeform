@@ -50,7 +50,7 @@ class CardsTransformer extends Transformer
                 'value' => $card->value,
                 'assetId' => $card->assetId,
                 'description' => $card->description,
-                'metadata' => (object) $card->metadata,
+                'metadata' => $card->metadata,
             ];
         }
 

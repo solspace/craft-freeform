@@ -9,5 +9,5 @@ class Card
     public string $value;
     public string $description;
     public ?int $assetId;
-    public array $metadata = [];
+    public array|bool|int|string $metadata = [];
 }

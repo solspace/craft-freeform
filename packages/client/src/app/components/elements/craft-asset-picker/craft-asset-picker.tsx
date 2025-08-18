@@ -91,7 +91,12 @@ export const CraftAssetPicker: FC<Props> = ({
 
                 <div className="chip-content">
                   <div className="element-label">
-                    <a className="label-link" href={asset.editUrl}>
+                    <a
+                      className="label-link"
+                      href={asset.editUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       {asset.title}
                     </a>
                   </div>

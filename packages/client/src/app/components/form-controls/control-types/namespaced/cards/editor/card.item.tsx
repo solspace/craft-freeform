@@ -1,14 +1,30 @@
 import type { FC } from 'react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Tooltip } from 'react-tippy';
 import { CraftAssetPicker } from '@components/elements/craft-asset-picker/craft-asset-picker';
 import { RemoveButton } from '@components/elements/remove-button/remove';
 import { ControlBlock } from '@components/form-controls/control.block';
+import { useDebounce } from '@ff-client/hooks/use-debounce';
+import type { GenericValue } from '@ff-client/types/properties';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { Editor } from '@monaco-editor/react';
 
 import type { Card } from '../cards.types';
 
-import { Actions, DragHandle, Item, TextArea } from './card.item.styles';
+import {
+  ActionButton,
+  Actions,
+  EditorWrapper,
+  Item,
+  PillWrapper,
+  StatusStrip,
+  TextArea,
+} from './card.item.styles';
+import CodeIcon from './code.icon.svg';
+import CrossIcon from './cross.icon.svg';
 import GripIcon from './grip.icon.svg';
+import SuccessIcon from './success.icon.svg';
 
 type Props = {
   card: Card;
@@ -16,15 +32,33 @@ type Props = {
   updateCard: (card: Card) => void;
 };
 
-export const CardItem: FC<Props> = ({ card, updateCard, removeCard }) => {
-  const { label, value, assetId, description } = card;
+export const CardItem: FC<Props> = (props) => {
+  const [editingMeta, setEditingMeta] = useState(false);
+
+  const { removeCard } = props;
+  const entries = countEntries(props.card.metadata);
 
   return (
     <Item>
       <Actions>
-        <DragHandle className="drag-handle">
+        <ActionButton
+          onClick={() => setEditingMeta(!editingMeta)}
+          className={classes(editingMeta && 'active')}
+        >
+          <Tooltip
+            title={translate('Edit Custom Metadata')}
+            delay={[500, 0] as unknown as number}
+          >
+            <PillWrapper>
+              <span className={entries > 0 && 'filled'}>{entries}</span>
+              <CodeIcon />
+            </PillWrapper>
+          </Tooltip>
+        </ActionButton>
+
+        <ActionButton className="drag-handle" title={translate('Drag Card')}>
           <GripIcon />
-        </DragHandle>
+        </ActionButton>
 
         <RemoveButton
           active
@@ -33,6 +67,17 @@ export const CardItem: FC<Props> = ({ card, updateCard, removeCard }) => {
         />
       </Actions>
 
+      {editingMeta && <MetadataEditor {...props} />}
+      {!editingMeta && <CommonEditor {...props} />}
+    </Item>
+  );
+};
+
+const CommonEditor: FC<Props> = ({ card, updateCard }) => {
+  const { label, value, assetId, description } = card;
+
+  return (
+    <>
       <ControlBlock label="Image">
         <CraftAssetPicker
           criteria={{ kind: ['image'] }}
@@ -79,6 +124,102 @@ export const CardItem: FC<Props> = ({ card, updateCard, removeCard }) => {
           }
         />
       </ControlBlock>
-    </Item>
+    </>
   );
+};
+
+enum Status {
+  pending = 'pending',
+  success = 'success',
+  error = 'error',
+}
+
+const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
+  const [status, setStatus] = useState<Status>(Status.pending);
+  const [message, setMessage] = useState<string>();
+  const [json, setJson] = useState(JSON.stringify(card.metadata, null, 2));
+  const debouncedJson = useDebounce(json, 1000);
+
+  useEffect(() => {
+    if (debouncedJson) {
+      setMessage(undefined);
+      setStatus(Status.pending);
+
+      try {
+        const parsedJson = JSON.parse(debouncedJson);
+        setStatus(Status.success);
+
+        updateCard({
+          ...card,
+          metadata: parsedJson,
+        });
+      } catch (error) {
+        setStatus(Status.error);
+        setMessage(error.message);
+      }
+    }
+  }, [debouncedJson]);
+
+  return (
+    <>
+      <ControlBlock
+        label="Metadata"
+        instructions="Enter your desired metadata in the form of JSON in this field, and access them in your template via `card.metadata.yourProperty`"
+      >
+        <EditorWrapper>
+          <Editor
+            height={200}
+            value={json}
+            defaultLanguage={'json'}
+            onChange={(value) => setJson(value)}
+            onMount={() => {
+              document.body.classList.remove('underline-links');
+            }}
+            options={{
+              folding: false,
+              glyphMargin: false,
+              renderLineHighlight: 'none',
+              minimap: { enabled: false },
+              lineNumbers: 'on',
+              lineNumbersMinChars: 1,
+              scrollbar: {
+                verticalScrollbarSize: 5,
+                horizontalScrollbarSize: 5,
+              },
+            }}
+          />
+        </EditorWrapper>
+      </ControlBlock>
+
+      {status !== Status.pending && (
+        <StatusStrip className={status}>
+          <span>
+            {status === Status.error && <CrossIcon />}
+            {status === Status.error && 'Invalid JSON'}
+
+            {status === Status.success && <SuccessIcon />}
+            {status === Status.success && 'JSON Valid'}
+          </span>
+
+          {!!message && <div className="code">{message}</div>}
+        </StatusStrip>
+      )}
+    </>
+  );
+};
+
+const countEntries = (meta: GenericValue): number => {
+  if (Array.isArray(meta)) {
+    return meta.length;
+  }
+
+  if (meta && typeof meta === 'object') {
+    return Object.keys(meta).length;
+  }
+
+  if (typeof meta === 'boolean' || typeof meta === 'string') {
+    return 1;
+  }
+
+  return 0;
 };

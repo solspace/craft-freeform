@@ -77,11 +77,12 @@ class GroupProcessor extends AbstractFieldProcessor
 
         // Get the nested fields from the group
         $nestedFields = $this->getNestedFields($formField);
+        $parentHandle = $this->getFieldHandle($formField->handle ?? 'group');
 
         if (!empty($nestedFields)) {
             foreach ($nestedFields as $nestedField) {
                 // Create a simple nested field that can be saved to database
-                $mappedField = $this->createNestedField($nestedField, $formUid, $index, $fieldIndex);
+                $mappedField = $this->createNestedField($nestedField, $parentHandle, $formUid, $index, $fieldIndex);
 
                 if ($mappedField) {
                     $fields->add($mappedField);
@@ -91,6 +92,7 @@ class GroupProcessor extends AbstractFieldProcessor
         } else {
             // If no nested fields found, create a default text field
             $fields->add($this->createDefaultSubfield(
+                $parentHandle,
                 $formUid,
                 $index,
                 $fieldIndex++
@@ -104,19 +106,20 @@ class GroupProcessor extends AbstractFieldProcessor
         return $layout;
     }
 
-    private function createNestedField($nestedField, string $formUid, int $parentIndex, int $fieldIndex): ?Field
+    private function createNestedField($nestedField, string $parentHandle, string $formUid, int $parentIndex, int $fieldIndex): ?Field
     {
         // Create a simple nested field that can be saved to database
         $field = new Field();
-        $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex, 32);
+        $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex.$parentHandle, 32);
         $field->name = $nestedField->label ?? 'Field';
-        $field->handle = $nestedField->handle ?? 'field'.$fieldIndex;
+        $nestedHandle = $nestedField->handle ?? 'field'.$fieldIndex;
+        $field->handle = $parentHandle.'_'.$nestedHandle;
         $field->type = $this->getFieldTypeClass($nestedField);
         $field->required = $nestedField->required ?? false;
 
         $metadata = [
             'label' => $nestedField->label ?? 'Field',
-            'handle' => $nestedField->handle ?? 'field'.$fieldIndex,
+            'handle' => $field->handle,
             'required' => $nestedField->required ?? false,
         ];
 
@@ -163,18 +166,18 @@ class GroupProcessor extends AbstractFieldProcessor
         return \is_array($nestedFields) ? $nestedFields : [];
     }
 
-    private function createDefaultSubfield(string $formUid, int $parentIndex, int $fieldIndex): Field
+    private function createDefaultSubfield(string $parentHandle, string $formUid, int $parentIndex, int $fieldIndex): Field
     {
         $field = new Field();
-        $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex, 32);
+        $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex.$parentHandle, 32);
         $field->name = 'Field';
-        $field->handle = 'field'.$fieldIndex;
+        $field->handle = $parentHandle.'_field'.$fieldIndex;
         $field->type = TextField::class;
         $field->required = false;
 
         $metadata = [
             'label' => 'Field',
-            'handle' => 'field'.$fieldIndex,
+            'handle' => $field->handle,
             'required' => false,
         ];
 

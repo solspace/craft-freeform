@@ -62,10 +62,12 @@ class AddressProcessor extends AbstractFieldProcessor
         $fields = new FieldCollection();
 
         $fieldIndex = 0;
+        $parentHandle = $this->getFieldHandle($formField->handle ?? 'address');
 
         // Address Line 1 (always enabled)
         $fields->add($this->createSubfield(
             $formField,
+            $parentHandle,
             'address1',
             $formField->address1Label ?? 'Address Line 1',
             $formField->address1Placeholder ?? '',
@@ -80,6 +82,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->address2Enabled ?? false) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'address2',
                 $formField->address2Label ?? 'Address Line 2',
                 $formField->address2Placeholder ?? '',
@@ -95,6 +98,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->address3Enabled ?? false) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'address3',
                 $formField->address3Label ?? 'Address Line 3',
                 $formField->address3Placeholder ?? '',
@@ -110,6 +114,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->cityEnabled ?? true) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'city',
                 $formField->cityLabel ?? 'City',
                 $formField->cityPlaceholder ?? '',
@@ -125,6 +130,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->stateEnabled ?? true) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'state',
                 $formField->stateLabel ?? 'State / Province',
                 $formField->statePlaceholder ?? '',
@@ -140,6 +146,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->zipEnabled ?? true) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'zip',
                 $formField->zipLabel ?? 'ZIP / Postal Code',
                 $formField->zipPlaceholder ?? '',
@@ -155,6 +162,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->countryEnabled ?? true) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'country',
                 $formField->countryLabel ?? 'Country',
                 $formField->countryPlaceholder ?? 'Select an option',
@@ -171,6 +179,7 @@ class AddressProcessor extends AbstractFieldProcessor
         if ($formField->autocompleteEnabled ?? false) {
             $fields->add($this->createSubfield(
                 $formField,
+                $parentHandle,
                 'autocomplete',
                 $formField->autocompleteLabel ?? 'Auto-Complete',
                 $formField->autocompletePlaceholder ?? '',
@@ -189,20 +198,20 @@ class AddressProcessor extends AbstractFieldProcessor
         return $layout;
     }
 
-    private function createSubfield($formField, string $handle, string $label, string $placeholder, bool $required, string $type, string $formUid, int $parentIndex, int $fieldIndex, array $options = []): Field
+    private function createSubfield($formField, string $parentHandle, string $handle, string $label, string $placeholder, bool $required, string $type, string $formUid, int $parentIndex, int $fieldIndex, array $options = []): Field
     {
         $subfield = new Field();
         // Create a unique UID for each nested field that can be used as a database record
         // Use a more unique pattern to avoid conflicts with existing fields
-        $subfield->uid = HashHelper::sha1($formUid.'nested'.$parentIndex.$fieldIndex.$handle, 32);
+        $subfield->uid = HashHelper::sha1($formUid.'nested'.$parentIndex.$fieldIndex.$parentHandle.'_'.$handle, 32);
         $subfield->name = $label;
-        $subfield->handle = $handle;
+        $subfield->handle = $parentHandle.'_'.$handle;
         $subfield->type = $this->getFieldTypeClass($type);
         $subfield->required = $required;
 
         $metadata = [
             'label' => $label,
-            'handle' => $handle,
+            'handle' => $subfield->handle,
             'placeholder' => $placeholder,
             'required' => $required,
         ];

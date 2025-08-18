@@ -11,11 +11,13 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
     public function process($formField, string $formUid, int $index): ?Field
     {
         $field = new Field();
-        $field->uid = $formField->uid ?? HashHelper::sha1($formUid.'field'.$index, 32);
         $field->name = $formField->label ?? 'Field '.($index + 1);
-        $field->handle = $this->getFieldHandle($formField->handle ?? 'field'.$index);
+        $handle = $this->getFieldHandle($formField->handle ?? 'field'.$index);
+        $field->handle = $handle;
         $field->type = $this->getFreeformFieldClass();
         $field->required = $formField->required ?? false;
+        // Stabilize UID generation: prefer source UID; otherwise derive from form UID + handle + type
+        $field->uid = $formField->uid ?? HashHelper::sha1($formUid.'_'.$handle.'_'.$field->type, 32);
         $field->metadata = $this->getFieldMetadata($formField);
 
         return $field;

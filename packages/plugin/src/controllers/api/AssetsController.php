@@ -11,6 +11,31 @@ use yii\web\Response;
 
 class AssetsController extends BaseApiController
 {
+    public function actionAssetUrls(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        $assetIds = $this->request->get('ids');
+        if (!$assetIds) {
+            return $this->asJson([]);
+        }
+
+        $transform = $this->request->get('transform');
+
+        $assetIds = explode(',', $assetIds);
+        $assets = Asset::find()->id($assetIds)->all();
+
+        $urls = [];
+        foreach ($assets as $asset) {
+            $urls[$asset->id] = [
+                'title' => $asset->title,
+                'url' => $asset->getUrl($transform),
+            ];
+        }
+
+        return $this->asSerializedJson($urls);
+    }
+
     public function actionCardThumbnail(int $assetId): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);

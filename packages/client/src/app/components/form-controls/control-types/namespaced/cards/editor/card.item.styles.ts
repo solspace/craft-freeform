@@ -27,11 +27,6 @@ export const TextArea = styled.textarea`
 
 export const DragHandle = styled.div`
   cursor: pointer;
-  position: absolute;
-  top: 14px;
-  right: 40px;
-  z-index: 2;
-
   transition: all 0.2s ease-in-out;
 
   &:hover {
@@ -43,4 +38,15 @@ export const DragHandle = styled.div`
     height: 16px;
     fill: ${colors.gray400};
   }
+`;
+
+export const Actions = styled.div`
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;

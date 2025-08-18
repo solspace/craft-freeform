@@ -29,6 +29,10 @@ export const Image = styled.div`
   grid-area: icon;
   align-self: start;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   border: 1px solid ${colors.gray200};
   border-radius: 5px;
   overflow: hidden;
@@ -50,4 +54,24 @@ export const Description = styled.div`
   font-style: italic;
   overflow: hidden;
   text-overflow: ellipsis;
+`;
+
+export const SpinnerWrapper = styled.div`
+  width: 20px;
+  height: 20px;
+  margin: 8px 0;
+
+  svg {
+    animation: spin 1s linear infinite;
+    fill: ${colors.gray400};
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 `;

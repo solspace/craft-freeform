@@ -7,7 +7,7 @@ import translate from '@ff-client/utils/translations';
 
 import type { Card } from '../cards.types';
 
-import { DragHandle, Item, TextArea } from './card.item.styles';
+import { Actions, DragHandle, Item, TextArea } from './card.item.styles';
 import GripIcon from './grip.icon.svg';
 
 type Props = {
@@ -21,21 +21,23 @@ export const CardItem: FC<Props> = ({ card, updateCard, removeCard }) => {
 
   return (
     <Item>
-      <DragHandle className="drag-handle">
-        <GripIcon />
-      </DragHandle>
+      <Actions>
+        <DragHandle className="drag-handle">
+          <GripIcon />
+        </DragHandle>
 
-      <RemoveButton
-        style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}
-        active
-        onClick={removeCard}
-        title={translate('Remove card')}
-      />
+        <RemoveButton
+          active
+          onClick={removeCard}
+          title={translate('Remove card')}
+        />
+      </Actions>
 
       <ControlBlock label="Image">
         <CraftAssetPicker
           criteria={{ kind: ['image'] }}
           value={assetId ? [assetId] : []}
+          limit={1}
           onUpdate={(assetIds) =>
             updateCard({ ...card, assetId: assetIds[0] ?? undefined })
           }

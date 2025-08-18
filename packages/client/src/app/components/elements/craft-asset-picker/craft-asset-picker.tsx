@@ -12,6 +12,7 @@ type Props = {
   multiSelect?: boolean;
   sources?: string[] | string;
   criteria?: Record<string, GenericValue>;
+  limit?: number;
   value: number[];
   onUpdate: (value: number[]) => void;
 };
@@ -21,6 +22,7 @@ export const CraftAssetPicker: FC<Props> = ({
   multiSelect,
   sources = '*',
   criteria,
+  limit,
   value,
   onUpdate,
 }) => {
@@ -28,13 +30,16 @@ export const CraftAssetPicker: FC<Props> = ({
 
   const openModal = useCallback((): void => {
     Craft.createElementSelectorModal('craft\\elements\\Asset', {
-      multiSelect,
+      multiSelect: limit !== 1 || multiSelect,
       sources,
       criteria,
       storageKey: 'freeform-asset-selection',
       onSelect: (elements) => {
         // Format selected assets
-        const selectedIds = elements.map((element) => element.id);
+        const selectedIds = elements
+          .map((element) => element.id)
+          .slice(0, limit);
+
         const newIds = selectedIds.filter((id) => !value.includes(id));
         const combinedIds = [...value, ...newIds];
 
@@ -50,6 +55,7 @@ export const CraftAssetPicker: FC<Props> = ({
     [onUpdate, value]
   );
 
+  const showAddButton = limit === undefined || value.length < limit;
   const showLoading = data === undefined && isFetching && value.length > 0;
 
   return (
@@ -103,11 +109,13 @@ export const CraftAssetPicker: FC<Props> = ({
           ))}
       </ul>
 
-      <div className="flex">
-        <button type="button" className="btn add icon" onClick={openModal}>
-          {translate(actionLabel || 'Add an asset')}
-        </button>
-      </div>
+      {showAddButton && (
+        <div className="flex">
+          <button type="button" className="btn add icon" onClick={openModal}>
+            {translate(actionLabel || 'Add an asset')}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

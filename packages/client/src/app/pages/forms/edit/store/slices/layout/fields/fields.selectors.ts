@@ -2,26 +2,34 @@ import type { Row } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
 import { createSelector } from '@reduxjs/toolkit';
 
-import type { Field } from '.';
-
 export const fieldSelectors = {
-  all: (state: RootState): Field[] => state.layout.fields,
-  count: (state: RootState): number => state.layout.fields.length,
+  all: createSelector(
+    (state: RootState) => state.layout.fields,
+    (fields) => fields
+  ),
 
-  one:
-    (uid: string) =>
-    (state: RootState): Field =>
-      state.layout.fields.find((field) => field.uid === uid),
+  count: createSelector(
+    (state: RootState) => state.layout.fields,
+    (fields) => fields.length
+  ),
 
-  hasErrors: (state: RootState): boolean =>
-    Boolean(state.layout.fields.find((field) => field.errors !== undefined)),
+  one: (uid: string) =>
+    createSelector(
+      (state: RootState) => state.layout.fields,
+      (fields) => fields.find((field) => field.uid === uid)
+    ),
+
+  hasErrors: createSelector(
+    (state: RootState) => state.layout.fields,
+    (fields) => fields.some((field) => field.errors !== undefined)
+  ),
 
   inRow: (row: Row) =>
     createSelector(
-      (state: RootState): Field[] => state.layout.fields,
+      (state: RootState) => state.layout.fields,
       (fields) =>
         fields
           .filter((field) => field.rowUid === row.uid)
-          .sort((a, b) => a.order - b.order)
+          .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
     ),
 } as const;

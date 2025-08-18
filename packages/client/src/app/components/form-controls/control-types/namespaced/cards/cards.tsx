@@ -7,15 +7,29 @@ import type { CardsProperty } from '@ff-client/types/properties';
 import { CardsEditor } from './editor/cards.editor';
 import { CardsPreview } from './preview/cards.preview';
 
-const Cards: React.FC<ControlType<CardsProperty>> = ({
+type Context = {
+  properties: {
+    transform?: string;
+  };
+};
+
+const Cards: React.FC<ControlType<CardsProperty, Context>> = ({
   value,
   property,
   errors,
   updateValue,
+  context,
 }) => {
   return (
     <Control property={property} errors={errors}>
-      <PreviewableComponent preview={<CardsPreview cards={value} />}>
+      <PreviewableComponent
+        preview={
+          <CardsPreview
+            cards={value}
+            transform={context?.properties?.transform}
+          />
+        }
+      >
         <CardsEditor value={value} updateValue={updateValue} />
       </PreviewableComponent>
     </Control>

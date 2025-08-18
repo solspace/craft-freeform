@@ -59,10 +59,10 @@ class Stripe extends PaymentGatewayIntegration
     protected string $secretKey = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
-    #[Flag(self::FLAG_ENV_SUGGEST)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Payment Configuration ID',
-        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here..',
+        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
         placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
     )]
     protected string $paymentConfigurationId = '';

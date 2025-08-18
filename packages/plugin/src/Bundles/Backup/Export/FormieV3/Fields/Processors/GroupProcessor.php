@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors;
 
+use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
+use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
-use Solspace\Freeform\Bundles\Backup\DTO\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
-use Solspace\Freeform\Bundles\Backup\DTO\RowCollection;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\DateField;
@@ -16,10 +16,11 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
-use Solspace\Freeform\Helpers\HashHelper;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class GroupProcessor extends AbstractFieldProcessor
 {
@@ -143,6 +144,7 @@ class GroupProcessor extends AbstractFieldProcessor
             'verbb\formie\fields\FileUpload' => FileUploadField::class,
             'verbb\formie\fields\Date' => DateField::class,
             'verbb\formie\fields\Hidden' => HiddenField::class,
+            'verbb\formie\fields\Table' => TableField::class,
         ];
 
         $formieType = $nestedField::class;
@@ -154,13 +156,29 @@ class GroupProcessor extends AbstractFieldProcessor
     {
         $nestedFields = [];
 
-        // Try different methods to get nested fields
-        if (method_exists($formField, 'getFields')) {
-            $nestedFields = $formField->getFields();
-        } elseif (property_exists($formField, 'fields')) {
+        // Robustly try different methods to get nested fields (align with Repeater)
+        if (property_exists($formField, 'fields') && \is_array($formField->fields)) {
             $nestedFields = $formField->fields;
-        } elseif (method_exists($formField, 'getSettings') && isset($formField->getSettings()['fields'])) {
-            $nestedFields = $formField->getSettings()['fields'];
+        } elseif (property_exists($formField, 'nestedFields') && \is_array($formField->nestedFields)) {
+            $nestedFields = $formField->nestedFields;
+        } elseif (method_exists($formField, 'getFields')) {
+            $nestedFields = $formField->getFields();
+        } elseif (method_exists($formField, 'getNestedFields')) {
+            $nestedFields = $formField->getNestedFields();
+        }
+
+        if (empty($nestedFields)) {
+            if (property_exists($formField, 'settings') && \is_object($formField->settings)) {
+                $settings = $formField->settings;
+                if (property_exists($settings, 'fields') && \is_array($settings->fields)) {
+                    $nestedFields = $settings->fields;
+                }
+            } elseif (method_exists($formField, 'getSettings')) {
+                $settings = $formField->getSettings();
+                if (\is_array($settings) && isset($settings['fields'])) {
+                    $nestedFields = $settings['fields'];
+                }
+            }
         }
 
         return \is_array($nestedFields) ? $nestedFields : [];

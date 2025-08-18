@@ -41,21 +41,26 @@ class FormProcessor
             $defaultStatus = Freeform::getInstance()->statuses->getDefaultStatusId();
 
             foreach ($forms as $index => $form) {
-                $exported = new Form();
-                $exported->uid = $form->uid;
-                $exported->name = $form->title ?? 'Untitled '.$form->id;
-                $exported->handle = $form->handle ?? 'untitled-'.$form->id;
-                $exported->order = $form->sortOrder ?? $index;
+                try {
+                    $exported = new Form();
+                    $exported->uid = $form->uid;
+                    $exported->name = $form->title ?? 'Untitled '.$form->id;
+                    $exported->handle = $form->handle ?? 'untitled-'.$form->id;
+                    $exported->order = $form->sortOrder ?? $index;
 
-                $exported->settings = new FormSettings([], $this->propertyProvider);
+                    $exported->settings = new FormSettings([], $this->propertyProvider);
 
-                $this->configureFormSettings($exported, $form, $colorGenerator, $defaultStatus);
-                $exported->notifications = $this->notificationProcessor->processNotifications($form, $exported->uid);
-                $exported->pages = new PageCollection();
+                    $this->configureFormSettings($exported, $form, $colorGenerator, $defaultStatus);
+                    $exported->notifications = $this->notificationProcessor->processNotifications($form, $exported->uid);
+                    $exported->pages = new PageCollection();
 
-                $this->layoutBuilder->buildFormLayout($form, $exported);
+                    $this->layoutBuilder->buildFormLayout($form, $exported);
 
-                $collection->add($exported);
+                    $collection->add($exported);
+                } catch (\Throwable $formException) {
+                    // Continue so one broken Formie form doesn't hide the rest
+                    continue;
+                }
             }
         } catch (\Throwable $e) {
             return new FormCollection();

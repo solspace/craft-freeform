@@ -3,17 +3,13 @@
 namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\StringHelper;
-use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\controllers\PopUpTrait;
 use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
-use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
-use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsEditBundle;
@@ -64,12 +60,14 @@ class IntegrationsController extends BaseController
 
     public function actionAuthorize(int $id): Response
     {
-        $integration = $this->integrationsService->getIntegrationObjectById($id);
-        if (!$integration) {
+        $model = $this->integrationsService->getById($id);
+        if (!$model) {
             throw new NotFoundHttpException();
         }
 
-        $event = new AuthorizeIntegrationEvent($integration);
+        $integration = $model->getIntegrationObject();
+
+        $event = new AuthorizeIntegrationEvent($model, $integration);
 
         try {
             Event::trigger(
@@ -85,85 +83,13 @@ class IntegrationsController extends BaseController
             return $this->renderPopUpError($event->getErrors());
         }
 
+        if ($event->isTriggerSave()) {
+            $this->integrationsService->save($model, $integration);
+        }
+
+        $this->integrationsService->setConnectionEstablished($integration);
+
         return $this->closePopUpWindowResponse();
-    }
-
-    public function actionCheckIntegrationConnection(int $id): Response
-    {
-        $integration = $this->getIntegrationsService()->getById($id);
-        if (!$integration) {
-            throw new NotFoundHttpException('Integration not found');
-        }
-
-        $integrationObject = $integration->getIntegrationObject();
-        if (!$integrationObject instanceof APIIntegration) {
-            throw new NotFoundHttpException('Integration not found');
-        }
-
-        $response = [
-            'status' => 'pending',
-            'errors' => null,
-        ];
-
-        $client = null;
-
-        try {
-            $client = $this->clientProvider->getAuthorizedClient($integrationObject);
-        } catch (\Exception $exception) {
-            $response['status'] = 'error';
-            $response['errors'] = [$exception->getMessage()];
-        }
-
-        if (!$client) {
-            return $this->asJson($response);
-        }
-
-        try {
-            if ($integrationObject->checkConnection($client)) {
-                $response['status'] = 'authorized';
-
-                $this->triggerAuthorized($integrationObject);
-            } else {
-                $response['status'] = 'unauthorized';
-            }
-        } catch (\Exception $exception) {
-            $event = new FailedRequestEvent(null, $integrationObject, $exception);
-            Event::trigger(
-                IntegrationInterface::class,
-                IntegrationInterface::EVENT_ON_FAILED_REQUEST,
-                $event,
-            );
-
-            if ($event->isRetry()) {
-                $client = $this->clientProvider->getAuthorizedClient($integrationObject);
-
-                try {
-                    if ($integrationObject->checkConnection($client)) {
-                        $response['status'] = 'authorized';
-
-                        $this->triggerAuthorized($integrationObject);
-                    } else {
-                        $response['status'] = 'unauthorized';
-                    }
-
-                    return $this->asJson($response);
-                } catch (\Exception $exception) {
-                }
-            }
-
-            $message = $exception->getMessage();
-            if ($exception instanceof BadResponseException) {
-                $responseBody = (string) $exception->getResponse()->getBody();
-                if ($responseBody) {
-                    $message = $responseBody;
-                }
-            }
-
-            $response['status'] = 'error';
-            $response['errors'] = [$message];
-        }
-
-        return $this->asJson($response);
     }
 
     public function actionCreate(string $type): Response
@@ -318,16 +244,6 @@ class IntegrationsController extends BaseController
                 ' ',
                 StringHelper::toWords($type, removePunctuation: true)
             )
-        );
-    }
-
-    private function triggerAuthorized(IntegrationInterface $integrationModel): void
-    {
-        $event = new AuthorizeIntegrationEvent($integrationModel);
-        Event::trigger(
-            APIIntegrationInterface::class,
-            APIIntegrationInterface::EVENT_TRIGGER_AUTHORIZED,
-            $event
         );
     }
 }

@@ -201,6 +201,17 @@ class IntegrationsService extends BaseService
         );
     }
 
+    public function setConnectionEstablished(IntegrationInterface $integration): void
+    {
+        $record = IntegrationRecord::findOne(['id' => $integration->getId()]);
+        if (!$record) {
+            return;
+        }
+
+        $record->connectionEstablished = true;
+        $record->save();
+    }
+
     public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
     {
         try {

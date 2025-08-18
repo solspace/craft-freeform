@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\controllers;
 
+use craft\web\View;
 use yii\web\Response;
 
 trait PopUpTrait
@@ -25,6 +26,8 @@ trait PopUpTrait
         if (!\is_array($messages)) {
             $messages = [$messages];
         }
+
+        \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         return $this->renderTemplate(
             'freeform/settings/integrations/callback-error',

@@ -149,7 +149,11 @@ class FieldsService extends BaseService
             $metadata,
         );
 
-        if (!class_exists($type)) {
+        try {
+            if (!class_exists($type)) {
+                return null;
+            }
+        } catch (\Exception $exception) {
             return null;
         }
 

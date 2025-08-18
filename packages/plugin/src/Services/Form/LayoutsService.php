@@ -179,7 +179,7 @@ class LayoutsService extends BaseService
 
             $currentFields = array_filter(
                 $allFields,
-                fn (FieldInterface $field) => $field->getRowId() === $row->getId()
+                fn (?FieldInterface $field) => $field?->getRowId() === $row->getId()
             );
 
             foreach ($currentFields as $field) {

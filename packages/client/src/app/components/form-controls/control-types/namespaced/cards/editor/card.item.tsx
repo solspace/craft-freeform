@@ -50,7 +50,9 @@ export const CardItem: FC<Props> = (props) => {
             delay={[500, 0] as unknown as number}
           >
             <PillWrapper>
-              <span className={entries > 0 && 'filled'}>{entries}</span>
+              <span className={classes(entries > 0 && 'filled')}>
+                {entries}
+              </span>
               <CodeIcon />
             </PillWrapper>
           </Tooltip>

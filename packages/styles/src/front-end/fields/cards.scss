@@ -4,7 +4,8 @@
   grid-template-columns: repeat(var(--card-columns, 5), 1fr);
   gap: 16px;
 
-  &__legend {
+  &__legend,
+  &__card__input {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -18,10 +19,6 @@
 
   &__card {
     display: block;
-
-    &__input {
-      display: none !important;
-    }
 
     &__input:checked + &__content {
       border-color: #333;

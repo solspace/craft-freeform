@@ -173,6 +173,12 @@ class RepeaterProcessor extends AbstractFieldProcessor
             'required' => $nestedField->required ?? false,
         ];
 
+        $metadata['optionConfiguration'] = [
+            'source' => 'custom',
+            'useCustomValues' => true,
+            'options' => [],
+        ];
+
         $field->metadata = $metadata;
 
         return $field;

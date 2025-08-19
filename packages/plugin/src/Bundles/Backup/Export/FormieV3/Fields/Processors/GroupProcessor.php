@@ -124,6 +124,12 @@ class GroupProcessor extends AbstractFieldProcessor
             'required' => $nestedField->required ?? false,
         ];
 
+        $metadata['optionConfiguration'] = [
+            'source' => 'custom',
+            'useCustomValues' => true,
+            'options' => [],
+        ];
+
         $field->metadata = $metadata;
 
         return $field;
@@ -199,6 +205,13 @@ class GroupProcessor extends AbstractFieldProcessor
             'required' => false,
         ];
 
+        // Always provide a valid optionConfiguration structure to prevent null errors
+        $metadata['optionConfiguration'] = [
+            'source' => 'custom',
+            'useCustomValues' => true,
+            'options' => [],
+        ];
+
         $field->metadata = $metadata;
 
         return $field;
@@ -222,11 +235,19 @@ class GroupProcessor extends AbstractFieldProcessor
             'required' => $required,
         ];
 
+        // Always provide a valid optionConfiguration structure to prevent null errors
         if (!empty($options)) {
             $metadata['optionConfiguration'] = [
                 'source' => 'custom',
                 'useCustomValues' => true,
                 'options' => $options,
+            ];
+        } else {
+            // For fields without options, provide empty but valid structure
+            $metadata['optionConfiguration'] = [
+                'source' => 'custom',
+                'useCustomValues' => true,
+                'options' => [],
             ];
         }
 

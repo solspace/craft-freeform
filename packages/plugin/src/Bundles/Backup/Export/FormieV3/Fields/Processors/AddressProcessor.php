@@ -222,6 +222,13 @@ class AddressProcessor extends AbstractFieldProcessor
                 'useCustomValues' => true,
                 'options' => $options,
             ];
+        } else {
+            // For fields without options, provide empty but valid structure
+            $metadata['optionConfiguration'] = [
+                'source' => 'custom',
+                'useCustomValues' => true,
+                'options' => [],
+            ];
         }
 
         $subfield->metadata = $metadata;

@@ -82,6 +82,11 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
                 'previewTag' => 'legend',
             ],
             [
+                'handle' => 'card',
+                'label' => 'Card',
+                'previewTag' => 'card',
+            ],
+            [
                 'handle' => 'content',
                 'label' => 'Content',
                 'previewTag' => 'div',
@@ -104,6 +109,11 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
             [
                 'handle' => 'cardDescription',
                 'label' => 'Card Description',
+                'previewTag' => 'span',
+            ],
+            [
+                'handle' => 'cardMetadata',
+                'label' => 'Card Metadata',
                 'previewTag' => 'span',
             ],
         ]

@@ -12,6 +12,7 @@ class CardAttributesCollection extends Attributes
     protected Attributes $image;
     protected Attributes $cardLabel;
     protected Attributes $cardDescription;
+    protected Attributes $cardMetadata;
 
     public function __construct(?array $attributes = [])
     {
@@ -23,6 +24,7 @@ class CardAttributesCollection extends Attributes
         $this->image = new Attributes();
         $this->cardLabel = new Attributes();
         $this->cardDescription = new Attributes();
+        $this->cardMetadata = new Attributes();
 
         parent::__construct($attributes ?? []);
     }
@@ -65,5 +67,10 @@ class CardAttributesCollection extends Attributes
     public function getCardDescription(): Attributes
     {
         return $this->cardDescription;
+    }
+
+    public function getCardMetadata(): Attributes
+    {
+        return $this->cardMetadata;
     }
 }

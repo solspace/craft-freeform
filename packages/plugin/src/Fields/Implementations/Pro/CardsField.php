@@ -35,7 +35,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
     #[Input\Integer(
         label: 'Max Selected Values',
-        instructions: 'The maximum number of values this field is allowed to have (Leave blank or zero for no limit).',
+        instructions: 'Limit how many values a user can select. Leave blank or set to 0 for no limit.',
         min: 0,
         unsigned: true,
     )]
@@ -43,7 +43,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
     #[Input\Integer(
         label: 'Cards Per Row',
-        instructions: 'The number of cards per row.',
+        instructions: 'Set how many cards should display in each row.',
         min: 1,
         unsigned: true,
     )]
@@ -51,8 +51,8 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
     #[Input\Select(
         label: 'Image Transform',
-        instructions: 'Select an image transform to apply to the image.',
-        emptyOption: 'Select an Image Transform',
+        instructions: 'Choose an image transform to apply.',
+        emptyOption: 'Select an image transform...',
         options: ImageTransformOptionsGenerator::class,
     )]
     protected string $transform = '';
@@ -60,7 +60,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     #[ValueTransformer(CardsTransformer::class)]
     #[Input\Cards(
         label: 'Cards Layout',
-        instructions: 'Configure the layout of your cards.',
+        instructions: 'Configure the content and layout of your cards.',
     )]
     protected CardCollection $layout;
 

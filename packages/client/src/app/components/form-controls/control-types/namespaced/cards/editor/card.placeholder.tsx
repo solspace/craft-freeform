@@ -11,7 +11,7 @@ type Props = {
 export const CardPlaceholder: FC<Props> = ({ onClick }) => {
   return (
     <CardPlaceholderWrapper onClick={onClick}>
-      {translate('Add a card')}
+      {translate('Add Card')}
     </CardPlaceholderWrapper>
   );
 };

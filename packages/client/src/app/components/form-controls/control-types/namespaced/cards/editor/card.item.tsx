@@ -46,7 +46,7 @@ export const CardItem: FC<Props> = (props) => {
           className={classes(editingMeta && 'active')}
         >
           <Tooltip
-            title={translate('Edit Custom Metadata')}
+            title={translate('Custom Metadata')}
             delay={[500, 0] as unknown as number}
           >
             <PillWrapper>
@@ -56,14 +56,14 @@ export const CardItem: FC<Props> = (props) => {
           </Tooltip>
         </ActionButton>
 
-        <ActionButton className="drag-handle" title={translate('Drag Card')}>
+        <ActionButton className="drag-handle" title={translate('Reorder Card')}>
           <GripIcon />
         </ActionButton>
 
         <RemoveButton
           active
           onClick={removeCard}
-          title={translate('Remove card')}
+          title={translate('Remove Card')}
         />
       </Actions>
 
@@ -102,7 +102,9 @@ const CommonEditor: FC<Props> = ({ card, updateCard }) => {
 
       <ControlBlock
         label="Value"
-        instructions="Provide a custom value for the card, when selected"
+        instructions="Enter a value to use when this card is selected.
+
+"
       >
         <input
           type="text"
@@ -164,7 +166,7 @@ const MetadataEditor: FC<Props> = ({ card, updateCard }) => {
     <>
       <ControlBlock
         label="Metadata"
-        instructions="Enter your desired metadata in the form of JSON in this field, and access them in your template via `card.metadata.yourProperty`"
+        instructions="Enter metadata in JSON format. Access it in your template with `card.metadata.yourProperty`"
       >
         <EditorWrapper>
           <Editor

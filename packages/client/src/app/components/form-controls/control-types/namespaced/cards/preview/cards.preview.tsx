@@ -29,7 +29,11 @@ export const CardsPreview: FC<Props> = ({ cards, transform }) => {
 
   return (
     <PreviewWrapper data-edit={translate('Click to edit data')}>
-      {!cards.length && <NoContent>{translate('No cards added')}</NoContent>}
+      {!cards.length && (
+        <NoContent>
+          {translate('No cards yet. Click Add Card to create one.')}
+        </NoContent>
+      )}
       <PreviewCardsList>
         {cards.map((card, index) => (
           <PreviewCard key={index} data-title={'card'}>

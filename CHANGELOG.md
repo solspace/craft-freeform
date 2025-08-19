@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.11.11 - 2025-08-18
+
+### Added
+- Added the option to define a _Payment Configuration ID_ in the Stripe integration.
+
+### Fixed
+- Fixed an issue where _Element_ integration field mapping didn't account for multiple instances of the same field.
+
 ## 5.11.10 - 2025-08-14
 
 ### Fixed

@@ -161,7 +161,7 @@ export const FieldCellWrapper = styled.div`
   &[data-field-type='cards'] {
     .ff-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(var(--card-columns, 5), 1fr);
       gap: ${spacings.sm};
 
       &__empty {

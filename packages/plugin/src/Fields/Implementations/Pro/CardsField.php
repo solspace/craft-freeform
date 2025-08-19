@@ -15,6 +15,7 @@ use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Cards\CardCollection;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'Cards',
@@ -31,8 +32,17 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
         label: 'Max Selected Values',
         instructions: 'The maximum number of values this field is allowed to have (Leave blank or zero for no limit).',
         min: 0,
+        unsigned: true,
     )]
     protected ?int $maxSelectedValues = null;
+
+    #[Input\Integer(
+        label: 'Cards Per Row',
+        instructions: 'The number of cards per row.',
+        min: 1,
+        unsigned: true,
+    )]
+    protected int $cardsPerRow = 5;
 
     #[Input\Select(
         label: 'Image Transform',
@@ -57,6 +67,11 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     public function getMaxSelectedValues(): ?int
     {
         return $this->maxSelectedValues;
+    }
+
+    public function getCardsPerRow(): int
+    {
+        return $this->cardsPerRow;
     }
 
     public function getLayout(): CardCollection
@@ -93,8 +108,18 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
         $fieldId = $this->getIdAttribute();
 
-        $output = '<fieldset class="ff-cards" aria-labelledby="ff-cards-label-'.$fieldId.'">';
-        $output .= '<legend id="ff-cards-label-'.$fieldId.'" class="ff-cards__legend">'.($this->getInstructions() ?: $this->getLabel()).'</legend>';
+        $fieldsetAttributes = new Attributes([
+            'class' => 'ff-cards',
+            'aria-labelledby' => 'ff-cards-label-'.$fieldId,
+            'style' => '--card-columns: '.$this->getCardsPerRow(),
+        ]);
+        $output = '<fieldset'.$fieldsetAttributes.'>';
+
+        $legendAttributes = new Attributes([
+            'class' => 'ff-cards__legend',
+            'id' => 'ff-cards-label-'.$fieldId,
+        ]);
+        $output .= '<legend'.$legendAttributes.'>'.($this->getInstructions() ?: $this->getLabel()).'</legend>';
 
         foreach ($layout as $index => $card) {
             $label = $card->label;

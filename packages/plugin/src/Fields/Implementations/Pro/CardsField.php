@@ -97,13 +97,13 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
                 'previewTag' => 'img',
             ],
             [
-                'handle' => 'label',
-                'label' => 'Label',
+                'handle' => 'cardLabel',
+                'label' => 'Card Label',
                 'previewTag' => 'span',
             ],
             [
-                'handle' => 'description',
-                'label' => 'Description',
+                'handle' => 'cardDescription',
+                'label' => 'Card Description',
                 'previewTag' => 'span',
             ],
         ]
@@ -227,7 +227,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
             // Label
             // =========
             $labelAttrs = $cardAttributes
-                ->getLabel()
+                ->getCardLabel()
                 ->clone()
                 ->append('class', 'ff-cards__card__content__label')
             ;
@@ -241,7 +241,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
             // Description
             // =========
             $descriptionAttrs = $cardAttributes
-                ->getDescription()
+                ->getCardDescription()
                 ->clone()
                 ->append('class', 'ff-cards__card__content__description')
             ;

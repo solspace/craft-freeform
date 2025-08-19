@@ -11,8 +11,12 @@ class FieldTransformer
         private PropertyProvider $propertyProvider,
     ) {}
 
-    public function transform(FieldInterface $field): object
+    public function transform(?FieldInterface $field): object
     {
+        if (!$field) {
+            return new \stdClass();
+        }
+
         $typeClass = $field::class;
         $editableProperties = $this->propertyProvider->getEditableProperties($typeClass);
 

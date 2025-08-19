@@ -5,6 +5,7 @@ import { PreviewableComponent } from '@components/form-controls/preview/previewa
 import type { ControlType } from '@components/form-controls/types';
 import { useDebounce } from '@ff-client/hooks/use-debounce';
 import type { AttributeProperty } from '@ff-client/types/properties';
+import { isEqual } from 'lodash';
 
 import { AttributesEditor } from './attributes.editor';
 import { cleanAttributes } from './attributes.operations';
@@ -49,12 +50,21 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
   );
 
   const debouncedValue = useDebounce(editableAttributes, 1000);
+
+  // When local edits settle, sync back to redux only if the converted value changed
   useEffect(() => {
-    updateValue(convertFromEditable(debouncedValue));
+    const next = convertFromEditable(debouncedValue);
+    if (!isEqual(next, attributes)) {
+      updateValue(next);
+    }
   }, [debouncedValue]);
 
+  // Only update local editable state if incoming props actually changed
   useEffect(() => {
-    setEditableAttributes(convertToEditable(attributes));
+    const incoming = convertToEditable(attributes);
+    if (!isEqual(incoming, editableAttributes)) {
+      setEditableAttributes(incoming);
+    }
   }, [attributes]);
 
   const preview = (
@@ -63,7 +73,13 @@ const Attributes: React.FC<ControlType<AttributeProperty>> = ({
         <AttributePreview property={property} attributes={editableAttributes} />
       }
       onAfterEdit={() => {
-        updateValue(convertFromEditable(cleanAttributes(editableAttributes)));
+        const cleaned = convertFromEditable(
+          cleanAttributes(editableAttributes)
+        );
+
+        if (!isEqual(cleaned, attributes)) {
+          updateValue(cleaned);
+        }
       }}
     >
       <AttributesEditor

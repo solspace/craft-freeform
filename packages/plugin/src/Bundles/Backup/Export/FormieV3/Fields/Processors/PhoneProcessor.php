@@ -18,6 +18,17 @@ class PhoneProcessor extends AbstractFieldProcessor
 
     public function getFieldMetadata($formField): array
     {
-        return $this->getBaseMetadata($formField);
+        $metadata = $this->getBaseMetadata($formField);
+
+        // Extract settings from Formie field
+        $settings = $this->getFieldSettings($formField);
+
+        // Add phone-specific properties from settings
+        $metadata['countryEnabled'] = $settings['countryEnabled'] ?? true;
+        $metadata['countryDefaultValue'] = $settings['countryDefaultValue'] ?? null;
+        $metadata['countryAllowed'] = $settings['countryAllowed'] ?? [];
+        $metadata['countryLanguage'] = $settings['countryLanguage'] ?? 'auto';
+
+        return $metadata;
     }
 }

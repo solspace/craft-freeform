@@ -42,14 +42,56 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
 
     protected function getBaseMetadata($formField): array
     {
-        return [
+        $metadata = [
             'label' => $formField->label ?? '',
             'handle' => $this->getFieldHandle($formField->handle ?? ''),
             'instructions' => $formField->instructions ?? '',
             'required' => $formField->required ?? false,
-            'placeholder' => $formField->placeholder ?? '',
-            'defaultValue' => $formField->defaultValue ?? '',
         ];
+
+        // Try to get placeholder and defaultValue from direct properties first
+        $placeholder = $formField->placeholder ?? null;
+        $defaultValue = $formField->defaultValue ?? null;
+
+        // If not found directly, try to get from settings
+        if (empty($placeholder) || empty($defaultValue)) {
+            $settings = $this->getFieldSettings($formField);
+
+            if (empty($placeholder) && isset($settings['placeholder'])) {
+                $placeholder = $settings['placeholder'];
+            }
+
+            if (empty($defaultValue) && isset($settings['defaultValue'])) {
+                $defaultValue = $settings['defaultValue'];
+            }
+        }
+
+        $metadata['placeholder'] = $placeholder ?? '';
+        $metadata['defaultValue'] = $defaultValue ?? '';
+
+        return $metadata;
+    }
+
+    /**
+     * Extract settings from Formie field.
+     *
+     * @param mixed $formField
+     */
+    protected function getFieldSettings($formField): array
+    {
+        $settings = [];
+
+        // Try to get settings from the field object
+        if (property_exists($formField, 'settings') && \is_object($formField->settings)) {
+            $settings = (array) $formField->settings;
+        }
+
+        // If no settings found, try to get from getSettings method
+        if (empty($settings) && method_exists($formField, 'getSettings')) {
+            $settings = $formField->getSettings() ?? [];
+        }
+
+        return $settings;
     }
 
     /**

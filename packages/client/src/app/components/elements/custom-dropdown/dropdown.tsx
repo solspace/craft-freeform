@@ -155,7 +155,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
       onClick={toggleOpen}
     >
       <CurrentValue
-        className={classes(loading && 'disabled', value === '' && 'empty')}
+        className={classes(
+          loading && 'disabled',
+          (value === '' || value === null) && 'empty'
+        )}
       >
         <span dangerouslySetInnerHTML={{ __html: selectedValue }} />
 

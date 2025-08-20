@@ -24,6 +24,13 @@ class Tags extends BaseOptionProvider
     )]
     private ?string $groupId = null;
 
+    #[Input\DynamicSelect(
+        label: 'Status',
+        emptyOption: 'Select a Status',
+        source: 'api/elements/statuses?type='.Tag::class,
+    )]
+    private ?string $status = null;
+
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -75,6 +82,11 @@ class Tags extends BaseOptionProvider
         return $this->groupId;
     }
 
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
@@ -100,6 +112,7 @@ class Tags extends BaseOptionProvider
         return Tag::find()
             ->siteId($this->getSiteId() ?: null)
             ->groupId($this->getGroupId() ?: null)
+            ->status($this->getStatus() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;

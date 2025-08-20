@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors;
 
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Library\Helpers\ProseMirrorHelper;
 
 class AgreeProcessor extends AbstractFieldProcessor
 {
@@ -24,42 +25,21 @@ class AgreeProcessor extends AbstractFieldProcessor
         $metadata['fieldType'] = 'checkbox';
         $metadata['checkedByDefault'] = $formField->defaultValue ?? false;
 
-        // Handle description (Formie stores it as rich text content) - this becomes the label in Freeform
+        // Handle description (Formie stores it as rich text content)
         $label = '';
+
         if (property_exists($formField, 'description') && $formField->description) {
             if (\is_array($formField->description)) {
-                // Extract text from rich text content structure
-                $label = $this->extractTextFromRichContent($formField->description);
+                // Convert Formie's ProseMirror rich text content to HTML for Freeform's label
+                $label = ProseMirrorHelper::toHtml($formField->description);
             } else {
                 $label = $formField->description;
             }
         }
 
-        // Override the label with the description content
+        // Set the label with rich text content
         $metadata['label'] = $label;
 
         return $metadata;
-    }
-
-    /**
-     * Extract plain text from Formie's rich text content structure.
-     */
-    private function extractTextFromRichContent(array $content): string
-    {
-        $text = '';
-
-        foreach ($content as $block) {
-            if (isset($block['type']) && 'paragraph' === $block['type']) {
-                if (isset($block['content']) && \is_array($block['content'])) {
-                    foreach ($block['content'] as $textBlock) {
-                        if (isset($textBlock['type']) && 'text' === $textBlock['type']) {
-                            $text .= $textBlock['text'] ?? '';
-                        }
-                    }
-                }
-            }
-        }
-
-        return trim($text);
     }
 }

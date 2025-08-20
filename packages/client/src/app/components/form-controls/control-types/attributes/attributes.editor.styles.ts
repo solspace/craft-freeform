@@ -1,4 +1,5 @@
 import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
+import { scrollBar } from '@ff-client/styles/mixins';
 import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -15,10 +16,13 @@ export const AttributeEditorWrapper = styled(PreviewEditor)`
 export const AttributeTypeTabs = styled(TabsWrapper)`
   width: 100%;
   overflow: hidden;
+  overflow-x: auto;
   align-self: flex-start;
 
   padding: ${spacings.md} ${spacings.md} 0;
   box-shadow: ${shadows.bottom};
+
+  ${scrollBar};
 
   a {
     cursor: pointer;

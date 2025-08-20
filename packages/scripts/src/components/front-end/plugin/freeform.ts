@@ -1,6 +1,7 @@
 import events from '@lib/plugin/constants/event-types';
 import { SuccessBehavior } from '@lib/plugin/constants/form';
 import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
+import CardsHandler from '@lib/plugin/handlers/fields/cards';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
@@ -66,6 +67,7 @@ export default class Freeform {
     GoogleTagManager,
     DragAndDropHandler,
     SaveFormHandler,
+    CardsHandler,
   ];
 
   _lastButtonPressed?: HTMLButtonElement;

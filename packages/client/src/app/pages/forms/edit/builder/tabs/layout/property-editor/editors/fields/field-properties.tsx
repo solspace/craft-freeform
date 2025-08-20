@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
 import config from '@config/freeform/freeform.config';
@@ -50,30 +50,34 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
     );
   }
 
-  const sectionBlocks: React.ReactElement[] = [];
-  sections
-    .sort((a, b) => a.order - b.order)
-    .forEach(({ handle, label, icon }, sectionIndex) => {
-      const properties = type.properties
-        .filter(sectionFilter(handle))
-        .filter((property) => property.visible);
-      if (!properties.length) {
-        return;
-      }
+  const sectionBlocks: React.ReactElement[] = useMemo(() => {
+    const blocks: React.ReactElement[] = [];
+    sections
+      .sort((a, b) => a.order - b.order)
+      .forEach(({ handle, label, icon }, sectionIndex) => {
+        const properties = type.properties
+          .filter(sectionFilter(handle))
+          .filter((property) => property.visible);
+        if (!properties.length) {
+          return;
+        }
 
-      sectionBlocks.push(
-        <SectionBlock label={translate(label)} icon={icon} key={handle}>
-          {properties.map((property, propertyIndex) => (
-            <FieldComponent
-              autoFocus={sectionIndex === 0 && propertyIndex === 0}
-              key={property.handle}
-              field={field}
-              property={property}
-            />
-          ))}
-        </SectionBlock>
-      );
-    });
+        blocks.push(
+          <SectionBlock label={translate(label)} icon={icon} key={handle}>
+            {properties.map((property, propertyIndex) => (
+              <FieldComponent
+                autoFocus={sectionIndex === 0 && propertyIndex === 0}
+                key={property.handle}
+                field={field}
+                property={property}
+              />
+            ))}
+          </SectionBlock>
+        );
+      });
+
+    return blocks;
+  }, [sections, type, field]);
 
   return (
     <FieldPropertiesWrapper>

@@ -54,6 +54,7 @@ export const PreviewableComponent: React.FC<Props> = ({
     excludeClassNames: [
       'tagify__dropdown',
       'dropdown-rollout',
+      'elementselectormodal',
       ...excludeClassNames,
     ],
   });

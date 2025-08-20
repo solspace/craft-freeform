@@ -110,6 +110,7 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
                 $options[] = [
                     'label' => $option['label'] ?? '',
                     'value' => $option['value'] ?? '',
+                    'isDefault' => $option['isDefault'] ?? false,
                 ];
             }
         }
@@ -123,6 +124,7 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
                     $options[] = [
                         'label' => $option['label'] ?? '',
                         'value' => $option['value'] ?? '',
+                        'isDefault' => $option['isDefault'] ?? false,
                     ];
                 }
             }
@@ -134,6 +136,7 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
                 $options[] = [
                     'label' => $option['label'] ?? '',
                     'value' => $option['value'] ?? '',
+                    'isDefault' => $option['isDefault'] ?? false,
                 ];
             }
         }

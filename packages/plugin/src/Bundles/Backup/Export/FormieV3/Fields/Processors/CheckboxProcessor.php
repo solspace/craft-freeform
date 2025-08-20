@@ -19,8 +19,35 @@ class CheckboxProcessor extends AbstractFieldProcessor
     public function getFieldMetadata($formField): array
     {
         $metadata = $this->getBaseMetadata($formField);
-        $metadata['defaultValue'] = $formField->defaultValue ?? false;
+
+        // For checkbox fields, we need to check both direct defaultValue and options with isDefault
+        $defaultValue = $this->getCheckboxDefaultValue($formField);
+        $metadata['defaultValue'] = $defaultValue;
 
         return $metadata;
+    }
+
+    /**
+     * Extract default value for checkbox fields.
+     *
+     * @param mixed $formField
+     */
+    private function getCheckboxDefaultValue($formField): bool
+    {
+        // First try to get from base metadata (which now checks settings)
+        $baseDefault = $this->getBaseMetadata($formField)['defaultValue'] ?? false;
+        if (!empty($baseDefault)) {
+            return (bool) $baseDefault;
+        }
+
+        // Check if any options have isDefault = true
+        $options = $this->mapFieldOptions($formField);
+        foreach ($options as $option) {
+            if (isset($option['isDefault']) && $option['isDefault']) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

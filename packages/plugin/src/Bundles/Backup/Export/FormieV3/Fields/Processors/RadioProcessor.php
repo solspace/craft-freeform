@@ -26,6 +26,34 @@ class RadioProcessor extends AbstractFieldProcessor
             'options' => $this->mapFieldOptions($formField),
         ];
 
+        // Extract default value for radio fields
+        $defaultValue = $this->getRadioDefaultValue($formField);
+        $metadata['defaultValue'] = $defaultValue;
+
         return $metadata;
+    }
+
+    /**
+     * Extract default value for radio fields.
+     *
+     * @param mixed $formField
+     */
+    private function getRadioDefaultValue($formField): ?string
+    {
+        // First try to get from base metadata (which now checks settings)
+        $baseDefault = $this->getBaseMetadata($formField)['defaultValue'] ?? null;
+        if (!empty($baseDefault)) {
+            return (string) $baseDefault;
+        }
+
+        // Check if any options have isDefault = true
+        $options = $this->mapFieldOptions($formField);
+        foreach ($options as $option) {
+            if (isset($option['isDefault']) && $option['isDefault']) {
+                return (string) $option['value'];
+            }
+        }
+
+        return null;
     }
 }

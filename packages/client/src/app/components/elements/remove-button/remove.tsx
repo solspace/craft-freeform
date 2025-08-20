@@ -15,12 +15,16 @@ export const RemoveButton: React.FC<
 > = ({ active, onClick, ...rest }) => {
   const ref = useRef<HTMLButtonElement>(null);
   const hovering = useHover(ref);
+
   const animation = useRemoveAnimation({ active, hovering });
+  const style = { ...animation, ...rest?.style };
+
+  delete rest.style;
 
   return (
     <RemoveButtonWrapper
       ref={ref}
-      style={animation}
+      style={style}
       onClick={(event) => {
         event.stopPropagation();
         onClick?.();

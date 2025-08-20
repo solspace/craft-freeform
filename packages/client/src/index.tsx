@@ -16,6 +16,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '../config';
+import './scripts';
 
 import { Form, Forms } from './app/pages/forms';
 import { ImportExport } from './app/pages/import-export';

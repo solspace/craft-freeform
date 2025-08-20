@@ -12,6 +12,8 @@ class Edition implements CustomNormalizerInterface
     public const LITE = Freeform::EDITION_LITE;
     public const EXPRESS = Freeform::EDITION_EXPRESS;
 
+    // TODO: Implement edition checker method
+    // TODO: Include fallback check mechanism, so we don't have to specify all editions manually
     public function __construct(public string $name) {}
 
     public function normalize(): string

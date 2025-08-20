@@ -37,6 +37,7 @@ export const PropertyEditor: React.FC = () => {
       'breadcrumbs',
       'tagify__dropdown',
       'tox',
+      'elementselectormodal',
     ],
   });
 

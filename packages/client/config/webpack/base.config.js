@@ -60,6 +60,10 @@ module.exports = {
       '@config': path.resolve(__dirname, '../../config/'),
       '@editor': path.resolve(__dirname, '../../src/app/pages/forms/edit/'),
       '@components': path.resolve(__dirname, '../../src/app/components/'),
+      '@form-controls': path.resolve(
+        __dirname,
+        '../../src/app/components/form-controls'
+      ),
       '@ff-icons': path.resolve(__dirname, '../../src/assets/icons/'),
       '@ff-client': path.resolve(__dirname, '../../src/'),
     },

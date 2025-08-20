@@ -1,4 +1,5 @@
 import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
+import type { Card } from '@components/form-controls/control-types/namespaced/cards/cards.types';
 import type { OptionsConfiguration } from '@components/form-controls/control-types/options/options.types';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 import type {
@@ -13,40 +14,41 @@ import type { Recipient, RecipientMapping } from './notifications';
 export type GenericValue = any;
 
 export enum PropertyType {
-  Attributes = 'attributes',
+  Ai = 'ai',
+  AppStateSelect = 'appStateSelect',
   AssetPicker = 'assetPicker',
+  Attributes = 'attributes',
   Boolean = 'bool',
-  Checkboxes = 'checkboxes',
-  Color = 'color',
   Calculation = 'calculation',
+  Cards = 'cards',
+  Checkboxes = 'checkboxes',
+  CodeEditor = 'codeEditor',
+  Color = 'color',
   ConditionalRules = 'conditionalRules',
   DateTime = 'dateTime',
+  DynamicSelect = 'dynamicSelect',
   Field = 'field',
   FieldMapping = 'fieldMapping',
   FieldSelection = 'fieldSelection',
-  Ai = 'ai',
   FieldType = 'fieldType',
   Hidden = 'hidden',
   Integer = 'int',
   Label = 'label',
   MinMax = 'minMax',
   NotificationTemplate = 'notificationTemplate',
-  Options = 'options',
   OptionPicker = 'optionPicker',
+  Options = 'options',
   PageButton = 'pageButton',
-  SaveButton = 'saveButton',
   PageButtonsLayout = 'pageButtonsLayout',
   RecipientMapping = 'recipientMapping',
   Recipients = 'recipients',
+  SaveButton = 'saveButton',
   Select = 'select',
-  DynamicSelect = 'dynamicSelect',
-  AppStateSelect = 'appStateSelect',
   String = 'string',
   Table = 'table',
   TabularData = 'tabularData',
   Textarea = 'textarea',
   WYSIWYG = 'wysiwyg',
-  CodeEditor = 'codeEditor',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -179,6 +181,8 @@ export type TableProperty = BaseProperty<
   options: Option[];
 };
 
+export type CardsProperty = BaseProperty<Card[], PropertyType.Cards>;
+
 export type OptionsProperty = BaseProperty<
   OptionsConfiguration,
   PropertyType.Options
@@ -301,40 +305,41 @@ export type CodeEditorProperty = BaseProperty<
 };
 
 export type Property =
-  | AttributeProperty
+  | AiProperty
+  | AppStateSelectProperty
   | AssetPickerProperty
+  | AttributeProperty
   | BooleanProperty
-  | CheckboxesProperty
-  | ColorProperty
   | CalculationProperty
+  | CardsProperty
+  | CheckboxesProperty
+  | CodeEditorProperty
+  | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
   | DynamicSelectProperty
-  | AppStateSelectProperty
   | FieldMappingProperty
-  | FieldSelectionProperty
-  | AiProperty
-  | FieldTypeProperty
   | FieldProperty
+  | FieldSelectionProperty
+  | FieldTypeProperty
   | HiddenProperty
   | IntegerProperty
   | LabelProperty
   | MinMaxProperty
   | NotificationTemplateProperty
-  | OptionsProperty
   | OptionPickerProperty
+  | OptionsProperty
   | PageButtonProperty
-  | SaveButtonProperty
   | PageButtonsLayoutProperty
   | RecipientMappingProperty
   | RecipientsProperty
+  | SaveButtonProperty
   | SelectProperty
   | StringProperty
   | TableProperty
   | TabularDataProperty
   | TextareaProperty
-  | WYSIWYGProperty
-  | CodeEditorProperty;
+  | WYSIWYGProperty;
 
 export type Section = {
   handle: string;

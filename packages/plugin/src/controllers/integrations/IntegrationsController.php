@@ -32,7 +32,9 @@ class IntegrationsController extends BaseController
             throw new NotFoundHttpException('Integration not found');
         }
 
-        $event = new AuthorizeIntegrationEvent($integration);
+        $integration = $model->getIntegrationObject();
+
+        $event = new AuthorizeIntegrationEvent($model, $integration);
 
         try {
             Event::trigger(

@@ -61,6 +61,13 @@ class Stripe extends PaymentGatewayIntegration
     )]
     protected string $secretKey = '';
 
+    #[Input\Text(
+        label: 'Payment Configuration ID',
+        instructions: 'To use a Stripe payment configuration other than the Default, enter its ID here.',
+        placeholder: 'e.g. "pmc_1PxtjcD6lnhW9qH54DHV8LbZ"',
+    )]
+    protected string $paymentConfigurationId = '';
+
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
@@ -123,6 +130,11 @@ class Stripe extends PaymentGatewayIntegration
     public function getSecretKey(): ?string
     {
         return $this->getProcessedValue($this->secretKey);
+    }
+
+    public function getPaymentConfigurationId(): ?string
+    {
+        return $this->getProcessedValue($this->paymentConfigurationId) ?: null;
     }
 
     public function getWebhookSecret(): ?string

@@ -147,6 +147,7 @@ class PaymentIntentsController extends BaseStripeController
                     'items' => [['price' => $price->id]],
                     'description' => $description,
                     'metadata' => $metadata,
+                    'payment_method_configuration' => $integration->getPaymentConfigurationId(),
                     'payment_behavior' => 'default_incomplete',
                     'payment_settings' => [
                         'save_default_payment_method' => 'on_subscription',
@@ -177,6 +178,7 @@ class PaymentIntentsController extends BaseStripeController
                     'amount' => $amount,
                     'currency' => $currency,
                     // 'payment_method_types' => ['card', 'ideal', 'paypal'],
+                    'payment_method_configuration' => $integration->getPaymentConfigurationId(),
                     'automatic_payment_methods' => [
                         'enabled' => true,
                     ],

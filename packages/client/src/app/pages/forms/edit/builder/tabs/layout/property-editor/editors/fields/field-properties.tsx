@@ -32,24 +32,6 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
 
-  if (!field || !type) {
-    return <FieldPropertiesWrapper />;
-  }
-
-  if (!sections && isFetching) {
-    return (
-      <FieldPropertiesWrapper>
-        <Title>
-          <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
-          <span>{translate(type.name)}</span>
-        </Title>
-        <SectionWrapper>
-          <Skeleton />
-        </SectionWrapper>
-      </FieldPropertiesWrapper>
-    );
-  }
-
   const sectionBlocks: React.ReactElement[] = useMemo(() => {
     const blocks: React.ReactElement[] = [];
     sections
@@ -78,6 +60,24 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
     return blocks;
   }, [sections, type, field]);
+
+  if (!field || !type) {
+    return <FieldPropertiesWrapper />;
+  }
+
+  if (!sections && isFetching) {
+    return (
+      <FieldPropertiesWrapper>
+        <Title>
+          <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
+          <span>{translate(type.name)}</span>
+        </Title>
+        <SectionWrapper>
+          <Skeleton />
+        </SectionWrapper>
+      </FieldPropertiesWrapper>
+    );
+  }
 
   return (
     <FieldPropertiesWrapper>

@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\Backup\Export\FormieV3\Layout;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
-use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
@@ -19,90 +18,79 @@ class FormieLayoutBuilder
 
     public function buildFormLayout(FormieForm $form, $exported): void
     {
-        // Get Formie form fields
-        try {
-            $formFields = $form->getFields();
-        } catch (\Throwable $e) {
-            $formFields = [];
-        }
+        $formFields = $form->getFields();
 
         if (empty($formFields)) {
-            // Create a default page if no fields
-            $this->createDefaultPage($form, $exported);
+            $this->createDefaultPage($exported);
 
             return;
         }
 
-        // Check if Formie has pages structure (multi-page forms)
-        $pages = $this->getFormiePages($form);
+        // Check if this is a multipage form
+        $pages = $form->getPages();
 
         if (empty($pages)) {
-            // Single page form - create one page with all fields
-            $this->createSinglePageLayout($form, $exported, $formFields);
+            $this->createSinglePageLayout($exported, $formFields, $form->uid);
         } else {
-            // Multi-page form - create pages based on Formie structure
-            $this->createMultiPageLayout($form, $exported, $pages);
+            $this->createMultiPageLayout($exported, $form, $form->uid);
         }
     }
 
-    private function createDefaultPage($form, $exported): void
-    {
-        $formUid = \is_array($form) ? ($form['uid'] ?? 'form-'.$form['id']) : $form->uid;
-
-        $page = new Page();
-        $page->uid = StringHelper::UUID();
-        $page->label = 'Page 1';
-
-        $layout = new Layout();
-        $layout->uid = StringHelper::UUID();
-        $layout->rows = new RowCollection();
-
-        $page->layout = $layout;
-        $exported->pages->add($page);
-    }
-
-    private function createSinglePageLayout(FormieForm $form, $exported, array $formFields): void
+    private function createDefaultPage($exported): void
     {
         $page = new Page();
         $page->uid = StringHelper::UUID();
         $page->label = 'Page 1';
-
-        $layout = new Layout();
-        $layout->uid = StringHelper::UUID();
-        $layout->rows = new RowCollection();
-
-        // Group fields into rows
-        $this->addFieldsToLayout($formFields, $layout, $form->uid);
-
-        $page->layout = $layout;
+        $page->layout = $this->createEmptyLayout();
         $exported->pages->add($page);
     }
 
-    private function createMultiPageLayout(FormieForm $form, $exported, array $pages): void
+    private function createSinglePageLayout($exported, array $formFields, string $formUid): void
     {
+        $page = new Page();
+        $page->uid = StringHelper::UUID();
+        $page->label = 'Page 1';
+        $page->layout = $this->createLayoutWithFields($formFields, $formUid);
+        $exported->pages->add($page);
+    }
+
+    private function createMultiPageLayout($exported, FormieForm $form, string $formUid): void
+    {
+        $pages = $form->getPages();
+        $rows = $form->getRows();
+
         foreach ($pages as $pageIndex => $pageData) {
             $page = new Page();
             $page->uid = StringHelper::UUID();
-            $page->label = $pageData['label'] ?? 'Page '.($pageIndex + 1);
+            $page->label = $pageData->label ?? 'Page '.($pageIndex + 1);
 
-            $layout = new Layout();
-            $layout->uid = StringHelper::UUID();
-            $layout->rows = new RowCollection();
+            // Get rows that belong to this page
+            $pageRows = array_filter($rows, function ($row) use ($pageData) {
+                return $row->pageId === $pageData->id;
+            });
 
-            // Add fields for this page
-            if (isset($pageData['fields']) && !empty($pageData['fields'])) {
-                $this->addFieldsToLayout($pageData['fields'], $layout, $form->uid);
-            }
-
-            $page->layout = $layout;
+            // Create layout with the correct rows and fields
+            $page->layout = $this->createLayoutFromRows($pageRows, $formUid);
             $exported->pages->add($page);
         }
     }
 
-    private function addFieldsToLayout(array $formFields, Layout $layout, string $formUid): void
+    private function createEmptyLayout(): Layout
     {
+        $layout = new Layout();
+        $layout->uid = StringHelper::UUID();
+        $layout->rows = new RowCollection();
+
+        return $layout;
+    }
+
+    private function createLayoutWithFields(array $formFields, string $formUid): Layout
+    {
+        $layout = new Layout();
+        $layout->uid = StringHelper::UUID();
+        $layout->rows = new RowCollection();
+
         foreach ($formFields as $index => $formField) {
-            // Special handling for Name fields that need to be split into multiple fields
             if ('verbb\formie\fields\Name' === $formField::class) {
                 $this->addNameFieldsToLayout($formField, $layout, $formUid, $index);
 
@@ -110,27 +98,60 @@ class FormieLayoutBuilder
             }
 
             $field = $this->fieldMapper->mapField($formField, $formUid, $index);
-
             if (!$field) {
-                continue; // Skip unsupported field types
+                continue;
             }
 
             $row = new Row();
             $row->uid = StringHelper::UUID();
             $row->fields = new FieldCollection();
             $row->fields->add($field);
-
             $layout->rows->add($row);
         }
+
+        return $layout;
+    }
+
+    private function createLayoutFromRows(array $pageRows, string $formUid): Layout
+    {
+        $layout = new Layout();
+        $layout->uid = StringHelper::UUID();
+        $layout->rows = new RowCollection();
+
+        foreach ($pageRows as $rowData) {
+            $row = new Row();
+            $row->uid = StringHelper::UUID();
+            $row->fields = new FieldCollection();
+
+            $fields = $rowData->getFields();
+            foreach ($fields as $index => $formField) {
+                if ('verbb\formie\fields\Name' === $formField::class) {
+                    $this->addNameFieldsToRow($formField, $row, $formUid, $index);
+
+                    continue;
+                }
+
+                $field = $this->fieldMapper->mapField($formField, $formUid, $index);
+                if (!$field) {
+                    continue;
+                }
+
+                $row->fields->add($field);
+            }
+
+            if ($row->fields->count() > 0) {
+                $layout->rows->add($row);
+            }
+        }
+
+        return $layout;
     }
 
     private function addNameFieldsToLayout($formField, Layout $layout, string $formUid, int $index): void
     {
-        // Get the NameProcessor to create sub-fields
         $nameProcessor = new NameProcessor();
         $subFields = $nameProcessor->getSubFields($formField, $formUid, $index);
 
-        // Create a single row with all the name sub-fields
         $row = new Row();
         $row->uid = StringHelper::UUID();
         $row->fields = new FieldCollection();
@@ -142,25 +163,13 @@ class FormieLayoutBuilder
         $layout->rows->add($row);
     }
 
-    private function getFormiePages(FormieForm $form): array
+    private function addNameFieldsToRow($formField, Row $row, string $formUid, int $index): void
     {
-        // This is a placeholder for Formie-specific page structure
+        $nameProcessor = new NameProcessor();
+        $subFields = $nameProcessor->getSubFields($formField, $formUid, $index);
 
-        // Check if form has pages property
-        if (property_exists($form, 'pages') && !empty($form->pages)) {
-            return $form->pages;
+        foreach ($subFields as $subField) {
+            $row->fields->add($subField);
         }
-
-        // Check if form has layout property with pages
-        if (property_exists($form, 'layout') && isset($form->layout['pages'])) {
-            return $form->layout['pages'];
-        }
-
-        // Check if form has settings with pages
-        if (property_exists($form, 'settings') && isset($form->settings->pages)) {
-            return $form->settings->pages;
-        }
-
-        return [];
     }
 }

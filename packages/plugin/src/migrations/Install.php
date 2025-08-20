@@ -224,6 +224,20 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('statusId', 'freeform_statuses', 'id', ForeignKey::CASCADE),
 
+            (new Table('freeform_submissions_tracking_parameters'))
+                ->addField('id', $this->primaryKey())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('name', $this->string(255)->notNull())
+                ->addField('value', $this->text())
+                ->addIndex(['submissionId', 'name'], name: 'submissionId_name')
+                ->addForeignKey(
+                    'submissionId',
+                    'freeform_submissions',
+                    'id',
+                    ForeignKey::CASCADE,
+                    name: 'fk-freeform_submissions_tracking_parameters-submissionId'
+                ),
+
             (new Table('freeform_integrations_queue'))
                 ->addField('id', $this->primaryKey())
                 ->addField('submissionId', $this->integer()->notNull())

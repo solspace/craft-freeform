@@ -45,17 +45,25 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
         $metadata = [
             'label' => $formField->label ?? '',
             'handle' => $this->getFieldHandle($formField->handle ?? ''),
-            'instructions' => $formField->instructions ?? '',
-            'required' => $formField->required ?? false,
         ];
 
-        // Try to get placeholder and defaultValue from direct properties first
+        // Try to get properties from direct properties first
+        $required = $formField->required ?? null;
         $placeholder = $formField->placeholder ?? null;
         $defaultValue = $formField->defaultValue ?? null;
+        $instructions = $formField->instructions ?? null;
+        $errorMessage = $formField->errorMessage ?? null;
+        $enabled = $formField->enabled ?? null;
+        $includeInEmail = $formField->includeInEmail ?? null;
 
-        // If not found directly, try to get from settings
-        if (empty($placeholder) || empty($defaultValue)) {
+        // If any properties not found directly, try to get from settings
+        if (null === $required || empty($placeholder) || empty($defaultValue)
+            || null === $instructions || null === $errorMessage || null === $enabled || null === $includeInEmail) {
             $settings = $this->getFieldSettings($formField);
+
+            if (null === $required && isset($settings['required'])) {
+                $required = $settings['required'];
+            }
 
             if (empty($placeholder) && isset($settings['placeholder'])) {
                 $placeholder = $settings['placeholder'];
@@ -64,10 +72,31 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
             if (empty($defaultValue) && isset($settings['defaultValue'])) {
                 $defaultValue = $settings['defaultValue'];
             }
+
+            if (null === $instructions && isset($settings['instructions'])) {
+                $instructions = $settings['instructions'];
+            }
+
+            if (null === $errorMessage && isset($settings['errorMessage'])) {
+                $errorMessage = $settings['errorMessage'];
+            }
+
+            if (null === $enabled && isset($settings['enabled'])) {
+                $enabled = $settings['enabled'];
+            }
+
+            if (null === $includeInEmail && isset($settings['includeInEmail'])) {
+                $includeInEmail = $settings['includeInEmail'];
+            }
         }
 
+        $metadata['required'] = $required ?? false;
         $metadata['placeholder'] = $placeholder ?? '';
         $metadata['defaultValue'] = $defaultValue ?? '';
+        $metadata['instructions'] = $instructions ?? '';
+        $metadata['errorMessage'] = $errorMessage ?? '';
+        $metadata['enabled'] = $enabled ?? true;
+        $metadata['includeInEmail'] = $includeInEmail ?? true;
 
         return $metadata;
     }

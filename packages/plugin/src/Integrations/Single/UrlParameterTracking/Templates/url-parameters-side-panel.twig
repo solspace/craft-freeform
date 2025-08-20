@@ -1,0 +1,23 @@
+<style>
+    .url-tracking-parameters-side-panel {
+        h6 {
+            margin: 0 -10px 10px;
+            padding: 0;
+
+            font-weight: bold;
+        }
+    }
+</style>
+
+<div class="meta read-only url-tracking-parameters-side-panel">
+    <h6>{{ "URL Parameters"|t('freeform') }}</h6>
+
+    {% for param in trackingParameters %}
+    <div class="data">
+        <h5 class="heading code">{{ param.name }}</h5>
+        <div class="value">{{ param.value }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<hr>

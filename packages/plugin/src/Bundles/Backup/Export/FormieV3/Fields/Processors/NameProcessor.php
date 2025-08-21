@@ -44,7 +44,144 @@ class NameProcessor extends AbstractFieldProcessor
             return $fields;
         }
 
-        // Multiple name fields enabled - create separate fields for each part
+        // Multiple name fields enabled - try to get the actual subfields from Formie
+        $nameSubfields = $this->getNameSubfields($formField);
+
+        // If we got the actual subfields, use their individual required settings
+        if (!empty($nameSubfields)) {
+            foreach ($nameSubfields as $subfield) {
+                $freeformField = $this->createFieldFromSubfield($subfield, $formField, $formUid, $index);
+                if ($freeformField) {
+                    $fields[] = $freeformField;
+                }
+            }
+        } else {
+            // Fallback to creating subfields manually (original approach)
+            $fields = $this->createManualSubfields($formField, $formUid, $index);
+        }
+
+        return $fields;
+    }
+
+    public function getFieldMetadata($formField): array
+    {
+        $metadata = $this->getBaseMetadata($formField);
+        $metadata['fieldType'] = 'name';
+        $metadata['showPrefix'] = $formField->showPrefix ?? false;
+        $metadata['showMiddle'] = $formField->showMiddle ?? false;
+        $metadata['showSuffix'] = $formField->showSuffix ?? false;
+        $metadata['firstNameMaxLength'] = $formField->firstNameMaxLength ?? null;
+        $metadata['lastNameMaxLength'] = $formField->lastNameMaxLength ?? null;
+        $metadata['prefixMaxLength'] = $formField->prefixMaxLength ?? null;
+        $metadata['middleNameMaxLength'] = $formField->middleNameMaxLength ?? null;
+
+        return $metadata;
+    }
+
+    private function getNameSubfields($formField): array
+    {
+        $subfields = [];
+
+        // Try different methods to get nested fields (same pattern as GroupProcessor)
+        if (property_exists($formField, 'fields') && \is_array($formField->fields)) {
+            $subfields = $formField->fields;
+        } elseif (property_exists($formField, 'subfields') && \is_array($formField->subfields)) {
+            $subfields = $formField->subfields;
+        } elseif (method_exists($formField, 'getFields')) {
+            $subfields = $formField->getFields();
+        } elseif (method_exists($formField, 'getSubfields')) {
+            $subfields = $formField->getSubfields();
+        } elseif (method_exists($formField, 'getNestedFields')) {
+            $subfields = $formField->getNestedFields();
+        }
+
+        // Try to access via settings
+        if (empty($subfields)) {
+            if (property_exists($formField, 'settings') && \is_object($formField->settings)) {
+                $settings = $formField->settings;
+                if (property_exists($settings, 'fields') && \is_array($settings->fields)) {
+                    $subfields = $settings->fields;
+                }
+            }
+        }
+
+        // Try to access via getSettings method
+        if (empty($subfields)) {
+            if (method_exists($formField, 'getSettings')) {
+                $settings = $formField->getSettings();
+                if (\is_array($settings) && isset($settings['fields'])) {
+                    $subfields = $settings['fields'];
+                }
+            }
+        }
+
+        // Filter to only include enabled subfields
+        if (!empty($subfields)) {
+            $subfields = array_filter($subfields, function ($subfield) {
+                // Check if subfield has enabled property and it's true
+                if (property_exists($subfield, 'enabled')) {
+                    return true === $subfield->enabled;
+                }
+
+                // Check if subfield has settings with enabled property
+                if (property_exists($subfield, 'settings') && \is_object($subfield->settings)) {
+                    if (property_exists($subfield->settings, 'enabled')) {
+                        return true === $subfield->settings->enabled;
+                    }
+                }
+
+                // Check if subfield has getSettings method
+                if (method_exists($subfield, 'getSettings')) {
+                    $settings = $subfield->getSettings();
+                    if (\is_array($settings) && isset($settings['enabled'])) {
+                        return true === $settings['enabled'];
+                    }
+                }
+
+                // If we can't determine, assume it's enabled (fallback)
+                return true;
+            });
+        }
+
+        return \is_array($subfields) ? $subfields : [];
+    }
+
+    private function createFieldFromSubfield($subfield, $parentField, string $formUid, int $index): ?Field
+    {
+        $field = new Field();
+        $field->uid = $subfield->uid ?? StringHelper::UUID();
+        $field->name = $subfield->label ?? $subfield->handle ?? 'Subfield';
+        $field->handle = ($parentField->handle ?? 'name').'_'.($subfield->handle ?? 'subfield');
+        $field->type = TextField::class;
+
+        // Use the subfield's individual required setting
+        $field->required = $subfield->required ?? false;
+
+        $field->order = $index + $this->getSubfieldOrderOffset($subfield->handle ?? '');
+        $field->metadata = [
+            'fieldType' => 'text',
+            'placeholder' => $subfield->placeholder ?? $field->name,
+            'maxLength' => $subfield->maxLength ?? null,
+        ];
+
+        return $field;
+    }
+
+    private function getSubfieldOrderOffset(string $handle): float
+    {
+        $offsets = [
+            'prefix' => -0.1,
+            'firstName' => 0.0,
+            'middleName' => 0.05,
+            'lastName' => 0.1,
+        ];
+
+        return $offsets[$handle] ?? 0.0;
+    }
+
+    private function createManualSubfields($formField, string $formUid, int $index): array
+    {
+        $fields = [];
 
         // Create prefix field if enabled
         if ($formField->showPrefix ?? false) {
@@ -111,20 +248,5 @@ class NameProcessor extends AbstractFieldProcessor
         $fields[] = $lastNameField;
 
         return $fields;
-    }
-
-    public function getFieldMetadata($formField): array
-    {
-        $metadata = $this->getBaseMetadata($formField);
-        $metadata['fieldType'] = 'name';
-        $metadata['showPrefix'] = $formField->showPrefix ?? false;
-        $metadata['showMiddle'] = $formField->showMiddle ?? false;
-        $metadata['showSuffix'] = $formField->showSuffix ?? false;
-        $metadata['firstNameMaxLength'] = $formField->firstNameMaxLength ?? null;
-        $metadata['lastNameMaxLength'] = $formField->lastNameMaxLength ?? null;
-        $metadata['prefixMaxLength'] = $formField->prefixMaxLength ?? null;
-        $metadata['middleNameMaxLength'] = $formField->middleNameMaxLength ?? null;
-
-        return $metadata;
     }
 }

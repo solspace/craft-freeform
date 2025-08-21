@@ -29,9 +29,7 @@ class UrlParameterSubmissionDisplay extends FeatureBundle
     {
         $submission = $context['submission'];
 
-        $trackingParameters = UrlTrackingParameterRecord::find()
-            ->where(['submissionId' => $submission->id])
-            ->orderBy(['name' => \SORT_ASC])
+        $trackingParameters = UrlTrackingParameterRecord::getForSubmission($submission)
             ->asArray()
             ->all()
         ;

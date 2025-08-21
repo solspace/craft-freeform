@@ -22,6 +22,8 @@ class UrlParameterTracking extends BaseIntegration
 {
     use EnabledByDefaultTrait;
 
+    public const TEMPLATE_KEY = 'url_parameters';
+
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]

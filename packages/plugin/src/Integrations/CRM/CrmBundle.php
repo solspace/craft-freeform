@@ -78,6 +78,7 @@ class CrmBundle extends FeatureBundle
         $this->queueHandler->executeIntegrationJob(
             new ProcessIntegrationsJob([
                 'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()?->getId(),
                 'postedData' => $event->getSubmission()->getFormFieldValues(),
                 'type' => CRMIntegrationInterface::class,
             ])

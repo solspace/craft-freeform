@@ -37,10 +37,11 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
     sections
       .sort((a, b) => a.order - b.order)
       .forEach(({ handle, label, icon }, sectionIndex) => {
-        const properties = type.properties
+        const properties = type?.properties
           .filter(sectionFilter(handle))
           .filter((property) => property.visible);
-        if (!properties.length) {
+
+        if (!properties?.length) {
           return;
         }
 

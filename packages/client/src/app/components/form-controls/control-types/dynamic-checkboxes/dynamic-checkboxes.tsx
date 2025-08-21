@@ -1,25 +1,25 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
-import {
-  findFirstValue,
-  isInOptions,
-} from '@components/elements/custom-dropdown/dropdown.operations';
+import { Checkboxes } from '@components/elements/checkboxes/checkboxes';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type {
-  DynamicSelectProperty,
+  DynamicCheckboxesProperty,
   OptionCollection,
 } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import RefreshIcon from '@ff-icons/actions/refresh.svg';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { extractParameter } from '../namespaced/field-mapping/mapping.utilities';
 
-import { DropdownContainer, RefreshButton } from './dynamic-select.styles';
+import {
+  CheckboxesContainer,
+  RefreshButton,
+} from './dynamic-checlboxes.styles';
 
-const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
+const DynamicCheckboxes: React.FC<ControlType<DynamicCheckboxesProperty>> = ({
   value,
   property,
   errors,
@@ -27,7 +27,7 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   context,
 }) => {
   const { formId } = useParams();
-  const { source, parameterFields, emptyOption } = property;
+  const { handle, source, parameterFields } = property;
 
   const params: Record<string, string> = { formId };
   if (parameterFields) {
@@ -52,29 +52,16 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
       return;
     }
 
-    if (isInOptions(data, value)) {
+    if (value.length > 0) {
       return;
     }
 
-    if (emptyOption) {
-      updateValue('');
-    } else {
-      const firstValue = findFirstValue(data);
-      updateValue(firstValue);
-    }
+    updateValue([]);
   }, [data, isFetched]);
 
   return (
     <Control property={property} errors={errors}>
-      <DropdownContainer>
-        <Dropdown
-          loading={isFetching}
-          value={value}
-          onChange={updateValue}
-          emptyOption={emptyOption}
-          options={data}
-        />
-
+      <CheckboxesContainer>
         <RefreshButton
           className="btn"
           disabled={isFetching}
@@ -86,9 +73,18 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
         >
           <RefreshIcon />
         </RefreshButton>
-      </DropdownContainer>
+
+        <Checkboxes
+          value={value}
+          options={data}
+          loading={isFetching}
+          emptyMessage={translate('No options available')}
+          uniqueId={handle}
+          onUpdate={updateValue}
+        />
+      </CheckboxesContainer>
     </Control>
   );
 };
 
-export default DynamicSelect;
+export default DynamicCheckboxes;

@@ -33,10 +33,18 @@ class UrlParameterMappingContext extends FeatureBundle
 
         $parameters = $integration->getCombinedParameters();
         foreach ($parameters as $parameter) {
-            $value = $_GET[$parameter] ?? null;
-            if (null !== $value) {
-                $urlParameters[$parameter] = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
+            $value = $_GET[$parameter] ?? '';
+            if ('' !== $value) {
+                if (\is_array($value)) {
+                    $value = implode(',', $value);
+                } else if (!\is_string($value)) {
+                    $value = (string) $value;
+                }
+
+                $value = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
             }
+
+            $urlParameters[$parameter] = $value;
         }
 
         $event->addContext('url_parameters', $urlParameters);

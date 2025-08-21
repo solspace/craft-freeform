@@ -110,9 +110,10 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
 
         foreach ($json->data as $field) {
             $type = match ($field->field_type) {
-                'varchar', 'varchar_auto', 'text', 'date', 'enum', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
+                'varchar', 'varchar_auto', 'text', 'date', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
                 'int', 'double', 'monetary', 'user', 'org', 'people' => FieldObject::TYPE_NUMERIC,
                 'set', 'phone' => FieldObject::TYPE_ARRAY,
+                'enum' => 'enum',
                 default => null,
             };
 

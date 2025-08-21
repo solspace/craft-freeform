@@ -33,6 +33,12 @@ class Entries extends BaseOptionProvider
     )]
     private ?int $entryTypeId = null;
 
+    #[Input\DynamicCheckboxes(
+        label: 'Status',
+        source: 'api/elements/statuses?type='.Entry::class,
+    )]
+    private array $status = [Entry::STATUS_LIVE];
+
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -91,6 +97,11 @@ class Entries extends BaseOptionProvider
         return $this->entryTypeId;
     }
 
+    public function getStatus(): array
+    {
+        return $this->status;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
@@ -116,6 +127,7 @@ class Entries extends BaseOptionProvider
         return Entry::find()
             ->siteId($this->getSiteId() ?: null)
             ->sectionId($this->getSectionId() ?: null)
+            ->status($this->getStatus() ?: null)
             ->typeId($this->getEntryTypeId() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()

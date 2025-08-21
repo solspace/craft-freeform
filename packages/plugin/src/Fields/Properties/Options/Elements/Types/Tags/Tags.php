@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Tags;
 
+use craft\base\Element;
 use craft\elements\Tag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
@@ -24,12 +25,11 @@ class Tags extends BaseOptionProvider
     )]
     private ?string $groupId = null;
 
-    #[Input\DynamicSelect(
+    #[Input\DynamicCheckboxes(
         label: 'Status',
-        emptyOption: 'Select a Status',
         source: 'api/elements/statuses?type='.Tag::class,
     )]
-    private ?string $status = null;
+    private array $status = [Element::STATUS_ENABLED];
 
     #[Required]
     #[Input\DynamicSelect(
@@ -82,7 +82,7 @@ class Tags extends BaseOptionProvider
         return $this->groupId;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): array
     {
         return $this->status;
     }

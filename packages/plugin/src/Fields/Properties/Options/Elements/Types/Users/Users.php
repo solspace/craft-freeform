@@ -16,12 +16,11 @@ class Users extends BaseOptionProvider
     )]
     private ?string $groupId = null;
 
-    #[Input\DynamicSelect(
+    #[Input\DynamicCheckboxes(
         label: 'Status',
-        emptyOption: 'Select a Status',
         source: 'api/elements/statuses?type='.User::class,
     )]
-    private ?string $status = null;
+    private array $status = [User::STATUS_ACTIVE];
 
     #[Required]
     #[Input\DynamicSelect(
@@ -61,7 +60,7 @@ class Users extends BaseOptionProvider
         return $this->groupId;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): array
     {
         return $this->status;
     }

@@ -33,12 +33,11 @@ class Entries extends BaseOptionProvider
     )]
     private ?int $entryTypeId = null;
 
-    #[Input\DynamicSelect(
+    #[Input\DynamicCheckboxes(
         label: 'Status',
-        emptyOption: 'Select a Status',
         source: 'api/elements/statuses?type='.Entry::class,
     )]
-    private ?string $status = null;
+    private array $status = [Entry::STATUS_LIVE];
 
     #[Required]
     #[Input\DynamicSelect(
@@ -98,7 +97,7 @@ class Entries extends BaseOptionProvider
         return $this->entryTypeId;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): array
     {
         return $this->status;
     }

@@ -18,12 +18,18 @@ export const usePosition = (
   const [top, setTop] = useState(0);
   const [left, setLeft] = useState(0);
 
+  // RAF-throttled updater to avoid excessive state churn on scroll/resize
+  let rafId: number | null = null;
   const updatePosition = (): void => {
-    setTop(calculateTopOffset(wrapper, editor));
-    const currentLeft = wrapper?.getBoundingClientRect()?.left;
-    if (currentLeft) {
-      setLeft(currentLeft - dimensions.left);
-    }
+    if (rafId !== null) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = null;
+      setTop(calculateTopOffset(wrapper, editor));
+      const currentLeft = wrapper?.getBoundingClientRect()?.left;
+      if (currentLeft != null && dimensions) {
+        setLeft(currentLeft - dimensions.left);
+      }
+    });
   };
 
   useEffect(() => {
@@ -43,15 +49,18 @@ export const usePosition = (
 
       window.addEventListener('resize', resizeCallback);
       window.addEventListener('scroll', resizeCallback);
-
       sectionWrapper?.addEventListener('scroll', resizeCallback);
 
       return () => {
         resizeObserver.disconnect();
         window.removeEventListener('resize', resizeCallback);
         window.removeEventListener('scroll', resizeCallback);
+        sectionWrapper?.removeEventListener('scroll', resizeCallback);
 
-        sectionWrapper?.addEventListener('scroll', resizeCallback);
+        // Cancel any pending frame
+        if (rafId !== null) {
+          cancelAnimationFrame(rafId);
+        }
       };
     }
   }, [editor]);

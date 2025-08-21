@@ -28,7 +28,7 @@ class UserController extends BaseApiController
         $fields = [];
         foreach ($layout->getCustomFields() as $item) {
             $fields[] = [
-                'id' => $item->id,
+                'id' => $item->handle,
                 'label' => $item->name,
                 'required' => $item->required,
             ];

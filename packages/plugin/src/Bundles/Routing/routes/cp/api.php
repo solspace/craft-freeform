@@ -98,6 +98,8 @@ return [
 
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
+    'freeform/api/assets/urls' => 'freeform/api/assets/asset-urls',
+    'freeform/api/assets/thumb/card/<assetId:\d+>' => 'freeform/api/assets/card-thumbnail',
 
     // AUTOSUGGEST
     'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',

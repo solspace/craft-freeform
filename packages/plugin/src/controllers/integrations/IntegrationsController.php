@@ -5,7 +5,6 @@ namespace Solspace\Freeform\controllers\integrations;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\controllers\PopUpTrait;
 use Solspace\Freeform\Events\Integrations\AuthorizeIntegrationEvent;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use yii\base\Event;
 use yii\web\NotFoundHttpException;
@@ -26,9 +25,8 @@ class IntegrationsController extends BaseController
 
     public function actionAuthorize(int $id): Response
     {
-        try {
-            $integration = $this->getIntegrationsService()->getIntegrationObjectById($id);
-        } catch (IntegrationException) {
+        $model = $this->getIntegrationsService()->getById($id);
+        if (!$model) {
             throw new NotFoundHttpException('Integration not found');
         }
 

@@ -16,6 +16,12 @@ class Users extends BaseOptionProvider
     )]
     private ?string $groupId = null;
 
+    #[Input\DynamicCheckboxes(
+        label: 'Status',
+        source: 'api/elements/statuses?type='.User::class,
+    )]
+    private array $status = [User::STATUS_ACTIVE];
+
     #[Required]
     #[Input\DynamicSelect(
         label: 'Option Label',
@@ -54,6 +60,11 @@ class Users extends BaseOptionProvider
         return $this->groupId;
     }
 
+    public function getStatus(): array
+    {
+        return $this->status;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
@@ -78,6 +89,7 @@ class Users extends BaseOptionProvider
     {
         return User::find()
             ->groupId($this->getGroupId() ?: null)
+            ->status($this->getStatus() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;

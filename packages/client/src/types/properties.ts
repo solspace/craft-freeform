@@ -26,6 +26,7 @@ export enum PropertyType {
   Color = 'color',
   ConditionalRules = 'conditionalRules',
   DateTime = 'dateTime',
+  DynamicCheckboxes = 'dynamicCheckboxes',
   DynamicSelect = 'dynamicSelect',
   Field = 'field',
   FieldMapping = 'fieldMapping',
@@ -145,6 +146,14 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
 };
 export type ButtonGroupProperty = BaseProperty<string, PropertyType.Select> & {
   options: OptionCollection;
+};
+export type DynamicCheckboxesProperty = BaseProperty<
+  Array<string>,
+  PropertyType.DynamicCheckboxes
+> & {
+  source?: string;
+  parameterFields?: string[];
+  generator?: string;
 };
 export type DynamicSelectProperty = BaseProperty<
   string,
@@ -317,6 +326,7 @@ export type Property =
   | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
+  | DynamicCheckboxesProperty
   | DynamicSelectProperty
   | FieldMappingProperty
   | FieldProperty

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Categories;
 
+use craft\base\Element;
 use craft\elements\Category;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
@@ -23,6 +24,12 @@ class Categories extends BaseOptionProvider
         options: CategoryGroupsOptionsGenerator::class,
     )]
     private ?string $groupId = null;
+
+    #[Input\DynamicCheckboxes(
+        label: 'Status',
+        source: 'api/elements/statuses?type='.Category::class,
+    )]
+    private array $status = [Element::STATUS_ENABLED];
 
     #[Required]
     #[Input\DynamicSelect(
@@ -75,6 +82,11 @@ class Categories extends BaseOptionProvider
         return $this->groupId;
     }
 
+    public function getStatus(): array
+    {
+        return $this->status;
+    }
+
     public function getLabel(): string
     {
         return $this->label;
@@ -100,6 +112,7 @@ class Categories extends BaseOptionProvider
         return Category::find()
             ->siteId($this->getSiteId() ?: null)
             ->groupId($this->getGroupId() ?: null)
+            ->status($this->getStatus() ?: null)
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;

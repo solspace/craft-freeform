@@ -37,7 +37,7 @@ class UrlParameterMappingContext extends FeatureBundle
             if ('' !== $value) {
                 if (\is_array($value)) {
                     $value = implode(',', $value);
-                } else if (!\is_string($value)) {
+                } elseif (!\is_string($value)) {
                     $value = (string) $value;
                 }
 

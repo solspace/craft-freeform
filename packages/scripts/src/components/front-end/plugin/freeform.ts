@@ -200,6 +200,8 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = false;
+      submit.ariaDisabled = undefined;
+      delete submit.dataset.disabled;
     }
   };
 

@@ -43,8 +43,15 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
             return [];
         }
 
-        $event = new ProcessMappingEvent($this, $form, $this->getProcessableFields($category));
+        $event = new ProcessMappingEvent(
+            $this,
+            $form,
+            $this->getProcessableFields($category),
+            context: ['category' => $category]
+        );
         Event::trigger($this, self::EVENT_BEFORE_PROCESS_MAPPING, $event);
+
+        $mappingContext = $event->getContext();
 
         $fields = $event->getFields();
         $keyValueMap = $event->getMappedValues();
@@ -61,10 +68,7 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
             $freeformField = $form->get($item->getValue());
 
             $key = $item->getSource();
-            $value = $item->extractValue(
-                $form,
-                ['integration' => $this, 'category' => $category]
-            );
+            $value = $item->extractValue($form, $mappingContext);
 
             $event = new ProcessValueEvent(
                 $this,

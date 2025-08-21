@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const DropdownContainer = styled.div`
   display: grid;
-  grid-template-columns: auto 30px;
+  grid-template-columns: auto 40px;
   gap: 5px;
 `;
 
@@ -12,6 +12,11 @@ export const RefreshButton = styled.button`
   padding: 0;
 
   background-color: #dfe5ec !important;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
 
   &[disabled] {
     background-color: #eef2f8 !important;

@@ -72,7 +72,7 @@ class UrlParameterMappingContext extends FeatureBundle
     private function getParameters(UrlParameterTracking $integration, Submission $submission): array
     {
         $urlParameterEntries = UrlTrackingParameterRecord::getForSubmission($submission)
-            ->select(['name'])
+            ->select(['value'])
             ->indexBy('name')
             ->column()
         ;

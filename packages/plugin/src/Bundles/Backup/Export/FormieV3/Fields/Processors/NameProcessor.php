@@ -160,8 +160,8 @@ class NameProcessor extends AbstractFieldProcessor
         $field->order = $index + $this->getSubfieldOrderOffset($subfield->handle ?? '');
         $field->metadata = [
             'fieldType' => 'text',
-            'placeholder' => $subfield->placeholder ?? $field->name,
-            'maxLength' => $subfield->maxLength ?? null,
+            'placeholder' => $this->getSubfieldPlaceholder($subfield),
+            'maxLength' => $this->getSubfieldMaxLength($subfield),
         ];
 
         return $field;
@@ -179,6 +179,50 @@ class NameProcessor extends AbstractFieldProcessor
         return $offsets[$handle] ?? 0.0;
     }
 
+    private function getSubfieldPlaceholder($subfield): ?string
+    {
+        if (property_exists($subfield, 'placeholder') && !empty($subfield->placeholder)) {
+            return $subfield->placeholder;
+        }
+
+        if (property_exists($subfield, 'settings') && \is_object($subfield->settings)) {
+            if (property_exists($subfield->settings, 'placeholder') && !empty($subfield->settings->placeholder)) {
+                return $subfield->settings->placeholder;
+            }
+        }
+
+        if (method_exists($subfield, 'getSettings')) {
+            $settings = $subfield->getSettings();
+            if (\is_array($settings) && isset($settings['placeholder']) && !empty($settings['placeholder'])) {
+                return $settings['placeholder'];
+            }
+        }
+
+        return null;
+    }
+
+    private function getSubfieldMaxLength($subfield): ?int
+    {
+        if (property_exists($subfield, 'maxLength') && $subfield->maxLength > 0) {
+            return $subfield->maxLength;
+        }
+
+        if (property_exists($subfield, 'settings') && \is_object($subfield->settings)) {
+            if (property_exists($subfield->settings, 'maxLength') && $subfield->settings->maxLength > 0) {
+                return $subfield->settings->maxLength;
+            }
+        }
+
+        if (method_exists($subfield, 'getSettings')) {
+            $settings = $subfield->getSettings();
+            if (\is_array($settings) && isset($settings['maxLength']) && $settings['maxLength'] > 0) {
+                return $settings['maxLength'];
+            }
+        }
+
+        return null;
+    }
+
     private function createManualSubfields($formField, string $formUid, int $index): array
     {
         $fields = [];
@@ -194,7 +238,7 @@ class NameProcessor extends AbstractFieldProcessor
             $prefixField->order = $index - 0.1;
             $prefixField->metadata = [
                 'fieldType' => 'text',
-                'placeholder' => 'Prefix',
+                'placeholder' => null,
                 'maxLength' => $formField->prefixMaxLength ?? null,
             ];
             $fields[] = $prefixField;
@@ -210,7 +254,7 @@ class NameProcessor extends AbstractFieldProcessor
         $firstNameField->order = $index;
         $firstNameField->metadata = [
             'fieldType' => 'text',
-            'placeholder' => 'First Name',
+            'placeholder' => null,
             'maxLength' => $formField->firstNameMaxLength ?? null,
         ];
         $fields[] = $firstNameField;
@@ -226,7 +270,7 @@ class NameProcessor extends AbstractFieldProcessor
             $middleNameField->order = $index + 0.05;
             $middleNameField->metadata = [
                 'fieldType' => 'text',
-                'placeholder' => 'Middle Name',
+                'placeholder' => null,
                 'maxLength' => $formField->middleNameMaxLength ?? null,
             ];
             $fields[] = $middleNameField;
@@ -242,7 +286,7 @@ class NameProcessor extends AbstractFieldProcessor
         $lastNameField->order = $index + 0.1;
         $lastNameField->metadata = [
             'fieldType' => 'text',
-            'placeholder' => 'Last Name',
+            'placeholder' => null,
             'maxLength' => $formField->lastNameMaxLength ?? null,
         ];
         $fields[] = $lastNameField;

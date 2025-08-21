@@ -9,6 +9,7 @@ export { default as checkboxes } from './checkboxes/checkboxes';
 export { default as codeEditor } from './code-editor/code';
 export { default as colorPicker } from './color-picker/color-picker';
 export { default as datePicker } from './date-picker/date-picker';
+export { default as dynamicCheckboxes } from './dynamic-checkboxes/dynamic-checkboxes';
 export { default as dynamicSelect } from './dynamic-select/dynamic-select';
 export { default as field } from './field/field';
 export { default as fieldType } from './field-type/field-type';

@@ -1,7 +1,14 @@
 import React from 'react';
 import translate from '@ff-client/utils/translations';
 
-import { SearchBar, SearchBlock, SearchIcon, Wrapper } from './search.style';
+import { useSearchFocus } from './search.hooks';
+import {
+  SearchBar,
+  SearchBlock,
+  SearchIcon,
+  SearchKeyHelper,
+  Wrapper,
+} from './search.style';
 import SearchIconSVG from './search.svg';
 
 type Props = {
@@ -11,6 +18,8 @@ type Props = {
 };
 
 export const Search: React.FC<Props> = ({ placeholder, query, setQuery }) => {
+  const ref = useSearchFocus();
+
   return (
     <Wrapper>
       <SearchBlock>
@@ -18,7 +27,10 @@ export const Search: React.FC<Props> = ({ placeholder, query, setQuery }) => {
           <SearchIconSVG />
         </SearchIcon>
 
+        <SearchKeyHelper>{'/'}</SearchKeyHelper>
+
         <SearchBar
+          ref={ref}
           type="text"
           placeholder={translate(placeholder || 'Search')}
           className="fullwidth text"

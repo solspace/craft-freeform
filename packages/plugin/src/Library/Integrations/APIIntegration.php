@@ -6,6 +6,7 @@ use JetBrains\PhpStorm\ArrayShape;
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
+use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Events\Integrations\ProcessMappingEvent;
 use Solspace\Freeform\Form\Form;
@@ -43,15 +44,16 @@ abstract class APIIntegration extends BaseIntegration implements APIIntegrationI
             return [];
         }
 
+        $event = new BuildMappingContextEvent($form, $this, ['category' => $category]);
+        Event::trigger($this, self::EVENT_BUILD_MAPPING_CONTEXT, $event);
+        $mappingContext = $event->getContext();
+
         $event = new ProcessMappingEvent(
             $this,
             $form,
             $this->getProcessableFields($category),
-            context: ['category' => $category]
         );
         Event::trigger($this, self::EVENT_BEFORE_PROCESS_MAPPING, $event);
-
-        $mappingContext = $event->getContext();
 
         $fields = $event->getFields();
         $keyValueMap = $event->getMappedValues();

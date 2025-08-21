@@ -3,10 +3,10 @@
 namespace Solspace\Freeform\Integrations\Single\UrlParameterTracking\EventListeners;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\Integrations\ProcessMappingEvent;
+use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\UrlParameterTracking;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use yii\base\Event;
 
 class UrlParameterMappingContext extends FeatureBundle
@@ -15,13 +15,13 @@ class UrlParameterMappingContext extends FeatureBundle
         private FormIntegrationsProvider $integrationsProvider,
     ) {
         Event::on(
-            APIIntegrationInterface::class,
-            APIIntegrationInterface::EVENT_BEFORE_PROCESS_MAPPING,
+            IntegrationInterface::class,
+            IntegrationInterface::EVENT_BUILD_MAPPING_CONTEXT,
             [$this, 'addContext'],
         );
     }
 
-    public function addContext(ProcessMappingEvent $event): void
+    public function addContext(BuildMappingContextEvent $event): void
     {
         $form = $event->getForm();
         $integration = $this->integrationsProvider->getSingleton($form, UrlParameterTracking::class);

@@ -19,6 +19,7 @@ interface IntegrationInterface
 {
     public const EVENT_AFTER_RESPONSE = 'after-response';
     public const EVENT_ON_FAILED_REQUEST = 'on-failed-request';
+    public const EVENT_BUILD_MAPPING_CONTEXT = 'build-mapping-context';
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_AS_HIDDEN_IN_INSTANCE = 'as-hidden-in-instance';

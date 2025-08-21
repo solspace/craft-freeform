@@ -13,10 +13,7 @@ class ProcessMappingEvent extends CancelableArrayableEvent
         private Form $form,
         private array $fields,
         private array $mappedValues = [],
-        private array $context = [],
     ) {
-        $this->context['integration'] = $this->integration;
-
         parent::__construct();
     }
 
@@ -55,25 +52,6 @@ class ProcessMappingEvent extends CancelableArrayableEvent
     public function setMappedValues(array $mappedValues): self
     {
         $this->mappedValues = $mappedValues;
-
-        return $this;
-    }
-
-    public function getContext(): array
-    {
-        return $this->context;
-    }
-
-    public function setContext(array $context): self
-    {
-        $this->context = $context;
-
-        return $this;
-    }
-
-    public function addContext(string $key, $value): self
-    {
-        $this->context[$key] = $value;
 
         return $this;
     }

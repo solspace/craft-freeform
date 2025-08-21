@@ -7,10 +7,14 @@ export const Wrapper = styled.div`
 `;
 
 export const SearchBlock = styled.div`
+  position: relative;
+
   display: flex;
 `;
 
 export const SearchBar = styled.input`
+  position: relative;
+
   padding: 6px 38px 6px 30px !important;
 
   border-radius: 5px;
@@ -19,6 +23,27 @@ export const SearchBar = styled.input`
     font-style: italic;
     color: ${colors.gray200};
   }
+`;
+
+export const SearchKeyHelper = styled.div`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  z-index: 2;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 3px 6px;
+
+  //background-color: ${colors.gray100};
+  border: 1px solid ${colors.gray200};
+  border-radius: 5px;
+
+  color: ${colors.gray300};
+  font-size: 12px;
+  line-height: 16px;
 `;
 
 const buttonSize = '14px';

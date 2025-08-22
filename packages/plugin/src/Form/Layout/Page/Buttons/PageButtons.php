@@ -528,9 +528,8 @@ class PageButtons
         Attributes $attributes
     ): Markup {
         $label = htmlspecialchars(Freeform::t($label), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
-        $label .= 'fraag';
 
-        $content = '';
+        $content = $label;
         if ($iconUrl) {
             $imgTag = Html::tag('img', '', ['src' => $iconUrl]);
             $label = Html::tag('span', $label);

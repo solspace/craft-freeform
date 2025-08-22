@@ -174,7 +174,6 @@ class PaymentIntentsController extends BaseStripeController
                     'amount' => $amount,
                     'currency' => $currency,
                     // 'payment_method_types' => ['card', 'ideal', 'paypal'],
-                    'payment_method_configuration' => $integration->getPaymentConfigurationId(),
                     'automatic_payment_methods' => [
                         'enabled' => true,
                     ],

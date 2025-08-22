@@ -18,6 +18,12 @@
       display: flex;
       align-items: center;
       gap: 5px;
+
+      img,
+      svg {
+        width: 24px;
+        height: 24px;
+      }
     }
   }
 }

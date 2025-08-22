@@ -70,4 +70,5 @@ export type ConfigurationProps<
   updateDefaultValue: (value: string | string[]) => void;
   convertToCustomValues?: () => void;
   isMultiple?: boolean;
+  autoUpdateHandle?: boolean;
 };

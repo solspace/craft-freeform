@@ -35,9 +35,27 @@ export const ButtonGroup = styled.div`
 `;
 
 export const Button = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  img,
+  svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  svg {
+    animation: spin 1s linear infinite;
+  }
+
   &.btn-submit {
     background-color: ${colors.gray600};
     color: white;
+
+    svg {
+      fill: white;
+    }
 
     &:hover {
       background-color: ${colors.gray700};

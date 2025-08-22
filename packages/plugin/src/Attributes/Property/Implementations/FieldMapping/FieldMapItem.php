@@ -47,14 +47,14 @@ class FieldMapItem
         }
 
         static $twig;
-        static $variables = [];
+        static $variableCache = [];
 
         if (null === $twig) {
             $twig = new IsolatedTwig();
         }
 
-        $formHandle = $form->getHandle();
-        if (!\array_key_exists($formHandle, $variables)) {
+        $variableCacheKey = $form->getHandle().$form->getSubmission()?->getId();
+        if (!\array_key_exists($variableCacheKey, $variableCache)) {
             $variableList = array_merge(
                 [
                     'form' => $form,
@@ -70,9 +70,9 @@ class FieldMapItem
                 }
             }
 
-            $variables[$formHandle] = $variableList;
+            $variableCache[$variableCacheKey] = $variableList;
         }
 
-        return $twig->render($this->getValue(), $variables[$formHandle]);
+        return $twig->render($this->getValue(), $variableCache[$variableCacheKey]);
     }
 }

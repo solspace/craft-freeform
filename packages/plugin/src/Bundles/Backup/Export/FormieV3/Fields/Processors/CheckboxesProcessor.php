@@ -38,6 +38,8 @@ class CheckboxesProcessor extends AbstractFieldProcessor
             }
         }
 
+        $metadata['oneLine'] = $this->shouldShowOnOneLine($formField);
+
         return $metadata;
     }
 
@@ -85,5 +87,19 @@ class CheckboxesProcessor extends AbstractFieldProcessor
         }
 
         return $defaults;
+    }
+
+    private function shouldShowOnOneLine($formField): bool
+    {
+        if (property_exists($formField, 'layout') && !empty($formField->layout)) {
+            return 'horizontal' === strtolower($formField->layout);
+        }
+
+        $settings = $this->getFieldSettings($formField);
+        if (isset($settings['layout']) && !empty($settings['layout'])) {
+            return 'horizontal' === strtolower($settings['layout']);
+        }
+
+        return false;
     }
 }

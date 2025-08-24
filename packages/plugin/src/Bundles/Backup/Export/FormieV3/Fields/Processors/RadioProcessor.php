@@ -30,6 +30,8 @@ class RadioProcessor extends AbstractFieldProcessor
         $defaultValue = $this->getRadioDefaultValue($formField);
         $metadata['defaultValue'] = $defaultValue;
 
+        $metadata['oneLine'] = $this->shouldShowOnOneLine($formField);
+
         return $metadata;
     }
 
@@ -55,5 +57,19 @@ class RadioProcessor extends AbstractFieldProcessor
         }
 
         return null;
+    }
+
+    private function shouldShowOnOneLine($formField): bool
+    {
+        if (property_exists($formField, 'layout') && !empty($formField->layout)) {
+            return 'horizontal' === strtolower($formField->layout);
+        }
+
+        $settings = $this->getFieldSettings($formField);
+        if (isset($settings['layout']) && !empty($settings['layout'])) {
+            return 'horizontal' === strtolower($settings['layout']);
+        }
+
+        return false;
     }
 }

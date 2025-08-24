@@ -20,6 +20,9 @@ class SectionProcessor extends AbstractFieldProcessor
     {
         $metadata = $this->getBaseMetadata($formField);
 
+        // Override the label to just "Section" for cleaner display
+        $metadata['label'] = 'Section';
+
         $metadata['content'] = $this->createHrElement($formField);
 
         $metadata['borderStyle'] = $this->getBorderStyle($formField);

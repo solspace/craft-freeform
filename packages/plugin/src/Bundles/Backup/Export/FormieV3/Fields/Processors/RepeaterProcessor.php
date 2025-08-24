@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
+use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\FormieFieldMapper;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Interfaces\FieldProcessorInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
@@ -158,7 +159,20 @@ class RepeaterProcessor extends AbstractFieldProcessor
 
     private function createNestedField($nestedField, string $parentHandle, string $formUid, int $parentIndex, int $fieldIndex): ?Field
     {
-        // Create a simple nested field that can be saved to database
+        // Use the field mapper to get the proper processor for this nested field
+        $fieldMapper = new FormieFieldMapper();
+        $mappedField = $fieldMapper->mapField($nestedField, $formUid, $parentIndex);
+
+        if ($mappedField) {
+            // Update the handle to include parent prefix and ensure unique UID
+            $nestedHandle = $nestedField->handle ?? 'field'.$fieldIndex;
+            $mappedField->handle = $parentHandle.'_'.$nestedHandle;
+            $mappedField->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex.$parentHandle, 32);
+
+            return $mappedField;
+        }
+
+        // Fallback: Create a simple nested field that can be saved to database
         $field = new Field();
         $field->uid = HashHelper::sha1($formUid.'subfield'.$parentIndex.$fieldIndex.$parentHandle, 32);
         $field->name = $nestedField->label ?? 'Field';

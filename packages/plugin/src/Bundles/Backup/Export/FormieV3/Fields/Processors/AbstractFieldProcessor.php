@@ -98,6 +98,11 @@ abstract class AbstractFieldProcessor implements FieldProcessorInterface
         $metadata['enabled'] = $enabled ?? true;
         $metadata['includeInEmail'] = $includeInEmail ?? true;
 
+        // Map Formie's errorMessage to Freeform's requiredMessage
+        if (!empty($errorMessage)) {
+            $metadata['requiredMessage'] = $errorMessage;
+        }
+
         return $metadata;
     }
 

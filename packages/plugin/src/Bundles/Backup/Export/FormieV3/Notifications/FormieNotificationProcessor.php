@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\NotificationCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\Templates\NotificationTemplateCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Notification;
 use Solspace\Freeform\Bundles\Backup\DTO\Templates\NotificationTemplate as TemplateDTO;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\ProseMirrorHelper;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
@@ -34,9 +35,9 @@ class FormieNotificationProcessor
 
             $notificationDto->metadata = [
                 'name' => $notification->name ?? 'Admin Notification',
-                'fromName' => $notification->fromName ?? '',
-                'fromEmail' => $notification->from ?? '',
-                'replyTo' => $this->mapEmailValue($notification->replyTo ?? ''),
+                'fromName' => $this->resolveFromName($notification->fromName ?? '', $form),
+                'fromEmail' => $this->mapEmailValue(($notification->from ?? '') !== '' ? $notification->from : '{systemEmail}'),
+                'replyTo' => $this->mapEmailValue(($notification->replyTo ?? '') !== '' ? $notification->replyTo : '{systemReplyTo}'),
                 'subject' => $notification->subject ?? 'Form submission',
                 'body' => $this->convertNotificationContent($notification),
                 'recipients' => $this->parseRecipients($notification->to ?? ''),
@@ -69,12 +70,19 @@ class FormieNotificationProcessor
 
             $baseName = $notification->name ?: 'Notification';
             $template->name = $baseName;
-            $template->handle = $this->buildTemplateHandle($baseName, $formUid);
+            $template->handle = $this->buildTemplateHandle($baseName, $formUid, (string) $notification->id);
 
-            $template->fromName = $notification->fromName ?? '';
-            $template->fromEmail = $this->mapEmailValue($notification->from ?? '{systemEmail}');
+            // Resolve sender defaults
+            $template->fromName = $this->resolveFromName($notification->fromName ?? '', $form);
+            $template->fromEmail = $this->mapEmailValue(($notification->from ?? '') !== '' ? $notification->from : '{systemEmail}');
             $template->replyToName = '';
-            $template->replyToEmail = $this->mapEmailValue($notification->replyTo ?? '{systemReplyTo}');
+            // Ignore variable-style reply-to (except systemReplyTo) for templates
+            $replyToRaw = $notification->replyTo ?? '';
+            if (\is_string($replyToRaw) && preg_match('/^\{.+\}$/', trim($replyToRaw)) && !preg_match('/^\{\s*systemReplyTo\s*\}$/i', trim($replyToRaw))) {
+                $template->replyToEmail = null;
+            } else {
+                $template->replyToEmail = $this->mapEmailValue(($notification->replyTo ?? '') !== '' ? $notification->replyTo : '{systemReplyTo}');
+            }
 
             $template->cc = $this->splitList($notification->cc ?? '');
             $template->bcc = $this->splitList($notification->bcc ?? '');
@@ -97,20 +105,35 @@ class FormieNotificationProcessor
     {
         $content = $notification->content ?? '';
 
-        if (empty($content)) {
+        if ('' === $content || null === $content) {
             return '';
         }
 
-        if (\is_string($content) && (str_starts_with($content, '[') || str_starts_with($content, '{'))) {
+        // If already structured content – try converting with ProseMirrorHelper
+        if (\is_array($content) || \is_object($content)) {
             try {
-                $jsonContent = json_decode($content, true);
-                if (\JSON_ERROR_NONE === json_last_error() && \is_array($jsonContent)) {
-                    return ProseMirrorHelper::toHtml($jsonContent);
-                }
-            } catch (\Throwable $e) {
+                $arrayContent = (\is_array($content) ? $content : json_decode(json_encode($content), true)) ?: [];
+
+                return ProseMirrorHelper::toHtml($arrayContent);
+            } catch (\Throwable) {
+                // Fallback to JSON string if conversion fails
+                return json_encode($content) ?: '';
             }
         }
 
+        // If string looks like JSON – convert to HTML
+        if (\is_string($content) && (str_starts_with($content, '[') || str_starts_with($content, '{'))) {
+            try {
+                $json = json_decode($content, true);
+                if (\JSON_ERROR_NONE === json_last_error() && \is_array($json)) {
+                    return ProseMirrorHelper::toHtml($json);
+                }
+            } catch (\Throwable) {
+                // Ignore and fall back to raw string
+            }
+        }
+
+        // Plain string – return as-is
         return (string) $content;
     }
 
@@ -119,12 +142,12 @@ class FormieNotificationProcessor
         return (string) $notification->id;
     }
 
-    private function buildTemplateHandle(string $name, string $formUid): string
+    private function buildTemplateHandle(string $name, string $formUid, string $notificationId): string
     {
         $handle = strtolower(preg_replace('/[^a-zA-Z0-9]+/', '_', $name));
         $handle = trim($handle, '_');
 
-        return $handle.'_'.substr($formUid, 0, 8);
+        return $handle.'_'.substr($formUid, 0, 8).'_'.$notificationId;
     }
 
     private function generateTemplateHandle($notification, string $formUid): string
@@ -201,6 +224,32 @@ class FormieNotificationProcessor
         }
 
         return $trimmed;
+    }
+
+    private function resolveFromName(string $value, $form = null): string
+    {
+        $value = trim($value);
+        if ('' !== $value) {
+            return $value;
+        }
+
+        // Use Formie form title if available
+        try {
+            if ($form && property_exists($form, 'title') && !empty($form->title)) {
+                return (string) $form->title;
+            }
+        } catch (\Throwable) {
+        }
+
+        try {
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+            if (!empty($settings->defaultFromName)) {
+                return (string) $settings->defaultFromName;
+            }
+        } catch (\Throwable) {
+        }
+
+        return '';
     }
 
     private function splitList(string $value): array

@@ -62,7 +62,11 @@ export const ImportFormie: React.FC = () => {
   return (
     <ContentContainer>
       <Breadcrumb id="import" label="Import" url="import/formie3" />
-      <Breadcrumb id="import-formie3" label="Formie v3" url="import/formie3" />
+      <Breadcrumb
+        id="import-formie3"
+        label="Formie (v3)"
+        url="import/formie3"
+      />
       {data && (
         <Field label={translate('Select Data')}>
           <Preview

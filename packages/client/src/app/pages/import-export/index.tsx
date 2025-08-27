@@ -20,7 +20,7 @@ export const ImportExport: React.FC = () => {
       break;
 
     case '/import/formie/v3':
-      title = 'Import from Formie v3';
+      title = 'Import from Formie (v3)';
       break;
 
     case '/import/forms':

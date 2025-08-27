@@ -13,6 +13,18 @@
     justify-content: space-between;
     align-content: center;
     gap: 5px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      img,
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 }
 

@@ -148,7 +148,7 @@ export default class Freeform {
 
     const submitButtons = this._getSubmitButtons();
     submitButtons.forEach((button) => {
-      button.dataset.originalText = button.innerText;
+      button.dataset.originalText = button.innerHTML;
       button.dataset.processingText = this.options.processingText;
     });
   };
@@ -230,7 +230,7 @@ export default class Freeform {
       }
 
       if (showProcessingText) {
-        lastButton.innerText = lastButton.dataset.processingText;
+        lastButton.innerHTML = lastButton.dataset.processingText;
       }
     }
   };
@@ -284,7 +284,7 @@ export default class Freeform {
       }
 
       if (showProcessingText) {
-        submit.innerText = submit.dataset.originalText;
+        submit.innerHTML = submit.dataset.originalText;
       }
     }
   };

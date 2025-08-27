@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
+use craft\helpers\Html;
 use craft\helpers\Template;
 use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\PageButtonAttributesTransformer;
@@ -13,12 +14,14 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Fields\Implementations\CardsField\ImageTransformOptionsGenerator;
 use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Events\Fields\CompileButtonAttributesEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Twig\Markup;
 use yii\base\Event;
@@ -33,6 +36,9 @@ class PageButtons
     public const INPUT_NAME_SUBMIT = 'form_page_submit';
 
     public const EVENT_COMPILE_ATTRIBUTES = 'compile-attributes';
+
+    private const ICON_POSITION_LEFT = 'left';
+    private const ICON_POSITION_RIGHT = 'right';
 
     #[Section(
         handle: 'general',
@@ -143,6 +149,86 @@ class PageButtons
         instructions: 'Select an email notification template.',
     )]
     private ?NotificationTemplate $notificationTemplate = null;
+
+    #[Section(
+        handle: 'icons',
+        label: 'Icons',
+        icon: __DIR__.'/SectionIcons/icons.svg',
+    )]
+    #[Input\Select(
+        label: 'Image Transform',
+        instructions: 'Choose an image transform to apply to icons.',
+        emptyOption: 'Select an image transform...',
+        options: ImageTransformOptionsGenerator::class,
+    )]
+    private string $iconTransform = '';
+
+    #[Section('icons')]
+    #[Input\AssetPicker(
+        label: 'Submit Icon',
+        instructions: 'Select an icon to use for the submit button.',
+        criteria: ['kind' => 'image'],
+        limit: 1,
+    )]
+    private array $submitIcon = [];
+
+    #[VisibilityFilter('Boolean(buttons.submitIcon?.length)')]
+    #[Section('icons')]
+    #[Input\ButtonGroup(
+        label: 'Submit Icon Position',
+        instructions: 'Choose the position of the submit icon relative to the label.',
+        options: [
+            ['value' => 'left', 'label' => 'Left'],
+            ['value' => 'right', 'label' => 'Right'],
+        ],
+    )]
+    private string $submitIconPosition = self::ICON_POSITION_LEFT;
+
+    #[Section('icons')]
+    #[VisibilityFilter('Boolean(buttons.back)')]
+    #[Input\AssetPicker(
+        label: 'Back Icon',
+        instructions: 'Select an icon to use for the back button.',
+        criteria: ['kind' => 'image'],
+        limit: 1,
+    )]
+    private array $backIcon = [];
+
+    #[Section('icons')]
+    #[VisibilityFilter('Boolean(buttons.back)')]
+    #[VisibilityFilter('Boolean(buttons.backIcon?.length)')]
+    #[Input\ButtonGroup(
+        label: 'Back Icon Position',
+        instructions: 'Choose the position of the back icon relative to the label.',
+        options: [
+            ['value' => 'left', 'label' => 'Left'],
+            ['value' => 'right', 'label' => 'Right'],
+        ],
+    )]
+    private string $backIconPosition = self::ICON_POSITION_LEFT;
+
+    #[Section('icons')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Input\AssetPicker(
+        label: 'Save Icon',
+        instructions: 'Select an icon to use for the save button.',
+        criteria: ['kind' => 'image'],
+        limit: 1,
+    )]
+    private array $saveIcon = [];
+
+    #[Section('icons')]
+    #[VisibilityFilter('Boolean(buttons.save)')]
+    #[VisibilityFilter('Boolean(buttons.saveIcon?.length)')]
+    #[Input\ButtonGroup(
+        label: 'Save Icon Position',
+        instructions: 'Choose the position of the save icon relative to the label.',
+        options: [
+            ['value' => 'left', 'label' => 'Left'],
+            ['value' => 'right', 'label' => 'Right'],
+        ],
+    )]
+    private string $saveIconPosition = self::ICON_POSITION_LEFT;
 
     #[Section(
         handle: 'attributes',
@@ -272,86 +358,104 @@ class PageButtons
         return $this->notificationTemplate;
     }
 
+    public function getIconTransform(): string
+    {
+        return $this->iconTransform;
+    }
+
+    public function getSubmitIcon(): array
+    {
+        return $this->submitIcon;
+    }
+
+    public function getSubmitIconPosition(): string
+    {
+        return $this->submitIconPosition;
+    }
+
+    public function getBackIcon(): array
+    {
+        return $this->backIcon;
+    }
+
+    public function getBackIconPosition(): string
+    {
+        return $this->backIconPosition;
+    }
+
+    public function getSaveIcon(): array
+    {
+        return $this->saveIcon;
+    }
+
+    public function getSaveIconPosition(): string
+    {
+        return $this->saveIconPosition;
+    }
+
+    public function getSubmitIconUrl(): ?string
+    {
+        return $this->getIconAssetUrl($this->getSubmitIcon());
+    }
+
+    public function getBackIconUrl(): ?string
+    {
+        return $this->getIconAssetUrl($this->getBackIcon());
+    }
+
+    public function getSaveIconUrl(): ?string
+    {
+        return $this->getIconAssetUrl($this->getSaveIcon());
+    }
+
     public function getSubmitRenderProps(array $customAttributes = []): Markup
     {
-        return Template::raw(
-            $this->getAttributes()
-                ->getSubmit()
-                ->clone()
-                ->merge($customAttributes)
-                ->replace('data-freeform-action', 'submit')
-                ->replace('data-button-container', 'submit')
-                ->replace('name', self::INPUT_NAME_SUBMIT)
-                ->replace('type', 'submit')
-        );
+        return Template::raw($this->getSubmitAttributes($customAttributes));
     }
 
     public function renderSubmit(array $customAttributes = []): Markup
     {
-        $attributes = $this->getSubmitRenderProps($customAttributes);
+        $attributes = $this->getSubmitAttributes($customAttributes);
 
-        return Template::raw(
-            '<button'.$attributes.'>'
-            .htmlspecialchars(
-                Freeform::t($this->getSubmitLabel()),
-                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
-            )
-            .'</button>'
+        return $this->renderButton(
+            $this->getSubmitLabel(),
+            $this->getSubmitIconUrl(),
+            $this->getSubmitIconPosition(),
+            $attributes
         );
     }
 
     public function getBackRenderProps(array $customAttributes = []): Markup
     {
-        return Template::raw(
-            $this->getAttributes()
-                ->getBack()
-                ->clone()
-                ->merge($customAttributes)
-                ->replace('data-freeform-action', 'back')
-                ->replace('data-button-container', 'back')
-                ->replace('name', self::INPUT_NAME_PREVIOUS_PAGE)
-                ->replace('type', 'submit')
-        );
+        return Template::raw($this->getBackAttributes($customAttributes));
     }
 
     public function renderBack(array $customAttributes = []): Markup
     {
-        $attributes = $this->getBackRenderProps($customAttributes);
+        $attributes = $this->getBackAttributes($customAttributes);
 
-        return Template::raw(
-            '<button'.$attributes.'>'
-            .htmlspecialchars(
-                Freeform::t($this->getBackLabel()),
-                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
-            )
-            .'</button>'
+        return $this->renderButton(
+            $this->getBackLabel(),
+            $this->getBackIconUrl(),
+            $this->getBackIconPosition(),
+            $attributes
         );
     }
 
     public function getSaveRenderProps(array $customAttributes = []): Markup
     {
-        return Template::raw(
-            $this->getAttributes()
-                ->getSave()
-                ->clone()
-                ->merge($customAttributes)
-                ->replace('data-freeform-action', 'save')
-                ->replace('data-button-container', 'save')
-                ->replace('type', 'submit')
-        );
+        return Template::raw($this->getSaveAttributes($customAttributes));
     }
 
     public function renderSave(array $customAttributes = []): Markup
     {
-        $attributes = $this->getSaveRenderProps($customAttributes);
+        $attributes = $this->getSaveAttributes($customAttributes);
 
-        return Template::raw(
-            '<button'.$attributes.'>'
-            .htmlspecialchars(
-                Freeform::t($this->getSaveLabel()),
-                \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401
-            )
-            .'</button>'
+        return $this->renderButton(
+            $this->getSaveLabel(),
+            $this->getSaveIconUrl(),
+            $this->getSaveIconPosition(),
+            $attributes
         );
     }
 
@@ -366,5 +470,83 @@ class PageButtons
                 $defaultValue
             )
         ;
+    }
+
+    protected function getSubmitAttributes(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getSubmit()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'submit')
+            ->replace('data-button-container', 'submit')
+            ->replace('name', self::INPUT_NAME_SUBMIT)
+            ->replace('type', 'submit')
+        ;
+    }
+
+    protected function getBackAttributes(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getBack()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'back')
+            ->replace('data-button-container', 'back')
+            ->replace('name', self::INPUT_NAME_PREVIOUS_PAGE)
+            ->replace('type', 'submit')
+        ;
+    }
+
+    protected function getSaveAttributes(array $customAttributes = []): Attributes
+    {
+        return $this->getAttributes()
+            ->getSave()
+            ->clone()
+            ->merge($customAttributes)
+            ->replace('data-freeform-action', 'save')
+            ->replace('data-button-container', 'save')
+            ->replace('type', 'submit')
+        ;
+    }
+
+    private function getIconAssetUrl(?array $assetArray): ?string
+    {
+        if (empty($assetArray)) {
+            return null;
+        }
+
+        $assetId = reset($assetArray);
+
+        return \Craft::$app->assets->getAssetById($assetId)?->getUrl($this->getIconTransform());
+    }
+
+    private function renderButton(
+        string $label,
+        ?string $iconUrl,
+        string $iconPosition,
+        Attributes $attributes
+    ): Markup {
+        $label = htmlspecialchars(Freeform::t($label), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401);
+
+        $content = $label;
+        if ($iconUrl) {
+            $imgTag = Html::tag('img', '', ['src' => $iconUrl]);
+            $label = Html::tag('span', $label);
+
+            if (self::ICON_POSITION_LEFT === $iconPosition) {
+                $content = $imgTag.$label;
+            } else {
+                $content = $label.$imgTag;
+            }
+        }
+
+        return Template::raw(
+            Html::tag(
+                $attributes->getTag('button'),
+                $content,
+                $attributes->toHtmlTagArray()
+            )
+        );
     }
 }

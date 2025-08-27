@@ -2,24 +2,18 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import type { Card } from './cards.types';
-
 export type AssetUrl = {
   title: string;
   url: string;
 };
 
-type AssetUrlRecords = Record<number, AssetUrl>;
+export type AssetUrlRecords = Record<number, AssetUrl>;
 
-export const useCardAssetUrls = (
-  cards: Card[],
+export const useAssetQuery = (
+  assetIds: number[],
   transform?: string
-): UseQueryResult<AssetUrlRecords> => {
-  const assetIds = cards
-    .map((card) => card.assetId)
-    .filter(Boolean) as number[];
-
-  return useQuery(
+): UseQueryResult<AssetUrlRecords> =>
+  useQuery(
     ['assets', 'urls', assetIds.sort(), transform],
     () =>
       axios
@@ -33,4 +27,3 @@ export const useCardAssetUrls = (
       enabled: assetIds.length > 0,
     }
   );
-};

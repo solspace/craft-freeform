@@ -10,16 +10,26 @@ export type PageButton = {
   label: string;
   enabled: boolean;
   handle?: string;
+  assetId?: number;
+  iconPosition?: IconPosition;
 };
+
+export type IconPosition = 'left' | 'right';
 
 export type PageButtons = {
   layout: string;
   attributes: AttributeCollection;
   submitLabel: string;
+  submitIcon: number[];
+  submitIconPosition: IconPosition;
   back: boolean;
   backLabel: string;
+  backIcon: number[];
+  backIconPosition: IconPosition;
   save: boolean;
   saveLabel: string;
+  saveIcon: number[];
+  saveIconPosition: IconPosition;
 };
 
 export type Page = {

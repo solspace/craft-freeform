@@ -38,10 +38,16 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
           save: {},
         },
         submitLabel: 'Submit',
+        submitIcon: [],
+        submitIconPosition: 'left',
         back: true,
         backLabel: 'Back',
+        backIcon: [],
+        backIconPosition: 'left',
         save: false,
         saveLabel: 'Save',
+        saveIcon: [],
+        saveIconPosition: 'left',
       },
     })
   );

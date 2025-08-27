@@ -11,13 +11,14 @@ const AssetPicker: React.FC<ControlType<AssetPickerProperty>> = ({
   errors,
   updateValue,
 }) => {
-  const { criteria, multiSelect, actionLabel } = property;
+  const { criteria, multiSelect, actionLabel, limit } = property;
 
   return (
     <Control property={property} errors={errors}>
       <CraftAssetPicker
         actionLabel={actionLabel}
         criteria={criteria}
+        limit={limit}
         multiSelect={multiSelect}
         value={value}
         onUpdate={updateValue}

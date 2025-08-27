@@ -40,8 +40,8 @@ export const CraftAssetPicker: FC<Props> = ({
           .map((element) => element.id)
           .slice(0, limit);
 
-        const newIds = selectedIds.filter((id) => !value.includes(id));
-        const combinedIds = [...value, ...newIds];
+        const newIds = selectedIds.filter((id) => !value?.includes(id));
+        const combinedIds = [...(value || []), ...newIds];
 
         onUpdate(combinedIds);
       },
@@ -55,8 +55,9 @@ export const CraftAssetPicker: FC<Props> = ({
     [onUpdate, value]
   );
 
-  const showAddButton = limit === undefined || value.length < limit;
-  const showLoading = data === undefined && isFetching && value.length > 0;
+  const showAddButton =
+    limit === undefined || value?.length === undefined || value?.length < limit;
+  const showLoading = data === undefined && isFetching && value?.length > 0;
 
   return (
     <div className="elementselect">

@@ -21,6 +21,8 @@ export const getButtonGroups = (page: Page): ButtonGroups => {
             handle: 'submit',
             label: page.buttons.submitLabel,
             enabled: true,
+            assetId: page.buttons.submitIcon?.[0] || undefined,
+            iconPosition: page.buttons.submitIconPosition || 'left',
           });
 
           break;
@@ -31,6 +33,8 @@ export const getButtonGroups = (page: Page): ButtonGroups => {
               handle: 'back',
               label: page.buttons.backLabel,
               enabled: page.buttons.back,
+              assetId: page.buttons.backIcon?.[0] || undefined,
+              iconPosition: page.buttons.backIconPosition || 'left',
             });
           }
 
@@ -42,6 +46,8 @@ export const getButtonGroups = (page: Page): ButtonGroups => {
               handle: 'save',
               label: page.buttons.saveLabel,
               enabled: page.buttons.save,
+              assetId: page.buttons.saveIcon?.[0] || undefined,
+              iconPosition: page.buttons.saveIconPosition || 'left',
             });
           }
 

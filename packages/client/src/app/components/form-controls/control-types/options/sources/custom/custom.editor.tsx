@@ -37,7 +37,14 @@ import {
 
 export const CustomEditor: React.FC<
   ConfigurationProps<CustomOptionsConfiguration>
-> = ({ value, updateValue, defaultValue, updateDefaultValue, isMultiple }) => {
+> = ({
+  value,
+  updateValue,
+  defaultValue,
+  updateDefaultValue,
+  isMultiple,
+  autoUpdateHandle,
+}) => {
   const [localValue, setLocalValue] = useState(value);
   const debouncedValue = useDebounce(localValue, 500);
 
@@ -170,7 +177,9 @@ export const CustomEditor: React.FC<
                             {
                               ...option,
                               label: event.target.value,
-                              value: event.target.value,
+                              value: autoUpdateHandle
+                                ? event.target.value
+                                : option.value,
                             },
                             localValue
                           )

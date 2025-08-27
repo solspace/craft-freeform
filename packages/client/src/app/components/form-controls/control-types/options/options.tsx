@@ -33,6 +33,8 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
   const fieldType = useFieldType(context.typeClass);
   const isMultiple = fieldType?.implements.includes('multiValue');
 
+  const autoUpdateHandle = context?.id === undefined;
+
   const { willTranslate } = useTranslations(context);
 
   const [options] = useFieldOptions(context, fieldType);
@@ -85,6 +87,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         updateDefaultValue={updateDefaultValue}
         convertToCustomValues={convertToCustomValues}
         isMultiple={isMultiple}
+        autoUpdateHandle={autoUpdateHandle}
       />
 
       <FormErrorList errors={errors} />

@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Integrations\CRM\HubSpot\Versions;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Delimiter;
 use Solspace\Freeform\Attributes\Property\Flag;
@@ -203,6 +204,35 @@ class HubSpotV3 extends BaseHubSpotIntegration
         $this->createAssociations($form, $client);
     }
 
+    /**
+     * Validate a v3 Contact ID by issuing a GET with archived=false.
+     * Returns the contact stdClass when valid, or null when 404/invalid.
+     */
+    private function validateAndFetchContact(Client $client, string $contactId): ?\stdClass
+    {
+        try {
+            [, $data] = $this->getJsonResponse(
+                $client->get(
+                    $this->getEndpoint('/objects/contacts/'.rawurlencode($contactId)),
+                    ['query' => ['archived' => 'false']]
+                )
+            );
+
+            return $data ?? null;
+        } catch (ClientException $e) {
+            $status = $e->getResponse() ? $e->getResponse()->getStatusCode() : 0;
+            if (404 === $status) {
+                $this->logger->debug('Cookie-derived contactId invalid (stale/merged/archived/wrong-portal), will fallback.', [
+                    'contactId' => $contactId,
+                ]);
+
+                return null;
+            }
+
+            throw $e;
+        }
+    }
+
     private function pushContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
@@ -223,6 +253,8 @@ class HubSpotV3 extends BaseHubSpotIntegration
         $email = $this->getEmailFieldValue($mapping);
 
         $contactId = null;
+        $contact = null; // <-- we’ll keep the fetched contact here for append logic
+
         $contact = $this->searchForObject(
             $client,
             $this->getRecord(self::CATEGORY_CONTACT),
@@ -244,20 +276,33 @@ class HubSpotV3 extends BaseHubSpotIntegration
                 try {
                     $response = $client->get($endpoint);
                     $json = json_decode((string) $response->getBody());
-                    $contactId = $json->vid ?? null;
+                    $cookieContactId = $json->vid ?? null;
 
-                    $this->logger->debug('Found contact by cookie', ['cookie' => $_COOKIE['hubspotutk'], 'contactId' => $contactId]);
+                    $this->logger->debug('Found contact by cookie (v1 VID)', ['cookie' => $contactCookie, 'contactId' => $cookieContactId]);
+
+                    if ($cookieContactId) {
+                        // Validate VID against v3 and fetch contact record
+                        $validated = $this->validateAndFetchContact($client, (string) $cookieContactId);
+                        if ($validated && isset($validated->id)) {
+                            $contactId = (int) $validated->id;
+                            $contact = $validated;
+                        } else {
+                            $this->logger->debug('Cookie-derived contactId failed v3 validation; ignoring.', [
+                                'cookieContactId' => $cookieContactId,
+                            ]);
+                        }
+                    }
                 } catch (\Exception $exception) {
-                    $this->logger->debug('Failed to find contact by cookie', ['cookie' => $_COOKIE['hubspotutk']]);
+                    $this->logger->debug('Failed to find contact by cookie', ['cookie' => $contactCookie]);
                 }
             }
         } else {
-            $contactId = $contact->id;
+            $contactId = (int) $contact->id;
             $this->logger->debug('Found existing contact by email', ['email' => $email, 'contactId' => $contactId]);
         }
 
         if ($contactId) {
-            if ($this->getAppendContactData()) {
+            if ($this->getAppendContactData() && $contact && isset($contact->properties)) {
                 $mapping = $this->appendValues(
                     self::CATEGORY_CONTACT,
                     $mapping,
@@ -280,7 +325,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
                 )
             );
 
-            $contactId = $data->id;
+            $contactId = (int) $data->id;
             $this->logger->info('New Contact created', ['contactId' => $contactId]);
             $this->logger->debug('With Mapping', $mapping);
         }

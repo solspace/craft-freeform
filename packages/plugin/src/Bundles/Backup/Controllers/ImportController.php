@@ -8,7 +8,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Backup\Export\ExporterInterface;
 use Solspace\Freeform\Bundles\Backup\Export\ExpressFormsExporter;
 use Solspace\Freeform\Bundles\Backup\Export\FileExportReader;
-use Solspace\Freeform\Bundles\Backup\Export\FormieV3Exporter;
+use Solspace\Freeform\Bundles\Backup\Import\FormieV3Importer;
 use Solspace\Freeform\Bundles\Backup\Import\FreeformImporter;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
@@ -31,7 +31,7 @@ class ImportController extends BaseApiController
     {
         try {
             $propertyProvider = \Craft::$container->get(PropertyProvider::class);
-            $exporter = new FormieV3Exporter($propertyProvider);
+            $exporter = new FormieV3Importer($propertyProvider);
             $data = $exporter->collectDataPreview();
 
             return $this->asSerializedJson($data, context: ['preserve_empty_objects' => false]);

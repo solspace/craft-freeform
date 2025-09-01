@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Export\FormieV3\Layout;
 
-use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Backup\Collections\FieldCollection;
 use Solspace\Freeform\Bundles\Backup\Collections\RowCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\Layout;
@@ -10,6 +9,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\Page;
 use Solspace\Freeform\Bundles\Backup\DTO\Row;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\FormieFieldMapper;
 use Solspace\Freeform\Bundles\Backup\Export\FormieV3\Fields\Processors\NameProcessor;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use verbb\formie\elements\Form as FormieForm;
 
 class FormieLayoutBuilder
@@ -39,16 +39,16 @@ class FormieLayoutBuilder
     private function createDefaultPage($exported): void
     {
         $page = new Page();
-        $page->uid = StringHelper::UUID();
+        $page->uid = HashHelper::sha1($exported->uid.'page1', 32);
         $page->label = 'Page 1';
-        $page->layout = $this->createEmptyLayout();
+        $page->layout = $this->createEmptyLayout($exported->uid);
         $exported->pages->add($page);
     }
 
     private function createSinglePageLayout($exported, array $formFields, string $formUid): void
     {
         $page = new Page();
-        $page->uid = StringHelper::UUID();
+        $page->uid = HashHelper::sha1($formUid.'page1', 32);
         $page->label = 'Page 1';
         $page->layout = $this->createLayoutWithFields($formFields, $formUid);
         $exported->pages->add($page);
@@ -61,7 +61,7 @@ class FormieLayoutBuilder
 
         foreach ($pages as $pageIndex => $pageData) {
             $page = new Page();
-            $page->uid = StringHelper::UUID();
+            $page->uid = HashHelper::sha1($formUid.'page'.($pageIndex + 1), 32);
             $page->label = $pageData->label ?? 'Page '.($pageIndex + 1);
 
             // Get rows that belong to this page
@@ -75,10 +75,10 @@ class FormieLayoutBuilder
         }
     }
 
-    private function createEmptyLayout(): Layout
+    private function createEmptyLayout(string $formUid): Layout
     {
         $layout = new Layout();
-        $layout->uid = StringHelper::UUID();
+        $layout->uid = HashHelper::sha1($formUid.'layout1', 32);
         $layout->rows = new RowCollection();
 
         return $layout;
@@ -87,7 +87,7 @@ class FormieLayoutBuilder
     private function createLayoutWithFields(array $formFields, string $formUid): Layout
     {
         $layout = new Layout();
-        $layout->uid = StringHelper::UUID();
+        $layout->uid = HashHelper::sha1($formUid.'layout1', 32);
         $layout->rows = new RowCollection();
 
         foreach ($formFields as $index => $formField) {
@@ -103,7 +103,7 @@ class FormieLayoutBuilder
             }
 
             $row = new Row();
-            $row->uid = StringHelper::UUID();
+            $row->uid = HashHelper::sha1($formUid.'row'.$index, 32);
             $row->fields = new FieldCollection();
             $row->fields->add($field);
             $layout->rows->add($row);
@@ -115,12 +115,12 @@ class FormieLayoutBuilder
     private function createLayoutFromRows(array $pageRows, string $formUid): Layout
     {
         $layout = new Layout();
-        $layout->uid = StringHelper::UUID();
+        $layout->uid = HashHelper::sha1($formUid.'layout'.\count($pageRows), 32);
         $layout->rows = new RowCollection();
 
-        foreach ($pageRows as $rowData) {
+        foreach ($pageRows as $rowIndex => $rowData) {
             $row = new Row();
-            $row->uid = StringHelper::UUID();
+            $row->uid = HashHelper::sha1($formUid.'row'.$rowIndex, 32);
             $row->fields = new FieldCollection();
 
             $fields = $rowData->getFields();
@@ -153,7 +153,7 @@ class FormieLayoutBuilder
         $subFields = $nameProcessor->getSubFields($formField, $formUid, $index);
 
         $row = new Row();
-        $row->uid = StringHelper::UUID();
+        $row->uid = HashHelper::sha1($formUid.'row'.uniqid(), 32);
         $row->fields = new FieldCollection();
 
         foreach ($subFields as $subField) {

@@ -7,8 +7,10 @@ use Solspace\Freeform\Bundles\Backup\BatchProcessing\ElementQueryProcessor;
 use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
+use Solspace\Freeform\Bundles\Backup\Import\FormieV3\Fields\Processors\FileUploadProcessor;
 use verbb\formie\elements\Form as FormieForm;
 use verbb\formie\elements\Submission as FormieSubmission;
+use verbb\formie\fields\FileUpload;
 use verbb\formie\fields\Table as FormieTable;
 
 class SubmissionProcessor
@@ -97,6 +99,12 @@ class SubmissionProcessor
                                 foreach ($formFields as $field) {
                                     $handle = $field->handle ?? '';
                                     $value = $row->getFieldValue($field->handle ?? '');
+
+                                    // Handle Formie File Upload field values
+                                    if ($field instanceof FileUpload) {
+                                        $fileUploadProcessor = new FileUploadProcessor();
+                                        $value = $fileUploadProcessor->convertSubmissionValue($value);
+                                    }
 
                                     // Normalize Formie Table field values to array-of-arrays
                                     if ($field instanceof FormieTable) {

@@ -9,6 +9,7 @@ use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use verbb\formie\elements\Form as FormieForm;
 use verbb\formie\elements\Submission as FormieSubmission;
+use verbb\formie\fields\Table as FormieTable;
 
 class SubmissionProcessor
 {
@@ -96,6 +97,23 @@ class SubmissionProcessor
                                 foreach ($formFields as $field) {
                                     $handle = $field->handle ?? '';
                                     $value = $row->getFieldValue($field->handle ?? '');
+
+                                    // Normalize Formie Table field values to array-of-arrays
+                                    if ($field instanceof FormieTable) {
+                                        if (\is_string($value)) {
+                                            $decoded = json_decode($value, true);
+                                            if (\JSON_ERROR_NONE === json_last_error()) {
+                                                $value = $decoded;
+                                            }
+                                        }
+                                        if (\is_object($value)) {
+                                            $value = json_decode(json_encode($value), true) ?: [];
+                                        }
+                                        if (!\is_array($value)) {
+                                            $value = [];
+                                        }
+                                    }
+
                                     $exported->{$handle} = $value;
                                 }
                             } catch (\Throwable $e) {

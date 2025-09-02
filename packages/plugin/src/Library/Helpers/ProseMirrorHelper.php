@@ -61,13 +61,19 @@ class ProseMirrorHelper
         $text = '';
 
         foreach ($content as $textBlock) {
-            if (isset($textBlock['type']) && 'text' === $textBlock['type']) {
-                $content = $textBlock['text'] ?? '';
-                $marks = $textBlock['marks'] ?? [];
+            if (isset($textBlock['type'])) {
+                if ('text' === $textBlock['type']) {
+                    $content = $textBlock['text'] ?? '';
+                    $marks = $textBlock['marks'] ?? [];
 
-                // Apply marks (formatting)
-                $content = self::applyMarks($content, $marks);
-                $text .= $content;
+                    // Apply marks (formatting)
+                    $content = self::applyMarks($content, $marks);
+                    $text .= $content;
+                } elseif ('variableTag' === $textBlock['type']) {
+                    // Handle Formie variableTag nodes
+                    $value = $textBlock['attrs']['value'] ?? '';
+                    $text .= self::convertFormieVariableToFreeform($value);
+                }
             }
         }
 
@@ -134,5 +140,48 @@ class ProseMirrorHelper
         }
 
         return $html;
+    }
+
+    private static function convertFormieVariableToFreeform(string $value): string
+    {
+        // Map common Formie variables to Freeform equivalents
+        $variableMap = [
+            '{formName}' => '{{ form.name }}',
+            '{formTitle}' => '{{ form.name }}',
+            '{form}' => '{{ form.name }}',
+            '{siteName}' => '{{ general.siteName }}',
+            '{systemName}' => '{{ general.systemName }}',
+            '{siteHandle}' => '{{ general.siteHandle }}',
+            '{timestamp}' => '{{ submission.dateCreated.format("F j, Y \a\t g:ia") }}',
+            '{dateCreated}' => '{{ submission.dateCreated.format("F j, Y \a\t g:ia") }}',
+            '{date}' => '{{ submission.dateCreated.format("F j, Y") }}',
+            '{time}' => '{{ submission.dateCreated.format("g:ia") }}',
+            '{allFields}' => '{{ loops.fields.all }}',
+            '{all}' => '{{ loops.fields.all }}',
+            '{all form field}' => '{{ loops.fields.all }}',
+            '{submissionId}' => '{{ submission.id }}',
+            '{submission}' => '{{ submission.id }}',
+            '{id}' => '{{ submission.id }}',
+            '{user}' => '{{ submission.userId ? submission.user.email : "Guest" }}',
+            '{userId}' => '{{ submission.userId }}',
+            '{ipAddress}' => '{{ submission.ipAddress }}',
+            '{userAgent}' => '{{ submission.userAgent }}',
+            '{referrer}' => '{{ submission.referrer }}',
+        ];
+
+        // Check for exact matches first
+        if (isset($variableMap[$value])) {
+            return $variableMap[$value];
+        }
+
+        // Handle field UID references like {field:uuid} or {uuid}
+        if (preg_match('/^\{([a-f0-9-]{36})\}$/', $value, $matches)) {
+            $fieldUid = $matches[1];
+
+            return '{{ fieldUids[\''.$fieldUid.'\'] }}';
+        }
+
+        // If no match found, return the original value wrapped in Freeform syntax
+        return '{{ '.trim($value, '{}').' }}';
     }
 }

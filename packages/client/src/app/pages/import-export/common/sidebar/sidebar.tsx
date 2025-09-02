@@ -18,7 +18,7 @@ type Heading = {
 
 type Response = Array<Link & Heading>;
 
-const localLinks = ['forms', 'express-forms'];
+const localLinks = ['forms', 'express-forms', 'formie'];
 
 export const Sidebar: React.FC = () => {
   const { pathname: currentUrl } = useLocation();

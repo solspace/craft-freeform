@@ -51,6 +51,16 @@ class ExportService extends BaseService
             ];
         }
 
+        // Check if Formie is installed and enabled
+        $formieInstalled = \Craft::$app->plugins->isPluginInstalled('formie');
+        $formieEnabled = \Craft::$app->plugins->isPluginEnabled('formie');
+        if ($formieInstalled && $formieEnabled) {
+            $navigation[] = [
+                'title' => Freeform::t('Formie (v3)'),
+                'url' => 'freeform/import/formie/v3',
+            ];
+        }
+
         return $navigation;
     }
 }

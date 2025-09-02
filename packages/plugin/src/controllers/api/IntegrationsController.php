@@ -257,7 +257,7 @@ class IntegrationsController extends BaseApiController
         return $this->asEmptyResponse(204);
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_MANAGE);
 

@@ -538,7 +538,7 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
-    public function processIntegrationJob(int $formId, array $postedData, string $type): void
+    public function processIntegrationJob(int $formId, ?int $submissionId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
         $edition = $freeform->edition;
@@ -546,6 +546,11 @@ class IntegrationsService extends BaseService
         $form = $freeform->forms->getFormById($formId);
         if (!$form) {
             return;
+        }
+
+        $submission = $freeform->submissions->getSubmissionById($submissionId);
+        if ($submission) {
+            $form->setSubmission($submission);
         }
 
         $form->valuesFromArray($postedData);

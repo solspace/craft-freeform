@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Integrations\Single\UrlParameterTracking\EventListeners;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
-use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\Records\UrlTrackingParameterRecord;
 use Solspace\Freeform\Integrations\Single\UrlParameterTracking\UrlParameterTracking;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Services\SubmissionsService;
 use yii\base\Event;
 
 class UrlParameterTrackingTrigger extends FeatureBundle
@@ -16,13 +16,13 @@ class UrlParameterTrackingTrigger extends FeatureBundle
         private FormIntegrationsProvider $integrationsProvider,
     ) {
         Event::on(
-            Form::class,
-            Form::EVENT_AFTER_SUBMIT,
-            [$this, 'onFormSubmit']
+            SubmissionsService::class,
+            SubmissionsService::EVENT_AFTER_SUBMIT,
+            [$this, 'onStoreSubmission']
         );
     }
 
-    public function onFormSubmit(SubmitEvent $event): void
+    public function onStoreSubmission(SubmitEvent $event): void
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();

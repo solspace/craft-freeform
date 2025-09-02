@@ -2,10 +2,31 @@
 
 namespace Solspace\Freeform\Bundles\Backup\Import\FormieV3\Fields\Processors;
 
+use Solspace\Freeform\Bundles\Backup\DTO\Field;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use verbb\formie\fields\Table as FormieTable;
 
 class TableProcessor extends AbstractFieldProcessor
 {
+    public function process($formField, string $formUid, int $index): ?Field
+    {
+        $field = parent::process($formField, $formUid, $index);
+        if (!$field) {
+            return null;
+        }
+
+        // Avoid collisions with Craft/Freeform element properties like "children"
+        $originalHandle = $field->handle;
+        if ($this->isReservedSubmissionProperty($originalHandle)) {
+            $field->handle = $originalHandle.'_table';
+            if (isset($field->metadata['handle'])) {
+                $field->metadata['handle'] = $field->handle;
+            }
+        }
+
+        return $field;
+    }
+
     public function canProcess($formField): bool
     {
         return 'verbb\formie\fields\Table' === $formField::class;
@@ -52,6 +73,64 @@ class TableProcessor extends AbstractFieldProcessor
         }
 
         return $metadata;
+    }
+
+    public function getSanitizedHandle(string $handle): string
+    {
+        return $this->isReservedSubmissionProperty($handle) ? $handle.'_table' : $handle;
+    }
+
+    public function convertSubmissionValue(FormieTable $formieField, mixed $value): array
+    {
+        // Convert objects/JSON strings to arrays
+        if (\is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (\JSON_ERROR_NONE === json_last_error()) {
+                $value = $decoded;
+            }
+        }
+        if (\is_object($value)) {
+            $value = json_decode(json_encode($value), true) ?: [];
+        }
+        if (!\is_array($value)) {
+            return [];
+        }
+
+        // Determine expected column order from the Formie field definition
+        $columnKeys = [];
+        if (property_exists($formieField, 'columns') && \is_array($formieField->columns)) {
+            $columnKeys = array_keys($formieField->columns);
+        } elseif (method_exists($formieField, 'getSettings')) {
+            $settings = $formieField->getSettings();
+            if (\is_array($settings) && isset($settings['columns']) && \is_array($settings['columns'])) {
+                $columnKeys = array_keys($settings['columns']);
+            }
+        }
+
+        // Ensure a numeric-indexed array of rows with index-based columns as Freeform expects
+        $normalized = [];
+        foreach ($value as $row) {
+            if (!\is_array($row)) {
+                continue;
+            }
+
+            $numericRow = [];
+            if (!empty($columnKeys) && array_keys($row) !== range(0, \count($row) - 1)) {
+                // Associative row; map using the known column order
+                foreach ($columnKeys as $key) {
+                    $numericRow[] = $row[$key] ?? '';
+                }
+            } else {
+                // Already numeric or unknown order; reindex preserving order
+                foreach ($row as $colValue) {
+                    $numericRow[] = $colValue;
+                }
+            }
+
+            $normalized[] = $numericRow;
+        }
+
+        return $normalized;
     }
 
     private function buildTableLayout($formField): array
@@ -156,5 +235,14 @@ class TableProcessor extends AbstractFieldProcessor
         }
 
         return $default;
+    }
+
+    private function isReservedSubmissionProperty(string $handle): bool
+    {
+        $reserved = [
+            'children',
+        ];
+
+        return \in_array($handle, $reserved, true);
     }
 }

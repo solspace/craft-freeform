@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Backup\Collections\FormSubmissionCollection;
 use Solspace\Freeform\Bundles\Backup\DTO\FormSubmissions;
 use Solspace\Freeform\Bundles\Backup\DTO\Submission;
 use Solspace\Freeform\Bundles\Backup\Import\FormieV3\Fields\Processors\FileUploadProcessor;
+use Solspace\Freeform\Bundles\Backup\Import\FormieV3\Fields\Processors\TableProcessor;
 use verbb\formie\elements\Form as FormieForm;
 use verbb\formie\elements\Submission as FormieSubmission;
 use verbb\formie\fields\FileUpload;
@@ -106,20 +107,11 @@ class SubmissionProcessor
                                         $value = $fileUploadProcessor->convertSubmissionValue($value);
                                     }
 
-                                    // Normalize Formie Table field values to array-of-arrays
+                                    // Normalize Formie Table field values and align handles with Freeform TableProcessor
                                     if ($field instanceof FormieTable) {
-                                        if (\is_string($value)) {
-                                            $decoded = json_decode($value, true);
-                                            if (\JSON_ERROR_NONE === json_last_error()) {
-                                                $value = $decoded;
-                                            }
-                                        }
-                                        if (\is_object($value)) {
-                                            $value = json_decode(json_encode($value), true) ?: [];
-                                        }
-                                        if (!\is_array($value)) {
-                                            $value = [];
-                                        }
+                                        $tableProcessor = new TableProcessor();
+                                        $handle = $tableProcessor->getSanitizedHandle($handle);
+                                        $value = $tableProcessor->convertSubmissionValue($field, $value);
                                     }
 
                                     $exported->{$handle} = $value;

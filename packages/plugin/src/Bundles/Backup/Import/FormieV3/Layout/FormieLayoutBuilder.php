@@ -69,8 +69,8 @@ class FormieLayoutBuilder
                 return $row->pageId === $pageData->id;
             });
 
-            // Create layout with the correct rows and fields
-            $page->layout = $this->createLayoutFromRows($pageRows, $formUid);
+            // Create layout with the correct rows and fields, passing page index for unique UIDs
+            $page->layout = $this->createLayoutFromRows($pageRows, $formUid, $pageIndex);
             $exported->pages->add($page);
         }
     }
@@ -112,26 +112,31 @@ class FormieLayoutBuilder
         return $layout;
     }
 
-    private function createLayoutFromRows(array $pageRows, string $formUid): Layout
+    private function createLayoutFromRows(array $pageRows, string $formUid, int $pageIndex): Layout
     {
         $layout = new Layout();
-        $layout->uid = HashHelper::sha1($formUid.'layout'.\count($pageRows), 32);
+        $layout->uid = HashHelper::sha1($formUid.'layout'.($pageIndex + 1), 32);
         $layout->rows = new RowCollection();
 
         foreach ($pageRows as $rowIndex => $rowData) {
             $row = new Row();
-            $row->uid = HashHelper::sha1($formUid.'row'.$rowIndex, 32);
+            // Use page index and row index for unique UIDs across pages
+            $row->uid = HashHelper::sha1($formUid.'page'.($pageIndex + 1).'row'.$rowIndex, 32);
             $row->fields = new FieldCollection();
 
             $fields = $rowData->getFields();
-            foreach ($fields as $index => $formField) {
+            foreach ($fields as $fieldIndex => $formField) {
                 if ('verbb\formie\fields\Name' === $formField::class) {
-                    $this->addNameFieldsToRow($formField, $row, $formUid, $index);
+                    // Use page and row context for unique field indices
+                    $globalFieldIndex = $pageIndex * 1000 + $rowIndex * 100 + $fieldIndex;
+                    $this->addNameFieldsToRow($formField, $row, $formUid, $globalFieldIndex);
 
                     continue;
                 }
 
-                $field = $this->fieldMapper->mapField($formField, $formUid, $index);
+                // Use page and row context for unique field indices
+                $globalFieldIndex = $pageIndex * 1000 + $rowIndex * 100 + $fieldIndex;
+                $field = $this->fieldMapper->mapField($formField, $formUid, $globalFieldIndex);
                 if (!$field) {
                     continue;
                 }
@@ -153,7 +158,7 @@ class FormieLayoutBuilder
         $subFields = $nameProcessor->getSubFields($formField, $formUid, $index);
 
         $row = new Row();
-        $row->uid = HashHelper::sha1($formUid.'row'.uniqid(), 32);
+        $row->uid = HashHelper::sha1($formUid.'row'.$index.'name', 32);
         $row->fields = new FieldCollection();
 
         foreach ($subFields as $subField) {

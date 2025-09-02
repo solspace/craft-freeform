@@ -108,7 +108,7 @@ abstract class BaseIntegration implements IntegrationInterface
         Event::trigger($this, self::EVENT_AFTER_RESPONSE, $event);
     }
 
-    protected function getProcessedValue(mixed $value): null|bool|string
+    protected function getProcessedValue(mixed $value): bool|string|null
     {
         return App::parseEnv($value);
     }

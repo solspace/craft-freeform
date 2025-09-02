@@ -138,7 +138,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
         return $this->getProcessedValue($this->apiUrl);
     }
 
-    protected function getTagId(Client $client, string $name): null|int|string
+    protected function getTagId(Client $client, string $name): int|string|null
     {
         static $tags;
         if (null === $tags) {

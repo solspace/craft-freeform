@@ -145,7 +145,7 @@ class FormsController extends BaseApiController
         );
     }
 
-    protected function getOne($id): null|array|object
+    protected function getOne($id): array|object|null
     {
         $this->requireFormPermission($id, Freeform::PERMISSION_FORMS_ACCESS);
 
@@ -157,7 +157,7 @@ class FormsController extends BaseApiController
         return $this->formTransformer->transform($form);
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         $this->requireFormPermission($id);
 

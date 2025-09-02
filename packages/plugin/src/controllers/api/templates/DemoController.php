@@ -7,7 +7,7 @@ use Solspace\Freeform\Library\Codepack\TemplateReplacer;
 
 class DemoController extends BaseApiController
 {
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         $settings = $this->getSettingsService();
         $fileName = $this->request->post('template');

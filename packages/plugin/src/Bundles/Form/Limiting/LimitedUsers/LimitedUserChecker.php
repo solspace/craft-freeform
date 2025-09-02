@@ -31,7 +31,7 @@ class LimitedUserChecker
         return (bool) $value;
     }
 
-    public function get(string $path): null|array|bool|string
+    public function get(string $path): array|bool|string|null
     {
         $user = $this->getCurrentUser();
         if ($user?->admin) {

@@ -18,7 +18,7 @@ class GroupsController extends BaseApiController
         $this->fieldTypesProvider = $fieldTypesProvider;
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         $groups = $this->request->getBodyParam('grouped', []);
         $hiddenTypes = $this->request->getBodyParam('hidden', []);

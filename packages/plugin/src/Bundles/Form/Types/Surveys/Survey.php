@@ -12,7 +12,7 @@ use Solspace\Freeform\Form\Form;
 #[Type('Surveys & Polls')]
 class Survey extends Form
 {
-    public function getSurveyResults(?FieldInterface $field = null): null|FieldTotals|FormTotals
+    public function getSurveyResults(?FieldInterface $field = null): FieldTotals|FormTotals|null
     {
         $totalsProvider = \Craft::$container->get(TotalsProvider::class);
         $formTotals = $totalsProvider->get($this);

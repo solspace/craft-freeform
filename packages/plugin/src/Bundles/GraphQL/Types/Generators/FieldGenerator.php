@@ -589,7 +589,7 @@ class FieldGenerator extends AbstractGenerator
         return $fieldDefinitions;
     }
 
-    private static function getFieldValueDefinitions(string $typeName): null|array|string
+    private static function getFieldValueDefinitions(string $typeName): array|string|null
     {
         $multipleValues = [
             FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS,

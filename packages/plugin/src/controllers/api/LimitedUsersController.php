@@ -51,7 +51,7 @@ class LimitedUsersController extends BaseApiController
         );
     }
 
-    protected function getOne(int|string $id): null|array|object
+    protected function getOne(int|string $id): array|object|null
     {
         if ('new' === $id) {
             $record = new LimitedUsersRecord();
@@ -80,7 +80,7 @@ class LimitedUsersController extends BaseApiController
         ];
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         if ('new' === $id) {
             $record = new LimitedUsersRecord();

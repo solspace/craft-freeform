@@ -9,7 +9,7 @@ class DisableFunctionalityEvent extends ArrayableEvent
 {
     public function __construct(
         private Form $form,
-        private null|array|bool $settings = []
+        private array|bool|null $settings = []
     ) {
         parent::__construct();
     }
@@ -24,12 +24,12 @@ class DisableFunctionalityEvent extends ArrayableEvent
         return $this->form;
     }
 
-    public function getSettings(): null|array|bool
+    public function getSettings(): array|bool|null
     {
         return $this->settings;
     }
 
-    public function setSettings(null|array|bool $settings): self
+    public function setSettings(array|bool|null $settings): self
     {
         $this->settings = $settings;
 

@@ -68,7 +68,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @return Form[]
      */
-    public function getAllForms(bool $orderByName = false, null|array|string $sites = null): array
+    public function getAllForms(bool $orderByName = false, array|string|null $sites = null): array
     {
         if ($sites && \is_array($sites)) {
             sort($sites);
@@ -103,7 +103,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$allFormsCache[$key];
     }
 
-    public function getAllNonArchivedForms(bool $orderByName = false, null|array|string $sites = null): array
+    public function getAllNonArchivedForms(bool $orderByName = false, array|string|null $sites = null): array
     {
         if ($sites && \is_array($sites)) {
             sort($sites);
@@ -648,7 +648,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         ;
     }
 
-    private function attachSitesToQuery(Query $query, null|array|string $sites = null): void
+    private function attachSitesToQuery(Query $query, array|string|null $sites = null): void
     {
         if (null === $sites) {
             return;

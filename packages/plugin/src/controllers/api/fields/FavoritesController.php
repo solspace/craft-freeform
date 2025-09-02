@@ -89,7 +89,7 @@ class FavoritesController extends BaseApiController
         return $this->favoritesProvider->getFavoriteFields();
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         $request = $this->request;
 

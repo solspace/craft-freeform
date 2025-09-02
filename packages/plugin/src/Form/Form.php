@@ -781,7 +781,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return new DisabledFunctionality($disableSettings);
     }
 
-    public function disableFunctionality(null|array|bool $config = null): self
+    public function disableFunctionality(array|bool|null $config = null): self
     {
         $this->disableFunctionality = $config ?? true;
 

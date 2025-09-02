@@ -260,7 +260,7 @@ class NotificationTemplateRecord extends ActiveRecord
         return (bool) $this->autoText;
     }
 
-    public function getPresetAssets(): null|array|string
+    public function getPresetAssets(): array|string|null
     {
         if ($this->presetAssets) {
             if (TwigHelper::isTwigValue($this->presetAssets)) {

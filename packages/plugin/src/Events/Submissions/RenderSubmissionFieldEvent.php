@@ -33,7 +33,7 @@ class RenderSubmissionFieldEvent extends Event
         return $this->output;
     }
 
-    public function setOutput(null|Markup|string $output): self
+    public function setOutput(Markup|string|null $output): self
     {
         if (null === $output) {
             $this->output = null;

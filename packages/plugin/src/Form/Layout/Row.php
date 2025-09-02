@@ -42,12 +42,12 @@ class Row implements \IteratorAggregate
         return $this->index;
     }
 
-    public function getFields(null|array|string $implements = null, ?string $strategy = null): FieldCollection
+    public function getFields(array|string|null $implements = null, ?string $strategy = null): FieldCollection
     {
         return $this->fieldCollection->getList($implements, $strategy);
     }
 
-    public function getAllFields(null|array|string $implements = null, ?string $strategy = null): FieldCollection
+    public function getAllFields(array|string|null $implements = null, ?string $strategy = null): FieldCollection
     {
         return $this->allFieldsCollection->getList($implements, $strategy);
     }

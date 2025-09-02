@@ -42,7 +42,7 @@ class FormFieldType extends Field
     }
 
     // Craft 5
-    public static function dbType(): null|array|string
+    public static function dbType(): array|string|null
     {
         return Schema::TYPE_INTEGER;
     }

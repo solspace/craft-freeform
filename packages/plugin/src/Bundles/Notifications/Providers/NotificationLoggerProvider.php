@@ -28,7 +28,7 @@ class NotificationLoggerProvider
     }
 
     public function getLogger(
-        null|NotificationInterface|NotificationTemplate $notification,
+        NotificationInterface|NotificationTemplate|null $notification,
         Form $form
     ): LoggerInterface {
         if ($notification) {

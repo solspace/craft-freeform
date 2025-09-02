@@ -20,13 +20,13 @@ class SubmissionsController extends Controller
     public bool $updateSearchIndex = false;
 
     /** @var null|int|string the ID(s) of the elements to resave */
-    public null|int|string $elementId = null;
+    public int|string|null $elementId = null;
 
     /** @var null|string the UUID(s) of the elements to resave */
     public ?string $uid = null;
 
     /** @var int|string The status(es) of elements to resave. Can be set to multiple comma-separated statuses. */
-    public null|int|string $status = null;
+    public int|string|null $status = null;
 
     /** @var bool whether the elements should be resaved via a queue job */
     public bool $queue = false;
@@ -43,7 +43,7 @@ class SubmissionsController extends Controller
     public ?int $count = 1;
 
     /** @var null|int|string The form handle or ID to generate submissions for */
-    public null|int|string $form = null;
+    public int|string|null $form = null;
 
     public ?int $authorId = null;
 
@@ -57,7 +57,7 @@ class SubmissionsController extends Controller
     public ?string $rangeEnd = null;
 
     /** @var null|array|int Site ID's to resave for */
-    public null|array|int $siteId = null;
+    public array|int|null $siteId = null;
 
     public ?bool $verbose = false;
     public ?bool $dryRun = false;

@@ -14,9 +14,9 @@ class ButtonGroup extends Property implements OptionsInterface
         ?string $label = null,
         ?string $instructions = null,
         ?int $order = null,
-        null|int|string $value = null,
+        int|string|null $value = null,
         ?int $width = null,
-        public null|array|OptionCollection|string $options = null,
+        public array|OptionCollection|string|null $options = null,
     ) {
         parent::__construct(
             label: $label,

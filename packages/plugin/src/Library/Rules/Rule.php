@@ -16,7 +16,7 @@ class Rule implements RuleInterface, IdentificatorInterface
     ) {}
 
     #[Ignore]
-    public function getNormalizeIdentificator(): null|int|string
+    public function getNormalizeIdentificator(): int|string|null
     {
         return $this->getUid();
     }

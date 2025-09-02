@@ -132,7 +132,7 @@ export const SubmissionDurationChart: React.FC<
     return null;
   };
 
-  const maxDuration = Math.max(...chartData.map((d) => d.duration), 0.1);
+  const Y_MAX_SECONDS = 10;
   const hasData = chartData.some((d) => d.duration >= 0);
 
   if (!hasData) {
@@ -175,8 +175,8 @@ export const SubmissionDurationChart: React.FC<
             />
             <YAxis
               tick={{ fontSize: 12 }}
-              domain={[0, maxDuration * 1.1]}
-              ticks={[1, 2, 3, 4, 5]}
+              domain={[0, Y_MAX_SECONDS]}
+              ticks={[2, 4, 6, 8, 10]}
               tickFormatter={(value) => `${value}s`}
               label={{
                 value: translate('Submit Time'),

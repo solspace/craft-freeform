@@ -28,7 +28,7 @@ class NotificationTemplate implements IdentificatorInterface
 
     public int|string $id;
     public ?int $formId = null;
-    public null|int|string $wrapperId = null;
+    public int|string|null $wrapperId = null;
     public array $pdfTemplateIds = [];
     public string $uid;
 
@@ -192,7 +192,7 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->formId;
     }
 
-    public function getWrapperId(): null|int|string
+    public function getWrapperId(): int|string|null
     {
         return $this->wrapperId;
     }
@@ -214,7 +214,7 @@ class NotificationTemplate implements IdentificatorInterface
         return PdfTemplateRecord::findAll(['id' => $this->pdfTemplateIds]);
     }
 
-    public function getNormalizeIdentificator(): null|int|string
+    public function getNormalizeIdentificator(): int|string|null
     {
         return $this->getId();
     }
@@ -274,7 +274,7 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->includeAttachments;
     }
 
-    public function getPresetAssets(): null|array|string
+    public function getPresetAssets(): array|string|null
     {
         return $this->presetAssets;
     }

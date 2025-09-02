@@ -4,7 +4,6 @@ import {
   PreviewEditor,
 } from '@components/form-controls/preview/previewable-component.styles';
 import config from '@config/freeform/freeform.config';
-import { useInitialValue } from '@ff-client/hooks/use-initial-value';
 import { Editor } from '@tinymce/tinymce-react';
 
 import 'tinymce/tinymce';
@@ -42,7 +41,6 @@ export const WysiwygEditor: React.FC<Props> = ({
   toolbar,
   updateValue,
 }) => {
-  const initialValue = useInitialValue(value);
   const {
     metadata: {
       tinymce: { stylesPath },
@@ -59,8 +57,10 @@ export const WysiwygEditor: React.FC<Props> = ({
               statusbar: statusbar,
               promotion: false,
               content_css: stylesPath,
+              relative_urls: false,
+              remove_script_host: false,
             }}
-            initialValue={initialValue}
+            value={value}
             onEditorChange={updateValue}
             plugins={plugins}
             toolbar={toolbar}

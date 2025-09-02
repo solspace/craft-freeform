@@ -420,7 +420,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->order;
     }
 
-    public function getNormalizeIdentificator(): null|int|string
+    public function getNormalizeIdentificator(): int|string|null
     {
         return $this->getUid();
     }

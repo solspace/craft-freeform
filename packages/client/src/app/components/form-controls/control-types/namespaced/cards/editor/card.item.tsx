@@ -104,9 +104,7 @@ const CommonEditor: FC<Props> = ({ card, updateCard }) => {
 
       <ControlBlock
         label="Value"
-        instructions="Enter a value to use when this card is selected.
-
-"
+        instructions="Enter a value to use when this card is selected."
       >
         <input
           type="text"

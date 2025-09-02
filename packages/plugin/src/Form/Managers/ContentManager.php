@@ -23,9 +23,13 @@ class ContentManager
     public function __construct(private Form $form, private array $fields)
     {
         foreach ($this->fields as $field) {
+            if (null === $field->id) {
+                continue;
+            }
+
             $reflection = new \ReflectionClass($field->type);
             if ($reflection->implementsInterface(NoStorageInterface::class)) {
-                $this->noStorageFields[] = $field->id;
+                $this->noStorageFields[] = (int) $field->id;
             }
         }
 
@@ -105,15 +109,22 @@ class ContentManager
     private function renameFieldColumns(): void
     {
         $table = $this->table;
+
         foreach ($this->fields as $field) {
+            if (null === $field->id) {
+                continue;
+            }
+
             $metadata = JsonHelper::decode($field->metadata);
             $handle = $metadata->handle ?? null;
             if (!$handle) {
                 continue;
             }
 
-            $oldColumn = $table->getFieldColumnName($field->id);
-            $newColumn = Submission::generateFieldColumnName($field->id, $handle);
+            $fieldId = (int) $field->id;
+
+            $oldColumn = $table->getFieldColumnName($fieldId);
+            $newColumn = Submission::generateFieldColumnName($fieldId, $handle);
 
             if ($oldColumn === $newColumn || !$oldColumn || !$newColumn) {
                 continue;
@@ -128,7 +139,7 @@ class ContentManager
                 ->execute()
             ;
 
-            $this->table->renameFieldColumn($field->id, $newColumn);
+            $this->table->renameFieldColumn($fieldId, $newColumn);
         }
     }
 
@@ -138,7 +149,7 @@ class ContentManager
 
         $usedFieldIds = [];
         foreach ($this->fields as $field) {
-            if ($this->isNoStorage($field)) {
+            if ($this->isNoStorage($field) || null === $field->id) {
                 continue;
             }
 
@@ -167,7 +178,13 @@ class ContentManager
         $existingFieldIds = $table->getFieldColumnFieldIds();
 
         foreach ($this->fields as $field) {
-            if (\in_array($field->id, $existingFieldIds, true)) {
+            if (null === $field->id) {
+                continue;
+            }
+
+            $fieldId = (int) $field->id;
+
+            if (\in_array($fieldId, $existingFieldIds, true)) {
                 continue;
             }
 
@@ -181,7 +198,7 @@ class ContentManager
                 continue;
             }
 
-            $columnName = Submission::generateFieldColumnName($field->id, $handle);
+            $columnName = Submission::generateFieldColumnName($fieldId, $handle);
 
             \Craft::$app->db->createCommand()
                 ->addColumn($table->getTableName(), $columnName, 'text')
@@ -216,7 +233,7 @@ class ContentManager
 
     private function isNoStorage(FormFieldRecord $record): bool
     {
-        return \in_array($record->id, $this->noStorageFields, true);
+        return null !== $record->id && \in_array((int) $record->id, $this->noStorageFields, true);
     }
 
     private function getDb(): Connection

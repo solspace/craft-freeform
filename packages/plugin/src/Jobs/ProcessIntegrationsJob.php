@@ -8,9 +8,8 @@ use Solspace\Freeform\Freeform;
 class ProcessIntegrationsJob extends BaseJob implements IntegrationJobInterface
 {
     public ?int $formId = null;
-
+    public ?int $submissionId = null;
     public array $postedData = [];
-
     public ?string $type = null;
 
     public function execute($queue): void
@@ -19,6 +18,7 @@ class ProcessIntegrationsJob extends BaseJob implements IntegrationJobInterface
             ->integrations
             ->processIntegrationJob(
                 $this->formId,
+                $this->submissionId,
                 $this->postedData,
                 $this->type,
             )

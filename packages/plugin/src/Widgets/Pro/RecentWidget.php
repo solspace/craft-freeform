@@ -25,7 +25,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 
     public ?string $title = null;
 
-    public null|array|string $formIds = null;
+    public array|string|null $formIds = null;
 
     public ?int $limit = null;
 

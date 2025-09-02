@@ -28,7 +28,7 @@ class ExportProfileModel extends Model
     public ?string $rangeEnd = null;
     public ?array $fields = null;
     public ?array $filters = null;
-    public null|array|string $statuses = null;
+    public array|string|null $statuses = null;
 
     public static function create(Form $form): self
     {

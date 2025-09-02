@@ -15,7 +15,7 @@ class FormMonitorProvider
     private const HEADER_FORM_ID = 'X-Form-Monitor-Form-Id';
     private const HEADER_TOKEN = 'X-Form-Monitor-Token';
     private const HEADER_REQUEST_ID = 'X-Form-Monitor-Request-Id';
-    private null|bool|Request $request = null;
+    private bool|Request|null $request = null;
     private array $requestCache = [];
 
     public function __construct(

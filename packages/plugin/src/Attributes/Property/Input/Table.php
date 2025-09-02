@@ -16,7 +16,7 @@ class Table extends Property implements OptionsInterface
         ?int $order = null,
         ?array $value = null,
         ?int $width = null,
-        public null|array|OptionCollection|string $options = null,
+        public array|OptionCollection|string|null $options = null,
     ) {
         parent::__construct(
             label: $label,

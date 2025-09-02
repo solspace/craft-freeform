@@ -26,7 +26,7 @@ class FormGroupsController extends BaseApiController
         parent::__construct($id, $module, $config);
     }
 
-    protected function post(null|int|string $id = null): null|array|object
+    protected function post(int|string|null $id = null): array|object|null
     {
         $groups = $this->request->post('groups');
         $siteId = $this->request->post('siteId');

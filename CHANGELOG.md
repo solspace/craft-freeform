@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.11.13 - 2025-08-26
+
+### Fixed
+- Fixed a bug where the new _Payment Configuration ID_ setting would break subscription payments in the Stripe integration.
+
 ## 5.11.12 - 2025-08-21
 
 ### Fixed

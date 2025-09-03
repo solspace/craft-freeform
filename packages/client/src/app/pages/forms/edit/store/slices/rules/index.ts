@@ -5,6 +5,7 @@ import './rules.persistence';
 
 import buttons from './buttons';
 import fields from './fields';
+import integrations from './integrations';
 import notifications from './notifications';
 import pages from './pages';
 import submitForm from './submit-form';
@@ -18,6 +19,7 @@ const rules = combineReducers({
   fields,
   pages,
   notifications,
+  integrations,
   submitForm,
   buttons,
 });

@@ -21,6 +21,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
+use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
@@ -59,6 +60,7 @@ class IntegrationsService extends BaseService
         protected IntegrationTypeProvider $typeProvider,
         protected IntegrationLoggerProvider $loggerProvider,
         private PropertyProvider $propertyProvider,
+        private IntegrationRuleValidator $integrationRuleValidator,
     ) {
         parent::__construct($config);
     }
@@ -504,6 +506,7 @@ class IntegrationsService extends BaseService
                     }
                 }
 
+                $integration->instanceUid = $formIntegration?->uid ?? StringHelper::UUID();
                 $integration->enabled = $enabledOverride;
                 $integration->metadata = array_merge(
                     $integration->metadata,
@@ -563,6 +566,10 @@ class IntegrationsService extends BaseService
             }
 
             if (!$integration->getTypeDefinition()->editionCheck($edition)) {
+                continue;
+            }
+
+            if (!$this->integrationRuleValidator->isPassing($integration, $form)) {
                 continue;
             }
 

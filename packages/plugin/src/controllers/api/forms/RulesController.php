@@ -23,21 +23,26 @@ class RulesController extends BaseApiController
     {
         $form = $this->getFormsService()->getFormById($formId);
 
-        $rules = $this->ruleProvider->getFormRules($form);
-        $serialized = $this->serializer->serialize($rules, 'json', ['groups' => 'builder']);
-
-        $this->response->format = Response::FORMAT_JSON;
-        $this->response->content = $serialized;
-
-        return $this->response;
+        return $this->compileResponse($this->ruleProvider->getFormRules($form));
     }
 
     public function actionGetNotifications(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);
 
-        $rules = $this->ruleProvider->getFormNotificationRules($form);
-        $serialized = $this->serializer->serialize($rules, 'json', ['groups' => 'builder']);
+        return $this->compileResponse($this->ruleProvider->getFormNotificationRules($form));
+    }
+
+    public function actionGetIntegrations(int $formId): Response
+    {
+        $form = $this->getFormsService()->getFormById($formId);
+
+        return $this->compileResponse($this->ruleProvider->getFormIntegrationRules($form));
+    }
+
+    private function compileResponse(mixed $content): Response
+    {
+        $serialized = $this->serializer->serialize($content, 'json', ['groups' => 'builder']);
 
         $this->response->format = Response::FORMAT_JSON;
         $this->response->content = $serialized;

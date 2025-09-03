@@ -42,6 +42,7 @@ return [
 
     'freeform/api/forms/<formId:\d+>/rules' => 'freeform/api/forms/rules/get',
     'freeform/api/forms/<formId:\d+>/rules/notifications' => 'freeform/api/forms/rules/get-notifications',
+    'freeform/api/forms/<formId:\d+>/rules/integrations' => 'freeform/api/forms/rules/get-integrations',
 
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',

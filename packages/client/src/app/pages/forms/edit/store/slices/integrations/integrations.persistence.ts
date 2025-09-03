@@ -16,6 +16,7 @@ const persistIntegrations: SaveSubscriber = (_, data) => {
 
   persist.integrations = getState().integrations.map((integration) => ({
     id: integration.id,
+    instanceUid: integration.instanceUid,
     enabled: Boolean(integration.enabled),
     values: integration.dirtyValues,
   }));

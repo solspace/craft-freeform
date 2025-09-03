@@ -4,6 +4,7 @@ import styled from 'styled-components';
 export const IntegrationsWrapper = styled.div`
   display: flex;
   max-height: calc(100vh - 150px);
+  height: 100%;
 
   margin-bottom: 30px;
 

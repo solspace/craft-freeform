@@ -8,6 +8,7 @@ class Integration
 {
     public int $id;
     public string $uid;
+    public string $instanceUid;
     public string $name;
     public string $handle;
     public bool $enabled;

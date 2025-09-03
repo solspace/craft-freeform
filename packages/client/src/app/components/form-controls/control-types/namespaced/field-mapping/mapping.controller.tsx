@@ -132,7 +132,7 @@ export const FieldMappingController: React.FC<Props> = ({
                   type="text"
                   className="text fullwidth code"
                   placeholder="e.g. {{ yourField }} {{ otherField }}"
-                  value={map.value}
+                  value={map?.value || ''}
                   onChange={(event) => {
                     update(
                       source.id,

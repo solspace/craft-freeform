@@ -18,6 +18,7 @@ use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\IntegrationRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
@@ -220,6 +221,15 @@ class RuleProvider
         return $this->getNotificationRuleArray($form);
     }
 
+    public function getFormIntegrationRules(?Form $form): array
+    {
+        if (!$form) {
+            return [];
+        }
+
+        return $this->getIntegrationRuleArray($form);
+    }
+
     private function createFieldRuleFromRecord(Form $form, FieldRuleRecord $record): FieldRule
     {
         $ruleRecord = $record->getRule()->one();
@@ -265,6 +275,40 @@ class RuleProvider
                 'notification' => $notificationRule->getNotification()->one()->uid,
                 'enabled' => true,
                 'send' => $notificationRule->send,
+                'combinator' => $rule->combinator,
+                'conditions' => $conditions,
+            ];
+        }
+
+        return $array;
+    }
+
+    private function getIntegrationRuleArray(Form $form): array
+    {
+        $rules = IntegrationRuleRecord::getExistingRules($form->getId());
+
+        $array = [];
+        foreach ($rules as $uid => $integrationRule) {
+            /** @var RuleRecord $rule */
+            $rule = $integrationRule->getRule()->one();
+
+            $conditions = [];
+
+            /** @var RuleConditionRecord $condition */
+            foreach ($rule->getConditions()->all() as $condition) {
+                $conditions[] = [
+                    'uid' => $condition->uid,
+                    'field' => $condition->getField()->one()->uid,
+                    'operator' => $condition->operator,
+                    'value' => $condition->value,
+                ];
+            }
+
+            $array[] = [
+                'uid' => $uid,
+                'integration' => $integrationRule->getIntegration()->one()->uid,
+                'enabled' => true,
+                'push' => $integrationRule->push,
                 'combinator' => $rule->combinator,
                 'conditions' => $conditions,
             ];

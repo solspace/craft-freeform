@@ -8,28 +8,28 @@ import { DisplayTriggerDropdown } from '@editor/builder/tabs/rules/conditions/tr
 import { ConfigurationDescription } from '@editor/builder/tabs/rules/editor/editor.styles';
 import { useAppDispatch } from '@editor/store';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
-import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
-import { notificationRuleSelectors } from '@editor/store/slices/rules/notifications/notification-rules.selectors';
-import { useQueryNotificationRules } from '@ff-client/queries/rules';
-import type { Notification } from '@ff-client/types/notifications';
+import { integrationRuleActions } from '@editor/store/slices/rules/integrations';
+import { integrationRuleSelectors } from '@editor/store/slices/rules/integrations/integration-rules.selectors';
+import { useQueryIntegrationRules } from '@ff-client/queries/rules';
+import type { Integration } from '@ff-client/types/integrations';
 import type { ConditionalRulesProperty } from '@ff-client/types/properties';
 import { Combinator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
-const ConditionalNotificationRules: React.FC<
-  ControlType<ConditionalRulesProperty, Notification>
+const ConditionalIntegrationRules: React.FC<
+  ControlType<ConditionalRulesProperty, Integration>
 > = ({ property, updateValue, value, context }) => {
   const dispatch = useAppDispatch();
   const generatedValues = useRef<string[]>([]);
 
   const { id: formId } = useSelector(formSelectors.current);
-  const { data, isFetched } = useQueryNotificationRules(formId);
+  const { data, isFetched } = useQueryIntegrationRules(formId);
 
-  const isInitialized = useSelector(notificationRuleSelectors.isInitialized);
-  const rule = useSelector(notificationRuleSelectors.one(value));
+  const isInitialized = useSelector(integrationRuleSelectors.isInitialized);
+  const rule = useSelector(integrationRuleSelectors.one(value));
 
-  const { uid: notificationUid } = context;
+  const { instanceUid } = context;
 
   useEffect(() => {
     if (generatedValues.current.includes(value)) {
@@ -45,9 +45,9 @@ const ConditionalNotificationRules: React.FC<
       generatedValues.current.push(ruleUid);
 
       dispatch(
-        notificationRuleActions.add({
+        integrationRuleActions.add({
           ruleUid,
-          notificationUid,
+          integrationUid: instanceUid,
         })
       );
       updateValue(ruleUid);
@@ -58,28 +58,28 @@ const ConditionalNotificationRules: React.FC<
     <Control property={property}>
       <ConfigurationDescription>
         <DisplayTriggerDropdown
-          value={rule?.send ?? true}
+          value={rule?.push ?? true}
           options={{
-            on: 'Send',
-            off: `Don't send`,
+            on: 'Push',
+            off: `Don't push`,
           }}
           onChange={(value) =>
             dispatch(
-              notificationRuleActions.modifySend({
+              integrationRuleActions.modifyPush({
                 ruleUid: rule.uid,
-                send: value,
+                push: value,
               })
             )
           }
         />
 
-        {translate('a notification when')}
+        {translate('data to integration when')}
 
         <CombinatorSelect
           value={rule?.combinator ?? Combinator.Or}
           onChange={(value) =>
             dispatch(
-              notificationRuleActions.modifyCombinator({
+              integrationRuleActions.modifyCombinator({
                 ruleUid: rule.uid,
                 combinator: value,
               })
@@ -95,7 +95,7 @@ const ConditionalNotificationRules: React.FC<
         conditions={rule ? rule.conditions : []}
         onChange={(conditions) => {
           dispatch(
-            notificationRuleActions.modifyConditions({
+            integrationRuleActions.modifyConditions({
               ruleUid: rule.uid,
               conditions,
             })
@@ -106,4 +106,4 @@ const ConditionalNotificationRules: React.FC<
   );
 };
 
-export default ConditionalNotificationRules;
+export default ConditionalIntegrationRules;

@@ -506,6 +506,7 @@ class IntegrationsService extends BaseService
                     }
                 }
 
+                $integration->instanceId = $formIntegration?->id;
                 $integration->instanceUid = $formIntegration?->uid ?? StringHelper::UUID();
                 $integration->enabled = $enabledOverride;
                 $integration->metadata = array_merge(

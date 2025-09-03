@@ -34,6 +34,8 @@ interface IntegrationInterface
 
     public function getUid(): ?string;
 
+    public function getInstanceId(): ?int;
+
     public function getInstanceUid(): ?string;
 
     public function setId(int $id): self;

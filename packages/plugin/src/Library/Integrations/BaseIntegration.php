@@ -50,6 +50,7 @@ abstract class BaseIntegration implements IntegrationInterface, RulesBasedInterf
 
     public function __construct(
         private ?int $id,
+        private ?int $instanceId,
         private ?string $uid,
         private ?string $instanceUid,
         private bool $enabled,
@@ -68,6 +69,11 @@ abstract class BaseIntegration implements IntegrationInterface, RulesBasedInterf
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getInstanceId(): ?int
+    {
+        return $this->instanceId;
     }
 
     public function getUid(): ?string

@@ -666,6 +666,19 @@ class FreeformFormsExporter extends BaseExporter
             );
         }
 
+        $integrationRules = $this->ruleProvider->getIntegrationRules($form);
+        foreach ($integrationRules as $rule) {
+            $collection->add(
+                $this->compileRule(
+                    $rule,
+                    [
+                        'integrationUid' => $rule->getIntegration()->getInstanceUid(),
+                        'push' => $rule->isPush(),
+                    ]
+                )
+            );
+        }
+
         return $collection;
     }
 

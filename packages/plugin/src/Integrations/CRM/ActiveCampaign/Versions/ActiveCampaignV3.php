@@ -156,7 +156,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
                     if (\is_array($value)) {
-                        $value = '||'.implode('||', $value).'||';
+                        $value = implode('||', $value);
                     }
 
                     $this->contactProps[] = [
@@ -179,7 +179,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             foreach ($mapping as $key => $value) {
                 if (is_numeric($key)) {
                     if (\is_array($value)) {
-                        $value = '||'.implode('||', $value).'||';
+                        $value = implode('||', $value);
                     }
 
                     $this->dealProps[] = [

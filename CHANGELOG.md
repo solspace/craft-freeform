@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 5.11.15 - 2025-09-03
+
+### Security
+- Updated the `phpoffice/phpspreadsheet` dependency versions to address a potential security vulnerability.
+
+## 5.11.14 - 2025-09-02
+
+### Changed
+- Updated TinyMCE in Rich Text fields to remove _Relative URL_ enforcement.
+- Updated the **Form Submit Times** chart in the form builder's **Monitoring** tab to a maximum of 10 seconds.
+
+### Fixed
+- Fixed a bug where the **Email Alert** feature was not always working correctly.
+
 ## 5.11.13 - 2025-08-26
 
 ### Fixed

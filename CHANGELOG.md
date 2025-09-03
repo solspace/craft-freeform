@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.11.16 - 2025-09-03
+
+### Fixed
+- Fixed an issue where **Export Notifications** could send multiple times in a single day.
+- Fixed an issue where the **ActiveCampaign** integration could send incorrect values for some fields.
+- Fixed an issue where translations for page tab names did not display correctly on the frontend.
+- Fixed the **HubSpot** v3 integration to validate cookie-based contact IDs and prevent `resource not found` errors.
+
 ## 5.11.15 - 2025-09-03
 
 ### Security

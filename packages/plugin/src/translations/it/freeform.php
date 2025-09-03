@@ -569,6 +569,8 @@ return [
     'No integrations found' => 'Nessuna integrazione trovata',
     'To add an integration, click the button below' => 'Per aggiungere un’integrazione, clicca il pulsante qui sotto',
     'Add integration' => 'Aggiungi integrazione',
+    'This can begin with an environment variable.' => 'Può iniziare con una variabile di ambiente.',
+    'Learn more' => 'Scopri di più',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Nome dell’evento',
@@ -592,6 +594,26 @@ return [
     'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Inserisci l’URL a cui inviare la richiesta POST. Puoi usare le variabili Twig per `form` e `submission` per elaborare l’URL.',
     'Error Trigger' => 'Attivatore di Errore',
     "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Fornisci una parola chiave o una frase che Freeform dovrebbe cercare nell'output dell’URL esterno POST per determinare se e quando c'è un errore da registrare, ad esempio 'errore' o 'si è verificato un errore'. Puoi usare le variabili Twig per `form` e `submission` per elaborare l'Attivatore di Errore.",
+
+    // Form Builder // Integrations // URL Parameter Tracking
+    'URL Parameter Tracking' => 'Tracciamento parametri URL',
+    'URL Tracking Parameters for this Form' => 'Parametri di tracciamento URL per questo modulo',
+    'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Inserisci i nomi dei parametri URL che desideri salvare. Usa una nuova riga per ciascuno.',
+    'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'I valori inseriti qui verranno applicati a tutti i moduli che usano questa integrazione. Parametri specifici per modulo possono essere impostati anche nel form builder.',
+    'URL Tracking Parameters' => 'Parametri URL di tracciamento',
+
+    // Form Builder // Integrations // Form Monitor
+    'Form Monitor' => 'Monitoraggio modulo',
+    'URL the Form Monitor should access to check the form' => 'URL che il monitoraggio modulo deve utilizzare per controllare il modulo',
+    'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.' => 'Questa è l’URL che verrà usata dal monitoraggio modulo per controllare il modulo. Deve essere pubblicamente accessibile e contenere il modulo.',
+    'Test Email Notifications' => 'Testa notifiche email',
+    'Allow Form Monitor to test any email notifications configured for this form.' => 'Consenti al monitoraggio modulo di testare le notifiche email configurate per questo modulo.',
+    'Notification Email' => 'Email di notifica',
+    'Email address to receive email alerts and other notifications for the form.' => 'Indirizzo email per ricevere notifiche e avvisi per questo modulo.',
+    'Site Name' => 'Nome del sito',
+    'The name of your Craft site. Form Monitor will use this in email notifications.' => 'Il nome del tuo sito Craft. Il monitoraggio del modulo lo userà nelle notifiche email.',
+    'Test Email Notifications on Live Environment only' => 'Testa le notifiche email solo in ambiente live',
+    'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Se abilitato, il monitoraggio del modulo testerà le notifiche email solo quando l’ambiente di Craft è impostato su produzione.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Utenti',
@@ -1370,7 +1392,7 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Aggiorna alla versione Freeform Pro per avere accesso alle integrazioni.',
     'What this integration will be called in the CP.' => 'Come verrà chiamata questa integrazione nel CP.',
     'The unique name used to identify this integration.' => 'Il nome univoco utilizzato per identificare questa integrazione.',
-    'Show Setup Instructions' => 'Mostra istruzioni di configurazione',
+    'Show Instructions' => 'Mostra istruzioni',
     'Authorized' => 'Autorizzato',
     'Unauthorized' => 'Non autorizzato',
     'Checking...' => 'Verifica in corso...',

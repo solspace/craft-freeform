@@ -569,6 +569,8 @@ return [
     'No integrations found' => 'Aucune intégration trouvée',
     'To add an integration, click the button below' => 'Pour ajouter une intégration, cliquez sur le bouton ci-dessous',
     'Add integration' => 'Ajouter une intégration',
+    'This can begin with an environment variable.' => 'Cela peut commencer par une variable d’environnement.',
+    'Learn more' => 'En savoir plus',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Nom de l’événement',
@@ -589,9 +591,29 @@ return [
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Transfert de publication',
     'URL' => 'URL',
-    'Enter the URL where the POST request should be sent.' => 'Entrez l’URL où la requête POST doit être envoyée.',
+    'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Saisissez l’URL à laquelle la requête POST doit être envoyée. Vous pouvez utiliser les variables Twig `form` et `submission` pour générer dynamiquement l’URL.',
     'Error Trigger' => 'Déclencheur d’erreur',
-    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'." => "Fournissez un mot-clé ou une phrase que Freeform doit rechercher dans la sortie de l’URL POST externe pour savoir s’il y a une erreur à enregistrer, par exemple 'erreur' ou 'une erreur s’est produite'.",
+    "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Indiquez un mot-clé ou une phrase que Freeform doit rechercher dans la réponse de l’URL POST externe pour détecter s’il faut enregistrer une erreur, par exemple 'erreur' ou 'une erreur s'est produite'. Vous pouvez utiliser les variables Twig `form` et `submission` pour traiter le déclencheur d’erreur.",
+
+    // Form Builder // Integrations // URL Parameter Tracking
+    'URL Parameter Tracking' => 'Suivi des paramètres d’URL',
+    'URL Tracking Parameters for this Form' => 'Paramètres d’URL à suivre pour ce formulaire',
+    'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Entrez les noms des paramètres URL à enregistrer. Séparez-les avec des sauts de ligne.',
+    'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'Les valeurs saisies ici s’appliqueront à tous les formulaires utilisant cette intégration. Des paramètres spécifiques peuvent également être définis dans le générateur de formulaire.',
+    'URL Tracking Parameters' => 'Paramètres d’URL à suivre',
+
+    // Form Builder // Integrations // Form Monitor
+    'Form Monitor' => 'Surveillance de formulaire',
+    'URL the Form Monitor should access to check the form' => 'URL à laquelle le Form Monitor doit accéder pour vérifier le formulaire',
+    'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.' => 'C’est l’URL que le Form Monitor utilisera pour vérifier le formulaire. Elle doit être accessible publiquement et contenir le formulaire.',
+    'Test Email Notifications' => 'Tester les notifications par e-mail',
+    'Allow Form Monitor to test any email notifications configured for this form.' => 'Autoriser le Form Monitor à tester les notifications email configurées pour ce formulaire.',
+    'Notification Email' => 'Email de notification',
+    'Email address to receive email alerts and other notifications for the form.' => 'Adresse email pour recevoir les alertes et autres notifications liées au formulaire.',
+    'Site Name' => 'Nom du site',
+    'The name of your Craft site. Form Monitor will use this in email notifications.' => 'Le nom de votre site Craft. Utilisé par le Form Monitor dans les notifications par email.',
+    'Test Email Notifications on Live Environment only' => 'Tester les notifications uniquement en environnement live',
+    'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Si activé, Form Monitor testera les notifications email uniquement lorsque l’environnement Craft est en mode production.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Utilisateurs',
@@ -1370,7 +1392,7 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Passez à l’édition Freeform Pro pour accéder aux intégrations.',
     'What this integration will be called in the CP.' => 'Comment cette intégration sera appelée dans le CP.',
     'The unique name used to identify this integration.' => 'Le nom unique utilisé pour identifier cette intégration.',
-    'Show Setup Instructions' => 'Afficher les instructions de configuration',
+    'Show Instructions' => 'Afficher les instructions',
     'Authorized' => 'Autorisé',
     'Unauthorized' => 'Non autorisé',
     'Checking...' => 'Vérification en cours...',

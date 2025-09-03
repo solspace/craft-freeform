@@ -569,6 +569,8 @@ return [
     'No integrations found' => 'No integrations found',
     'To add an integration, click the button below' => 'To add an integration, click the button below',
     'Add integration' => 'Add integration',
+    'This can begin with an environment variable.' => 'This can begin with an environment variable.',
+    'Learn more' => 'Learn more',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Event Name',
@@ -592,6 +594,26 @@ return [
     'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',
     'Error Trigger' => 'Error Trigger',
     "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger.",
+
+    // Form Builder // Integrations // URL Parameter Tracking
+    'URL Parameter Tracking' => 'URL Parameter Tracking',
+    'URL Tracking Parameters for this Form' => 'URL Tracking Parameters for this Form',
+    'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.',
+    'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.',
+    'URL Tracking Parameters' => 'URL Tracking Parameters',
+
+    // Form Builder // Integrations // Form Monitor
+    'Form Monitor' => 'Form Monitor',
+    'URL the Form Monitor should access to check the form' => 'URL the Form Monitor should access to check the form',
+    'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.' => 'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.',
+    'Test Email Notifications' => 'Test Email Notifications',
+    'Allow Form Monitor to test any email notifications configured for this form.' => 'Allow Form Monitor to test any email notifications configured for this form.',
+    'Notification Email' => 'Notification Email',
+    'Email address to receive email alerts and other notifications for the form.' => 'Email address to receive email alerts and other notifications for the form.',
+    'Site Name' => 'Site Name',
+    'The name of your Craft site. Form Monitor will use this in email notifications.' => 'The name of your Craft site. Form Monitor will use this in email notifications.',
+    'Test Email Notifications on Live Environment only' => 'Test Email Notifications on Live Environment only',
+    'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Users',
@@ -1370,7 +1392,7 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade to the Freeform Pro edition to get access to integrations.',
     'What this integration will be called in the CP.' => 'What this integration will be called in the CP.',
     'The unique name used to identify this integration.' => 'The unique name used to identify this integration.',
-    'Show Setup Instructions' => 'Show Setup Instructions',
+    'Show Instructions' => 'Show Instructions',
     'Authorized' => 'Authorized',
     'Unauthorized' => 'Unauthorized',
     'Checking...' => 'Checking...',

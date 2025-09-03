@@ -569,6 +569,8 @@ return [
     'No integrations found' => 'Keine Integrationen gefunden',
     'To add an integration, click the button below' => 'Um eine Integration hinzuzufügen, klicken Sie auf die Schaltfläche unten',
     'Add integration' => 'Integration hinzufügen',
+    'This can begin with an environment variable.' => 'Dies kann mit einer Umgebungsvariablen beginnen.',
+    'Learn more' => 'Mehr erfahren',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Ereignisname',
@@ -592,6 +594,26 @@ return [
     'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Geben Sie die URL ein, an die die POST-Anfrage gesendet werden soll. Sie können Twig-Variablen für `form` und `submission` verwenden, um die URL zu verarbeiten.',
     'Error Trigger' => 'Fehlerauslöser',
     "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Geben Sie ein Schlüsselwort oder einen Ausdruck an, nach dem Freeform in der Ausgabe der externen POST-URL suchen soll, um zu wissen, ob und wann ein Fehler protokolliert werden muss, z. B. 'Fehler' oder 'ein Fehler ist aufgetreten'. Sie können Twig-Variablen für `form` und `submission` verwenden, um den Fehlerauslöser zu verarbeiten.",
+
+    // Form Builder // Integrations // URL Parameter Tracking
+    'URL Parameter Tracking' => 'URL-Parameterverfolgung',
+    'URL Tracking Parameters for this Form' => 'URL-Tracking-Parameter für dieses Formular',
+    'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Geben Sie die Namen der zu speichernden URL-Parameter ein. Trennen Sie mehrere durch Zeilenumbrüche.',
+    'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'Die hier eingegebenen Werte gelten für alle Formulare, die diese Integration verwenden. Formularspezifische Parameter können zusätzlich im Formulargenerator festgelegt werden.',
+    'URL Tracking Parameters' => 'URL-Tracking-Parameter',
+
+    // Form Builder // Integrations // Form Monitor
+    'Form Monitor' => 'Formularüberwachung',
+    'URL the Form Monitor should access to check the form' => 'URL, die vom Formularmonitor zum Prüfen des Formulars aufgerufen wird',
+    'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.' => 'Dies ist die URL, die der Formularmonitor zum Überprüfen des Formulars verwendet. Sie muss öffentlich zugänglich sein und das Formular enthalten.',
+    'Test Email Notifications' => 'E-Mail-Benachrichtigungen testen',
+    'Allow Form Monitor to test any email notifications configured for this form.' => 'Erlauben Sie dem Formularmonitor, E-Mail-Benachrichtigungen für dieses Formular zu testen.',
+    'Notification Email' => 'Benachrichtigungs-E-Mail',
+    'Email address to receive email alerts and other notifications for the form.' => 'E-Mail-Adresse, um Benachrichtigungen und Warnmeldungen für das Formular zu erhalten.',
+    'Site Name' => 'Seitenname',
+    'The name of your Craft site. Form Monitor will use this in email notifications.' => 'Der Name Ihrer Craft-Website. Der Formularmonitor verwendet diesen in E-Mail-Benachrichtigungen.',
+    'Test Email Notifications on Live Environment only' => 'E-Mail-Benachrichtigungen nur in der Live-Umgebung testen',
+    'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Wenn aktiviert, testet der Formularmonitor E-Mail-Benachrichtigungen nur, wenn die Craft-Umgebung auf Produktion gesetzt ist.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Benutzer',
@@ -1370,7 +1392,7 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade auf die Freeform Pro Edition, um Zugriff auf Integrationen zu erhalten.',
     'What this integration will be called in the CP.' => 'Wie diese Integration im Kontrollpanel genannt wird.',
     'The unique name used to identify this integration.' => 'Der eindeutige Name, der zur Identifizierung dieser Integration verwendet wird.',
-    'Show Setup Instructions' => 'Einrichtungsanleitung anzeigen',
+    'Show Instructions' => 'Anleitung anzeigen',
     'Authorized' => 'Autorisierte',
     'Unauthorized' => 'Nicht autorisiert',
     'Checking...' => 'Überprüfung läuft...',

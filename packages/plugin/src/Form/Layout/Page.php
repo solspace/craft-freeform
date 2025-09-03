@@ -59,7 +59,7 @@ class Page implements \IteratorAggregate
         return $this
             ->translationProvider
             ->getTranslation(
-                $this->getForm(),
+                $this,
                 $this->getUid(),
                 'label',
                 $this->label

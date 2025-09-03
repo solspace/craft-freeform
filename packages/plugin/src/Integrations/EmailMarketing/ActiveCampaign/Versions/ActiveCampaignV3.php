@@ -159,7 +159,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             $fieldId = (string) $key;
 
             if (\is_array($value)) {
-                $value = '||'.implode('||', $value).'||';
+                $value = implode('||', $value);
             }
 
             $response = $client->post(

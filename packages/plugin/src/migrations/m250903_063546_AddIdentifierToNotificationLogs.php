@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 
 class m250903_063546_AddIdentifierToNotificationLogs extends Migration

@@ -135,31 +135,39 @@ class ExportNotifications extends FeatureBundle
         }
 
         $frequency = (int) $record->frequency;
-        $type = self::NOTIFICATION_TYPE.'-'.$record->id;
+        $type = self::NOTIFICATION_TYPE;
 
-        $lookupStart = new Carbon('now');
+        $now = new Carbon('now');
+
+        $lookupStart = $now;
         $lookupStart->setTime(0, 0, 0);
-
         $lookupEnd = $lookupStart->copy()->setTime(23, 59, 59);
 
         if (-1 !== $frequency && $lookupStart->dayOfWeek !== $frequency) {
             return false;
         }
 
-        $record = NotificationLogRecord::find()
+        $lock = NotificationLogRecord::find()
             ->where(Db::parseDateParam('dateCreated', $lookupStart, '>='))
             ->andWhere(Db::parseDateParam('dateCreated', $lookupEnd, '<='))
-            ->andWhere(['type' => $type])
+            ->andWhere([
+                'type' => $type,
+                'identifier' => $record->id,
+                'name' => $record->name,
+            ])
             ->one()
         ;
 
-        if ($record) {
+        if ($lock) {
             return false;
         }
 
-        $record = new NotificationLogRecord();
-        $record->type = $type;
-        $record->save();
+        $lock = new NotificationLogRecord();
+        $lock->type = $type;
+        $lock->identifier = $record->id;
+        $lock->name = $record->name;
+        $lock->digestDate = $now->toDateString();
+        $lock->save();
 
         return true;
     }

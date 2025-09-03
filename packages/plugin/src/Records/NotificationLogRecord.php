@@ -20,8 +20,9 @@ use craft\db\ActiveRecord;
  *
  * @property int       $id
  * @property string    $type
- * @property \DateTime $digestDate
+ * @property int       $identifier
  * @property string    $name
+ * @property \DateTime $digestDate
  */
 class NotificationLogRecord extends ActiveRecord
 {

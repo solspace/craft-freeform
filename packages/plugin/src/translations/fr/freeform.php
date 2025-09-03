@@ -930,6 +930,9 @@ return [
     'Formatting' => 'Mise en forme',
     'Success' => 'Succès',
 
+    // Import / Export // Formie
+    'Import from Formie (v3)' => 'Importer depuis Formie (v3)',
+
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importer depuis Express Forms',
     'Import' => 'Importer',
@@ -948,7 +951,7 @@ return [
     'Choose the behavior Freeform should use if this site contains any email notification templates that match the data in this import.' => 'Choisissez le comportement que Freeform doit utiliser si ce site contient des modèles de notification par e-mail correspondant aux données de cette importation.',
     'Begin Import' => 'Commencer l’importation',
     'Import Progress' => 'Progression de l’importation',
-    'Import completed successfully!' => 'Importation terminée avec succès !',
+    'Import completed successfully!' => 'Importation terminée avec succès!',
 
     // Settings // General
     'Freeform settings saved.' => 'Paramètres Freeform enregistrés.',

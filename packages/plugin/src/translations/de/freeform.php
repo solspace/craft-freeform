@@ -930,6 +930,9 @@ return [
     'Formatting' => 'Formatierung',
     'Success' => 'Erfolg',
 
+    // Import / Export // Formie
+    'Import from Formie (v3)' => 'Import aus Formie (v3)',
+
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Von Express Forms importieren',
     'Import' => 'Importieren',

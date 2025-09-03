@@ -118,6 +118,7 @@ return [
   'Add new Form' => 'Add new Form',
   'Create a new Form' => 'Create a new Form',
   'Import from Express Forms' => 'Import from Express Forms',
+  'Import from Formie (v3)' => 'Import from Formie (v3)',
   'Export' => 'Export',
   'Profiles' => 'Profiles',
   'Import' => 'Import',

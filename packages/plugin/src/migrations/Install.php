@@ -321,8 +321,10 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_notification_log'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(30)->notNull())
+                ->addField('identifier', $this->string(100)->null())
                 ->addField('digestDate', $this->date()->null()->defaultValue(null))
                 ->addField('name', $this->string())
+                ->addIndex(['type', 'identifier', 'name', 'dateCreated'], name: 'idx_type_identifier_name_digestDate')
                 ->addIndex(['type', 'dateCreated']),
 
             (new Table('freeform_session_context'))

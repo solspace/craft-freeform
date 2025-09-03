@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.11.15 - 2025-09-03
+
+### Security
+- Updated the `phpoffice/phpspreadsheet` dependency versions to address a potential security vulnerability.
+
 ## 5.11.14 - 2025-09-02
 
 ### Changed

@@ -32,7 +32,7 @@ export const ImportFormie: React.FC = () => {
 
     const { data } = await axios.post('/api/import/prepare', {
       exporter:
-        '\\Solspace\\Freeform\\Bundles\\Backup\\Import\\FormieV3Importer',
+        '\\Solspace\\Freeform\\Bundles\\Backup\\Export\\FormieV3Exporter',
       options,
     });
 

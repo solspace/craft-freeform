@@ -204,35 +204,6 @@ class HubSpotV3 extends BaseHubSpotIntegration
         $this->createAssociations($form, $client);
     }
 
-    /**
-     * Validate a v3 Contact ID by issuing a GET with archived=false.
-     * Returns the contact stdClass when valid, or null when 404/invalid.
-     */
-    private function validateAndFetchContact(Client $client, string $contactId): ?\stdClass
-    {
-        try {
-            [, $data] = $this->getJsonResponse(
-                $client->get(
-                    $this->getEndpoint('/objects/contacts/'.rawurlencode($contactId)),
-                    ['query' => ['archived' => 'false']]
-                )
-            );
-
-            return $data ?? null;
-        } catch (ClientException $e) {
-            $status = $e->getResponse() ? $e->getResponse()->getStatusCode() : 0;
-            if (404 === $status) {
-                $this->logger->debug('Cookie-derived contactId invalid (stale/merged/archived/wrong-portal), will fallback.', [
-                    'contactId' => $contactId,
-                ]);
-
-                return null;
-            }
-
-            throw $e;
-        }
-    }
-
     private function pushContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
@@ -251,9 +222,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
         }
 
         $email = $this->getEmailFieldValue($mapping);
-
         $contactId = null;
-        $contact = null; // <-- we’ll keep the fetched contact here for append logic
 
         $contact = $this->searchForObject(
             $client,
@@ -278,18 +247,21 @@ class HubSpotV3 extends BaseHubSpotIntegration
                     $json = json_decode((string) $response->getBody());
                     $cookieContactId = $json->vid ?? null;
 
-                    $this->logger->debug('Found contact by cookie (v1 VID)', ['cookie' => $contactCookie, 'contactId' => $cookieContactId]);
+                    $this->logger->debug(
+                        'Found contact by cookie (v1 VID)',
+                        ['cookie' => $contactCookie, 'contactId' => $cookieContactId]
+                    );
 
                     if ($cookieContactId) {
                         // Validate VID against v3 and fetch contact record
                         $validated = $this->validateAndFetchContact($client, (string) $cookieContactId);
                         if ($validated && isset($validated->id)) {
                             $contactId = (int) $validated->id;
-                            $contact = $validated;
                         } else {
-                            $this->logger->debug('Cookie-derived contactId failed v3 validation; ignoring.', [
-                                'cookieContactId' => $cookieContactId,
-                            ]);
+                            $this->logger->debug(
+                                'Cookie-derived contactId failed v3 validation; ignoring.',
+                                ['cookieContactId' => $cookieContactId]
+                            );
                         }
                     }
                 } catch (\Exception $exception) {
@@ -316,7 +288,6 @@ class HubSpotV3 extends BaseHubSpotIntegration
             );
 
             $this->logger->info('Updated contact', ['contactId' => $contactId]);
-            $this->logger->debug('With Mapping', $mapping);
         } else {
             [$response, $data] = $this->getJsonResponse(
                 $client->post(
@@ -327,8 +298,9 @@ class HubSpotV3 extends BaseHubSpotIntegration
 
             $contactId = (int) $data->id;
             $this->logger->info('New Contact created', ['contactId' => $contactId]);
-            $this->logger->debug('With Mapping', $mapping);
         }
+
+        $this->logger->debug('With Mapping', $mapping);
 
         $this->triggerAfterResponseEvent(self::CATEGORY_CONTACT, $response);
         $this->contactId = $contactId;
@@ -606,5 +578,35 @@ class HubSpotV3 extends BaseHubSpotIntegration
             fn (FieldMapItem $item) => $item->getSource(),
             $mapping->getMapping()
         );
+    }
+
+    /**
+     * Validate a v3 Contact ID by issuing a GET with archived=false.
+     * Returns the contact stdClass when valid, or null when 404/invalid.
+     */
+    private function validateAndFetchContact(Client $client, string $contactId): ?\stdClass
+    {
+        try {
+            [, $data] = $this->getJsonResponse(
+                $client->get(
+                    $this->getEndpoint('/objects/contacts/'.rawurlencode($contactId)),
+                    ['query' => ['archived' => 'false']]
+                )
+            );
+
+            return $data ?? null;
+        } catch (ClientException $e) {
+            $status = $e->getResponse() ? $e->getResponse()->getStatusCode() : 0;
+            if (404 === $status) {
+                $this->logger->debug(
+                    'Cookie-derived contactId invalid (stale/merged/archived/wrong-portal), will fallback.',
+                    ['contactId' => $contactId]
+                );
+
+                return null;
+            }
+
+            throw $e;
+        }
     }
 }

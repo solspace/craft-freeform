@@ -283,6 +283,7 @@ return [
     'Target field' => 'Zielfeld',
     'The field that should be matched and validated against.' => 'Das Feld, das abgeglichen und validiert werden soll.',
     'Select a field' => 'Ein Feld auswählen',
+    'Select a field...' => 'Ein Feld auswählen...',
     'Pattern' => 'Muster',
     'Enter any regex pattern here.' => 'Geben Sie hier ein beliebiges Regex-Muster ein.',
     'Error Message' => 'Fehlermeldung',
@@ -571,6 +572,20 @@ return [
     'Add integration' => 'Integration hinzufügen',
     'This can begin with an environment variable.' => 'Dies kann mit einer Umgebungsvariablen beginnen.',
     'Learn more' => 'Mehr erfahren',
+    'Enable Rules' => 'Regeln aktivieren',
+    'Enable rules to control when this integration is triggered.' => 'Aktivieren Sie Regeln, um zu steuern, wann diese Integration ausgelöst wird.',
+    'Specify when this integration should be triggered.' => 'Geben Sie an, wann diese Integration ausgelöst werden soll.',
+    'Push' => 'Senden',
+    "Don't push" => 'Nicht senden',
+    'data to integration when' => 'Daten an die Integration senden, wenn',
+    'Target Email Field' => 'Ziel-E-Mail-Feld',
+    'The email field to be subscribed to the mailing list.' => 'Das E-Mail-Feld, das für die Anmeldung zur Mailingliste verwendet wird.',
+    'Opt-in Field (optional)' => 'Opt-in-Feld (optional)',
+    'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.' => 'Dieses Feld muss aktiviert sein, um den Benutzer zur Mailingliste hinzuzufügen. Wenn es nicht ausgewählt ist, wird der Benutzer automatisch angemeldet.',
+    'Automatically opt-in the user' => 'Benutzer automatisch anmelden',
+    'Mailing List' => 'Mailingliste',
+    'The mailing list the user should be subscribed to.' => 'Die Mailingliste, in die der Benutzer eingetragen werden soll.',
+    'Select a mailing list...' => 'Mailingliste auswählen...',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Ereignisname',
@@ -645,6 +660,19 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'Die Sprache, die für das Captcha als Sprach-ID verwendet wird, z. B. <code>en</code>, <code>de</code> usw. Wenn dieses Feld leer bleibt, wird die Sprache automatisch erkannt.',
     'The error message to display when the Captcha validation fails.' => 'Die Fehlermeldung, die angezeigt wird, wenn die Captcha-Validierung fehlschlägt.',
     'Size' => 'Größe',
+
+    // Form Builder // Integrations // CRM // HubSpot
+    'Map to Deals' => 'Mit Deals verknüpfen',
+    'Should map to the Deals endpoint.' => 'Soll mit dem Deals-Endpunkt verknüpft werden.',
+    'Deal Mapping' => 'Deal-Zuordnung',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden HubSpot-Deal-Feldern zugeordnet werden sollen',
+    'Should map to the Contacts endpoint.' => 'Soll mit dem Contacts-Endpunkt verknüpft werden.',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden HubSpot-Kontaktfeldern zugeordnet werden sollen',
+    'Map to Companies' => 'Mit Unternehmen verknüpfen',
+    'Should map to the Companies endpoint.' => 'Soll mit dem Companies-Endpunkt verknüpft werden.',
+    'Company Mapping' => 'Unternehmenszuordnung',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Wählen Sie die Freeform-Felder aus, die den entsprechenden HubSpot-Unternehmensfeldern zugeordnet werden sollen',
+    'Append checkbox group field values on Contact update' => 'Checkbox-Gruppenwerte bei Kontaktaktualisierung anhängen',
 
     // Form Builder // Settings
     'Settings' => 'Einstellungen',

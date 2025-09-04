@@ -283,6 +283,7 @@ return [
     'Target field' => 'Doelveld',
     'The field that should be matched and validated against.' => 'Het veld dat moet worden vergeleken en gevalideerd.',
     'Select a field' => 'Selecteer een veld',
+    'Select a field...' => 'Selecteer een veld...',
     'Pattern' => 'Patroon',
     'Enter any regex pattern here.' => 'Voer hier een regex-patroon in.',
     'Error Message' => 'Foutmelding',
@@ -571,6 +572,20 @@ return [
     'Add integration' => 'Integratie toevoegen',
     'This can begin with an environment variable.' => 'Dit kan beginnen met een omgevingsvariabele.',
     'Learn more' => 'Meer informatie',
+    'Enable Rules' => 'Regels inschakelen',
+    'Enable rules to control when this integration is triggered.' => 'Schakel regels in om te bepalen wanneer deze integratie wordt geactiveerd.',
+    'Specify when this integration should be triggered.' => 'Geef aan wanneer deze integratie moet worden geactiveerd.',
+    'Push' => 'Verstuur',
+    "Don't push" => 'Niet versturen',
+    'data to integration when' => 'gegevens naar de integratie sturen wanneer',
+    'Target Email Field' => 'Doel-e-mailveld',
+    'The email field to be subscribed to the mailing list.' => 'Het e-mailveld dat moet worden ingeschreven op de mailinglijst.',
+    'Opt-in Field (optional)' => 'Opt-in-veld (optioneel)',
+    'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.' => 'Dit veld moet aangevinkt zijn om toe te voegen aan de mailinglijst. Indien niet geselecteerd, wordt de gebruiker automatisch ingeschreven.',
+    'Automatically opt-in the user' => 'Gebruiker automatisch inschrijven',
+    'Mailing List' => 'Mailinglijst',
+    'The mailing list the user should be subscribed to.' => 'De mailinglijst waarop de gebruiker moet worden ingeschreven.',
+    'Select a mailing list...' => 'Selecteer een mailinglijst...',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Evenementnaam',
@@ -645,6 +660,19 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'De landinstelling die voor de Captcha moet worden gebruikt als taal-ID, b.v. <code>en</code>, <code>de</code>, etc. Als je dit veld leeg laat, wordt de landinstelling automatisch gedetecteerd.',
     'The error message to display when the Captcha validation fails.' => 'De foutmelding die wordt weergegeven als de Captcha-validatie mislukt.',
     'Size' => 'Grootte',
+
+    // Form Builder // Integrations // CRM // HubSpot
+    'Map to Deals' => 'Koppelen aan Deals',
+    'Should map to the Deals endpoint.' => 'Moet gekoppeld worden aan het Deals-endpoint.',
+    'Deal Mapping' => 'Dealkoppeling',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields' => 'Selecteer de Freeform-velden die moeten worden gekoppeld aan de juiste HubSpot Deal-velden',
+    'Should map to the Contacts endpoint.' => 'Moet gekoppeld worden aan het Contacts-endpoint.',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields' => 'Selecteer de Freeform-velden die moeten worden gekoppeld aan de juiste HubSpot Contact-velden',
+    'Map to Companies' => 'Koppelen aan Bedrijven',
+    'Should map to the Companies endpoint.' => 'Moet gekoppeld worden aan het Companies-endpoint.',
+    'Company Mapping' => 'Bedrijfskoppeling',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Selecteer de Freeform-velden die moeten worden gekoppeld aan de juiste HubSpot Bedrijfsvelden',
+    'Append checkbox group field values on Contact update' => 'Waarden van checkboxgroep toevoegen bij contactupdate',
 
     // Form Builder // Settings
     'Settings' => 'Instellingen',

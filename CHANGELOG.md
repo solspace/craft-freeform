@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.11.17 - 2025-09-04
+
+### Fixed
+- Fixed an issue where the **Stripe** integration could fail in rare cases due to an instance mismatch during payment confirmation.
+
 ## 5.11.16 - 2025-09-03
 
 ### Fixed

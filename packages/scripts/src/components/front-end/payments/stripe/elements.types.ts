@@ -9,13 +9,13 @@ export type Config = {
   theme: StripeTheme;
   floatingLabels: boolean;
   fieldMapping: Array<{ source: string; target: string }>;
-  getStripeInstance: () => Stripe;
   loadStripe: () => Promise<Stripe>;
 };
 
 export type StripeElement = {
   empty: boolean;
   elements: StripeElements;
+  stripe: Stripe;
   paymentIntent: {
     id: string;
     secret: string;

@@ -106,7 +106,7 @@ export const ImportExpressForms: React.FC = () => {
 
       <Progress
         label={translate('Import')}
-        finishLabel={translate('Import completed successfully')}
+        finishLabel={translate('Import completed successfully!')}
         event={progressEvent}
       />
     </ContentContainer>

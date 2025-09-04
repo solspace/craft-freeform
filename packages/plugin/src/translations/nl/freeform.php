@@ -569,6 +569,8 @@ return [
     'No integrations found' => 'Geen integraties gevonden',
     'To add an integration, click the button below' => 'Om een integratie toe te voegen, klik op onderstaande knop',
     'Add integration' => 'Integratie toevoegen',
+    'This can begin with an environment variable.' => 'Dit kan beginnen met een omgevingsvariabele.',
+    'Learn more' => 'Meer informatie',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Evenementnaam',
@@ -592,6 +594,26 @@ return [
     'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.' => 'Voer de URL in waar het POST-verzoek naartoe moet worden verzonden. Je kunt Twig-variabelen voor `form` en `submission` gebruiken om de URL te verwerken.',
     'Error Trigger' => 'Fouttrigger',
     "Provide a keyword or phrase Freeform should check for in the output of the external POST URL to know if and when there's an error to log, e.g. 'error' or 'an error occurred'. You can use Twig variables for `form` and `submission` to process the Error Trigger." => "Geef een trefwoord of woordgroep op waar Freeform in de uitvoer van de externe POST-URL naar moet kijken om te weten of en wanneer er een fout is om te loggen, bijvoorbeeld 'fout' of 'er is een fout opgetreden'. Je kunt Twig-variabelen voor `form` en `submission` gebruiken om de fouttrigger te verwerken.",
+
+    // Form Builder // Integrations // URL Parameter Tracking
+    'URL Parameter Tracking' => 'URL-parametertracking',
+    'URL Tracking Parameters for this Form' => 'URL-trackingparameters voor dit formulier',
+    'Enter URL tracking parameter names you would like stored. Separate multiples on new lines.' => 'Voer de namen in van URL-trackingparameters die je wilt opslaan. Gebruik een nieuwe regel voor meerdere.',
+    'The values entered here will apply to all forms that use this integration. Additionally, form-specific parameters can be set inside the form builder.' => 'De hier ingevoerde waarden gelden voor alle formulieren die deze integratie gebruiken. Formulierspecifieke parameters kunnen ook in de formulierbouwer worden ingesteld.',
+    'URL Tracking Parameters' => 'URL-trackingparameters',
+
+    // Form Builder // Integrations // Form Monitor
+    'Form Monitor' => 'Formuliermonitor',
+    'URL the Form Monitor should access to check the form' => 'URL die de formuliermonitor moet openen om het formulier te controleren',
+    'This is the URL that Form Monitor will use to check the form. It should be a publicly accessible URL and contain the form.' => 'Dit is de URL die de formuliermonitor gebruikt om het formulier te controleren. Het moet een publiek toegankelijke URL zijn die het formulier bevat.',
+    'Test Email Notifications' => 'Test e-mailnotificaties',
+    'Allow Form Monitor to test any email notifications configured for this form.' => 'Sta de formuliermonitor toe om e-mailnotificaties van dit formulier te testen.',
+    'Notification Email' => 'Notificatie-e-mail',
+    'Email address to receive email alerts and other notifications for the form.' => 'E-mailadres voor het ontvangen van waarschuwingen en andere notificaties voor het formulier.',
+    'Site Name' => 'Sitenaam',
+    'The name of your Craft site. Form Monitor will use this in email notifications.' => 'De naam van je Craft-site. Formuliermonitor gebruikt dit in e-mailnotificaties.',
+    'Test Email Notifications on Live Environment only' => 'Test e-mailnotificaties alleen in live-omgeving',
+    'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Indien ingeschakeld, test Formuliermonitor alleen e-mailnotificaties als de Craft-omgeving is ingesteld op productie.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Gebruikers',
@@ -929,6 +951,9 @@ return [
     'Wrapper' => 'Wrapper',
     'Formatting' => 'Opmaak',
     'Success' => 'Succes',
+
+    // Import / Export // Formie
+    'Import from Formie (v3)' => 'Importeren vanuit Formie (v3)',
 
     // Import / Export // Express Forms
     'Import from Express Forms' => 'Importeren uit Express Forms',
@@ -1367,7 +1392,7 @@ return [
     'Upgrade to the Freeform Pro edition to get access to integrations.' => 'Upgrade naar de Freeform Pro-editie om toegang te krijgen tot integraties.',
     'What this integration will be called in the CP.' => 'Hoe deze integratie in de CP zal worden genoemd.',
     'The unique name used to identify this integration.' => 'De unieke naam die wordt gebruikt om deze integratie te identificeren.',
-    'Show Setup Instructions' => 'Installatie-instructies tonen',
+    'Show Instructions' => 'Toon instructies',
     'Authorized' => 'Geautoriseerd',
     'Unauthorized' => 'Niet geautoriseerd',
     'Checking...' => 'Bezig met controleren...',

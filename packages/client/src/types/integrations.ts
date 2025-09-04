@@ -27,6 +27,7 @@ export type FieldMapping = Record<string, TargetField>;
 export type Integration = {
   id: number;
   uid: string;
+  instanceUid: string;
   type: string;
   shortName: string;
 

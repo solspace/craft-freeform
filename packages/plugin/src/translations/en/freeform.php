@@ -283,6 +283,7 @@ return [
     'Target field' => 'Target field',
     'The field that should be matched and validated against.' => 'The field that should be matched and validated against.',
     'Select a field' => 'Select a field',
+    'Select a field...' => 'Select a field...',
     'Pattern' => 'Pattern',
     'Enter any regex pattern here.' => 'Enter any regex pattern here.',
     'Error Message' => 'Error Message',
@@ -571,6 +572,20 @@ return [
     'Add integration' => 'Add integration',
     'This can begin with an environment variable.' => 'This can begin with an environment variable.',
     'Learn more' => 'Learn more',
+    'Enable Rules' => 'Enable Rules',
+    'Enable rules to control when this integration is triggered.' => 'Enable rules to control when this integration is triggered.',
+    'Specify when this integration should be triggered.' => 'Specify when this integration should be triggered.',
+    'Push' => 'Push',
+    "Don't push" => "Don't push",
+    'data to integration when' => 'data to integration when',
+    'Target Email Field' => 'Target Email Field',
+    'The email field to be subscribed to the mailing list.' => 'The email field to be subscribed to the mailing list.',
+    'Opt-in Field (optional)' => 'Opt-in Field (optional)',
+    'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.' => 'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.',
+    'Automatically opt-in the user' => 'Automatically opt-in the user',
+    'Mailing List' => 'Mailing List',
+    'The mailing list the user should be subscribed to.' => 'The mailing list the user should be subscribed to.',
+    'Select a mailing list...' => 'Select a mailing list...',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Event Name',
@@ -645,6 +660,19 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.',
     'The error message to display when the Captcha validation fails.' => 'The error message to display when the Captcha validation fails.',
     'Size' => 'Size',
+
+    // Form Builder // Integrations // CRM // HubSpot
+    'Map to Deals' => 'Map to Deals',
+    'Should map to the Deals endpoint.' => 'Should map to the Deals endpoint.',
+    'Deal Mapping' => 'Deal Mapping',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields' => 'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields',
+    'Should map to the Contacts endpoint.' => 'Should map to the Contacts endpoint.',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields' => 'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields',
+    'Map to Companies' => 'Map to Companies',
+    'Should map to the Companies endpoint.' => 'Should map to the Companies endpoint.',
+    'Company Mapping' => 'Company Mapping',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Select the Freeform fields to be mapped to the applicable HubSpot Company fields',
+    'Append checkbox group field values on Contact update' => 'Append checkbox group field values on Contact update',
 
     // Form Builder // Settings
     'Settings' => 'Settings',

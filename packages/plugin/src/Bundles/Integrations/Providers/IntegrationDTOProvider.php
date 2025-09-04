@@ -44,6 +44,7 @@ class IntegrationDTOProvider
         $dto = new Integration();
         $dto->id = $integration->getId();
         $dto->uid = $integration->getUid();
+        $dto->instanceUid = $integration->getInstanceUid();
         $dto->name = $integration->getName();
         $dto->handle = $integration->getHandle();
         $dto->enabled = (bool) $integration->isEnabled();

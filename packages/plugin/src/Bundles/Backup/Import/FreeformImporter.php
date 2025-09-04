@@ -17,6 +17,7 @@ use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use Solspace\Freeform\Library\Rules\Types\IntegrationRule;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
@@ -43,6 +44,7 @@ use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\PdfTemplateRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\IntegrationRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
@@ -61,6 +63,7 @@ class FreeformImporter
     private array $pdfTemplateTransferIdMap = [];
     private array $wrapperTemplateTransferIdMap = [];
     private array $integrationRecords = [];
+    private array $formIntegrationRecords = [];
 
     private FreeformDataset $dataset;
     private SSE $sse;
@@ -340,6 +343,8 @@ class FreeformImporter
                 $formIntegration->enabled = $integration->enabled;
                 $formIntegration->metadata = json_encode($integration->metadata);
                 $formIntegration->save();
+
+                $this->formIntegrationRecords[$formIntegration->uid] = $formIntegration;
             }
 
             foreach ($form->pages as $pageIndex => $page) {
@@ -449,6 +454,19 @@ class FreeformImporter
                     $notificationRuleRecord->notificationId = $notificationRecord->id;
                     $notificationRuleRecord->send = $rule->metadata['send'] ?? true;
                     $notificationRuleRecord->save();
+                }
+
+                if (IntegrationRule::class === $rule->type) {
+                    $integrationRecord = $this->formIntegrationRecords[$rule->metadata['integrationUid']] ?? null;
+                    if (!$integrationRecord) {
+                        continue;
+                    }
+
+                    $integrationRuleRecord = new IntegrationRuleRecord();
+                    $integrationRuleRecord->id = $ruleRecord->id;
+                    $integrationRuleRecord->integrationId = $integrationRecord->id;
+                    $integrationRuleRecord->push = $rule->metadata['push'] ?? true;
+                    $integrationRuleRecord->save();
                 }
 
                 foreach ($rule->conditions as $condition) {

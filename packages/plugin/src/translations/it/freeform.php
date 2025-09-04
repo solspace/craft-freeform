@@ -283,6 +283,7 @@ return [
     'Target field' => 'Campo di destinazione',
     'The field that should be matched and validated against.' => 'Il campo che deve essere confrontato e validato.',
     'Select a field' => 'Seleziona un campo',
+    'Select a field...' => 'Seleziona un campo...',
     'Pattern' => 'Schema',
     'Enter any regex pattern here.' => 'Inserisci qui qualsiasi pattern regex.',
     'Error Message' => 'Messaggio di errore',
@@ -571,6 +572,20 @@ return [
     'Add integration' => 'Aggiungi integrazione',
     'This can begin with an environment variable.' => 'Può iniziare con una variabile di ambiente.',
     'Learn more' => 'Scopri di più',
+    'Enable Rules' => 'Abilita regole',
+    'Enable rules to control when this integration is triggered.' => 'Abilita regole per controllare quando viene attivata l’integrazione.',
+    'Specify when this integration should be triggered.' => 'Specifica quando questa integrazione deve essere attivata.',
+    'Push' => 'Invia',
+    "Don't push" => 'Non inviare',
+    'data to integration when' => 'invia i dati all’integrazione quando',
+    'Target Email Field' => 'Campo email di destinazione',
+    'The email field to be subscribed to the mailing list.' => 'Il campo email da iscrivere alla mailing list.',
+    'Opt-in Field (optional)' => 'Campo di consenso (opzionale)',
+    'This field has to be checked to push to the mailing list. If unselected, the user will automatically be opted into the mailing list.' => 'Questo campo deve essere selezionato per inviare l’utente alla mailing list. Se non selezionato, l’utente verrà iscritto automaticamente.',
+    'Automatically opt-in the user' => 'Iscrivi automaticamente l’utente',
+    'Mailing List' => 'Mailing list',
+    'The mailing list the user should be subscribed to.' => 'La mailing list a cui l’utente dovrebbe essere iscritto.',
+    'Select a mailing list...' => 'Seleziona una mailing list...',
 
     // Form Builder // Integrations // GTM
     'Event Name' => 'Nome dell’evento',
@@ -645,6 +660,19 @@ return [
     'The locale to use for the Captcha as the language ID, e.g. <code>en</code>, <code>de</code>, etc. If left blank, the locale will be auto-detected.' => 'La lingua da utilizzare per il Captcha come ID lingua, ad esempio <code>en</code>, <code>de</code>, ecc. Se lasciato vuoto, la lingua verrà rilevata automaticamente.',
     'The error message to display when the Captcha validation fails.' => 'Il messaggio di errore da visualizzare quando la validazione del Captcha fallisce.',
     'Size' => 'Dimensione',
+
+    // Form Builder // Integrations // CRM // HubSpot
+    'Map to Deals' => 'Mappa ai Deal',
+    'Should map to the Deals endpoint.' => 'Dovrebbe essere mappato sull’endpoint Deal.',
+    'Deal Mapping' => 'Mappatura Deal',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields' => 'Seleziona i campi Freeform da mappare ai campi Deal corrispondenti di HubSpot',
+    'Should map to the Contacts endpoint.' => 'Dovrebbe essere mappato sull’endpoint Contatti.',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields' => 'Seleziona i campi Freeform da mappare ai campi Contatto corrispondenti di HubSpot',
+    'Map to Companies' => 'Mappa alle Aziende',
+    'Should map to the Companies endpoint.' => 'Dovrebbe essere mappato sull’endpoint Aziende.',
+    'Company Mapping' => 'Mappatura Azienda',
+    'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Seleziona i campi Freeform da mappare ai campi Azienda corrispondenti di HubSpot',
+    'Append checkbox group field values on Contact update' => 'Aggiungi i valori del gruppo di checkbox durante l’aggiornamento del contatto',
 
     // Form Builder // Settings
     'Settings' => 'Impostazioni',

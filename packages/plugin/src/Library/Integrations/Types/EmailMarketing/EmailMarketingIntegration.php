@@ -24,10 +24,14 @@ use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
 use Solspace\Freeform\Library\Integrations\Types\EmailMarketing\DataObjects\ListObject;
 
-abstract class EmailMarketingIntegration extends APIIntegration implements EmailMarketingIntegrationInterface
+abstract class EmailMarketingIntegration extends APIIntegration implements EmailMarketingIntegrationInterface, RulesBasedInterface
 {
+    use RulesTrait;
+
     #[Validators\Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(enabled)')]

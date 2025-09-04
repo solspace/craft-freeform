@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use yii\base\Event;
@@ -26,6 +27,11 @@ class PersistFormEvent extends Event
      * @var FormNotificationRecord[]
      */
     private array $notificationRecords = [];
+
+    /**
+     * @var FormIntegrationRecord[]
+     */
+    private array $integrationRecords = [];
 
     public function __construct(
         private \stdClass $payload,
@@ -99,6 +105,24 @@ class PersistFormEvent extends Event
         foreach ($this->notificationRecords as $notificationRecord) {
             if ($notificationRecord->uid === $uid) {
                 return $notificationRecord;
+            }
+        }
+
+        return null;
+    }
+
+    public function addIntegrationRecord(FormIntegrationRecord $integrationRecord): self
+    {
+        $this->integrationRecords[] = $integrationRecord;
+
+        return $this;
+    }
+
+    public function getIntegrationRecord(string $uid): ?FormIntegrationRecord
+    {
+        foreach ($this->integrationRecords as $integrationRecord) {
+            if ($integrationRecord->uid === $uid) {
+                return $integrationRecord;
             }
         }
 

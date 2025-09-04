@@ -12,10 +12,14 @@ use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
 use yii\base\Event;
 
-abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface
+abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface, RulesBasedInterface
 {
+    use RulesTrait;
+
     public function onValidate(Form $form, Element $element): void {}
 
     public function onBeforeConnect(Form $form, Element $element): void {}

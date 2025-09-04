@@ -2,20 +2,20 @@
 
 namespace Solspace\Freeform\Records\Rules;
 
-use Solspace\Freeform\Records\Form\FormNotificationRecord;
+use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use yii\db\ActiveQuery;
 
 /**
  * @property int       $id
- * @property int       $notificationId
- * @property bool      $send
+ * @property int       $integrationId
+ * @property bool      $push
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid
  */
-class NotificationRuleRecord extends RuleRecord
+class IntegrationRuleRecord extends RuleRecord
 {
-    public const TABLE = '{{%freeform_rules_notifications}}';
+    public const TABLE = '{{%freeform_rules_integrations}}';
 
     public static function tableName(): string
     {
@@ -27,14 +27,14 @@ class NotificationRuleRecord extends RuleRecord
      */
     public static function getExistingRules(int $formId): array
     {
-        /** @var NotificationRuleRecord[] $records */
+        /** @var IntegrationRuleRecord[] $records */
         $records = self::find()
-            ->select(['fr.*'])
-            ->from(self::TABLE.' fr')
-            ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
-            ->innerJoin(FormNotificationRecord::TABLE.' fn', '[[fr.notificationId]] = [[fn.id]]')
-            ->where(['fn.formId' => $formId])
-            ->with('rule', 'conditions', 'notification')
+            ->select(['ir.*'])
+            ->from(self::TABLE.' ir')
+            ->innerJoin(RuleRecord::TABLE.' r', '[[ir.id]] = [[r.id]]')
+            ->innerJoin(FormIntegrationRecord::TABLE.' fi', '[[ir.integrationId]] = [[fi.id]]')
+            ->where(['fi.formId' => $formId])
+            ->with('rule', 'conditions', 'integration')
             ->indexBy('id')
             ->all()
         ;
@@ -52,22 +52,22 @@ class NotificationRuleRecord extends RuleRecord
         return $this->hasOne(RuleRecord::class, ['id' => 'id']);
     }
 
-    public function getNotification(): ActiveQuery
+    public function getIntegration(): ActiveQuery
     {
-        return $this->hasOne(FormNotificationRecord::class, ['id' => 'notificationId']);
+        return $this->hasOne(FormIntegrationRecord::class, ['id' => 'integrationId']);
     }
 
     public function rules(): array
     {
         return [
-            [['notificationId'], 'required'],
+            [['integrationId'], 'required'],
         ];
     }
 
     public function safeAttributes(): array
     {
         return [
-            'notificationId',
+            'integrationId',
             'send',
         ];
     }

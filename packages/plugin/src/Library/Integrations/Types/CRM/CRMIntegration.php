@@ -16,10 +16,14 @@ namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
 use yii\base\Event;
 
-abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface
+abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface, RulesBasedInterface
 {
+    use RulesTrait;
+
     protected function getProcessableFields(string $category): array
     {
         return Freeform::getInstance()->crm->getFields($this, $category);

@@ -98,7 +98,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
         );
 
         $this->addForeignKey(
-            null,
+            'fk_notifications_ruleId',
             '{{%freeform_rules_notifications}}',
             'id',
             '{{%freeform_rules}}',
@@ -107,7 +107,7 @@ class m230101_100060_FF4to5_MigrateConditionalRules extends Migration
         );
 
         $this->addForeignKey(
-            null,
+            'fk_notificationId',
             '{{%freeform_rules_notifications}}',
             'notificationId',
             '{{%freeform_forms_notifications}}',

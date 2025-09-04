@@ -95,6 +95,11 @@ export type NotificationRule = Rule & {
   send: boolean;
 };
 
+export type IntegrationRule = Rule & {
+  integration: string;
+  push: boolean;
+};
+
 export type SubmitFormRule = Rule;
 
 export type PageButtonType = 'submit' | 'save' | 'back' | 'group';

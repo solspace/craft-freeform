@@ -10,12 +10,15 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\PushableInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BaseJiraIntegration extends CRMIntegration implements JiraIntegrationInterface, OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, PushableInterface
+abstract class BaseJiraIntegration extends CRMIntegration implements JiraIntegrationInterface, OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, PushableInterface, RulesBasedInterface
 {
     use OAuth2RefreshTokenTrait;
     use OAuth2Trait;
+    use RulesTrait;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]

@@ -24,7 +24,9 @@ abstract class BaseIntegration implements IntegrationInterface
 {
     public function __construct(
         private ?int $id,
+        private ?int $instanceId,
         private ?string $uid,
+        private ?string $instanceUid,
         private bool $enabled,
         private bool $legacy,
         private string $handle,
@@ -43,9 +45,19 @@ abstract class BaseIntegration implements IntegrationInterface
         return $this->id;
     }
 
+    public function getInstanceId(): ?int
+    {
+        return $this->instanceId;
+    }
+
     public function getUid(): ?string
     {
         return $this->uid;
+    }
+
+    public function getInstanceUid(): ?string
+    {
+        return $this->instanceUid;
     }
 
     public function setId(int $id): self

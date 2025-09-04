@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Elements;
 use Solspace\Freeform\Bundles\Integrations\Elements\ElementFieldMappingHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
+use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ConnectEvent;
@@ -25,6 +26,7 @@ class ElementsBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
+        private IntegrationRuleValidator $ruleValidator,
         private ElementFieldMappingHelper $mappingHelper,
         private IntegrationLoggerProvider $loggerProvider,
     ) {
@@ -117,6 +119,10 @@ class ElementsBundle extends FeatureBundle
         $integrations = $this->getElementIntegrations($form);
         foreach ($integrations as $integration) {
             if (!$integration->getTypeDefinition()->editionCheck($edition)) {
+                continue;
+            }
+
+            if (!$this->ruleValidator->isPassing($integration, $form)) {
                 continue;
             }
 

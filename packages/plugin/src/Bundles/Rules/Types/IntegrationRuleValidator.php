@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\Rules\Types;
 use Solspace\Freeform\Bundles\Rules\ConditionValidator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 
 class IntegrationRuleValidator

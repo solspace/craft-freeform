@@ -11,7 +11,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations;
+namespace Solspace\Freeform\Library\Integrations\Rules;
 
 use Solspace\Freeform\Library\Rules\Types\IntegrationRule;
 

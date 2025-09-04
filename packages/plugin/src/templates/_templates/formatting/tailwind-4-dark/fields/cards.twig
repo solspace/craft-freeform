@@ -59,7 +59,7 @@
         <label for="{{ field.idAttribute }}-{{ loop.index }}" class="{{ field.attributes.optionLabel.get("class") }}">
           {% set asset = craft.assets.id(card.assetId).one %}
           {% if asset %}
-            <img src="{{ asset.getUrl() }}" alt="{{ card.label }}" {{ field.cardAttributes.image }} />
+            <img src="{{ asset.getUrl(field.transform) }}" alt="{{ card.label }}" {{ field.cardAttributes.image }} />
           {% endif %}
           <div {{ field.cardAttributes.content }}>
             <h5 {{ field.cardAttributes.cardLabel }}>{{ card.label }}</h5>

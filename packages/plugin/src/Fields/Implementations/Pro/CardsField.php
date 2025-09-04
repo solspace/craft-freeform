@@ -140,6 +140,11 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
         return $this->layout;
     }
 
+    public function getTransform(): ?string
+    {
+        return $this->transform ?: null;
+    }
+
     public function getAssetUrl(?int $assetId): ?string
     {
         if (!$assetId) {

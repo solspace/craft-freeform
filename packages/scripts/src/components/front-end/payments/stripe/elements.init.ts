@@ -1,4 +1,5 @@
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
+import type { Stripe } from '@stripe/stripe-js';
 
 import { generateElementOptions } from './elements.appearance';
 import config from './elements.config';
@@ -26,11 +27,16 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   } = config(container);
   const { elementMap, form } = props;
 
-  const stripe = await getStripe();
-
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
   if (elementMap.has(field)) {
     return;
+  }
+
+  let stripe: Stripe;
+  if (elementMap.has(field) && elementMap.get(field).stripe) {
+    stripe = elementMap.get(field).stripe;
+  } else {
+    stripe = await getStripe();
   }
 
   form.freeform.disableSubmit('stripe.init');
@@ -38,6 +44,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   // Store an empty entry in the elementMap to prevent duplicate initialization
   elementMap.set(field, {
     empty: true,
+    stripe,
     elements: null,
     paymentIntent: null,
   });
@@ -116,6 +123,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
                   elementMap.set(field, {
                     empty: true,
                     elements,
+                    stripe,
                     paymentIntent: {
                       id,
                       secret: client_secret,
@@ -170,6 +178,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
 
       elementMap.set(field, {
         empty: true,
+        stripe,
         elements,
         paymentIntent: {
           id,

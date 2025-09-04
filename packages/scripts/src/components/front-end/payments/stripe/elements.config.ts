@@ -15,7 +15,6 @@ const config = (container: HTMLDivElement): Config | undefined => {
 
   return {
     ...config,
-    getStripeInstance: (): Stripe => stripeInstances.get(config.apiKey),
     loadStripe: async (): Promise<Stripe> => {
       if (!stripeInstances.has(config.apiKey)) {
         const stripeInstance = await loadStripe(config.apiKey);

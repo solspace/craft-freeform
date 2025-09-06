@@ -27,9 +27,9 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     #[Input\Text(
         label: 'Model',
         instructions: 'The OpenAI model to use for AI processing.',
-        placeholder: 'gpt-3.5-turbo',
+        placeholder: 'gpt-5-mini',
     )]
-    protected string $model = 'gpt-3.5-turbo';
+    protected string $model = 'gpt-5-mini';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(

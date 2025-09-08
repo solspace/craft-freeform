@@ -6,10 +6,13 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\Traits\DefaultTemperatureTrait;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
 abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegrationInterface
 {
+    use DefaultTemperatureTrait;
+
     public const LOG_CATEGORY = 'OpenAI';
 
     public const CATEGORY_AI = 'ai';

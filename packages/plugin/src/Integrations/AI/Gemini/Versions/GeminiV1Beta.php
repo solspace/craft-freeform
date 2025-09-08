@@ -95,4 +95,34 @@ class GeminiV1Beta extends BaseGeminiIntegration
 
         return $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
     }
+
+    public function listModels(bool $refresh = false): array
+    {
+        try {
+            $client = new Client();
+            $response = $client->get($this->getEndpoint('/models'), [
+                'query' => [
+                    'key' => $this->getApiKey(),
+                ],
+            ]);
+            $data = json_decode((string) $response->getBody(), true);
+
+            $models = [];
+            foreach ($data['models'] ?? [] as $item) {
+                if (!isset($item['name'])) {
+                    continue;
+                }
+                // API returns name like models/gemini-2.5-flash; extract the id
+                $id = preg_replace('#^models/#', '', $item['name']);
+                $models[] = [
+                    'id' => $id,
+                    'label' => $id,
+                ];
+            }
+
+            return $models;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
 }

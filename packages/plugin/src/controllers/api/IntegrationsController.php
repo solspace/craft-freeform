@@ -257,6 +257,28 @@ class IntegrationsController extends BaseApiController
         return $this->asEmptyResponse(204);
     }
 
+    protected function get(): array|object
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
+        $integrations = $this->getIntegrationsService()->getAllIntegrations();
+        $result = [];
+
+        foreach ($integrations as $integration) {
+            $result[] = [
+                'id' => $integration->id,
+                'uid' => $integration->uid,
+                'name' => $integration->name,
+                'handle' => $integration->handle,
+                'enabled' => $integration->enabled,
+                'type' => $integration->type,
+                'shortName' => $integration->getTypeDefinition()->shortName,
+            ];
+        }
+
+        return $result;
+    }
+
     protected function post(int|string|null $id = null): array|object|null
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_INTEGRATIONS_MANAGE);

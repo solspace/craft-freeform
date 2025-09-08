@@ -150,25 +150,6 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
         return $this->integration?->getMaxTokens() ?? 150;
     }
 
-    public function getTemperature(): float
-    {
-        if (null !== $this->temperature && !empty($this->temperature)) {
-            $temp = (float) $this->temperature;
-
-            // Validate and clamp to valid range
-            if ($temp < 0.0) {
-                return 0.0;
-            }
-            if ($temp > 2.0) {
-                return 2.0;
-            }
-
-            return $temp;
-        }
-
-        return $this->integration?->getTemperature() ?? 0.7;
-    }
-
     public function getModel(): ?string
     {
         return $this->integration?->getModel();

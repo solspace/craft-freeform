@@ -51,6 +51,7 @@ class AiService extends Component
             'model' => $integration->getModel(),
             'max_tokens' => $aiField->getMaxTokens(),
         ];
+
         $integrationTemperature = $integration->getTemperature();
         if (null !== $integrationTemperature) {
             $options['temperature'] = $integrationTemperature;

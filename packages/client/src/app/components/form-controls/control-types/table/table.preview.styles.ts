@@ -67,8 +67,7 @@ export const Header = styled.div`
 `;
 
 export const PreviewTable = styled.div`
-  height: 200px;
-  max-height: 200px;
+  height: 170px;
   overflow-x: hidden;
   overflow-y: auto;
 

@@ -82,4 +82,33 @@ class OpenAIV1 extends BaseOpenAIIntegration
 
         return $data['choices'][0]['message']['content'] ?? '';
     }
+
+    public function listModels(bool $refresh = false): array
+    {
+        try {
+            $client = new Client([
+                'headers' => [
+                    'Authorization' => 'Bearer '.$this->getApiKey(),
+                ],
+            ]);
+
+            $response = $client->get($this->getEndpoint('/models'));
+            $data = json_decode((string) $response->getBody(), true);
+
+            $models = [];
+            foreach ($data['data'] ?? [] as $item) {
+                if (!isset($item['id'])) {
+                    continue;
+                }
+                $models[] = [
+                    'id' => $item['id'],
+                    'label' => $item['id'],
+                ];
+            }
+
+            return $models;
+        } catch (\Throwable) {
+            return [];
+        }
+    }
 }

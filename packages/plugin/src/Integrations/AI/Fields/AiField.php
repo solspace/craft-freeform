@@ -77,17 +77,9 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
         label: 'Max Tokens Override',
         instructions: 'Leave empty to use integration settings. Override only if you need different max tokens for this field.',
         min: 1,
-        max: 8192,
+        max: 128000,
     )]
     protected ?int $maxTokens = null;
-
-    #[Section('ai-configuration')]
-    #[Input\Text(
-        label: 'Temperature Override',
-        instructions: 'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.',
-        placeholder: '0.7',
-    )]
-    protected ?string $temperature = null;
 
     #[VisibilityFilter('false')]
     protected bool $required = false;

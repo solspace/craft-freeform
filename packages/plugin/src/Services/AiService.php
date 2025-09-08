@@ -50,8 +50,11 @@ class AiService extends Component
         $options = [
             'model' => $integration->getModel(),
             'max_tokens' => $aiField->getMaxTokens(),
-            'temperature' => $aiField->getTemperature(),
         ];
+        $integrationTemperature = $integration->getTemperature();
+        if (null !== $integrationTemperature) {
+            $options['temperature'] = $integrationTemperature;
+        }
         if (null !== $timeout) {
             $options['timeout'] = $timeout;
         }

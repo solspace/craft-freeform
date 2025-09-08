@@ -71,8 +71,7 @@ class OpenAIV1 extends BaseOpenAIIntegration
                     'content' => $userContent,
                 ],
             ],
-            'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
-            'temperature' => $options['temperature'] ?? $this->getTemperature(),
+            'max_completion_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
         ];
 
         $response = $client->post($this->getEndpoint('/chat/completions'), [

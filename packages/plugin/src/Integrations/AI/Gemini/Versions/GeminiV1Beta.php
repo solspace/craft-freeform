@@ -59,15 +59,18 @@ class GeminiV1Beta extends BaseGeminiIntegration
         ]);
 
         $payload = [
-            'contents' => [
-                [
-                    'parts' => [
-                        [
-                            'text' => $systemPrompt,
-                        ],
+            // Provide system instructions via systemInstruction (no role required here)
+            'systemInstruction' => [
+                'parts' => [
+                    [
+                        'text' => $systemPrompt,
                     ],
                 ],
+            ],
+            // User content must include a valid role
+            'contents' => [
                 [
+                    'role' => 'user',
                     'parts' => [
                         [
                             'text' => $userContent,

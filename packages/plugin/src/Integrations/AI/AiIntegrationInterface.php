@@ -10,9 +10,9 @@ interface AiIntegrationInterface extends APIIntegrationInterface
 
     public function getModel(): string;
 
-    public function getMaxTokens(): int;
+    public function getMaxTokens(): ?int;
 
-    public function getTemperature(): float;
+    public function getTemperature(): ?float;
 
     public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string;
 }

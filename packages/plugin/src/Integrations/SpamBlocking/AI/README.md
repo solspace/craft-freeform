@@ -1,6 +1,6 @@
-# AI Spam Protection
+# AI Spam Analysis
 
-AI-based spam detection for Freeform submissions. This integration sends selected field values to a configured AI integration (e.g., OpenAI or Gemini) and flags the submission as spam when the AI response indicates spam.
+AI-based spam analysis for Freeform submissions. This integration sends selected field values to a configured AI integration (e.g., OpenAI or Gemini) and flags the submission as spam when the AI response indicates spam.
 
 ## Settings
 - AI Integration (per-form, required)

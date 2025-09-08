@@ -17,7 +17,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
 #[Type(
-    name: 'AI Spam Protection',
+    name: 'AI Spam Analysis',
     type: Type::TYPE_SPAM_BLOCK,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
@@ -113,7 +113,7 @@ class AiSpamProtection extends SpamBlockingIntegration
             $response = $this->integration->processAiRequest($systemPrompt, $content, $options);
         } catch (\Throwable $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
-                'AI Spam Protection failed: '.$e->getMessage(),
+                'AI Spam Analysis failed: '.$e->getMessage(),
                 [
                     'form' => $form->getHandle(),
                     'exception' => $e,
@@ -131,7 +131,7 @@ class AiSpamProtection extends SpamBlockingIntegration
             if ($this->displayErrors || $displayErrors) {
                 $form->addError(Freeform::t('Submission flagged as spam by AI: {reason}', ['reason' => $message]));
             } else {
-                $spamReason = 'AI Spam Protection: '.$message;
+                $spamReason = 'AI Spam Analysis: '.$message;
 
                 $details = [];
                 if ($confidence && 'UNKNOWN' !== $confidence) {

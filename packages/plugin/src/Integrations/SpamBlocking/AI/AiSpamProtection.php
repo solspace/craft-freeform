@@ -24,6 +24,17 @@ use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegr
 )]
 class AiSpamProtection extends SpamBlockingIntegration
 {
+    private const CONFIDENCE_LEVELS = [
+        'DEFINITELY_SPAM',
+        'LIKELY_SPAM',
+        'POSSIBLY_SPAM',
+        'NOT_SPAM',
+        'SPAM_DETECTED',
+        'SUSPICIOUS',
+    ];
+
+    private const DEFAULT_SYSTEM_PROMPT = 'Analyze the following form submission content and determine if it appears to be spam.';
+    private const MAX_REASON_LENGTH = 140;
     #[Section('ai-spam')]
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -83,13 +94,12 @@ class AiSpamProtection extends SpamBlockingIntegration
 
     public static function isInstallable(): bool
     {
-        // Always installable; fields will guide the user to select an AI integration
         return true;
     }
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        if (!$this->integration || !$this->integration instanceof AiIntegrationInterface) {
+        if (!$this->isValidIntegration()) {
             return;
         }
 
@@ -97,12 +107,28 @@ class AiSpamProtection extends SpamBlockingIntegration
             return;
         }
 
-        // Build content from selected fields
         $content = $this->prepareContentForAnalysis($form);
-        if ('' === trim($content)) {
+        if (empty(trim($content))) {
             return;
         }
 
+        $response = $this->processAiRequest($form, $content);
+        if (empty($response)) {
+            return;
+        }
+
+        if ($this->isSpamResponse($response)) {
+            $this->handleSpamDetection($form, $response, $displayErrors);
+        }
+    }
+
+    private function isValidIntegration(): bool
+    {
+        return $this->integration instanceof AiIntegrationInterface;
+    }
+
+    private function processAiRequest(Form $form, string $content): ?string
+    {
         $systemPrompt = $this->buildSystemPrompt();
         $options = [
             'model' => $this->integration->getModel(),
@@ -110,7 +136,7 @@ class AiSpamProtection extends SpamBlockingIntegration
         ];
 
         try {
-            $response = $this->integration->processAiRequest($systemPrompt, $content, $options);
+            return $this->integration->processAiRequest($systemPrompt, $content, $options);
         } catch (\Throwable $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
                 'AI Spam Analysis failed: '.$e->getMessage(),
@@ -120,36 +146,48 @@ class AiSpamProtection extends SpamBlockingIntegration
                 ]
             );
 
-            return;
+            return null;
+        }
+    }
+
+    private function handleSpamDetection(Form $form, string $response, bool $displayErrors): void
+    {
+        $reason = $this->getSpamReason($response);
+        $confidence = $this->getSpamConfidence($response);
+        $message = $reason ?: $this->formatConfidenceMessage($confidence);
+
+        if ($this->displayErrors || $displayErrors) {
+            $form->addError(Freeform::t('Submission flagged as spam by AI: {reason}', ['reason' => $message]));
+        } else {
+            $spamReason = $this->buildSpamReason($message, $confidence, $response);
+            $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
+        }
+    }
+
+    private function formatConfidenceMessage(string $confidence): string
+    {
+        return ucfirst(strtolower(str_replace('_', ' ', $confidence)));
+    }
+
+    private function buildSpamReason(string $message, string $confidence, string $response): string
+    {
+        $spamReason = 'AI Spam Analysis: '.$message;
+        $details = [];
+
+        if ($confidence && 'UNKNOWN' !== $confidence) {
+            $details[] = 'Confidence: '.$this->formatConfidenceMessage($confidence);
         }
 
-        if ($this->isSpamResponse($response)) {
-            $reason = $this->getSpamReason($response);
-            $confidence = $this->getSpamConfidence($response);
-            $message = $reason ?: ucfirst(strtolower(str_replace('_', ' ', $confidence)));
-
-            if ($this->displayErrors || $displayErrors) {
-                $form->addError(Freeform::t('Submission flagged as spam by AI: {reason}', ['reason' => $message]));
-            } else {
-                $spamReason = 'AI Spam Analysis: '.$message;
-
-                $details = [];
-                if ($confidence && 'UNKNOWN' !== $confidence) {
-                    $details[] = 'Confidence: '.ucfirst(strtolower(str_replace('_', ' ', $confidence)));
-                }
-
-                $rating = $this->getSpamRating($response);
-                if ($rating) {
-                    $details[] = 'Rating: '.$rating.'/10';
-                }
-
-                if (!empty($details)) {
-                    $spamReason .= ' ('.implode(', ', $details).')';
-                }
-
-                $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
-            }
+        $rating = $this->getSpamRating($response);
+        if ($rating) {
+            $details[] = 'Rating: '.$rating.'/10';
         }
+
+        if (!empty($details)) {
+            $spamReason .= ' ('.implode(', ', $details).')';
+        }
+
+        return $spamReason;
     }
 
     private function prepareContentForAnalysis(Form $form): string
@@ -187,20 +225,31 @@ class AiSpamProtection extends SpamBlockingIntegration
     {
         $raw = trim((string) $this->fieldsToAnalyze);
 
-        if ('' === $raw || '@' === $raw || '@all' === $raw) {
-            $handles = [];
-            foreach ($form->getLayout()->getFields() as $field) {
-                $handle = $field->getHandle();
-                if ($handle) {
-                    $handles[] = $handle;
-                }
-            }
-
-            return $handles;
+        if (\in_array($raw, ['', '@', '@all'], true)) {
+            return $this->getAllFieldHandles($form);
         }
 
-        preg_match_all('/field:([a-zA-Z0-9_]+)/', $raw, $matches);
-        if (!empty($matches[1])) {
+        $handles = $this->extractFieldHandles($raw);
+
+        return !empty($handles) ? $handles : $this->getAllFieldHandles($form);
+    }
+
+    private function getAllFieldHandles(Form $form): array
+    {
+        $handles = [];
+        foreach ($form->getLayout()->getFields() as $field) {
+            $handle = $field->getHandle();
+            if ($handle) {
+                $handles[] = $handle;
+            }
+        }
+
+        return $handles;
+    }
+
+    private function extractFieldHandles(string $raw): array
+    {
+        if (preg_match_all('/field:([a-zA-Z0-9_]+)/', $raw, $matches)) {
             return $matches[1];
         }
 
@@ -214,24 +263,48 @@ class AiSpamProtection extends SpamBlockingIntegration
 
     private function isSpamResponse(?string $response): bool
     {
-        if (!$response) {
+        if (empty($response)) {
             return false;
         }
 
-        $jsonData = json_decode($response, true);
-        if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['isSpam'])) {
-            return (bool) $jsonData['isSpam'];
-        }
-
-        if (preg_match('/\{[^}]*"isSpam"[^}]*\}/', $response, $matches)) {
-            $jsonData = json_decode($matches[0], true);
-            if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['isSpam'])) {
-                return (bool) $jsonData['isSpam'];
-            }
+        $isSpam = $this->extractJsonValue($response, 'isSpam');
+        if (null !== $isSpam) {
+            return (bool) $isSpam;
         }
 
         $normalized = strtoupper(trim($response));
+
+        return $this->checkSpamIndicators($normalized);
+    }
+
+    private function getSpamConfidence(?string $response): string
+    {
+        if (empty($response)) {
+            return 'UNKNOWN';
+        }
+
+        $confidence = $this->extractJsonValue($response, 'confidence');
+        if (null !== $confidence) {
+            return $this->normalizeConfidence(strtoupper(trim($confidence)));
+        }
+
+        $normalized = strtoupper(trim($response));
+
+        return $this->normalizeConfidence($normalized);
+    }
+
+    private function checkSpamIndicators(string $normalized): bool
+    {
         $notSpamIndicators = $this->getNotSpamKeywords();
+        $spamIndicators = $this->getSpamKeywords();
+
+        if (\in_array($normalized, $notSpamIndicators, true)) {
+            return false;
+        }
+
+        if (\in_array($normalized, $spamIndicators, true)) {
+            return true;
+        }
 
         foreach ($notSpamIndicators as $indicator) {
             if (str_contains($normalized, $indicator)) {
@@ -239,7 +312,6 @@ class AiSpamProtection extends SpamBlockingIntegration
             }
         }
 
-        $spamIndicators = $this->getSpamKeywords();
         foreach ($spamIndicators as $indicator) {
             if (str_contains($normalized, $indicator)) {
                 return true;
@@ -249,51 +321,20 @@ class AiSpamProtection extends SpamBlockingIntegration
         return false;
     }
 
-    private function getSpamConfidence(?string $response): string
+    private function normalizeConfidence(string $confidence): string
     {
-        if (!$response) {
-            return 'UNKNOWN';
+        if (\in_array($confidence, self::CONFIDENCE_LEVELS, true)) {
+            return $confidence;
         }
 
-        $jsonData = json_decode($response, true);
-        if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['confidence'])) {
-            return strtoupper(trim($jsonData['confidence']));
-        }
-
-        if (preg_match('/\{[^}]*"confidence"[^}]*\}/', $response, $matches)) {
-            $jsonData = json_decode($matches[0], true);
-            if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['confidence'])) {
-                return strtoupper(trim($jsonData['confidence']));
+        foreach (self::CONFIDENCE_LEVELS as $validConfidence) {
+            if (str_contains($confidence, $validConfidence)) {
+                return $validConfidence;
             }
         }
 
-        $normalized = strtoupper(trim($response));
-
-        if (str_contains($normalized, 'DEFINITELY_SPAM')) {
-            return 'DEFINITELY_SPAM';
-        }
-        if (str_contains($normalized, 'LIKELY_SPAM')) {
-            return 'LIKELY_SPAM';
-        }
-        if (str_contains($normalized, 'POSSIBLY_SPAM')) {
-            return 'POSSIBLY_SPAM';
-        }
-
-        if (str_contains($normalized, 'NOT_SPAM')
-            || str_contains($normalized, 'NOT APPEAR TO BE SPAM')
-            || str_contains($normalized, 'DOES NOT APPEAR TO BE SPAM')
-            || str_contains($normalized, 'IS NOT SPAM')
-            || str_contains($normalized, 'LEGITIMATE')
-            || str_contains($normalized, 'STRAIGHTFORWARD REQUEST')
-        ) {
-            return 'NOT_SPAM';
-        }
-
-        if (str_contains($normalized, 'SPAM DETECTED') || str_contains($normalized, 'FLAGGED AS SPAM')) {
+        if (str_contains($confidence, 'FLAGGED_AS_SPAM')) {
             return 'SPAM_DETECTED';
-        }
-        if (str_contains($normalized, 'SUSPICIOUS')) {
-            return 'SUSPICIOUS';
         }
 
         return 'UNKNOWN';
@@ -301,40 +342,38 @@ class AiSpamProtection extends SpamBlockingIntegration
 
     private function getSpamReason(?string $response): ?string
     {
-        if (!$response) {
+        if (empty($response)) {
             return null;
         }
 
-        $jsonData = json_decode($response, true);
-        if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['reason'])) {
-            return trim($jsonData['reason']);
-        }
+        $reason = $this->extractJsonValue($response, 'reason');
 
-        if (preg_match('/\{[^}]*"reason"[^}]*\}/', $response, $matches)) {
-            $jsonData = json_decode($matches[0], true);
-            if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['reason'])) {
-                return trim($jsonData['reason']);
-            }
-        }
-
-        return null;
+        return $reason ? trim($reason) : null;
     }
 
     private function getSpamRating(?string $response): ?int
     {
-        if (!$response) {
+        if (empty($response)) {
             return null;
         }
 
+        $rating = $this->extractJsonValue($response, 'spam_rating');
+
+        return $rating ? (int) $rating : null;
+    }
+
+    private function extractJsonValue(string $response, string $key): mixed
+    {
         $jsonData = json_decode($response, true);
-        if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['spam_rating'])) {
-            return (int) $jsonData['spam_rating'];
+        if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData[$key])) {
+            return $jsonData[$key];
         }
 
-        if (preg_match('/\{[^}]*"spam_rating"[^}]*\}/', $response, $matches)) {
+        $pattern = '/\{[^}]*"'.$key.'"[^}]*\}/';
+        if (preg_match($pattern, $response, $matches)) {
             $jsonData = json_decode($matches[0], true);
-            if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData['spam_rating'])) {
-                return (int) $jsonData['spam_rating'];
+            if (\JSON_ERROR_NONE === json_last_error() && isset($jsonData[$key])) {
+                return $jsonData[$key];
             }
         }
 
@@ -343,7 +382,7 @@ class AiSpamProtection extends SpamBlockingIntegration
 
     private function buildSystemPrompt(): string
     {
-        $userPrompt = trim($this->systemPrompt) ?: 'Analyze the following form submission content and determine if it appears to be spam.';
+        $userPrompt = trim($this->systemPrompt) ?: self::DEFAULT_SYSTEM_PROMPT;
         $spamKeywords = $this->getSpamKeywords();
         $notSpamKeywords = $this->getNotSpamKeywords();
 
@@ -354,7 +393,7 @@ class AiSpamProtection extends SpamBlockingIntegration
             "confidence": "DEFINITELY_SPAM|LIKELY_SPAM|POSSIBLY_SPAM|NOT_SPAM",
             "spam_rating": 1-10,
             "isSpam": true/false,
-            "reason": "A short, human-readable sentence (<= 140 chars) explaining why it is spam or legitimate. Do NOT include the SPAM/NOT_SPAM keywords below or any ALL_CAPS words."
+            "reason": "A short, human-readable sentence (<= '.self::MAX_REASON_LENGTH.' chars) explaining why it is spam or legitimate. Do NOT include the SPAM/NOT_SPAM keywords below or any ALL_CAPS words."
         }
 
         Use these specific keywords ONLY for the "confidence" field (do not repeat them in "reason"):

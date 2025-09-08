@@ -1,4 +1,4 @@
-# AI Spam Analysis
+# AI Spam
 
 AI-based spam analysis for Freeform submissions. This integration sends selected field values to a configured AI integration (e.g., OpenAI or Gemini) and flags the submission as spam when the AI response indicates spam.
 
@@ -22,25 +22,19 @@ Runs during form validation. The AI analyzes submission content and provides an 
 - Falls back to general spam detection for any response format
 - Only blocks when clear spam indicators are present
 
-## Example: Spam submission (form fill-up)
+## Example: Spam submission
 
-Form fields (with "Include Field Labels" enabled):
-```
-Name: Great Deals Ltd
-Email: promos@deals.example
-Message: Buy now! Limited time offer. Visit http://spammysite.example for 90% OFF!!
-Phone: +1 555 000 1111
-```
+**Form fields (with "Include Field Labels" enabled):**
+- Name: Great Deals Ltd
+- Email: promos@deals.example  
+- Message: Buy now! Limited time offer. Visit http://spammysite.example for 90% OFF!!
+- Phone: +1 555 000 1111
 
-Result in Spam Reasons (admin):
-```
-AI: Repetitive promotional language with external link [Definitely spam, 9/10]
-```
+**Result in Spam Reasons (admin):**
+- AI: Repetitive promotional language with external link [Definitely spam, 9/10]
 
-## System prompt example for users
+## System prompt example
 
 You can leave this empty to use the default. To customize the analysis, a good starting prompt is:
 
-```
-Analyze the following form submission and decide if it is spam. Consider factors like promotional or sales language, excessive links, irrelevant content, suspicious patterns, profanity, or automation signals.
-```
+> Analyze the following form submission and decide if it is spam. Consider factors like promotional or sales language, excessive links, irrelevant content, suspicious patterns, profanity, or automation signals.

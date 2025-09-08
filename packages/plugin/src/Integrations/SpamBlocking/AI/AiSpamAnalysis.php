@@ -22,7 +22,7 @@ use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegr
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class AiSpamProtection extends SpamBlockingIntegration
+class AiSpamAnalysis extends SpamBlockingIntegration
 {
     private const CONFIDENCE_LEVELS = [
         'DEFINITELY_SPAM',

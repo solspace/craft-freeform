@@ -10,7 +10,7 @@ interface AiIntegrationInterface extends APIIntegrationInterface
 
     public function getModel(): string;
 
-    public function getMaxTokens(): int;
+    public function getMaxTokens(): ?int;
 
     public function getTemperature(): ?float;
 

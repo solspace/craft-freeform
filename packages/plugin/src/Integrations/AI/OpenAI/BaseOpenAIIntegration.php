@@ -58,6 +58,12 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
         return $this->maxTokens;
     }
 
+    public function getTemperature(): ?float
+    {
+        // OpenAI usage in this integration does not require temperature
+        return null;
+    }
+
     protected function getProcessableFields(string $category): array
     {
         $indexed = [];

@@ -36,9 +36,9 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
         label: 'Max Tokens',
         instructions: 'Maximum number of tokens to generate.',
         min: 1,
-        max: 4000,
+        max: 1048576,
     )]
-    protected int $maxTokens = 150;
+    protected int $maxTokens = 15000;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(

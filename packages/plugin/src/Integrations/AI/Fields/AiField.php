@@ -77,17 +77,9 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
         label: 'Max Tokens Override',
         instructions: 'Leave empty to use integration settings. Override only if you need different max tokens for this field.',
         min: 1,
-        max: 8192,
+        max: 128000,
     )]
     protected ?int $maxTokens = null;
-
-    #[Section('ai-configuration')]
-    #[Input\Text(
-        label: 'Temperature Override',
-        instructions: 'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.',
-        placeholder: '0.7',
-    )]
-    protected ?string $temperature = null;
 
     #[VisibilityFilter('false')]
     protected bool $required = false;
@@ -156,25 +148,6 @@ class AiField extends AbstractField implements NoRenderInterface, ExtraFieldInte
         }
 
         return $this->integration?->getMaxTokens() ?? 150;
-    }
-
-    public function getTemperature(): float
-    {
-        if (null !== $this->temperature && !empty($this->temperature)) {
-            $temp = (float) $this->temperature;
-
-            // Validate and clamp to valid range
-            if ($temp < 0.0) {
-                return 0.0;
-            }
-            if ($temp > 2.0) {
-                return 2.0;
-            }
-
-            return $temp;
-        }
-
-        return $this->integration?->getTemperature() ?? 0.7;
     }
 
     public function getModel(): ?string

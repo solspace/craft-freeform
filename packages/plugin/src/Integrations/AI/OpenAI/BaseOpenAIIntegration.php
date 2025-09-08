@@ -6,10 +6,13 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\AI\Traits\DefaultTemperatureTrait;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 
 abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegrationInterface
 {
+    use DefaultTemperatureTrait;
+
     public const LOG_CATEGORY = 'OpenAI';
 
     public const CATEGORY_AI = 'ai';
@@ -27,26 +30,18 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     #[Input\Text(
         label: 'Model',
         instructions: 'The OpenAI model to use for AI processing.',
-        placeholder: 'gpt-5-mini',
+        placeholder: 'gpt-5-nano',
     )]
-    protected string $model = 'gpt-5-mini';
+    protected string $model = 'gpt-5-nano';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Integer(
         label: 'Max Tokens',
         instructions: 'Maximum number of tokens to generate.',
         min: 1,
-        max: 4000,
+        max: 128000,
     )]
-    protected int $maxTokens = 150;
-
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
-        label: 'Temperature',
-        instructions: 'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.',
-        placeholder: '0.7',
-    )]
-    protected string $temperature = '0.7';
+    protected int $maxTokens = 15000;
 
     public function getApiKey(): string
     {
@@ -61,21 +56,6 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     public function getMaxTokens(): int
     {
         return $this->maxTokens;
-    }
-
-    public function getTemperature(): float
-    {
-        $temp = (float) $this->temperature;
-
-        // Validate and clamp to valid range
-        if ($temp < 0.0) {
-            return 0.0;
-        }
-        if ($temp > 2.0) {
-            return 2.0;
-        }
-
-        return $temp;
     }
 
     protected function getProcessableFields(string $category): array

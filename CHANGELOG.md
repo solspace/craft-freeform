@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.12.0 - 2025-09-09
+
+### Added
+- **OpenAI integration**: Use OpenAI models to process form submissions.
+- **Google Gemini integration**: Use Gemini models to process form submissions.
+- **AI Spam Analysis**: Evaluates each submission for spam using your configured AI provider. Supports a customizable prompt with explicit rules (what to flag/allow).
+- **AI field type**: Analyzes submission data and outputs an AI-generated response via your configured AI provider.
+- **Cards field type**: A radio/checkbox-style field that supports richer visual cards (images/icons, descriptions, and custom metadata).
+- **URL Parameter Tracking**: Automatically captures UTM and other URL parameters (e.g., `utm_campaign`, `utm_source`, `utm_medium`) for every submission. Configure parameter names once globally, with optional per-form overrides in the form builder.
+- **Submit Button icons**: Add and position icons on submit buttons in the form builder.
+- **Formie 3.x migration**: Migrate from Formie 3.x.
+- **Status filtering for Elements**: When populating fields with Elements data, you can now filter by status.
+
+### Changed
+- Refactored the Integrations settings into a single, unified page with improved layout and usability.
+- Field option values are now preserved when editing option labels later.
+
 ## 5.11.17 - 2025-09-04
 
 ### Fixed

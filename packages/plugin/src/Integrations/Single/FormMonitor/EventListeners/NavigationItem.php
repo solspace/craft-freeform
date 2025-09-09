@@ -26,20 +26,17 @@ class NavigationItem extends FeatureBundle
 
         $this->registerController('form-monitor', FormMonitorController::class);
 
-        // Add Form Monitor shortcut to settings nav for PRO edition only
+        // Add Form Monitor shortcut to settings nav
         Event::on(
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
             function (RegisterSettingsNavigationEvent $event) {
                 $freeform = Freeform::getInstance();
-                if (!$freeform->isPro()) {
-                    return;
-                }
 
                 $event->addNavigationItem(
-                    'integrations/single/FormMonitor',
+                    '../integrations/single/FormMonitor',
                     Freeform::t('Form Monitor'),
-                    'integrations/single'
+                    'notices-and-alerts'
                 );
             }
         );
@@ -47,8 +44,8 @@ class NavigationItem extends FeatureBundle
 
     public function registerRoutes(RegisterUrlRulesEvent $event): void
     {
-        $event->rules['freeform/form-monitor'] = 'freeform/forms';
-        $event->rules['freeform/form-monitor/<id:\d+>/tests'] = 'freeform/forms';
+        $event->rules['freeform/form-monitor'] = 'freeform/app';
+        $event->rules['freeform/form-monitor/<id:\d+>/tests'] = 'freeform/app';
         $event->rules['freeform/form-monitor/delete/me'] = 'freeform/form-monitor/delete-me';
         $event->rules['freeform/form-monitor/disable/me'] = 'freeform/form-monitor/disable-me';
         $event->rules['freeform/api/form-monitor/forms'] = 'freeform/form-monitor/available-forms';

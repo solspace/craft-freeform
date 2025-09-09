@@ -42,11 +42,16 @@ return [
 
     'freeform/api/forms/<formId:\d+>/rules' => 'freeform/api/forms/rules/get',
     'freeform/api/forms/<formId:\d+>/rules/notifications' => 'freeform/api/forms/rules/get-notifications',
+    'freeform/api/forms/<formId:\d+>/rules/integrations' => 'freeform/api/forms/rules/get-integrations',
 
     // INTEGRATIONS
     'freeform/api/integrations' => 'freeform/api/integrations',
     'freeform/api/integrations/<id:\d+>' => 'freeform/api/integrations',
+    'freeform/api/integrations/<id:\d+>/delete' => 'freeform/api/integrations/delete',
     'freeform/api/integrations/<id:\d+>/status' => 'freeform/api/integrations/status-check',
+    'freeform/api/integrations/navigation' => 'freeform/api/integrations/navigation',
+    'freeform/api/integrations/properties/<id:\d+>' => 'freeform/api/integrations/properties',
+    'freeform/api/integrations/properties/<type:[a-zA-Z0-9\-]+>/<integration:[a-zA-Z0-9\-_]+>' => 'freeform/api/integrations/properties',
 
     // NOTIFICATIONS
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',
@@ -94,4 +99,9 @@ return [
 
     // ASSETS
     'freeform/api/assets' => 'freeform/api/assets',
+    'freeform/api/assets/urls' => 'freeform/api/assets/asset-urls',
+    'freeform/api/assets/thumb/card/<assetId:\d+>' => 'freeform/api/assets/card-thumbnail',
+
+    // AUTOSUGGEST
+    'freeform/api/autosuggest/env' => 'freeform/api/autosuggest/env',
 ];

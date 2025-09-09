@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import { CombinatorSelect } from '@editor/builder/tabs/rules/conditions/combinator/combinator';
-import { DisplaySend } from '@editor/builder/tabs/rules/conditions/send/send';
 import { ConditionTable } from '@editor/builder/tabs/rules/conditions/table/condition-table';
+import { DisplayTriggerDropdown } from '@editor/builder/tabs/rules/conditions/trigger-dropdown/trigger-dropdown';
 import { ConfigurationDescription } from '@editor/builder/tabs/rules/editor/editor.styles';
 import { useAppDispatch } from '@editor/store';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
@@ -57,8 +57,12 @@ const ConditionalNotificationRules: React.FC<
   return (
     <Control property={property}>
       <ConfigurationDescription>
-        <DisplaySend
+        <DisplayTriggerDropdown
           value={rule?.send ?? true}
+          options={{
+            on: 'Send',
+            off: `Don't send`,
+          }}
           onChange={(value) =>
             dispatch(
               notificationRuleActions.modifySend({

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Webhooks;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
@@ -19,6 +20,7 @@ class WebhooksBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
+        private IntegrationRuleValidator $ruleValidator,
     ) {
         Event::on(
             IntegrationsService::class,
@@ -31,11 +33,6 @@ class WebhooksBundle extends FeatureBundle
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'triggerWebhooks']
         );
-    }
-
-    public static function isProOnly(): bool
-    {
-        return true;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
@@ -60,6 +57,10 @@ class WebhooksBundle extends FeatureBundle
         /** @var WebhookIntegrationInterface[] $webhooks */
         $webhooks = $this->formIntegrationsProvider->getForForm($form, Type::TYPE_WEBHOOKS);
         foreach ($webhooks as $webhook) {
+            if (!$this->ruleValidator->isPassing($webhook, $form)) {
+                continue;
+            }
+
             try {
                 $webhook->trigger($form);
             } catch (\Exception $exception) {

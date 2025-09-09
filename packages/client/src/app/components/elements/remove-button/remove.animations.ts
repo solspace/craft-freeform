@@ -11,6 +11,7 @@ export const useRemoveAnimation: RemoveAnimation = ({ active, hovering }) => {
     opacity: active ? 1 : 0,
     background: hovering ? colors.error : 'transparent',
     fill: hovering ? '#fff' : colors.gray300,
+    color: hovering ? '#fff' : colors.gray300,
     scale: hovering ? 1.2 : 1,
     rotate: active ? 0 : 30,
 

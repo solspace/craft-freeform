@@ -1,7 +1,8 @@
+@use '../fields/cards';
 @use '../fields/opinion-scale';
 @use '../fields/drag-and-drop-file';
 @use '../fields/rating';
-@use "../components/visual";
+@use '../components/visual';
 
 [data-freeform-controls] {
   display: flex;
@@ -12,6 +13,18 @@
     justify-content: space-between;
     align-content: center;
     gap: 5px;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      img,
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
   }
 }
 

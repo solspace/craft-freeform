@@ -16,6 +16,8 @@ class OptionsTransformer extends Transformer
 
     public function transform($value, ?Form $form = null): OptionsConfigurationInterface
     {
+        $value = \is_array($value) ? $value : [];
+
         $source = $value['source'] ?? null;
 
         return match ($source) {

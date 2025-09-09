@@ -8,13 +8,18 @@ use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Bundles\Form\ElementEdit\ElementEditBundle;
+use Solspace\Freeform\Events\Integrations\BuildMappingContextEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
+use Solspace\Freeform\Library\Integrations\Rules\RulesBasedInterface;
+use Solspace\Freeform\Library\Integrations\Rules\RulesTrait;
 use yii\base\Event;
 
-abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface
+abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface, RulesBasedInterface
 {
+    use RulesTrait;
+
     public function onValidate(Form $form, Element $element): void {}
 
     public function onBeforeConnect(Form $form, Element $element): void {}
@@ -38,9 +43,13 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
             return null;
         }
 
+        $event = new BuildMappingContextEvent($form, $this);
+        Event::trigger($this, self::EVENT_BUILD_MAPPING_CONTEXT, $event);
+        $mappingContext = $event->getContext();
+
         foreach ($mapping as $item) {
             if ($source === $item->getSource()) {
-                return $item->extractValue($form);
+                return $item->extractValue($form, $mappingContext);
             }
         }
 
@@ -52,6 +61,10 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
         if (null === $mapping) {
             return;
         }
+
+        $event = new BuildMappingContextEvent($form, $this);
+        Event::trigger($this, self::EVENT_BUILD_MAPPING_CONTEXT, $event);
+        $mappingContext = $event->getContext();
 
         $fieldLayout = $element->getFieldLayout();
         if (!$fieldLayout) {
@@ -79,7 +92,7 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
             }
 
             $key = $item->getSource();
-            $value = $item->extractValue($form);
+            $value = $item->extractValue($form, $mappingContext);
 
             $event = new ProcessValueEvent(
                 $this,

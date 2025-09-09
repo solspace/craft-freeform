@@ -19,6 +19,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
   defaultValue,
   updateDefaultValue,
   isMultiple,
+  autoUpdateHandle,
 }) => {
   return (
     <>
@@ -41,6 +42,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
           defaultValue={defaultValue}
           updateDefaultValue={updateDefaultValue}
           isMultiple={isMultiple}
+          autoUpdateHandle={autoUpdateHandle}
         />
       </PreviewableComponent>
     </>

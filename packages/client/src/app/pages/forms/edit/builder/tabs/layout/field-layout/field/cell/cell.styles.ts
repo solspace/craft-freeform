@@ -157,6 +157,70 @@ export const FieldCellWrapper = styled.div`
       margin: 1em 0;
     }
   }
+
+  &[data-field-type='cards'] {
+    .ff-cards {
+      display: grid;
+      grid-template-columns: repeat(var(--card-columns, 5), 1fr);
+      gap: ${spacings.sm};
+
+      &__empty {
+        grid-column: 1 / -1;
+        padding-top: 10px;
+
+        color: ${colors.gray500};
+        text-align: left;
+        font-style: italic;
+      }
+
+      &__card {
+        display: grid;
+        grid-template-rows: 100px 20px auto;
+        gap: 5px;
+
+        padding: ${spacings.md};
+
+        background: ${colors.white};
+        border: 1px solid ${colors.gray200};
+        border-radius: 8px;
+
+        &__image {
+          border: 1px solid ${colors.gray200};
+          border-radius: 8px;
+
+          overflow: hidden;
+          text-align: center;
+
+          svg {
+            width: 100%;
+            height: 100%;
+
+            fill: ${colors.gray200};
+          }
+        }
+
+        &__label {
+          height: 20px;
+          font-weight: bold;
+
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        &__description {
+          font-size: 12px;
+          color: ${colors.gray500};
+          font-style: italic;
+        }
+
+        &__label,
+        &__description {
+          text-align: center;
+        }
+      }
+    }
+  }
 `;
 
 export const Row = styled.div`

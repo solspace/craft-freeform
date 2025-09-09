@@ -7,6 +7,7 @@ use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -66,9 +67,12 @@ class IntegrationPersistence extends FeatureBundle
             } else {
                 $record = new FormIntegrationRecord();
                 $record->enabled = false;
+                $record->uid = $integration->instanceUid ?? StringHelper::UUID();
                 $record->formId = $event->getFormId();
                 $record->integrationId = $id;
             }
+
+            $event->addIntegrationRecord($record);
 
             $metadata = array_merge($metadata, $values);
 

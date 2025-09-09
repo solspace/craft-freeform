@@ -8,6 +8,6 @@ return [
     'freeform/forms/reset-spam-counter' => 'freeform/forms/reset-spam-counter',
     'freeform/forms/delete' => 'freeform/forms/delete',
 
-    'freeform/forms' => 'freeform/forms',
-    'freeform/forms/<id:.*>' => 'freeform/forms',
+    'freeform/forms' => 'freeform/app',
+    'freeform/forms/<id:.*>' => 'freeform/app',
 ];

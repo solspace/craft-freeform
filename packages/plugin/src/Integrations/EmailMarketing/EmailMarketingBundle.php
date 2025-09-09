@@ -44,11 +44,6 @@ class EmailMarketingBundle extends FeatureBundle
         );
     }
 
-    public static function isProOnly(): bool
-    {
-        return true;
-    }
-
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $path = \Craft::getAlias('@freeform/Integrations/EmailMarketing');
@@ -83,6 +78,7 @@ class EmailMarketingBundle extends FeatureBundle
         $this->queueHandler->executeIntegrationJob(
             new ProcessIntegrationsJob([
                 'formId' => $form->getId(),
+                'submissionId' => $event->getSubmission()?->getId(),
                 'postedData' => $event->getSubmission()->getFormFieldValues(),
                 'type' => EmailMarketingIntegrationInterface::class,
             ])

@@ -8,12 +8,12 @@ export type ErrorList = {
   [key: string]: GenericValue;
 };
 
-type ErrorCollection = {
+export type ErrorCollection = {
   [key: string]: ErrorList;
 };
 
 export class APIError extends Error {
-  errors: ErrorCollection = {};
+  errors: ErrorCollection | ErrorList = {};
   status: number;
 
   //constructor(message: string, errors: ErrorCollection) {

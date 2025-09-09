@@ -42,7 +42,7 @@
         input: { "+class": "border-1 border-red-700" },
       },
     },
-    "@checkboxes, @radios, @opinion-scale, @rating": {
+    "@checkboxes, @radios, @opinion-scale, @rating, @cards": {
       attributes: {
         container: { tag: "fieldset" },
         label: { tag: "legend" },
@@ -77,6 +77,20 @@
         optionLabel: { "=class": "relative flex items-center justify-between cursor-pointer bg-white/10 px-3 py-1.5 rounded-md text-base text-white text-sm outline-1 -outline-offset-1 outline-white/10 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-500 hover:bg-white/5" },
         input: { "-class": "appearance-none block w-full" },
       },
+    },
+    "@cards": {
+      attributes: {
+        optionLabel: { "=class": "relative flex flex-col gap-1 h-full items-left justify-start cursor-pointer bg-white/10 pb-3 rounded-md text-base text-white text-sm outline-1 -outline-offset-1 outline-white/10 rounded-md peer-checked:outline-2 peer-checked:outline-indigo-500 hover:bg-white/5" },
+        input: { "-class": "appearance-none block w-full" },
+      },
+      cardAttributes: {
+        card: { class: "group min-w-0 mb-2 sm:mb-0" },
+        image: { class: "mb-1 rounded-t-md" },
+        content: { class: "flex items-center justify-between px-3" },
+        cardLabel: { "=class": "text-lg font-bold" },
+        cardDescription: { class: "text-xs px-3" },
+        cardMetadata: { class: "list-disc list-outside text-xs pl-6 pr-3" },
+      }
     },
     "@rating": {
       attributes: {

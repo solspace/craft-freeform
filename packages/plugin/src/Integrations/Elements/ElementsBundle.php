@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Integrations\Elements;
 use Solspace\Freeform\Bundles\Integrations\Elements\ElementFieldMappingHelper;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
+use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ConnectEvent;
@@ -13,6 +14,7 @@ use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Helpers\ClassMapHelper;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
@@ -24,6 +26,7 @@ class ElementsBundle extends FeatureBundle
 {
     public function __construct(
         private FormIntegrationsProvider $integrationsProvider,
+        private IntegrationRuleValidator $ruleValidator,
         private ElementFieldMappingHelper $mappingHelper,
         private IntegrationLoggerProvider $loggerProvider,
     ) {
@@ -46,11 +49,6 @@ class ElementsBundle extends FeatureBundle
         );
     }
 
-    public static function isProOnly(): bool
-    {
-        return true;
-    }
-
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $path = \Craft::getAlias('@freeform/Integrations/Elements');
@@ -65,10 +63,15 @@ class ElementsBundle extends FeatureBundle
 
     public function validate(ValidationEvent $event): void
     {
+        $edition = Freeform::getInstance()->edition();
         $form = $event->getForm();
 
         $integrations = $this->getElementIntegrations($form);
         foreach ($integrations as $integration) {
+            if (!$integration->getTypeDefinition()->editionCheck($edition)) {
+                continue;
+            }
+
             $element = $integration->buildElement($form);
             $logger = $this->loggerProvider->getLogger($integration);
 
@@ -102,6 +105,7 @@ class ElementsBundle extends FeatureBundle
 
     public function connect(ProcessSubmissionEvent $event): void
     {
+        $edition = Freeform::getInstance()->edition();
         $form = $event->getForm();
 
         if (!$event->isValid) {
@@ -114,6 +118,14 @@ class ElementsBundle extends FeatureBundle
 
         $integrations = $this->getElementIntegrations($form);
         foreach ($integrations as $integration) {
+            if (!$integration->getTypeDefinition()->editionCheck($edition)) {
+                continue;
+            }
+
+            if (!$this->ruleValidator->isPassing($integration, $form)) {
+                continue;
+            }
+
             $element = $integration->buildElement($form);
             $logger = $this->loggerProvider->getLogger($integration);
             $integration->onBeforeConnect($form, $element);

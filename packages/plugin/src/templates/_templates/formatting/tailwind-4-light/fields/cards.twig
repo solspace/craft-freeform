@@ -1,0 +1,89 @@
+{# Automated handling of metadata if present #}
+{% macro renderMeta(value, key = null) %}
+  {# Nothing to output #}
+  {% if value is empty %}
+  {% elseif value is iterable %}
+    {# Decide if it's a list (0..n-1) or a map #}
+    {% set keys   = value|keys %}
+    {% set isList = (keys|length > 0) and (keys|first == 0) and (keys|last == value|length - 1) %}
+
+    {% if isList %}
+      {% set cleaned = value|filter(v => v is not empty) %}
+      {% if cleaned|length %}
+        {# If every item is scalar, join; otherwise recurse per item #}
+        {% set hasNested = cleaned|filter(v => v is iterable)|length > 0 %}
+        {% if not hasNested %}
+          <li>{% if key is not null %}{{ key }}: {% endif %}{{ cleaned|join(', ') }}</li>
+        {% else %}
+          {% for v in cleaned %}
+            {{ _self.renderMeta(v, key) }}
+          {% endfor %}
+        {% endif %}
+      {% endif %}
+    {% else %}
+      {% for k, v in value %}
+        {{ _self.renderMeta(v, k) }}
+      {% endfor %}
+    {% endif %}
+  {% else %}
+    <li>{% if key is not null %}{{ key }}: {% endif %}{{ value }}</li>
+  {% endif %}
+{% endmacro %}
+
+{% import _self as meta %}
+
+{% set perRow = 4 %}
+{% if field.cardsPerRow is defined and field.cardsPerRow is not null and field.cardsPerRow is numeric %}
+  {% set perRow = field.cardsPerRow + 0 %}
+{% endif %}
+{% if perRow < 1 %}{% set perRow = 1 %}{% endif %}
+{% if perRow > 6 %}{% set perRow = 6 %}{% endif %}
+
+{% set colsClass =
+  perRow == 1 ? 'sm:grid-cols-1' :
+  perRow == 2 ? 'sm:grid-cols-2' :
+  perRow == 3 ? 'sm:grid-cols-3' :
+  perRow == 4 ? 'sm:grid-cols-4' :
+  perRow == 5 ? 'sm:grid-cols-5' : 'sm:grid-cols-6'
+%}
+
+{{ field.renderContainerOpeningTag }}
+
+  {{ field.renderLabel }}
+  {{ field.renderInstructions }}
+
+  <div class="grid gap-3 grid-cols-1 {{ colsClass }}">
+    {% for card in field.layout %}
+      <div {{ field.cardAttributes.card }}>
+        <input type="checkbox" name="{{ field.handle }}[]" value="{{ card.value }}" id="{{ field.idAttribute }}-{{ loop.index }}" {{ field.value == card.value ? "checked" }} class="hidden peer" />
+        <label for="{{ field.idAttribute }}-{{ loop.index }}" class="{{ field.attributes.optionLabel.get("class") }}">
+          {% set asset = craft.assets.id(card.assetId).one %}
+          {% if asset %}
+            <img src="{{ asset.getUrl(field.transform) }}" alt="{{ card.label }}" {{ field.cardAttributes.image }} />
+          {% endif %}
+          <div {{ field.cardAttributes.content }}>
+            <h5 {{ field.cardAttributes.cardLabel }}>{{ card.label }}</h5>
+            <svg class="size-5 text-indigo-500 opacity-0 group-has-checked:opacity-100" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <span {{ field.cardAttributes.cardDescription }}>{{ card.description }}</span>
+          {# Metadata if present #}
+          {% set metaValue = card.metadata is defined ? card.metadata : null %}
+          {# Capture output so we only render <ul> if there's actual <li> content #}
+          {% set rendered %}
+            {{ meta.renderMeta(metaValue) }}
+          {% endset %}
+          {% if rendered|trim %}
+            <ul {{ field.cardAttributes.cardMetadata }}>
+              {{ rendered|raw }}
+            </ul>
+          {% endif %}
+        </label>
+      </div>
+    {% endfor %}
+  </div>
+
+  {{ field.renderErrors }}
+
+{{ field.renderContainerClosingTag }}

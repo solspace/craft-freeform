@@ -44,6 +44,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       messages={messages}
       translatable={isTranslationsEnabled && translatable}
       hasTranslation={hasTranslation(handle)}
+      isEncrypted={property?.flags?.includes('encrypted')}
       removeTranslation={() => removeTranslation(handle)}
     >
       {children}

@@ -1,12 +1,14 @@
 import { useDispatch } from 'react-redux';
 import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
+import { integrationRuleActions } from '@editor/store/slices/rules/integrations';
 import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
 import { pageRuleActions } from '@editor/store/slices/rules/pages';
 import { submitFormRuleActions } from '@editor/store/slices/rules/submit-form';
 import type {
   ButtonRule,
   FieldRule,
+  IntegrationRule,
   NotificationRule,
   PageRule,
   SubmitFormRule,
@@ -21,6 +23,8 @@ export const QKRules = {
   form: (formId: number) => [...QKRules.all, 'forms', formId] as const,
   notifications: (formId: number) =>
     [...QKRules.form(formId), 'notifications'] as const,
+  integrations: (formId: number) =>
+    [...QKRules.form(formId), 'integrations'] as const,
 };
 
 type FormRules = {
@@ -79,6 +83,29 @@ export const useQueryNotificationRules = (
         .then((res) => res.data)
         .then((res) => {
           dispatch(notificationRuleActions.set(res));
+
+          return res;
+        }),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
+  );
+};
+
+export const useQueryIntegrationRules = (
+  formId: number
+): UseQueryResult<IntegrationRule[]> => {
+  const dispatch = useDispatch();
+
+  return useQuery(
+    QKRules.integrations(formId),
+    () =>
+      axios
+        .get<IntegrationRule[]>(`/api/forms/${formId || 0}/rules/integrations`)
+        .then((res) => res.data)
+        .then((res) => {
+          dispatch(integrationRuleActions.set(res));
 
           return res;
         }),

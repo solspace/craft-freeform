@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
@@ -11,6 +12,7 @@ use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\ButtonRule;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use Solspace\Freeform\Library\Rules\Types\IntegrationRule;
 use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Library\Rules\Types\SubmitFormRule;
@@ -18,6 +20,7 @@ use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Rules\ButtonRuleRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\IntegrationRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
@@ -28,7 +31,10 @@ class RuleProvider
 {
     private static array $fieldRuleCache = [];
 
-    public function __construct(private NotificationsProvider $notificationsProvider) {}
+    public function __construct(
+        private NotificationsProvider $notificationsProvider,
+        private FormIntegrationsProvider $integrationsProvider,
+    ) {}
 
     public function getFormRules(?Form $form): array
     {
@@ -211,6 +217,47 @@ class RuleProvider
         return $array;
     }
 
+    /**
+     * @return IntegrationRule[]
+     */
+    public function getIntegrationRules(Form $form): array
+    {
+        $rules = IntegrationRuleRecord::getExistingRules($form->getId());
+        $integrations = $this->integrationsProvider->getForForm($form);
+
+        $array = [];
+        foreach ($rules as $uid => $integrationRule) {
+            $ruleRecord = $integrationRule->getRule()->one();
+            $rule = new IntegrationRule(
+                $integrationRule->id,
+                $uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
+
+            $rule->setPush($integrationRule->push);
+
+            $integrationInstance = null;
+            foreach ($integrations as $integration) {
+                if ($integration->getInstanceId() === $integrationRule->integrationId) {
+                    $integrationInstance = $integration;
+
+                    break;
+                }
+            }
+
+            if (!$integrationInstance) {
+                continue;
+            }
+
+            $rule->setIntegration($integrationInstance);
+
+            $array[] = $rule;
+        }
+
+        return $array;
+    }
+
     public function getFormNotificationRules(?Form $form): array
     {
         if (!$form) {
@@ -218,6 +265,15 @@ class RuleProvider
         }
 
         return $this->getNotificationRuleArray($form);
+    }
+
+    public function getFormIntegrationRules(?Form $form): array
+    {
+        if (!$form) {
+            return [];
+        }
+
+        return $this->getIntegrationRuleArray($form);
     }
 
     private function createFieldRuleFromRecord(Form $form, FieldRuleRecord $record): FieldRule
@@ -265,6 +321,40 @@ class RuleProvider
                 'notification' => $notificationRule->getNotification()->one()->uid,
                 'enabled' => true,
                 'send' => $notificationRule->send,
+                'combinator' => $rule->combinator,
+                'conditions' => $conditions,
+            ];
+        }
+
+        return $array;
+    }
+
+    private function getIntegrationRuleArray(Form $form): array
+    {
+        $rules = IntegrationRuleRecord::getExistingRules($form->getId());
+
+        $array = [];
+        foreach ($rules as $uid => $integrationRule) {
+            /** @var RuleRecord $rule */
+            $rule = $integrationRule->getRule()->one();
+
+            $conditions = [];
+
+            /** @var RuleConditionRecord $condition */
+            foreach ($rule->getConditions()->all() as $condition) {
+                $conditions[] = [
+                    'uid' => $condition->uid,
+                    'field' => $condition->getField()->one()->uid,
+                    'operator' => $condition->operator,
+                    'value' => $condition->value,
+                ];
+            }
+
+            $array[] = [
+                'uid' => $uid,
+                'integration' => $integrationRule->getIntegration()->one()->uid,
+                'enabled' => true,
+                'push' => $integrationRule->push,
                 'combinator' => $rule->combinator,
                 'conditions' => $conditions,
             ];

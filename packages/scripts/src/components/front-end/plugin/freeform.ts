@@ -1,6 +1,7 @@
 import events from '@lib/plugin/constants/event-types';
 import { SuccessBehavior } from '@lib/plugin/constants/form';
 import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
+import CardsHandler from '@lib/plugin/handlers/fields/cards';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
@@ -66,6 +67,7 @@ export default class Freeform {
     GoogleTagManager,
     DragAndDropHandler,
     SaveFormHandler,
+    CardsHandler,
   ];
 
   _lastButtonPressed?: HTMLButtonElement;
@@ -146,7 +148,7 @@ export default class Freeform {
 
     const submitButtons = this._getSubmitButtons();
     submitButtons.forEach((button) => {
-      button.dataset.originalText = button.innerText;
+      button.dataset.originalText = button.innerHTML;
       button.dataset.processingText = this.options.processingText;
     });
   };
@@ -198,6 +200,8 @@ export default class Freeform {
     const submitButtons = Array.from(this._getSubmitButtons());
     for (const submit of submitButtons) {
       submit.disabled = false;
+      submit.ariaDisabled = undefined;
+      delete submit.dataset.disabled;
     }
   };
 
@@ -226,7 +230,7 @@ export default class Freeform {
       }
 
       if (showProcessingText) {
-        lastButton.innerText = lastButton.dataset.processingText;
+        lastButton.innerHTML = lastButton.dataset.processingText;
       }
     }
   };
@@ -280,7 +284,7 @@ export default class Freeform {
       }
 
       if (showProcessingText) {
-        submit.innerText = submit.dataset.originalText;
+        submit.innerHTML = submit.dataset.originalText;
       }
     }
   };

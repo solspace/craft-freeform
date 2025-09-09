@@ -39,6 +39,7 @@ use Solspace\Freeform\Fields\Implementations\HtmlField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
+use Solspace\Freeform\Fields\Implementations\Pro\CardsField;
 use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
@@ -68,6 +69,7 @@ use Solspace\Freeform\Records\FieldTypeGroupRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
+use Solspace\Freeform\Services\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
@@ -143,6 +145,7 @@ use yii\db\Query;
  * @property SummaryService              $summary
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
+ * @property AiService                   $ai
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
  * @property TypesService                $formTypes
@@ -176,6 +179,8 @@ class Freeform extends Plugin
     public const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
     public const PERMISSION_SUBMISSIONS_MANAGE = 'freeform-submissionsManage';
     public const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
+    public const PERMISSION_INTEGRATIONS_ACCESS = 'freeform-integrationsAccess';
+    public const PERMISSION_INTEGRATIONS_MANAGE = 'freeform-integrationsManage';
     public const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
     public const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
     public const PERMISSION_PDF_TEMPLATES_ACCESS = 'freeform-pdfTemplatesAccess';
@@ -367,6 +372,7 @@ class Freeform extends Plugin
             RadiosField::class,
             OpinionScaleField::class,
             RatingField::class,
+            CardsField::class,
         ];
         $group->save();
 
@@ -441,6 +447,7 @@ class Freeform extends Plugin
                 'crm' => CrmService::class,
                 'diagnostics' => DiagnosticsService::class,
                 'digest' => DigestService::class,
+                'ai' => AiService::class,
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,

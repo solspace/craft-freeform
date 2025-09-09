@@ -19,6 +19,10 @@ export const ImportExport: React.FC = () => {
       title = 'Import from Express Forms';
       break;
 
+    case '/import/formie/v3':
+      title = 'Import from Formie (v3)';
+      break;
+
     case '/import/forms':
       title = 'Import Freeform Data';
       break;

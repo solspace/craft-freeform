@@ -27,7 +27,7 @@ class NotificationRuleRecord extends RuleRecord
      */
     public static function getExistingRules(int $formId): array
     {
-        /** @var PageRuleRecord[] $records */
+        /** @var NotificationRuleRecord[] $records */
         $records = self::find()
             ->select(['fr.*'])
             ->from(self::TABLE.' fr')

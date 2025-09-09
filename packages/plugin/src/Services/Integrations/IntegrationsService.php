@@ -21,6 +21,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
+use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
@@ -49,9 +50,9 @@ class IntegrationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'before-delete';
     public const EVENT_AFTER_DELETE = 'after-delete';
 
-    private $cacheByUid = [];
-    private $cacheById = [];
-    private $cacheByHandle = [];
+    private array $cacheByUid = [];
+    private array $cacheById = [];
+    private array $cacheByHandle = [];
 
     public function __construct(
         $config,
@@ -59,6 +60,7 @@ class IntegrationsService extends BaseService
         protected IntegrationTypeProvider $typeProvider,
         protected IntegrationLoggerProvider $loggerProvider,
         private PropertyProvider $propertyProvider,
+        private IntegrationRuleValidator $integrationRuleValidator,
     ) {
         parent::__construct($config);
     }
@@ -69,6 +71,7 @@ class IntegrationsService extends BaseService
     public function getAllIntegrationTypes(): array
     {
         static $types;
+
         if (null === $types) {
             $event = new RegisterIntegrationTypesEvent();
             Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
@@ -393,7 +396,7 @@ class IntegrationsService extends BaseService
 
             if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(
-                    $model->class.$handle,
+                    'metadata.'.$handle,
                     Freeform::t('{key} is required', ['key' => $property->label])
                 );
 
@@ -503,6 +506,8 @@ class IntegrationsService extends BaseService
                     }
                 }
 
+                $integration->instanceId = $formIntegration?->id;
+                $integration->instanceUid = $formIntegration?->uid ?? StringHelper::UUID();
                 $integration->enabled = $enabledOverride;
                 $integration->metadata = array_merge(
                     $integration->metadata,
@@ -528,14 +533,7 @@ class IntegrationsService extends BaseService
 
             $eligibleIntegrationObjects = array_filter(
                 $integrationObjects,
-                function (IntegrationInterface $integration) use ($freeformEdition) {
-                    $editions = $integration->getTypeDefinition()->editions;
-                    if (!$editions) {
-                        return true;
-                    }
-
-                    return \in_array($freeformEdition, $editions, true);
-                }
+                fn (IntegrationInterface $integration) => $integration->getTypeDefinition()->editionCheck($freeformEdition),
             );
 
             $cache[$key] = $eligibleIntegrationObjects;
@@ -544,13 +542,19 @@ class IntegrationsService extends BaseService
         return $cache[$key];
     }
 
-    public function processIntegrationJob(int $formId, array $postedData, string $type): void
+    public function processIntegrationJob(int $formId, ?int $submissionId, array $postedData, string $type): void
     {
         $freeform = Freeform::getInstance();
+        $edition = $freeform->edition;
 
         $form = $freeform->forms->getFormById($formId);
         if (!$form) {
             return;
+        }
+
+        $submission = $freeform->submissions->getSubmissionById($submissionId);
+        if ($submission) {
+            $form->setSubmission($submission);
         }
 
         $form->valuesFromArray($postedData);
@@ -559,6 +563,14 @@ class IntegrationsService extends BaseService
         $integrations = $this->getForForm($form, $type, true);
         foreach ($integrations as $integration) {
             if (!$integration instanceof PushableInterface) {
+                continue;
+            }
+
+            if (!$integration->getTypeDefinition()->editionCheck($edition)) {
+                continue;
+            }
+
+            if (!$this->integrationRuleValidator->isPassing($integration, $form)) {
                 continue;
             }
 

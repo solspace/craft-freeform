@@ -9,6 +9,10 @@ import axios from 'axios';
 export const QKIntegrations = {
   all: ['integrations'] as const,
   single: (id: number) => [...QKIntegrations.all, id] as const,
+  navigation: ['integrations', 'navigation'] as const,
+  properties: (type: string, integration: string, id: string) =>
+    [...QKIntegrations.all, 'properties', type, integration, id] as const,
+  authCheck: (id: number) => [...QKIntegrations.all, id, 'auth-check'] as const,
 };
 
 export const useFormIntegrationsQueryReset = (): (() => void) => {

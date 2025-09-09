@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Uri;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -18,6 +19,7 @@ use Solspace\Freeform\Integrations\Other\Jira\BaseJiraIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObjectOption;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Jira',
     type: Type::TYPE_OTHER,
@@ -35,6 +37,7 @@ class JiraCards extends BaseJiraIntegration
     private const CATEGORY_CARD = 'card';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Project Key',
         instructions: 'Enter the project key for the Jira project you want to interact with. If left empty, it will be auto-populated with the first available project key of your account.',

@@ -19,6 +19,7 @@ interface IntegrationInterface
 {
     public const EVENT_AFTER_RESPONSE = 'after-response';
     public const EVENT_ON_FAILED_REQUEST = 'on-failed-request';
+    public const EVENT_BUILD_MAPPING_CONTEXT = 'build-mapping-context';
 
     public const FLAG_GLOBAL_PROPERTY = 'global-property';
     public const FLAG_AS_HIDDEN_IN_INSTANCE = 'as-hidden-in-instance';
@@ -27,10 +28,15 @@ interface IntegrationInterface
     public const FLAG_INTERNAL = 'internal';
     public const FLAG_ENCRYPTED = 'encrypted';
     public const FLAG_READONLY = 'readonly';
+    public const FLAG_ENV_SUGGEST = 'env-suggest';
 
     public function getId(): ?int;
 
     public function getUid(): ?string;
+
+    public function getInstanceId(): ?int;
+
+    public function getInstanceUid(): ?string;
 
     public function setId(int $id): self;
 
@@ -47,4 +53,6 @@ interface IntegrationInterface
     public function getServiceProvider(): string;
 
     public function getTypeDefinition(): Type;
+
+    public static function isInstallable(): bool;
 }

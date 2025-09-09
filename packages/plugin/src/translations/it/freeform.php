@@ -603,6 +603,16 @@ return [
     "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Inserisci un nuovo valore per rinominare il nome di input del test Javascript predefinito di Freeform. Il predefinito è 'freeform_check'.",
     'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Inserisci un nuovo valore per cambiare il messaggio di errore predefinito per il Test Javascript di Freeform. Questo verrà applicato solo se l’impostazione Comportamento Spam è configurata per visualizzare i messaggi di errore.',
 
+    // Form Builder // Integrations // AI Spam Analysis
+    'AI Spam Analysis' => 'Analisi spam AI',
+    'Select an AI integration to analyze submissions for spam.' => 'Seleziona un’integrazione AI per analizzare le inviate e rilevare spam.',
+    'Fields to Analyze' => 'Campi da analizzare',
+    'Select which fields to send for AI analysis. Use @ to include all fields.' => 'Seleziona i campi da inviare all’AI per l’analisi. Usa @ per includere tutti i campi.',
+    'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Personalizza come l’AI deve analizzare le inviate per rilevare spam. Lascia vuoto per usare il prompt predefinito.',
+    'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analizza il contenuto e fornisci una valutazione chiara se si tratta di spam o contenuto legittimo.',
+    'Send labels with values (e.g., "Name: John Doe").' => 'Invia le etichette con i valori (es. "Name: John Doe").',
+    'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'Se abilitato, verrà mostrato all’utente un errore dettagliato invece di contrassegnare silenziosamente l’invio come spam.',
+
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Inoltro POST',
     'URL' => 'URL',
@@ -813,6 +823,7 @@ return [
     'generic' => 'Sconosciuto',
     'honeypot' => 'Honeypot',
     'js_test' => 'Test JS Honeypot',
+    'ai_spam' => 'Analisi spam AI',
     'captcha' => 'Errore Captcha',
     'blocked_keywords' => 'Parole chiave bloccate',
     'blocked_email_address' => 'Indirizzo email bloccato',

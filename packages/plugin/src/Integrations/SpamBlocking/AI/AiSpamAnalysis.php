@@ -88,7 +88,7 @@ class AiSpamAnalysis extends SpamBlockingIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Display Errors',
-        instructions: 'When enabled, a general error will be displayed to the user instead of silently marking the submission as spam.',
+        instructions: 'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.',
     )]
     protected bool $displayErrors = false;
 

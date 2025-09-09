@@ -603,6 +603,16 @@ return [
     "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'.",
     'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.',
 
+    // Form Builder // Integrations // AI Spam Analysis
+    'AI Spam Analysis' => 'AI Spam Analysis',
+    'Select an AI integration to analyze submissions for spam.' => 'Select an AI integration to analyze submissions for spam.',
+    'Fields to Analyze' => 'Fields to Analyze',
+    'Select which fields to send for AI analysis. Use @ to include all fields.' => 'Select which fields to send for AI analysis. Use @ to include all fields.',
+    'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.',
+    'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.',
+    'Send labels with values (e.g., "Name: John Doe").' => 'Send labels with values (e.g., "Name: John Doe").',
+    'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.',
+
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Post Forwarding',
     'URL' => 'URL',
@@ -813,6 +823,7 @@ return [
     'generic' => 'Unknown',
     'honeypot' => 'Honeypot',
     'js_test' => 'Honeypot JS Test',
+    'ai_spam' => 'AI Spam Analysis',
     'captcha' => 'Captcha Failure',
     'blocked_keywords' => 'Blocked Keywords',
     'blocked_email_address' => 'Blocked Email Address',

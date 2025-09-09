@@ -603,6 +603,16 @@ return [
     "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Geben Sie einen neuen Wert ein, um den Standardnamen des Freeform-Javascript-Test-Eingabefelds umzubenennen. Der Standardwert ist 'freeform_check'.",
     'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Geben Sie einen neuen Wert ein, um die Standard-Fehlermeldung für den Freeform-Javascript-Test zu ändern. Dies wird nur angewendet, wenn die Spam-Verhalten-Einstellung auf Fehlermeldungen anzeigen gesetzt ist.',
 
+    // Form Builder // Integrations // AI Spam Analysis
+    'AI Spam Analysis' => 'KI-Spamanalyse',
+    'Select an AI integration to analyze submissions for spam.' => 'Wählen Sie eine KI-Integration, um Einsendungen auf Spam zu analysieren.',
+    'Fields to Analyze' => 'Zu analysierende Felder',
+    'Select which fields to send for AI analysis. Use @ to include all fields.' => 'Wählen Sie die Felder aus, die zur Analyse an die KI gesendet werden sollen. Verwenden Sie @, um alle Felder einzuschließen.',
+    'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Passen Sie an, wie die KI Einsendungen auf Spam analysieren soll. Lassen Sie das Feld leer, um die Standard-Aufforderung zu verwenden.',
+    'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analysieren Sie den Inhalt und geben Sie eine klare Einschätzung ab, ob es sich um Spam oder legitime Inhalte handelt.',
+    'Send labels with values (e.g., "Name: John Doe").' => 'Senden Sie Labels mit Werten (z.B. "Name: John Doe").',
+    'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'Wenn aktiviert, wird dem Benutzer eine detaillierte Fehlermeldung angezeigt, anstatt die Einsendung stillschweigend als Spam zu markieren.',
+
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Postweiterleitung',
     'URL' => 'URL',
@@ -813,6 +823,7 @@ return [
     'generic' => 'Unbekannt',
     'honeypot' => 'Honeypot',
     'js_test' => 'Honeypot JS-Test',
+    'ai_spam' => 'KI-Spamanalyse',
     'captcha' => 'Captcha-Fehler',
     'blocked_keywords' => 'Gesperrte Schlüsselwörter',
     'blocked_email_address' => 'Gesperrte E-Mail-Adresse',

@@ -603,6 +603,16 @@ return [
     "Enter a new value to rename the default Freeform Javascript Test input name. The default is 'freeform_check'." => "Voer een nieuwe waarde in om de standaard Freeform Javascript Test-invoernaam te hernoemen. De standaardwaarde is 'freeform_check'.",
     'Enter a new value to change the default error message for the Freeform Javascript Test. This is only applied if the Spam Behavior setting is set to Display Error Messages.' => 'Voer een nieuwe waarde in om het standaardfoutbericht voor de Freeform Javascript Test te wijzigen. Dit wordt alleen toegepast als de instelling Spamgedrag is ingesteld op Foutmeldingen weergeven.',
 
+    // Form Builder // Integrations // AI Spam Analysis
+    'AI Spam Analysis' => 'AI-spamanalyse',
+    'Select an AI integration to analyze submissions for spam.' => 'Selecteer een AI-integratie om inzendingen op spam te analyseren.',
+    'Fields to Analyze' => 'Te analyseren velden',
+    'Select which fields to send for AI analysis. Use @ to include all fields.' => 'Selecteer welke velden je wilt laten analyseren door de AI. Gebruik @ om alle velden op te nemen.',
+    'Customize how the AI should analyze submissions for spam. Leave empty to use the default prompt.' => 'Pas aan hoe de AI inzendingen op spam moet analyseren. Laat leeg om de standaardprompt te gebruiken.',
+    'Analyze the content and provide a clear assessment of whether it appears to be spam or legitimate content.' => 'Analyseer de inhoud en geef een duidelijke beoordeling of het spam of legitieme inhoud lijkt.',
+    'Send labels with values (e.g., "Name: John Doe").' => 'Verstuur labels met waarden (bijv. "Name: John Doe").',
+    'When enabled, a detailed error will be displayed to the user instead of silently marking the submission as spam.' => 'Indien ingeschakeld, wordt een gedetailleerde foutmelding aan de gebruiker getoond in plaats van de inzending stilzwijgend als spam te markeren.',
+
     // Form Builder // Integrations // Post Forwarding
     'Post Forwarding' => 'Post doorsturen',
     'URL' => 'URL',
@@ -813,6 +823,7 @@ return [
     'generic' => 'Onbekend',
     'honeypot' => 'Honingpot',
     'js_test' => 'Honeypot JS-test',
+    'ai_spam' => 'AI-spamanalyse',
     'captcha' => 'Captcha-fout',
     'blocked_keywords' => 'Geblokkeerde zoekwoorden',
     'blocked_email_address' => 'Geblokkeerd e-mailadres',

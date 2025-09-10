@@ -15,6 +15,7 @@
 
 ### Changed
 - Refactored the Integrations settings into a single, unified page with improved layout and usability.
+- CRM, Email Marketing, and Element integrations now support field-based conditional rules to control whether submission data is sent to the provider.
 - Field option values are now preserved when editing option labels later.
 
 ## 5.11.17 - 2025-09-04

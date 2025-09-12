@@ -37,11 +37,34 @@ class FieldContainerBundle extends FeatureBundle
         }
 
         $field = $event->getField();
-        $event
-            ->getAttributes()
+
+        /** @var FieldAttributesCollection $attributes */
+        $attributes = $event->getAttributes();
+
+        $attributes
             ->getContainer()
             ->replace('data-field-container', $field->getHandle())
             ->replace('data-field-type', $field->getType())
+        ;
+
+        $attributes
+            ->getLabel()
+            ->replace('data-field-label', $field->getHandle())
+        ;
+
+        $attributes
+            ->getInput()
+            ->replace('data-field-handle', $field->getHandle())
+        ;
+
+        $attributes
+            ->getInstructions()
+            ->replace('data-field-instructions', $field->getHandle())
+        ;
+
+        $attributes
+            ->getError()
+            ->replace('data-field-errors', $field->getHandle())
         ;
     }
 }

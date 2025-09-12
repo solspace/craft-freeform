@@ -69,8 +69,16 @@ const attachCalculations = (input: HTMLInputElement) => {
       return;
     }
 
-    let result = expressionLanguage.evaluate(calculationsLogic, variables);
-    result = decimalCount !== null ? result.toFixed(decimalCount) : result;
+    let result: number | string = '';
+    if (calculationsLogic) {
+      result = expressionLanguage.evaluate(calculationsLogic, variables);
+    } else {
+      result = '';
+    }
+
+    if (Number.isInteger(result) && !Number.isNaN(result) && decimalCount !== null) {
+      result = (result as number).toFixed(decimalCount);
+    }
 
     const updateInputValue = (value: string | number) => {
       input.value = value.toString();
@@ -86,7 +94,7 @@ const attachCalculations = (input: HTMLInputElement) => {
     const pTag = container.querySelector('.freeform-calculation-plain-field');
 
     if (pTag) {
-      pTag.textContent = result;
+      pTag.textContent = String(result);
     }
 
     updateInputValue(result);

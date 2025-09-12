@@ -119,6 +119,8 @@ interface FieldInterface
 
     public function addError(...$error): AbstractField;
 
+    public function removeError(string $error): AbstractField;
+
     public function addErrors(array $errors): AbstractField;
 
     public function render(): Markup;

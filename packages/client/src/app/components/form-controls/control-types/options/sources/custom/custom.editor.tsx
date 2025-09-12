@@ -177,9 +177,10 @@ export const CustomEditor: React.FC<
                             {
                               ...option,
                               label: event.target.value,
-                              value: autoUpdateHandle
-                                ? event.target.value
-                                : option.value,
+                              value:
+                                autoUpdateHandle || !useCustomValues
+                                  ? event.target.value
+                                  : option.value,
                             },
                             localValue
                           )

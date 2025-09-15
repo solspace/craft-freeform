@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.12.1 - 2025-09-15
+
+### Fixed
+- Fixed an issue where `{{ submission.id }}` was not parsing in **Stripe** payment descriptions.
+- Fixed an issue where new field option values were not auto-generated when added later and **Custom Values** was disabled.
+
 ## 5.12.0 - 2025-09-09
 
 ### Added

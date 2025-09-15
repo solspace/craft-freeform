@@ -37,7 +37,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
       } = elementMap.get(field);
 
       if (empty && !required) {
-        return;
+        continue;
       }
 
       const token = await event.freeform.quickSave(secret, id);

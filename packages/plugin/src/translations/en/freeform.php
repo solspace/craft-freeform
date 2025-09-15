@@ -1666,6 +1666,8 @@ return [
     'Model' => 'Model',
     'The OpenAI model to use for AI processing.' => 'The OpenAI model to use for AI processing.',
     'The Google Gemini model to use for AI processing.' => 'The Google Gemini model to use for AI processing.',
+    'The Anthropic model to use for AI processing.' => 'The Anthropic model to use for AI processing.',
+    'The xAI model to use for AI processing.' => 'The xAI model to use for AI processing.',
     'Max Tokens' => 'Max Tokens',
     'Maximum number of tokens to generate.' => 'Maximum number of tokens to generate.',
     'Temperature' => 'Temperature',

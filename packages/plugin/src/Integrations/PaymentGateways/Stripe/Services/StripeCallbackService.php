@@ -171,19 +171,19 @@ class StripeCallbackService
                         ),
                     ]
                 );
-            } else {
-                $stripe->paymentIntents->update(
-                    $paymentIntent->id,
-                    [
-                        'description' => $description,
-                        'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
-                        'metadata' => array_merge(
-                            $paymentIntent->metadata->toArray(),
-                            $submissionMetadata,
-                        ),
-                    ]
-                );
             }
+
+            $stripe->paymentIntents->update(
+                $paymentIntent->id,
+                [
+                    'description' => $description,
+                    'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
+                    'metadata' => array_merge(
+                        $paymentIntent->metadata->toArray(),
+                        $submissionMetadata,
+                    ),
+                ]
+            );
         }
 
         return true;

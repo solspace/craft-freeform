@@ -50,7 +50,8 @@ const createContainer = ({
 };
 
 export const createRemoveButton = (freeform: Freeform): HTMLElement => {
-  const button = document.createElement('a');
+  const button = document.createElement('button');
+  button.type = 'button';
   button.setAttribute('data-remove-button', '');
   button.setAttribute('title', 'Remove file?');
   button.setAttribute('aria-label', 'Remove file?');

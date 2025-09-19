@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 5.13.0 - Unreleased
+
+### Added
+- **xAI integration**: Use xAI models to process form submissions.
+- **Anthropic AI integration**: Use Anthropic models to process form submissions.
+
+### Changed
+- Updated the _Template Overrides_ feature to automatically factor in success and error attributes when in AJAX mode.
+- Various other minor improvements to the _Template Overrides_ feature reliability.
+
 ## 5.12.1 - 2025-09-15
 
 ### Fixed

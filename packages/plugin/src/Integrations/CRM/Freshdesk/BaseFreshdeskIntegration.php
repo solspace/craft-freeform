@@ -40,7 +40,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        instructions: 'Enter your Domain (e.g. "https://yourcompany.freshdesk.com").',
+        instructions: 'Enter your Domain (e.g. `https://yourcompany.freshdesk.com`).',
         order: 2,
     )]
     protected string $domain = '';
@@ -49,7 +49,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Type (Optional)',
-        instructions: "Set the default Type for tickets, e.g. 'Question'.",
+        instructions: 'Set the default Type for tickets, e.g. `Question`.',
         order: 3,
     )]
     protected ?string $defaultType = null;
@@ -58,7 +58,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Priority (Optional)',
-        instructions: "Set the default Priority for tickets, e.g. '1' (Low), '2' (Medium), '3' (High), '4' (Urgent).",
+        instructions: 'Set the default Priority for tickets, e.g. `1` (Low), `2` (Medium), `3` (High), `4` (Urgent).',
         order: 4,
     )]
     protected ?string $defaultPriority = null;
@@ -67,7 +67,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Status (Optional)',
-        instructions: "Set the default Status for tickets, e.g. '2' (Open), '3' (Pending), '4' (Resolved), '5' (Closed).",
+        instructions: 'Set the default Status for tickets, e.g. `2` (Open), `3` (Pending), `4` (Resolved), `5` (Closed).',
         order: 5,
     )]
     protected ?string $defaultStatus = null;
@@ -76,7 +76,7 @@ abstract class BaseFreshdeskIntegration extends CRMIntegration implements Freshd
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Default Source (Optional)',
-        instructions: "Set the default Source for tickets, e.g. '1' (Email), '2' (Portal), '3' (Phone), '7' (Chat), '9' (Feedback Widget), '10' (Outbound Email).",
+        instructions: 'Set the default Source for tickets, e.g. `1` (Email), `2` (Portal), `3` (Phone), `7` (Chat), `9` (Feedback Widget), `10` (Outbound Email).',
         order: 6,
     )]
     protected ?string $defaultSource = null;

@@ -6,6 +6,8 @@ interface DefaultConfigInterface
 {
     public function getLabel(): string;
 
+    public function getPlaceholder(): string;
+
     public function getValue(): mixed;
 
     public function isLocked(): bool;

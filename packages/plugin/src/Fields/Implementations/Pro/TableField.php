@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -77,33 +78,45 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected TableLayout $tableLayout;
 
+    #[Limitation('props.table', 'javascript')]
+    #[DefaultValue('props.table.javascript')]
     #[Input\Boolean('Use built-in javascript for adding and removing rows')]
     protected bool $useScript = true;
 
+    #[Limitation('props.table', 'maxRows')]
+    #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(
         label: 'Maximum number of rows',
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
     protected ?int $maxRows = null;
 
+    #[Limitation('props.table', 'addButtonLabel')]
+    #[DefaultValue('props.table.addButtonLabel')]
     #[Input\Text(
         label: 'Add Button Label',
         instructions: 'Set the label for the add button.',
     )]
     protected string $addButtonLabel = 'Add';
 
+    #[Limitation('props.table', 'addButtonMarkup')]
+    #[DefaultValue('props.table.addButtonMarkup')]
     #[Input\Text(
         label: 'Add Button Markup',
         instructions: 'Set the markup for the add button.',
     )]
     protected ?string $addButtonMarkup = null;
 
+    #[Limitation('props.table', 'removeButtonLabel')]
+    #[DefaultValue('props.table.removeButtonLabel')]
     #[Input\Text(
         label: 'Remove Button Label',
         instructions: 'Set the label for the remove button.',
     )]
     protected string $removeButtonLabel = 'Remove';
 
+    #[Limitation('props.table', 'removeButtonMarkup')]
+    #[DefaultValue('props.table.removeButtonMarkup')]
     #[Input\Text(
         label: 'Remove Button Markup',
         instructions: 'Set the markup for the remove button.',
@@ -111,8 +124,9 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     protected ?string $removeButtonMarkup = null;
 
     #[Section('attributes')]
-    #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(TableAttributesTransformer::class)]
+    #[Limitation('layout.fields.attributes')]
+    #[Limitation('props.table', 'tableAttributes')]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
         tabs: [

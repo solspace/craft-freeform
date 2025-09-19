@@ -29,10 +29,10 @@ class File extends BaseCategory
     #[SetDefaultValue('')]
     public SelectItem $initialValue;
 
-    #[Label('Upload location')]
+    #[Label('Upload Location')]
     public TextItem $uploadLocation;
 
-    #[Label('File kinds')]
+    #[Label('File Kinds')]
     #[SetDefaultValue(['image'])]
     #[OptionsGenerator(FileKindsOptionsGenerator::class)]
     public CheckboxesItem $fileKinds;
@@ -61,11 +61,11 @@ class File extends BaseCategory
     #[SetPlaceholder('Are you sure?')]
     public TextItem $removeFileMessage;
 
-    #[Label('Use a Dialog element?')]
+    #[Label('Use Dialog Element')]
     #[SetDefaultValue(false)]
     public BoolItem $dialogElement;
 
-    #[Label('Dialog Selector')]
+    #[Label('Custom Confirm Dialog Selector')]
     #[SetPlaceholder('#my-confirm-dialog')]
     public TextItem $dialogSelector;
 

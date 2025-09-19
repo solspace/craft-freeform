@@ -40,7 +40,7 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'API URL',
-        instructions: 'Enter your API specific URL (e.g. "https://api.na1.insightly.com").',
+        instructions: 'Enter your API specific URL (e.g. `https://api.na1.insightly.com`).',
         order: 2,
     )]
     protected string $apiUrl = '';

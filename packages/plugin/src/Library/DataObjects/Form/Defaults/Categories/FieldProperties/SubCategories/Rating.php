@@ -6,17 +6,12 @@ use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
-use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\BoolItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\ColorItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
 
 class Rating extends BaseCategory
 {
-    #[Label('Use built-in javascript?')]
-    #[SetDefaultValue(true)]
-    public BoolItem $javascript;
-
-    #[Label('Maximum number of stars')]
+    #[Label('Maximum Number of Stars')]
     #[SetDefaultValue(5)]
     #[OptionsGenerator([
         1 => 1,

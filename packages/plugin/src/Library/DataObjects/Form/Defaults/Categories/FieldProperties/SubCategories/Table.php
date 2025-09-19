@@ -10,7 +10,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Table extends BaseCategory
 {
-    #[Label('Use built-in javascript?')]
+    #[Label('Use built-in javascript for adding and removing rows')]
     #[SetDefaultValue(true)]
     public BoolItem $javascript;
 

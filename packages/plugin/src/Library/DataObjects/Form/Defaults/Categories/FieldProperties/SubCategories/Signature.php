@@ -11,15 +11,15 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
 class Signature extends BaseCategory
 {
-    #[Label('Width')]
+    #[Label('Width of Pad')]
     #[SetDefaultValue('400')]
     public TextItem $width;
 
-    #[Label('Height')]
+    #[Label('Height of Pad')]
     #[SetDefaultValue('100')]
     public TextItem $height;
 
-    #[Label('Show \'Clear\' button?')]
+    #[Label("Show 'Clear' button")]
     #[SetDefaultValue(true)]
     public BoolItem $clear;
 
@@ -27,13 +27,17 @@ class Signature extends BaseCategory
     #[SetDefaultValue('#999999')]
     public ColorItem $borderColor;
 
-    #[Label('Background color of pad')]
+    #[Label('Background color of Pad')]
     #[SetDefaultValue('TRANSPARENT')]
     public ColorItem $backgroundColor;
 
     #[Label('Pen color')]
     #[SetDefaultValue('#000000')]
     public ColorItem $penColor;
+
+    #[Label('Pen dot size')]
+    #[SetDefaultValue('2.5')]
+    public TextItem $penDotSize;
 
     public function getLabel(): string
     {

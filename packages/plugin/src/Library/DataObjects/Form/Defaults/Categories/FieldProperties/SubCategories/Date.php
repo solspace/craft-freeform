@@ -22,7 +22,7 @@ class Date extends BaseCategory
     ])]
     public SelectItem $type;
 
-    #[Label('Initial Value')]
+    #[Label('Initial value')]
     public TextItem $initialValue;
 
     #[Label('Force a locale')]
@@ -77,7 +77,7 @@ class Date extends BaseCategory
     #[SetDefaultValue(false)]
     public BoolItem $clock24h;
 
-    #[Label('Clock separator')]
+    #[Label('Clock Separator')]
     #[SetDefaultValue(':')]
     #[OptionsGenerator([
         ' ' => 'Space',

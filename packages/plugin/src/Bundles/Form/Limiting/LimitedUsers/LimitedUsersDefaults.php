@@ -119,7 +119,7 @@ class LimitedUsersDefaults
 
             (new Group('props', 'Field Properties'))
                 ->setChildren([
-                    (new Toggles('date', 'Date & Time Field'))
+                    (new Toggles('date', 'Date & Time'))
                         ->setValues([
                             'type',
                             'initialValue',
@@ -139,31 +139,31 @@ class LimitedUsersDefaults
                         ])
                         ->setOptions([
                             'type' => 'Type',
-                            'initialValue' => 'Initial Value',
-                            'locale' => 'Force Locale',
-                            'datepicker' => 'Use Built-In Datepicker',
-                            'nativeTypes' => 'Use Native Input Types',
-                            'formatAsPlaceholder' => 'Use Format as Placeholder',
-                            'dateOrder' => 'Date Order',
-                            'date4DigitYear' => '4-Digit Year',
-                            'dateLeadingZero' => 'Leading Zero on Date',
-                            'dateSeparator' => 'Date Separator',
-                            'minDate' => 'Minimum Date',
-                            'maxDate' => 'Maximum Date',
-                            'clock24h' => '24-Hour Clock',
+                            'initialValue' => 'Initial value',
+                            'locale' => 'Force a locale',
+                            'datepicker' => 'Use built-in datepicker',
+                            'nativeTypes' => 'Use native input types',
+                            'formatAsPlaceholder' => 'Use date format as placeholder',
+                            'dateOrder' => 'Date order',
+                            'date4DigitYear' => 'Four digit year',
+                            'dateLeadingZero' => 'Leading zero on date',
+                            'dateSeparator' => 'Date separator',
+                            'minDate' => 'Minimum date',
+                            'maxDate' => 'Maximum date',
+                            'clock24h' => '24h clock',
                             'clockSeparator' => 'Clock Separator',
                             'clockAMPMSeparate' => 'Separate AM/PM with a space',
                         ]),
-                    (new Toggles('phone', 'Phone Field'))
+                    (new Toggles('phone', 'Phone'))
                         ->setValues([
                             'pattern',
                             'javascript',
                         ])
                         ->setOptions([
-                            'pattern' => 'Pattern Validation',
-                            'javascript' => 'Built-in javascript validation',
+                            'pattern' => 'Pattern validation',
+                            'javascript' => 'Use built-in javascript validation on pattern',
                         ]),
-                    (new Toggles('file', 'File Uplaod Fields'))
+                    (new Toggles('file', 'File Upload'))
                         ->setValues([
                             'count',
                             'source',
@@ -186,16 +186,16 @@ class LimitedUsersDefaults
                             'accentColor' => 'Accent Color',
                             'theme' => 'Theme',
                             'placeholder' => 'Placeholder',
-                            'removeFileMessage' => 'Remove File Message',
+                            'removeFileMessage' => 'Remove File Confirmation Message',
                             'dialogElement' => 'Use Dialog Element',
-                            'dialogSelector' => 'Custom Dialog Selector',
+                            'dialogSelector' => 'Custom Confirm Dialog Selector',
                         ]),
-                    (new Toggles('html', 'HTML Field'))
+                    (new Toggles('html', 'HTML'))
                         ->setValues(['twig'])
                         ->setOptions([
                             'twig' => 'Allow Twig',
                         ]),
-                    (new Toggles('table', 'Table Field'))
+                    (new Toggles('table', 'Table'))
                         ->setValues([
                             'javascript',
                             'maxRows',
@@ -206,15 +206,15 @@ class LimitedUsersDefaults
                             'tableAttributes',
                         ])
                         ->setOptions([
-                            'javascript' => 'Use built-in javascript for adding/removing rows',
-                            'maxRows' => 'Maximum Rows',
+                            'javascript' => 'Use built-in javascript for adding and removing rows',
+                            'maxRows' => 'Maximum number of rows',
                             'addButtonLabel' => 'Add Button Label',
                             'addButtonMarkup' => 'Add Button Markup',
                             'removeButtonLabel' => 'Remove Button Label',
                             'removeButtonMarkup' => 'Remove Button Markup',
                             'tableAttributes' => 'Table Attributes',
                         ]),
-                    (new Toggles('rating', 'Rating Field'))
+                    (new Toggles('rating', 'Rating'))
                         ->setValues([
                             'max',
                             'idle',
@@ -222,12 +222,12 @@ class LimitedUsersDefaults
                             'selected',
                         ])
                         ->setOptions([
-                            'max' => 'Maximum Stars',
+                            'max' => 'Maximum Number of Stars',
                             'idle' => 'Unselected Color',
                             'hover' => 'Hover Color',
                             'selected' => 'Selected Color',
                         ]),
-                    (new Toggles('signature', 'Signature Field'))
+                    (new Toggles('signature', 'Signature'))
                         ->setValues([
                             'width',
                             'height',
@@ -240,13 +240,13 @@ class LimitedUsersDefaults
                         ->setOptions([
                             'width' => 'Width of Pad',
                             'height' => 'Height of Pad',
-                            'clear' => 'Show "Clear" Button',
-                            'borderColor' => 'Border Color',
-                            'backgroundColor' => 'Background Color',
-                            'penColor' => 'Pen Color',
-                            'penDotSize' => 'Pen Dot Size',
+                            'clear' => "Show 'Clear' button",
+                            'borderColor' => 'Border color of Pad',
+                            'backgroundColor' => 'Background color of Pad',
+                            'penColor' => 'Pen color',
+                            'penDotSize' => 'Pen dot size',
                         ]),
-                    (new Toggles('calculation', 'Calculation Field'))
+                    (new Toggles('calculation', 'Calculation'))
                         ->setValues([
                             'decimalCount',
                             'inputType',
@@ -255,14 +255,14 @@ class LimitedUsersDefaults
                             'decimalCount' => 'Decimal Count',
                             'inputType' => 'Input Type',
                         ]),
-                    (new Toggles('cards', 'Cards Field'))
+                    (new Toggles('cards', 'Cards'))
                         ->setValues([
                             'max',
                             'perRow',
                             'transform',
                         ])
                         ->setOptions([
-                            'max' => 'Maximum Selected Values',
+                            'max' => 'Max Selected Values',
                             'perRow' => 'Cards Per Row',
                             'transform' => 'Image Transform',
                         ]),

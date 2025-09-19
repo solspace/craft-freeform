@@ -70,7 +70,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     #[Limitation('props.file', 'dialogElement')]
     #[DefaultValue('props.file.dialogElement')]
     #[Input\Boolean(
-        label: 'Use a Dialog element?',
+        label: 'Use Dialog Element',
         instructions: 'If enabled, a dialog element will be used to confirm file removal.',
         order: 80,
     )]

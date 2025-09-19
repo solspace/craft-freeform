@@ -13,8 +13,10 @@
 
 namespace Solspace\Freeform\Fields\Traits;
 
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Implementations\ValueGenerators\AssetSourceGenerator;
@@ -24,6 +26,8 @@ trait FileUploadTrait
 {
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
     #[ValueGenerator(AssetSourceGenerator::class)]
+    #[Limitation('props.file', 'source')]
+    #[DefaultValue('props.file.source')]
     #[Input\Select(
         label: 'Asset Source',
         instructions: 'Select an asset source to be able to store user uploaded files.',
@@ -33,6 +37,8 @@ trait FileUploadTrait
     protected ?int $assetSourceId = null;
 
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Limitation('props.file', 'uploadLocation')]
+    #[DefaultValue('props.file.uploadLocation')]
     #[Input\Text(
         label: 'Upload Location',
         instructions: 'The subfolder path that files should be uploaded to. May contain `{{ form.handle }}` or `{{ form.id }}` variables as well.',

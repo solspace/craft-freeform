@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -25,6 +27,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public const DEFAULT_PLACEHOLDER = 'Upload a file or drag and drop';
     private const DEFAULT_CONFIRM_MESSAGE = 'Are you sure?';
 
+    #[Limitation('props.file', 'accentColor')]
+    #[DefaultValue('props.file.accentColor')]
     #[Input\ColorPicker(
         label: 'Accent Color',
         instructions: 'Select accent color',
@@ -32,6 +36,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
+    #[Limitation('props.file', 'theme')]
+    #[DefaultValue('props.file.theme')]
     #[Input\Select(
         label: 'Theme',
         instructions: 'Select theme',
@@ -43,12 +49,16 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $theme = self::DEFAULT_THEME;
 
+    #[Limitation('props.file', 'placeholder')]
+    #[DefaultValue('props.file.placeholder')]
     #[Input\Text(
         instructions: 'Field placeholder.',
         order: 8,
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;
 
+    #[Limitation('props.file', 'removeFileMessage')]
+    #[DefaultValue('props.file.removeFileMessage')]
     #[Input\Text(
         label: 'Remove File Confirmation Message',
         instructions: 'Enter a custom message that will be shown when removing a file from the upload field.',
@@ -57,6 +67,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $removeFileMessage = '';
 
+    #[Limitation('props.file', 'dialogElement')]
+    #[DefaultValue('props.file.dialogElement')]
     #[Input\Boolean(
         label: 'Use a Dialog element?',
         instructions: 'If enabled, a dialog element will be used to confirm file removal.',
@@ -65,6 +77,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     protected bool $useCustomDialog = false;
 
     #[VisibilityFilter('Boolean(properties.useCustomDialog)')]
+    #[Limitation('props.file', 'dialogSelector')]
+    #[DefaultValue('props.file.dialogSelector')]
     #[Input\Text(
         label: 'Custom Confirm Dialog Selector',
         instructions: 'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.',

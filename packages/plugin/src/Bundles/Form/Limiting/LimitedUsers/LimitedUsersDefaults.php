@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\ItemTypes\Boolean;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\ItemTypes\Group;
-use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\ItemTypes\Select;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\ItemTypes\Toggles;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
@@ -34,7 +33,6 @@ use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months\Months;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers\Numbers;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\States\States;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Years\Years;
-use Solspace\Freeform\Library\Helpers\ArrayHelper;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
@@ -73,9 +71,6 @@ class LimitedUsersDefaults
                             TableField::class,
                         ])
                         ->setOptions($this->getFieldTypes()),
-                    // (new Select('maxColumns', 'Maximum Fields Per Row'))
-                    //     ->setValue('4')
-                    //     ->setOptions(ArrayHelper::generate(8, fn ($i) => [$i + 1, $i + 1])),
 
                     (new Boolean('fields', 'Advanced Field Properties', true))
                         ->setChildren([
@@ -121,6 +116,158 @@ class LimitedUsersDefaults
                             new Boolean('convert', 'Convert to Custom Values'),
                         ]),
                 ]),
+
+            (new Group('props', 'Field Properties'))
+                ->setChildren([
+                    (new Toggles('date', 'Date & Time Field'))
+                        ->setValues([
+                            'type',
+                            'initialValue',
+                            'locale',
+                            'datepicker',
+                            'nativeTypes',
+                            'formatAsPlaceholder',
+                            'dateOrder',
+                            'date4DigitYear',
+                            'dateLeadingZero',
+                            'dateSeparator',
+                            'minDate',
+                            'maxDate',
+                            'clock24h',
+                            'clockSeparator',
+                            'clockAMPMSeparate',
+                        ])
+                        ->setOptions([
+                            'type' => 'Type',
+                            'initialValue' => 'Initial Value',
+                            'locale' => 'Force Locale',
+                            'datepicker' => 'Use Built-In Datepicker',
+                            'nativeTypes' => 'Use Native Input Types',
+                            'formatAsPlaceholder' => 'Use Format as Placeholder',
+                            'dateOrder' => 'Date Order',
+                            'date4DigitYear' => '4-Digit Year',
+                            'dateLeadingZero' => 'Leading Zero on Date',
+                            'dateSeparator' => 'Date Separator',
+                            'minDate' => 'Minimum Date',
+                            'maxDate' => 'Maximum Date',
+                            'clock24h' => '24-Hour Clock',
+                            'clockSeparator' => 'Clock Separator',
+                            'clockAMPMSeparate' => 'Separate AM/PM with a space',
+                        ]),
+                    (new Toggles('phone', 'Phone Field'))
+                        ->setValues([
+                            'pattern',
+                            'javascript',
+                        ])
+                        ->setOptions([
+                            'pattern' => 'Pattern Validation',
+                            'javascript' => 'Built-in javascript validation',
+                        ]),
+                    (new Toggles('file', 'File Uplaod Fields'))
+                        ->setValues([
+                            'count',
+                            'source',
+                            'uploadLocation',
+                            'fileKinds',
+                            'maxFileSizeKB',
+                            'accentColor',
+                            'theme',
+                            'placeholder',
+                            'removeFileMessage',
+                            'dialogElement',
+                            'dialogSelector',
+                        ])
+                        ->setOptions([
+                            'count' => 'File Count',
+                            'source' => 'Asset Source',
+                            'uploadLocation' => 'Upload Location',
+                            'fileKinds' => 'File Kinds',
+                            'maxFileSizeKB' => 'Maximum File Size',
+                            'accentColor' => 'Accent Color',
+                            'theme' => 'Theme',
+                            'placeholder' => 'Placeholder',
+                            'removeFileMessage' => 'Remove File Message',
+                            'dialogElement' => 'Use Dialog Element',
+                            'dialogSelector' => 'Custom Dialog Selector',
+                        ]),
+                    (new Toggles('html', 'HTML Field'))
+                        ->setValues(['twig'])
+                        ->setOptions([
+                            'twig' => 'Allow Twig',
+                        ]),
+                    (new Toggles('table', 'Table Field'))
+                        ->setValues([
+                            'javascript',
+                            'maxRows',
+                            'addButtonLabel',
+                            'addButtonMarkup',
+                            'removeButtonLabel',
+                            'removeButtonMarkup',
+                            'tableAttributes',
+                        ])
+                        ->setOptions([
+                            'javascript' => 'Use built-in javascript for adding/removing rows',
+                            'maxRows' => 'Maximum Rows',
+                            'addButtonLabel' => 'Add Button Label',
+                            'addButtonMarkup' => 'Add Button Markup',
+                            'removeButtonLabel' => 'Remove Button Label',
+                            'removeButtonMarkup' => 'Remove Button Markup',
+                            'tableAttributes' => 'Table Attributes',
+                        ]),
+                    (new Toggles('rating', 'Rating Field'))
+                        ->setValues([
+                            'max',
+                            'idle',
+                            'hover',
+                            'selected',
+                        ])
+                        ->setOptions([
+                            'max' => 'Maximum Stars',
+                            'idle' => 'Unselected Color',
+                            'hover' => 'Hover Color',
+                            'selected' => 'Selected Color',
+                        ]),
+                    (new Toggles('signature', 'Signature Field'))
+                        ->setValues([
+                            'width',
+                            'height',
+                            'clear',
+                            'borderColor',
+                            'backgroundColor',
+                            'penColor',
+                            'penDotSize',
+                        ])
+                        ->setOptions([
+                            'width' => 'Width of Pad',
+                            'height' => 'Height of Pad',
+                            'clear' => 'Show "Clear" Button',
+                            'borderColor' => 'Border Color',
+                            'backgroundColor' => 'Background Color',
+                            'penColor' => 'Pen Color',
+                            'penDotSize' => 'Pen Dot Size',
+                        ]),
+                    (new Toggles('calculation', 'Calculation Field'))
+                        ->setValues([
+                            'decimalCount',
+                            'inputType',
+                        ])
+                        ->setOptions([
+                            'decimalCount' => 'Decimal Count',
+                            'inputType' => 'Input Type',
+                        ]),
+                    (new Toggles('cards', 'Cards Field'))
+                        ->setValues([
+                            'max',
+                            'perRow',
+                            'transform',
+                        ])
+                        ->setOptions([
+                            'max' => 'Maximum Selected Values',
+                            'perRow' => 'Cards Per Row',
+                            'transform' => 'Image Transform',
+                        ]),
+                ]),
+
             (new Group('notifications', 'Notifications'))
                 ->setChildren([
                     (new Boolean('tab', 'Notifications Tab', true))

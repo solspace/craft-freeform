@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\DataObjects\Form\Defaults;
 
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\CategoryInterface;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\FieldProperties;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Notifications\Notifications;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\Settings\Settings;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
@@ -19,6 +20,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
 
     public Notifications $notifications;
     public Settings $settings;
+    public FieldProperties $props;
 
     public function __construct(array $config = [])
     {
@@ -30,6 +32,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
 
         $this->notifications = new Notifications($config['notifications'] ?? []);
         $this->settings = new Settings($config['settings'] ?? []);
+        $this->props = new FieldProperties($config['props'] ?? []);
     }
 
     public function getIterator(): \ArrayIterator
@@ -68,6 +71,7 @@ class Defaults implements \IteratorAggregate, \JsonSerializable, CustomNormalize
             'includeSampleTemplates' => $this->includeSampleTemplates,
             'notifications' => $this->notifications->jsonSerialize(),
             'settings' => $this->settings->jsonSerialize(),
+            'props' => $this->props->jsonSerialize(),
         ];
     }
 }

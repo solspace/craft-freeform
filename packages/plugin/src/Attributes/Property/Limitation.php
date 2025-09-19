@@ -7,7 +7,10 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Limitation implements CustomNormalizerInterface
 {
-    public function __construct(public string $expression) {}
+    public function __construct(
+        public string $expression,
+        public ?string $includes = null,
+    ) {}
 
     public function normalize(): string
     {

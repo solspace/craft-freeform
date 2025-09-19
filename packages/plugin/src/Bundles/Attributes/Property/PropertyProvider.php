@@ -433,7 +433,7 @@ class PropertyProvider
             return;
         }
 
-        $attribute->visible = $this->checker->can($limitation->expression);
+        $attribute->visible = $this->checker->can($limitation->expression, $limitation->includes);
     }
 
     private function getContainer(): Container

@@ -107,7 +107,7 @@
         <hr>
 
         <h2>{{ category.label|t('freeform') }}</h2>
-        <ul class="categories">
+        <ul class="categories {{ category.delimited ? 'delimited' }}">
             {% for subName, subCategory in category %}
                 <li>
                     <ul class="category-item-list">
@@ -124,22 +124,37 @@
                                 </label>
 
                                 <div>
-                                    {% if item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\SelectItem') %}
+                                    {% if item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\CheckboxesItem') %}
+                                        {{ forms.checkboxSelect({
+                                            id: 'checkbox-select-'~item.label|kebab,
+                                            name: path~"[value]",
+                                            values: item.value,
+                                            options: item.options.toTwigArray(),
+                                            class: 'fullwidth'
+                                        }) }}
+                                    {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\SelectItem') %}
                                         {{ forms.select({
                                             name: path~"[value]",
                                             value: item.value,
                                             options: item.options.toTwigArray(),
                                             class: 'fullwidth',
+                                            columns: 2
                                         }) }}
                                     {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\BoolItem') %}
                                         {{ forms.lightswitch({
                                             name: path~"[value]",
                                             on: item.value,
                                         }) }}
+                                    {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\ColorItem') %}
+                                        {{ forms.color({
+                                            name: path~"[value]",
+                                            value: item.value,
+                                        }) }}
                                     {% else %}
                                         {{ forms.text({
                                             name: path~"[value]",
                                             value: item.value,
+                                            placeholder: item.placeholder,
                                         }) }}
                                     {% endif %}
                                 </div>

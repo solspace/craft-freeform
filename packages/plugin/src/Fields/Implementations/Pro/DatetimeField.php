@@ -8,7 +8,9 @@ use craft\gql\types\DateTime as DateTimeType;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
@@ -41,6 +43,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         icon: __DIR__.'/../../SectionIcons/gears.svg',
         order: 1,
     )]
+    #[Limitation('props.date', 'type')]
+    #[DefaultValue('props.date.type')]
     #[Input\Select(
         label: 'Type',
         instructions: 'Use date, time or both.',
@@ -53,12 +57,16 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
+    #[Limitation('props.date', 'initialValue')]
+    #[DefaultValue('props.date.initialValue')]
     #[Input\Text(
         label: 'Initial value',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
     )]
     protected string $initialValue = '';
 
+    #[Limitation('props.date', 'locale')]
+    #[DefaultValue('props.date.locale')]
     #[Input\Text(
         label: 'Force a locale',
         instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
@@ -66,12 +74,16 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected ?string $locale = null;
 
+    #[Limitation('props.date', 'datepicker')]
+    #[DefaultValue('props.date.datepicker')]
     #[Input\Boolean(
         label: 'Use built-in datepicker',
         order: 2,
     )]
     protected bool $useDatepicker = true;
 
+    #[Limitation('props.date', 'nativeTypes')]
+    #[DefaultValue('props.date.nativeTypes')]
     #[Input\Boolean(
         label: 'Use native input types',
         instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
@@ -79,6 +91,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected bool $useNativeTypes = false;
 
+    #[Limitation('props.date', 'formatAsPlaceholder')]
+    #[DefaultValue('props.date.formatAsPlaceholder')]
     #[Input\Boolean(
         label: 'Use date format as placeholder',
         order: 3,
@@ -99,6 +113,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 2,
     )]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateOrder')]
+    #[DefaultValue('props.date.dateOrder')]
     #[Input\Select(
         label: 'Date order',
         instructions: 'Choose the order in which to show day, month and year.',
@@ -112,11 +128,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'date4DigitYear')]
+    #[DefaultValue('props.date.date4DigitYear')]
     #[Input\Boolean('Four digit year')]
     protected bool $date4DigitYear = true;
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateLeadingZero')]
+    #[DefaultValue('props.date.dateLeadingZero')]
     #[Input\Boolean(
         label: 'Leading zero on date',
         instructions: 'Include a leading zero for day and month numbers.'
@@ -125,6 +145,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateSeparator')]
+    #[DefaultValue('props.date.dateSeparator')]
     #[Input\Select(
         label: 'Date separator',
         instructions: 'Used to separate date values.',
@@ -140,6 +162,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'minDate')]
+    #[DefaultValue('props.date.minDate')]
     #[Input\Text(
         label: 'Minimum date',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
@@ -148,6 +172,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('date')]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'maxDate')]
+    #[DefaultValue('props.date.maxDate')]
     #[Input\Text(
         label: 'Maximum date',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
@@ -161,11 +187,15 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         order: 3,
     )]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clock24h')]
+    #[DefaultValue('props.date.clock24h')]
     #[Input\Boolean('24h clock')]
     protected bool $clock24h = false;
 
     #[Section('time')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clockSeparator')]
+    #[DefaultValue('props.date.clockSeparator')]
     #[Input\Select(
         label: 'Clock Separator',
         instructions: 'Used to separate clock values.',
@@ -181,6 +211,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     #[Section('time')]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clockAMPMSeparate')]
+    #[DefaultValue('props.date.clockAMPMSeparate')]
     #[Input\Boolean('Separate AM/PM with a space')]
     protected bool $clockAMPMSeparate = true;
 

@@ -43,7 +43,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Temperature',
-        instructions: 'Controls randomness in the response (0.0 = deterministic, 1.0 = very random). Enter a value between 0.0 and 1.0.',
+        instructions: 'Controls randomness in the response (`0.0` = deterministic, `1.0` = very random). Enter a value between `0.0` and `1.0`.',
         placeholder: '0.7',
     )]
     protected string $temperature = '0.7';

@@ -4,7 +4,9 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
@@ -27,11 +29,11 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
 {
     use DefaultTextValueTrait;
 
-    private const DEFAULT_CALCULATIONS = '';
+    public const INPUT_TYPE_REGULAR = 'regularTextInput';
+    public const INPUT_TYPE_PLAIN = 'plainText';
+    public const INPUT_TYPE_HIDDEN = 'hidden';
 
-    private const INPUT_TYPE_REGULAR = 'regularTextInput';
-    private const INPUT_TYPE_PLAIN = 'plainText';
-    private const INPUT_TYPE_HIDDEN = 'hidden';
+    private const DEFAULT_CALCULATIONS = '';
 
     protected string $instructions = '';
 
@@ -52,6 +54,8 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     )]
     protected string $calculations = self::DEFAULT_CALCULATIONS;
 
+    #[Limitation('props.calculation', 'decimalCount')]
+    #[DefaultValue('props.calculation.decimalCount')]
     #[Input\Integer(
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for empty / no rounding',
@@ -59,6 +63,8 @@ class CalculationField extends AbstractField implements DefaultValueInterface, T
     )]
     protected ?int $decimalCount = null;
 
+    #[Limitation('props.calculation', 'inputType')]
+    #[DefaultValue('props.calculation.inputType')]
     #[Input\Select(
         options: [
             self::INPUT_TYPE_REGULAR => 'Regular Text Input',

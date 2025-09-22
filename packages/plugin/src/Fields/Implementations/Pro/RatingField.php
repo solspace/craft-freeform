@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -30,6 +31,8 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 
+    #[Limitation('props.rating', 'max')]
+    #[DefaultValue('props.rating.max')]
     #[Input\Select(
         label: 'Maximum Number of Stars',
         options: [
@@ -47,12 +50,18 @@ class RatingField extends BaseOptionsField implements ExtraFieldInterface, Optio
     )]
     protected int $maxValue = 5;
 
+    #[Limitation('props.rating', 'idle')]
+    #[DefaultValue('props.rating.idle')]
     #[Input\ColorPicker('Unselected Color')]
     protected string $colorIdle = '#DDDDDD';
 
+    #[Limitation('props.rating', 'hover')]
+    #[DefaultValue('props.rating.hover')]
     #[Input\ColorPicker('Hover Color')]
     protected string $colorHover = '#FFD700';
 
+    #[Limitation('props.rating', 'selected')]
+    #[DefaultValue('props.rating.selected')]
     #[Input\ColorPicker('Selected Color')]
     protected string $colorSelected = '#FF7700';
 

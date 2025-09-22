@@ -21,4 +21,9 @@ class Settings extends BaseCategory
     {
         return 'Settings Defaults';
     }
+
+    public function isDelimited(): bool
+    {
+        return true;
+    }
 }

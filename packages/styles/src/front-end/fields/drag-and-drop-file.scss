@@ -27,8 +27,10 @@ $color-fill: #077bff;
 
 .freeform-file-dnd__input {
   --accent: #3a85ee;
+  display: block;
 
   padding: 67px $gap;
+  width: 100%;
   height: auto;
 
   border-radius: 7px;

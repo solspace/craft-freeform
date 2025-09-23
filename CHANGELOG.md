@@ -10,6 +10,12 @@
 - Updated the _Template Overrides_ feature to automatically factor in success and error attributes when in AJAX mode.
 - Various other minor improvements to the _Template Overrides_ feature reliability.
 
+## 5.12.2 - 2025-09-23
+
+### Fixed
+- Fixed WCAG compliance issues in **File Upload Drag & Drop** fields.
+- Fixed an issue where, when multiple forms with **manual CAPTCHAs** were rendered on the same page, subsequent CAPTCHAs did not display.
+
 ## 5.12.1 - 2025-09-15
 
 ### Fixed

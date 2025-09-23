@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'File Drag & Drop',
@@ -124,9 +125,15 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             $fileCount = \count($this->getValue());
         }
 
+        $placeholderText = $this->translate('placeholder', $this->getPlaceholder());
+        $ariaDescribedBy = $this->getHandle().'-messages';
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
+            ->setIfEmpty('type', 'button')
+            ->setIfEmpty('aria-label', $placeholderText)
+            ->setIfEmpty('aria-describedby', $ariaDescribedBy)
             ->append('class', 'freeform-file-dnd__input')
             ->replace('data-freeform-file-upload', $this->getHandle())
             ->replace('data-file-count', $fileCount)
@@ -139,18 +146,26 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->setIfEmpty('data-message-size', $messageSize)
             ->setIfEmpty('data-accent', $this->getAccent())
             ->setIfEmpty('data-base-url', UrlHelper::siteUrl('/freeform'))
+            ->set('data-confirm-message', $this->getRemoveFileMessage())
         ;
 
-        $attributes->set('data-confirm-message', $this->getRemoveFileMessage());
         if ($this->isUseCustomDialog()) {
             $attributes->set('data-dialog-selector', $this->getConfirmDialogSelector());
         }
 
         $output = '<div data-placeholder class="freeform-file-dnd__placeholder">';
-        $output .= $this->translate('placeholder', $this->getPlaceholder());
+        $output .= $placeholderText;
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-dnd__preview-zone"></div>';
-        $output .= '<ul data-messages class="freeform-file-dnd__messages"></ul>';
+
+        $messageAttributes = (new Attributes())
+            ->set('id', $ariaDescribedBy)
+            ->set('aria-live', 'polite')
+            ->set('data-messages')
+            ->append('class', 'freeform-file-dnd__messages')
+        ;
+
+        $output .= Html::tag('ul', '', $messageAttributes->toHtmlTagArray());
         $output .= Html::tag(
             'input',
             '',
@@ -159,7 +174,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $errorTag = '<div data-error-append-target="'.$this->getHandle().'"></div>';
         $tag = Html::tag(
-            'div',
+            $attributes->getTag('button'),
             $output,
             $attributes->toHtmlTagArray(['field' => $this])
         );

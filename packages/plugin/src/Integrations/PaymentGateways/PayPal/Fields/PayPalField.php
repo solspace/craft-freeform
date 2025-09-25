@@ -9,7 +9,6 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
@@ -31,6 +30,7 @@ class PayPalField extends AbstractField implements PaymentFieldInterface
 {
     public const AMOUNT_TYPE_FIXED = 'fixed';
     public const AMOUNT_TYPE_DYNAMIC = 'dynamic';
+
     #[Required]
     #[ValueTransformer(IntegrationTransformer::class)]
     #[Input\ApplicationStateSelect(
@@ -143,9 +143,6 @@ class PayPalField extends AbstractField implements PaymentFieldInterface
             ->set('value', $this->getValue())
         ;
         $output .= '<input'.$inputAttributes.' />';
-
-        $provider = \Craft::$container->get(FormIntegrationsProvider::class);
-        $integrations = $provider->getForForm($this->getForm(), PayPal::class);
 
         $config = json_encode([
             'required' => $this->isRequired(),

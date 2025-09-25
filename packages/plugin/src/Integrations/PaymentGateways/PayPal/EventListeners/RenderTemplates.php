@@ -51,12 +51,22 @@ class RenderTemplates extends FeatureBundle
 
         // Prefer metadata for amount/currency/status; fallback to record
         $unit = $metadata['unit'] ?? 'dollars';
-        $rawAmount = isset($metadata['amount']) ? (float) $metadata['amount'] : (float) ($payment->amount ?? 0);
-        $displayAmount = $rawAmount > 0
-            ? ('cents' === $unit ? number_format($rawAmount / 100, 2) : number_format($rawAmount, 2))
-            : null;
 
-        $displayStatus = isset($metadata['status']) ? (string) $metadata['status'] : (string) $payment->status;
+        $rawAmount = 0;
+        if (isset($metadata['amount'])) {
+            $rawAmount = (float) $metadata['amount'];
+        } elseif (isset($payment->amount)) {
+            $rawAmount = (float) $payment->amount;
+        }
+
+        $displayAmount = null;
+        if ($rawAmount > 0) {
+            $isCents = 'cents' === $unit;
+            $divider = $isCents ? 100 : 1;
+            $displayAmount = number_format($rawAmount / $divider, 2);
+        }
+
+        $displayStatus = (string) ($metadata['status'] ?? $payment->status);
 
         $captureId = $metadata['captureId'] ?? null;
         $orderId = $metadata['orderId'] ?? $payment->resourceId ?? null;

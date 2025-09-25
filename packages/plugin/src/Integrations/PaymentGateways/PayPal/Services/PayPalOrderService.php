@@ -20,7 +20,6 @@ class PayPalOrderService
     {
         try {
             $client = $this->clientProvider->getAuthorizedClient($integration);
-            $token = $this->fetchAccessToken($client, $integration);
 
             $endpoint = $integration->getApiRootUrl().'/v2/checkout/orders';
 
@@ -40,10 +39,6 @@ class PayPalOrderService
             ];
 
             $response = $client->post($endpoint, [
-                RequestOptions::HEADERS => [
-                    'Authorization' => 'Bearer '.$token,
-                    'Content-Type' => 'application/json',
-                ],
                 RequestOptions::JSON => $payload,
             ]);
 
@@ -77,21 +72,10 @@ class PayPalOrderService
             throw $e;
         }
 
-        try {
-            $token = $this->fetchAccessToken($client, $integration);
-        } catch (\Exception $e) {
-            throw $e;
-        }
-
         $endpoint = $integration->getApiRootUrl().'/v2/checkout/orders/'.$orderId.'/capture';
 
         try {
-            $response = $client->post($endpoint, [
-                RequestOptions::HEADERS => [
-                    'Authorization' => 'Bearer '.$token,
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
+            $response = $client->post($endpoint);
 
             $json = json_decode((string) $response->getBody());
 
@@ -100,37 +84,6 @@ class PayPalOrderService
                 'id' => (string) ($json->id ?? $orderId),
             ];
         } catch (\Throwable $e) {
-            throw $e;
-        }
-    }
-
-    private function fetchAccessToken($client, PayPal $integration): string
-    {
-        $clientId = $integration->getClientId();
-        $clientSecret = $integration->getClientSecret();
-
-        if (!$clientId || !$clientSecret) {
-            throw new \Exception('PayPal credentials are not set correctly. Client ID: '.($clientId ? 'set' : 'not set').', Client Secret: '.($clientSecret ? 'set' : 'not set'));
-        }
-
-        $endpoint = $integration->getApiRootUrl().'/v1/oauth2/token';
-
-        try {
-            $response = $client->post($endpoint, [
-                'auth' => [$clientId, $clientSecret],
-                'headers' => [
-                    'Accept' => 'application/json',
-                    'Accept-Language' => 'en_US',
-                ],
-                'form_params' => [
-                    'grant_type' => 'client_credentials',
-                ],
-            ]);
-
-            $json = json_decode($response->getBody()->getContents());
-
-            return (string) ($json->access_token ?? '');
-        } catch (\Exception $e) {
             throw $e;
         }
     }

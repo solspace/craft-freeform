@@ -40,16 +40,12 @@ abstract class BasePayPalController extends BaseApiController
             $form->handleRequest($this->request, true);
         }
 
-        $integrations = $this->getIntegrationsService()->getForForm($form, Type::TYPE_PAYMENT_GATEWAYS);
-
-        $integration = null;
-        foreach ($integrations as $int) {
-            if ($int->getId() === $integrationId) {
-                $integration = $int;
-
-                break;
-            }
-        }
+        $integration = $this->getIntegrationsService()->getFirstForForm(
+            $form,
+            Type::TYPE_PAYMENT_GATEWAYS,
+            true,
+            filter: fn ($integration) => $integration->getId() === $integrationId,
+        );
 
         if (null === $integration) {
             throw new NotFoundHttpException('Integration not found');

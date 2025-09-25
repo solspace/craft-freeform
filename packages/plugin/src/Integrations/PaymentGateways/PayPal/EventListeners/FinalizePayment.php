@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways\PayPal\EventListeners;
 
-use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
@@ -53,25 +52,22 @@ class FinalizePayment extends FeatureBundle
             // Try to fetch capture details to enrich the record
             try {
                 $client = $this->clientProvider->getAuthorizedClient($integration);
-                $accessToken = $this->fetchAccessToken($client, $integration);
-                if ($accessToken) {
-                    [$order, $capture] = $this->fetchOrderWithRetry($client, $integration, $orderId, $accessToken);
+                [$order, $capture] = $this->fetchOrderWithRetry($client, $integration, $orderId);
 
-                    $amount = $capture->amount->value ?? null;
-                    $currency = $capture->amount->currency_code ?? $payment->currency;
-                    $status = $capture->status ?? ($order->status ?? '');
+                $amount = $capture->amount->value ?? null;
+                $currency = $capture->amount->currency_code ?? $payment->currency;
+                $status = $capture->status ?? ($order->status ?? '');
 
-                    if ($amount) {
-                        $payment->amount = (float) $amount;
-                    }
-                    $payment->currency = strtoupper($currency);
-                    if ($status) {
-                        $payment->status = (string) $status;
-                    }
-
-                    $payment->metadata = json_encode($this->buildMetadata($order, $capture, $payment, $orderId));
-                    $payment->save();
+                if ($amount) {
+                    $payment->amount = (float) $amount;
                 }
+                $payment->currency = strtoupper($currency);
+                if ($status) {
+                    $payment->status = (string) $status;
+                }
+
+                $payment->metadata = json_encode($this->buildMetadata($order, $capture, $payment, $orderId));
+                $payment->save();
             } catch (\Throwable $e) {
                 // swallow; keep pending record
             }
@@ -103,36 +99,13 @@ class FinalizePayment extends FeatureBundle
         return $payment;
     }
 
-    private function fetchAccessToken($client, PayPal $integration): ?string
-    {
-        $response = $client->post($integration->getApiRootUrl().'/v1/oauth2/token', [
-            'auth' => [$integration->getClientId(), $integration->getClientSecret()],
-            RequestOptions::HEADERS => [
-                'Accept' => 'application/json',
-                'Accept-Language' => 'en_US',
-            ],
-            'form_params' => [
-                'grant_type' => 'client_credentials',
-            ],
-        ]);
-
-        $json = json_decode($response->getBody()->getContents());
-
-        return (string) ($json->access_token ?? '') ?: null;
-    }
-
-    private function fetchOrderWithRetry($client, PayPal $integration, string $orderId, string $accessToken): array
+    private function fetchOrderWithRetry($client, PayPal $integration, string $orderId): array
     {
         $order = null;
         $capture = null;
 
         for ($i = 0; $i < 3; ++$i) {
-            $orderResponse = $client->get($integration->getApiRootUrl().'/v2/checkout/orders/'.$orderId, [
-                RequestOptions::HEADERS => [
-                    'Authorization' => 'Bearer '.$accessToken,
-                    'Content-Type' => 'application/json',
-                ],
-            ]);
+            $orderResponse = $client->get('/v2/checkout/orders/'.$orderId);
             $order = json_decode($orderResponse->getBody()->getContents());
             $purchaseUnit = $order->purchase_units[0] ?? null;
             $capture = $purchaseUnit->payments->captures[0] ?? null;

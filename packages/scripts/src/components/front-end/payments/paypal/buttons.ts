@@ -1,21 +1,13 @@
 // PayPal SDK integration for Freeform
-interface PayPalButtons {
-  render(element: Element): void;
+import { loadScript, type PayPalNamespace as PayPalSDK } from '@paypal/paypal-js';
+
+// Declare globals once for typing
+declare global {
+  interface Window {
+    paypal?: PayPalSDK;
+    FREEFORM_DEBUG?: boolean;
+  }
 }
-
-type PayPalButtonsConfig = {
-  style?: Record<string, unknown>;
-  createOrder: () => Promise<string> | string;
-  onApprove: (data: { orderID: string }) => Promise<void> | void;
-  onError?: (err: unknown) => void;
-  onCancel?: (_data: unknown) => void;
-};
-
-interface PayPalSDK {
-  Buttons: (config: PayPalButtonsConfig) => PayPalButtons;
-}
-
-// Removed global declaration; use window.paypal safely instead
 
 type Config = {
   required: boolean;
@@ -26,7 +18,7 @@ type Config = {
   finalizeOnSubmit?: boolean;
 };
 
-const Q = {
+const SELECTORS = {
   root: '[data-freeform-paypal-buttons]',
   orderInput: '[data-freeform-paypal-order]',
 };
@@ -35,7 +27,7 @@ const ENDPOINTS = {
   orders: '/freeform/payments/paypal/orders',
 } as const;
 
-const DEBUG = (window as Window & { FREEFORM_DEBUG?: boolean }).FREEFORM_DEBUG === true;
+const DEBUG = window.FREEFORM_DEBUG === true;
 
 function logError(...args: unknown[]) {
   if (DEBUG) {
@@ -44,7 +36,7 @@ function logError(...args: unknown[]) {
 }
 
 function showNotice(root: Element, text: string) {
-  const container = root.closest('[data-field-container="payPalPayment"]') || root.parentElement;
+  const container = root.closest('[data-field-type="paypal"]') || root.parentElement;
   if (!container) return;
   let notice = container.querySelector('[data-ff-paypal-notice]') as HTMLElement | null;
   if (!notice) {
@@ -68,10 +60,14 @@ function parseConfig(el: Element): Config | null {
   }
 }
 
-type Values = Record<string, string | number | boolean | File>;
+type Values = Record<string, FormDataEntryValue>;
 
-type CreateOrderResult = { id: string; status?: string; approve?: string } | null;
-async function createOrder(endpoint: string, integration: string, values?: Values): Promise<CreateOrderResult> {
+type CreateOrderResult = {
+  id: string;
+  status?: string;
+  approve?: string;
+};
+async function createOrder(endpoint: string, integration: string, values: Values): Promise<CreateOrderResult | null> {
   try {
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -80,7 +76,7 @@ async function createOrder(endpoint: string, integration: string, values?: Value
         'FF-PAYPAL-INTEGRATION': integration,
       },
       credentials: 'same-origin',
-      body: values ? JSON.stringify({ values }) : undefined,
+      body: JSON.stringify({ values }),
     });
 
     if (!res.ok) {
@@ -97,13 +93,16 @@ async function createOrder(endpoint: string, integration: string, values?: Value
   }
 }
 
-type CaptureOrderResult = { status: string; id: string } | null;
+type CaptureOrderResult = {
+  status: string;
+  id: string;
+};
 async function captureOrder(
   endpoint: string,
   integration: string,
   orderId: string,
-  body?: unknown
-): Promise<CaptureOrderResult> {
+  body: unknown
+): Promise<CaptureOrderResult | null> {
   try {
     const res = await fetch(`${endpoint}/${orderId}/capture`, {
       method: 'POST',
@@ -112,7 +111,7 @@ async function captureOrder(
         'FF-PAYPAL-INTEGRATION': integration,
       },
       credentials: 'same-origin',
-      body: body ? JSON.stringify(body) : undefined,
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
@@ -130,44 +129,26 @@ async function captureOrder(
 }
 
 // Load PayPal SDK dynamically
-function loadPayPalSDK(clientId: string, sandbox: boolean, currency: string = 'USD'): Promise<void> {
-  return new Promise((resolve, reject) => {
-    if ((window as Window & { paypal?: PayPalSDK }).paypal) {
-      resolve();
-      return;
-    }
-
-    // Check if script is already being loaded
-    const existingScript = document.getElementById('freeform-paypal-sdk');
-    if (existingScript) {
-      existingScript.addEventListener('load', () => resolve());
-      existingScript.addEventListener('error', () => reject(new Error('Failed to load PayPal SDK')));
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.id = 'freeform-paypal-sdk';
-    const cur = (currency || 'USD').toUpperCase();
-    script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${cur}&intent=capture&components=buttons&enable-funding=venmo,paylater`;
-    script.async = true;
-    script.defer = true;
-
-    script.onload = () => {
-      // SDK loaded
-      resolve();
-    };
-
-    script.onerror = () => {
-      logError('Failed to load SDK');
-      reject(new Error('Failed to load PayPal SDK'));
-    };
-
-    document.head.appendChild(script);
+async function getPayPalSDK(clientId: string, sandbox: boolean, currency: string): Promise<PayPalSDK> {
+  if (window.paypal) {
+    return window.paypal;
+  }
+  const paypalNamespace = await loadScript({
+    clientId,
+    currency: (currency || 'USD').toUpperCase(),
+    components: 'buttons',
+    intent: 'capture',
+    enableFunding: 'venmo,paylater',
   });
+  if (!paypalNamespace) {
+    throw new Error('PayPal SDK failed to load');
+  }
+  window.paypal = paypalNamespace;
+  return paypalNamespace;
 }
 
 // Initialize PayPal buttons for a specific element
-async function initializePayPalButtons(root: Element) {
+async function initializePayPalButtons(root: HTMLElement) {
   const config = parseConfig(root);
   if (!config) {
     logError('Could not parse config from element', root);
@@ -179,13 +160,13 @@ async function initializePayPalButtons(root: Element) {
     return;
   }
 
-  const form = root.closest('form');
+  const form = root.closest('form') as HTMLFormElement | null;
   if (!form) {
     logError('Could not find form element');
     return;
   }
 
-  const hiddenInput = form.querySelector<HTMLInputElement>(Q.orderInput);
+  const hiddenInput = form.querySelector<HTMLInputElement>(SELECTORS.orderInput);
   if (!hiddenInput) {
     logError('Could not find hidden order input');
     return;
@@ -193,142 +174,118 @@ async function initializePayPalButtons(root: Element) {
 
   // Initialize PayPal buttons
   try {
-    // Load SDK first
-    await loadPayPalSDK(config.clientId, config.sandbox, config.currency || 'USD');
+    const paypalSDK = await getPayPalSDK(config.clientId, config.sandbox, config.currency || 'USD');
 
-    // Wait a bit for the SDK to be fully ready
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    paypalSDK
+      .Buttons({
+        style: {
+          layout: 'vertical',
+          color: 'blue',
+          shape: 'rect',
+          label: 'paypal',
+        },
+        createOrder: async () => {
+          // Create order
 
-    const p = (window as unknown as { paypal?: PayPalSDK }).paypal;
-    if (!p) {
-      logError('PayPal SDK is not available on window');
-      return;
-    }
+          try {
+            // Serialize current form values so server can compute dynamic amount before order create
+            const formData = new FormData(form);
+            const values: Values = {};
+            formData.forEach((value, key) => {
+              values[key] = value;
+            });
 
-    p.Buttons({
-      style: {
-        layout: 'vertical',
-        color: 'blue',
-        shape: 'rect',
-        label: 'paypal',
-      },
-      createOrder: async () => {
-        // Create order
-
-        try {
-          // Serialize current form values so server can compute dynamic amount before order create
-          const fd = new FormData(form);
-          const values: Values = {};
-          fd.forEach((v, k) => {
-            (values as Record<string, unknown>)[k] = v as unknown as string | number | boolean | File;
-          });
-
-          const order = await createOrder(ENDPOINTS.orders, config.integration, values);
-          if (!order || !order.id) {
-            logError('Failed to create order or no order ID returned', order);
-            throw new Error('Failed to create PayPal order');
+            const order = await createOrder(ENDPOINTS.orders, config.integration, values);
+            if (!order || !order.id) {
+              logError('Failed to create order or no order ID returned', order);
+              throw new Error('Failed to create PayPal order');
+            }
+            // Order created
+            hiddenInput.value = order.id;
+            return order.id;
+          } catch (error) {
+            logError('Error in createOrder:', error);
+            throw error;
           }
-          // Order created
-          hiddenInput.value = order.id;
-          return order.id;
-        } catch (error) {
-          logError('Error in createOrder:', error);
-          throw error;
-        }
-      },
-      onApprove: async (data: { orderID: string }) => {
-        // Order approved: immediately capture, but do NOT auto-submit
-        hiddenInput.value = String(data.orderID || '');
-        try {
-          const fd = new FormData(form);
-          const values: Values = {};
-          fd.forEach((v, k) => {
-            (values as Record<string, unknown>)[k] = v as unknown as string | number | boolean | File;
-          });
-          const captureResult = await captureOrder(ENDPOINTS.orders, config.integration, String(data.orderID || ''), {
-            values,
-          });
-          if (captureResult && captureResult.status === 'COMPLETED') {
-            showNotice(root, 'Payment completed with PayPal. Click Submit to finish.');
-          } else {
-            logError('Payment capture failed', captureResult);
-            showNotice(root, 'PayPal capture failed. Please try again.');
+        },
+        onApprove: async (data: { orderID: string }) => {
+          // Order approved: immediately capture, but do NOT auto-submit
+          hiddenInput.value = String(data.orderID || '');
+          try {
+            const formData = new FormData(form);
+            const values: Values = {};
+            formData.forEach((value, key) => {
+              values[key] = value;
+            });
+            const captureResult = await captureOrder(ENDPOINTS.orders, config.integration, String(data.orderID || ''), {
+              values,
+            });
+            if (captureResult && captureResult.status === 'COMPLETED') {
+              showNotice(root, 'Payment completed with PayPal. Click Submit to finish.');
+            } else {
+              logError('Payment capture failed', captureResult);
+              showNotice(root, 'PayPal capture failed. Please try again.');
+            }
+          } catch (error) {
+            logError('Error during payment capture:', error);
+            showNotice(root, 'PayPal capture error. Please try again.');
           }
-        } catch (error) {
-          logError('Error during payment capture:', error);
-          showNotice(root, 'PayPal capture error. Please try again.');
-        }
-      },
-      onError: (err: unknown) => {
-        logError('Payment error:', err);
-      },
-      onCancel: (_data: unknown) => {
-        // Payment cancelled
-      },
-    }).render(root);
+        },
+        onError: (err: unknown) => {
+          logError('Payment error:', err);
+        },
+        onCancel: (_data: unknown) => {
+          // Payment cancelled
+        },
+      })
+      .render(root);
   } catch (error) {
     logError('Failed to initialize buttons:', error);
   }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  const roots = document.querySelectorAll(Q.root);
+  const roots = document.querySelectorAll<HTMLElement>(SELECTORS.root);
   // Found PayPal button containers
 
   if (roots.length === 0) {
     return;
   }
 
-  // Get unique client IDs
-  const clientIds = new Set<string>();
-  const currencies = new Set<string>();
+  // Group roots by clientId to load separate SDKs
+  const rootsByClientId = new Map<string, HTMLElement[]>();
   roots.forEach((root) => {
     const config = parseConfig(root);
     if (config?.clientId) {
-      clientIds.add(config.clientId);
-    }
-    if (config?.currency) {
-      currencies.add(String(config.currency).toUpperCase());
+      if (!rootsByClientId.has(config.clientId)) {
+        rootsByClientId.set(config.clientId, []);
+      }
+      rootsByClientId.get(config.clientId)!.push(root);
     }
   });
 
-  if (clientIds.size === 0) {
+  if (rootsByClientId.size === 0) {
     logError('No valid configurations found');
     return;
   }
 
-  // Load SDK with the first client ID and first currency (all PayPal fields on a page must share one currency)
-  const firstClientId = Array.from(clientIds)[0];
-  const firstConfig = parseConfig(roots[0]);
-  const loadedCurrency = (firstConfig?.currency || 'USD').toUpperCase();
-  if (currencies.size > 1) {
-    logError(
-      'Multiple currencies detected on the same page. Using',
-      loadedCurrency,
-      'for SDK. Other currencies will be skipped.'
-    );
-  }
+  // Load SDK and initialize buttons for each clientId
+  rootsByClientId.forEach(async (clientRoots, clientId) => {
+    try {
+      // Get the first config for this clientId to determine sandbox setting
+      const firstConfig = parseConfig(clientRoots[0]);
+      if (!firstConfig) return;
 
-  try {
-    await loadPayPalSDK(firstClientId, firstConfig?.sandbox || false, loadedCurrency);
-  } catch (error) {
-    logError('Failed to load SDK:', error);
-    return;
-  }
+      // Load SDK for this clientId
+      await getPayPalSDK(clientId, firstConfig.sandbox, firstConfig.currency || 'USD');
 
-  // Initialize all PayPal button containers
-  roots.forEach((root) => {
-    const cfg = parseConfig(root);
-    const ccy = (cfg?.currency || 'USD').toUpperCase();
-    if (ccy !== loadedCurrency) {
-      logError(
-        'Skipping button init due to currency mismatch. Loaded SDK currency =',
-        loadedCurrency,
-        'button currency =',
-        ccy
-      );
-      return;
+      // Initialize all buttons for this clientId
+      clientRoots.forEach((root) => {
+        initializePayPalButtons(root);
+      });
+    } catch (error) {
+      logError(`Failed to load SDK for clientId ${clientId}:`, error);
+      // Continue with other clientIds even if one fails
     }
-    initializePayPalButtons(root);
   });
 });

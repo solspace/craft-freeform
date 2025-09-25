@@ -9,20 +9,10 @@ class PayPalPriceService
 {
     public function getAmount(Form $form, PayPalField $field): int
     {
-        $amount = $field->getAmount();
-
-        switch ($field->getAmountType()) {
-            case PayPalField::AMOUNT_TYPE_DYNAMIC:
-                $amount = $this->getDynamicAmount($form, $field);
-
-                break;
-
-            case PayPalField::AMOUNT_TYPE_FIXED:
-            default:
-                $amount = $field->getAmount();
-
-                break;
-        }
+        $amount = match ($field->getAmountType()) {
+            PayPalField::AMOUNT_TYPE_DYNAMIC => $this->getDynamicAmount($field),
+            default => $field->getAmount(),
+        };
 
         $finalAmount = (int) round($amount * 100);
 
@@ -33,23 +23,30 @@ class PayPalPriceService
         return $finalAmount;
     }
 
-    private function getDynamicAmount(Form $form, PayPalField $field): float
+    private function getDynamicAmount(PayPalField $field): float
     {
-        $amount = 0;
-
         $amountField = $field->getAmountField();
-        if ($amountField) {
-            $value = $amountField->getValue();
-            if (is_numeric($value)) {
-                $amount = (float) $value;
-            } elseif (\is_string($value)) {
-                $amount = (float) preg_replace('/[^0-9.]/', '', $value);
-            } elseif (\is_array($value)) {
-                $flat = array_filter(array_map(static fn ($v) => is_numeric($v) ? (float) $v : 0, $value));
-                $amount = (float) array_sum($flat);
-            }
+        $value = $amountField?->getValue();
+
+        if (is_numeric($value)) {
+            return (float) $value;
         }
 
-        return (float) $amount;
+        if (\is_string($value)) {
+            return (float) preg_replace('/[^0-9.]/', '', $value);
+        }
+
+        if (\is_array($value)) {
+            return (float) array_sum(
+                array_filter(
+                    array_map(
+                        static fn ($val) => is_numeric($val) ? (float) $val : 0,
+                        $value
+                    )
+                )
+            );
+        }
+
+        return 0.0;
     }
 }

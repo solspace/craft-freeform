@@ -36,6 +36,12 @@ class RegisterField extends FeatureBundle
             Form::EVENT_COLLECT_SCRIPTS,
             [$this, 'collectScripts']
         );
+
+        // Register PayPal client provider for client credentials flow
+        new PayPalClientProvider();
+
+        // Register PayPal error handler for 401 errors
+        new PayPalErrorHandler();
     }
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void

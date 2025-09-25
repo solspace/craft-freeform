@@ -8,7 +8,6 @@ use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 
 #[Edition(Edition::PRO)]
@@ -48,26 +47,86 @@ class PayPal extends PaymentGatewayIntegration
     )]
     protected bool $useSandbox = true;
 
-    public function getClientId(): ?string
+    // Token management properties (stored in metadata)
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $accessToken = '';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected int $issuedAt = 0;
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected int $expiresIn = 0;
+
+    public function getClientId(): string
     {
         return $this->getProcessedValue($this->clientId);
     }
 
-    public function getClientSecret(): ?string
+    public function getClientSecret(): string
     {
         return $this->getProcessedValue($this->clientSecret);
     }
 
     public function isSandbox(): bool
     {
-        return (bool) $this->useSandbox;
+        return $this->useSandbox;
+    }
+
+    // Token management methods
+    public function getAccessToken(): string
+    {
+        return $this->accessToken;
+    }
+
+    public function setAccessToken(string $accessToken): self
+    {
+        $this->accessToken = $accessToken;
+
+        return $this;
+    }
+
+    public function getIssuedAt(): int
+    {
+        return $this->issuedAt;
+    }
+
+    public function setIssuedAt(int $issuedAt): self
+    {
+        $this->issuedAt = $issuedAt;
+
+        return $this;
+    }
+
+    public function getExpiresIn(): int
+    {
+        return $this->expiresIn;
+    }
+
+    public function setExpiresIn(int $expiresIn): self
+    {
+        $this->expiresIn = $expiresIn;
+
+        return $this;
     }
 
     public function checkConnection(Client $client): bool
     {
-        $token = $this->fetchAccessToken($client);
+        try {
+            $response = $client->post($this->getApiRootUrl().'/v1/oauth2/token', [
+                'auth' => [$this->getClientId(), $this->getClientSecret()],
+                'form_params' => [
+                    'grant_type' => 'client_credentials',
+                ],
+            ]);
 
-        return !empty($token);
+            return 200 === $response->getStatusCode();
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 
     public function getApiRootUrl(): string
@@ -83,31 +142,5 @@ class PayPal extends PaymentGatewayIntegration
     {
         // No field mapping defined yet for PayPal; return empty map
         return [];
-    }
-
-    private function fetchAccessToken(Client $client): string
-    {
-        $clientId = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-        if (!$clientId || !$clientSecret) {
-            throw new IntegrationException('PayPal credentials are not set correctly.');
-        }
-
-        $endpoint = $this->getEndpoint('/v1/oauth2/token');
-
-        $response = $client->post($endpoint, [
-            'auth' => [$clientId, $clientSecret],
-            'headers' => [
-                'Accept' => 'application/json',
-                'Accept-Language' => 'en_US',
-            ],
-            'form_params' => [
-                'grant_type' => 'client_credentials',
-            ],
-        ]);
-
-        [, $json] = $this->getJsonResponse($response);
-
-        return (string) ($json->access_token ?? '');
     }
 }

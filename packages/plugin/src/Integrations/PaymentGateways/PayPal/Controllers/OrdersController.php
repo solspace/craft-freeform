@@ -27,12 +27,7 @@ class OrdersController extends BasePayPalController
     public function actionCreate(): Response
     {
         try {
-            [$form, $integration, $field, $hash] = $this->getRequestItems(handleFormRequest: false);
-
-            // Validate integration
-            if (!$integration->isEnabled()) {
-                throw new \Exception('PayPal integration is not enabled');
-            }
+            [$form, $integration, $field, $hash] = $this->getRequestItems();
 
             if (!$integration->getClientId() || !$integration->getClientSecret()) {
                 throw new \Exception('PayPal integration credentials are not configured');
@@ -55,13 +50,13 @@ class OrdersController extends BasePayPalController
 
         // Allow dynamic amount: merge posted values (from client) into form before calculating
         $raw = $this->request->getRawBody();
-        $json = $raw ? json_decode($raw, true) : null;
-        $values = \is_array($json) && isset($json['values']) && \is_array($json['values']) ? $json['values'] : null;
-        if ($values) {
-            foreach ($form->getLayout()->getFields()->getIterator() as $f) {
-                $handle = $f->getHandle();
+        $json = json_decode($raw, true);
+        $values = $json['values'] ?? null;
+        if (\is_array($values)) {
+            foreach ($form->getLayout()->getFields() as $formField) {
+                $handle = $formField->getHandle();
                 if (\array_key_exists($handle, $values)) {
-                    $f->setValue($values[$handle]);
+                    $formField->setValue($values[$handle]);
                 }
             }
         }
@@ -87,7 +82,7 @@ class OrdersController extends BasePayPalController
     public function actionCapture(string $orderId): Response
     {
         try {
-            [$form, $integration, $field] = $this->getRequestItems(handleFormRequest: false);
+            [$form, $integration, $field] = $this->getRequestItems();
         } catch (NotFoundHttpException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
         } catch (\Throwable $exception) {
@@ -96,8 +91,8 @@ class OrdersController extends BasePayPalController
 
         // Read optional latest form values sent from frontend to merge before finalize
         $raw = $this->request->getRawBody();
-        $json = $raw ? json_decode($raw, true) : null;
-        $values = \is_array($json) && isset($json['values']) && \is_array($json['values']) ? $json['values'] : null;
+        $json = json_decode($raw, true);
+        $values = $json['values'] ?? null;
 
         try {
             $result = $this->orderService->captureOrder($form, $integration, $field, $orderId, $values);

@@ -253,6 +253,14 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
+        if (FreeformFieldInterface::TYPE_RADIO_GROUP === $typeName) {
+            $fieldDefinitions['oneLine'] = [
+                'name' => 'oneLine',
+                'type' => Type::boolean(),
+                'description' => 'Should this be shown in a single line',
+            ];
+        }
+
         if (FreeformFieldInterface::TYPE_CHECKBOX === $typeName) {
             $fieldDefinitions['checkedByDefault'] = [
                 'name' => 'checkedByDefault',

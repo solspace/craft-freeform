@@ -115,18 +115,14 @@ class PayPal extends PaymentGatewayIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->post($this->getApiRootUrl().'/v1/oauth2/token', [
-                'auth' => [$this->getClientId(), $this->getClientSecret()],
-                'form_params' => [
-                    'grant_type' => 'client_credentials',
-                ],
-            ]);
+        $response = $client->post($this->getApiRootUrl().'/v1/oauth2/token', [
+            'auth' => [$this->getClientId(), $this->getClientSecret()],
+            'form_params' => [
+                'grant_type' => 'client_credentials',
+            ],
+        ]);
 
-            return 200 === $response->getStatusCode();
-        } catch (\Exception $e) {
-            return false;
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function getApiRootUrl(): string

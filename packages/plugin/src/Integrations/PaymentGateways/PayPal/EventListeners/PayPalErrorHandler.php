@@ -6,10 +6,11 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\PayPal;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use yii\base\Event;
 
-class PayPalErrorHandler
+class PayPalErrorHandler extends FeatureBundle
 {
     public function __construct()
     {

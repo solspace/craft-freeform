@@ -7,9 +7,10 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\PayPal\PayPal;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class PayPalClientProvider
+class PayPalClientProvider extends FeatureBundle
 {
     public function __construct()
     {

@@ -9,6 +9,9 @@ declare global {
   }
 }
 
+// Cache for different PayPal SDK configurations
+const sdkCache = new Map<string, PayPalSDK>();
+
 type Config = {
   required: boolean;
   integration: string;
@@ -128,11 +131,17 @@ async function captureOrder(
   }
 }
 
-// Load PayPal SDK dynamically
+// Load PayPal SDK dynamically with proper caching for different configurations
 async function getPayPalSDK(clientId: string, sandbox: boolean, currency: string): Promise<PayPalSDK> {
-  if (window.paypal) {
-    return window.paypal;
+  // Create a cache key based on configuration
+  const cacheKey = `${clientId}-${sandbox ? 'sandbox' : 'live'}-${currency}`;
+
+  // Return cached SDK if available
+  if (sdkCache.has(cacheKey)) {
+    return sdkCache.get(cacheKey)!;
   }
+
+  // Load new SDK instance for this configuration
   const paypalNamespace = await loadScript({
     clientId,
     currency: (currency || 'USD').toUpperCase(),
@@ -140,10 +149,19 @@ async function getPayPalSDK(clientId: string, sandbox: boolean, currency: string
     intent: 'capture',
     enableFunding: 'venmo,paylater',
   });
+
   if (!paypalNamespace) {
     throw new Error('PayPal SDK failed to load');
   }
-  window.paypal = paypalNamespace;
+
+  // Cache the SDK instance
+  sdkCache.set(cacheKey, paypalNamespace);
+
+  // Also set global for backward compatibility (use first loaded instance)
+  if (!window.paypal) {
+    window.paypal = paypalNamespace;
+  }
+
   return paypalNamespace;
 }
 
@@ -160,7 +178,7 @@ async function initializePayPalButtons(root: HTMLElement) {
     return;
   }
 
-  const form = root.closest('form') as HTMLFormElement | null;
+  const form = root.closest<HTMLFormElement>('form');
   if (!form) {
     logError('Could not find form element');
     return;

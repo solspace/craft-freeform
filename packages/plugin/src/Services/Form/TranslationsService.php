@@ -45,7 +45,7 @@ class TranslationsService extends BaseService
 
         $translationTable = $this->getFormTranslations($form);
         $translation = $translationTable->{$siteId}[$type][$namespace][$handle] ?? null;
-        if (empty($translation)) {
+        if (null === $translation || '' === $translation) {
             if (\is_string($defaultValue)) {
                 return Freeform::t($defaultValue);
             }

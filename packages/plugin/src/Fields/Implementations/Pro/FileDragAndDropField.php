@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -50,6 +51,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $theme = self::DEFAULT_THEME;
 
+    #[Translatable]
     #[Limitation('props.file', 'placeholder')]
     #[DefaultValue('props.file.placeholder')]
     #[Input\Text(

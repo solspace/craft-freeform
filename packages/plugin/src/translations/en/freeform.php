@@ -83,7 +83,7 @@ return [
     'HTML' => 'HTML',
     'Rich Text' => 'Rich Text',
     'Invisible' => 'Invisible',
-    'Stripe Payment' => 'Stripe Payment',
+    'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => "You don't have any forms yet. Create your first form now...",
 
     // Form Builder // Layout
@@ -217,6 +217,8 @@ return [
     'String' => 'String',
     'Numeric' => 'Numeric',
     'Select a Stripe integration to use for this field.' => 'Select a Stripe integration to use for this field.',
+    'Select a PayPal integration to use for this field.' => 'Select a PayPal integration to use for this field.',
+    'Select a Number/Text/Options field which will determine the amount.' => 'Select a Number/Text/Options field which will determine the amount.',
     'No integration selected.' => 'No integration selected.',
     'Description' => 'Description',
     'Enter a description for this payment. You can use the `form` object in twig.' => 'Enter a description for this payment. You can use the `form` object in twig.',
@@ -1641,6 +1643,17 @@ return [
     'Succeeded' => 'Succeeded',
     'Failed' => 'Failed',
     'Open in Stripe' => 'Open in Stripe',
+    'Use Sandbox' => 'Use Sandbox',
+    'Enable to use PayPal Sandbox environment.' => 'Enable to use PayPal Sandbox environment.',
+    'Enter your PayPal REST app client ID.' => 'Enter your PayPal REST app client ID.',
+    'Enter your PayPal REST app client secret.' => 'Enter your PayPal REST app client secret.',
+    'Open in PayPal' => 'Open in PayPal',
+    'Completed' => 'Completed',
+    'Payer' => 'Payer',
+    'Fees' => 'Fees',
+    'Net' => 'Net',
+    'Order ID' => 'Order ID',
+    'Capture ID' => 'Capture ID',
 
     // Integrations // Webhooks
     'Webhooks' => 'Webhooks',

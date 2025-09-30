@@ -42,7 +42,7 @@
             </li>
             <li>
                 <div>{{ "Status"|t('freeform') }}</div>
-                <span class="paypal-status {{ (displayStatus ?? meta.status ?? payment.status)|lower }}">{{ (displayStatus ?? meta.status ?? payment.status)|replace('_',' ')|capitalize }}</span>
+                <span class="paypal-status {{ (displayStatus ?? meta.status ?? payment.status)|lower }}">{{ (displayStatus ?? meta.status ?? payment.status)|replace('_',' ')|capitalize|t('freeform') }}</span>
             </li>
             {% if payerEmail or payerGivenName or payerSurname %}
                 <li>

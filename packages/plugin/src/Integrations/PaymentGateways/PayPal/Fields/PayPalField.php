@@ -21,7 +21,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
-    name: 'PayPal Payment',
+    name: 'PayPal',
     typeShorthand: 'paypal',
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/paypal-field-preview.ejs',

@@ -8,6 +8,7 @@ use Solspace\Freeform\Bundles\Translations\TranslationProvider;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
+use Solspace\Freeform\Fields\Interfaces\GeneratedOptionsInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
@@ -36,15 +37,32 @@ class DefaultValuesContext
                 continue;
             }
 
-            $value = $this
-                ->translationProvider
-                ->getTranslation(
-                    $field,
-                    $field->getUid(),
-                    'defaultValue',
-                    $field->getDefaultValue(),
-                )
-            ;
+            $value = null;
+            if ($field instanceof GeneratedOptionsInterface) {
+                $namespace = $this
+                    ->translationProvider
+                    ->getTranslation(
+                        $field,
+                        $field->getUid(),
+                        'optionConfiguration',
+                        null,
+                    )
+                ;
+
+                $value = $namespace['defaultValue'] ?? null;
+            }
+
+            if (null === $value) {
+                $value = $this
+                    ->translationProvider
+                    ->getTranslation(
+                        $field,
+                        $field->getUid(),
+                        'defaultValue',
+                        $field->getDefaultValue(),
+                    )
+                ;
+            }
 
             if (TwigHelper::isTwigValue($value) && preg_match('/\bfaker\.\b/', $value)) {
                 $value = $this->getTwig()->render($value, ['faker' => $this->getFaker()]);

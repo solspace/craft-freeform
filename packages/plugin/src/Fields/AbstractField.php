@@ -748,6 +748,23 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         );
     }
 
+    protected function translateDefaultValue(?string $handle, mixed $defaultValue): mixed
+    {
+        $translation = Freeform::getInstance()->translations->getTranslation(
+            $this->getForm(),
+            TranslationsService::TYPE_FIELDS,
+            $this->getUid(),
+            $handle,
+            '',
+        );
+
+        if (!$translation || !isset($translation['defaultValue'])) {
+            return $defaultValue;
+        }
+
+        return $translation['defaultValue'];
+    }
+
     protected function translateOption(?string $handle, string $key, mixed $defaultValue): mixed
     {
         $translation = Freeform::getInstance()->translations->getTranslation(

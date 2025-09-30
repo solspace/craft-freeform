@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import {
   Cell,
   Input,
@@ -20,13 +21,16 @@ import { OriginalValuePreview } from './translations.editor.styles';
 import type { OptionTranslations } from './translations.types';
 
 type Props = {
-  property: Property;
   value: OptionsConfiguration;
+  defaultValue: string | string[];
+  isMultiple: boolean;
   field: Field;
+  property: Property;
 };
 
 export const OptionsTranslationsEditor: React.FC<Props> = ({
   value,
+  isMultiple,
   property,
   field,
 }) => {
@@ -35,6 +39,8 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
 
   const translation = getTranslation<OptionTranslations>(property.handle, {});
   const optionTranslations: Option[] = translation.options || [];
+  const defaultValueTranslations: string | string[] =
+    translation.defaultValue || (isMultiple ? [] : '');
 
   const refs = useRef([]);
   refs.current = options.map(
@@ -90,6 +96,52 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                         ...translation,
                         options: updatedOptions,
                       });
+                    }}
+                  />
+                </Cell>
+
+                <Cell>
+                  <LightSwitch
+                    enabled={
+                      isMultiple
+                        ? (defaultValueTranslations as string[]).includes(
+                            option.value
+                          )
+                        : defaultValueTranslations === option.value
+                    }
+                    onClick={(value) => {
+                      if (isMultiple) {
+                        let updatedValues: string[];
+                        if (typeof defaultValueTranslations === 'object') {
+                          updatedValues = [...defaultValueTranslations];
+                        } else {
+                          updatedValues = [];
+                        }
+
+                        if (value && !updatedValues.includes(option.value)) {
+                          updatedValues.push(option.value);
+                        } else if (
+                          !value &&
+                          updatedValues.includes(option.value)
+                        ) {
+                          updatedValues.splice(
+                            updatedValues.indexOf(option.value),
+                            1
+                          );
+                        }
+
+                        updateTranslation(property.handle, {
+                          ...translation,
+                          defaultValue: updatedValues,
+                        });
+                      }
+
+                      if (!isMultiple) {
+                        updateTranslation(property.handle, {
+                          ...translation,
+                          defaultValue: value ? option.value : '',
+                        });
+                      }
                     }}
                   />
                 </Cell>

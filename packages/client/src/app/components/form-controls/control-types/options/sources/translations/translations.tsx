@@ -19,13 +19,17 @@ import { OptionsTranslationsEditor } from './translations.editor';
 import type { OptionTranslations } from './translations.types';
 
 type Props = {
-  property: Property;
   value: OptionsConfiguration;
+  defaultValue: string | string[];
+  isMultiple: boolean;
   field: Field;
+  property: Property;
 };
 
 export const OptionsTranslatable: React.FC<Props> = ({
   value,
+  defaultValue,
+  isMultiple,
   field,
   property,
 }) => {
@@ -77,6 +81,8 @@ export const OptionsTranslatable: React.FC<Props> = ({
       >
         <OptionsTranslationsEditor
           value={value}
+          defaultValue={defaultValue}
+          isMultiple={isMultiple}
           field={field}
           property={property}
         />

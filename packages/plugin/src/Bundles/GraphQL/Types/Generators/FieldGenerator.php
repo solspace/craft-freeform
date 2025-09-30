@@ -88,6 +88,18 @@ class FieldGenerator extends AbstractGenerator
             'value' => self::getFieldValueDefinitions($typeName),
         ];
 
+        // Attributes on a per field type basis
+        $attributesType = AttributesGenerator::getAttributesForFieldType($typeName);
+
+        $fieldDefinitions['attributes'] = [
+            'name' => 'attributes',
+            'type' => $attributesType,
+            'description' => "Field's attributes",
+            'resolve' => function ($source) {
+                return $source->getAttributes();
+            },
+        ];
+
         if (FreeformFieldInterface::TYPE_TEXTAREA === $typeName) {
             $fieldDefinitions['rows'] = [
                 'name' => 'rows',
@@ -373,15 +385,26 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'legends',
                 'type' => Type::listOf(Type::string()),
                 'description' => 'Opinion field legends',
-                'resolve' => function (OpinionScaleField $source, $arguments, $context, ResolveInfo $resolveInfo) {
+                'resolve' => function (OpinionScaleField $source) {
                     $legends = $source->getLegends();
 
-                    return array_map(
-                        function ($item) {
-                            return $item['legend'];
-                        },
-                        $legends
-                    );
+                    return array_map(static function ($item) {
+                        if (\is_string($item)) {
+                            return $item;
+                        }
+
+                        if (\is_object($item)) {
+                            if (method_exists($item, 'getLabel')) {
+                                return $item->getLabel();
+                            }
+
+                            if (method_exists($item, '__toString')) {
+                                return (string) $item;
+                            }
+                        }
+
+                        return $item;
+                    }, $legends);
                 },
             ];
         }

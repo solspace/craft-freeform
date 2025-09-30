@@ -16,7 +16,7 @@ class GqlPermissions extends Gql
      */
     public static function canCreateAllSubmissions(): bool
     {
-        return self::canSchema(self::CATEGORY_SUBMISSIONS.'.all', 'create');
+        return self::canSchema(self::CATEGORY_SUBMISSIONS.'.all', 'create') || self::canSchema(self::CATEGORY_SUBMISSIONS.'.all', 'save');
     }
 
     /**
@@ -24,7 +24,7 @@ class GqlPermissions extends Gql
      */
     public static function canCreateSubmissions(string $formUid): bool
     {
-        return self::canSchema(self::CATEGORY_SUBMISSIONS.'.'.$formUid, 'create');
+        return self::canSchema(self::CATEGORY_SUBMISSIONS.'.'.$formUid, 'create') || self::canSchema(self::CATEGORY_SUBMISSIONS.'.'.$formUid, 'save');
     }
 
     /**
@@ -37,13 +37,11 @@ class GqlPermissions extends Gql
 
     public static function allowedFormUids(): array
     {
-        $formUids = self::extractAllowedEntitiesFromSchema('read')[self::CATEGORY_FORMS] ?? [];
+        $formUidsByAction = self::extractAllowedEntitiesFromSchema();
+        $formUids = $formUidsByAction[self::CATEGORY_FORMS] ?? [];
 
-        return array_filter(array_filter(
-            $formUids,
-            function ($item) {
-                return 'all' !== $item;
-            }
-        ));
+        return array_values(array_filter($formUids, function ($uid) {
+            return 'all' !== $uid;
+        }));
     }
 }

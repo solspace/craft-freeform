@@ -1,139 +1,82 @@
 # Setup Guide
 
-This guide assumes you have a [PayPal](https://paypal.com) account already.
+This guide assumes you already have a [PayPal](https://paypal.com) account.
 
-<span class="note warning">Please refer to the [Freeform Paypal integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/paypal/) for a complete setup guide.</span>
+<span class="note warning">Please refer to the [Freeform PayPal integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/paypal/) for the complete setup guide.</span>
 
 ## Compatibility
 
-Uses private app on `v1` of the REST API.
+Uses a private app on `v1` of the REST API.
 
 ### Endpoints
-Maps data to Stripe via the **Payment Element API**.
 
-### Fields
-Maps Freeform fields to Stripe fields to populate more customer information for the transaction/customer profile in Stripe.
+Maps data to PayPal with the **Popup Payment Flow** via the **Orders** endpoint.
 
 ## Setup Instructions
 
 ### 1. Prepare Freeform
 
-- Select *Stripe* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
-- Copy the URL in the **Webhook URL** field to your clipboard.
+- Click on the **PayPal** integration in your Freeform control panel.
 - Leave this page open.
 
-### 2. Prepare Stripe
+### 2. Set Up PayPal
 
-Open up another browser tab and go to your Stripe account:
+Open another browser tab and log into your PayPal account:
 
-- On the top menu, click on the **Developers** button. On the next page click **API Keys**.
-- Copy the token for **Publishable key** (e.g. `pk_test_fs7f6f8g8dfg68g68d76dgd8`) and paste into the **Public Key** field inside Freeform.
-- Copy the token (click *Reveal test key* button to reveal) for **Secret key** (e.g. `sk_test_af7fa7gfdo78g6ddfg6d8d87`) and paste into the **Secret Key** field inside Freeform.
+- On the top menu, click **Developers**.
+- On the next page, click **Apps & Credentials**.
+- Click the **Create App** button on the right.
+    - Provide a name for the app.
+    - Choose _Merchant_ for the type.
+    - Select a _Sandbox Account_.
+    - Click the **Create App** button.
+- Once you're taken to the app's page, copy the **Client ID** and **Secret Key 1** tokens.
 
-<span class="note tip">Stripe can be run in **Live** mode or **Test** mode. To toggle between Live and Test mode, click the **Test mode** toggle at the top of the page. When doing this, the _Publishable key_ and _Secret key_ will switch between live and test as well. We strongly recommend switching Stripe to **Test** mode first, and testing your site with those keys instead.
+### 3. Complete the Connection
 
-Consider using an **Environment Variable** for these settings instead. Then, store _Live_ keys on production and _Test_ keys on local dev environments.</span>
-
-### 3. Configure the Stripe Webhook
-
-- Click on the **Webhooks** tab inside the Stripe **Developers** page.
-- On the next page, click the **+ Add endpoint** button.
-- Configure the webhook:
-    - Copy the **Webhook URL** field value in Freeform (e.g. `http://my-precio.us/freeform/payment-webhooks/stripe?id=1`) and paste it into the **Endpoint URL** setting.
-    - For the **Listen to** setting, choose **Events on your account**.
-    - Click on the **Select events** button under the **Select events to listen to** setting. Add the following 3 events Freeform requires:
-        - `payment_intent.succeeded`
-        - `payment_intent.payment_failed`
-        - `payment_intent.canceled`
-    - Click the **Add endpoint** button to save it.
-- On the next page inside Stripe account, click on the newly created endpoint URL.
-- At the top of the next page, you'll see an item called **Signing secret**.
-- Click on the **Reveal** button below it, and then copy the token (e.g. `whsec_dsf87d876sdf7g876fd8fasd9f7dsasd`).
-
-### 4. Complete the Connection
-
-- Switch back to the Payment integration inside Freeform, and paste the Stripe **Signing secret** token into the **Webhook Secret** setting.
+- Switch back to the PayPal integration inside Freeform, and paste the PayPal tokens into the **Client ID** and **Client Secret** settings.
+- If you plan on testing the integration in sandbox mode (recommended), enable the **Use Sandbox** setting.
 - Click the **Save** button.
 - After the integration is saved, you should see an **Authorize** button at the top of the page.
-- Click the **Authorize** button.
-- If successful, the _Unauthorized_ flag should now appear green with _Authorized_ at the top.
+- Click **Authorize**.
+- If successful, the flag at the top will turn green and display _Authorized_.
 
-### 5. Configure the Form
+### 4. Configure the Form
 
-To use this integration on your form(s), you'll need to configure each form individually.
+To use this integration on your form(s), configure each form individually:
 
-- Visit the form inside the form builder.
-- Click on the **Integrations** tab.
-- Click on **Stripe** in the list of available integrations.
+- Open the form in the form builder.
+- Click the **Integrations** tab.
+- Click **PayPal** in the list of available integrations.
 - Toggle the _Enable_ setting ON.
-- Map your Freeform fields to Stripe's fields as necessary.
+- Add a **PayPal** field to your form layout and configure as needed.
+- Save the form.
 
-<span class="note warning">Please refer to the [Freeform Stripe integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for a complete setup guide.</span>
+<span class="note warning">Please refer to the [Freeform PayPal integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/paypal/) for the complete setup guide.</span>
+
+### 5. Sandbox Configuration
+
+- Switch back to the PayPal account browser tab.
+- Scroll down to the **Sandbox account info** area. Here you'll see a test account login email and password.
+- At the top of the PayPal page, click **Testing Tools** and then **Sandbox Accounts**.
+- This will provide a list of test accounts to use for testing.
+- Click on one of the **Personal** test account types to reveal/copy the email and password login.
+    - Copy the email address and password.
+    - This will be used for PayPal testing on your site.
+
+### 6. Sandbox Testing
+
+- Switch back to your Craft site.
+- Open your form on the front end.
+- Regular **PayPal** testing:
+    - Click the **PayPal** button. A popup will load.
+    - Log into PayPal with the **Personal** test account credentials you copied earlier.
+    - Complete the transaction.
+- **Credit Card** testing:
+    - Click the **Debit or Credit Card** button. A series of form fields will load directly on the page.
+    - Use PayPal's [credit card generator](https://developer.paypal.com/tools/sandbox/card-testing/#link-testcardnumbers) to create test credit card details.
+    - Complete the transaction.
 
 ---
 
-<small>Do you need more from this integration? Is the integration you're looking for not here? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# PayPal Integration
-
-This integration enables Freeform to connect to PayPal REST APIs for popup-based payments.
-
-## Features
-- **Popup Payment Flow**: Uses PayPal SDK for seamless popup-based payments
-- **Order Creation**: Creates PayPal orders via REST API
-- **Payment Capture**: Captures payments after user approval
-- **Dynamic Pricing**: Supports both fixed and dynamic pricing based on form data
-- **Sandbox Support**: Full sandbox environment support for testing
-
-## Configuration
-- **Client ID**: PayPal App client ID
-- **Client Secret**: PayPal App client secret  
-- **Use Sandbox**: Toggle for sandbox or live environment
-
-## How It Works
-1. User clicks PayPal button on form
-2. PayPal popup opens for payment
-3. User completes payment in popup
-4. Payment is automatically captured
-5. Form submission is processed
-
-## API Endpoints
-- `POST /freeform/payments/paypal/orders` - Create PayPal order
-- `POST /freeform/payments/paypal/orders/{orderId}/capture` - Capture payment
-
-No callback or webhook endpoints needed - everything is handled via the popup flow.
-
-
-
+<small>Need more from this integration? Looking for an integration that's not available? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

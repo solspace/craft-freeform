@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Entries extends BaseOptionProvider
 {
@@ -122,13 +123,13 @@ class Entries extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(): array
+    protected function getElements(TranslationTable $translationTable): array
     {
         return Entry::find()
-            ->siteId($this->getSiteId() ?: null)
-            ->sectionId($this->getSectionId() ?: null)
-            ->status($this->getStatus() ?: null)
-            ->typeId($this->getEntryTypeId() ?: null)
+            ->siteId($translationTable->get('siteId') ?: $this->getSiteId())
+            ->sectionId($translationTable->get('sectionId') ?: $this->getSectionId())
+            ->status($translationTable->get('status') ?: $this->getStatus())
+            ->typeId($translationTable->get('entryTypeId') ?: $this->getEntryTypeId())
             ->orderBy($this->getOrderBy().' '.$this->getSort())
             ->all()
         ;

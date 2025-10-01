@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Fields\Properties\Options;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 abstract class OptionsConfiguration implements OptionsConfigurationInterface
 {
@@ -35,15 +36,17 @@ abstract class OptionsConfiguration implements OptionsConfigurationInterface
         return $this->typeClass;
     }
 
-    public function getOptions(): OptionCollection
+    public function getOptions(TranslationTable $translationTable): OptionCollection
     {
         if (!$this->configuration) {
             return new OptionCollection();
         }
 
-        $collection = $this->configuration->generateOptions();
+        $collection = $this->configuration->generateOptions($translationTable);
         if ($this->emptyOption) {
-            $collection->add('', $this->emptyOption, 0);
+            $emptyOption = $translationTable->get('optionConfiguration.emptyOption', $this->emptyOption);
+
+            $collection->add('', $emptyOption, 0);
         }
 
         return $collection;

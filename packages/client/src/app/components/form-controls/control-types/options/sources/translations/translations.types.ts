@@ -5,3 +5,8 @@ export type OptionTranslations = {
   options?: Option[];
   defaultValue?: string | string[];
 };
+
+export type ElementTranslations = {
+  emptyOption?: string;
+  defaultValue?: string | string[];
+};

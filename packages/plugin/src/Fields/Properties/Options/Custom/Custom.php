@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Custom;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Custom implements OptionsConfigurationInterface
 {
@@ -34,7 +35,7 @@ class Custom implements OptionsConfigurationInterface
         return $this->useCustomValues;
     }
 
-    public function getOptions(): OptionCollection
+    public function getOptions(TranslationTable $translationTable): OptionCollection
     {
         $collection = new OptionCollection();
         foreach ($this->options as $option) {

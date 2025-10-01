@@ -42,6 +42,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 use Solspace\Freeform\Services\Form\TranslationsService;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
@@ -748,38 +749,25 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         );
     }
 
-    protected function translateDefaultValue(?string $handle, mixed $defaultValue): mixed
+    protected function getTranslationTable(): TranslationTable
     {
-        $translation = Freeform::getInstance()->translations->getTranslation(
+        return Freeform::getInstance()->translations->getTranslationTable(
             $this->getForm(),
             TranslationsService::TYPE_FIELDS,
             $this->getUid(),
-            $handle,
-            '',
         );
-
-        if (!$translation || !isset($translation['defaultValue'])) {
-            return $defaultValue;
-        }
-
-        return $translation['defaultValue'];
     }
 
     protected function translateOption(?string $handle, string $key, mixed $defaultValue): mixed
     {
-        $translation = Freeform::getInstance()->translations->getTranslation(
-            $this->getForm(),
-            TranslationsService::TYPE_FIELDS,
-            $this->getUid(),
-            $handle,
-            '',
-        );
+        $table = $this->getTranslationTable();
+        $options = $table->get($handle.'[options]');
 
-        if (!$translation || !isset($translation['options'])) {
+        if (null === $options) {
             return $defaultValue;
         }
 
-        foreach ($translation['options'] as $option) {
+        foreach ($options as $option) {
             if ($option['value'] === $key) {
                 return $option['label'];
             }

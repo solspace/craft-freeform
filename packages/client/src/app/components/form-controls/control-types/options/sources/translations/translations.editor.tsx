@@ -30,6 +30,7 @@ type Props = {
 
 export const OptionsTranslationsEditor: React.FC<Props> = ({
   value,
+  defaultValue,
   isMultiple,
   property,
   field,
@@ -40,7 +41,7 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
   const translation = getTranslation<OptionTranslations>(property.handle, {});
   const optionTranslations: Option[] = translation.options || [];
   const defaultValueTranslations: string | string[] =
-    translation.defaultValue || (isMultiple ? [] : '');
+    translation.defaultValue || defaultValue;
 
   const refs = useRef([]);
   refs.current = options.map(
@@ -55,62 +56,85 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
       <TableContainer>
         <TabularOptions>
           <tbody>
-            {options.map((option, index) => (
-              <Row key={index}>
-                <Cell style={{ width: 200 }}>
-                  <OriginalValuePreview className="code" title={option.value}>
-                    {option.value || translate('Empty')}
-                  </OriginalValuePreview>
-                </Cell>
+            {options.map((option, index) => {
+              const optTranslation = optionTranslations.find(
+                (opt) => opt.value === option.value
+              );
 
-                <Cell>
-                  <Input
-                    type="text"
-                    value={
-                      optionTranslations.find(
-                        (opt) => opt.value === option.value
-                      )?.label || option.label
-                    }
-                    placeholder={translate('Label')}
-                    autoFocus={activeCell === `${index}:0`}
-                    ref={(element) => setCellRef(element, index, 0)}
-                    onFocus={() => setActiveCell(index, 0)}
-                    onKeyDown={keyPressHandler()}
-                    onChange={(event) => {
-                      const updatedOptions = cloneDeep(optionTranslations);
-                      const translationIndex = updatedOptions.findIndex(
-                        (opt) => opt.value === option.value
-                      );
+              let isChecked = false;
+              if (defaultValueTranslations === undefined) {
+                if (isMultiple) {
+                  isChecked = defaultValue.includes(option.value);
+                } else {
+                  isChecked = defaultValue === option.value;
+                }
+              } else {
+                if (isMultiple) {
+                  isChecked = defaultValueTranslations.includes(option.value);
+                } else {
+                  isChecked = defaultValueTranslations === option.value;
+                }
+              }
 
-                      if (translationIndex === -1) {
-                        updatedOptions.push({
-                          value: option.value,
-                          label: event.target.value,
+              const label =
+                optTranslation !== undefined
+                  ? optTranslation.label
+                  : option.label;
+
+              return (
+                <Row key={index}>
+                  <Cell style={{ width: 200 }}>
+                    <OriginalValuePreview className="code" title={option.value}>
+                      {option.value || translate('Empty')}
+                    </OriginalValuePreview>
+                  </Cell>
+
+                  <Cell>
+                    <Input
+                      type="text"
+                      value={label}
+                      placeholder={translate('Label')}
+                      autoFocus={activeCell === `${index}:0`}
+                      ref={(element) => setCellRef(element, index, 0)}
+                      onFocus={() => setActiveCell(index, 0)}
+                      onKeyDown={keyPressHandler()}
+                      onChange={(event) => {
+                        const updatedOptions = cloneDeep(optionTranslations);
+                        const translationIndex = updatedOptions.findIndex(
+                          (opt) => opt.value === option.value
+                        );
+
+                        if (translationIndex === -1) {
+                          updatedOptions.push({
+                            value: option.value,
+                            label: event.target.value,
+                          });
+                        } else {
+                          updatedOptions[translationIndex].label =
+                            event.target.value;
+                        }
+
+                        updateTranslation(property.handle, {
+                          ...translation,
+                          options: updatedOptions,
                         });
-                      } else {
-                        updatedOptions[translationIndex].label =
-                          event.target.value;
-                      }
+                      }}
+                    />
+                  </Cell>
 
-                      updateTranslation(property.handle, {
-                        ...translation,
-                        options: updatedOptions,
-                      });
-                    }}
-                  />
-                </Cell>
+                  <Cell $tiny>
+                    <LightSwitch
+                      enabled={isChecked}
+                      onClick={(value) => {
+                        if (!isMultiple) {
+                          updateTranslation(property.handle, {
+                            ...translation,
+                            defaultValue: value ? option.value : '',
+                          });
 
-                <Cell>
-                  <LightSwitch
-                    enabled={
-                      isMultiple
-                        ? (defaultValueTranslations as string[]).includes(
-                            option.value
-                          )
-                        : defaultValueTranslations === option.value
-                    }
-                    onClick={(value) => {
-                      if (isMultiple) {
+                          return;
+                        }
+
                         let updatedValues: string[];
                         if (typeof defaultValueTranslations === 'object') {
                           updatedValues = [...defaultValueTranslations];
@@ -134,19 +158,12 @@ export const OptionsTranslationsEditor: React.FC<Props> = ({
                           ...translation,
                           defaultValue: updatedValues,
                         });
-                      }
-
-                      if (!isMultiple) {
-                        updateTranslation(property.handle, {
-                          ...translation,
-                          defaultValue: value ? option.value : '',
-                        });
-                      }
-                    }}
-                  />
-                </Cell>
-              </Row>
-            ))}
+                      }}
+                    />
+                  </Cell>
+                </Row>
+              );
+            })}
           </tbody>
         </TabularOptions>
       </TableContainer>

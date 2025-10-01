@@ -78,7 +78,7 @@ class Assets extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(): array
+    protected function getElements(?array $translationTable): array
     {
         return Asset::find()
             ->volumeId($this->getAssetSourceId() ?: null)

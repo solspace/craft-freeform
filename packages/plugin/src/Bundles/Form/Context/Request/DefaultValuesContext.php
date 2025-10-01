@@ -49,7 +49,7 @@ class DefaultValuesContext
                     )
                 ;
 
-                $value = $namespace['defaultValue'] ?? null;
+                $value = $namespace->defaultValue ?? null;
             }
 
             if (null === $value) {

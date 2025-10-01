@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Services\Form;
 
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 use Solspace\Freeform\Records\FormTranslationRecord;
 use Solspace\Freeform\Services\BaseService;
 
@@ -15,6 +15,7 @@ class TranslationsService extends BaseService
     public const TYPE_FORM = 'form';
 
     private array $translationCache = [];
+    private array $translationTableCache = [];
     private ?bool $sitesEnabled = null;
 
     public function isTranslationsEnabled(Form $form): bool
@@ -37,23 +38,27 @@ class TranslationsService extends BaseService
         string $handle,
         mixed $defaultValue
     ): mixed {
-        if (!$this->isTranslationsEnabled($form)) {
-            return $defaultValue;
-        }
+        $table = $this->getTranslationTable($form, $type, $namespace);
 
-        $siteId = $this->getCurrentSiteId();
+        return $table->get($handle, $defaultValue);
+    }
 
-        $translationTable = $this->getFormTranslations($form);
-        $translation = $translationTable->{$siteId}[$type][$namespace][$handle] ?? null;
-        if (null === $translation || '' === $translation) {
-            if (\is_string($defaultValue)) {
-                return Freeform::t($defaultValue);
+    public function getTranslationTable(Form $form, string $type, string $namespace): TranslationTable
+    {
+        if (!isset($this->translationTableCache[$form->getId()][$type][$namespace])) {
+            if (!$this->isTranslationsEnabled($form)) {
+                $this->translationTableCache[$form->getId()][$type][$namespace] = new TranslationTable();
+            } else {
+                $siteId = $this->getCurrentSiteId();
+
+                $translationTable = $this->getFormTranslations($form);
+                $translations = $translationTable->{$siteId}->{$type}->{$namespace} ?? null;
+
+                $this->translationTableCache[$form->getId()][$type][$namespace] = new TranslationTable($translations);
             }
-
-            return $defaultValue;
         }
 
-        return $translation;
+        return $this->translationTableCache[$form->getId()][$type][$namespace];
     }
 
     public function getFormTranslations(Form $form): ?\stdClass
@@ -99,9 +104,9 @@ class TranslationsService extends BaseService
         }
     }
 
-    private function decodeTranslations(string $translations): array
+    private function decodeTranslations(string $translations): object
     {
-        $decoded = json_decode($translations, true);
+        $decoded = json_decode($translations);
         foreach ($decoded as $type => $typeTranslations) {
             if (empty($typeTranslations)) {
                 unset($decoded[$type]);

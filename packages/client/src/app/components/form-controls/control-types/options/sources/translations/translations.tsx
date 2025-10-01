@@ -7,15 +7,16 @@ import type { OptionsConfiguration } from '../../options.types';
 import { SourceCustom } from './source.custom';
 import { SourceElements } from './source.elements';
 
-type Props = {
+export type TranslateOptionsProps = {
   value: OptionsConfiguration;
   defaultValue: string | string[];
   isMultiple: boolean;
   field: Field;
   property: OptionsProperty;
+  context: Field;
 };
 
-export const OptionsTranslatable: React.FC<Props> = (props) => {
+export const OptionsTranslatable: React.FC<TranslateOptionsProps> = (props) => {
   const { value } = props;
   switch (value.source) {
     case 'custom':

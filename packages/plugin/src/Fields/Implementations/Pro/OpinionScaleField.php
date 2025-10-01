@@ -12,6 +12,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -28,6 +29,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 )]
 class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface
 {
+    #[Translatable]
     #[ValueTransformer(ScalesTransformer::class)]
     #[Input\TabularData(
         label: 'Scales',
@@ -41,18 +43,24 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
             [
                 'key' => 'label',
                 'label' => 'Label (Optional)',
+                'translatable' => true,
             ],
         ],
     )]
     protected array $scales = [];
 
+    #[Translatable]
     #[ValueTransformer(LegendsTransformer::class)]
     #[Input\TabularData(
         label: 'Legends',
         instructions: 'Descriptions of options or ranges of options (does not need to match the number of options available).',
         value: [],
         configuration: [
-            ['key' => 'label', 'label' => 'Legend'],
+            [
+                'key' => 'label',
+                'label' => 'Legend',
+                'translatable' => true,
+            ],
         ],
     )]
     protected array $legends = [];
@@ -168,19 +176,6 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
         ];
     }
 
-    public function translateOptionLabel(mixed $option): string
-    {
-        if (!$option instanceof Scale) {
-            return '';
-        }
-
-        $value = $option->getValue();
-        $label = $option->getLabel();
-        $label = $label ?: $value;
-
-        return $this->translateOption('scales', $value, $label);
-    }
-
     protected function getInputHtml(): string
     {
         if (empty($this->scales)) {
@@ -239,7 +234,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $this->translateOptionLabel($scale),
+                $label,
                 $labelAttributes->toHtmlTagArray($variables)
             );
 

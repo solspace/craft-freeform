@@ -740,13 +740,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected function translate(?string $handle, mixed $defaultValue = null): mixed
     {
-        return Freeform::getInstance()->translations->getTranslation(
-            $this->getForm(),
-            TranslationsService::TYPE_FIELDS,
-            $this->getUid(),
-            $handle,
-            $defaultValue
-        );
+        return $this->getTranslationTable()->get($handle, $defaultValue);
     }
 
     protected function getTranslationTable(): TranslationTable
@@ -756,24 +750,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             TranslationsService::TYPE_FIELDS,
             $this->getUid(),
         );
-    }
-
-    protected function translateOption(?string $handle, string $key, mixed $defaultValue): mixed
-    {
-        $table = $this->getTranslationTable();
-        $options = $table->get($handle.'[options]');
-
-        if (null === $options) {
-            return $defaultValue;
-        }
-
-        foreach ($options as $option) {
-            if ($option['value'] === $key) {
-                return $option['label'];
-            }
-        }
-
-        return $defaultValue;
     }
 
     protected function renderRaw(string $output): Markup

@@ -37,8 +37,20 @@ class Custom implements OptionsConfigurationInterface
 
     public function getOptions(TranslationTable $translationTable): OptionCollection
     {
+        $translations = $translationTable->get('optionConfiguration.options');
+
         $collection = new OptionCollection();
         foreach ($this->options as $option) {
+            if (\is_array($translations)) {
+                $translatedOption = array_find($translations, fn ($item) => $item->value === $option->getValue());
+                if ($translatedOption) {
+                    $option = new Option(
+                        $option->getValue(),
+                        $translatedOption->label,
+                    );
+                }
+            }
+
             $collection->add($option);
         }
 

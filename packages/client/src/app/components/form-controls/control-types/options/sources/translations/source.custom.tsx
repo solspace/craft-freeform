@@ -2,9 +2,7 @@ import type { FC } from 'react';
 import React from 'react';
 import FormLabel from '@components/form-controls/label';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
-import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
-import type { Property } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -14,20 +12,13 @@ import {
   PreviewTable,
   PreviewWrapper,
 } from '../../../table/table.preview.styles';
-import type { Option, OptionsConfiguration } from '../../options.types';
+import type { Option } from '../../options.types';
 
+import type { TranslateOptionsProps } from './translations';
 import { OptionsTranslationsEditor } from './translations.editor';
 import type { OptionTranslations } from './translations.types';
 
-type Props = {
-  value: OptionsConfiguration;
-  defaultValue: string | string[];
-  isMultiple: boolean;
-  field: Field;
-  property: Property;
-};
-
-export const SourceCustom: FC<Props> = ({
+export const SourceCustom: FC<TranslateOptionsProps> = ({
   value,
   defaultValue,
   isMultiple,

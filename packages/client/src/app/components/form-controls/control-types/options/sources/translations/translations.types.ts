@@ -1,3 +1,5 @@
+import type { GenericValue } from '@ff-client/types/properties';
+
 import type { Option } from '../../options.types';
 
 export type OptionTranslations = {
@@ -9,4 +11,5 @@ export type OptionTranslations = {
 export type ElementTranslations = {
   emptyOption?: string;
   defaultValue?: string | string[];
+  properties: Record<string, GenericValue>;
 };

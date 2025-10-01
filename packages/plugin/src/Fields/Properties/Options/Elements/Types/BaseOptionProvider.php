@@ -14,8 +14,11 @@ abstract class BaseOptionProvider implements OptionTypeProviderInterface
         $collection = new OptionCollection();
 
         foreach ($this->getElements($translationTable) as $element) {
-            $value = ElementHelper::extractFieldValue($element, $this->getValue());
-            $label = ElementHelper::extractFieldValue($element, $this->getLabel());
+            $value = $translationTable->get('optionConfiguration.properties.value', $this->getValue());
+            $label = $translationTable->get('optionConfiguration.properties.label', $this->getLabel());
+
+            $value = ElementHelper::extractFieldValue($element, $value);
+            $label = ElementHelper::extractFieldValue($element, $label);
 
             if (null !== $value && !empty($label)) {
                 $collection->add($value, $label);

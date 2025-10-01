@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Assets extends BaseOptionProvider
 {
@@ -78,11 +79,16 @@ class Assets extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(?array $translationTable): array
+    protected function getElements(TranslationTable $translationTable): array
     {
+        $assetSourceId = $translationTable->get('optionConfiguration.properties.assetSourceId') ?: $this->getAssetSourceId();
+
+        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
+        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+
         return Asset::find()
-            ->volumeId($this->getAssetSourceId() ?: null)
-            ->orderBy($this->getOrderBy().' '.$this->getSort())
+            ->volumeId($assetSourceId)
+            ->orderBy($orderBy.' '.$sort)
             ->all()
         ;
     }

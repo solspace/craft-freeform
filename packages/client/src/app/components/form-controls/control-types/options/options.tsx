@@ -64,6 +64,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         field={context}
         defaultValue={defaultValue}
         isMultiple={isMultiple}
+        context={context}
       />
     );
   }

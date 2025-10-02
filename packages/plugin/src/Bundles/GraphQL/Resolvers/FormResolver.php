@@ -13,14 +13,21 @@ class FormResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): array
     {
-        $arguments = self::getArguments($arguments);
+        $arguments = self::applyFormPermissions($arguments);
+        if (false === $arguments) {
+            return []; // NONE allowed
+        }
 
         return Freeform::getInstance()->forms->getResolvedForms($arguments);
     }
 
     public static function resolveOne($source, array $arguments, $context, ResolveInfo $resolveInfo): ?Form
     {
-        $arguments = self::getArguments($arguments);
+        $arguments = self::applyFormPermissions($arguments);
+        if (false === $arguments) {
+            return null; // NONE allowed
+        }
+
         $arguments['limit'] = 1;
 
         if ($source instanceof ElementInterface) {
@@ -33,13 +40,24 @@ class FormResolver extends Resolver
         return $form ?: null;
     }
 
-    private static function getArguments(array $arguments): array
+    /**
+     * Returns filtered $arguments, or false if no forms are allowed.
+     */
+    private static function applyFormPermissions(array $arguments): array|false
     {
-        $formUids = GqlPermissions::allowedFormUids();
-        if ($formUids) {
-            $arguments['uid'] = $formUids;
+        $allowedFormUids = GqlPermissions::allowedFormUids();
+
+        if ([] === $allowedFormUids) {
+            // NONE: explicitly deny by returning no results
+            return false;
         }
 
+        if (\is_array($allowedFormUids)) {
+            // SOME: constrain by UID list
+            $arguments['uid'] = $allowedFormUids;
+        }
+
+        // ALL (null): leave $arguments untouched
         return $arguments;
     }
 }

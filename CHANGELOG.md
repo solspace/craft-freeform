@@ -3,12 +3,25 @@
 ## 5.13.0 - Unreleased
 
 ### Added
+- **PayPal** integration: Accept payments with PayPal.
+- **Square** integration: Accept payments with Square.
 - **xAI integration**: Use xAI models to process form submissions.
 - **Anthropic AI integration**: Use Anthropic models to process form submissions.
 
 ### Changed
 - Updated the _Template Overrides_ feature to automatically factor in success and error attributes when in AJAX mode.
 - Various other minor improvements to the _Template Overrides_ feature reliability.
+
+## 5.12.3 - 2025-10-02
+
+### Fixed
+- Fixed an issue preventing authorization of the **Form Monitor** integration.
+- Fixed submission mutations to use the form resolver instead of `$context` in GraphQL.
+- Fixed querying of `FreeformField_OpinionScale` in GraphQL.
+- Fixed GraphQL permission checks when querying forms.
+- Fixed the `pageIndex` field not being assigned in GraphQL.
+- Fixed `oneLine` support for **Radios** fields in GraphQL.
+- Fixed an issue where users with per-form management permissions did not automatically have access to their newly created forms.
 
 ## 5.12.2 - 2025-09-23
 

@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
-    name: 'Stripe Payment',
+    name: 'Stripe',
     typeShorthand: 'stripe',
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/stripe-field-preview.ejs',

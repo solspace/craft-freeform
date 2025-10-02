@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
-use Solspace\Freeform\Fields\DataContainers\Option;
 
 class AttributeType extends AbstractObjectType
 {
@@ -20,8 +19,8 @@ class AttributeType extends AbstractObjectType
     }
 
     /**
-     * @param Option $source
-     * @param mixed  $arguments
+     * @param mixed $source
+     * @param mixed $arguments
      */
     protected function resolve($source, $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {

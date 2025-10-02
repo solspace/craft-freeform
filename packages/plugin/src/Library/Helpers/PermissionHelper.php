@@ -7,7 +7,7 @@ use yii\web\ForbiddenHttpException;
 class PermissionHelper
 {
     /**
-     * Checks a given permission for the currently logged in user.
+     * Checks a given permission for the currently logged-in user.
      *
      * @param bool $checkForNested - see nested permissions for matching permission name root
      */
@@ -43,7 +43,7 @@ class PermissionHelper
     /**
      * @throws ForbiddenHttpException
      */
-    public static function requirePermission(string $permissionName)
+    public static function requirePermission(string $permissionName): void
     {
         if (self::isAdmin()) {
             return;
@@ -59,10 +59,8 @@ class PermissionHelper
 
     /**
      * Fetches all nested allowed permission IDs from a nested permission set.
-     *
-     * @return array|bool
      */
-    public static function getNestedPermissionIds(string $permissionName)
+    public static function getNestedPermissionIds(string $permissionName): array|bool
     {
         if (self::isAdmin()) {
             return true;
@@ -98,17 +96,14 @@ class PermissionHelper
 
     /**
      * Combines a nested permission with ID.
-     *
-     * @param string $permissionName
-     * @param int    $id
      */
-    public static function prepareNestedPermission($permissionName, $id): string
+    public static function prepareNestedPermission(string $permissionName, int|string $id): string
     {
         return $permissionName.':'.$id;
     }
 
     /**
-     * Returns true if the currently logged in user is an admin.
+     * Returns true if the currently logged-in user is an admin.
      */
     public static function isAdmin(): bool
     {

@@ -83,7 +83,7 @@ return [
     'HTML' => 'HTML',
     'Rich Text' => 'Rijke tekst',
     'Invisible' => 'Onzichtbaar',
-    'Stripe Payment' => 'Stripe-betaling',
+    'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => 'Je hebt nog geen formulieren. Maak nu je eerste formulier aan...',
 
     // Form Builder // Layout
@@ -217,6 +217,8 @@ return [
     'String' => 'String',
     'Numeric' => 'Numeriek',
     'Select a Stripe integration to use for this field.' => 'Selecteer een Stripe-integratie om voor dit veld te gebruiken.',
+    'Select a PayPal integration to use for this field.' => 'Selecteer een PayPal-integratie voor dit veld.',
+    'Select a Number/Text/Options field which will determine the amount.' => 'Selecteer een Nummer-/Tekst-/Keuzeveld dat het bedrag bepaalt.',
     'No integration selected.' => 'Geen integratie geselecteerd.',
     'Description' => 'Beschrijving',
     'Enter a description for this payment. You can use the `form` object in twig.' => 'Voer een omschrijving in voor deze betaling. U kunt het `form` object in twig gebruiken.',
@@ -1641,6 +1643,17 @@ return [
     'Succeeded' => 'Geslaagd',
     'Failed' => 'Mislukt',
     'Open in Stripe' => 'Open in Stripe',
+    'Use Sandbox' => 'Sandbox gebruiken',
+    'Enable to use PayPal Sandbox environment.' => 'Schakel in om de PayPal Sandbox-omgeving te gebruiken.',
+    'Enter your PayPal REST app client ID.' => 'Voer je PayPal REST-app client-ID in.',
+    'Enter your PayPal REST app client secret.' => 'Voer je PayPal REST-app client secret in.',
+    'Open in PayPal' => 'Openen in PayPal',
+    'Completed' => 'Voltooid',
+    'Payer' => 'Betaler',
+    'Fees' => 'Kosten',
+    'Net' => 'Netto',
+    'Order ID' => 'Bestel-ID',
+    'Capture ID' => 'Capture-ID',
 
     // Integrations // Webhooks
     'Webhooks' => 'Webhooks',

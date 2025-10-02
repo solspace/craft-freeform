@@ -479,6 +479,13 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->pageIndex;
     }
 
+    public function setPageIndex(int $pageIndex): self
+    {
+        $this->pageIndex = $pageIndex;
+
+        return $this;
+    }
+
     /**
      * Gets whatever value is set and returns its string representation.
      */

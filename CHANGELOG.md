@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 5.12.3 - 2025-10-02
+
+### Fixed
+- Fixed an issue preventing authorization of the **Form Monitor** integration.
+- Fixed submission mutations to use the form resolver instead of `$context` in GraphQL.
+- Fixed querying of `FreeformField_OpinionScale` in GraphQL.
+- Fixed GraphQL permission checks when querying forms.
+- Fixed the `pageIndex` field not being assigned in GraphQL.
+- Fixed `oneLine` support for **Radios** fields in GraphQL.
+- Fixed an issue where users with per-form management permissions did not automatically have access to newly forms they create.
+
 ## 5.12.2 - 2025-09-23
 
 ### Fixed

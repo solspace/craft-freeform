@@ -22,7 +22,12 @@ import { DraggableRow } from '@components/form-controls/draggable-row';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import CrossIcon from '@components/form-controls/icons/cross.svg';
 import MoveIcon from '@components/form-controls/icons/move.svg';
-import type { Option as PropertyOption } from '@ff-client/types/properties';
+import type { Field } from '@editor/store/slices/layout/fields';
+import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
+import type {
+  Option as PropertyOption,
+  TableProperty,
+} from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import { TableCheckboxEditor } from './editor/table.input.checkbox';
@@ -33,12 +38,16 @@ type Props = {
   columnTypes: PropertyOption[];
   columns: ColumnDescription[];
   updateValue: UpdateValue<ColumnDescription[]>;
+  property: TableProperty;
+  context: Field;
 };
 
 export const TableEditor: React.FC<Props> = ({
   columnTypes,
   columns,
   updateValue,
+  property,
+  context,
 }) => {
   const refs = useRef([]);
   refs.current = columns.map(
@@ -59,12 +68,22 @@ export const TableEditor: React.FC<Props> = ({
     );
   };
 
+  const { getTranslation, willTranslate } = useTranslations(context);
+
+  const isTranslating = willTranslate(property.handle);
+  const translation = getTranslation<ColumnDescription[]>(
+    property.handle,
+    columns
+  );
+
+  const columnValues = isTranslating ? translation : columns;
+
   return (
     <TableEditorWrapper>
       <TableContainer>
         <TabularOptions>
           <tbody>
-            {columns.map((column, rowIndex) => (
+            {columnValues.map((column, rowIndex) => (
               <DraggableRow
                 key={rowIndex}
                 index={rowIndex}
@@ -94,7 +113,7 @@ export const TableEditor: React.FC<Props> = ({
                         updateColumn(
                           rowIndex,
                           { ...column, label: event.target.value },
-                          columns
+                          columnValues
                         )
                       )
                     }
@@ -119,7 +138,7 @@ export const TableEditor: React.FC<Props> = ({
                         updateColumn(
                           rowIndex,
                           { ...column, type: event.target.value },
-                          columns
+                          columnValues
                         )
                       )
                     }
@@ -142,7 +161,7 @@ export const TableEditor: React.FC<Props> = ({
                         updateColumn(
                           rowIndex,
                           { ...column, required: !column.required },
-                          columns
+                          columnValues
                         )
                       );
                     }}

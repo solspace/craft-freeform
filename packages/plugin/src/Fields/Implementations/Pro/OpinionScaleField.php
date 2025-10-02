@@ -120,7 +120,26 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
      */
     public function getScales(): array
     {
-        return $this->scales;
+        $scales = $this->scales;
+
+        $translationTable = $this->getTranslationTable();
+        if ($translationTable->get('scales')) {
+            $translatedScales = $translationTable->get('scales');
+
+            $translations = [];
+            foreach ($scales as $scale) {
+                $found = array_find($translatedScales, fn ($item) => $item[0] === $scale->getValue());
+                if ($found) {
+                    $translations[] = new Scale($found[0], $found[1]);
+                } else {
+                    $translations[] = $scale;
+                }
+            }
+
+            $scales = $translations;
+        }
+
+        return $scales;
     }
 
     /**
@@ -128,7 +147,19 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
      */
     public function getLegends(): array
     {
-        return $this->legends;
+        $translations = $this->getTranslationTable()->get('legends');
+        if (!$translations) {
+            return $this->legends;
+        }
+
+        $legends = [];
+        foreach ($translations as $translation) {
+            [$label] = $translation;
+
+            $legends[] = new Legend($label);
+        }
+
+        return $legends;
     }
 
     public function getOptions(): OptionCollection

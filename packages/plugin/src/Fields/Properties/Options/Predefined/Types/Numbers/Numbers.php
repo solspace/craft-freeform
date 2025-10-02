@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Numbers;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Integer;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Numbers implements PredefinedSourceTypeInterface
 {
@@ -31,7 +32,7 @@ class Numbers implements PredefinedSourceTypeInterface
         return 'Numbers';
     }
 
-    public function generateOptions(): OptionCollection
+    public function generateOptions(TranslationTable $translationTable): OptionCollection
     {
         $collection = new OptionCollection();
 

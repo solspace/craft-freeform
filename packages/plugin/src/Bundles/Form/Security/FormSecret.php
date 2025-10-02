@@ -22,7 +22,7 @@ class FormSecret extends FeatureBundle
         return $form->getProperties()->get(self::KEY);
     }
 
-    public function addSecret(FormEventInterface $event)
+    public function addSecret(FormEventInterface $event): void
     {
         $secret = CryptoHelper::getUniqueToken(20);
         $event->getForm()->getProperties()->set(self::KEY, $secret);

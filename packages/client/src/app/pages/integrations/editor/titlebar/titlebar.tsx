@@ -12,6 +12,10 @@ import axios from 'axios';
 import type { AuthState, Integration } from '../../integration.types';
 import { Readme } from '../readme/readme';
 
+import {
+  FormMonitorTitlebarActions,
+  isFormMonitor,
+} from './form-monitor/titlebar.actions';
 import IconInfo from './icon.info.svg';
 import IconRefresh from './icon.refresh.svg';
 import IconShield from './icon.shield.svg';
@@ -70,6 +74,11 @@ export const Titlebar: FC<Props> = ({ integration }) => {
     }
   };
 
+  const formMonitor = isFormMonitor({
+    ...integration,
+    id: String(integration.id),
+  });
+
   const canManage = config.permissions.integrations === 'manage';
   const canRemove = canManage && integration.id && integration.supported;
   const hasReadme = !!integration.type.readmeContent;
@@ -126,6 +135,17 @@ export const Titlebar: FC<Props> = ({ integration }) => {
             </Action>
           </Actions>
         )}
+
+        {canManage &&
+          integration.enabled &&
+          formMonitor &&
+          state === 'authorized' && (
+            <Actions>
+              <FormMonitorTitlebarActions
+                integration={{ ...integration, id: String(integration.id) }}
+              />
+            </Actions>
+          )}
 
         {canRemove && (
           <RemoveButtonWrapper>

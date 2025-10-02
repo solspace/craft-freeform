@@ -191,6 +191,8 @@ class LayoutsService extends BaseService
                 $page->getFields()->add($field);
                 $row->getAllFields()->add($field);
 
+                $field->setPageIndex($page->getIndex());
+
                 if ($field instanceof NoRenderInterface || !$field->canRender()) {
                     continue;
                 }

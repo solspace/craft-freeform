@@ -36,6 +36,16 @@ class OpinionScaleInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'Value',
             ],
+            /*
+             * @deprecated - this attribute is no longer used
+             *
+             * @remove - Freeform 6.0
+             */
+            'key' => [
+                'name' => 'key',
+                'type' => Type::string(),
+                'description' => 'Alias of value. Deprecated. Will be removed in Freeform 6.0.',
+            ],
             'label' => [
                 'name' => 'label',
                 'type' => Type::string(),

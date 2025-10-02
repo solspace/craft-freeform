@@ -26,15 +26,15 @@ class SubmissionMutationResolver extends ElementMutationResolver
      */
     public function saveSubmission(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): ?array
     {
-        if (!GqlPermissions::canCreateAllSubmissions() && !GqlPermissions::canCreateSubmissions($context->uid)) {
-            throw new Error('Unable to create Freeform submissions.');
-        }
-
         $form = $this->getResolutionData('form');
         if (!$form) {
-            throw new Error('Form with ID {id} not found', [
-                'id' => $context->id,
+            throw new Error('Form with handle {handle} not found', [
+                'handle' => $form->handle,
             ]);
+        }
+
+        if (!GqlPermissions::canCreateAllSubmissions() && !GqlPermissions::canCreateSubmissions($form->getUid())) {
+            throw new Error('Unable to create Freeform submissions.');
         }
 
         $properties = [];

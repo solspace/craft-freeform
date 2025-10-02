@@ -13,7 +13,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormModal\CreateFormModal;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
-use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;
 
 class ModalController extends BaseApiController
@@ -24,7 +23,6 @@ class ModalController extends BaseApiController
         $config,
         private PropertyProvider $propertyProvider,
         private FormTransformer $formTransformer,
-        private SettingsService $settingsService,
     ) {
         parent::__construct($id, $module, $config);
     }

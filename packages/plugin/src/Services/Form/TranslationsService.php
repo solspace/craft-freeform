@@ -107,16 +107,17 @@ class TranslationsService extends BaseService
     private function decodeTranslations(string $translations): object
     {
         $decoded = json_decode($translations);
+
         foreach ($decoded as $type => $typeTranslations) {
-            if (empty($typeTranslations)) {
-                unset($decoded[$type]);
+            if (empty((array) $typeTranslations)) {
+                unset($decoded->{$type});
 
                 continue;
             }
 
             foreach ($typeTranslations as $namespace => $namespaceTranslations) {
-                if (empty($namespaceTranslations)) {
-                    unset($decoded[$type][$namespace]);
+                if (empty((array) $namespaceTranslations)) {
+                    unset($decoded->{$type}->{$namespace});
                 }
             }
         }

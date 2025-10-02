@@ -18,8 +18,6 @@ Maps Freeform fields to Stripe fields to populate more customer information for 
 
 ### 1. Prepare Freeform
 
-- Select *Stripe* from the **Service Provider** select dropdown.
-- Enter a name and handle for the integration.
 - Copy the URL in the **Webhook URL** field to your clipboard.
 - Leave this page open.
 
@@ -68,6 +66,7 @@ To use this integration on your form(s), you'll need to configure each form indi
 - Click on **Stripe** in the list of available integrations.
 - Toggle the _Enable_ setting ON.
 - Map your Freeform fields to Stripe's fields as necessary.
+- Add a **Stripe** field to your form layout and configure as necessary.
 
 <span class="note warning">Please refer to the [Freeform Stripe integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/stripe-payments/) for a complete setup guide.</span>
 

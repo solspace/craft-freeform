@@ -16,11 +16,12 @@ const ColorPicker: React.FC<ControlType<ColorProperty>> = ({
   property,
   errors,
   updateValue,
+  context,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
         <SelectedColor style={{ backgroundColor: value }} />
       </Swatch>

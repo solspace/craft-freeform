@@ -9,7 +9,7 @@
 - Fixed GraphQL permission checks when querying forms.
 - Fixed the `pageIndex` field not being assigned in GraphQL.
 - Fixed `oneLine` support for **Radios** fields in GraphQL.
-- Fixed an issue where users with per-form management permissions did not automatically have access to newly forms they create.
+- Fixed an issue where users with per-form management permissions did not automatically have access to their newly created forms.
 
 ## 5.12.2 - 2025-09-23
 

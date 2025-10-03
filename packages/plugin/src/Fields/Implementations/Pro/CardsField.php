@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Cards\CardsTransformer
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\Implementations\CardsField\ImageTransformOptionsGenerator;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
@@ -65,6 +66,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     protected string $transform = '';
 
     #[ValueTransformer(CardsTransformer::class)]
+    #[Translatable]
     #[Input\Cards(
         label: 'Cards Layout',
         instructions: 'Configure the content and layout of your cards.',
@@ -144,7 +146,13 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
     public function getLayout(): CardCollection
     {
-        return $this->layout;
+        $layout = $this->layout;
+        $translatedLayout = $this->getTranslationTable()->get('layout');
+        if ($translatedLayout) {
+            $layout = new CardCollection($translatedLayout);
+        }
+
+        return $layout;
     }
 
     public function getTransform(): ?string

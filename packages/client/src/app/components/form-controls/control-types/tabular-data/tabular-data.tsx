@@ -13,11 +13,12 @@ const Matrix: React.FC<ControlType<TabularDataProperty>> = ({
   property,
   errors,
   updateValue,
+  context,
 }) => {
   const { configuration } = property;
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <PreviewableComponent
         preview={
           <TabularDataPreview configuration={configuration} values={value} />
@@ -33,6 +34,8 @@ const Matrix: React.FC<ControlType<TabularDataProperty>> = ({
           configuration={configuration}
           values={value}
           updateValue={updateValue}
+          property={property}
+          context={context}
         />
       </PreviewableComponent>
     </Control>

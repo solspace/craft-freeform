@@ -6,6 +6,7 @@ use craft\elements\User;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Users extends BaseOptionProvider
 {
@@ -85,12 +86,18 @@ class Users extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(): array
+    protected function getElements(TranslationTable $translationTable): array
     {
+        $groupId = $translationTable->get('optionConfiguration.properties.groupId') ?: $this->getGroupId();
+        $status = $translationTable->get('optionConfiguration.properties.status') ?: $this->getStatus();
+
+        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
+        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+
         return User::find()
-            ->groupId($this->getGroupId() ?: null)
-            ->status($this->getStatus() ?: null)
-            ->orderBy($this->getOrderBy().' '.$this->getSort())
+            ->groupId($groupId)
+            ->status($status)
+            ->orderBy($orderBy.' '.$sort)
             ->all()
         ;
     }

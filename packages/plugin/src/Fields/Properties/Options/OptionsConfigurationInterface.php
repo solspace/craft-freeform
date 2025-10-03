@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Properties\Options;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 interface OptionsConfigurationInterface
 {
@@ -12,7 +13,7 @@ interface OptionsConfigurationInterface
 
     public function getSource(): string;
 
-    public function getOptions(): OptionCollection;
+    public function getOptions(TranslationTable $translationTable): OptionCollection;
 
     public function toArray(): array;
 }

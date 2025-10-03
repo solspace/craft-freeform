@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Tags extends BaseOptionProvider
 {
@@ -107,13 +108,20 @@ class Tags extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(): array
+    protected function getElements(TranslationTable $translationTable): array
     {
+        $siteId = $translationTable->get('optionConfiguration.properties.siteId') ?: $this->getSiteId();
+        $groupId = $translationTable->get('optionConfiguration.properties.groupId') ?: $this->getGroupId();
+        $status = $translationTable->get('optionConfiguration.properties.status') ?: $this->getStatus();
+
+        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
+        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+
         return Tag::find()
-            ->siteId($this->getSiteId() ?: null)
-            ->groupId($this->getGroupId() ?: null)
-            ->status($this->getStatus() ?: null)
-            ->orderBy($this->getOrderBy().' '.$this->getSort())
+            ->siteId($siteId)
+            ->groupId($groupId)
+            ->status($status)
+            ->orderBy($orderBy.' '.$sort)
             ->all()
         ;
     }

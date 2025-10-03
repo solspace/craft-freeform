@@ -17,6 +17,7 @@ use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Fields\Implementations\Options\AssetSourceOptions;
 use Solspace\Freeform\Fields\Implementations\ValueGenerators\AssetSourceGenerator;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 trait FileUploadTrait
 {
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Translatable]
     #[ValueGenerator(AssetSourceGenerator::class)]
     #[Limitation('props.file', 'source')]
     #[DefaultValue('props.file.source')]
@@ -37,6 +39,7 @@ trait FileUploadTrait
     protected ?int $assetSourceId = null;
 
     #[Flag(FileUploadInterface::FLAG_GLOBAL_PROPERTY)]
+    #[Translatable]
     #[Limitation('props.file', 'uploadLocation')]
     #[DefaultValue('props.file.uploadLocation')]
     #[Input\Text(
@@ -49,11 +52,11 @@ trait FileUploadTrait
 
     public function getAssetSourceId(): ?int
     {
-        return $this->assetSourceId;
+        return $this->getTranslationTable()->get('assetSourceId', $this->assetSourceId);
     }
 
     public function getDefaultUploadLocation(): ?string
     {
-        return $this->defaultUploadLocation;
+        return $this->getTranslationTable()->get('defaultUploadLocation', $this->defaultUploadLocation);
     }
 }

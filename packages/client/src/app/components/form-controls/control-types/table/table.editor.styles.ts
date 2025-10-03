@@ -50,6 +50,11 @@ export const Input = styled.input`
   &::placeholder {
     color: ${colors.gray200};
   }
+
+  &:disabled {
+    background: #00000004;
+    color: ${colors.gray300};
+  }
 `;
 
 export const Select = styled.select`

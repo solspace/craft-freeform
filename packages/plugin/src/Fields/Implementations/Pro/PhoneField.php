@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PhoneMaskInterface;
@@ -24,6 +25,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 
     #[Limitation('props.phone', 'pattern')]
     #[DefaultValue('props.phone.pattern')]
+    #[Translatable]
     #[Input\Text(
         label: 'Pattern validation',
         instructions: "Use '0' (a digit between 0-9) and other characters, e.g. '(000) 000-0000' or '+0 0000 000000'.",
@@ -49,7 +51,9 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 
     public function getPattern(): ?string
     {
-        return !empty($this->pattern) ? $this->pattern : null;
+        $pattern = $this->getTranslationTable()->get('pattern', $this->pattern);
+
+        return !empty($pattern) ? $pattern : null;
     }
 
     public function getInputHtml(): string

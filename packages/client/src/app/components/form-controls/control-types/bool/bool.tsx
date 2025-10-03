@@ -1,45 +1,35 @@
 import React from 'react';
 import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
-import { ControlWrapper } from '@components/form-controls/control.styles';
-import { FormErrorList } from '@components/form-controls/error-list';
-import FormInstructions from '@components/form-controls/instructions';
+import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { BooleanProperty } from '@ff-client/types/properties';
-import classes from '@ff-client/utils/classes';
-import translate from '@ff-client/utils/translations';
 
-import { CheckboxItem, CheckboxWrapper, TextWrapper } from './bool.styles';
+import { CheckboxItem, CheckboxWrapper } from './bool.styles';
 
 const Bool: React.FC<ControlType<BooleanProperty>> = ({
   value: enabled,
   property,
   errors,
+  context,
   updateValue,
 }) => {
-  const { handle, label, width } = property;
-
   return (
-    <ControlWrapper
-      $width={width}
-      className={classes(property.disabled && 'disabled')}
-    >
-      <CheckboxWrapper>
-        <CheckboxItem>
-          <LightSwitch
-            enabled={enabled}
-            onClick={(enabled) => updateValue(enabled)}
-            errors={errors}
-          />
-        </CheckboxItem>
-        <TextWrapper onClick={() => updateValue(!enabled)}>
-          <label className={classes(errors && 'error')} htmlFor={handle}>
-            {translate(label)}
-          </label>
-          <FormInstructions instructions={property.instructions} />
-        </TextWrapper>
-      </CheckboxWrapper>
-      <FormErrorList errors={errors} />
-    </ControlWrapper>
+    <Control
+      property={property}
+      errors={errors}
+      context={context}
+      preContent={
+        <CheckboxWrapper>
+          <CheckboxItem>
+            <LightSwitch
+              enabled={enabled}
+              onClick={(enabled) => updateValue(enabled)}
+              errors={errors}
+            />
+          </CheckboxItem>
+        </CheckboxWrapper>
+      }
+    ></Control>
   );
 };
 

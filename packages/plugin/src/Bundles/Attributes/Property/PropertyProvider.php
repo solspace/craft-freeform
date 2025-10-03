@@ -277,7 +277,8 @@ class PropertyProvider
             $configuration->add(
                 $item['key'],
                 $item['label'] ?? $item['key'],
-                $item['type'] ?? null
+                $item['type'] ?? null,
+                $item['translatable'] ?? false,
             );
         }
 

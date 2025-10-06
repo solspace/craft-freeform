@@ -26,7 +26,7 @@ class CaptchasBundle extends FeatureBundle
     public const KEY_CAPTCHA_PROPERTIES = 'captchas';
     public const KEY_CAPTCHA_PROPERTY_STACK = 'captchaPropertyStack';
 
-    private bool $renderedManually = false;
+    private array $renderedManually = [];
 
     public function __construct(
         private FormIntegrationsProvider $formIntegrationsProvider,
@@ -79,13 +79,13 @@ class CaptchasBundle extends FeatureBundle
     public function renderCaptchaManually(RenderTagEvent $event): void
     {
         if ($this->attachHtmlElement($event)) {
-            $this->renderedManually = true;
+            $this->renderedManually[] = spl_object_hash($event->getForm());
         }
     }
 
     public function attachHtmlElement(RenderTagEvent $event): bool
     {
-        if ($this->renderedManually) {
+        if (isset($this->renderedManually[spl_object_hash($event->getForm())])) {
             return false;
         }
 

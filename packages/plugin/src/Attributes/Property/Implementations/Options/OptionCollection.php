@@ -63,6 +63,15 @@ class OptionCollection implements CustomNormalizerInterface, \IteratorAggregate,
         return $this->toArray();
     }
 
+    public function fromArray(array $options): self
+    {
+        foreach ($options as $value => $label) {
+            $this->add($value, $label);
+        }
+
+        return $this;
+    }
+
     public function toArray(?self $optionCollection = null): array
     {
         $options = [];

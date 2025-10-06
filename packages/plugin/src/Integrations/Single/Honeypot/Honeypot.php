@@ -29,7 +29,7 @@ class Honeypot extends BaseIntegration implements SingletonIntegrationInterface
     #[Middleware('handle')]
     #[Text(
         label: 'Custom Input Name',
-        instructions: "Enter a new value to rename the default Freeform Honeypot input name. The default is 'freeform_form_handle'.",
+        instructions: 'Enter a new value to rename the default Freeform Honeypot input name. The default is `freeform_form_handle`.',
         placeholder: 'e.g. freeform_form_handle',
     )]
     protected string $inputName = '';

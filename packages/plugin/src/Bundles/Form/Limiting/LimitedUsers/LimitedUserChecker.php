@@ -2,20 +2,22 @@
 
 namespace Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers;
 
-use craft\elements\User;
-use Solspace\Freeform\Records\LimitedUsersRecord;
+use Solspace\Freeform\Bundles\Permissions\PermissionsProvider;
 
 class LimitedUserChecker
 {
-    public function __construct() {}
+    public function __construct(
+        private PermissionsProvider $permissions,
+        private LimitedUserSettingsProvider $settingsProvider,
+    ) {}
 
     public function can(string $path, ?string $includes = null): bool
     {
-        if ($this->isConsole()) {
+        if ($this->permissions->isConsole()) {
             return true;
         }
 
-        if (!$this->permissionsEnabled()) {
+        if (!$this->permissions->permissionsEnabled()) {
             return true;
         }
 
@@ -33,7 +35,7 @@ class LimitedUserChecker
 
     public function get(string $path): array|bool|string|null
     {
-        $user = $this->getCurrentUser();
+        $user = $this->permissions->getCurrentUser();
         if ($user?->admin) {
             return null;
         }
@@ -59,7 +61,7 @@ class LimitedUserChecker
 
     public function getAll(): ?array
     {
-        $user = $this->getCurrentUser();
+        $user = $this->permissions->getCurrentUser();
         if ($user->admin) {
             return null;
         }
@@ -69,67 +71,12 @@ class LimitedUserChecker
 
     private function getFirstPermissionSettings(): ?array
     {
-        static $settings;
+        static $id;
 
-        if (null === $settings) {
-            $permissionName = 'freeform-limitedusers';
-            $id = null;
-
-            $user = $this->getCurrentUser();
-            if (!$user) {
-                return null;
-            }
-
-            $permissionList = \Craft::$app->userPermissions->getPermissionsByUserId($user->getId());
-            foreach ($permissionList as $permission) {
-                if (str_starts_with($permission, $permissionName)) {
-                    if (!str_contains($permission, ':')) {
-                        continue;
-                    }
-
-                    [, $permissionId] = explode(':', $permission);
-
-                    $id = $permissionId;
-
-                    break;
-                }
-            }
-
-            if (!$id) {
-                $settings = false;
-
-                return null;
-            }
-
-            $record = LimitedUsersRecord::findOne(['id' => $id]);
-            if (!$record) {
-                $settings = false;
-
-                return null;
-            }
-
-            $settings = json_decode($record->settings, true);
+        if (null === $id) {
+            $id = $this->permissions->getFirstPermissionId('freeform-limitedusers');
         }
 
-        if (false === $settings) {
-            return null;
-        }
-
-        return $settings;
-    }
-
-    private function isConsole(): bool
-    {
-        return \Craft::$app->request->getIsConsoleRequest();
-    }
-
-    private function getCurrentUser(): ?User
-    {
-        return \Craft::$app->getUser()->getIdentity();
-    }
-
-    private function permissionsEnabled(): bool
-    {
-        return \Craft::Pro === \Craft::$app->getEdition();
+        return $this->settingsProvider->getSettings($id);
     }
 }

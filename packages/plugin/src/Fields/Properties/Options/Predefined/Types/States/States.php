@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class States implements PredefinedSourceTypeInterface
 {
@@ -35,7 +36,7 @@ class States implements PredefinedSourceTypeInterface
         return 'USA States';
     }
 
-    public function generateOptions(): OptionCollection
+    public function generateOptions(TranslationTable $translationTable): OptionCollection
     {
         static $states;
         if (null === $states) {

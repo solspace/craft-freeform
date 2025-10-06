@@ -277,7 +277,8 @@ class PropertyProvider
             $configuration->add(
                 $item['key'],
                 $item['label'] ?? $item['key'],
-                $item['type'] ?? null
+                $item['type'] ?? null,
+                $item['translatable'] ?? false,
             );
         }
 
@@ -433,7 +434,7 @@ class PropertyProvider
             return;
         }
 
-        $attribute->visible = $this->checker->can($limitation->expression);
+        $attribute->visible = $this->checker->can($limitation->expression, $limitation->includes);
     }
 
     private function getContainer(): Container

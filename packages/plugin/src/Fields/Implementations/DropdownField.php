@@ -121,7 +121,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
 
             $output .= Html::tag(
                 $optionAttributes->getTag('option'),
-                $this->translateOptionLabel($option),
+                $option->getLabel(),
                 $optionAttributes->toHtmlTagArray([
                     'i' => $index,
                     'index' => $index,

@@ -12,14 +12,12 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Records\IntegrationRecord;
-use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class AuthorizationListener extends FeatureBundle
 {
-    public function __construct(
-        private IntegrationsService $integrationsService,
-    ) {
+    public function __construct()
+    {
         Event::on(
             IntegrationClientProvider::class,
             IntegrationClientProvider::EVENT_GET_CLIENT,
@@ -40,21 +38,11 @@ class AuthorizationListener extends FeatureBundle
             return;
         }
 
-        $plugin = \Craft::$app->plugins->getPlugin('freeform');
-        $licenseKey = \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+        $licenseKey = $this->getLicenseKey();
         $storedLicenseKey = $integration->getStoredLicenseKey();
 
         if ($storedLicenseKey && $storedLicenseKey !== $licenseKey) {
-            // Disable the integration in the database
-            $record = IntegrationRecord::find()
-                ->where(['class' => FormMonitor::class])
-                ->one()
-            ;
-
-            if ($record) {
-                $record->enabled = false;
-                $record->save();
-            }
+            $this->disableIntegration();
         }
 
         $event->addConfig([
@@ -78,8 +66,7 @@ class AuthorizationListener extends FeatureBundle
             return;
         }
 
-        $plugin = \Craft::$app->plugins->getPlugin('freeform');
-        $licenseKey = \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+        $licenseKey = $this->getLicenseKey();
         $storedLicenseKey = $integration->getStoredLicenseKey();
 
         $payload = [
@@ -105,16 +92,7 @@ class AuthorizationListener extends FeatureBundle
         $json = json_decode($body);
 
         if (409 === $response->getStatusCode()) {
-            // Disable the integration in the database
-            $record = IntegrationRecord::find()
-                ->where(['class' => FormMonitor::class])
-                ->one()
-            ;
-
-            if ($record) {
-                $record->enabled = false;
-                $record->save();
-            }
+            $this->disableIntegration();
 
             throw new IntegrationException('Failed to authorize Form Monitor: Freeform license key has changed. Please contact support.');
         }
@@ -135,6 +113,26 @@ class AuthorizationListener extends FeatureBundle
         $integration->setRequestToken($json->requestToken);
         $integration->setStoredLicenseKey($licenseKey);
 
-        $event->setTriggerSave(true);
+        Freeform::getInstance()->integrations->save($event->getModel(), $event->getIntegration());
+    }
+
+    private function getLicenseKey(): string
+    {
+        $plugin = \Craft::$app->plugins->getPlugin('freeform');
+
+        return \Craft::$app->plugins->getPluginLicenseKey($plugin->id);
+    }
+
+    private function disableIntegration(): void
+    {
+        $record = IntegrationRecord::find()
+            ->where(['class' => FormMonitor::class])
+            ->one()
+        ;
+
+        if ($record) {
+            $record->enabled = false;
+            $record->save();
+        }
     }
 }

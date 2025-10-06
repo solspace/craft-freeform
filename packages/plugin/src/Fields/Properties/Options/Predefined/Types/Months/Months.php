@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Months implements PredefinedSourceTypeInterface
 {
@@ -38,7 +39,7 @@ class Months implements PredefinedSourceTypeInterface
         return 'Months';
     }
 
-    public function generateOptions(): OptionCollection
+    public function generateOptions(TranslationTable $translationTable): OptionCollection
     {
         $collection = new OptionCollection();
 

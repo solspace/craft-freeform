@@ -4,11 +4,13 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\CardAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Cards\CardsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\Implementations\CardsField\ImageTransformOptionsGenerator;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
@@ -33,6 +35,8 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     use EncryptionTrait;
     use MultipleValueTrait;
 
+    #[Limitation('props.cards', 'max')]
+    #[DefaultValue('props.cards.max')]
     #[Input\Integer(
         label: 'Max Selected Values',
         instructions: 'Limit how many values a user can select. Leave blank or set to 0 for no limit.',
@@ -41,6 +45,8 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     )]
     protected ?int $maxSelectedValues = null;
 
+    #[Limitation('props.cards', 'perRow')]
+    #[DefaultValue('props.cards.perRow')]
     #[Input\Integer(
         label: 'Cards Per Row',
         instructions: 'Set how many cards should display in each row.',
@@ -49,6 +55,8 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     )]
     protected int $cardsPerRow = 5;
 
+    #[Limitation('props.cards', 'transform')]
+    #[DefaultValue('props.cards.transform')]
     #[Input\Select(
         label: 'Image Transform',
         instructions: 'Choose an image transform to apply.',
@@ -58,6 +66,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     protected string $transform = '';
 
     #[ValueTransformer(CardsTransformer::class)]
+    #[Translatable]
     #[Input\Cards(
         label: 'Cards Layout',
         instructions: 'Configure the content and layout of your cards.',
@@ -137,7 +146,13 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
 
     public function getLayout(): CardCollection
     {
-        return $this->layout;
+        $layout = $this->layout;
+        $translatedLayout = $this->getTranslationTable()->get('layout');
+        if ($translatedLayout) {
+            $layout = new CardCollection($translatedLayout);
+        }
+
+        return $layout;
     }
 
     public function getTransform(): ?string

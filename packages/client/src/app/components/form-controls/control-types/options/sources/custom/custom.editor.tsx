@@ -128,7 +128,6 @@ export const CustomEditor: React.FC<
             setLocalValue(toggleUseCustomValues(localValue, !useCustomValues))
           }
         />
-
         <BulkWrapper>
           <PreviewableComponent
             preview={
@@ -144,6 +143,7 @@ export const CustomEditor: React.FC<
           </PreviewableComponent>
         </BulkWrapper>
       </ChoiceWrapper>
+
       {!!options.length && (
         <TableContainer>
           <TabularOptions>
@@ -177,9 +177,10 @@ export const CustomEditor: React.FC<
                             {
                               ...option,
                               label: event.target.value,
-                              value: autoUpdateHandle
-                                ? event.target.value
-                                : option.value,
+                              value:
+                                autoUpdateHandle || !useCustomValues
+                                  ? event.target.value
+                                  : option.value,
                             },
                             localValue
                           )
@@ -277,7 +278,6 @@ export const CustomEditor: React.FC<
           </TabularOptions>
         </TableContainer>
       )}
-
       <HelpText>
         <span
           dangerouslySetInnerHTML={{

@@ -201,7 +201,6 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
                 'field' => $this,
             ];
 
-            $label = $this->translateOptionLabel($option);
             $inputTag = Html::tag(
                 $inputAttributes->getTag('input'),
                 $option->getValue(),
@@ -210,7 +209,7 @@ class CheckboxesField extends BaseGeneratedOptionsField implements MultiValueInt
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $inputTag.$label,
+                $inputTag.$option->getLabel(),
                 $labelAttributes->toHtmlTagArray($twigVariables),
             );
         }

@@ -5,12 +5,16 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'File Drag & Drop',
@@ -25,6 +29,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public const DEFAULT_PLACEHOLDER = 'Upload a file or drag and drop';
     private const DEFAULT_CONFIRM_MESSAGE = 'Are you sure?';
 
+    #[Limitation('props.file', 'accentColor')]
+    #[DefaultValue('props.file.accentColor')]
     #[Input\ColorPicker(
         label: 'Accent Color',
         instructions: 'Select accent color',
@@ -32,6 +38,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
+    #[Limitation('props.file', 'theme')]
+    #[DefaultValue('props.file.theme')]
     #[Input\Select(
         label: 'Theme',
         instructions: 'Select theme',
@@ -43,12 +51,17 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $theme = self::DEFAULT_THEME;
 
+    #[Translatable]
+    #[Limitation('props.file', 'placeholder')]
+    #[DefaultValue('props.file.placeholder')]
     #[Input\Text(
         instructions: 'Field placeholder.',
         order: 8,
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;
 
+    #[Limitation('props.file', 'removeFileMessage')]
+    #[DefaultValue('props.file.removeFileMessage')]
     #[Input\Text(
         label: 'Remove File Confirmation Message',
         instructions: 'Enter a custom message that will be shown when removing a file from the upload field.',
@@ -57,14 +70,18 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $removeFileMessage = '';
 
+    #[Limitation('props.file', 'dialogElement')]
+    #[DefaultValue('props.file.dialogElement')]
     #[Input\Boolean(
-        label: 'Use a Dialog element?',
+        label: 'Use Dialog Element',
         instructions: 'If enabled, a dialog element will be used to confirm file removal.',
         order: 80,
     )]
     protected bool $useCustomDialog = false;
 
     #[VisibilityFilter('Boolean(properties.useCustomDialog)')]
+    #[Limitation('props.file', 'dialogSelector')]
+    #[DefaultValue('props.file.dialogSelector')]
     #[Input\Text(
         label: 'Custom Confirm Dialog Selector',
         instructions: 'To use a custom dialog element, specify its CSS selector here. If left blank, Freeform will generate its own dialog element.',
@@ -124,9 +141,15 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             $fileCount = \count($this->getValue());
         }
 
+        $placeholderText = $this->translate('placeholder', $this->getPlaceholder());
+        $ariaDescribedBy = $this->getHandle().'-messages';
+
         $attributes = $this->getAttributes()
             ->getInput()
             ->clone()
+            ->setIfEmpty('type', 'button')
+            ->setIfEmpty('aria-label', $placeholderText)
+            ->setIfEmpty('aria-describedby', $ariaDescribedBy)
             ->append('class', 'freeform-file-dnd__input')
             ->replace('data-freeform-file-upload', $this->getHandle())
             ->replace('data-file-count', $fileCount)
@@ -139,18 +162,26 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ->setIfEmpty('data-message-size', $messageSize)
             ->setIfEmpty('data-accent', $this->getAccent())
             ->setIfEmpty('data-base-url', UrlHelper::siteUrl('/freeform'))
+            ->set('data-confirm-message', $this->getRemoveFileMessage())
         ;
 
-        $attributes->set('data-confirm-message', $this->getRemoveFileMessage());
         if ($this->isUseCustomDialog()) {
             $attributes->set('data-dialog-selector', $this->getConfirmDialogSelector());
         }
 
         $output = '<div data-placeholder class="freeform-file-dnd__placeholder">';
-        $output .= $this->translate('placeholder', $this->getPlaceholder());
+        $output .= $placeholderText;
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-dnd__preview-zone"></div>';
-        $output .= '<ul data-messages class="freeform-file-dnd__messages"></ul>';
+
+        $messageAttributes = (new Attributes())
+            ->set('id', $ariaDescribedBy)
+            ->set('aria-live', 'polite')
+            ->set('data-messages')
+            ->append('class', 'freeform-file-dnd__messages')
+        ;
+
+        $output .= Html::tag('ul', '', $messageAttributes->toHtmlTagArray());
         $output .= Html::tag(
             'input',
             '',
@@ -159,7 +190,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $errorTag = '<div data-error-append-target="'.$this->getHandle().'"></div>';
         $tag = Html::tag(
-            'div',
+            $attributes->getTag('button'),
             $output,
             $attributes->toHtmlTagArray(['field' => $this])
         );

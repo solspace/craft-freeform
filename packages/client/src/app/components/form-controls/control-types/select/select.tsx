@@ -7,13 +7,14 @@ import type { SelectProperty } from '@ff-client/types/properties';
 const Select: React.FC<ControlType<SelectProperty>> = ({
   value,
   property,
+  context,
   errors,
   updateValue,
 }) => {
   const { options, emptyOption } = property;
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <Dropdown
         value={value ?? ''}
         emptyOption={emptyOption}

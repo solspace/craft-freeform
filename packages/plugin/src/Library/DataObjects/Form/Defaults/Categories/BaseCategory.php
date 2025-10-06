@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Defaults\EmptyValue;
 use Solspace\Freeform\Attributes\Defaults\Label;
 use Solspace\Freeform\Attributes\Defaults\OptionsGenerator;
 use Solspace\Freeform\Attributes\Defaults\SetDefaultValue;
+use Solspace\Freeform\Attributes\Defaults\SetPlaceholder;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
@@ -71,6 +72,11 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                     'locked' => $config[$name]['locked'] ?? false,
                 ];
 
+                $placeholderAttribute = AttributeHelper::findAttribute($property, SetPlaceholder::class);
+                if ($placeholderAttribute) {
+                    $configuration['placeholder'] = $placeholderAttribute->value;
+                }
+
                 if (is_a($class, SelectItem::class, true)) {
                     $emptyValue = AttributeHelper::findAttribute($property, EmptyValue::class);
                     if ($emptyValue) {
@@ -79,9 +85,13 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
 
                     $optionsGenerator = AttributeHelper::findAttribute($property, OptionsGenerator::class);
                     if ($optionsGenerator) {
-                        $generator = \Craft::$container->get($optionsGenerator->generator);
-                        if ($generator instanceof OptionsGeneratorInterface) {
-                            $configuration['optionsGenerator'] = $generator;
+                        if (\is_array($optionsGenerator->generator)) {
+                            $configuration['optionsArray'] = $optionsGenerator->generator;
+                        } else {
+                            $generator = \Craft::$container->get($optionsGenerator->generator);
+                            if ($generator instanceof OptionsGeneratorInterface) {
+                                $configuration['optionsGenerator'] = $generator;
+                            }
                         }
                     }
                 }
@@ -90,6 +100,16 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
                 $this->{$property->getName()}->setLabel($label);
             }
         }
+    }
+
+    public function isEnabled(): bool
+    {
+        return true;
+    }
+
+    public function isDelimited(): bool
+    {
+        return false;
     }
 
     public function getIterator(): \ArrayIterator

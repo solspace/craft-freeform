@@ -8,6 +8,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Events\UpdateMetadataEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Records\SavedFormRecord;
 use Solspace\Freeform\Services\SubmissionsService;
@@ -19,6 +20,7 @@ class StripeCallbackService
     public function __construct(
         private SubmissionsService $submissionsService,
         private IntegrationLoggerProvider $loggerProvider,
+        private IsolatedTwig $isolatedTwig,
     ) {}
 
     public function handleSavedForm(
@@ -138,6 +140,17 @@ class StripeCallbackService
         $logger->debug('Payment record saved', ['id' => $payment->id]);
 
         if ($savedForm) {
+            $description = $this->isolatedTwig
+                ->render(
+                    $field->getDescription(),
+                    [
+                        'form' => $field->getForm(),
+                        'submission' => $form->getSubmission(),
+                        'field' => $field,
+                    ]
+                )
+            ;
+
             $submissionMetadata = [
                 'submission' => UrlHelper::cpUrl('freeform/submissions/'.$form->getSubmission()->id),
             ];
@@ -151,24 +164,26 @@ class StripeCallbackService
                 $stripe->subscriptions->update(
                     $paymentIntent->invoice->subscription->id,
                     [
+                        'description' => $description,
                         'metadata' => array_merge(
                             $paymentIntent->invoice->subscription->metadata->toArray(),
                             $submissionMetadata,
                         ),
                     ]
                 );
-            } else {
-                $stripe->paymentIntents->update(
-                    $paymentIntent->id,
-                    [
-                        'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
-                        'metadata' => array_merge(
-                            $paymentIntent->metadata->toArray(),
-                            $submissionMetadata,
-                        ),
-                    ]
-                );
             }
+
+            $stripe->paymentIntents->update(
+                $paymentIntent->id,
+                [
+                    'description' => $description,
+                    'receipt_email' => $integration->isSendSuccessMail() ? $paymentIntent->customer->email : null,
+                    'metadata' => array_merge(
+                        $paymentIntent->metadata->toArray(),
+                        $submissionMetadata,
+                    ),
+                ]
+            );
         }
 
         return true;

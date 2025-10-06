@@ -49,7 +49,7 @@ abstract class BaseActiveCampaignIntegration extends EmailMarketingIntegration i
     #[Validators\Required]
     #[Input\Text(
         label: 'API URL',
-        instructions: 'Enter your API specific URL (e.g. "https://youraccountname.api-us1.com" or "https://youraccountname.activehosted.com").',
+        instructions: 'Enter your API specific URL (e.g. `https://youraccountname.api-us1.com` or `https://youraccountname.activehosted.com`).',
         order: 5,
     )]
     protected string $apiUrl = '';

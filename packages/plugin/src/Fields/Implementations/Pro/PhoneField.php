@@ -5,7 +5,10 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PhoneMaskInterface;
@@ -20,12 +23,17 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 {
     protected string $customInputType = 'tel';
 
+    #[Limitation('props.phone', 'pattern')]
+    #[DefaultValue('props.phone.pattern')]
+    #[Translatable]
     #[Input\Text(
         label: 'Pattern validation',
         instructions: "Use '0' (a digit between 0-9) and other characters, e.g. '(000) 000-0000' or '+0 0000 000000'.",
     )]
     protected ?string $pattern = null;
 
+    #[Limitation('props.phone', 'javascript')]
+    #[DefaultValue('props.phone.javascript')]
     #[Input\Boolean(
         label: 'Use built-in javascript validation on pattern',
     )]
@@ -43,7 +51,9 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 
     public function getPattern(): ?string
     {
-        return !empty($this->pattern) ? $this->pattern : null;
+        $pattern = $this->getTranslationTable()->get('pattern', $this->pattern);
+
+        return !empty($pattern) ? $pattern : null;
     }
 
     public function getInputHtml(): string

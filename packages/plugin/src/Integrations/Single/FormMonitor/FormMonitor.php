@@ -45,7 +45,6 @@ class FormMonitor extends APIIntegration
     )]
     protected bool $liveOnly = true;
 
-    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]
     private string $apiKey = '';

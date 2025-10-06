@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    {% for catName, category in settings.defaults %}
+    {% for catName, category in settings.defaults|filter(def => def.enabled) %}
         <hr>
 
         <h2>{{ category.label|t('freeform') }}</h2>

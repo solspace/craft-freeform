@@ -1654,6 +1654,16 @@ return [
     'Net' => 'Net',
     'Order ID' => 'ID de commande',
     'Capture ID' => 'ID de capture',
+    'Transaction ID' => 'ID de transaction',
+    'Open in Square' => 'Ouvrir dans Square',
+    'Application ID' => 'ID d’application',
+    'Your Square Application ID (used by the Web Payments SDK).' => 'Votre ID d’application Square (utilisé par le SDK Web Payments).',
+    'Enable to use Square Sandbox environment.' => 'Activer pour utiliser l’environnement Sandbox de Square.',
+    'Select a Square integration to use for this field.' => 'Sélectionnez une intégration Square à utiliser pour ce champ.',
+    'Enter a URL to redirect to after a successful payment. You can use the `form`, `submission`, and `payment` variables in twig.' => 'Entrez une URL de redirection après un paiement réussi. Vous pouvez utiliser les variables Twig `form`, `submission` et `payment`.',
+    'Enter a URL to redirect to after a failed payment. You can use the `form` and `payment` variables in twig.' => 'Entrez une URL de redirection après un échec de paiement. Vous pouvez utiliser les variables Twig `form` et `payment`.',
+    'Square access token for server-side API calls. Use a sandbox token when sandbox is enabled.' => 'Jeton d’accès Square pour les appels API côté serveur. Utilisez un jeton sandbox si le mode sandbox est activé.',
+    'Square Location ID where payments will be taken.' => 'ID de localisation Square où les paiements seront traités.',
 
     // Integrations // Webhooks
     'Webhooks' => 'Webhooks',

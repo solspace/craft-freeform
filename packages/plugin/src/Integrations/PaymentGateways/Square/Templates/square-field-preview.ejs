@@ -1,0 +1,44 @@
+<style>
+    .square-demo {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        > div {
+            display: grid;
+            gap: 10px;
+            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-areas: 'cc-number expiry cvc';
+
+            .cc-number {
+                grid-area: cc-number;
+            }
+            .expiry {
+                grid-area: expiry;
+            }
+            .cvc {
+                grid-area: cvc;
+            }
+        }
+    }
+</style>
+
+<div class="square-demo">
+    <div>
+        <div class="cc-number">
+            <div>
+                <input type="text" placeholder="Card number" />
+            </div>
+        </div>
+        <div class="expiry">
+            <div>
+                <input type="text" placeholder="MM/YY" />
+            </div>
+        </div>
+        <div class="cvc">
+            <div>
+                <input type="text" placeholder="CVV" />
+            </div>
+        </div>
+    </div>
+</div>

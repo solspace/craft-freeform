@@ -102,6 +102,11 @@ abstract class BaseCategory implements CategoryInterface, \IteratorAggregate, \J
         }
     }
 
+    public function isEnabled(): bool
+    {
+        return true;
+    }
+
     public function isDelimited(): bool
     {
         return false;

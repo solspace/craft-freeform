@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Calculation;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Cards;
@@ -33,5 +34,10 @@ class FieldProperties extends BaseCategory
     public function isDelimited(): bool
     {
         return true;
+    }
+
+    public function isEnabled(): bool
+    {
+        return Freeform::getInstance()->edition()->isAtLeast(Freeform::EDITION_PRO);
     }
 }

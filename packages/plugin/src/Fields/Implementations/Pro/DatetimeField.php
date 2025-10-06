@@ -341,12 +341,12 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getMinDate(): ?string
     {
-        return $this->minDate;
+        return $this->translate('minDate', $this->minDate);
     }
 
     public function getMaxDate(): ?string
     {
-        return $this->maxDate;
+        return $this->translate('maxDate', $this->maxDate);
     }
 
     public function getLocale(): ?string

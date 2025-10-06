@@ -7,4 +7,6 @@ interface CategoryInterface
     public function getLabel(): string;
 
     public function isDelimited(): bool;
+
+    public function isEnabled(): bool;
 }

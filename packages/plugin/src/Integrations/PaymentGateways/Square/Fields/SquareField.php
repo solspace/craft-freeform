@@ -22,7 +22,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
-    name: 'Square Payment',
+    name: 'Square',
     typeShorthand: 'square',
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/square-field-preview.ejs',

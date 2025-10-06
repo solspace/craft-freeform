@@ -1,58 +1,66 @@
 # Setup Guide
 
-This guide assumes you have a Square account and developer app.
+This guide assumes you already have [Square](https://squareup.com/) and [Square Developer](https://developer.squareup.com/console/apps) accounts.
 
-> For a complete setup guide for payments in Freeform, see the Freeform documentation.
+<span class="note warning">Please refer to the [Freeform Square integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/square/) for the complete setup guide.</span>
 
 ## Compatibility
 
-- Supports one-time payments using Square’s Web Payments SDK and REST API.
-- Amounts are in the smallest currency unit (e.g., USD cents). $5.00 = 500.
+Uses a private app on `v1` of the REST API.
 
-## Requirements
+### Endpoints
 
-- Square Application ID (frontend)
-- Square Access Token (server-side)
-- Square Location ID
+Maps data to Square's **Web Payments SDK**.
 
 ## Setup Instructions
 
 ### 1. Prepare Freeform
 
-- Go to Craft CP → Freeform → Integrations → Add Integration.
-- Choose Square and enter:
-  - Application ID
-  - Access Token (use a Sandbox token if Sandbox is enabled)
-  - Location ID
-- Toggle “Use Sandbox” for testing.
-- Save and run Status Check to verify credentials.
+- Click on the **Square** integration in your Freeform control panel.
+- Leave this page open.
 
-### 2. Configure the Form
+### 2. Set Up Square
 
-- Open your form in the Freeform form builder.
-- Add the “Square Payment” field.
-- In field settings:
-  - Select your Square integration.
-  - Choose the amount source:
-    - Fixed amount
-    - Dynamic amount (read from another field)
-  - Optional: set Successful Payment Redirect and Failed Payment Redirect.
+Open another browser tab and [log into your Square Developer account](https://developer.squareup.com/console/apps):
 
-### 3. Frontend Behavior
+- In the **Applications** menu, click on the large **+** button to create a new app:
+    - Provide a name for the app and click _Next_.
+    - Select _Accept Payments_ checkbox and click _Next_.
+    - Choose an option for _Find your audience_ (likely **Myself**).
+    - Click on **Complete** button.
+- Once you're taken to the app's page, copy the **Sandbox Application ID** and **Sandbox Access token** tokens.
+- In the navigation menu, click on **Locations**.
+    - In the right side of the page, copy the value under the **Location ID** column.
 
-- The Square field renders a mount point for the Web Payments SDK.
-- On form submit, the card is tokenized and a payment is created server-side.
-- On success, the payment id is stored and the form submits normally (or redirects if configured).
+### 3. Complete the Connection
 
-## How It Works
+- Switch back to the Square integration inside Freeform, and paste the Square tokens into the **Application ID**, **Access Token** and **Location ID** settings.
+- If you plan on testing the integration in sandbox mode (recommended), enable the **Use Sandbox** setting.
+- Click the **Save** button.
+- After the integration is saved, you should see an **Authorize** button at the top of the page.
+- Click **Authorize**.
+- If successful, the flag at the top will turn green and display _Authorized_.
 
-- Frontend: Square Web Payments SDK creates a nonce and posts to a Freeform endpoint to create the payment.
-- Backend: Freeform creates a Square payment and returns success/failure.
-- Submission: After the form is saved, Freeform links the payment to the submission so it appears in the Control Panel.
+### 4. Configure the Form
 
-## Troubleshooting
+To use this integration on your form(s), configure each form individually:
 
-- Declines (e.g., CARD_DECLINED) are returned and shown on the form; test with Sandbox cards when in Sandbox mode.
-- If a payment is successful but doesn’t appear on the submission, ensure the form includes a Square Payment field and that the page loads the Square script.
+- Open the form in the form builder.
+- Click the **Integrations** tab.
+- Click **Square** in the list of available integrations.
+- Toggle the _Enable_ setting ON.
+- Add a **Square** field to your form layout and configure as needed.
+- Save the form.
 
+<span class="note warning">Please refer to the [Freeform Square integration documentation](https://docs.solspace.com/craft/freeform/v5/integrations/square/) for the complete setup guide.</span>
 
+### 5. Sandbox Testing
+
+- Open your form on the front end.
+    - Fill out the form as usual.
+    - To test the credit card field, refer to [Square's Sandbox Payments](https://developer.squareup.com/docs/devtools/sandbox/payments) docs for test card numbers.
+    - Complete the transaction.
+
+---
+
+<small>Need more from this integration? Looking for an integration that's not available? Solspace offers [custom software development services](https://docs.solspace.com/support/premium/) to build any feature or change you need.</small>

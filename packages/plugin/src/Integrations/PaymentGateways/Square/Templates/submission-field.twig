@@ -1,0 +1,155 @@
+{% set payment = payment %}
+
+<style>
+    .square-payment {
+        display: inline-flex;
+        justify-content: start;
+
+        min-width: 400px;
+        padding: 10px 15px;
+
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        box-shadow: 0 2px 12px rgba(205,216,228,.5);
+
+        & ul {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            & li {
+                display: grid;
+                grid-template-columns: 120px max-content;
+                align-items: start;
+            }
+        }
+
+        .square-icon {
+            display: inline-block;
+            border-radius: 4px;
+        }
+
+        .square-amount {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .square-status {
+            font-weight: bold;
+
+            &.completed {
+                color: #28a745;
+            }
+
+            &.failed {
+                color: #dc3545;
+            }
+        }
+
+        .payment-icon {
+            display: inline-block;
+            width: 50px;
+
+            border-radius: 4px;
+        }
+
+        .payment-method {
+
+            &.card {
+                display: grid;
+                grid-template-columns: min-content max-content;
+                grid-template-areas: 'icon brand' 'card-number card-number';
+                column-gap: 10px;
+                row-gap: 2px;
+                padding: 10px;
+
+                .icon {
+                    grid-area: icon;
+                    width: 40px;
+                }
+
+                .brand {
+                    grid-area: brand;
+                    font-weight: bold;
+                    margin-top: auto;
+                    margin-bottom: auto;
+                }
+
+                .card-number {
+                    grid-area: card-number;
+
+                    font-size: 0.8em;
+                    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+
+                    &:before {
+                        content: "•••• •••• •••• ";
+                    }
+                }
+            }
+        }
+    }
+</style>
+
+<div class="field">
+    <div class="heading">
+        <label class="square-label" for="">
+            <span>{{ field.label }}</span>
+        </label>
+    </div>
+    <div class="square-payment">
+        <ul>
+            <li>
+                <div>
+                    <span class="square-icon">{{ squareSvg|raw }}</span>
+                </div>
+                <span>
+                    {{ "Single Payment"|t('freeform') }}
+                </span>
+            </li>
+            <li>
+                <div>{{ "Amount"|t('freeform') }}</div>
+                <span class="square-amount">
+                    {{ payment.amount / 100 }} {{ payment.currency|upper }}
+                </span>
+            </li>
+            <li>
+                <div>{{ "Status"|t('freeform') }}</div>
+                <span class="square-status {{ payment.status == "COMPLETED" ? "completed" : "failed" }}">
+                    {{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}
+                </span>
+            </li>
+
+            {% if payment.resourceId %}
+                <li>
+                    <div>{{ "Transaction ID"|t('freeform') }}</div>
+                    <span>
+                        {{ payment.resourceId }}
+                    </span>
+                </li>
+            {% endif %}
+
+            {% if payment.dateCreated %}
+                <li>
+                    <div>{{ "Date"|t('freeform') }}</div>
+                    <span>
+                        {{ payment.dateCreated|date('Y-m-d H:i:s') }}
+                    </span>
+                </li>
+            {% endif %}
+
+            <li>
+                <div></div>
+                {% set link = 'https://squareup.com/receipt/preview/' ~ payment.resourceId %}
+                <a href="{{ link }}" target="_blank">
+                    {{ 'Open in Square'|t('freeform') }}
+                    <span class="icon-link-ext"></span>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</div>

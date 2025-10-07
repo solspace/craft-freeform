@@ -8,8 +8,21 @@
 {% set fullPageForm = fullPageForm|default(true) %}
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
+{% if selectableSites|default([])|length %}
+	{% set rootCrumb = {
+		label: craft.freeform.name,
+		url: url('freeform'),
+		icon: earthIcon,
+		menu: {
+			label: 'Select site',
+			items: selectableSites
+		}
+	} %}
+{% else %}
+	{% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
+{% endif %}
 {% set crumbs = crumbs|default([
-	{ label: craft.freeform.name, url: url('freeform') },
+	rootCrumb,
 	{ label: "Forms"|t("freeform"), url: url('freeform/forms') },
 	{ label: form.name, url: url('freeform/forms/' ~ form.id) },
 	{ label: "Submissions"|t('freeform'), url: url('freeform/submissions') },

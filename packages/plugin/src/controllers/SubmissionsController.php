@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\controllers;
 
+use craft\helpers\Cp;
 use craft\records\Asset;
 use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
 use Solspace\Freeform\Bundles\Export\Implementations\Csv\ExportCsv;
@@ -181,6 +182,8 @@ class SubmissionsController extends BaseController
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
             'isCraft5' => version_compare(\Craft::$app->version, '5.0', '>='),
+            'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(null, $submission->site) : [],
+            'earthIcon' => Cp::earthIcon(),
         ];
 
         return $this->renderTemplate(

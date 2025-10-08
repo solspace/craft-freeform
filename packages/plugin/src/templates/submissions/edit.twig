@@ -28,6 +28,12 @@
 	{ label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ]) %}
 
+{% if not isCraft5 %}
+	{% set contextMenu %}
+		{% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
+	{% endset %}
+{% endif %}
+
 {% block actionButton %}
 	<div class="btngroup submit">
 		<input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">

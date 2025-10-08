@@ -386,6 +386,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
         $config = json_encode([
             'apiKey' => $this->integration?->getPublicKey(),
+            'site' => \Craft::$app->getSites()->getCurrentSite()->handle,
             'required' => $this->isRequired(),
             'integration' => $id,
             'amountFields' => $amountFields,

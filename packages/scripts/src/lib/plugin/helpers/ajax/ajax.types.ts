@@ -4,6 +4,7 @@ export type Headers = Record<string, string | boolean | number>;
 
 export type Options = {
   headers?: Headers;
+  queryParams?: URLSearchParams;
   request?: XMLHttpRequest;
   cancelToken?: CancelToken;
   onUploadProgress?: (progress: ProgressEvent) => void;

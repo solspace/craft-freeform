@@ -27,7 +27,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
 
     const containers = selectVisibleContainers(form);
     for (const container of containers) {
-      const { required, integration } = config(container);
+      const { required, integration, site } = config(container);
       const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
       const {
         empty,
@@ -54,6 +54,7 @@ export const submitStripe = (props: StripeFunctionConstructorProps) => async (ev
       const returnUrl = new URL('/freeform/payments/stripe/callback', window.location.origin);
       returnUrl.searchParams.append('integration', integration);
       returnUrl.searchParams.append('token', token);
+      returnUrl.searchParams.append('site', site);
 
       const { error } = await stripe.confirmPayment({
         elements,

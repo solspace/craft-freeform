@@ -3,8 +3,15 @@ import { HttpError } from './ajax.classes';
 import type { CreateXhrRequest, Headers } from './ajax.types';
 
 export const createXhrRequest: CreateXhrRequest = async (method, url, resolve, reject, options) => {
+  const urlObject = new URL(url, window.location.origin);
+  if (options?.queryParams) {
+    options.queryParams.forEach((value, key) => {
+      urlObject.searchParams.set(key, value);
+    });
+  }
+
   const xhr = options.request || new XMLHttpRequest();
-  xhr.open(method, url);
+  xhr.open(method, urlObject);
 
   xhr.setRequestHeader('Cache-Control', 'no-cache');
   xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');

@@ -8,7 +8,7 @@
 {% set fullPageForm = fullPageForm|default(true) %}
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
-{% if selectableSites|default([])|length %}
+{% if isCraft5 and selectableSites|default([])|length %}
 	{% set rootCrumb = {
 		label: craft.freeform.name,
 		url: url('freeform'),

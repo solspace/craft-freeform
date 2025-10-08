@@ -2,28 +2,71 @@
 
 namespace Solspace\Freeform\Services;
 
+use GuzzleHttp\Client;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\AI\Fields\AiField;
-use yii\base\Component;
 
-class AiService extends Component
+class AiService extends BaseService
 {
-    public function processAiField(Form $form, AiIntegrationInterface $integration, AiField $aiField, ?int $timeout = null): ?string
+    public function __construct(
+        $config,
+        private IntegrationClientProvider $clientProvider,
+    ) {
+        parent::__construct($config);
+    }
+
+    public function processAiFieldsJob(
+        int $formId,
+        ?int $submissionId,
+        array $postedData,
+    ): void {
+        $freeform = Freeform::getInstance();
+
+        $form = $freeform->forms->getFormById($formId);
+        if (!$form) {
+            return;
+        }
+
+        $submission = $freeform->submissions->getSubmissionById($submissionId);
+        if ($submission) {
+            $form->setSubmission($submission);
+        }
+
+        $form->valuesFromArray($postedData);
+
+        $fields = $form->getLayout()->getFields()->getList(AiField::class);
+        foreach ($fields as $field) {
+            $integration = $field->getIntegration();
+            $result = $this->processAiField($form, $integration, $field, 6);
+
+            if (null !== $result && '' !== $result) {
+                $submission->setFormFieldValues([$field->getHandle() => $result], false);
+                $form->setFieldValues([$field->getHandle() => $result]);
+
+                \Craft::$app->elements->saveElement($submission, false, false, false);
+            }
+        }
+    }
+
+    public function processAiField(Form $form, AiIntegrationInterface $integration, AiField $field, ?int $timeout = null): ?string
     {
         if (!$integration->isEnabled()) {
             return null;
         }
 
+        $client = $this->clientProvider->getAuthorizedClient($integration);
+
         try {
-            return $this->callAiApi($form, $aiField, $integration, $timeout);
+            return $this->callAiApi($client, $form, $field, $timeout);
         } catch (\Exception $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
                 'AI processing failed: '.$e->getMessage(),
                 [
                     'form' => $form->getHandle(),
-                    'field' => $aiField->getHandle(),
+                    'field' => $field->getHandle(),
                     'exception' => $e,
                 ]
             );
@@ -32,14 +75,19 @@ class AiService extends Component
         }
     }
 
-    private function callAiApi(Form $form, AiField $aiField, AiIntegrationInterface $integration, ?int $timeout = null): string
-    {
-        $content = $this->prepareContentForAnalysis($form, $aiField);
-        $systemPrompt = $this->prepareSystemPrompt($aiField);
+    private function callAiApi(
+        Client $client,
+        Form $form,
+        AiField $field,
+        ?int $timeout = null
+    ): string {
+        $integration = $field->getIntegration();
+        $content = $this->prepareContentForAnalysis($form, $field);
+        $systemPrompt = $this->prepareSystemPrompt($field);
 
         $options = [
             'model' => $integration->getModel(),
-            'max_tokens' => $aiField->getMaxTokens(),
+            'max_tokens' => $field->getMaxTokens(),
         ];
 
         $integrationTemperature = $integration->getTemperature();
@@ -50,7 +98,12 @@ class AiService extends Component
             $options['timeout'] = $timeout;
         }
 
-        return $integration->processAiRequest($systemPrompt, $content, $options);
+        return $integration->processAiRequest(
+            $client,
+            $systemPrompt,
+            $content,
+            $options
+        );
     }
 
     private function prepareContentForAnalysis(Form $form, $aiField): string

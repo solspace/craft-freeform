@@ -17,6 +17,7 @@ use craft\queue\BaseJob;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
+use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -82,8 +83,12 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         // Set the application language to the site's primary language
         \Craft::$app->language = $sites->getCurrentSite()->language;
 
-        $form->valuesFromArray($this->postedData);
         $submission = $freeform->submissions->getSubmissionById($this->submissionId);
+
+        $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
+        Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
+
+        $form->valuesFromArray($event->getValues());
 
         $freeform->mailer->sendEmail(
             $form,

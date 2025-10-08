@@ -60,6 +60,17 @@ class FreeformQueueHandler
         }
     }
 
+    public function executeAiFieldsJob(AiFieldsJobInterface $job, ?int $priority = null): void
+    {
+        $queue = \Craft::$app->getQueue();
+
+        if ($this->settingsService->isAiFieldQueueEnabled()) {
+            Queue::push($job, $priority ?? $this->queuePriority);
+        } else {
+            $job->execute($queue);
+        }
+    }
+
     private function isJobInQueue(JobInterface $job): bool
     {
         $description = $job->getDescription();

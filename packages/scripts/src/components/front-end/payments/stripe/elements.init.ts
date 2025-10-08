@@ -17,6 +17,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   }
 
   const {
+    site,
     fieldMapping,
     theme,
     layout,
@@ -52,7 +53,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   field.innerHTML = 'Loading...';
 
   queries.paymentIntents
-    .create(integration, form)
+    .create(integration, form, site)
     .then(({ data: { id, secret } }) => {
       // Set the PaymentIntent ID as the field value
       field.parentElement.querySelector<HTMLInputElement>('[data-freeform-stripe-intent]').value = id;
@@ -107,7 +108,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
             const paymentIntentId = elementMap.get(field).paymentIntent.id;
 
             queries.paymentIntents
-              .updateAmount(integration, form, paymentIntentId)
+              .updateAmount(integration, form, paymentIntentId, site)
               .then(({ id, client_secret }) => {
                 // If a client_secret is returned - we need to recreate the Stripe element
                 if (client_secret) {
@@ -160,6 +161,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
           paymentIntentId: id,
           key: source,
           value,
+          site,
         });
       };
 

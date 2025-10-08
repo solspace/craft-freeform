@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
@@ -11,17 +10,8 @@ use yii\base\Component;
 
 class AiService extends Component
 {
-    public function processAiField(Form $form, FieldInterface $aiField, ?int $timeout = null): ?string
+    public function processAiField(Form $form, AiIntegrationInterface $integration, AiField $aiField, ?int $timeout = null): ?string
     {
-        if (!$aiField instanceof AiField) {
-            return null;
-        }
-
-        $integration = $aiField->getIntegration();
-        if (!$integration || !$integration instanceof AiIntegrationInterface) {
-            return null;
-        }
-
         if (!$integration->isEnabled()) {
             return null;
         }

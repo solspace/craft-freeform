@@ -45,7 +45,7 @@ class AiBundle extends FeatureBundle
         foreach ($aiFields as $aiField) {
             $integration = $aiField->getIntegration();
             if ($integration instanceof AiIntegrationInterface && $integration->isEnabled()) {
-                $result = $aiService->processAiField($form, $aiField, 6);
+                $result = $aiService->processAiField($form, $integration, $aiField, 6);
                 if (null !== $result && '' !== $result) {
                     $submission->setFormFieldValues([$aiField->getHandle() => $result], false);
                     $form->setFieldValues([$aiField->getHandle() => $result]);

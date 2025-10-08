@@ -38,23 +38,23 @@ class FreeformQueueHandler
         Queue::push($job, $this->queuePriority);
     }
 
-    public function executeNotificationJob(NotificationJobInterface $job): void
+    public function executeNotificationJob(NotificationJobInterface $job, ?int $priority = null): void
     {
         $queue = \Craft::$app->getQueue();
 
         if ($this->settingsService->isNotificationQueueEnabled()) {
-            Queue::push($job, $this->queuePriority);
+            Queue::push($job, $priority ?? $this->queuePriority);
         } else {
             $job->execute($queue);
         }
     }
 
-    public function executeIntegrationJob(IntegrationJobInterface $job): void
+    public function executeIntegrationJob(IntegrationJobInterface $job, ?int $priority = null): void
     {
         $queue = \Craft::$app->getQueue();
 
         if ($this->settingsService->isIntegrationQueueEnabled()) {
-            Queue::push($job, $this->queuePriority);
+            Queue::push($job, $priority ?? $this->queuePriority);
         } else {
             $job->execute($queue);
         }

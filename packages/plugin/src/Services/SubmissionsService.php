@@ -299,7 +299,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $formIds = (new Query())
             ->select(['formId'])
-            ->distinct('formId')
+            ->distinct()
             ->from(Submission::TABLE)
             ->where(['in', 'id', $submissionIds])
             ->column()

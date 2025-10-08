@@ -25,18 +25,9 @@ class OpenAIV1 extends BaseOpenAIIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/models'), [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getApiKey(),
-                ],
-            ]);
-            $data = json_decode((string) $response->getBody(), true);
+        $response = $client->get($this->getEndpoint('/models'));
 
-            return isset($data['data']) && \is_array($data['data']);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function fetchFields(string $category): array
@@ -50,17 +41,15 @@ class OpenAIV1 extends BaseOpenAIIntegration
         };
     }
 
-    public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string
-    {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getApiKey(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
+    public function processAiRequest(
+        Client $client,
+        string $systemPrompt,
+        string $userContent,
+        array $options = []
+    ): string {
         $payload = [
             'model' => $options['model'] ?? $this->getModel(),
+            'max_completion_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
             'messages' => [
                 [
                     'role' => 'system',
@@ -71,44 +60,15 @@ class OpenAIV1 extends BaseOpenAIIntegration
                     'content' => $userContent,
                 ],
             ],
-            'max_completion_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
         ];
 
-        $response = $client->post($this->getEndpoint('/chat/completions'), [
-            'json' => $payload,
-        ]);
+        $response = $client->post(
+            $this->getEndpoint('/chat/completions'),
+            ['json' => $payload]
+        );
 
         $data = json_decode((string) $response->getBody(), true);
 
         return $data['choices'][0]['message']['content'] ?? '';
-    }
-
-    public function listModels(bool $refresh = false): array
-    {
-        try {
-            $client = new Client([
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getApiKey(),
-                ],
-            ]);
-
-            $response = $client->get($this->getEndpoint('/models'));
-            $data = json_decode((string) $response->getBody(), true);
-
-            $models = [];
-            foreach ($data['data'] ?? [] as $item) {
-                if (!isset($item['id'])) {
-                    continue;
-                }
-                $models[] = [
-                    'id' => $item['id'],
-                    'label' => $item['id'],
-                ];
-            }
-
-            return $models;
-        } catch (\Throwable) {
-            return [];
-        }
     }
 }

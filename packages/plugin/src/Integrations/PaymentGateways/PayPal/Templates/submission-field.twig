@@ -1,0 +1,89 @@
+{% set meta = paypalMeta ?? (payment.paymentMethod ?? {}) %}
+{% set payerEmail = meta.payerEmail ?? null %}
+{% set payerGivenName = meta.payerGivenName ?? null %}
+{% set payerSurname = meta.payerSurname ?? null %}
+
+<style>
+    .paypal-payment {
+        display: inline-flex;
+        justify-content: start;
+        min-width: 400px;
+        padding: 10px 15px;
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        box-shadow: 0 2px 12px rgba(205,216,228,.5);
+    }
+    .paypal-payment ul { display: flex; flex-direction: column; gap: 5px; margin: 0; padding: 0; list-style: none; }
+    .paypal-payment ul li { display: grid; grid-template-columns: 120px max-content; align-items: start; }
+    .paypal-payment ul li:first-child { align-items: center; }
+    .paypal-icon { display: inline-block; width: 50px; border-radius: 4px; }
+    .paypal-amount { font-weight: bold; font-size: 1.2em; }
+    .paypal-status { font-weight: bold; }
+    .paypal-status.completed { color: #28a745; }
+    .paypal-status.failed { color: #dc3545; }
+    .paypal-title { font-weight: bold; }
+</style>
+
+<div class="field">
+    <div class="heading">
+        <label class="paypal-label"><span>{{ field.label }}</span></label>
+    </div>
+    <div class="paypal-payment">
+        <ul>
+            <li>
+                <div>
+                    <span class="paypal-icon">{{ paypalSvg|raw }}</span>
+                </div>
+                <span class="paypal-title">PayPal</span>
+            </li>
+            <li>
+                <div>{{ "Amount"|t('freeform') }}</div>
+                <span class="paypal-amount">{{ amount is not empty ? amount ~ ' ' ~ currency|upper : '—' }}</span>
+            </li>
+            <li>
+                <div>{{ "Status"|t('freeform') }}</div>
+                <span class="paypal-status {{ (displayStatus ?? meta.status ?? payment.status)|lower }}">{{ (displayStatus ?? meta.status ?? payment.status)|replace('_',' ')|capitalize|t('freeform') }}</span>
+            </li>
+            {% if payerEmail or payerGivenName or payerSurname %}
+                <li>
+                    <div>{{ "Payer"|t('freeform') }}</div>
+                    <span>{{ (payerGivenName ~ ' ' ~ payerSurname)|trim }}{% if payerEmail %} — {{ payerEmail }}{% endif %}</span>
+                </li>
+            {% endif %}
+            {% if feeAmount or netAmount %}
+                <li>
+                    <div>{{ "Fees"|t('freeform') }}</div>
+                    <span>
+                        {% if feeAmount %}{{ feeAmount }} {{ currency|upper }}{% else %}—{% endif %}
+                    </span>
+                </li>
+                <li>
+                    <div>{{ "Net"|t('freeform') }}</div>
+                    <span>
+                        {% if netAmount %}{{ netAmount }} {{ currency|upper }}{% else %}—{% endif %}
+                    </span>
+                </li>
+            {% endif %}
+            {% if meta and meta.orderId %}
+                <li>
+                    <div>{{ "Order ID"|t('freeform') }}</div>
+                    <span>{{ meta.orderId }}</span>
+                </li>
+            {% endif %}
+            {% if meta and meta.captureId %}
+                <li>
+                    <div>{{ "Capture ID"|t('freeform') }}</div>
+                    <span>{{ meta.captureId }}</span>
+                </li>
+            {% endif %}
+            {% if dashboardLink %}
+                <li>
+                    <div></div>
+                    <a href="{{ dashboardLink }}" target="_blank">{{ 'Open in PayPal'|t('freeform') }}</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+
+

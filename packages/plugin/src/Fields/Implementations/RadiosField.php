@@ -134,7 +134,6 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
                 'field' => $this,
             ];
 
-            $label = $this->translateOptionLabel($option);
             $inputTag = Html::tag(
                 $inputAttributes->getTag('input'),
                 '',
@@ -143,7 +142,7 @@ class RadiosField extends BaseGeneratedOptionsField implements OneLineInterface,
 
             $output .= Html::tag(
                 $labelAttributes->getTag('label'),
-                $inputTag.$label,
+                $inputTag.$option->getLabel(),
                 $labelAttributes->toHtmlTagArray($twigVariables),
             );
         }

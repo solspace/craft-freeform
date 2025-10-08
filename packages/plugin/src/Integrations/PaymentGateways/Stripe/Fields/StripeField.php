@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -23,7 +24,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
-    name: 'Stripe Payment',
+    name: 'Stripe',
     typeShorthand: 'stripe',
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/stripe-field-preview.ejs',
@@ -58,6 +59,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     )]
     protected ?Stripe $integration = null;
 
+    #[Translatable]
     #[Input\TextArea(
         instructions: 'Enter a description for this payment. You can use the `form` object in twig.',
     )]
@@ -72,6 +74,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     protected string $paymentType = self::PAYMENT_TYPE_SINGLE;
 
     #[VisibilityFilter('properties.paymentType === "subscription"')]
+    #[Translatable]
     #[Input\Text(
         label: 'Subscription Product Name',
         instructions: 'Enter the name of the product you want to subscribe to. You can use the `form` and `integration` objects in twig.',
@@ -159,6 +162,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     #[Section('payment-amount')]
     #[VisibilityFilter('properties.amountType === "fixed"')]
+    #[Translatable]
     #[Input\Integer(
         label: 'Payment Amount',
         instructions: 'Enter the amount you want to charge for this payment.',
@@ -183,6 +187,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     protected ?FieldInterface $amountField = null;
 
     #[Section('payment-amount')]
+    #[Translatable]
     #[Input\Select(
         label: 'Payment Currency',
         options: CurrencyOptionsGenerator::class,
@@ -195,6 +200,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
         icon: __DIR__.'/Icons/redirect.svg',
         order: 3,
     )]
+    #[Translatable]
     #[Input\Text(
         label: 'Successful Payment Redirect',
         instructions: 'Enter a URL to redirect to after a successful payment. You can use the `form`, `submission` and `paymentIntent` objects in twig.',
@@ -202,6 +208,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
     protected string $redirectSuccess = '';
 
     #[Section('redirect')]
+    #[Translatable]
     #[Input\Text(
         label: 'Failed Payment Redirect',
         instructions: 'Enter a URL to redirect to after a failed payment. You can use the `form` and `paymentIntent` objects in twig.',
@@ -251,7 +258,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public function getDescription(): string
     {
-        return $this->description;
+        return $this->getTranslationTable()->get('description', $this->description);
     }
 
     public function getPaymentType(): string
@@ -261,7 +268,9 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public function getProductName(): string
     {
-        return trim($this->productName) ?: self::DEFAULT_PRODUCT_NAME;
+        $productName = trim($this->productName) ?: self::DEFAULT_PRODUCT_NAME;
+
+        return $this->getTranslationTable()->get('productName', $productName);
     }
 
     public function getIntervalType(): string
@@ -301,7 +310,7 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public function getAmount(): float
     {
-        return $this->amount;
+        return $this->getTranslationTable()->get('amount', $this->amount);
     }
 
     public function getAmountField(): ?FieldInterface
@@ -311,17 +320,17 @@ class StripeField extends AbstractField implements PaymentFieldInterface
 
     public function getCurrency(): string
     {
-        return $this->currency;
+        return $this->getTranslationTable()->get('currency', $this->currency);
     }
 
     public function getRedirectSuccess(): string
     {
-        return $this->redirectSuccess;
+        return $this->getTranslationTable()->get('redirectSuccess', $this->redirectSuccess);
     }
 
     public function getRedirectFailed(): string
     {
-        return $this->redirectFailed;
+        return $this->getTranslationTable()->get('redirectFailed', $this->redirectFailed);
     }
 
     public function getTheme(): string

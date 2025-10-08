@@ -10,6 +10,7 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   errors,
   updateValue,
   autoFocus,
+  context,
 }) => {
   const { handle, min, max, unsigned, step = 1 } = property;
 
@@ -22,7 +23,7 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   };
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <input
         id={handle}
         type="number"

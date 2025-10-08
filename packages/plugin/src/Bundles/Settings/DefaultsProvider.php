@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Settings;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\DefaultConfigInterface;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
 use Solspace\Freeform\Services\SettingsService;
+use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -21,7 +22,12 @@ class DefaultsProvider
 
     public function getValue(string $path, mixed $default = null): mixed
     {
-        $object = $this->propertyAccess->getValue($this->defaults, $path);
+        try {
+            $object = $this->propertyAccess->getValue($this->defaults, $path);
+        } catch (NoSuchPropertyException) {
+            return $default;
+        }
+
         if ($object instanceof DefaultConfigInterface) {
             return $object->getValue();
         }
@@ -31,7 +37,12 @@ class DefaultsProvider
 
     public function isLocked(string $path): bool
     {
-        $object = $this->propertyAccess->getValue($this->defaults, $path);
+        try {
+            $object = $this->propertyAccess->getValue($this->defaults, $path);
+        } catch (NoSuchPropertyException) {
+            return false;
+        }
+
         if ($object instanceof DefaultConfigInterface) {
             return $object->isLocked();
         }

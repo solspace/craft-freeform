@@ -74,7 +74,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
-        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com" or "mycompany.my.salesforce.com").',
+        instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to `test.salesforce.com` instead of `login.salesforce.com` or `mycompany.my.salesforce.com`).',
         order: 4,
     )]
     protected bool $sandboxMode = false;

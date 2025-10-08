@@ -5,11 +5,13 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Events\Fields\CompileFieldAttributesEvent;
 use Solspace\Freeform\Fields\AbstractField;
@@ -49,6 +51,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public array $columns = [];
 
     #[ValueTransformer(TableTransformer::class)]
+    #[Translatable]
     #[Input\Table(
         label: 'Table Layout',
         value: [],
@@ -77,33 +80,49 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected TableLayout $tableLayout;
 
+    #[Limitation('props.table', 'javascript')]
+    #[DefaultValue('props.table.javascript')]
     #[Input\Boolean('Use built-in javascript for adding and removing rows')]
     protected bool $useScript = true;
 
+    #[Limitation('props.table', 'maxRows')]
+    #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(
         label: 'Maximum number of rows',
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
     protected ?int $maxRows = null;
 
+    #[Limitation('props.table', 'addButtonLabel')]
+    #[DefaultValue('props.table.addButtonLabel')]
+    #[Translatable]
     #[Input\Text(
         label: 'Add Button Label',
         instructions: 'Set the label for the add button.',
     )]
     protected string $addButtonLabel = 'Add';
 
+    #[Limitation('props.table', 'addButtonMarkup')]
+    #[DefaultValue('props.table.addButtonMarkup')]
+    #[Translatable]
     #[Input\Text(
         label: 'Add Button Markup',
         instructions: 'Set the markup for the add button.',
     )]
     protected ?string $addButtonMarkup = null;
 
+    #[Limitation('props.table', 'removeButtonLabel')]
+    #[DefaultValue('props.table.removeButtonLabel')]
+    #[Translatable]
     #[Input\Text(
         label: 'Remove Button Label',
         instructions: 'Set the label for the remove button.',
     )]
     protected string $removeButtonLabel = 'Remove';
 
+    #[Limitation('props.table', 'removeButtonMarkup')]
+    #[DefaultValue('props.table.removeButtonMarkup')]
+    #[Translatable]
     #[Input\Text(
         label: 'Remove Button Markup',
         instructions: 'Set the markup for the remove button.',
@@ -111,8 +130,9 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     protected ?string $removeButtonMarkup = null;
 
     #[Section('attributes')]
-    #[Limitation('layout.fields.attributes')]
     #[ValueTransformer(TableAttributesTransformer::class)]
+    #[Limitation('layout.fields.attributes')]
+    #[Limitation('props.table', 'tableAttributes')]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
         tabs: [
@@ -179,7 +199,13 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
     public function getTableLayout(): TableLayout
     {
-        return $this->tableLayout;
+        $layout = $this->tableLayout;
+        $translation = $this->getTranslationTable()->get('tableLayout');
+        if ($translation) {
+            $layout = new TableLayout($translation);
+        }
+
+        return $layout;
     }
 
     public function isUseScript(): bool
@@ -194,22 +220,22 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
     public function getAddButtonLabel(): string
     {
-        return $this->addButtonLabel;
+        return $this->getTranslationTable()->get('addButtonLabel', $this->addButtonLabel);
     }
 
     public function getAddButtonMarkup(): ?string
     {
-        return $this->addButtonMarkup;
+        return $this->getTranslationTable()->get('addButtonMarkup', $this->addButtonMarkup);
     }
 
     public function getRemoveButtonLabel(): string
     {
-        return $this->removeButtonLabel;
+        return $this->getTranslationTable()->get('removeButtonLabel', $this->removeButtonLabel);
     }
 
     public function getRemoveButtonMarkup(): ?string
     {
-        return $this->removeButtonMarkup;
+        return $this->getTranslationTable()->get('removeButtonMarkup', $this->removeButtonMarkup);
     }
 
     public function getTableAttributes(): TableAttributesCollection

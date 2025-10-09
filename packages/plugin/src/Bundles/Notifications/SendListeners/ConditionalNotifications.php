@@ -15,18 +15,21 @@ namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Bundles\Rules\ConditionValidator;
+use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleValidator;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
+use Solspace\Freeform\Events\Mailer\SendEmailEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
-use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
+use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
 
 class ConditionalNotifications extends NotificationListener
 {
     public function __construct(
         private NotificationsProvider $notificationsProvider,
+        private NotificationRuleValidator $ruleValidator,
         private ConditionValidator $conditionValidator,
         private FreeformQueueHandler $queueHandler
     ) {
@@ -34,6 +37,12 @@ class ConditionalNotifications extends NotificationListener
             Form::class,
             Form::EVENT_SEND_NOTIFICATIONS,
             [$this, 'sendToRecipients']
+        );
+
+        Event::on(
+            MailerService::class,
+            MailerService::EVENT_BEFORE_SEND,
+            [$this, 'checkRulesBeforeSend'],
         );
     }
 
@@ -75,42 +84,6 @@ class ConditionalNotifications extends NotificationListener
                 continue;
             }
 
-            $rule = $notification->getRule();
-            if (!$rule) {
-                continue;
-            }
-
-            $conditions = $rule->getConditions();
-
-            $matchesSome = false;
-            $matchesAll = true;
-            foreach ($conditions as $condition) {
-                $field = $form->get($condition->getField());
-                if (!$field) {
-                    continue;
-                }
-
-                $postedValue = $field->getValue();
-
-                $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
-                if ($valueMatch) {
-                    $matchesSome = true;
-                } else {
-                    $matchesAll = false;
-                }
-            }
-
-            $shouldSend = $rule->isSend();
-
-            $triggers = match ($rule->getCombinator()) {
-                NotificationRule::COMBINATOR_AND => $shouldSend ? $matchesAll : !$matchesAll,
-                NotificationRule::COMBINATOR_OR => $shouldSend ? $matchesSome : !$matchesSome,
-            };
-
-            if (!$triggers) {
-                continue;
-            }
-
             $this->queueHandler->executeNotificationJob(
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
@@ -122,6 +95,20 @@ class ConditionalNotifications extends NotificationListener
                     'notificationId' => $notification->getId(),
                 ])
             );
+        }
+    }
+
+    public function checkRulesBeforeSend(SendEmailEvent $event): void
+    {
+        $form = $event->getForm();
+        $notification = $event->getNotificationRecord();
+        if (!$notification instanceof Conditional) {
+            return;
+        }
+
+        $rulesPass = $this->ruleValidator->isPassing($notification, $form);
+        if (!$rulesPass) {
+            $event->isValid = false;
         }
     }
 }

@@ -23,6 +23,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Notifications\NotificationInterface;
 use yii\base\Event;
 
 class SendNotificationsJob extends BaseJob implements NotificationJobInterface
@@ -55,13 +56,15 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
     public function execute($queue): void
     {
         $freeform = Freeform::getInstance();
+        $notificationProvider = \Craft::$container->get(NotificationsProvider::class);
 
         $form = $freeform->forms->getFormById($this->formId);
         if (!$form) {
             return;
         }
 
-        $logger = $this->getLogger($form);
+        $notification = $notificationProvider->getById($this->notificationId);
+        $logger = $this->getLogger($notification, $form);
 
         if (!$this->recipients) {
             $logger->warning('No recipients found for the notification', ['form' => $form->getHandle()]);
@@ -97,6 +100,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             $submission,
             $this->headers,
             $logger,
+            $notification,
         );
 
         $sites->setCurrentSite($originalSiteId);
@@ -108,12 +112,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         return Freeform::t('Freeform: Processing Notifications');
     }
 
-    private function getLogger(Form $form): LoggerInterface
+    private function getLogger(NotificationInterface $notification, Form $form): LoggerInterface
     {
         $loggerProvider = \Craft::$container->get(NotificationLoggerProvider::class);
-        $notificationProvider = \Craft::$container->get(NotificationsProvider::class);
-
-        $notification = $notificationProvider->getById($this->notificationId);
 
         return $loggerProvider->getLogger($notification, $form);
     }

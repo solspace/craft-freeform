@@ -1,17 +1,15 @@
 {# Automated handling of metadata if present #}
 {% macro renderMeta(value, key = null) %}
-  {# Nothing to output #}
   {% if value is empty %}
+  
   {% elseif value is iterable %}
-    {# Decide if it's a list (0..n-1) or a map #}
     {% set keys   = value|keys %}
     {% set isList = (keys|length > 0) and (keys|first == 0) and (keys|last == value|length - 1) %}
 
     {% if isList %}
       {% set cleaned = value|filter(v => v is not empty) %}
       {% if cleaned|length %}
-        {# If every item is scalar, join; otherwise recurse per item #}
-        {% set hasNested = cleaned|filter(v => v is iterable)|length > 0 %}
+        {% set hasNested = cleaned|filter(v => v is iterable or v is object)|length > 0 %}
         {% if not hasNested %}
           <li>{% if key is not null %}{{ key }}: {% endif %}{{ cleaned|join(', ') }}</li>
         {% else %}
@@ -25,8 +23,13 @@
         {{ _self.renderMeta(v, k) }}
       {% endfor %}
     {% endif %}
+
   {% else %}
-    <li>{% if key is not null %}{{ key }}: {% endif %}{{ value }}</li>
+    {% if value is object %}
+      <li>{% if key is not null %}{{ key }}: {% endif %}{{ value|json_encode }}</li>
+    {% else %}
+      <li>{% if key is not null %}{{ key }}: {% endif %}{{ value }}</li>
+    {% endif %}
   {% endif %}
 {% endmacro %}
 

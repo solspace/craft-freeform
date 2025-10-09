@@ -98,7 +98,7 @@ export const LabelGroup = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${spacings.md};
+  gap: ${spacings.sm};
 
   width: 100%;
   padding-bottom: ${spacings.xs};

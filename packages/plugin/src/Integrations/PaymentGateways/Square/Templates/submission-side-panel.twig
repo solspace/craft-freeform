@@ -1,0 +1,80 @@
+<style>
+    .square-panel {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+
+        .data {
+            align-items: center !important;
+
+            .heading, .value {
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+        }
+
+        .square-logo {
+            width: 50px;
+            border-radius: 4px;
+        }
+
+        .square-amount .value {
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .square-status {
+            font-weight: bold;
+
+            &.completed { color: var(--enabled-color); }
+            &.failed { color: var(--disabled-color); }
+        }
+    }
+</style>
+
+<div class="square-panel meta read-only">
+    <div class="data">
+        <div class="heading">
+            <div class="square-logo">
+                {{ squareSvg|raw }}
+            </div>
+        </div>
+        <div class="value">
+            {{ "Single Payment"|t('freeform') }}
+        </div>
+    </div>
+    <div class="data square-amount">
+        <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+        <div class="value">
+            {{ amount }} {{ currency|upper }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
+        <div class="value square-status {{ payment.status == "COMPLETED" ? "completed" : "failed" }}">
+            {{ payment.status|replace('_', ' ')|capitalize|t('freeform') }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ "Transaction ID"|t('freeform') }}</h5>
+        <div class="value">
+            {{ payment.resourceId }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading">{{ "Date"|t('freeform') }}</h5>
+        <div class="value">
+            {{ payment.dateCreated|date('Y-m-d H:i:s') }}
+        </div>
+    </div>
+    <div class="data">
+        <h5 class="heading"></h5>
+        <div class="value">
+            {% set link = 'https://squareup.com/receipt/preview/' ~ payment.resourceId %}
+            <a href="{{ link }}" target="_blank">
+                {{ 'Open in Square'|t('freeform') }}
+                <span class="icon-link-ext"></span>
+            </a>
+        </div>
+    </div>
+</div>

@@ -23,7 +23,6 @@ use craft\services\Fields;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
-use craft\web\View;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
@@ -113,6 +112,7 @@ use Solspace\Freeform\Variables\FreeformVariable;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
+use yii\web\View;
 
 /**
  * Class Plugin.
@@ -125,6 +125,7 @@ use yii\db\Query;
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
  * @property EmailMarketingService       $emailMarketing
+ * @property NotesService                $notes
  * @property NotificationsService        $notifications
  * @property NotificationWrappersService $notificationWrappers
  * @property SettingsService             $settings

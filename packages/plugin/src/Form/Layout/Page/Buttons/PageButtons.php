@@ -46,6 +46,7 @@ class PageButtons
         icon: __DIR__.'/SectionIcons/button.svg',
     )]
     #[Limitation('layout.buttons')]
+    #[Translatable]
     #[Input\Special\PageButtonLayout(
         label: 'Button Layout',
         layouts: [
@@ -76,12 +77,12 @@ class PageButtons
     )]
     private string $layout;
 
-    #[Translatable]
     #[Section(
         handle: 'submit',
         label: 'Submit',
         icon: __DIR__.'/SectionIcons/submit.svg',
     )]
+    #[Translatable]
     #[Input\Text('Label', placeholder: 'Submit')]
     private string $submitLabel = 'Submit';
 
@@ -94,10 +95,10 @@ class PageButtons
     #[Input\Boolean('Enable Back Button')]
     private bool $back = false;
 
-    #[Translatable]
     #[Section('back')]
     #[VisibilityFilter('Boolean(buttons.back)')]
     #[VisibilityFilter('context.page.order !== 0')]
+    #[Translatable]
     #[Input\Text('Label', placeholder: 'Back')]
     private string $backLabel = 'Back';
 
@@ -111,16 +112,17 @@ class PageButtons
     #[Input\Boolean('Enable Save Button')]
     private bool $save = false;
 
-    #[Translatable]
     #[Section('save')]
     #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Translatable]
     #[Input\Text('Label', placeholder: 'Save')]
     private string $saveLabel = 'Save';
 
     #[Section('save')]
     #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Translatable]
     #[Input\Text(
         label: 'Redirect URL',
         instructions: 'Specify the redirect URL when saving a form. You can use `token` and `key` variables to pass the submission token and key to the URL.',
@@ -143,6 +145,7 @@ class PageButtons
     #[Section('save')]
     #[Limitation('layout.buttons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
+    #[Translatable]
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[Input\NotificationTemplate(
         label: 'Email Notification Template',
@@ -172,8 +175,9 @@ class PageButtons
     )]
     private array $submitIcon = [];
 
-    #[VisibilityFilter('Boolean(buttons.submitIcon?.length)')]
     #[Section('icons')]
+    #[VisibilityFilter('Boolean(buttons.submitIcon?.length)')]
+    #[Translatable]
     #[Input\ButtonGroup(
         label: 'Submit Icon Position',
         instructions: 'Choose the position of the submit icon relative to the label.',
@@ -197,6 +201,7 @@ class PageButtons
     #[Section('icons')]
     #[VisibilityFilter('Boolean(buttons.back)')]
     #[VisibilityFilter('Boolean(buttons.backIcon?.length)')]
+    #[Translatable]
     #[Input\ButtonGroup(
         label: 'Back Icon Position',
         instructions: 'Choose the position of the back icon relative to the label.',
@@ -220,6 +225,7 @@ class PageButtons
     #[Section('icons')]
     #[VisibilityFilter('Boolean(buttons.save)')]
     #[VisibilityFilter('Boolean(buttons.saveIcon?.length)')]
+    #[Translatable]
     #[Input\ButtonGroup(
         label: 'Save Icon Position',
         instructions: 'Choose the position of the save icon relative to the label.',
@@ -290,7 +296,7 @@ class PageButtons
 
     public function getLayout(): string
     {
-        return $this->layout;
+        return $this->translate('layout', $this->layout);
     }
 
     /**
@@ -298,7 +304,7 @@ class PageButtons
      */
     public function getParsedLayout(): array
     {
-        $layout = $this->layout;
+        $layout = $this->getLayout();
         $layout = preg_replace('/\s+/', ' ', $layout);
         $groups = explode(' ', $layout);
 
@@ -345,7 +351,7 @@ class PageButtons
 
     public function getSaveRedirectUrl(): string
     {
-        return $this->saveRedirectUrl;
+        return $this->translate('saveRedirectUrl', $this->saveRedirectUrl);
     }
 
     public function getEmailField(): ?FieldInterface
@@ -370,7 +376,7 @@ class PageButtons
 
     public function getSubmitIconPosition(): string
     {
-        return $this->submitIconPosition;
+        return $this->translate('submitIconPosition', $this->submitIconPosition);
     }
 
     public function getBackIcon(): array
@@ -380,7 +386,7 @@ class PageButtons
 
     public function getBackIconPosition(): string
     {
-        return $this->backIconPosition;
+        return $this->translate('backIconPosition', $this->backIconPosition);
     }
 
     public function getSaveIcon(): array
@@ -390,7 +396,7 @@ class PageButtons
 
     public function getSaveIconPosition(): string
     {
-        return $this->saveIconPosition;
+        return $this->translate('saveIconPosition', $this->saveIconPosition);
     }
 
     public function getSubmitIconUrl(): ?string

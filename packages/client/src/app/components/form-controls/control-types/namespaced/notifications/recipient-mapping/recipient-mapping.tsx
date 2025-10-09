@@ -30,7 +30,7 @@ const RecipientMapping: React.FC<
   };
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <RecipientMappingWrapper>
         {!!generatedOptions &&
           generatedOptions

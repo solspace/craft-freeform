@@ -7,6 +7,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Notifications\NotificationInterface;
 
 class SendEmailEvent extends CancelableArrayableEvent
 {
@@ -15,7 +16,8 @@ class SendEmailEvent extends CancelableArrayableEvent
         private Form $form,
         private NotificationTemplate $notification,
         private array $fieldValues,
-        private ?Submission $submission = null
+        private ?Submission $submission = null,
+        private ?NotificationInterface $notificationRecord = null,
     ) {
         parent::__construct();
     }
@@ -48,5 +50,10 @@ class SendEmailEvent extends CancelableArrayableEvent
     public function getSubmission(): ?Submission
     {
         return $this->submission;
+    }
+
+    public function getNotificationRecord(): ?NotificationInterface
+    {
+        return $this->notificationRecord;
     }
 }

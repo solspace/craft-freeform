@@ -12,9 +12,10 @@ class TabularDataConfiguration implements CustomNormalizerInterface
     public function add(
         string $key,
         string $label,
-        ?string $type = null
+        ?string $type = null,
+        ?bool $translatable = null,
     ): self {
-        $this->configuration[] = new ColumnConfiguration($key, $label, $type);
+        $this->configuration[] = new ColumnConfiguration($key, $label, $type, $translatable);
 
         return $this;
     }

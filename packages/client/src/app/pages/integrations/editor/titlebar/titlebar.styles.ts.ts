@@ -156,4 +156,21 @@ export const ErrorList = styled.ul`
 
   color: ${colors.red600};
   font-size: 14px;
+
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+
+  pre {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+
+    overflow-x: auto;
+  }
 `;

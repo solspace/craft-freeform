@@ -10,17 +10,19 @@
 
 {% if isCraft5 and selectableSites|default([])|length %}
 	{% set rootCrumb = {
-		label: craft.freeform.name,
+		label: selectedSite.name,
 		url: url('freeform'),
 		icon: earthIcon,
 		menu: {
 			label: 'Select site',
-			items: selectableSites
+			items: selectableSites,
+            selected: 'latvian',
 		}
 	} %}
 {% else %}
 	{% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
 {% endif %}
+
 {% set crumbs = crumbs|default([
 	rootCrumb,
 	{ label: "Forms"|t("freeform"), url: url('freeform/forms') },

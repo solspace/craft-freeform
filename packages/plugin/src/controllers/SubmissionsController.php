@@ -172,11 +172,12 @@ class SubmissionsController extends BaseController
             []
         );
 
+        $selectedSite = \Craft::$app->sites->getSiteByHandle($this->request->getQueryParam('site'));
         $isCraft5 = version_compare(\Craft::$app->version, '5.0', '>=');
 
         if ($isCraft5) {
             $craftVersionSpecificVariables = [
-                'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(null, $submission->site) : [],
+                'selectableSites' => $submission::isLocalized() ? Cp::siteMenuItems(selectedSite: $selectedSite) : [],
                 'earthIcon' => Cp::earthIcon(),
             ];
         } else {
@@ -201,6 +202,7 @@ class SubmissionsController extends BaseController
             'continueEditingUrl' => 'freeform/submissions/{id}',
             'tabs' => $tabs,
             'sidebarHtml' => $submission->getSidebarHtml(true),
+            'selectedSite' => $selectedSite,
             'isCraft5' => $isCraft5,
         ];
 

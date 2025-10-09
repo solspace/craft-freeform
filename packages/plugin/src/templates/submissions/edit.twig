@@ -9,245 +9,246 @@
 {% set actionUrl = actionUrl|default('freeform/submissions/save') %}
 
 {% if isCraft5 and selectableSites|default([])|length %}
-	{% set rootCrumb = {
-		label: selectedSite.name,
-		url: url('freeform'),
-		icon: earthIcon,
-		menu: {
-			label: 'Select site',
-			items: selectableSites,
-		}
-	} %}
+  {% set rootCrumb = {
+    label: selectedSite.name,
+    url: url('freeform'),
+    icon: earthIcon,
+    menu: {
+      label: 'Select site',
+      items: selectableSites,
+    }
+  } %}
 {% else %}
-	{% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
+  {% set rootCrumb = { label: craft.freeform.name, url: url('freeform') } %}
 {% endif %}
 
 {% set crumbs = crumbs|default([
-	rootCrumb,
-	{ label: "Forms"|t("freeform"), url: url('freeform/forms') },
-	{ label: form.name, url: url('freeform/forms/' ~ form.id) },
-	{ label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
+  rootCrumb,
+  { label: craft.freeform.name, url: url('freeform') },
+  { label: "Forms"|t("freeform"), url: url('freeform/forms') },
+  { label: form.name, url: url('freeform/forms/' ~ form.id) },
+  { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ]) %}
 
 {% if not isCraft5 %}
-	{% set contextMenu %}
-		{% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
-	{% endset %}
+  {% set contextMenu %}
+    {% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
+  {% endset %}
 {% endif %}
 
 {% block actionButton %}
-	<div class="btngroup submit">
-		<input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+  <div class="btngroup submit">
+    <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
 
-		<div class="btn submit menubtn"></div>
-		<div class="menu">
-			<ul>
-				<li>
-					<a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-						{{ "Save and continue editing"|t('app') }}
-						<span class="shortcut">⌘S</span>
-					</a>
-				</li>
-			</ul>
-		</div>
-	</div>
+    <div class="btn submit menubtn"></div>
+    <div class="menu">
+      <ul>
+        <li>
+          <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+            {{ "Save and continue editing"|t('app') }}
+            <span class="shortcut">⌘S</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
 {% endblock %}
 
 {% block mainFormAttributes %}
-	{{ parent() }}
+  {{ parent() }}
 
-	enctype="multipart/form-data"
-	data-id="{{ form.anchor }}"
-	data-freeform
+  enctype="multipart/form-data"
+  data-id="{{ form.anchor }}"
+  data-freeform
 
 {% endblock %}
 
 {% block body %}
-	{{ parent() }}
+  {{ parent() }}
 
-	<form method="post"
-		  id="asset_download"
-		  style="height: 0; width: 0; position: absolute; left: -99999px;">
-		<input type="hidden" name="action" value="assets/download-asset" />
-		<input type="hidden" name="assetId" value="" />
-		{{ csrfInput() }}
-	</form>
+  <form method="post"
+      id="asset_download"
+      style="height: 0; width: 0; position: absolute; left: -99999px;">
+    <input type="hidden" name="action" value="assets/download-asset" />
+    <input type="hidden" name="assetId" value="" />
+    {{ csrfInput() }}
+  </form>
 {% endblock %}
 
 {% block content %}
 
-	{% js %}
-		window.isCraft5 = {{ isCraft5 is defined and isCraft5 ? 'true' : 'false' }};
-	{% endjs %}
+  {% js %}
+    window.isCraft5 = {{ isCraft5 is defined and isCraft5 ? 'true' : 'false' }};
+  {% endjs %}
 
-	<input type="hidden" name="action" value="{{ actionUrl }}">
-	<input type="hidden" name="submissionId" value="{{ submission.id }}">
-	{{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
-	{{ csrfInput() }}
+  <input type="hidden" name="action" value="{{ actionUrl }}">
+  <input type="hidden" name="submissionId" value="{{ submission.id }}">
+  {{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
+  {{ csrfInput() }}
 
-	<div id="fields">
-		{% for page in layout.pages %}
-			<div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
-				{% for row in page.layout.allRows %}
-					{{ rowMacro.render(row, submission) }}
-				{% endfor %}
-			</div>
-		{% endfor %}
-	</div>
+  <div id="fields">
+    {% for page in layout.pages %}
+      <div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
+        {% for row in page.layout.allRows %}
+          {{ rowMacro.render(row, submission) }}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
 
-	{{ freeform.loadFreeformPlugin }}
+  {{ freeform.loadFreeformPlugin }}
 
-	<script>
-		function removeAsset(element) {
-			if (confirm('Are you sure?')) {
-				$(element).parents(".element:first").remove();
-			}
-		}
-	</script>
+  <script>
+    function removeAsset(element) {
+      if (confirm('Are you sure?')) {
+        $(element).parents(".element:first").remove();
+      }
+    }
+  </script>
 
-	{{ form.renderClosingTag(false) }}
+  {{ form.renderClosingTag(false) }}
 
 {% endblock %}
 
 {% block details %}
 
-	<div id="settings" class="meta">
+  <div id="settings" class="meta">
 
-		{{ forms.textField({
-			label: "Title"|t('app'),
-			id: 'title',
-			name: 'title',
-			value: submission.title,
-			placeholder: "Enter title"|t('freeform'),
-			errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
-		}) }}
+    {{ forms.textField({
+      label: "Title"|t('app'),
+      id: 'title',
+      name: 'title',
+      value: submission.title,
+      placeholder: "Enter title"|t('freeform'),
+      errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
+    }) }}
 
-		{{ forms.elementSelectField({
-			status: submission.getAttributeStatus('userId'),
-			label: "Author"|t('app'),
-			id: 'author',
-			name: 'author',
-			elementType: 'craft\\elements\\User',
-			selectionLabel: "Choose"|t('app'),
-			limit: 1,
-			elements: (submission.author ? [submission.author])
-		}) }}
+    {{ forms.elementSelectField({
+      status: submission.getAttributeStatus('userId'),
+      label: "Author"|t('app'),
+      id: 'author',
+      name: 'author',
+      elementType: 'craft\\elements\\User',
+      selectionLabel: "Choose"|t('app'),
+      limit: 1,
+      elements: (submission.author ? [submission.author])
+    }) }}
 
-		{% set statusField %}
-			<div>
-				{% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
+    {% set statusField %}
+      <div>
+        {% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
 
-				<a id="status-menu-btn" class="btn menubtn" href="#">
-					<span class="status {{ selectedStatus.color }}"></span>
-					{{ selectedStatus.name|t('freeform')|title }}
-				</a>
-				<div class="menu" id="status-menu-select">
-					<ul class="padded">
-						{% for status in statuses %}
-							<li>
-								<a {% if selectedStatus.color == status.color %}class="sel"{% endif %}
-								   data-id="{{ status.id }}"
-								   data-name="{{ status.name }}"
-								   data-color="{{ status.color }}"
-								   href="#">
-									<span class="status {{ status.color }}"></span>
-									{{ status.name|t('freeform')|title }}
-								</a>
-							</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		{% endset %}
+        <a id="status-menu-btn" class="btn menubtn" href="#">
+          <span class="status {{ selectedStatus.color }}"></span>
+          {{ selectedStatus.name|t('freeform')|title }}
+        </a>
+        <div class="menu" id="status-menu-select">
+          <ul class="padded">
+            {% for status in statuses %}
+              <li>
+                <a {% if selectedStatus.color == status.color %}class="sel"{% endif %}
+                   data-id="{{ status.id }}"
+                   data-name="{{ status.name }}"
+                   data-color="{{ status.color }}"
+                   href="#">
+                  <span class="status {{ status.color }}"></span>
+                  {{ status.name|t('freeform')|title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% endset %}
 
-		{{ forms.field({
-			label: 'Status'|t('app'),
-		}, statusField) }}
+    {{ forms.field({
+      label: 'Status'|t('app'),
+    }, statusField) }}
 
-		{{ forms.hidden({
-			id: "statusId",
-			name: "statusId",
-			value: submission.statusId,
-			errors: [],
-			required: true
-		}) }}
+    {{ forms.hidden({
+      id: "statusId",
+      name: "statusId",
+      value: submission.statusId,
+      errors: [],
+      required: true
+    }) }}
 
-		<div class="field">
-			<div class="heading">
-				<label>{{ 'Form'|t('freeform') }}</label>
-			</div>
-			<div class="input ltr">
-				<span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/forms/' ~ form.id) }}">{{ form.name }}</a>
-			</div>
-		</div>
+    <div class="field">
+      <div class="heading">
+        <label>{{ 'Form'|t('freeform') }}</label>
+      </div>
+      <div class="input ltr">
+        <span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/forms/' ~ form.id) }}">{{ form.name }}</a>
+      </div>
+    </div>
 
-	</div>
+  </div>
 
-	<div class="field">
-		<div class="heading">
-			<label for="freeform-submission-note" class="h6">{{ 'Notes about your changes'|t('app') }}</label>
-		</div>
-		<div class="input">
-            <textarea
-					class="text nicetext notes fullwidth freeform-submission-note"
-					id="freeform-submission-note"
-					name="freeform-submission-note"
-					spellcheck="false"
-					style="min-height: 100px;"
-			>{% if note %}{{ note }}{% endif %}</textarea>
-		</div>
-	</div>
+  <div class="field">
+    <div class="heading">
+      <label for="freeform-submission-note" class="h6">{{ 'Notes about your changes'|t('app') }}</label>
+    </div>
+    <div class="input">
+      <textarea
+          class="text nicetext notes fullwidth freeform-submission-note"
+          id="freeform-submission-note"
+          name="freeform-submission-note"
+          spellcheck="false"
+          style="min-height: 100px;"
+      >{% if note %}{{ note }}{% endif %}</textarea>
+    </div>
+  </div>
 
-	{% if submission.id and sidebarHtml %}
-		{{ sidebarHtml|raw }}
-	{% endif %}
+  {% if submission.id and sidebarHtml %}
+    {{ sidebarHtml|raw }}
+  {% endif %}
 
-	{% if submission.isSpam and submission.spamReasons %}
+  {% if submission.isSpam and submission.spamReasons %}
 
-		<fieldset>
-			<legend class="h6">
-				{{ 'Spam Reasons'|t('freeform') }} ({{ submission.spamReasons|length }})
-			</legend>
-			<ul class="spam-reasons">
-				{% for reason in submission.spamReasons %}
-					<li>
-						{{ reason.message|t('freeform') }}
-						{% if reason.value %}
-							<br>{{ 'Value'|t('freeform') }}: <i>{{ reason.value|t('freeform') }}</i>
-						{% endif %}
-					</li>
-				{% endfor %}
-			</ul>
-		</fieldset>
-		<hr>
+    <fieldset>
+      <legend class="h6">
+        {{ 'Spam Reasons'|t('freeform') }} ({{ submission.spamReasons|length }})
+      </legend>
+      <ul class="spam-reasons">
+        {% for reason in submission.spamReasons %}
+          <li>
+            {{ reason.message|t('freeform') }}
+            {% if reason.value %}
+              <br>{{ 'Value'|t('freeform') }}: <i>{{ reason.value|t('freeform') }}</i>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </fieldset>
+    <hr>
 
-	{% endif %}
+  {% endif %}
 
-	{% hook 'freeform.submissions.edit.sidepanel' %}
+  {% hook 'freeform.submissions.edit.sidepanel' %}
 
-	{% if submission.id %}
+  {% if submission.id %}
 
-		<div class="meta read-only">
-			<div class="data">
-				<h5 class="heading">{{ "ID"|t('app') }}</h5>
-				<div class="value">{{ submission.id }}</div>
-			</div>
-			<div class="data">
-				<h5 class="heading">{{ "Freeform ID"|t('freeform') }}</h5>
-				<div class="value">{{ submission.incrementalId }}</div>
-			</div>
-			<div class="data">
-				<h5 class="heading">{{ "Created at"|t('app') }}</h5>
-				<div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
-			</div>
-			<div class="data">
-				<h5 class="heading">{{ "Updated at"|t('app') }}</h5>
-				<div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
-			</div>
-		</div>
+    <div class="meta read-only">
+      <div class="data">
+        <h5 class="heading">{{ "ID"|t('app') }}</h5>
+        <div class="value">{{ submission.id }}</div>
+      </div>
+      <div class="data">
+        <h5 class="heading">{{ "Freeform ID"|t('freeform') }}</h5>
+        <div class="value">{{ submission.incrementalId }}</div>
+      </div>
+      <div class="data">
+        <h5 class="heading">{{ "Created at"|t('app') }}</h5>
+        <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
+      </div>
+      <div class="data">
+        <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
+        <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
+      </div>
+    </div>
 
-		{% hook 'freeform.submissions.edit.meta' %}
+    {% hook 'freeform.submissions.edit.meta' %}
 
-	{% endif %}
+  {% endif %}
 
 {% endblock %}

@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
@@ -135,8 +136,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration
             'max_tokens' => $this->integration->getMaxTokens(),
         ];
 
+        $clientProvider = \Craft::$container->get(IntegrationClientProvider::class);
+        $client = $clientProvider->getAuthorizedClient($this->integration);
+
         try {
-            return $this->integration->processAiRequest($systemPrompt, $content, $options);
+            return $this->integration->processAiRequest($client, $systemPrompt, $content, $options);
         } catch (\Throwable $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
                 'AI Spam Analysis failed: '.$e->getMessage(),

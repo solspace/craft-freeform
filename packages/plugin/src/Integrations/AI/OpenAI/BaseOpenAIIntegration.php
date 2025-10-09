@@ -19,6 +19,7 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
@@ -45,7 +46,7 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
 
     public function getApiKey(): string
     {
-        return $this->getProcessedValue($this->apiKey);
+        return $this->getProcessedValue($this->apiKey) ?? '';
     }
 
     public function getModel(): string

@@ -1122,6 +1122,8 @@ return [
     'Always on Each Request' => 'À chaque requête',
     'Never' => 'Jamais',
     'Form Processing' => 'Traitement du formulaire',
+    'Use Queue for AI Field Processing' => 'Utiliser la file d’attente pour le traitement du champ IA',
+    "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users." => 'Utilisez le système de file d’attente de Craft pour déclencher le traitement des champs IA. Cela accélérera le traitement des soumissions pour vos utilisateurs.',
     'Use Queue for Email Notifications' => 'Utiliser la file d’attente pour les notifications par e-mail',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => "Utiliser le système de file d'attente de Craft pour déclencher les e-mails. L'activation de cette option accélérera le traitement des contributions pour vos utilisateurs.",
     'Use Queue for Integrations' => 'Utiliser la file d’attente pour les intégrations',
@@ -1203,6 +1205,7 @@ return [
     'Integrations Tab' => 'Onglet Intégrations',
     'Settings Tab' => 'Onglet Paramètres',
     'Table Attributes' => 'Attributs de tableau',
+    'Field Properties' => 'Propriétés du champ',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Passez à l’édition Freeform Pro pour accéder à la fonctionnalité Utilisateurs limités.',
 
     // Settings // Template Manager
@@ -1817,6 +1820,7 @@ return [
     'Freeform: Purging Unfinalized Assets' => 'Freeform : Purge des ressources non finalisées',
     'Freeform: Sending Digest Email' => 'Freeform : Envoi de l’e-mail récapitulatif',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Nettoyage des anciens journaux de notification',
+    'Freeform: Processing AI Fields' => 'Freeform: Traitement des champs IA',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Ce champ est obligatoire',

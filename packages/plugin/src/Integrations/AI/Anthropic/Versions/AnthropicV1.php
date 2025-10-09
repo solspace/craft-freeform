@@ -25,19 +25,10 @@ class AnthropicV1 extends BaseAnthropicIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/models'), [
-                'headers' => [
-                    'x-api-key' => $this->getApiKey(),
-                    'anthropic-version' => '2023-06-01',
-                ],
-            ]);
-            $data = json_decode((string) $response->getBody(), true);
+        $response = $client->get($this->getEndpoint('/models'));
+        $data = json_decode((string) $response->getBody());
 
-            return isset($data['data']) && \is_array($data['data']);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return isset($data->data) && \is_array($data->data);
     }
 
     public function fetchFields(string $category): array
@@ -51,16 +42,12 @@ class AnthropicV1 extends BaseAnthropicIntegration
         };
     }
 
-    public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string
-    {
-        $client = new Client([
-            'headers' => [
-                'x-api-key' => $this->getApiKey(),
-                'anthropic-version' => '2023-06-01',
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
+    public function processAiRequest(
+        Client $client,
+        string $systemPrompt,
+        string $userContent,
+        array $options = []
+    ): string {
         $payload = [
             'model' => $options['model'] ?? $this->getModel(),
             'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
@@ -78,42 +65,13 @@ class AnthropicV1 extends BaseAnthropicIntegration
             $payload['temperature'] = $options['temperature'] ?? $this->getTemperature();
         }
 
-        $response = $client->post($this->getEndpoint('/messages'), [
-            'json' => $payload,
-        ]);
+        $response = $client->post(
+            $this->getEndpoint('/messages'),
+            ['json' => $payload]
+        );
 
         $data = json_decode((string) $response->getBody(), true);
 
         return $data['content'][0]['text'] ?? '';
-    }
-
-    public function listModels(bool $refresh = false): array
-    {
-        try {
-            $client = new Client([
-                'headers' => [
-                    'x-api-key' => $this->getApiKey(),
-                    'anthropic-version' => '2023-06-01',
-                ],
-            ]);
-
-            $response = $client->get($this->getEndpoint('/models'));
-            $data = json_decode((string) $response->getBody(), true);
-
-            $models = [];
-            foreach ($data['data'] ?? [] as $item) {
-                if (!isset($item['id'])) {
-                    continue;
-                }
-                $models[] = [
-                    'id' => $item['id'],
-                    'label' => $item['id'],
-                ];
-            }
-
-            return $models;
-        } catch (\Throwable) {
-            return [];
-        }
     }
 }

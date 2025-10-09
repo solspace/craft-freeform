@@ -1122,6 +1122,8 @@ return [
     'Always on Each Request' => 'Bei jeder Anfrage',
     'Never' => 'Nie',
     'Form Processing' => 'Formularverarbeitung',
+    'Use Queue for AI Field Processing' => 'Warteschlange für KI-Feldverarbeitung verwenden',
+    "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users." => 'Verwende das Warteschlangensystem von Craft, um die KI-Feldverarbeitung auszulösen. Dies beschleunigt die Verarbeitung von Formularübermittlungen für deine Benutzer.',
     'Use Queue for Email Notifications' => 'Warteschlange für E-Mail-Benachrichtigungen verwenden',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Verwenden Sie das Warteschlangensystem von Craft, um E-Mails auszulösen. Das Aktivieren dieser Option beschleunigt die Formularverarbeitung für Ihre Benutzer.',
     'Use Queue for Integrations' => 'Warteschlange für Integrationen verwenden',
@@ -1203,6 +1205,7 @@ return [
     'Integrations Tab' => 'Integrationen-Tab',
     'Settings Tab' => 'Einstellungen-Tab',
     'Table Attributes' => 'Tabellenattribute',
+    'Field Properties' => 'Feldeigenschaften',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade auf die Freeform Pro Edition, um auf die Funktion Eingeschränkte Benutzer zuzugreifen.',
 
     // Settings // Template Manager
@@ -1817,6 +1820,7 @@ return [
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Unfertige Dateien löschen',
     'Freeform: Sending Digest Email' => 'Freeform: Sende Digest-E-Mail',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Alte Benachrichtigungsprotokolle löschen',
+    'Freeform: Processing AI Fields' => 'Freeform: Verarbeitung von KI-Feldern',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Dieses Feld ist erforderlich',

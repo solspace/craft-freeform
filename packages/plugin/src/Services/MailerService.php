@@ -38,6 +38,7 @@ use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
@@ -72,6 +73,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         ?Submission $submission = null,
         array $headers = [],
         ?LoggerInterface $logger = null,
+        ?NotificationInterface $notification = null,
     ): int {
         $sentMailCount = 0;
 
@@ -107,7 +109,15 @@ class MailerService extends BaseService implements MailHandlerInterface
                     $email->setHeaders($headers);
                 }
 
-                $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $twigVariables, $submission);
+                $sendEmailEvent = new SendEmailEvent(
+                    $email,
+                    $form,
+                    $notificationTemplate,
+                    $twigVariables,
+                    $submission,
+                    $notification,
+                );
+
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {

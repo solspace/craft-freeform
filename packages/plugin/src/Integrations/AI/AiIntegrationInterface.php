@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\AI;
 
+use GuzzleHttp\Client;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 
 interface AiIntegrationInterface extends APIIntegrationInterface
@@ -14,7 +15,5 @@ interface AiIntegrationInterface extends APIIntegrationInterface
 
     public function getTemperature(): ?float;
 
-    public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string;
-
-    public function listModels(bool $refresh = false): array;
+    public function processAiRequest(Client $client, string $systemPrompt, string $userContent, array $options = []): string;
 }

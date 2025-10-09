@@ -172,7 +172,9 @@ class SubmissionsController extends BaseController
             []
         );
 
-        $selectedSite = \Craft::$app->sites->getSiteByHandle($this->request->getQueryParam('site'));
+        $selectedSite = \Craft::$app->sites->getSiteByHandle(
+            $this->request->getQueryParam('site') ?? ''
+        ) ?? \Craft::$app->sites->getPrimarySite();
         $isCraft5 = version_compare(\Craft::$app->version, '5.0', '>=');
 
         if ($isCraft5) {

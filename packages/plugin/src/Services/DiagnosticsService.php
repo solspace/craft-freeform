@@ -511,7 +511,7 @@ class DiagnosticsService extends BaseService
                     $this->getSettingsService()->getSettingsModel()->updateSearchIndexes
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Fields').'</span>',
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Field Processing').'</span>',
                     $this->getSettingsService()->getSettingsModel()->useQueueForAiFields
                 ),
                 new DiagnosticItem(

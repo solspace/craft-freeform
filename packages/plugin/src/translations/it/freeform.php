@@ -1122,6 +1122,8 @@ return [
     'Always on Each Request' => 'Ad ogni richiesta',
     'Never' => 'Mai',
     'Form Processing' => 'Elaborazione del Modulo',
+    'Use Queue for AI Field Processing' => 'Usa la coda per l’elaborazione del campo AI',
+    "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users." => 'Utilizza il sistema di coda di Craft per avviare l’elaborazione dei campi AI. Questo velocizzerà l’elaborazione delle invii per gli utenti.',
     'Use Queue for Email Notifications' => 'Utilizza la Coda per le Notifiche Email',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Utilizza il sistema di coda di Craft per inviare email. Abilitando questa opzione, si velocizzerà l’elaborazione degli invii per i tuoi utenti.',
     'Use Queue for Integrations' => 'Utilizza la Coda per le Integrazioni',
@@ -1203,6 +1205,7 @@ return [
     'Integrations Tab' => 'Scheda Integrazioni',
     'Settings Tab' => 'Scheda Impostazioni',
     'Table Attributes' => 'Attributi della tabella',
+    'Field Properties' => 'Proprietà del campo',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Passa all’edizione Freeform Pro per accedere alla funzionalità Utenti limitati.',
 
     // Settings // Template Manager
@@ -1817,6 +1820,7 @@ return [
     'Freeform: Purging Unfinalized Assets' => 'Freeform: eliminazione delle risorse non finalizzate',
     'Freeform: Sending Digest Email' => 'Freeform: invio di email riassuntiva',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Pulizia dei vecchi log di notifica',
+    'Freeform: Processing AI Fields' => 'Freeform: Elaborazione dei campi AI',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Questo campo è obbligatorio',

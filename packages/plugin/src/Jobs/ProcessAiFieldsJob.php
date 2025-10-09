@@ -25,6 +25,6 @@ class ProcessAiFieldsJob extends BaseJob implements AiFieldsJobInterface
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Processing Ai Fields');
+        return Freeform::t('Freeform: Processing AI Fields');
     }
 }

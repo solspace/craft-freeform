@@ -1122,6 +1122,8 @@ return [
     'Always on Each Request' => 'Always on Each Request',
     'Never' => 'Never',
     'Form Processing' => 'Form Processing',
+    'Use Queue for AI Field Processing' => 'Use Queue for AI Field Processing',
+    "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users." => "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users.",
     'Use Queue for Email Notifications' => 'Use Queue for Email Notifications',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users.",
     'Use Queue for Integrations' => 'Use Queue for Integrations',
@@ -1203,6 +1205,7 @@ return [
     'Integrations Tab' => 'Integrations Tab',
     'Settings Tab' => 'Settings Tab',
     'Table Attributes' => 'Table Attributes',
+    'Field Properties' => 'Field Properties',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.',
 
     // Settings // Template Manager
@@ -1817,6 +1820,7 @@ return [
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Purging Unfinalized Assets',
     'Freeform: Sending Digest Email' => 'Freeform: Sending Digest Email',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Purging Old Notification Logs',
+    'Freeform: Processing AI Fields' => 'Freeform: Processing AI Fields',
 
     // Front End Form Errors // Fields
     'This field is required' => 'This field is required',

@@ -159,7 +159,6 @@ export const ErrorList = styled.ul`
 
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;
 
   pre {
     margin: 0;

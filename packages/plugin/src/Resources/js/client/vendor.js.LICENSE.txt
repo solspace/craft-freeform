@@ -6,7 +6,7 @@
 
 /*! @license DOMPurify 3.2.4 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.4/LICENSE */
 
-/*! Axios v1.8.4 Copyright (c) 2025 Matt Zabriskie and contributors */
+/*! Axios v1.12.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 /*! decimal.js-light v2.5.1 https://github.com/MikeMcl/decimal.js-light/LICENCE */
 
@@ -119,7 +119,7 @@
  */
 
 /**
- * React Router DOM v6.30.0
+ * React Router DOM v6.30.1
  *
  * Copyright (c) Remix Software Inc.
  *
@@ -130,7 +130,7 @@
  */
 
 /**
- * React Router v6.30.0
+ * React Router v6.30.1
  *
  * Copyright (c) Remix Software Inc.
  *

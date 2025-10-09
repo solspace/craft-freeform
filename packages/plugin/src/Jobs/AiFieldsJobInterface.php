@@ -13,4 +13,4 @@
 
 namespace Solspace\Freeform\Jobs;
 
-interface NotificationJobInterface extends FormJobInterface {}
+interface AiFieldsJobInterface extends FormJobInterface {}

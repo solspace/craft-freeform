@@ -286,6 +286,7 @@ class Settings extends Model
     public Defaults $defaults;
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
+    public bool $useQueueForAiFields = false;
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
     public string $csrfRefresh = self::CSRF_REFRESH_NONE;
 

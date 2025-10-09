@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePaymentMethodIconService;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePriceService;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Services\SubmissionsService;
@@ -92,9 +93,10 @@ class RenderTemplates extends FeatureBundle
     {
         $submission = $context['submission'];
 
-        $payment = PaymentRecord::findOne([
-            'submissionId' => $submission->id,
-        ]);
+        $payment = PaymentRecord::findOneOfClass(
+            Stripe::class,
+            ['submissionId' => $submission->id]
+        );
 
         if (!$payment || !$payment->getPaymentMethod()) {
             return null;

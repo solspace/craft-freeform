@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Submissions\RenderSubmissionFieldEvent;
 use Solspace\Freeform\Events\Submissions\RenderTableValueEvent;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Services\SquarePriceService;
+use Solspace\Freeform\Integrations\PaymentGateways\Square\Square;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Pro\Payments\PaymentRecord;
 use Solspace\Freeform\Services\SubmissionsService;
@@ -136,9 +137,10 @@ class RenderTemplates extends FeatureBundle
 
         $submission = $context['submission'];
 
-        $payment = PaymentRecord::findOne([
-            'submissionId' => $submission->id,
-        ]);
+        $payment = PaymentRecord::findOneOfClass(
+            Square::class,
+            ['submissionId' => $submission->id],
+        );
 
         if (!$payment) {
             return null;

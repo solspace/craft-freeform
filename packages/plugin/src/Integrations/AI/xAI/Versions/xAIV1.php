@@ -25,17 +25,9 @@ class xAIV1 extends BasexAIIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/api-key'), [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getApiKey(),
-                ],
-            ]);
+        $response = $client->get($this->getEndpoint('/api-key'));
 
-            return method_exists($response, 'getStatusCode') && 200 === $response->getStatusCode();
-        } catch (\Exception $e) {
-            return false;
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function fetchFields(string $category): array
@@ -49,17 +41,15 @@ class xAIV1 extends BasexAIIntegration
         };
     }
 
-    public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string
-    {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getApiKey(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
+    public function processAiRequest(
+        Client $client,
+        string $systemPrompt,
+        string $userContent,
+        array $options = []
+    ): string {
         $payload = [
             'model' => $options['model'] ?? $this->getModel(),
+            'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
             'messages' => [
                 [
                     'role' => 'system',
@@ -70,44 +60,15 @@ class xAIV1 extends BasexAIIntegration
                     'content' => $userContent,
                 ],
             ],
-            'max_tokens' => $options['max_tokens'] ?? $this->getMaxTokens(),
         ];
 
-        $response = $client->post($this->getEndpoint('/chat/completions'), [
-            'json' => $payload,
-        ]);
+        $response = $client->post(
+            $this->getEndpoint('/chat/completions'),
+            ['json' => $payload]
+        );
 
         $data = json_decode((string) $response->getBody(), true);
 
         return $data['choices'][0]['message']['content'] ?? '';
-    }
-
-    public function listModels(bool $refresh = false): array
-    {
-        try {
-            $client = new Client([
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getApiKey(),
-                ],
-            ]);
-
-            $response = $client->get($this->getEndpoint('/models'));
-            $data = json_decode((string) $response->getBody(), true);
-
-            $models = [];
-            foreach ($data['data'] ?? [] as $item) {
-                if (!isset($item['id'])) {
-                    continue;
-                }
-                $models[] = [
-                    'id' => $item['id'],
-                    'label' => $item['id'],
-                ];
-            }
-
-            return $models;
-        } catch (\Throwable $e) {
-            return [];
-        }
     }
 }

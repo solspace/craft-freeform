@@ -415,6 +415,11 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->useQueueForIntegrations;
     }
 
+    public function isAiFieldQueueEnabled(): bool
+    {
+        return $this->getSettingsModel()->useQueueForAiFields;
+    }
+
     private function getTemplatesIn(?string $path): array
     {
         if (!$path) {

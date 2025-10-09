@@ -7,21 +7,29 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 /**
- * @implements \IteratorAggregate<int, FieldInterface>
+ * @template T of FieldInterface
+ *
+ * @implements \IteratorAggregate<int, T>
  */
 class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
 {
     public const STRATEGY_INCLUDES = 'includes';
     public const STRATEGY_EXCLUDES = 'excludes';
 
-    /** @var FieldInterface[] */
+    /** @var T[] */
     private array $fields;
 
+    /**
+     * @param T[] $fields
+     */
     public function __construct(array $fields = [])
     {
         $this->fields = array_values($fields);
     }
 
+    /**
+     * @return null|T
+     */
     public function get(mixed $identificator): ?FieldInterface
     {
         if ($identificator instanceof FieldInterface) {
@@ -57,6 +65,13 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         }
     }
 
+    /**
+     * @template TField of FieldInterface
+     *
+     * @param null|array<class-string<TField>>|class-string<TField> $implements
+     *
+     * @return FieldCollection<TField>
+     */
     public function getList(array|string|null $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
     {
         if (null === $implements) {
@@ -157,6 +172,9 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
         return new self($clonedList);
     }
 
+    /**
+     * @return \ArrayIterator<int, T>
+     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->fields);
@@ -180,6 +198,11 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
     public function offsetUnset(mixed $offset): void
     {
         throw new FreeformException('Cannot delete fields directly');
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->fields);
     }
 
     public function count(): int

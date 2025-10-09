@@ -1122,6 +1122,8 @@ return [
     'Always on Each Request' => 'Bij elk verzoek',
     'Never' => 'Nooit',
     'Form Processing' => 'Formulierverwerking',
+    'Use Queue for AI Field Processing' => 'Wachtrij gebruiken voor AI-veldverwerking',
+    "Use Craft's queue system to trigger AI Field processing. Enabling this will speed up submission processing for your users." => 'Gebruik het wachtrijsysteem van Craft om AI-veldverwerking te activeren. Dit versnelt de verwerking van inzendingen voor je gebruikers.',
     'Use Queue for Email Notifications' => 'Gebruik wachtrij voor e-mailmeldingen',
     "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users." => 'Gebruik het wachtrijsysteem van Craft om e-mails te activeren. Als u dit inschakelt, wordt de verwerking van inzendingen voor uw gebruikers versneld.',
     'Use Queue for Integrations' => 'Gebruik wachtrij voor integraties',
@@ -1203,6 +1205,7 @@ return [
     'Integrations Tab' => 'Integraties Tab',
     'Settings Tab' => 'Tabblad Instellingen',
     'Table Attributes' => 'Tabelattributen',
+    'Field Properties' => 'Veldeigenschappen',
     'Upgrade to the Freeform Pro edition to get access to the Limited Users feature.' => 'Upgrade naar de Freeform Pro-editie om toegang te krijgen tot de functie Beperkte gebruikers.',
 
     // Settings // Template Manager
@@ -1817,6 +1820,7 @@ return [
     'Freeform: Purging Unfinalized Assets' => 'Freeform: Niet-gefinaliseerde bestanden opschonen',
     'Freeform: Sending Digest Email' => 'Freeform: Samenvatting-e-mail verzenden',
     'Freeform: Purging Old Notification Logs' => 'Freeform: Oude notificatielogs opschonen',
+    'Freeform: Processing AI Fields' => 'Freeform: Verwerken van AI-velden',
 
     // Front End Form Errors // Fields
     'This field is required' => 'Dit veld is verplicht',

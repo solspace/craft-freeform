@@ -87,7 +87,7 @@ class PaymentIntentsController extends BaseStripeController
     public function actionCreate(): Response
     {
         try {
-            [$form, $integration, $field, $hash] = $this->getRequestItems();
+            [$form, $integration, $field, $hash, $opts] = $this->getRequestItems();
         } catch (NotFoundHttpException $exception) {
             return $this->asSerializedJson(['errors' => [$exception->getMessage()]], 404);
         }
@@ -142,17 +142,20 @@ class PaymentIntentsController extends BaseStripeController
 
             $subscription = $stripe
                 ->subscriptions
-                ->create([
-                    'customer' => $customer->id,
-                    'items' => [['price' => $price->id]],
-                    'description' => $description,
-                    'metadata' => $metadata,
-                    'payment_behavior' => 'default_incomplete',
-                    'payment_settings' => [
-                        'save_default_payment_method' => 'on_subscription',
+                ->create(
+                    [
+                        'customer' => $customer->id,
+                        'items' => [['price' => $price->id]],
+                        'description' => $description,
+                        'metadata' => $metadata,
+                        'payment_behavior' => 'default_incomplete',
+                        'payment_settings' => [
+                            'save_default_payment_method' => 'on_subscription',
+                        ],
+                        'expand' => ['latest_invoice.payment_intent'],
                     ],
-                    'expand' => ['latest_invoice.payment_intent'],
-                ])
+                    $opts,
+                )
             ;
 
             // Set the same metadata on the payment intent as well.
@@ -172,19 +175,22 @@ class PaymentIntentsController extends BaseStripeController
 
             $paymentIntent = $stripe
                 ->paymentIntents
-                ->create(array_filter([
-                    'customer' => $customer->id,
-                    'amount' => $amount,
-                    'currency' => $currency,
-                    // 'payment_method_types' => ['card', 'ideal', 'paypal'],
-                    'payment_method_configuration' => $integration->getPaymentConfigurationId(),
-                    'automatic_payment_methods' => [
-                        'enabled' => true,
-                    ],
-                    'description' => $description,
-                    'metadata' => $metadata,
-                    'receipt_email' => $integration->isSendSuccessMail() ? $customer->email : null,
-                ]))
+                ->create(
+                    array_filter([
+                        'customer' => $customer->id,
+                        'amount' => $amount,
+                        'currency' => $currency,
+                        // 'payment_method_types' => ['card', 'ideal', 'paypal'],
+                        'payment_method_configuration' => $integration->getPaymentConfigurationId(),
+                        'automatic_payment_methods' => [
+                            'enabled' => true,
+                        ],
+                        'description' => $description,
+                        'metadata' => $metadata,
+                        'receipt_email' => $integration->isSendSuccessMail() ? $customer->email : null,
+                    ]),
+                    $opts
+                )
             ;
 
             $id = $paymentIntent->id;

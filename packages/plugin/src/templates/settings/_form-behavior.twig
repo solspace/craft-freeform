@@ -49,6 +49,14 @@
         errors: settings.errors("rememberPageSubmitOrder"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Prevent Duplicate Submissions (Idempotency Keys)"|t('freeform'),
+        instructions: "When enabled, Freeform generates a unique token for each form instance. If the same form data is submitted twice within a short period, only the first submission is processed. This is especially useful for payment or AI-powered forms where repeated submissions could cause duplicate actions."|t('freeform'),
+        name: "settings[useIdempotencyKey]",
+        on: settings.useIdempotencyKey,
+        errors: settings.errors("useIdempotencyKey"),
+    }) }}
+
     {% if (craft.app.config.general.asyncCsrfInputs) %}
         {{ forms.selectField({
             label: "CSRF Token Refresh Method"|t('freeform'),

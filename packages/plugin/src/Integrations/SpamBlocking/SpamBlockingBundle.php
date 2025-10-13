@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Integrations\SpamBlocking;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Form\Form;
@@ -77,10 +77,12 @@ class SpamBlockingBundle extends FeatureBundle
         }
     }
 
-    public function validateAsync(SubmitEvent $event): void
+    public function validateAsync(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $settings = $this->plugin()->settings->getSettingsModel();
+        $isQueueEnabled = $settings->useQueueForAiFields;
+
         if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
             return;
         }
@@ -104,6 +106,6 @@ class SpamBlockingBundle extends FeatureBundle
             'displayErrors' => false,
         ]);
 
-        $this->queueHandler->queueJob($job, $priority);
+        $this->queueHandler->queueJob($job, $priority, $isQueueEnabled);
     }
 }

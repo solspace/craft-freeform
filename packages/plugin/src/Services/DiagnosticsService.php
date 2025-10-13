@@ -471,6 +471,10 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->settings->autoScroll,
                 ),
                 new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Prevent Duplicate Submissions (Idempotency Keys)').'</span>',
+                    $this->getSummary()->statistics->settings->useIdempotencyKey,
+                ),
+                new DiagnosticItem(
                     '<span class="diag-check diag-{{ value == "Never" ? "disabled" : "enabled" }}"></span><span class="item-inline">'.Freeform::t('CSRF Token Refresh Method').'{% if value %}: <b>{{ value }}</b>{% endif %}</span>',
                     $this->getCsrfRefresh()
                 ),

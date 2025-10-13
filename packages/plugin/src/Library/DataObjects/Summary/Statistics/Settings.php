@@ -13,6 +13,7 @@ class Settings
     public bool $populateValuesFromGet = false;
     public bool $disableSubmit = false;
     public bool $autoScroll = false;
+    public bool $useIdempotencyKey = false;
     public string $csrfRefresh = '';
     public string $jsInsertLocation = '';
     public string $jsInsertType = '';

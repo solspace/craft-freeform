@@ -328,6 +328,7 @@ class Settings extends Model
         $this->renderFormHtmlInCpViews = true;
         $this->autoScrollToErrors = true;
         $this->autoScroll = true;
+        $this->useIdempotencyKey = true;
         $this->fillWithGet = false;
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;

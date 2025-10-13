@@ -71,6 +71,7 @@ class Submission extends Element
     public bool $isHidden = false;
     public ?string $requestId = null;
     public ?string $ip = null;
+    public ?string $idempotencyKey = null;
 
     private ?FieldCollection $fieldCollection = null;
     private static array $permissionCache = [];
@@ -512,6 +513,7 @@ class Submission extends Element
             'isSpam' => $this->isSpam,
             'isHidden' => $this->isHidden,
             'requestId' => $this->requestId,
+            'idempotencyKey' => $this->idempotencyKey,
         ];
 
         $contentData = [];

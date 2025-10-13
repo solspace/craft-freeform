@@ -181,6 +181,11 @@ class SettingsService extends BaseService
         return (bool) $this->getSettingsModel()->autoScrollToErrors;
     }
 
+    public function isUseIdempotencyKey(): bool
+    {
+        return (bool) $this->getSettingsModel()->useIdempotencyKey;
+    }
+
     public function isRemoveNewlines(): bool
     {
         return (bool) $this->getSettingsModel()->removeNewlines;

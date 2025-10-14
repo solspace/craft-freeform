@@ -111,10 +111,10 @@ class FreeformVariable
 
         return array_map(
             fn ($row) => [
-                'id' => $row['id'],
-                'label' => $row['label'],
-                'order' => $row['order'],
-                'formIds' => $row['formIds'],
+                'id' => $row['id'] ?? null,
+                'label' => $row['label'] ?? '',
+                'order' => $row['order'] ?? 0,
+                'formIds' => $row['formIds'] ?? [],
             ],
             $service->getAllFormGroupsBySiteId($siteId)
         );

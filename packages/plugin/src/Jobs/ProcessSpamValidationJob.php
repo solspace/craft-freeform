@@ -36,6 +36,8 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
 
         $form->valuesFromArray($event->getValues());
 
+        $isSpam = $form->isMarkedAsSpam();
+
         $integrations = $integrationProvider->getForForm($form, AsyncSpamBlockingIntegrationInterface::class);
         foreach ($integrations as $integration) {
             $integration->validate($form, $this->displayErrors);
@@ -47,6 +49,10 @@ class ProcessSpamValidationJob extends BaseJob implements AiFieldsJobInterface
             $spamControl->persistSpamReasons($event);
 
             \Craft::$app->elements->saveElement($submission, false, false, true);
+        }
+
+        if (!$isSpam) {
+            $form->removeMarkedAsSpam();
         }
     }
 

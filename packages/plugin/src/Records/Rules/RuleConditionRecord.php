@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Records\Rules;
 
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 
 /**
  * @property int       $id
@@ -23,6 +25,18 @@ class RuleConditionRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function behaviors(): array
+    {
+        return [
+            'timestamp' => [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'dateCreated',
+                'updatedAtAttribute' => 'dateUpdated',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
     }
 
     public function getField(): ActiveQuery

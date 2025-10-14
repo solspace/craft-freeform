@@ -38,6 +38,7 @@ export const ActionsWrapper = styled.div`
   position: absolute;
   right: 0;
   top: -44px;
+  z-index: 2;
 `;
 
 export const EditorTabsWrapper = styled(TabsWrapper)`

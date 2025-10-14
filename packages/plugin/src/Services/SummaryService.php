@@ -122,6 +122,7 @@ class SummaryService extends Component
         $settings->populateValuesFromGet = (bool) $settingsService->getSettingsModel()->fillWithGet;
         $settings->disableSubmit = $settingsService->isFormSubmitDisable();
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
+        $settings->useIdempotencyKey = $settingsService->isUseIdempotencyKey();
         $settings->csrfRefresh = $settingsService->getSettingsModel()->csrfRefresh;
         $settings->jsInsertLocation = $settingsService->getSettingsModel()->scriptInsertLocation;
         $settings->jsInsertType = $settingsService->getSettingsModel()->scriptInsertType;

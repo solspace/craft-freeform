@@ -58,14 +58,66 @@ class FreeformVariable
     /**
      * @return Form[]
      */
-    public function forms(): array
+    public function forms(array $options = []): array
     {
         $formService = $this->getFormService();
+
+        if (isset($options['group'])) {
+            $groupList = $options['group'];
+            if (!\is_array($groupList)) {
+                $groupList = [$groupList];
+            }
+
+            $groupList = array_map(
+                fn ($group) => \is_string($group) ? strtolower(trim($group)) : $group,
+                $groupList
+            );
+
+            $formIds = [];
+            $groups = $this->formGroups();
+
+            if (\in_array('other', $groupList, true)) {
+                $formIds = $this->plugin()->formGroups->getUnusedFormIds();
+            }
+
+            foreach ($groups as $group) {
+                $label = strtolower(trim($group['label']));
+                $id = $group['id'];
+
+                foreach ($groupList as $identificator) {
+                    if ($label === $identificator || $id === $identificator) {
+                        $formIds = array_merge($formIds, $group['formIds']);
+                    }
+                }
+            }
+
+            if (empty($formIds)) {
+                return [];
+            }
+
+            return $formService->getResolvedForms(['id' => $formIds]);
+        }
 
         $sites = SitesHelper::getSiteHandlesForFrontend();
         $forms = $formService->getAllForms(sites: $sites);
 
         return $forms ?: [];
+    }
+
+    public function formGroups(): array
+    {
+        $service = $this->plugin()->formGroups;
+        $siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+
+        return array_map(
+            fn ($row) => [
+                'id' => $row['id'],
+                'label' => $row['label'],
+                'order' => $row['order'],
+                'formIds' => $row['formIds'],
+            ],
+            $service->getAllFormGroupsBySiteId($siteId)
+        );
     }
 
     public function plugin(): Freeform

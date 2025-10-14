@@ -1,0 +1,78 @@
+{% set method = payment.paymentMethod %}
+{% set d = method.details ?? {} %}
+
+<style>
+    .mollie-payment {
+        display: inline-flex;
+        justify-content: start;
+        min-width: 400px;
+        padding: 10px 15px;
+        border: 1px solid #e3e3e3;
+        border-radius: 5px;
+        box-shadow: 0 2px 12px rgba(205,216,228,.5);
+    }
+    .mollie-payment ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .mollie-payment ul li { display: grid; grid-template-columns: 140px max-content; align-items: start; }
+    .mollie-amount { font-weight: 600; font-size: 1.1em; }
+    .mollie-status { font-weight: 600; text-transform: capitalize; }
+    .mollie-status.paid { color: #28a745; }
+    .mollie-status.failed, .mollie-status.canceled { color: #dc3545; }
+    .mollie-status.expired { color: #6c757d; }
+    .mollie-meta { color: #6b7280; }
+    .mollie-link a { color: #3b82f6; text-decoration: none; }
+    .mollie-link a:hover { text-decoration: underline; }
+</style>
+
+<div class="field">
+    <div class="heading">
+        <label class="mollie-label">
+            <span>{{ field.label }}</span>
+        </label>
+    </div>
+    <div class="mollie-payment">
+        <ul>
+            <li>
+                <div>{{ 'Amount'|t('freeform') }}</div>
+                <span class="mollie-amount">{{ amount }} {{ currency|upper }}</span>
+            </li>
+            <li>
+                <div>{{ 'Status'|t('freeform') }}</div>
+                <span class="mollie-status {{ status }}">{{ status|capitalize }}</span>
+            </li>
+            <li>
+                <div>{{ 'Payment ID'|t('freeform') }}</div>
+                <span>{{ payment.resourceId }}</span>
+            </li>
+            {% if method %}
+                <li>
+                    <div>{{ 'Method'|t('freeform') }}</div>
+                    <span>{{ (method.method ?? method.type ?? 'credit card')|capitalize }}</span>
+                </li>
+                <li>
+                    <div>{{ 'Card Brand'|t('freeform') }}</div>
+                    <span>{{ d.cardLabel ?? d.brand ?? '—' }}</span>
+                </li>
+                <li>
+                    <div>{{ 'Last 4'|t('freeform') }}</div>
+                    <span>{{ d.cardNumber ?? '—' }}</span>
+                </li>
+                <li>
+                    <div>{{ 'Card Holder'|t('freeform') }}</div>
+                    <span>{{ d.cardHolder ?? '—' }}</span>
+                </li>
+                <li>
+                    <div>{{ 'Issuer Country'|t('freeform') }}</div>
+                    <span class="mollie-meta">{{ d.cardIssuerCountry ?? d.cardCountryCode ?? '—' }}</span>
+                </li>
+            {% endif %}
+            <li class="mollie-link">
+                <div>{{ 'Open in Mollie'|t('freeform') }}</div>
+                <span>
+                    <a href="https://www.mollie.com/dashboard/payments/{{ payment.resourceId }}" target="_blank" rel="noopener">
+                        {{ 'View payment'|t('freeform') }}
+                    </a>
+                </span>
+            </li>
+        </ul>
+    </div>
+</div>

@@ -57,9 +57,9 @@ To use this integration on your form(s), configure each form individually:
 ### 5. Sandbox Testing
 
 - Open your form on the front end.
-    - Fill out the form as usual.
-    - To test the credit card field, refer to [Square's Sandbox Payments](https://developer.squareup.com/docs/devtools/sandbox/payments) docs for test card numbers.
-    - Complete the transaction.
+- Fill out the form as usual.
+- To test the credit card field, refer to [Square's Sandbox Payments](https://developer.squareup.com/docs/devtools/sandbox/payments) docs for test card numbers.
+- Complete the transaction.
 
 ---
 

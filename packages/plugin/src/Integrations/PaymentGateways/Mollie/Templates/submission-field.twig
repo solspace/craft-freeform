@@ -2,7 +2,7 @@
 {% set d = method.details ?? {} %}
 
 <style>
-    .mollie-payment {
+    .mollie {
         display: inline-flex;
         justify-content: start;
         min-width: 400px;
@@ -11,8 +11,8 @@
         border-radius: 5px;
         box-shadow: 0 2px 12px rgba(205,216,228,.5);
     }
-    .mollie-payment ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
-    .mollie-payment ul li { display: grid; grid-template-columns: 140px max-content; align-items: start; }
+    .mollie ul { display: flex; flex-direction: column; gap: 6px; margin: 0; padding: 0; list-style: none; }
+    .mollie ul li { display: grid; grid-template-columns: 140px max-content; align-items: start; }
     .mollie-amount { font-weight: 600; font-size: 1.1em; }
     .mollie-status { font-weight: 600; text-transform: capitalize; }
     .mollie-status.paid { color: #28a745; }
@@ -29,7 +29,7 @@
             <span>{{ field.label }}</span>
         </label>
     </div>
-    <div class="mollie-payment">
+    <div class="mollie">
         <ul>
             <li>
                 <div>{{ 'Amount'|t('freeform') }}</div>

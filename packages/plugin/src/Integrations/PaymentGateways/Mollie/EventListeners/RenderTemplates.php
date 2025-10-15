@@ -35,7 +35,7 @@ class RenderTemplates extends FeatureBundle
         ]);
 
         if (!$payment) {
-            $event->setOutput('<div class="field"><div class="heading"><label><span>'.$field->getLabel().'</span></label></div><div class="mollie-payment"><p>No payment found</p></div></div>');
+            $event->setOutput('<div class="field"><div class="heading"><label><span>'.$field->getLabel().'</span></label></div><div class="mollie"><p>No payment found</p></div></div>');
 
             return;
         }

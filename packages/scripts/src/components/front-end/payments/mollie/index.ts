@@ -4,7 +4,7 @@ import { addListeners } from '@lib/plugin/helpers/event-handling';
 import type { MollieConfig } from './mollie.types';
 
 // Data attribute selector for Mollie hidden input
-const SELECTOR = '[data-freeform-mollie-payment]';
+const SELECTOR = '[data-freeform-mollie]';
 
 // Freeform submit event shape used by addListeners
 type FreeformSubmitEvent = Event & {
@@ -81,7 +81,7 @@ async function createPayment(
   };
 
   try {
-    const url = `/freeform/payments/mollie-payment/create?integration=${encodeURIComponent(config.integration)}`;
+    const url = `/freeform/payments/mollie/create?integration=${encodeURIComponent(config.integration)}`;
     const res = await fetch(url, {
       method: 'POST',
       headers: {

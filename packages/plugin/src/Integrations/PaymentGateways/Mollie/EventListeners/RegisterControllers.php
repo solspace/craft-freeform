@@ -14,7 +14,7 @@ class RegisterControllers extends FeatureBundle
 {
     public function __construct()
     {
-        $this->registerController('mollie-payment', MolliePaymentController::class);
+        $this->registerController('mollie', MolliePaymentController::class);
         $this->registerController('mollie-webhook', MollieWebhookController::class);
 
         Event::on(
@@ -22,8 +22,8 @@ class RegisterControllers extends FeatureBundle
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules[] = new UrlRule([
-                    'pattern' => 'freeform/payments/mollie-payment/create',
-                    'route' => 'freeform/mollie-payment/index',
+                    'pattern' => 'freeform/payments/mollie/create',
+                    'route' => 'freeform/mollie/index',
                     'verb' => ['POST'],
                 ]);
 

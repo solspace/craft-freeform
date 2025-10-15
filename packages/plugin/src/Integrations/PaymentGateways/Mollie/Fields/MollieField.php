@@ -21,8 +21,8 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
-    name: 'Mollie Payment',
-    typeShorthand: 'mollie-payment',
+    name: 'Mollie',
+    typeShorthand: 'mollie',
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/mollie-field-preview.ejs',
 )]
@@ -135,7 +135,7 @@ class MollieField extends HiddenField implements PaymentFieldInterface
 
     public function getType(): string
     {
-        return 'mollie-payment';
+        return 'mollie';
     }
 
     public function getInputHtml(): string
@@ -155,7 +155,7 @@ class MollieField extends HiddenField implements PaymentFieldInterface
         ]);
 
         $inputAttributes = (new Attributes())
-            ->set('data-freeform-mollie-payment')
+            ->set('data-freeform-mollie')
             ->set('data-mollie-config', $config)
             ->set('name', $this->getHandle())
             ->set('type', 'hidden')

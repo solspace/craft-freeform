@@ -38,37 +38,30 @@ class FreeformQueueHandler
         Queue::push($job, $this->queuePriority);
     }
 
-    public function executeNotificationJob(NotificationJobInterface $job, ?int $priority = null): void
+    public function queueJob(JobInterface $job, ?int $priority = null, bool $queuedExecution = true): void
     {
         $queue = \Craft::$app->getQueue();
 
-        if ($this->settingsService->isNotificationQueueEnabled()) {
+        if ($queuedExecution) {
             Queue::push($job, $priority ?? $this->queuePriority);
         } else {
             $job->execute($queue);
         }
+    }
+
+    public function executeNotificationJob(NotificationJobInterface $job, ?int $priority = null): void
+    {
+        $this->queueJob($job, $priority, $this->settingsService->isNotificationQueueEnabled());
     }
 
     public function executeIntegrationJob(IntegrationJobInterface $job, ?int $priority = null): void
     {
-        $queue = \Craft::$app->getQueue();
-
-        if ($this->settingsService->isIntegrationQueueEnabled()) {
-            Queue::push($job, $priority ?? $this->queuePriority);
-        } else {
-            $job->execute($queue);
-        }
+        $this->queueJob($job, $priority, $this->settingsService->isIntegrationQueueEnabled());
     }
 
     public function executeAiFieldsJob(AiFieldsJobInterface $job, ?int $priority = null): void
     {
-        $queue = \Craft::$app->getQueue();
-
-        if ($this->settingsService->isAiFieldQueueEnabled()) {
-            Queue::push($job, $priority ?? $this->queuePriority);
-        } else {
-            $job->execute($queue);
-        }
+        $this->queueJob($job, $priority, $this->settingsService->isAiFieldQueueEnabled());
     }
 
     private function isJobInQueue(JobInterface $job): bool

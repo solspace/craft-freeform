@@ -15,6 +15,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
 #[Type(
@@ -23,7 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegr
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class AiSpamAnalysis extends SpamBlockingIntegration
+class AiSpamAnalysis extends SpamBlockingIntegration implements AsyncSpamBlockingIntegrationInterface
 {
     private const CONFIDENCE_LEVELS = [
         'DEFINITELY_SPAM',
@@ -160,11 +161,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration
         $confidence = $this->getSpamConfidence($response);
         $message = $reason ?: $this->formatConfidenceMessage($confidence);
 
+        $spamReason = $this->buildSpamReason($message, $confidence, $response);
+        $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
+
         if ($this->displayErrors || $displayErrors) {
             $form->addError(Freeform::t('Submission flagged as spam by AI: {reason}', ['reason' => $message]));
-        } else {
-            $spamReason = $this->buildSpamReason($message, $confidence, $response);
-            $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
         }
     }
 

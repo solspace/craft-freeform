@@ -90,18 +90,18 @@ class BlockKeywords extends SpamBlockingIntegration
                         ]));
                     }
 
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_KEYWORDS,
+                        \sprintf(
+                            'Field "%s" contains a blocked keyword "%s" in the string "%s"',
+                            $field->getHandle(),
+                            $keyword,
+                            $value
+                        )
+                    );
+
                     if ($displayErrors) {
                         $form->addError(Freeform::t('Form contains a restricted keyword'));
-                    } else {
-                        $form->markAsSpam(
-                            SpamReason::TYPE_BLOCKED_KEYWORDS,
-                            \sprintf(
-                                'Field "%s" contains a blocked keyword "%s" in the string "%s"',
-                                $field->getHandle(),
-                                $keyword,
-                                $value
-                            )
-                        );
                     }
 
                     break;

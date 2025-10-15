@@ -9,6 +9,7 @@ import RatingHandler from '@lib/plugin/handlers/fields/rating';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
+import IdempotencyHandler from '@lib/plugin/handlers/form/idempotency';
 import RuleHandler from '@lib/plugin/handlers/form/rules';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { ajax } from '@lib/plugin/helpers/ajax';
@@ -58,6 +59,7 @@ export default class Freeform {
 
   _initializedHandlers: FreeformHandler[] = [];
   _handlers: FreeformHandlerConstructor[] = [
+    IdempotencyHandler,
     BackButtonHandler,
     RuleHandler,
     DatePickerHandler,

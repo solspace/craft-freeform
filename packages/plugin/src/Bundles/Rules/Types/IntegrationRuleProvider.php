@@ -70,7 +70,11 @@ class IntegrationRuleProvider
     {
         $conditions = new ConditionCollection();
         foreach ($record->getConditions()->all() as $conditionRecord) {
-            $field = $this->fieldTransformer->transform($conditionRecord->getField()->one()->uid);
+            $field = $this->fieldTransformer->transform($conditionRecord->getField()->one()?->uid);
+            if (!$field) {
+                continue;
+            }
+
             $condition = new Condition(
                 $conditionRecord->uid,
                 $field,

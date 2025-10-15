@@ -87,6 +87,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         \Craft::$app->language = $sites->getCurrentSite()->language;
 
         $submission = $freeform->submissions->getSubmissionById($this->submissionId);
+        if ($submission->isSpam) {
+            return;
+        }
 
         $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
         Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);

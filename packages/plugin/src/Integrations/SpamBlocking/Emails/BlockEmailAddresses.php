@@ -87,17 +87,17 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                         $field->addError(Freeform::t($message, ['email' => $value]));
                     }
 
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                        \sprintf(
+                            'Email field "%s" contains a blocked email address "%s"',
+                            $field->getHandle(),
+                            $email
+                        )
+                    );
+
                     if ($displayErrors) {
                         $form->addError(Freeform::t('Form contains a blocked email'));
-                    } else {
-                        $form->markAsSpam(
-                            SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                            \sprintf(
-                                'Email field "%s" contains a blocked email address "%s"',
-                                $field->getHandle(),
-                                $email
-                            )
-                        );
                     }
 
                     break;

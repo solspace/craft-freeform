@@ -99,7 +99,7 @@ class AiBundle extends FeatureBundle
 
         $settingsPriority = $this->settingsService->getQueuePriority();
         if (null !== $settingsPriority) {
-            $priority = $settingsPriority - 1;
+            $priority = $settingsPriority - 20;
         } else {
             $priority = 100;
         }

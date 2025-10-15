@@ -11,13 +11,43 @@ class FormGroupsService extends BaseService
     public function getAllFormGroupsBySiteId(int $siteId): array
     {
         $query = $this->getGroupQuery();
-        $query->where(['groups.siteId' => $siteId])
+        $query
+            ->where(['groups.siteId' => $siteId])
             ->orderBy(['groups.order' => \SORT_ASC])
+            ->indexBy('id')
         ;
 
         $groupRecords = $query->all();
 
-        return $groupRecords ?: [];
+        $groupedFormIds = (new Query())
+            ->select(['groupId', 'formId'])
+            ->from(FormGroupsEntriesRecord::TABLE)
+            ->where(['groupId' => array_column($groupRecords, 'id')])
+            ->all()
+        ;
+
+        foreach ($groupedFormIds as $row) {
+            $groupId = (int) $row['groupId'];
+            $formId = (int) $row['formId'];
+
+            $groupRecords[$groupId]['formIds'][] = $formId;
+        }
+
+        return array_values($groupRecords);
+    }
+
+    public function getUnusedFormIds(): array
+    {
+        $siteId = \Craft::$app->sites->currentSite->id;
+        $groups = $this->getAllFormGroupsBySiteId($siteId);
+
+        $allFormIds = $this->getFormsService()->getAllFormIds();
+        $usedFormIds = [];
+        foreach ($groups as $group) {
+            $usedFormIds = array_merge($usedFormIds, $group['formIds']);
+        }
+
+        return array_diff($allFormIds, $usedFormIds);
     }
 
     public function deleteById(int $formId): bool

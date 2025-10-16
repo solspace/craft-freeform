@@ -49,7 +49,7 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
 
   const getIcon = useCallback(
     (assetId: number) => {
-      const url = assetPreviews?.[assetId]?.url;
+      const url = assetPreviews?.[assetId]?.src;
       if (isFetching) {
         return <SpinnerIcon />;
       }

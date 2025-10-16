@@ -69,6 +69,7 @@ interface FieldInterface
     public const TYPE_TABLE = 'table';
     public const TYPE_INVISIBLE = 'invisible';
     public const TYPE_CARDS = 'cards';
+    public const TYPE_IMAGE = 'image';
     public const TYPE_GROUP = 'group';
     public const TYPE_CREDIT_CARD_DETAILS = 'credit-card';
     public const TYPE_CREDIT_CARD_NUMBER = 'cc-number';

@@ -266,7 +266,7 @@ class LimitedUsersDefaults
                             'max' => 'Max Selected Values',
                             'perRow' => 'Cards Per Row',
                             'transform' => 'Image Transform',
-                            'srcset' => 'Srcset',
+                            'srcset' => 'Srcset Sizes',
                         ]),
                     (new Toggles('image', 'Image'))
                         ->setValues([
@@ -275,7 +275,7 @@ class LimitedUsersDefaults
                         ])
                         ->setOptions([
                             'transform' => 'Image Transform',
-                            'srcset' => 'Srcset',
+                            'srcset' => 'Srcset Sizes',
                         ]),
                 ]),
 

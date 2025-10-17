@@ -19,7 +19,7 @@ class Image extends BaseCategory
     #[OptionsGenerator(ImageTransformOptionsGenerator::class)]
     public SelectItem $transform;
 
-    #[Label('Srcset')]
+    #[Label('Srcset Sizes')]
     #[SetDefaultValue('')]
     public TextItem $srcset;
 

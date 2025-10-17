@@ -51,11 +51,11 @@ class ImageField extends AbstractField implements InputOnlyInterface, NoStorageI
 
     #[Input\AssetPicker(
         label: 'Image',
-        instructions: 'Select an icon to use for the submit button.',
+        instructions: 'Select an image for this field.',
         criteria: ['kind' => 'image'],
         limit: 1,
     )]
-    protected array $assetId;
+    protected array $assetId = [];
 
     public function getType(): string
     {

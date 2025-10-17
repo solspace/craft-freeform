@@ -457,6 +457,9 @@ return [
     'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laissez vide pour utiliser les paramètres de l’intégration. Remplacez uniquement si vous avez besoin d’un nombre différent de jetons pour ce champ.',
     'Temperature Override' => 'Remplacer la température',
     'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laissez vide pour utiliser les paramètres de l’intégration. Remplacez uniquement si vous avez besoin d’une température différente pour ce champ. Entrez une valeur entre 0.0 et 1.0.',
+    'Srcset Sizes' => 'Tailles Srcset',
+    'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Entrez une liste de tailles d’image séparées par des virgules pour générer l’attribut `srcset`.',
+    'Select an image for this field.' => 'Sélectionnez une image pour ce champ.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',

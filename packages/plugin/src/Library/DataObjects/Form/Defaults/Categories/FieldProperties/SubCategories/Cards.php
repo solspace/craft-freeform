@@ -26,6 +26,10 @@ class Cards extends BaseCategory
     #[OptionsGenerator(ImageTransformOptionsGenerator::class)]
     public SelectItem $transform;
 
+    #[Label('Srcset Sizes')]
+    #[SetDefaultValue('')]
+    public TextItem $srcset;
+
     public function getLabel(): string
     {
         return 'Cards';

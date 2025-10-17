@@ -359,6 +359,10 @@ return [
     'Use custom values' => 'Usa valori personalizzati',
     'Value' => 'Valore',
     'Press <b>enter</b> while editing a cell to add a new row.' => 'Premi <b>invio</b> mentre modifichi una cella per aggiungere una nuova riga.',
+    'Copy to clipboard' => 'Copia negli appunti',
+    'Copied' => 'Copiato',
+    'Optgroup' => 'Gruppo opt',
+    'Actions' => 'Azioni',
     'Add options in bulk' => 'Aggiungi opzioni in blocco',
     'Separator' => 'Separatore',
     'Select the separator used to separate the option label and value when using custom values for option labels.' => 'Seleziona il separatore utilizzato per separare l’etichetta dell’opzione e il valore quando utilizzi valori personalizzati per le etichette delle opzioni.',
@@ -457,6 +461,9 @@ return [
     'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Lascia vuoto per usare le impostazioni dell’integrazione. Sovrascrivi solo se hai bisogno di un numero diverso di token per questo campo.',
     'Temperature Override' => 'Sovrascrivi Temperatura',
     'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Lascia vuoto per usare le impostazioni dell’integrazione. Sovrascrivi solo se ti serve una temperatura diversa per questo campo. Inserisci un valore compreso tra 0.0 e 1.0.',
+    'Srcset Sizes' => 'Dimensioni Srcset',
+    'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Inserisci un elenco separato da virgole di dimensioni dell’immagine per generare l’attributo `srcset`.',
+    'Select an image for this field.' => 'Seleziona un’immagine per questo campo.',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifiche',

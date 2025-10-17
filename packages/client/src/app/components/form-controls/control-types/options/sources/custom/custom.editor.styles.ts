@@ -30,3 +30,7 @@ export const BulkButton = styled.button`
     }
   }
 `;
+
+export const CopyButtonWrapper = styled.div`
+  position: relative;
+`;

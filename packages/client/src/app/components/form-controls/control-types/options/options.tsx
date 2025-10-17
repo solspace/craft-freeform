@@ -94,6 +94,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         updateDefaultValue={updateDefaultValue}
         convertToCustomValues={convertToCustomValues}
         isMultiple={isMultiple}
+        allowOptgroup={property.allowOptgroup}
         autoUpdateHandle={autoUpdateHandle}
       />
 

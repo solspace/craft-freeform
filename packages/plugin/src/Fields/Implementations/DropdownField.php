@@ -17,6 +17,7 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -26,6 +27,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -45,6 +47,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
         label: 'Options Editor',
         instructions: 'Define your options',
         showEmptyOption: true,
+        allowOptgroup: true,
     )]
     protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
@@ -108,32 +111,11 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             ->set($this->getRequiredAttribute())
         ;
 
-        $output = '';
-        foreach ($this->getOptions() as $index => $option) {
-            $isChecked = $option->getValue() == $this->getValue();
-
-            $optionAttributes = $this->getAttributes()
-                ->getOption()
-                ->clone()
-                ->replace('value', $option->getValue())
-                ->replace('selected', $isChecked)
-            ;
-
-            $output .= Html::tag(
-                $optionAttributes->getTag('option'),
-                $option->getLabel(),
-                $optionAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'option' => $option,
-                    'field' => $this,
-                ])
-            );
-        }
+        $optionAttributes = $this->getAttributes()->getOption();
 
         return Html::tag(
             $attributes->getTag('select'),
-            $output,
+            $this->renderCollection($this->getOptions(), $optionAttributes),
             $attributes->toHtmlTagArray(['field' => $this])
         );
     }
@@ -160,5 +142,42 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];
+    }
+
+    private function renderCollection(OptionCollection $collection, Attributes $attributes): string
+    {
+        $output = '';
+        foreach ($collection as $index => $option) {
+            if ($option instanceof OptionCollection) {
+                $output .= Html::tag(
+                    'optgroup',
+                    $this->renderCollection($option, $attributes),
+                    ['label' => $option->getLabel()]
+                );
+
+                continue;
+            }
+
+            $isChecked = $option->getValue() == $this->getValue();
+
+            $optionAttributes = $attributes
+                ->clone()
+                ->replace('value', $option->getValue())
+                ->replace('selected', $isChecked)
+            ;
+
+            $output .= Html::tag(
+                $optionAttributes->getTag('option'),
+                $option->getLabel(),
+                $optionAttributes->toHtmlTagArray([
+                    'i' => $index,
+                    'index' => $index,
+                    'option' => $option,
+                    'field' => $this,
+                ])
+            );
+        }
+
+        return $output;
     }
 }

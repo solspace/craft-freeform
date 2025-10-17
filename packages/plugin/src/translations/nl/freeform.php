@@ -359,6 +359,10 @@ return [
     'Use custom values' => 'Gebruik aangepaste waarden',
     'Value' => 'Waarde',
     'Press <b>enter</b> while editing a cell to add a new row.' => 'Druk op <b>enter</b> terwijl je een cel bewerkt om een nieuwe rij toe te voegen.',
+    'Copy to clipboard' => 'Kopiëren naar klembord',
+    'Copied' => 'Gekopieerd',
+    'Optgroup' => 'Optiegroep',
+    'Actions' => 'Acties',
     'Add options in bulk' => 'Opties bulksgewijs toevoegen',
     'Separator' => 'Scheidingsteken',
     'Select the separator used to separate the option label and value when using custom values for option labels.' => 'Selecteer het scheidingsteken dat wordt gebruikt om het optielabel en de waarde te scheiden bij gebruik van aangepaste waarden voor optielabels.',
@@ -457,6 +461,9 @@ return [
     'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een ander maximum aantal tokens voor dit veld nodig hebt.',
     'Temperature Override' => 'Temperatuur overschrijven',
     'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een andere temperatuur voor dit veld nodig hebt. Voer een waarde in tussen 0.0 en 1.0.',
+    'Srcset Sizes' => 'Srcset-groottes',
+    'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Voer een door komma’s gescheiden lijst in van afbeeldingsgroottes voor het genereren van het `srcset`-attribuut.',
+    'Select an image for this field.' => 'Selecteer een afbeelding voor dit veld.',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',

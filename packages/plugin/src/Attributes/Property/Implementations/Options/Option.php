@@ -7,6 +7,7 @@ class Option
     public function __construct(
         private string $value,
         private string $label,
+        private bool $optgroup = false,
     ) {}
 
     public function __toString(): string
@@ -22,5 +23,10 @@ class Option
     public function getLabel(): string
     {
         return $this->label;
+    }
+
+    public function isOptgroup(): bool
+    {
+        return $this->optgroup;
     }
 }

@@ -359,6 +359,10 @@ return [
     'Use custom values' => 'Benutzerdefinierte Werte verwenden',
     'Value' => 'Wert',
     'Press <b>enter</b> while editing a cell to add a new row.' => 'Drücken Sie <b>Enter</b>, während Sie eine Zelle bearbeiten, um eine neue Zeile hinzuzufügen.',
+    'Copy to clipboard' => 'In die Zwischenablage kopieren',
+    'Copied' => 'Kopiert',
+    'Optgroup' => 'Optionsgruppe',
+    'Actions' => 'Aktionen',
     'Add options in bulk' => 'Optionen in großen Mengen hinzufügen',
     'Separator' => 'Trennzeichen',
     'Select the separator used to separate the option label and value when using custom values for option labels.' => 'Wählen Sie das Trennzeichen aus, das verwendet wird, um die Optionsbeschriftung und den Optionswert zu trennen, wenn benutzerdefinierte Werte für Optionsbeschriftungen verwendet werden.',
@@ -457,6 +461,9 @@ return [
     'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Leer lassen, um die Integrationseinstellungen zu verwenden. Nur überschreiben, wenn Sie eine andere Token-Grenze für dieses Feld benötigen.',
     'Temperature Override' => 'Temperatur überschreiben',
     'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Leer lassen, um die Integrationseinstellungen zu verwenden. Nur überschreiben, wenn Sie eine andere Temperatur für dieses Feld benötigen. Geben Sie einen Wert zwischen 0.0 und 1.0 ein.',
+    'Srcset Sizes' => 'Srcset-Größen',
+    'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Geben Sie eine durch Kommas getrennte Liste von Bildgrößen ein, um das `srcset`-Attribut zu generieren.',
+    'Select an image for this field.' => 'Wählen Sie ein Bild für dieses Feld aus.',
 
     // Form Builder // Notifications
     'Notifications' => 'Benachrichtigungen',

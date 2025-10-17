@@ -17,13 +17,16 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
@@ -39,6 +42,16 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
 
     #[Input\Hidden]
     protected ?array $defaultValue = [];
+
+    #[Translatable]
+    #[ValueTransformer(OptionsTransformer::class)]
+    #[Input\Options(
+        label: 'Options Editor',
+        instructions: 'Define your options',
+        showEmptyOption: true,
+        allowOptgroup: true,
+    )]
+    protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
     #[Section(
         handle: 'attributes',

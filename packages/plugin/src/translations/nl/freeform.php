@@ -457,6 +457,9 @@ return [
     'Leave empty to use integration settings. Override only if you need different max tokens for this field.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een ander maximum aantal tokens voor dit veld nodig hebt.',
     'Temperature Override' => 'Temperatuur overschrijven',
     'Leave empty to use integration settings. Override only if you need different temperature for this field. Enter a value between 0.0 and 1.0.' => 'Laat leeg om de instellingen van de integratie te gebruiken. Overschrijf alleen als je een andere temperatuur voor dit veld nodig hebt. Voer een waarde in tussen 0.0 en 1.0.',
+    'Srcset Sizes' => 'Srcset-groottes',
+    'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Voer een door komma’s gescheiden lijst in van afbeeldingsgroottes voor het genereren van het `srcset`-attribuut.',
+    'Select an image for this field.' => 'Selecteer een afbeelding voor dit veld.',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',

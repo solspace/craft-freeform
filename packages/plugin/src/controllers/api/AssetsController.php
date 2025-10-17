@@ -29,7 +29,8 @@ class AssetsController extends BaseApiController
         foreach ($assets as $asset) {
             $urls[$asset->id] = [
                 'title' => $asset->title,
-                'url' => $asset->getUrl($transform),
+                'src' => $asset->getUrl($transform),
+                // 'srcset' => $asset->getSrcset([480, 720, 960, 1024, 1280, 1800], $transform)
             ];
         }
 

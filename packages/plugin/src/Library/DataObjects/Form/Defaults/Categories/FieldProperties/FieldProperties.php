@@ -9,6 +9,7 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperti
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Date;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\File;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Html;
+use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Image;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Phone;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Rating;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\FieldProperties\SubCategories\Signature;
@@ -25,6 +26,7 @@ class FieldProperties extends BaseCategory
     public Signature $signature;
     public Calculation $calculation;
     public Cards $cards;
+    public Image $image;
 
     public function getLabel(): string
     {

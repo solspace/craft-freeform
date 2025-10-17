@@ -21,6 +21,7 @@ class Custom implements OptionsConfigurationInterface
             $this->options[] = new Option(
                 $option['value'] ?? '',
                 $option['label'] ?? '',
+                $option['optgroup'] ?? false,
             );
         }
     }
@@ -39,6 +40,8 @@ class Custom implements OptionsConfigurationInterface
     {
         $translations = $translationTable->get('optionConfiguration.options');
 
+        $lastOptgroup = null;
+
         $collection = new OptionCollection();
         foreach ($this->options as $option) {
             if (\is_array($translations)) {
@@ -47,11 +50,20 @@ class Custom implements OptionsConfigurationInterface
                     $option = new Option(
                         $option->getValue(),
                         $translatedOption->label,
+                        $option->isOptGroup(),
                     );
                 }
             }
 
-            $collection->add($option);
+            if ($option->isOptgroup()) {
+                $lastOptgroup = new OptionCollection($option->getLabel());
+                $collection->addCollection($lastOptgroup);
+
+                continue;
+            }
+
+            $targetCollection = $lastOptgroup ?? $collection;
+            $targetCollection->add($option);
         }
 
         return $collection;
@@ -66,6 +78,7 @@ class Custom implements OptionsConfigurationInterface
                 fn (Option $option) => [
                     'label' => $option->getLabel(),
                     'value' => $option->getValue(),
+                    'optgroup' => $option->isOptGroup(),
                 ],
                 $this->options
             ),

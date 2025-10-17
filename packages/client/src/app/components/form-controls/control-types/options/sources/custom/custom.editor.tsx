@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { HelpText } from '@components/elements/help-text';
+import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import Bool from '@components/form-controls/control-types/bool/bool';
 import {
   Button,
   Cell,
+  CenterPoint,
   Input,
   TableContainer,
   TabularOptions,
@@ -25,6 +27,7 @@ import type {
 } from '../../options.types';
 
 import { Bulk } from './custom.bulk';
+import { CopyToClipboardButton } from './custom.clipboard-button';
 import { BulkButton, BulkWrapper, ChoiceWrapper } from './custom.editor.styles';
 import {
   addOption,
@@ -43,6 +46,7 @@ export const CustomEditor: React.FC<
   defaultValue,
   updateDefaultValue,
   isMultiple,
+  allowOptgroup,
   autoUpdateHandle,
 }) => {
   const [localValue, setLocalValue] = useState(value);
@@ -100,6 +104,12 @@ export const CustomEditor: React.FC<
       let [label, value] = line.split(separator);
       label = label.trim();
       value = value?.trim();
+      let optgroup = false;
+
+      if (label.startsWith('@@')) {
+        optgroup = true;
+        label = label.replace(/^@@/, '').trim();
+      }
 
       if (!label && !value) {
         return;
@@ -108,6 +118,7 @@ export const CustomEditor: React.FC<
       currentOptions.push({
         label: label,
         value: useCustomValues && !!value ? value : label,
+        optgroup,
       });
     });
 
@@ -128,6 +139,7 @@ export const CustomEditor: React.FC<
             setLocalValue(toggleUseCustomValues(localValue, !useCustomValues))
           }
         />
+
         <BulkWrapper>
           <PreviewableComponent
             preview={
@@ -141,12 +153,27 @@ export const CustomEditor: React.FC<
               <Bulk open={isEditing} close={close} bulkImport={bulkImport} />
             )}
           </PreviewableComponent>
+
+          <CopyToClipboardButton
+            options={localValue.options}
+            copyValues={useCustomValues}
+          />
         </BulkWrapper>
       </ChoiceWrapper>
 
       {!!options.length && (
         <TableContainer>
           <TabularOptions>
+            <thead>
+              <tr>
+                {allowOptgroup && <th>{translate('Optgroup')}</th>}
+                <th>{translate('Label')}</th>
+                {useCustomValues && <th>{translate('Value')}</th>}
+                {options.length > 1 && (
+                  <th colSpan={3}>{translate('Actions')}</th>
+                )}
+              </tr>
+            </thead>
             <tbody>
               {options.map((option, index) => (
                 <DraggableRow
@@ -157,6 +184,27 @@ export const CustomEditor: React.FC<
                     setLocalValue(moveOption(localValue, fromIndex, toIndex))
                   }
                 >
+                  {allowOptgroup && (
+                    <Cell $tiny>
+                      <CenterPoint>
+                        <LightSwitch
+                          enabled={option.optgroup}
+                          onClick={(enabled) =>
+                            setLocalValue(
+                              updateOption(
+                                index,
+                                {
+                                  ...option,
+                                  optgroup: enabled,
+                                },
+                                localValue
+                              )
+                            )
+                          }
+                        />
+                      </CenterPoint>
+                    </Cell>
+                  )}
                   <Cell>
                     <Input
                       type="text"
@@ -278,6 +326,7 @@ export const CustomEditor: React.FC<
           </TabularOptions>
         </TableContainer>
       )}
+
       <HelpText>
         <span
           dangerouslySetInnerHTML={{

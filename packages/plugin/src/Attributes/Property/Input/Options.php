@@ -21,6 +21,7 @@ class Options extends Property implements OptionsInterface
         ?int $width = null,
         public ?bool $showEmptyOption = false,
         public array|OptionCollection|string|null $options = null,
+        public ?bool $allowOptgroup = false,
     ) {
         parent::__construct(
             label: $label,

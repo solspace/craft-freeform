@@ -175,25 +175,28 @@ export const FieldCellWrapper = styled.div`
 
       &__card {
         display: grid;
-        grid-template-rows: 100px 20px auto;
+        grid-template-rows: min-content 20px auto;
         gap: 5px;
-
-        padding: ${spacings.md};
 
         background: ${colors.white};
         border: 1px solid ${colors.gray200};
         border-radius: 8px;
 
         &__image {
-          border: 1px solid ${colors.gray200};
-          border-radius: 8px;
+          border: none;
+          border-top-left-radius: 8px;
+          border-top-right-radius: 8px;
 
           overflow: hidden;
           text-align: center;
 
+          img {
+            width: 100%;
+          }
+
           svg {
             width: 100%;
-            height: 100%;
+            max-height: 80px;
 
             fill: ${colors.gray200};
           }
@@ -201,16 +204,19 @@ export const FieldCellWrapper = styled.div`
 
         &__label {
           height: 20px;
-          font-weight: bold;
+          padding: 0 ${spacings.sm};
 
           overflow: hidden;
-          text-overflow: ellipsis;
           white-space: nowrap;
+          text-overflow: ellipsis;
+          font-weight: bold;
         }
 
         &__description {
-          font-size: 12px;
+          padding: 0 ${spacings.sm} ${spacings.sm};
+
           color: ${colors.gray500};
+          font-size: 12px;
           font-style: italic;
         }
 

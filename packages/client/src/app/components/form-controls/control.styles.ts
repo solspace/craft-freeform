@@ -85,6 +85,11 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
     padding-top: 6px;
   }
 
+  ::placeholder {
+    color: ${colors.gray200};
+    font-style: italic;
+  }
+
   .btn {
     background-color: var(--ui-control-bg-color);
 

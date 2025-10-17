@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\ArrayOfNumbersTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\CardAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Cards\CardsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -20,6 +21,7 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Cards\CardCollection;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
+use Solspace\Freeform\Fields\Traits\ImageAssetTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Attributes\CardAttributesCollection;
 use yii\base\Event;
@@ -33,6 +35,7 @@ use yii\base\Event;
 class CardsField extends AbstractField implements MultiValueInterface, ExtraFieldInterface, EncryptionInterface
 {
     use EncryptionTrait;
+    use ImageAssetTrait;
     use MultipleValueTrait;
 
     #[Limitation('props.cards', 'max')]
@@ -64,6 +67,17 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
         options: ImageTransformOptionsGenerator::class,
     )]
     protected string $transform = '';
+
+    #[Limitation('props.cards', 'srcset')]
+    #[DefaultValue('props.cards.srcset')]
+    #[ValueTransformer(ArrayOfNumbersTransformer::class)]
+    #[Input\TextArea(
+        label: 'Srcset Sizes',
+        instructions: 'Enter a comma separated list of image size numbers for `srcset` attribute generation.',
+        placeholder: 'e.g. "480, 768, 1024"',
+        rows: 1,
+    )]
+    protected array $srcset = [];
 
     #[ValueTransformer(CardsTransformer::class)]
     #[Translatable]
@@ -155,22 +169,6 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
         return $layout;
     }
 
-    public function getTransform(): ?string
-    {
-        return $this->transform ?: null;
-    }
-
-    public function getAssetUrl(?int $assetId): ?string
-    {
-        if (!$assetId) {
-            return null;
-        }
-
-        $asset = \Craft::$app->assets->getAssetById($assetId);
-
-        return $asset?->getUrl($this->transform);
-    }
-
     public function getCardAttributes(): CardAttributesCollection
     {
         $event = new CompileFieldAttributesEvent(
@@ -187,9 +185,6 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
     protected function getInputHtml(): string
     {
         $layout = $this->getLayout();
-        if (empty($layout)) {
-            return '';
-        }
 
         $fieldId = $this->getIdAttribute();
         $attributes = $this->getAttributes();
@@ -219,7 +214,9 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
                 'field' => $this,
             ];
 
-            $assetUrl = $this->getAssetUrl($card->assetId);
+            $asset = $this->getAsset($card->assetId);
+            $assetUrl = $this->getSrc($asset);
+            $srcset = $this->getSrcset($asset);
 
             // =========
             // Image
@@ -231,6 +228,7 @@ class CardsField extends AbstractField implements MultiValueInterface, ExtraFiel
                     ->clone()
                     ->append('class', 'ff-cards__card__content__image-wrapper__image')
                     ->setIfEmpty('src', $assetUrl)
+                    ->setIfEmpty('srcset', $srcset)
                 ;
                 $imgTag = Html::tag(
                     $imgAttrs->getTag('img'),

@@ -1,9 +1,13 @@
 import { useMemo } from 'react';
+import type { Card } from '@components/form-controls/control-types/namespaced/cards/cards.types';
 import { useFieldOptions } from '@components/options/use-field-options';
 import type { Field } from '@editor/store/slices/layout/fields';
 import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
+import type { AssetUrlRecords } from '@ff-client/queries/assets';
+import { useAssetQuery } from '@ff-client/queries/assets';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
 import { type FieldType } from '@ff-client/types/fields';
+import { PropertyType } from '@ff-client/types/properties';
 import { template } from 'lodash';
 
 export const useFieldPreview = (
@@ -25,6 +29,7 @@ export const useFieldPreview = (
   });
 
   data.generatedOptions = generatedOptions;
+  data.fetchedAssets = useAssets(field, type);
 
   const compiledTemplate = useMemo(() => {
     if (
@@ -44,3 +49,56 @@ export const useFieldPreview = (
 
   return [compiledTemplate, isFetching];
 };
+
+const useAssets = (field: Field, type: FieldType): AssetUrlRecords => {
+  const assetIds = useAssetIds(field, type);
+  const transform = useAssetTransform(field, type);
+  const { data } = useAssetQuery(assetIds, transform);
+
+  return data || {};
+};
+
+const useAssetIds = (field: Field, type: FieldType): number[] => {
+  const fromAssetPicker = useMemo(
+    () =>
+      type?.properties
+        .filter((prop) => prop.type === PropertyType.AssetPicker)
+        .map((prop) => {
+          const value = field.properties[prop.handle];
+          if (typeof value === 'number') {
+            return [value];
+          }
+
+          if (Array.isArray(value)) {
+            return value.filter((v) => typeof v === 'number') as number[];
+          }
+
+          return [];
+        })
+        .flat(),
+    [field, type]
+  );
+
+  const fromCards = useMemo(
+    () =>
+      type?.properties
+        .filter((prop) => prop.type === PropertyType.Cards)
+        .map((prop) => {
+          const value = field.properties[prop.handle];
+
+          return value.map((card: Card) => card.assetId).filter(Boolean);
+        }),
+    [field, type]
+  );
+
+  return [...(fromAssetPicker || []), ...(fromCards || [])].flat();
+};
+
+const useAssetTransform = (field: Field, type: FieldType): string | undefined =>
+  useMemo(() => {
+    const handle = type?.properties.find(
+      (prop) => prop.handle === 'transform'
+    )?.handle;
+
+    return field.properties[handle];
+  }, [field, type]);

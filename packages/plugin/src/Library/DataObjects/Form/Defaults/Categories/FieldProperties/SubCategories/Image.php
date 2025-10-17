@@ -11,15 +11,8 @@ use Solspace\Freeform\Library\DataObjects\Form\Defaults\Categories\BaseCategory;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\SelectItem;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\ConfigItems\TextItem;
 
-class Cards extends BaseCategory
+class Image extends BaseCategory
 {
-    #[Label('Max Selected Values')]
-    public TextItem $max;
-
-    #[Label('Cards Per Row')]
-    #[SetDefaultValue(5)]
-    public TextItem $perRow;
-
     #[Label('Image Transform')]
     #[EmptyValue('')]
     #[SetDefaultValue('')]
@@ -32,6 +25,6 @@ class Cards extends BaseCategory
 
     public function getLabel(): string
     {
-        return 'Cards';
+        return 'Image';
     }
 }

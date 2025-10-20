@@ -28,6 +28,7 @@ use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -39,6 +40,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValueInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
+    use OptionCollectionTrait;
 
     #[Input\Hidden]
     protected ?array $defaultValue = [];
@@ -119,34 +121,11 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
             ->set($this->getRequiredAttribute())
         ;
 
-        $output = '';
-        foreach ($this->getOptions() as $index => $option) {
-            $isSelected = \in_array($option->getValue(), $this->getValue());
-
-            $optionAttributes = $this->getAttributes()
-                ->getOption()
-                ->clone()
-                ->setIfEmpty('value', $option->getValue())
-                ->replace('selected', $isSelected)
-            ;
-
-            $output .= Html::tag(
-                $optionAttributes->getTag('option'),
-                $option->getLabel(),
-                $optionAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'option' => $option,
-                    'field' => $this,
-                ])
-            );
-        }
-
-        $output .= '</select>';
+        $optionAttributes = $this->getAttributes()->getOption();
 
         return Html::tag(
             $attributes->getTag('select'),
-            $output,
+            $this->renderCollection($this->getOptions(), $optionAttributes),
             $attributes->toHtmlTagArray(['field' => $this])
         );
     }

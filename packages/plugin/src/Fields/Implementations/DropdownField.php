@@ -17,7 +17,6 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -27,7 +26,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
-use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -38,6 +37,8 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 )]
 class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInterface
 {
+    use OptionCollectionTrait;
+
     #[Input\Hidden]
     protected string $defaultValue = '';
 
@@ -142,42 +143,5 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];
-    }
-
-    private function renderCollection(OptionCollection $collection, Attributes $attributes): string
-    {
-        $output = '';
-        foreach ($collection as $index => $option) {
-            if ($option instanceof OptionCollection) {
-                $output .= Html::tag(
-                    'optgroup',
-                    $this->renderCollection($option, $attributes),
-                    ['label' => $option->getLabel()]
-                );
-
-                continue;
-            }
-
-            $isChecked = $option->getValue() == $this->getValue();
-
-            $optionAttributes = $attributes
-                ->clone()
-                ->replace('value', $option->getValue())
-                ->replace('selected', $isChecked)
-            ;
-
-            $output .= Html::tag(
-                $optionAttributes->getTag('option'),
-                $option->getLabel(),
-                $optionAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'option' => $option,
-                    'field' => $this,
-                ])
-            );
-        }
-
-        return $output;
     }
 }

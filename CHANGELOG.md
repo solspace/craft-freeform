@@ -17,6 +17,13 @@
 - TBD: Improved **Template Overrides** reliability with various minor enhancements.
 - Whitespaces on values sent to integrations are now trimmed automatically.
 
+## 5.12.4 - 2025-10-20
+
+### Fixed
+- Fixed a PostgreSQL compatibility issue where saving form page rules could fail because the `freeform_rules_conditions` table did not auto-populate timestamp columns.
+- Fixed the **Save** button not working for integrations in Craft 4.x.
+- Fixed missing **Disable** and **Delete** actions in the **Form Monitor** integration settings menu.
+
 ## 5.12.3 - 2025-10-02
 
 ### Fixed

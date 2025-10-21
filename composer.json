@@ -28,7 +28,8 @@
     "phpoffice/phpspreadsheet": "^1.30|^2.0|^3.0|^4.0|^5.0",
     "composer/class-map-generator": "^1.1",
     "tecnickcom/tcpdf": "^6.4",
-    "fakerphp/faker": "^1.0"
+    "fakerphp/faker": "^1.0",
+    "delaneymethod/spamshield": "^1.4"
   },
   "require-dev": {
     "phpunit/phpunit": "^11.5.1",

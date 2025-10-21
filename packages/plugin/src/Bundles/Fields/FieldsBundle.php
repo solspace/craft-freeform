@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Implementations\HtmlField;
+use Solspace\Freeform\Fields\Implementations\ImageField;
 use Solspace\Freeform\Fields\Implementations\MultipleSelectField;
 use Solspace\Freeform\Fields\Implementations\NumberField;
 use Solspace\Freeform\Fields\Implementations\Pro\CalculationField;
@@ -85,6 +86,7 @@ class FieldsBundle extends FeatureBundle
             GroupField::class,
             CalculationField::class,
             CardsField::class,
+            ImageField::class,
         );
     }
 }

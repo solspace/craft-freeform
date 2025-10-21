@@ -46,6 +46,10 @@ class IntegrationsBundle extends FeatureBundle
             $value = implode(', ', $value);
         }
 
+        if (\is_string($value)) {
+            $value = trim($value);
+        }
+
         switch ($integrationField->getType()) {
             case FieldObject::TYPE_ARRAY:
                 if (!\is_array($value)) {

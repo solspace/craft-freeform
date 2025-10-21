@@ -55,7 +55,6 @@ export const LimitedUsers: React.FC = () => {
 
       <div id="main-content" className="has-sidebar">
         <SettingsSidebar />
-
         <ContentContainer
           id="content-container"
           className={classes(!isCraft5 && 'craft-4')}

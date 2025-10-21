@@ -25,18 +25,9 @@ class GeminiV1Beta extends BaseGeminiIntegration
 
     public function checkConnection(Client $client): bool
     {
-        try {
-            $response = $client->get($this->getEndpoint('/models'), [
-                'query' => [
-                    'key' => $this->getApiKey(),
-                ],
-            ]);
-            $data = json_decode((string) $response->getBody(), true);
+        $response = $client->get($this->getEndpoint('/models'));
 
-            return isset($data['models']) && \is_array($data['models']);
-        } catch (\Exception $e) {
-            return false;
-        }
+        return 200 === $response->getStatusCode();
     }
 
     public function fetchFields(string $category): array
@@ -50,32 +41,22 @@ class GeminiV1Beta extends BaseGeminiIntegration
         };
     }
 
-    public function processAiRequest(string $systemPrompt, string $userContent, array $options = []): string
-    {
-        $client = new Client([
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
+    public function processAiRequest(
+        Client $client,
+        string $systemPrompt,
+        string $userContent,
+        array $options = []
+    ): string {
         $payload = [
             // Provide system instructions via systemInstruction (no role required here)
             'systemInstruction' => [
-                'parts' => [
-                    [
-                        'text' => $systemPrompt,
-                    ],
-                ],
+                'parts' => [['text' => $systemPrompt]],
             ],
             // User content must include a valid role
             'contents' => [
                 [
                     'role' => 'user',
-                    'parts' => [
-                        [
-                            'text' => $userContent,
-                        ],
-                    ],
+                    'parts' => [['text' => $userContent]],
                 ],
             ],
             'generationConfig' => [
@@ -84,45 +65,14 @@ class GeminiV1Beta extends BaseGeminiIntegration
             ],
         ];
 
-        $response = $client->post($this->getEndpoint('/models/'.($options['model'] ?? $this->getModel()).':generateContent'), [
-            'query' => [
-                'key' => $this->getApiKey(),
-            ],
-            'json' => $payload,
-        ]);
+        $model = $options['model'] ?? $this->getModel();
+        $response = $client->post(
+            $this->getEndpoint('/models/'.$model.':generateContent'),
+            ['json' => $payload]
+        );
 
         $data = json_decode((string) $response->getBody(), true);
 
         return $data['candidates'][0]['content']['parts'][0]['text'] ?? '';
-    }
-
-    public function listModels(bool $refresh = false): array
-    {
-        try {
-            $client = new Client();
-            $response = $client->get($this->getEndpoint('/models'), [
-                'query' => [
-                    'key' => $this->getApiKey(),
-                ],
-            ]);
-            $data = json_decode((string) $response->getBody(), true);
-
-            $models = [];
-            foreach ($data['models'] ?? [] as $item) {
-                if (!isset($item['name'])) {
-                    continue;
-                }
-                // API returns name like models/gemini-2.5-flash; extract the id
-                $id = preg_replace('#^models/#', '', $item['name']);
-                $models[] = [
-                    'id' => $id,
-                    'label' => $id,
-                ];
-            }
-
-            return $models;
-        } catch (\Throwable) {
-            return [];
-        }
     }
 }

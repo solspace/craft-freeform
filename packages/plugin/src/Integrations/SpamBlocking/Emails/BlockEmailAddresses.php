@@ -49,7 +49,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Blocked Email Addresses for this Form',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
+        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
         rows: 8,
     )]
     #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
@@ -60,7 +60,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default Blocked Email Addresses',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
+        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
@@ -87,17 +87,17 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                         $field->addError(Freeform::t($message, ['email' => $value]));
                     }
 
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                        \sprintf(
+                            'Email field "%s" contains a blocked email address "%s"',
+                            $field->getHandle(),
+                            $email
+                        )
+                    );
+
                     if ($displayErrors) {
                         $form->addError(Freeform::t('Form contains a blocked email'));
-                    } else {
-                        $form->markAsSpam(
-                            SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                            \sprintf(
-                                'Email field "%s" contains a blocked email address "%s"',
-                                $field->getHandle(),
-                                $email
-                            )
-                        );
                     }
 
                     break;

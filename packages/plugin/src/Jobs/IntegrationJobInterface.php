@@ -13,6 +13,4 @@
 
 namespace Solspace\Freeform\Jobs;
 
-use yii\queue\JobInterface;
-
-interface IntegrationJobInterface extends JobInterface {}
+interface IntegrationJobInterface extends FormJobInterface {}

@@ -181,6 +181,11 @@ class SettingsService extends BaseService
         return (bool) $this->getSettingsModel()->autoScrollToErrors;
     }
 
+    public function isUseIdempotencyKey(): bool
+    {
+        return (bool) $this->getSettingsModel()->useIdempotencyKey;
+    }
+
     public function isRemoveNewlines(): bool
     {
         return (bool) $this->getSettingsModel()->removeNewlines;
@@ -413,6 +418,11 @@ class SettingsService extends BaseService
     public function isIntegrationQueueEnabled(): bool
     {
         return $this->getSettingsModel()->useQueueForIntegrations;
+    }
+
+    public function isAiFieldQueueEnabled(): bool
+    {
+        return $this->getSettingsModel()->useQueueForAiFields;
     }
 
     private function getTemplatesIn(?string $path): array

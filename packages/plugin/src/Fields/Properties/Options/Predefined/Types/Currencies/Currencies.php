@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Currencie
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Currencies implements PredefinedSourceTypeInterface
 {
@@ -31,7 +32,7 @@ class Currencies implements PredefinedSourceTypeInterface
         return 'Currencies';
     }
 
-    public function generateOptions(): OptionCollection
+    public function generateOptions(TranslationTable $translationTable): OptionCollection
     {
         static $countries;
         if (null === $countries) {

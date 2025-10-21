@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -34,6 +35,7 @@ class RichTextField extends AbstractField implements InputOnlyInterface, NoStora
     protected string $instructions = '';
     protected bool $required = false;
 
+    #[Translatable]
     #[Input\Wysiwyg(
         label: 'Content',
         instructions: 'The HTML content to be rendered',
@@ -45,7 +47,7 @@ class RichTextField extends AbstractField implements InputOnlyInterface, NoStora
 
     public function getContent(): string
     {
-        return $this->content ?? '';
+        return $this->getTranslationTable()->get('content', $this->content ?? '');
     }
 
     /**

@@ -7,7 +7,7 @@ export const EnvLine: FC = () => {
   return (
     <Paragraph className="notice has-icon">
       <span className="icon" aria-hidden="true" />
-      <div className="visually-hidden">Tip: </div>
+      <span className="visually-hidden">Tip: </span>
       <span>
         {translate('This can begin with an environment variable.')}{' '}
         <a

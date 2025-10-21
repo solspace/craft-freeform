@@ -85,6 +85,11 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
     padding-top: 6px;
   }
 
+  ::placeholder {
+    color: ${colors.gray200};
+    font-style: italic;
+  }
+
   .btn {
     background-color: var(--ui-control-bg-color);
 
@@ -98,7 +103,7 @@ export const LabelGroup = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: ${spacings.md};
+  gap: ${spacings.sm};
 
   width: 100%;
   padding-bottom: ${spacings.xs};

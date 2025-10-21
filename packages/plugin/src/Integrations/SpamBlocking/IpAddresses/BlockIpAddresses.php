@@ -57,16 +57,16 @@ class BlockIpAddresses extends SpamBlockingIntegration
 
         $remoteIp = \Craft::$app->request->getRemoteIP();
         if (IpUtils::checkIp($remoteIp, $ips)) {
+            $form->markAsSpam(
+                SpamReason::TYPE_BLOCKED_IP,
+                \sprintf(
+                    'Form submitted by a blocked IP "%s"',
+                    $remoteIp
+                )
+            );
+
             if ($displayErrors) {
                 $form->addError(Freeform::t('Your IP has been blocked'));
-            } else {
-                $form->markAsSpam(
-                    SpamReason::TYPE_BLOCKED_IP,
-                    \sprintf(
-                        'Form submitted by a blocked IP "%s"',
-                        $remoteIp
-                    )
-                );
             }
         }
     }

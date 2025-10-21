@@ -49,7 +49,7 @@ class BlockKeywords extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Blocked Keywords for this Form',
-        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. "generate new leads"), asterisks for wildcards (e.g. lead*), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
+        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. `"generate new leads"`), asterisks for wildcards (e.g. `lead*`), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
         rows: 8,
     )]
     #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
@@ -60,7 +60,7 @@ class BlockKeywords extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default Blocked Keywords',
-        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. "generate new leads"), asterisks for wildcards (e.g. lead*), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
+        instructions: 'Enter keywords you would like blocked from being used in all text and textarea fields. Use quotes for phrases (e.g. `"generate new leads"`), asterisks for wildcards (e.g. `lead*`), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after.',
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
@@ -90,18 +90,18 @@ class BlockKeywords extends SpamBlockingIntegration
                         ]));
                     }
 
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_KEYWORDS,
+                        \sprintf(
+                            'Field "%s" contains a blocked keyword "%s" in the string "%s"',
+                            $field->getHandle(),
+                            $keyword,
+                            $value
+                        )
+                    );
+
                     if ($displayErrors) {
                         $form->addError(Freeform::t('Form contains a restricted keyword'));
-                    } else {
-                        $form->markAsSpam(
-                            SpamReason::TYPE_BLOCKED_KEYWORDS,
-                            \sprintf(
-                                'Field "%s" contains a blocked keyword "%s" in the string "%s"',
-                                $field->getHandle(),
-                                $keyword,
-                                $value
-                            )
-                        );
                     }
 
                     break;

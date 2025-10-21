@@ -19,7 +19,7 @@ export type NotificationSelectHandler = (
 
 const NotificationTemplate: React.FC<
   ControlType<NotificationTemplateProperty>
-> = ({ value, property, errors, updateValue }) => {
+> = ({ value, property, errors, updateValue, context }) => {
   const { size } = useRenderContext();
   const { templates, options, isFetching } = useNotificationTemplates(value);
   const openModal = useNotificationEditModal();
@@ -50,7 +50,7 @@ const NotificationTemplate: React.FC<
   };
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       {size === 'small' && (
         <Dropdown
           emptyOption="Select a template"

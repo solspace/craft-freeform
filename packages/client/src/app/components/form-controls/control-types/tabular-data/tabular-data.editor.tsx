@@ -13,6 +13,11 @@ import { DraggableRow } from '@components/form-controls/draggable-row';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import CrossIcon from '@components/form-controls/icons/cross.svg';
 import MoveIcon from '@components/form-controls/icons/move.svg';
+import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
+import type {
+  GenericValue,
+  TabularDataProperty,
+} from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -27,27 +32,45 @@ type Props = {
   configuration: ColumnConfiguration[];
   values: ColumnValue[];
   updateValue: UpdateValue<ColumnValue[]>;
+  property: TabularDataProperty;
+  context: unknown;
 };
 
 export const TabularDataEditor: React.FC<Props> = ({
   configuration,
   values,
   updateValue,
+  property,
+  context,
 }) => {
+  const { getTranslation, updateTranslation, willTranslate } = useTranslations(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    context as any
+  );
+
+  const { handle } = property;
+
+  const isTranslating = willTranslate(handle);
+  const translation = getTranslation<Array<GenericValue>>(handle, values);
+
   const refs = useRef([]);
   refs.current = values.map(
-    (value, index) =>
-      refs.current[index] || React.createRef<HTMLButtonElement>()
+    (_, index) => refs.current[index] || React.createRef<HTMLButtonElement>()
   );
 
   const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
     useCellNavigation(values.length, configuration.length);
 
   const appendAndFocus = (cellIndex: number, atIndex?: number): void => {
+    if (isTranslating) {
+      return;
+    }
+
     setActiveCell(
       atIndex !== undefined ? atIndex + 1 : values.length,
       cellIndex
     );
+
     updateValue(
       addRow(
         values,
@@ -78,6 +101,7 @@ export const TabularDataEditor: React.FC<Props> = ({
                       value={value[columnIndex]}
                       placeholder={translate(column.label)}
                       autoFocus={activeCell === `${rowIndex}:${columnIndex}`}
+                      disabled={isTranslating && !column.translatable}
                       ref={(element) =>
                         setCellRef(element, rowIndex, columnIndex)
                       }
@@ -90,7 +114,28 @@ export const TabularDataEditor: React.FC<Props> = ({
                           );
                         },
                       })}
-                      onChange={(event) =>
+                      onChange={(event) => {
+                        if (isTranslating) {
+                          if (!column.translatable) {
+                            return;
+                          }
+
+                          updateTranslation(
+                            property.handle,
+                            updateRow(
+                              rowIndex,
+                              [
+                                ...translation[rowIndex].slice(0, columnIndex),
+                                event.target.value,
+                                ...translation[rowIndex].slice(columnIndex + 1),
+                              ],
+                              translation
+                            )
+                          );
+
+                          return;
+                        }
+
                         updateValue(
                           updateRow(
                             rowIndex,
@@ -101,8 +146,8 @@ export const TabularDataEditor: React.FC<Props> = ({
                             ],
                             values
                           )
-                        )
-                      }
+                        );
+                      }}
                     />
                   </Cell>
                 ))}

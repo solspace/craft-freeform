@@ -42,7 +42,7 @@ return [
     'Display as list' => 'Visualizza come elenco',
     'Chart' => 'Grafico',
     'Manage' => 'Gestisci',
-    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.' => 'Attualmente sono presenti <a href="{link}">{errors} errori registrati</a> nel log degli errori di Freeform.',
+    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.' => 'Attualmente ci sono <a href="{link}">{errors} errori registrati</a> nei file di log degli errori di Freeform.',
 
     // Form Builder // Universal
     'Forms' => 'Moduli',
@@ -1355,6 +1355,8 @@ return [
     'Email Alerts' => 'Avvisi Email',
     'Send Email Alerts for Failed Notifications' => 'Invia Avvisi Email per Notifiche Fallite',
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Invia una notifica email agli indirizzi sottostanti quando una notifica email non può essere consegnata.',
+    'Critical System Error Report Recipients' => 'Destinatari dei rapporti sugli errori di sistema critici',
+    'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Fornisci uno o più indirizzi email separati da virgole che devono ricevere i rapporti sugli errori critici.',
     'Digest Email Notifications' => 'Notifiche Email Riepilogative',
     'Developer Digest Email' => 'Email Riepilogativa per Sviluppatori',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Invia email settimanali o giornaliere nel giorno specificato (se si usa 'Settimanale') agli indirizzi email indicati. Questo includerà un riepilogo delle prestazioni del periodo precedente e eventuali errori registrati o notifiche di aggiornamento.",

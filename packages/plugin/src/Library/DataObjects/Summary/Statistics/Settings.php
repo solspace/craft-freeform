@@ -24,6 +24,7 @@ class Settings
     public ?int $purgeAssetsInterval = null;
     public bool $formattingTemplatesPath = false;
     public bool $sendAlertsOnFailedNotifications = false;
+    public bool $sendErrorNotifications = false;
     public bool $notificationTemplatesPath = false;
     public bool $successTemplatesPath = false;
     public bool $modifiedStatuses = false;

@@ -35,7 +35,6 @@ use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Helpers\TwigHelper;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\NotificationInterface;
@@ -143,12 +142,6 @@ class MailerService extends BaseService implements MailHandlerInterface
                 ];
 
                 $logger->error($message, $context);
-                Freeform::getInstance()
-                    ->logger
-                    ->getLogger(FreeformLogger::MAILER)
-                    ->error($message, $context)
-                ;
-
                 $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form, $logger);
             }
         }
@@ -454,7 +447,13 @@ class MailerService extends BaseService implements MailHandlerInterface
         Form $form,
         ?LoggerInterface $logger,
     ): void {
-        if (Freeform::getInstance()->edition()->isBelow(Freeform::EDITION_LITE)) {
+        $freeform = Freeform::getInstance();
+        if ($freeform->edition()->isBelow(Freeform::EDITION_LITE)) {
+            return;
+        }
+
+        // Skip this if the global error notification service is enabled
+        if ($freeform->settings->isErrorNotificationEnabled()) {
             return;
         }
 

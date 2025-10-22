@@ -334,6 +334,16 @@ class SettingsService extends BaseService
         return $this->getRecipientCollection($this->getSettingsModel()->alertNotificationRecipients ?? '');
     }
 
+    public function isErrorNotificationEnabled(): bool
+    {
+        return $this->getErrorNotificationRecipients()->count() > 0;
+    }
+
+    public function getErrorNotificationRecipients(): RecipientCollection
+    {
+        return $this->getRecipientCollection($this->getSettingsModel()->errorNotificationRecipients ?? '');
+    }
+
     public function getDigestRecipients(): RecipientCollection
     {
         return $this->getRecipientCollection($this->getSettingsModel()->digestRecipients ?? '');

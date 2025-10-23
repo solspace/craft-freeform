@@ -37,6 +37,10 @@ class RedirectToCheckout extends FeatureBundle
     public function overrideAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void
     {
         $form = $event->getForm();
+        if (!$this->hasMolliePayment($form)) {
+            return;
+        }
+
         $payload = $event->getPayload();
 
         // If returnUrl is already present (set via ReturnUrl pipeline), force redirect behavior
@@ -58,7 +62,12 @@ class RedirectToCheckout extends FeatureBundle
 
     public function overrideSubmitResponse(SubmitResponseEvent $event): void
     {
-        $checkoutUrl = $this->getCheckoutUrl($event->getForm());
+        $form = $event->getForm();
+        if (!$this->hasMolliePayment($form)) {
+            return;
+        }
+
+        $checkoutUrl = $this->getCheckoutUrl($form);
         if ($checkoutUrl) {
             $event->getResponse()->redirect($checkoutUrl);
         }

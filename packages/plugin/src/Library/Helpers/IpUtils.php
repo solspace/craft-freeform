@@ -131,4 +131,45 @@ class IpUtils
 
         return self::$checkedIps[$cacheKey] = true;
     }
+
+    public static function checkDnsBlockLists(string $requestIp, array $dnsBlockLists): bool
+    {
+        // Skip IPv6 entirely (or implement a v6 DNS BL)
+        if (filter_var($requestIp, \FILTER_VALIDATE_IP, \FILTER_FLAG_IPV6)) {
+            return false;
+        }
+
+        // Explicitly skip well-known non-routable/documentation ranges
+        // RFC 5737 (TEST-NET): 192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24
+        // Benchmarking: 198.18.0.0/15, Carrier-Grade NAT: 100.64.0.0/10, Loopback/Private/Link-local: handled below too
+        $nonRoutablePatterns = [
+            '/^192\.0\.2\./', // TEST-NET-1
+            '/^198\.51\.100\./', // TEST-NET-2
+            '/^203\.0\.113\./', // TEST-NET-3
+            '/^198\.(18|19)\./', // 198.18.0.0/15 benchmarking
+            '/^100\.(6[4-9]|[7-9]\d|1[0-1]\d|12[0-7])\./', // 100.64.0.0/10 CGNAT
+        ];
+
+        foreach ($nonRoutablePatterns as $nonRoutablePattern) {
+            if (preg_match($nonRoutablePattern, $requestIp)) {
+                return false;
+            }
+        }
+
+        // Only public IPv4: skip loopback/private/link-local/**reserved** per PHP's flags
+        if (false === filter_var($requestIp, \FILTER_VALIDATE_IP, \FILTER_FLAG_NO_PRIV_RANGE | \FILTER_FLAG_NO_RES_RANGE)) {
+            return false;
+        }
+
+        // At this point we have a public IPv4; do the lookup
+        $reverse = implode('.', array_reverse(explode('.', $requestIp)));
+
+        foreach ($dnsBlockLists as $dnsBlockList) {
+            if (@checkdnsrr("{$reverse}.{$dnsBlockList}", 'A')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

@@ -29,6 +29,13 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
+        label: 'Check MX Record',
+        instructions: 'If enabled, email field(s0 will be checked for valid MX record.',
+    )]
+    protected bool $checkMxRecord = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(
         label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
@@ -102,6 +109,23 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
                     break;
                 }
+
+                if ($this->checkMxRecord && !$this->hasMXRecord($email)) {
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                        \sprintf(
+                            'Email field "%s" with email address "%s" does not have a MX record',
+                            $field->getHandle(),
+                            $email
+                        )
+                    );
+
+                    if ($displayErrors) {
+                        $form->addError(Freeform::t('Form contains a blocked email'));
+                    }
+
+                    break;
+                }
             }
         }
     }
@@ -109,5 +133,20 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     private function getCombinedEmails(): array
     {
         return array_merge($this->emails, $this->defaultEmails);
+    }
+
+    private function hasMXRecord(string $email): bool
+    {
+        $at = strrpos($email, '@');
+        if (false === $at) {
+            return false;
+        }
+
+        $domain = substr($email, $at + 1);
+        if ('' === $domain) {
+            return false;
+        }
+
+        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
     }
 }

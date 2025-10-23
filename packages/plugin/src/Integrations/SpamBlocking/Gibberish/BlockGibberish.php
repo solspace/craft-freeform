@@ -25,8 +25,6 @@ class BlockGibberish extends SpamBlockingIntegration
 {
     use EnabledByDefaultTrait;
 
-    private const GIBBERISH_THRESHOLD = 7;
-
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Integer(min: 0)]
     protected int $gibberishWordMinimumLength = 6;
@@ -81,7 +79,8 @@ class BlockGibberish extends SpamBlockingIntegration
             return false;
         }
 
-        $bad = 0;
+        $badWordCount = 0;
+        $shortWordJunkCount = 0;
 
         // Strip URLs and emails so tokens like "https" never enter the loop
         $cleanedValue = preg_replace('~https?://\S+|www\.\S+|\S+@\S+~iu', ' ', $value) ?? $value;
@@ -91,7 +90,7 @@ class BlockGibberish extends SpamBlockingIntegration
         if (!empty($fieldLetters) && mb_strlen($fieldLetters) <= 4 && !$this->isAllowedTerm($fieldLetters)) {
             $unique = \count(array_unique(preg_split('//u', mb_strtolower($fieldLetters), -1, \PREG_SPLIT_NO_EMPTY)));
             if ($unique <= 3) {
-                $bad += 2;
+                $badWordCount += 2;
             }
         }
 
@@ -138,19 +137,24 @@ class BlockGibberish extends SpamBlockingIntegration
             }
 
             $length = mb_strlen($letters);
-            $characters = preg_split('//u', $letters, -1, \PREG_SPLIT_NO_EMPTY);
-            $unique = \count(array_unique($characters));
+            $lettersLowerCase = mb_strtolower($letters);
+            $unique = \count(array_unique(preg_split('//u', $letters, -1, \PREG_SPLIT_NO_EMPTY)));
 
             // Short junk token: 2–4 letters (e.g. "asd", "qwe", "zzz")
             if ($length >= 2 && $length <= 4) {
-                if ($unique <= 3) {
-                    $bad += 2;
+                // skip common real words
+                $shortWordWhitelist = ['a', 'an', 'and', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'i', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'our', 'she', 'so', 'to', 'up', 'us', 'we', 'you', 'the', 'test'];
+                if (!\in_array($lettersLowerCase, $shortWordWhitelist, true)) {
+                    // count but don't score yet
+                    if ($unique <= 3) {
+                        ++$shortWordJunkCount;
+                    }
                 }
             }
 
             // Low alphabet variety: 7+ letters using ≤3 distinct chars → junk (catches "assadasd", "zzzzzzz")
             if ($length >= 7 && $unique <= 3) {
-                $bad += 2;
+                $badWordCount += 2;
 
                 continue;
             }
@@ -186,7 +190,7 @@ class BlockGibberish extends SpamBlockingIntegration
                     }
 
                     if ($mismatches <= $allowed || $mismatches2 <= $allowed) {
-                        $bad += 2;
+                        $badWordCount += 2;
 
                         continue 2; // next word
                     }
@@ -198,7 +202,7 @@ class BlockGibberish extends SpamBlockingIntegration
                 $minusLast = mb_substr($letters, 0, $length - 1);
                 $minusFirst = mb_substr($letters, 1);
                 if (preg_match('/^([A-Za-z]{1,3})\1+$/', $minusLast) || preg_match('/^([A-Za-z]{1,3})\1+$/', $minusFirst)) {
-                    $bad += 2;
+                    $badWordCount += 2;
 
                     continue;
                 }
@@ -213,33 +217,38 @@ class BlockGibberish extends SpamBlockingIntegration
 
             // Repetitive CV (consonant–vowel) pattern — soften to avoid real words like "banana"
             if ($length >= 8 && preg_match('/^(?:[bcdfghjklmnpqrstvwxyz][aeiou]){4,}[bcdfghjklmnpqrstvwxyz]?$/iu', $letters)) {
-                $bad += 2;
+                $badWordCount += 2;
             }
 
             // Vowel ratio extremes
             $vowels = preg_match_all('/[aeiou]/iu', $letters);
             $ratio = $vowels ? ($vowels / max(1, $length)) : 0;
             if ($ratio < 0.2 || $ratio > 0.8) {
-                ++$bad;
+                ++$badWordCount;
             }
 
             // Long consonant run
             if (preg_match('/[^aeiou]{5,}/i', $letters)) {
-                ++$bad;
+                ++$badWordCount;
             }
 
             // Mixed case weirdness
             if (preg_match('/[A-Z].*[a-z].*[A-Z]/u', $word)) {
-                ++$bad;
+                ++$badWordCount;
             }
 
             // High entropy “random-ish”
             if ($this->shannonEntropy($word) > 3.8) {
-                ++$bad;
+                ++$badWordCount;
             }
         }
 
-        return $bad >= 2;
+        // Only penalize if there were multiple short-junk tokens
+        if ($shortWordJunkCount >= 2) {
+            $badWordCount += 2;
+        }
+
+        return $badWordCount >= 2;
     }
 
     private function isAllowedTerm(string $value): bool

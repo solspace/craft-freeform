@@ -42,7 +42,7 @@ return [
     'Display as list' => 'Als Liste anzeigen',
     'Chart' => 'Diagramm',
     'Manage' => 'Verwalten',
-    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.' => 'Im Freeform-Fehlerprotokoll sind derzeit <a href="{link}">{errors} protokollierte Fehler</a> vorhanden.',
+    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.' => 'Derzeit befinden sich <a href="{link}">{errors} protokollierte Fehler</a> in den Freeform-Fehlerprotokolldateien.',
 
     // Form Builder // Universal
     'Forms' => 'Formulare',
@@ -1356,6 +1356,8 @@ return [
     'Email Alerts' => 'E-Mail-Warnungen',
     'Send Email Alerts for Failed Notifications' => 'E-Mail-Warnungen bei fehlgeschlagenen Benachrichtigungen senden',
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Senden Sie eine E-Mail-Benachrichtigung an die unten angegebenen E-Mail-Adressen, wenn eine E-Mail-Benachrichtigung nicht zugestellt werden kann.',
+    'Critical System Error Report Recipients' => 'Empfänger von kritischen Systemfehlermeldungen',
+    'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Geben Sie eine oder mehrere durch Kommas getrennte E-Mail-Adressen an, die kritische Fehlermeldungen erhalten sollen.',
     'Digest Email Notifications' => 'E-Mail-Zusammenfassungen',
     'Developer Digest Email' => 'Entwickler-Zusammenfassungs-E-Mail',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Senden Sie wöchentliche oder tägliche E-Mails am angegebenen Tag (bei Verwendung von 'Wöchentlich') an die unten angegebenen E-Mail-Adressen. Dies enthält eine Momentaufnahme der Leistung des vorherigen Zeitraums sowie protokollierte Fehler und Upgrade-Hinweise.",

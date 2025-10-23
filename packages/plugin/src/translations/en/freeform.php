@@ -42,7 +42,7 @@ return [
     'Display as list' => 'Display as list',
     'Chart' => 'Chart',
     'Manage' => 'Manage',
-    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.' => 'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.',
+    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.' => 'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.',
 
     // Form Builder // Universal
     'Forms' => 'Forms',
@@ -1356,6 +1356,8 @@ return [
     'Email Alerts' => 'Email Alerts',
     'Send Email Alerts for Failed Notifications' => 'Send Email Alerts for Failed Notifications',
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.',
+    'Critical System Error Report Recipients' => 'Critical System Error Report Recipients',
+    'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Provide one or more comma-separated email addresses that should receive critical error reports.',
     'Digest Email Notifications' => 'Digest Email Notifications',
     'Developer Digest Email' => 'Developer Digest Email',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices.",

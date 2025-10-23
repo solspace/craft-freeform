@@ -14,9 +14,12 @@
 namespace Solspace\Freeform\Library\Logging;
 
 use Monolog\Handler\StreamHandler;
+use Monolog\Level;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\CryptoHelper;
+use Solspace\Freeform\Library\Logging\Handlers\ErrorNotificationHandler;
 use Solspace\Freeform\Library\Logging\Processors\RedactSensitiveInfoProcessor;
 
 class LoggerFactory
@@ -37,6 +40,9 @@ class LoggerFactory
 
         if (!isset(self::$instance[$hash])) {
             $logger = new Logger($category);
+
+            $plugin = Freeform::getInstance();
+            $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, Level::Error));
             $logger->pushHandler(new StreamHandler($logfilePath, $level ?? Logger::DEBUG));
             $logger->pushProcessor(new RedactSensitiveInfoProcessor());
             $logger->pushProcessor(function ($record) use ($requestId) {

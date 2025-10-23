@@ -42,7 +42,7 @@ return [
     'Display as list' => 'Afficher en liste',
     'Chart' => 'Graphique',
     'Manage' => 'Gérer',
-    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.' => 'Il y a actuellement <a href="{link}">{errors} erreurs enregistrées</a> dans le journal des erreurs Freeform.',
+    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.' => 'Il y a actuellement <a href="{link}">{errors} erreurs enregistrées</a> dans les fichiers journaux d’erreurs de Freeform.',
 
     // Form Builder // Universal
     'Forms' => 'Formulaires',
@@ -1355,6 +1355,8 @@ return [
     'Email Alerts' => 'Alertes par e-mail',
     'Send Email Alerts for Failed Notifications' => 'Envoyer des alertes par e-mail pour les notifications échouées',
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Envoyer une notification par e-mail alertant la ou les adresses e-mail ci-dessous lorsqu’une notification par e-mail ne peut pas être délivrée.',
+    'Critical System Error Report Recipients' => 'Destinataires des rapports d’erreurs système critiques',
+    'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Indiquez une ou plusieurs adresses e-mail, séparées par des virgules, qui doivent recevoir les rapports d’erreurs critiques.',
     'Digest Email Notifications' => 'Notifications par e-mail récapitulatives',
     'Developer Digest Email' => 'E-mail récapitulatif pour développeurs',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Envoyez des e-mails hebdomadaires ou quotidiens le jour spécifié (si vous utilisez 'Hebdomadaire') aux adresses e-mail ci-dessous. Cela inclura un aperçu des performances de la période précédente ainsi que les erreurs enregistrées et les avis de mise à niveau.",

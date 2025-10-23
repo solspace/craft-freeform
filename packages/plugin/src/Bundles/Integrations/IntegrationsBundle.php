@@ -12,7 +12,6 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class IntegrationsBundle extends FeatureBundle
@@ -148,6 +147,7 @@ class IntegrationsBundle extends FeatureBundle
 
         $context = [
             'integration' => $integration->getHandle(),
+            'exception' => $exception,
         ];
 
         if ($form) {
@@ -161,11 +161,5 @@ class IntegrationsBundle extends FeatureBundle
         }
 
         $logger->error($message, $context);
-
-        $this->plugin()
-            ->logger
-            ->getLogger(FreeformLogger::INTEGRATION)
-            ->error($integration->getTypeDefinition()->name.': '.$message, $context)
-        ;
     }
 }

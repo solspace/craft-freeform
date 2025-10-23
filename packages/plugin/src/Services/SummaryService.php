@@ -133,6 +133,7 @@ class SummaryService extends Component
         $settings->purgeAssetsInterval = $settingsService->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes ?? 1;
         $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;
         $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
+        $settings->sendErrorNotifications = $settingsService->isErrorNotificationEnabled();
         $settings->notificationTemplatesPath = (bool) $settingsService->getSettingsModel()->emailTemplateDirectory;
         $settings->successTemplatesPath = (bool) $settingsService->getSettingsModel()->successTemplateDirectory;
         $settings->modifiedStatuses = $this->isModifiedStatuses();

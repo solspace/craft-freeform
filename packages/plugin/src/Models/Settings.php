@@ -225,8 +225,8 @@ class Settings extends Model
     /** @var int */
     public $sessionEntryTTL;
 
-    /** @var string */
-    public $alertNotificationRecipients;
+    public ?string $alertNotificationRecipients = null;
+    public ?string $errorNotificationRecipients = null;
 
     /** @var string */
     public $digestRecipients;
@@ -332,6 +332,7 @@ class Settings extends Model
         $this->fillWithGet = false;
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;
+        $this->errorNotificationRecipients = null;
         $this->digestRecipients = null;
         $this->digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
         $this->clientDigestRecipients = null;

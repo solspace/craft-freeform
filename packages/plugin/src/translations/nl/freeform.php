@@ -42,7 +42,7 @@ return [
     'Display as list' => 'Toon als lijst',
     'Chart' => 'Grafiek',
     'Manage' => 'Beheren',
-    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log.' => 'Er staan momenteel <a href="{link}">{errors} geregistreerde fouten</a> in het Freeform-foutenlogboek.',
+    'There are currently <a href="{link}">{errors} logged errors</a> in the Freeform error log files.' => 'Er zijn momenteel <a href="{link}">{errors} vastgelegde fouten</a> in de Freeform-foutlogbestanden.',
 
     // Form Builder // Universal
     'Forms' => 'Formulieren',
@@ -1355,6 +1355,8 @@ return [
     'Email Alerts' => 'Email waarschuwingen',
     'Send Email Alerts for Failed Notifications' => 'E-mailwaarschuwingen verzenden voor mislukte meldingen',
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Stuur een e-mailmelding waarin u het onderstaande e-mailadres(sen) waarschuwt wanneer een e-mailmelding niet kan worden afgeleverd.',
+    'Critical System Error Report Recipients' => 'Ontvangers van kritieke systeemfoutmeldingen',
+    'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Geef één of meer e-mailadressen op, gescheiden door komma’s, die kritieke foutmeldingen moeten ontvangen.',
     'Digest Email Notifications' => 'E-mailmeldingen samenvatten',
     'Developer Digest Email' => 'Ontwikkelaarsoverzicht-e-mail',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Stuur wekelijkse of dagelijkse e-mails op de aangegeven dag (als u 'Wekelijks' gebruikt) naar het/de e-mailadres(sen) hieronder. Dit omvat een momentopname van de prestaties van de vorige periode en eventuele geregistreerde fouten en upgrademeldingen.",

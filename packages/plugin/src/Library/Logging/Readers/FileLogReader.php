@@ -85,9 +85,29 @@ class FileLogReader extends LogReader
         return $this->file->valid();
     }
 
-    public function count(): int
+    public function count(array|string|null $level = null): int
     {
-        return $this->lineCount;
+        if (null === $level) {
+            return $this->lineCount;
+        }
+
+        if (!\is_array($level)) {
+            $level = [$level];
+        }
+
+        $level = array_map('strtoupper', $level);
+
+        $count = 0;
+        $file = $this->file;
+        while ($file->valid()) {
+            $file->next();
+            $parsed = $this->getParser()->parse($file->current());
+            if ($parsed && \in_array($parsed->getLevel(), $level, true)) {
+                ++$count;
+            }
+        }
+
+        return $count;
     }
 
     private function readFromEnd(int $count, int $offset): array

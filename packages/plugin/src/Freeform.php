@@ -71,6 +71,7 @@ use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DiagnosticsService;
+use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\FieldsService;
@@ -141,6 +142,7 @@ use yii\web\View;
  * @property ExportService               $export
  * @property ExportProfilesService       $exportProfiles
  * @property ExportNotificationsService  $exportNotifications
+ * @property ErrorNotificationsService   $errorNotifications
  * @property RelationsService            $relations
  * @property DigestService               $digest
  * @property SummaryService              $summary
@@ -452,6 +454,7 @@ class Freeform extends Plugin
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,
+                'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'feed' => FreeformFeedService::class,
                 'field' => FieldsService::class,

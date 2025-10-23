@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Integrations\PaymentGateways\Mollie\EventListeners;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\CollectScriptsEvent;
+use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\PaymentGateways\Mollie\Fields\MollieField;

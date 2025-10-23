@@ -10,8 +10,9 @@ Spam Blocking is handled as an integration to give you more control. Spam Blocki
 
 ### 2. Set the Defaults
 
-- In the **Default DNS Block Lists** textarea below, enter DNS block lists you would like to use against the users IP address for any form that enables this integration.
-- If you ever need to add, remove or change DNS block lists, you can come back to this integration settings page and do so.
+- In the **Gibberish Word Length** field below, enter the word length you would like to use for any form that enables this integration.
+  In the **Default Allowed Terms** textarea below, enter terms you would like to be ignored as gibberish for any form that enables this integration.
+- - If you ever need to add, remove or change the word length or allowed terms, you can come back to this integration settings page and do so.
 - Save the integration.
 
 ### 3. Configure the Form

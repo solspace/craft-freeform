@@ -841,7 +841,7 @@ return [
     'blocked_keywords' => 'Parole chiave bloccate',
     'blocked_email_address' => 'Indirizzo email bloccato',
     'blocked_ip' => 'IP bloccato',
-    'block_gibberish' => 'Blocca le parole senza senso',
+    'gibberish' => 'Gibberish',
     'minimum_submit_time' => 'Tempo minimo di invio',
     'maximum_submit_time' => 'Tempo massimo di invio',
     'Honeypot check failed' => 'Controllo Honeypot fallito',

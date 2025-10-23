@@ -11,7 +11,7 @@ class SpamReason
     public const TYPE_BLOCKED_KEYWORDS = 'blocked_keywords';
     public const TYPE_BLOCKED_EMAIL_ADDRESS = 'blocked_email_address';
     public const TYPE_BLOCKED_IP = 'blocked_ip';
-    public const TYPE_BLOCK_GIBBERISH = 'block_gibberish';
+    public const TYPE_GIBBERISH = 'gibberish';
     public const TYPE_MINIMUM_SUBMIT_TIME = 'minimum_submit_time';
     public const TYPE_MAXIMUM_SUBMIT_TIME = 'maximum_submit_time';
     public const TYPE_AI = 'ai_spam';
@@ -42,7 +42,7 @@ class SpamReason
             self::TYPE_BLOCKED_KEYWORDS,
             self::TYPE_BLOCKED_EMAIL_ADDRESS,
             self::TYPE_BLOCKED_IP,
-            self::TYPE_BLOCK_GIBBERISH,
+            self::TYPE_GIBBERISH,
             self::TYPE_MINIMUM_SUBMIT_TIME,
             self::TYPE_MAXIMUM_SUBMIT_TIME,
             self::TYPE_AI,

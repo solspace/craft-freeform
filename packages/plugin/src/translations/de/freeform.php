@@ -841,7 +841,7 @@ return [
     'blocked_keywords' => 'Gesperrte Schlüsselwörter',
     'blocked_email_address' => 'Gesperrte E-Mail-Adresse',
     'blocked_ip' => 'Gesperrte IP',
-    'block_gibberish' => 'Blockieren Sie Kauderwelsch',
+    'gibberish' => 'Gibberish',
     'minimum_submit_time' => 'Minimale Absendezeit',
     'maximum_submit_time' => 'Maximale Absendezeit',
     'Honeypot check failed' => 'Honeypot-Überprüfung fehlgeschlagen',

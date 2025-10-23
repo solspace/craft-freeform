@@ -841,7 +841,7 @@ return [
     'blocked_keywords' => 'Geblokkeerde zoekwoorden',
     'blocked_email_address' => 'Geblokkeerd e-mailadres',
     'blocked_ip' => 'Geblokkeerd IP-adres',
-    'block_gibberish' => 'Blokkeer wartaal',
+    'gibberish' => 'Gibberish',
     'minimum_submit_time' => 'Minimale verzendtijd',
     'maximum_submit_time' => 'Maximale verzendtijd',
     'Honeypot check failed' => 'Honingpotcontrole mislukt',

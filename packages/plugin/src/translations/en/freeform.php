@@ -841,7 +841,7 @@ return [
     'blocked_keywords' => 'Blocked Keywords',
     'blocked_email_address' => 'Blocked Email Address',
     'blocked_ip' => 'Blocked IP',
-    'block_gibberish' => 'Block Gibberish',
+    'gibberish' => 'Gibberish',
     'minimum_submit_time' => 'Minimum Submit Time',
     'maximum_submit_time' => 'Maximum Submit Time',
     'Honeypot check failed' => 'Honeypot check failed',

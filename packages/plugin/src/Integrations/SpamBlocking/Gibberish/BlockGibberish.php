@@ -140,15 +140,11 @@ class BlockGibberish extends SpamBlockingIntegration
                 continue;
             }
 
-            if (mb_strlen($word) < $this->gibberishWordMinimumLength) {
-                continue;
-            }
-
             if ($this->isAllowedTerm($word)) {
                 continue;
             }
 
-            // Canonical letters + cached metrics
+            // Canonical letters
             $letters = preg_replace('/[^A-Za-z]/u', '', $word);
             if (empty($letters)) {
                 continue;
@@ -173,6 +169,14 @@ class BlockGibberish extends SpamBlockingIntegration
                         ++$shortWordJunkCount;
                     }
                 }
+
+                // short words are fully handled; skip the rest of the heavy checks
+                continue;
+            }
+
+            // apply the min-length guard for the heavier rules
+            if (mb_strlen($word) < $this->gibberishWordMinimumLength) {
+                continue;
             }
 
             // Low alphabet variety: 7+ letters using ≤3 distinct chars → junk (catches "assadasd", "zzzzzzz")
@@ -244,7 +248,8 @@ class BlockGibberish extends SpamBlockingIntegration
             }
 
             // Vowel ratio extremes
-            $vowels = preg_match_all('/[aeiou]/iu', $letters);
+            $vowelPattern = ($length >= 10) ? '/[aeiouy]/iu' : '/[aeiou]/iu';
+            $vowels = preg_match_all($vowelPattern, $letters);
             // Strong penalty for long tokens with very few vowels
             if ($length >= 10 && $vowels <= 2) {
                 $badWordCount += 2;
@@ -260,19 +265,11 @@ class BlockGibberish extends SpamBlockingIntegration
             }
 
             // Additional consonant-dominance penalty (pushes random consonant-heavy blobs over the line)
-            $cons = $length - $vowels; // $vowels is an integer count from preg_match_all
+            $cons = $length - $vowels;
             $consRatio = $cons / max(1, $length);
-            if ($length >= 10 && $consRatio >= 0.70) { // 70%+ consonants on a long token
-                $badWordCount += 2;
-            }
-
-            // Long consonant run
-            if (preg_match('/[^aeiou]{5,}/i', $letters)) {
-                ++$badWordCount;
-            }
-
-            // For long tokens, even a 4-consonant run is a red flag
-            if ($length >= 10 && preg_match('/[^aeiou]{4,}/i', $letters)) {
+            $has5Run = (bool) preg_match('/[^aeiou]{5,}/i', $letters);
+            $has4RunLong = ($length >= 10) && (bool) preg_match('/[^aeiou]{4,}/i', $letters);
+            if (($length >= 10 && $consRatio >= 0.70) || $has5Run || $has4RunLong) {
                 ++$badWordCount;
             }
 

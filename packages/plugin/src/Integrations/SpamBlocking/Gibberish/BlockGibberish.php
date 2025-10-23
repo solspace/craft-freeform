@@ -295,7 +295,7 @@ class BlockGibberish extends SpamBlockingIntegration
     private function isAllowedTerm(string $value): bool
     {
         $normalize = strtoupper(preg_replace('/[^A-Z]/i', '', $value) ?? '');
-        $allowedTerms = array_map(fn ($allowedTerm) => strtoupper(preg_replace('/[^A-Z]/i', '', $allowedTerm) ?? ''), array_merge($this->allowedTerms, $this->defaultAllowedTerms));
+        $allowedTerms = array_map(fn ($allowedTerm) => strtoupper(preg_replace('/[^A-Z]/i', '', $allowedTerm) ?? ''), array_merge($this->allowedTerms, $this->defaultAllowedTerms, $this->shortWordWhitelist));
 
         return \in_array($normalize, $allowedTerms, true);
     }

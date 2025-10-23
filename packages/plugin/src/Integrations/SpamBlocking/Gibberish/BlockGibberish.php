@@ -45,7 +45,7 @@ class BlockGibberish extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default Allowed Terms',
-        instructions: 'Enter default allowed terms you would like to be ignored as gibberish, and separate multiples on new lines. Example: RFP, ABB, KUKA or other technical phrases.',
+        instructions: 'Enter allowed terms you would like to be ignored as gibberish, and separate multiples on new lines. Example: RFP, ABB, KUKA or other technical phrases.',
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]

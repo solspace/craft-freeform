@@ -30,7 +30,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Check MX Record',
-        instructions: 'If enabled, email field(s0 will be checked for valid MX record.',
+        instructions: 'If enabled, email field(s) will be checked for valid MX record.',
     )]
     protected bool $checkMxRecord = false;
 
@@ -75,11 +75,6 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        $emails = $this->getCombinedEmails();
-        if (!$emails) {
-            return;
-        }
-
         $fields = $form->getLayout()->getFields(EmailField::class);
         foreach ($fields as $field) {
             $value = $field->getValue();
@@ -87,6 +82,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                 continue;
             }
 
+            $emails = $this->getCombinedEmails();
             foreach ($emails as $email) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
                     if ($this->errorsBelowFields) {
@@ -109,23 +105,23 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
                     break;
                 }
+            }
 
-                if ($this->checkMxRecord && !$this->hasMXRecord($email)) {
-                    $form->markAsSpam(
-                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                        \sprintf(
-                            'Email field "%s" with email address "%s" does not have a MX record',
-                            $field->getHandle(),
-                            $email
-                        )
-                    );
+            if ($this->checkMxRecord && !$this->hasMXRecord($value)) {
+                $form->markAsSpam(
+                    SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                    \sprintf(
+                        'Email field "%s" with email address "%s" does not have a MX record',
+                        $field->getHandle(),
+                        $value,
+                    )
+                );
 
-                    if ($displayErrors) {
-                        $form->addError(Freeform::t('Form contains a blocked email'));
-                    }
-
-                    break;
+                if ($displayErrors) {
+                    $form->addError(Freeform::t('Form contains a blocked email'));
                 }
+
+                break;
             }
         }
     }
@@ -143,7 +139,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
         }
 
         $domain = substr($email, $at + 1);
-        if ('' === $domain) {
+        if (empty($domain)) {
             return false;
         }
 

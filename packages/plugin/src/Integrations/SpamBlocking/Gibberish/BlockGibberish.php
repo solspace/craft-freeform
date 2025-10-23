@@ -51,6 +51,24 @@ class BlockGibberish extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultAllowedTerms = [];
 
+    private array $shortWordWhitelist = [
+        // 1 letter
+        'a', 'i',
+        // 2 letters
+        'am', 'an', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'so', 'to', 'up', 'us', 'we',
+        // 3 letters
+        'and', 'any', 'are', 'can', 'did', 'for', 'get', 'had', 'has', 'her', 'him', 'his', 'how', 'its', 'let', 'man', 'may', 'new', 'not', 'six',
+        'now', 'off', 'old', 'one', 'our', 'out', 'put', 'see', 'set', 'she', 'the', 'too', 'two', 'use', 'war', 'was', 'way', 'who', 'why', 'you',
+        // 4 letters
+        'also', 'able', 'back', 'best', 'both', 'call', 'come', 'done', 'door', 'down', 'each', 'even', 'ever', 'from', 'good', 'have', 'here',
+        'high', 'into', 'just', 'keep', 'kind', 'know', 'lake', 'last', 'left', 'like', 'long', 'look', 'made', 'make', 'many', 'more', 'most',
+        'much', 'near', 'need', 'once', 'only', 'park', 'part', 'past', 'pool', 'rest', 'road', 'same', 'some', 'soon', 'take', 'tell', 'test',
+        'than', 'that', 'them', 'then', 'they', 'this', 'time', 'turn', 'walk', 'well', 'went', 'what', 'when', 'where', 'with', 'work', 'your',
+        'four', 'five',
+        // 5 letters
+        'three',
+    ];
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $gibberishHits = 0;
@@ -143,10 +161,15 @@ class BlockGibberish extends SpamBlockingIntegration
             // Short junk token: 2–4 letters (e.g. "asd", "qwe", "zzz")
             if ($length >= 2 && $length <= 4) {
                 // skip common real words
-                $shortWordWhitelist = ['a', 'an', 'and', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'i', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'our', 'she', 'so', 'to', 'up', 'us', 'we', 'you', 'the', 'test', 'now', 'one', 'two', 'three'];
-                if (!\in_array($lettersLowerCase, $shortWordWhitelist, true)) {
-                    // count but don't score yet
-                    if ($unique <= 3) {
+                if (!\in_array($lettersLowerCase, $this->shortWordWhitelist, true)) {
+                    $hasVowel = (bool) preg_match('/[aeiou]/i', $letters);
+
+                    // 2–3 letters: only if very low variety (less than 2 uniques)
+                    if ($length <= 3 && $unique <= 2) {
+                        ++$shortWordJunkCount;
+                    }
+                    // 4 letters: only if very low variety (less than 2 uniques) AND no vowels
+                    elseif (4 === $length && $unique <= 2 && !$hasVowel) {
                         ++$shortWordJunkCount;
                     }
                 }
@@ -222,13 +245,34 @@ class BlockGibberish extends SpamBlockingIntegration
 
             // Vowel ratio extremes
             $vowels = preg_match_all('/[aeiou]/iu', $letters);
-            $ratio = $vowels ? ($vowels / max(1, $length)) : 0;
-            if ($ratio < 0.2 || $ratio > 0.8) {
-                ++$badWordCount;
+            // Strong penalty for long tokens with very few vowels
+            if ($length >= 10 && $vowels <= 2) {
+                $badWordCount += 2;
+            } elseif ($length >= 6 && 0 === $vowels) {
+                // e.g. long all-consonant blobs
+                $badWordCount += 2;
+            } else {
+                // Softer, general ratio heuristic
+                $ratio = $vowels ? ($vowels / max(1, $length)) : 0;
+                if ($ratio < 0.2 || $ratio > 0.8) {
+                    ++$badWordCount;
+                }
+            }
+
+            // Additional consonant-dominance penalty (pushes random consonant-heavy blobs over the line)
+            $cons = $length - $vowels; // $vowels is an integer count from preg_match_all
+            $consRatio = $cons / max(1, $length);
+            if ($length >= 10 && $consRatio >= 0.70) { // 70%+ consonants on a long token
+                $badWordCount += 2;
             }
 
             // Long consonant run
             if (preg_match('/[^aeiou]{5,}/i', $letters)) {
+                ++$badWordCount;
+            }
+
+            // For long tokens, even a 4-consonant run is a red flag
+            if ($length >= 10 && preg_match('/[^aeiou]{4,}/i', $letters)) {
                 ++$badWordCount;
             }
 
@@ -238,13 +282,13 @@ class BlockGibberish extends SpamBlockingIntegration
             }
 
             // High entropy “random-ish”
-            if ($this->shannonEntropy($word) > 3.8) {
+            if ($this->shannonEntropy($letters) > 3.8) {
                 ++$badWordCount;
             }
         }
 
         // Only penalize if there were multiple short-junk tokens
-        if ($shortWordJunkCount >= 2) {
+        if ($shortWordJunkCount >= 3) {
             $badWordCount += 2;
         }
 

@@ -81,13 +81,11 @@ class BlockIpAddresses extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        $ips = $this->getCombinedIps();
-        if (!$ips) {
-            return;
-        }
-
         $remoteIp = \Craft::$app->request->getRemoteIP();
-        if (IpUtils::checkIp($remoteIp, $ips)) {
+        $dnsBlockLists = $this->getCombinedDnsBlockLists();
+        $ips = $this->getCombinedIps();
+
+        if ($ips && IpUtils::checkIp($remoteIp, $ips)) {
             $form->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,
                 \sprintf(
@@ -101,7 +99,6 @@ class BlockIpAddresses extends SpamBlockingIntegration
             }
         }
 
-        $dnsBlockLists = $this->getCombinedDnsBlockLists();
         if ($this->checkDnsBlockLists && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
             $form->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,

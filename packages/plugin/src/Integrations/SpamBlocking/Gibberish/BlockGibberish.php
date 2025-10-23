@@ -143,7 +143,7 @@ class BlockGibberish extends SpamBlockingIntegration
             // Short junk token: 2–4 letters (e.g. "asd", "qwe", "zzz")
             if ($length >= 2 && $length <= 4) {
                 // skip common real words
-                $shortWordWhitelist = ['a', 'an', 'and', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'i', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'our', 'she', 'so', 'to', 'up', 'us', 'we', 'you', 'the', 'test'];
+                $shortWordWhitelist = ['a', 'an', 'and', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'i', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'our', 'she', 'so', 'to', 'up', 'us', 'we', 'you', 'the', 'test', 'now', 'one', 'two', 'three'];
                 if (!\in_array($lettersLowerCase, $shortWordWhitelist, true)) {
                     // count but don't score yet
                     if ($unique <= 3) {
@@ -210,7 +210,7 @@ class BlockGibberish extends SpamBlockingIntegration
 
             // Exact repeat of 1–3 char motif (e.g. "asdasd", "ababab", "zzzz")
             if (preg_match('/^([A-Za-z]{1,3})\1+$/', $letters)) {
-                $bad += 2;
+                $badWordCount += 2;
 
                 continue;
             }

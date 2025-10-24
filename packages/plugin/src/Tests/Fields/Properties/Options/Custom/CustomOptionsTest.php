@@ -24,7 +24,7 @@ class CustomOptionsTest extends TestCase
             'source' => 'customOptions',
             'useCustomValues' => true,
             'options' => [
-                ['label' => 'Checked option', 'value' => 'checkedOption'],
+                ['label' => 'Checked option', 'value' => 'checkedOption', 'optgroup' => true],
                 ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
             ],
         ];
@@ -34,8 +34,8 @@ class CustomOptionsTest extends TestCase
         $expected = new Custom([
             'useCustomValues' => true,
             'options' => [
-                ['label' => 'Checked option', 'value' => 'checkedOption'],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
+                ['label' => 'Checked option', 'value' => 'checkedOption', 'optgroup' => true],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'optgroup' => false],
             ],
         ]);
 
@@ -48,7 +48,7 @@ class CustomOptionsTest extends TestCase
             'useCustomValues' => true,
             'options' => [
                 ['label' => 'Checked option', 'value' => 'checkedOption'],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'optgroup' => true],
             ],
         ]);
 
@@ -58,8 +58,8 @@ class CustomOptionsTest extends TestCase
             'source' => 'custom',
             'useCustomValues' => true,
             'options' => [
-                ['label' => 'Checked option', 'value' => 'checkedOption'],
-                ['label' => 'Unchecked option', 'value' => 'uncheckedOption'],
+                ['label' => 'Checked option', 'value' => 'checkedOption', 'optgroup' => false],
+                ['label' => 'Unchecked option', 'value' => 'uncheckedOption', 'optgroup' => true],
             ],
         ];
 

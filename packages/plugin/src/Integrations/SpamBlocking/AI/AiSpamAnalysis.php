@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\SpamBlocking\AI;
 
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -18,6 +19,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'AI Spam Analysis',
     type: Type::TYPE_SPAM_BLOCK,

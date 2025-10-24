@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\AI;
 
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
@@ -52,17 +53,20 @@ class AiBundle extends FeatureBundle
 
     public static function isProOnly(): bool
     {
-        return true;
+        return false;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $path = \Craft::getAlias('@freeform/Integrations/AI');
-
         $classMap = ClassMapHelper::getMap($path);
-        $classes = array_keys($classMap);
 
-        foreach ($classes as $class) {
+        $event->addType(new Type(
+            name: 'AI',
+            type: Type::TYPE_AI,
+        ));
+
+        foreach (array_keys($classMap) as $class) {
             $event->addType($class);
         }
     }
@@ -98,11 +102,7 @@ class AiBundle extends FeatureBundle
         }
 
         $settingsPriority = $this->settingsService->getQueuePriority();
-        if (null !== $settingsPriority) {
-            $priority = $settingsPriority - 20;
-        } else {
-            $priority = 100;
-        }
+        $priority = null !== $settingsPriority ? $settingsPriority - 20 : 100;
 
         $this->queueHandler->executeAiFieldsJob(
             new ProcessAiFieldsJob([

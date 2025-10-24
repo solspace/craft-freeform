@@ -51,7 +51,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
         label: 'Check DNS Block Lists',
-        instructions: 'If enabled, IP addresses will be checked against DNS block lists.',
+        instructions: 'IP addresses will be checked against the DNS block lists provided below to help detect spam and abusive activity.',
     )]
     protected bool $checkDnsBlockLists = false;
 
@@ -61,7 +61,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'DNS Block Lists',
-        instructions: 'Enter DNS block lists you would like to be used, and separate multiples on new lines.',
+        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
         rows: 8,
     )]
     #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
@@ -73,7 +73,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default DNS Block Lists',
-        instructions: 'Enter DNS block lists you would like to be used, and separate multiples on new lines.',
+        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]

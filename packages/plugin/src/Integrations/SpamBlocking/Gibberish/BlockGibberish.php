@@ -28,15 +28,19 @@ class BlockGibberish extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Integer(min: 0)]
+    #[Input\Integer(
+        label: 'Gibberish Word Minimum Length',
+        instructions: 'Minimum word length used to detect gibberish. Lower values increase sensitivity but may flag valid words.',
+        min: 0
+    )]
     protected int $gibberishWordMinimumLength = 6;
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
-        label: 'Allowed Terms',
-        instructions: 'Enter allowed terms you would like to be ignored as gibberish, and separate multiples on new lines. Example: RFP, ABB, KUKA or other technical phrases.',
+        label: 'Allowed Terms for this Form',
+        instructions: 'Enter words or abbreviations that should be ignored by gibberish detection. Add one per line (e.g., RFP, ABB, KUKA, or other technical terms).',
         rows: 8,
     )]
     #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
@@ -47,7 +51,7 @@ class BlockGibberish extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default Allowed Terms',
-        instructions: 'Enter allowed terms you would like to be ignored as gibberish, and separate multiples on new lines. Example: RFP, ABB, KUKA or other technical phrases.',
+        instructions: 'Enter words or abbreviations that should be ignored by gibberish detection. Add one per line (e.g., RFP, ABB, KUKA, or other technical terms).',
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]

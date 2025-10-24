@@ -697,6 +697,16 @@ return [
     'Select the Freeform fields to be mapped to the applicable HubSpot Company fields' => 'Selecteer de Freeform-velden die moeten worden gekoppeld aan de juiste HubSpot Bedrijfsvelden',
     'Append checkbox group field values on Contact update' => 'Waarden van checkboxgroep toevoegen bij contactupdate',
 
+    // Form Builder // Integrations // CRM // SugarCRM
+    'Map submission data to create Leads in SugarCRM.' => 'Koppel indieningsgegevens om Leads in SugarCRM aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarCRM Lead fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Lead-velden in SugarCRM.',
+    'Map submission data to create Opportunities in SugarCRM.' => 'Koppel indieningsgegevens om Opportunities in SugarCRM aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarCRM Opportunity fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Opportunity-velden in SugarCRM.',
+    'Map submission data to create Accounts in SugarCRM.' => 'Koppel indieningsgegevens om Accounts in SugarCRM aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Account-velden in SugarCRM.',
+    'Map submission data to create Contacts in SugarCRM.' => 'Koppel indieningsgegevens om Contacten in SugarCRM aan te maken.',
+    'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.' => 'Selecteer de Freeform-velden die gekoppeld moeten worden aan de betreffende Contact-velden in SugarCRM.',
+
     // Form Builder // Settings
     'Settings' => 'Instellingen',
     'Created' => 'Aangemaakt',
@@ -1545,6 +1555,11 @@ return [
     'Enter the project key for the Jira project you want to interact with. If left empty, it will be auto-populated with the first available project key of your account.' => 'Voer de projectsleutel in van het Jira-project waarmee u wilt communiceren. Als u dit leeg laat, wordt het automatisch ingevuld met de eerste beschikbare projectsleutel van uw account.',
     'Mapping' > 'In kaart brengen',
     'Select the Freeform fields to be mapped to the applicable Jira Issue fields.' => 'Selecteer de Freeform-velden die moeten worden toegewezen aan de toepasselijke Jira Issue-velden.',
+    'Domain Name' => 'Domeinnaam',
+    'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`' => 'Voer de volledige domeinnaam van de SugarCRM-instantie in, bijv. `https://your-domain.sugarcrm.eu`',
+    'Username' => 'Gebruikersnaam',
+    'The username to use for authentication' => 'De gebruikersnaam voor authenticatie',
+    'The password to use for authentication' => 'Het wachtwoord voor authenticatie',
 
     // Integrations // CRM // Salesforce
     'Leads' => 'Leads',

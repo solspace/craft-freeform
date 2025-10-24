@@ -54,7 +54,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Domain Name',
-        instructions: 'Enter the full domain name of the SugarCRM instance. (`https://your-domain.sugarcrm.eu`)',
+        instructions: 'Enter the full domain name of the SugarCRM instance, e.g. `https://your-domain.sugarcrm.eu`',
     )]
     protected string $domain = '';
 
@@ -143,7 +143,7 @@ class SugarCRM extends CRMIntegration implements SugarIntegrationInterface
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
-        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Contact fields.',
+        instructions: 'Select the Freeform fields to be mapped to the applicable SugarCRM Account fields.',
         order: 19,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],

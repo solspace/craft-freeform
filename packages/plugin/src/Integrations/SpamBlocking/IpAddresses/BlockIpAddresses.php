@@ -48,19 +48,62 @@ class BlockIpAddresses extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultIps = [];
 
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(
+        label: 'Check DNS Block Lists',
+        instructions: 'IP addresses will be checked against the DNS block lists provided below to help detect spam and abusive activity.',
+    )]
+    protected bool $checkDnsBlockLists = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.checkDnsBlockLists)')]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
+    #[Input\TextArea(
+        label: 'DNS Block Lists',
+        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
+        rows: 8,
+    )]
+    #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
+    protected array $dnsBlockLists = [];
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.checkDnsBlockLists)')]
+    #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
+    #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
+    #[Input\TextArea(
+        label: 'Default DNS Block Lists',
+        instructions: "Enter the DNS block lists you'd like to use. Add one per line.",
+        rows: 8,
+    )]
+    #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
+    protected array $defaultDnsBlockLists = ['zen.spamhaus.org', 'bl.spamcop.net'];
+
     public function validate(Form $form, bool $displayErrors): void
     {
-        $ips = $this->getCombinedIps();
-        if (!$ips) {
-            return;
-        }
-
         $remoteIp = \Craft::$app->request->getRemoteIP();
-        if (IpUtils::checkIp($remoteIp, $ips)) {
+        $dnsBlockLists = $this->getCombinedDnsBlockLists();
+        $ips = $this->getCombinedIps();
+
+        if ($ips && IpUtils::checkIp($remoteIp, $ips)) {
             $form->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,
                 \sprintf(
                     'Form submitted by a blocked IP "%s"',
+                    $remoteIp
+                )
+            );
+
+            if ($displayErrors) {
+                $form->addError(Freeform::t('Your IP has been blocked'));
+            }
+        }
+
+        if ($this->checkDnsBlockLists && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
+            $form->markAsSpam(
+                SpamReason::TYPE_BLOCKED_IP,
+                \sprintf(
+                    'IP "%s" was listed on DNS block lists',
                     $remoteIp
                 )
             );
@@ -74,5 +117,10 @@ class BlockIpAddresses extends SpamBlockingIntegration
     private function getCombinedIps(): array
     {
         return array_merge($this->ips, $this->defaultIps);
+    }
+
+    private function getCombinedDnsBlockLists(): array
+    {
+        return array_values(array_unique(array_filter(array_map('trim', array_merge($this->defaultDnsBlockLists, $this->dnsBlockLists)), static fn ($value) => \is_string($value) && '' !== $value)));
     }
 }

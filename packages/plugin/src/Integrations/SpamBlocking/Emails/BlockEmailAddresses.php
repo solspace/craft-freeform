@@ -29,6 +29,13 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
+        label: 'Check MX Record',
+        instructions: "Email addresses will be validated against their domain's MX records to ensure the domain can receive mail.",
+    )]
+    protected bool $checkMxRecord = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(
         label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
@@ -68,11 +75,6 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        $emails = $this->getCombinedEmails();
-        if (!$emails) {
-            return;
-        }
-
         $fields = $form->getLayout()->getFields(EmailField::class);
         foreach ($fields as $field) {
             $value = $field->getValue();
@@ -80,6 +82,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                 continue;
             }
 
+            $emails = $this->getCombinedEmails();
             foreach ($emails as $email) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
                     if ($this->errorsBelowFields) {
@@ -103,11 +106,43 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                     break;
                 }
             }
+
+            if ($this->checkMxRecord && !$this->hasMXRecord($value)) {
+                $form->markAsSpam(
+                    SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                    \sprintf(
+                        'Email field "%s" with email address "%s" does not have a MX record',
+                        $field->getHandle(),
+                        $value,
+                    )
+                );
+
+                if ($displayErrors) {
+                    $form->addError(Freeform::t('Form contains a blocked email'));
+                }
+
+                break;
+            }
         }
     }
 
     private function getCombinedEmails(): array
     {
         return array_merge($this->emails, $this->defaultEmails);
+    }
+
+    private function hasMXRecord(string $email): bool
+    {
+        $at = strrpos($email, '@');
+        if (false === $at) {
+            return false;
+        }
+
+        $domain = substr($email, $at + 1);
+        if (empty($domain)) {
+            return false;
+        }
+
+        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
     }
 }

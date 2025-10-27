@@ -1,5 +1,6 @@
 import type { FC } from 'react';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { QKIntegrations } from '@ff-client/queries/integrations';
 import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
@@ -24,6 +25,7 @@ type Props = {
 
 export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [showDisable, setShowDisable] = useState(false);
   const [showDisableDelete, setShowDisableDelete] = useState(false);
 
@@ -66,6 +68,7 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
             notifications.success(
               translate('Monitoring disabled and data deleted.')
             );
+            navigate('/integrations', { replace: true });
           }}
         />
       )}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Fields\Implementations;
+namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use craft\helpers\Html;
 use Solspace\Freeform\Attributes\Field\Type;
@@ -11,6 +11,7 @@ use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Bundles\Fields\Implementations\CardsField\ImageTransformOptionsGenerator;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -19,10 +20,10 @@ use Solspace\Freeform\Fields\Traits\ImageAssetTrait;
 #[Type(
     name: 'Image',
     typeShorthand: 'image',
-    iconPath: __DIR__.'/Icons/image.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/image.ejs',
+    iconPath: __DIR__.'/../Icons/image.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/image.ejs',
 )]
-class ImageField extends AbstractField implements InputOnlyInterface, NoStorageInterface, NoEmailPresenceInterface
+class ImageField extends AbstractField implements ExtraFieldInterface, InputOnlyInterface, NoStorageInterface, NoEmailPresenceInterface
 {
     use ImageAssetTrait;
 

@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Properties\OptionsGenerators\SiteIdOptionsGenerator;
 use Solspace\Freeform\Fields\Properties\Options\Elements\Types\BaseOptionProvider;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Entries extends BaseOptionProvider
 {
@@ -122,14 +123,22 @@ class Entries extends BaseOptionProvider
         return $this->sort;
     }
 
-    protected function getElements(): array
+    protected function getElements(TranslationTable $translationTable): array
     {
+        $siteId = $translationTable->get('optionConfiguration.properties.siteId') ?: $this->getSiteId();
+        $sectionId = $translationTable->get('optionConfiguration.properties.sectionId') ?: $this->getSectionId();
+        $status = $translationTable->get('optionConfiguration.properties.status') ?: $this->getStatus();
+        $entryTypeId = $translationTable->get('optionConfiguration.properties.entryTypeId') ?: $this->getEntryTypeId();
+
+        $orderBy = $translationTable->get('optionConfiguration.properties.orderBy') ?: $this->getOrderBy();
+        $sort = $translationTable->get('optionConfiguration.properties.sort') ?: $this->getSort();
+
         return Entry::find()
-            ->siteId($this->getSiteId() ?: null)
-            ->sectionId($this->getSectionId() ?: null)
-            ->status($this->getStatus() ?: null)
-            ->typeId($this->getEntryTypeId() ?: null)
-            ->orderBy($this->getOrderBy().' '.$this->getSort())
+            ->siteId($siteId)
+            ->sectionId($sectionId)
+            ->status($status)
+            ->typeId($entryTypeId)
+            ->orderBy($orderBy.' '.$sort)
             ->all()
         ;
     }

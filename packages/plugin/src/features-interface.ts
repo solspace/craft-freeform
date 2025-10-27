@@ -73,6 +73,7 @@ interface Features {
       populateValuesFromGet: boolean;
       disableSubmit: boolean;
       autoScroll: boolean;
+      useIdempotencyKey: boolean;
       jsInsertLocation: JSInsertLocation;
       purgeSubmissions: boolean;
       purgeInterval: 7;

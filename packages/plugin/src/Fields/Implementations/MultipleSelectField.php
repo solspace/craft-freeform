@@ -17,14 +17,18 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
+use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -36,9 +40,20 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValueInterface, DefaultValueInterface
 {
     use MultipleValueTrait;
+    use OptionCollectionTrait;
 
     #[Input\Hidden]
     protected ?array $defaultValue = [];
+
+    #[Translatable]
+    #[ValueTransformer(OptionsTransformer::class)]
+    #[Input\Options(
+        label: 'Options Editor',
+        instructions: 'Define your options',
+        showEmptyOption: true,
+        allowOptgroup: true,
+    )]
+    protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
     #[Section(
         handle: 'attributes',
@@ -106,34 +121,11 @@ class MultipleSelectField extends BaseGeneratedOptionsField implements MultiValu
             ->set($this->getRequiredAttribute())
         ;
 
-        $output = '';
-        foreach ($this->getOptions() as $index => $option) {
-            $isSelected = \in_array($option->getValue(), $this->getValue());
-
-            $optionAttributes = $this->getAttributes()
-                ->getOption()
-                ->clone()
-                ->setIfEmpty('value', $option->getValue())
-                ->replace('selected', $isSelected)
-            ;
-
-            $output .= Html::tag(
-                $optionAttributes->getTag('option'),
-                $this->translateOptionLabel($option),
-                $optionAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'option' => $option,
-                    'field' => $this,
-                ])
-            );
-        }
-
-        $output .= '</select>';
+        $optionAttributes = $this->getAttributes()->getOption();
 
         return Html::tag(
             $attributes->getTag('select'),
-            $output,
+            $this->renderCollection($this->getOptions(), $optionAttributes),
             $attributes->toHtmlTagArray(['field' => $this])
         );
     }

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Custom;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Custom implements OptionsConfigurationInterface
 {
@@ -20,6 +21,7 @@ class Custom implements OptionsConfigurationInterface
             $this->options[] = new Option(
                 $option['value'] ?? '',
                 $option['label'] ?? '',
+                $option['optgroup'] ?? false,
             );
         }
     }
@@ -34,11 +36,34 @@ class Custom implements OptionsConfigurationInterface
         return $this->useCustomValues;
     }
 
-    public function getOptions(): OptionCollection
+    public function getOptions(TranslationTable $translationTable): OptionCollection
     {
+        $translations = $translationTable->get('optionConfiguration.options');
+
+        $lastOptgroup = null;
+
         $collection = new OptionCollection();
         foreach ($this->options as $option) {
-            $collection->add($option);
+            if (\is_array($translations)) {
+                $translatedOption = array_find($translations, fn ($item) => $item->value === $option->getValue());
+                if ($translatedOption) {
+                    $option = new Option(
+                        $option->getValue(),
+                        $translatedOption->label,
+                        $option->isOptGroup(),
+                    );
+                }
+            }
+
+            if ($option->isOptgroup()) {
+                $lastOptgroup = new OptionCollection($option->getLabel());
+                $collection->addCollection($lastOptgroup);
+
+                continue;
+            }
+
+            $targetCollection = $lastOptgroup ?? $collection;
+            $targetCollection->add($option);
         }
 
         return $collection;
@@ -53,6 +78,7 @@ class Custom implements OptionsConfigurationInterface
                 fn (Option $option) => [
                     'label' => $option->getLabel(),
                     'value' => $option->getValue(),
+                    'optgroup' => $option->isOptGroup(),
                 ],
                 $this->options
             ),

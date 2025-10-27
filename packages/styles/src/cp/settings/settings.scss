@@ -27,6 +27,21 @@ ul.freeform-settings-list {
   display: flex;
   flex-direction: column;
   gap: 5px;
+
+  #checkbox-select-file-kinds {
+    column-count: 3;
+  }
+}
+
+.categories.delimited {
+  > li {
+    &:not(:last-child):after {
+      content: '';
+      display: block;
+      border-bottom: 1px solid #e1e1e16d;
+      margin: 8px -24px;
+    }
+  }
 }
 
 .category-item-list {

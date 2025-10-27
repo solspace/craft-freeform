@@ -5,7 +5,10 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -25,39 +28,59 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
 {
     use EncryptionTrait;
 
+    #[Limitation('props.signature', 'width')]
+    #[DefaultValue('props.signature.width')]
+    #[Translatable]
     #[Input\Integer(
         label: 'Width of Pad',
         instructions: 'Specify a value in pixels.',
     )]
     protected int $width = 400;
 
+    #[Limitation('props.signature', 'height')]
+    #[DefaultValue('props.signature.height')]
+    #[Translatable]
     #[Input\Integer(
         label: 'Height of Pad',
         instructions: 'Specify a value in pixels.',
     )]
     protected int $height = 100;
 
+    #[Limitation('props.signature', 'clear')]
+    #[DefaultValue('props.signature.clear')]
     #[Input\Boolean(
         label: "Show 'Clear' button",
         instructions: 'Allows user to erase and start over.',
     )]
     protected bool $showClearButton = true;
 
+    #[Limitation('props.signature', 'borderColor')]
+    #[DefaultValue('props.signature.borderColor')]
+    #[Translatable]
     #[Input\ColorPicker(
         label: 'Border color of Pad',
     )]
     protected string $borderColor = '#999999';
 
+    #[Limitation('props.signature', 'backgroundColor')]
+    #[DefaultValue('props.signature.backgroundColor')]
+    #[Translatable]
     #[Input\ColorPicker(
         label: 'Background color of Pad',
     )]
     protected string $backgroundColor = 'rgba(0,0,0,0)';
 
+    #[Limitation('props.signature', 'penColor')]
+    #[DefaultValue('props.signature.penColor')]
+    #[Translatable]
     #[Input\ColorPicker(
         label: 'Pen color',
     )]
     protected string $penColor = '#000000';
 
+    #[Limitation('props.signature', 'penDotSize')]
+    #[DefaultValue('props.signature.penDotSize')]
+    #[Translatable]
     #[Input\Integer(
         label: 'Pen dot size',
         instructions: 'The size of the dot when drawing on the pad.',
@@ -75,12 +98,12 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
 
     public function getWidth(): int
     {
-        return $this->width;
+        return $this->getTranslationTable()->get('width', $this->width);
     }
 
     public function getHeight(): int
     {
-        return $this->height;
+        return $this->getTranslationTable()->get('height', $this->height);
     }
 
     public function isShowClearButton(): bool
@@ -90,22 +113,22 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
 
     public function getBorderColor(): string
     {
-        return $this->borderColor;
+        return $this->getTranslationTable()->get('borderColor', $this->borderColor);
     }
 
     public function getBackgroundColor(): string
     {
-        return $this->backgroundColor;
+        return $this->getTranslationTable()->get('backgroundColor', $this->backgroundColor);
     }
 
     public function getPenColor(): string
     {
-        return $this->penColor;
+        return $this->getTranslationTable()->get('penColor', $this->penColor);
     }
 
     public function getPenDotSize(): float
     {
-        return $this->penDotSize;
+        return $this->getTranslationTable()->get('penDotSize', $this->penDotSize);
     }
 
     public function getReadableOutputValue(): Markup|string

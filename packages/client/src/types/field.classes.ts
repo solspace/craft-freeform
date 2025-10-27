@@ -18,6 +18,8 @@ export enum Fields {
   Confirmation = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\ConfirmationField',
   Datetime = 'Solspace\\Freeform\\Fields\\Implementations\\DatetimeField',
   FileDragAndDrop = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\FileDragAndDropField',
+  Image = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\ImageField',
+  Cards = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\CardsField',
   Group = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\GroupField',
   Invisible = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\InvisibleField',
   OpinionScale = 'Solspace\\Freeform\\Fields\\Implementations\\Pro\\OpinionScaleField',

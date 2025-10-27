@@ -8,8 +8,11 @@ use craft\gql\types\DateTime as DateTimeType;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DatePickerInterface;
@@ -41,6 +44,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         icon: __DIR__.'/../../SectionIcons/gears.svg',
         order: 1,
     )]
+    #[Limitation('props.date', 'type')]
+    #[DefaultValue('props.date.type')]
     #[Input\Select(
         label: 'Type',
         instructions: 'Use date, time or both.',
@@ -53,12 +58,18 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
+    #[Translatable]
+    #[Limitation('props.date', 'initialValue')]
+    #[DefaultValue('props.date.initialValue')]
     #[Input\Text(
         label: 'Initial value',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
     )]
     protected string $initialValue = '';
 
+    #[Translatable]
+    #[Limitation('props.date', 'locale')]
+    #[DefaultValue('props.date.locale')]
     #[Input\Text(
         label: 'Force a locale',
         instructions: "Uses the site's locale set in Craft by default. To force a different locale, specify a 2-digit language code, e.g. `fr`, `de`, etc.",
@@ -66,12 +77,16 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected ?string $locale = null;
 
+    #[Limitation('props.date', 'datepicker')]
+    #[DefaultValue('props.date.datepicker')]
     #[Input\Boolean(
         label: 'Use built-in datepicker',
         order: 2,
     )]
     protected bool $useDatepicker = true;
 
+    #[Limitation('props.date', 'nativeTypes')]
+    #[DefaultValue('props.date.nativeTypes')]
     #[Input\Boolean(
         label: 'Use native input types',
         instructions: 'Use the browser\'s native date picker types (e.g. `datetime-local`, `date` and `time`).',
@@ -79,6 +94,8 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     )]
     protected bool $useNativeTypes = false;
 
+    #[Limitation('props.date', 'formatAsPlaceholder')]
+    #[DefaultValue('props.date.formatAsPlaceholder')]
     #[Input\Boolean(
         label: 'Use date format as placeholder',
         order: 3,
@@ -98,7 +115,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         icon: __DIR__.'/../../SectionIcons/calendar.svg',
         order: 2,
     )]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateOrder')]
+    #[DefaultValue('props.date.dateOrder')]
     #[Input\Select(
         label: 'Date order',
         instructions: 'Choose the order in which to show day, month and year.',
@@ -111,12 +131,18 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected string $dateOrder = 'ymd';
 
     #[Section('date')]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'date4DigitYear')]
+    #[DefaultValue('props.date.date4DigitYear')]
     #[Input\Boolean('Four digit year')]
     protected bool $date4DigitYear = true;
 
     #[Section('date')]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateLeadingZero')]
+    #[DefaultValue('props.date.dateLeadingZero')]
     #[Input\Boolean(
         label: 'Leading zero on date',
         instructions: 'Include a leading zero for day and month numbers.'
@@ -124,7 +150,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected bool $dateLeadingZero = true;
 
     #[Section('date')]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'dateSeparator')]
+    #[DefaultValue('props.date.dateSeparator')]
     #[Input\Select(
         label: 'Date separator',
         instructions: 'Used to separate date values.',
@@ -139,7 +168,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected string $dateSeparator = '-';
 
     #[Section('date')]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'minDate')]
+    #[DefaultValue('props.date.minDate')]
     #[Input\Text(
         label: 'Minimum date',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
@@ -147,7 +179,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected ?string $minDate = null;
 
     #[Section('date')]
+    #[Translatable]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'maxDate')]
+    #[DefaultValue('props.date.maxDate')]
     #[Input\Text(
         label: 'Maximum date',
         instructions: "You can use 'now', 'today', '5 days ago', '2025-01-01 20:00:00', etc.",
@@ -160,12 +195,18 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         icon: __DIR__.'/../../SectionIcons/time.svg',
         order: 3,
     )]
+    #[Translatable]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clock24h')]
+    #[DefaultValue('props.date.clock24h')]
     #[Input\Boolean('24h clock')]
     protected bool $clock24h = false;
 
     #[Section('time')]
+    #[Translatable]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clockSeparator')]
+    #[DefaultValue('props.date.clockSeparator')]
     #[Input\Select(
         label: 'Clock Separator',
         instructions: 'Used to separate clock values.',
@@ -180,7 +221,10 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
     protected string $clockSeparator = ':';
 
     #[Section('time')]
+    #[Translatable]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Limitation('props.date', 'clockAMPMSeparate')]
+    #[DefaultValue('props.date.clockAMPMSeparate')]
     #[Input\Boolean('Separate AM/PM with a space')]
     protected bool $clockAMPMSeparate = true;
 
@@ -227,7 +271,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getInitialValue(): string
     {
-        return $this->initialValue;
+        return $this->translate('initialValue', $this->initialValue);
     }
 
     public function getDateTimeType(): string
@@ -252,37 +296,37 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getDateOrder(): string
     {
-        return $this->dateOrder;
+        return $this->translate('dateOrder', $this->dateOrder);
     }
 
     public function isDate4DigitYear(): bool
     {
-        return $this->date4DigitYear;
+        return $this->translate('date4DigitYear', $this->date4DigitYear);
     }
 
     public function isDateLeadingZero(): bool
     {
-        return $this->dateLeadingZero;
+        return $this->translate('dateLeadingZero', $this->dateLeadingZero);
     }
 
     public function getDateSeparator(): string
     {
-        return $this->dateSeparator;
+        return $this->translate('dateSeparator', $this->dateSeparator);
     }
 
     public function isClock24h(): bool
     {
-        return $this->clock24h;
+        return $this->translate('clock24h', $this->clock24h);
     }
 
     public function getClockSeparator(): string
     {
-        return $this->clockSeparator;
+        return $this->translate('clockSeparator', $this->clockSeparator);
     }
 
     public function isClockAMPMSeparate(): bool
     {
-        return $this->clockAMPMSeparate;
+        return $this->translate('clockAMPMSeparate', $this->clockAMPMSeparate);
     }
 
     public function isUseDatepicker(): bool
@@ -297,41 +341,41 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getMinDate(): ?string
     {
-        return $this->minDate;
+        return $this->translate('minDate', $this->minDate);
     }
 
     public function getMaxDate(): ?string
     {
-        return $this->maxDate;
+        return $this->translate('maxDate', $this->maxDate);
     }
 
     public function getLocale(): ?string
     {
-        return $this->locale;
+        return $this->translate('locale', $this->locale);
     }
 
     public function getGeneratedMinDate(?string $format = null): ?string
     {
-        if (!$this->minDate) {
+        if (!$this->getMinDate()) {
             return null;
         }
 
-        return date($format ?? 'Y-m-d', strtotime($this->minDate));
+        return date($format ?? 'Y-m-d', strtotime($this->getMinDate()));
     }
 
     public function getGeneratedMaxDate(?string $format = null): ?string
     {
-        if (!$this->maxDate) {
+        if (!$this->getMaxDate()) {
             return null;
         }
 
-        return date($format ?? 'Y-m-d', strtotime($this->maxDate));
+        return date($format ?? 'Y-m-d', strtotime($this->getMaxDate()));
     }
 
     public function getPlaceholder(): string
     {
         if (!$this->isGeneratePlaceholder()) {
-            return $this->placeholder;
+            return $this->translate('placeholder', $this->placeholder);
         }
 
         return $this->getHumanReadableFormat();
@@ -522,7 +566,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
             ->setIfEmpty('name', $this->getHandle())
             ->setIfEmpty('type', $this->getInputType())
             ->setIfEmpty('id', $this->getIdAttribute())
-            ->setIfEmpty('placeholder', $this->translate('placeholder', $this->getPlaceholder()))
+            ->setIfEmpty('placeholder', $this->getPlaceholder())
             ->setIfEmpty('value', $this->getValue())
             ->set($this->getRequiredAttribute())
             ->set('data-datepicker', true)

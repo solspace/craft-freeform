@@ -19,8 +19,10 @@ use craft\gql\interfaces\elements\Asset as FileUploadType;
 use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -45,6 +47,8 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     public const DEFAULT_MAX_FILESIZE_KB = 2048;
     public const DEFAULT_FILE_COUNT = 1;
 
+    #[Limitation('props.file', 'fileKinds')]
+    #[DefaultValue('props.file.fileKinds')]
     #[Input\Checkboxes(
         label: 'File Kinds',
         instructions: 'Select the file kinds that are allowed to be uploaded.',
@@ -55,6 +59,8 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     )]
     protected array $fileKinds = ['image'];
 
+    #[Limitation('props.file', 'maxFileSizeKB')]
+    #[DefaultValue('props.file.maxFileSizeKB')]
     #[Input\Integer(
         label: 'Maximum File Size',
         instructions: 'Specify the maximum file size, in KB.',
@@ -62,6 +68,8 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     )]
     protected int $maxFileSizeKB = self::DEFAULT_MAX_FILESIZE_KB;
 
+    #[Limitation('props.file', 'count')]
+    #[DefaultValue('props.file.count')]
     #[Input\Integer(
         instructions: 'Specify the maximum uploadable file count.',
     )]

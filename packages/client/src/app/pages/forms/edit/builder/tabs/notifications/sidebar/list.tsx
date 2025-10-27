@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import config from '@config/freeform/freeform.config';
 import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
@@ -10,15 +10,19 @@ import {
   useQueryFormNotifications,
   useQueryNotificationTypes,
 } from '@ff-client/queries/notifications';
+import translate from '@ff-client/utils/translations';
 
 import { useLastTab } from '../../tabs.hooks';
 
 import { NotificationItem } from './items/item';
+import { Icon, Link, Name } from './items/item.styles';
+import IconManager from './icon.manager.svg';
 import { ScrollableList } from './list.styles';
 
 export const List: React.FC = () => {
   const limitations = config.limitations;
   const { formId, uid } = useParams();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const { lastTab, setLastTab } = useLastTab('notifications');
 
@@ -33,6 +37,10 @@ export const List: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (pathname.endsWith('/manager')) {
+      return;
+    }
+
     if (!uid && !lastTab && notificationTypes && notifications) {
       const first = notifications.find(Boolean);
       if (first) {
@@ -77,6 +85,13 @@ export const List: React.FC = () => {
                   ))}
             </NotificationTypeItem>
           ))}
+
+        <Link onClick={() => setLastTab(uid)} to={`manager`}>
+          <Icon>
+            <IconManager />
+          </Icon>
+          <Name>{translate('Template Manager')}</Name>
+        </Link>
       </ScrollableList>
     </Sidebar>
   );

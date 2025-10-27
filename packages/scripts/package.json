@@ -35,6 +35,7 @@
     "y18n": "^5.0.8"
   },
   "dependencies": {
+    "@paypal/paypal-js": "^8.4.2",
     "@stripe/stripe-js": "^2.1.9",
     "clsx": "^2.0.0",
     "expression-language": "^1.1.4",

@@ -225,8 +225,8 @@ class Settings extends Model
     /** @var int */
     public $sessionEntryTTL;
 
-    /** @var string */
-    public $alertNotificationRecipients;
+    public ?string $alertNotificationRecipients = null;
+    public ?string $errorNotificationRecipients = null;
 
     /** @var string */
     public $digestRecipients;
@@ -286,8 +286,10 @@ class Settings extends Model
     public Defaults $defaults;
     public bool $useQueueForEmailNotifications = false;
     public bool $useQueueForIntegrations = false;
+    public bool $useQueueForAiFields = false;
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
     public string $csrfRefresh = self::CSRF_REFRESH_NONE;
+    public bool $useIdempotencyKey = false;
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
@@ -326,9 +328,11 @@ class Settings extends Model
         $this->renderFormHtmlInCpViews = true;
         $this->autoScrollToErrors = true;
         $this->autoScroll = true;
+        $this->useIdempotencyKey = true;
         $this->fillWithGet = false;
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;
+        $this->errorNotificationRecipients = null;
         $this->digestRecipients = null;
         $this->digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
         $this->clientDigestRecipients = null;

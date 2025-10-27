@@ -73,6 +73,6 @@ const ImageElement: FC<ImageElementProps> = ({ assetUrl, loading }) => {
   }
 
   return (
-    <img src={assetUrl.url} alt={assetUrl.title || translate('No title')} />
+    <img src={assetUrl.src} alt={assetUrl.title || translate('No title')} />
   );
 };

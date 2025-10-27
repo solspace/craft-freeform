@@ -1,6 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
+import type { Field } from '@editor/store/slices/layout/fields';
+import { useTranslations } from '@editor/store/slices/translations/translations.hooks';
+import type { CardsProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 import Sortable from 'sortablejs';
 
@@ -17,11 +20,23 @@ import {
 
 type Props = {
   value: Card[];
+  property: CardsProperty;
   updateValue: UpdateValue<Card[]>;
+  context: Field;
 };
 
-export const CardsEditor: React.FC<Props> = ({ value, updateValue }) => {
+export const CardsEditor: React.FC<Props> = ({
+  value,
+  property,
+  updateValue,
+  context,
+}) => {
   const gridRef = useRef(null);
+  const { updateTranslation, getTranslation, willTranslate } =
+    useTranslations(context);
+
+  const isTranslating = willTranslate(property.handle);
+  const translation = getTranslation<Card[]>(property.handle, value);
 
   useEffect(() => {
     if (!gridRef.current) {
@@ -59,9 +74,16 @@ export const CardsEditor: React.FC<Props> = ({ value, updateValue }) => {
                 updateValue(newCards);
               }}
               updateCard={(updatedCard) => {
-                const newCards = [...value];
-                newCards[idx] = updatedCard;
-                updateValue(newCards);
+                if (isTranslating) {
+                  const newTranslations = [...translation];
+                  newTranslations[idx] = updatedCard;
+                  updateTranslation(property.handle, newTranslations);
+                } else {
+                  const newCards = [...value];
+                  newCards[idx] = updatedCard;
+
+                  updateValue(newCards);
+                }
               }}
             />
           ))}

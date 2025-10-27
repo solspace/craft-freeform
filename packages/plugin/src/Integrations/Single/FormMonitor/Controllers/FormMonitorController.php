@@ -318,6 +318,10 @@ class FormMonitorController extends BaseApiController
             $client = $this->clientProvider->getAuthorizedClient($formMonitor);
             $formMonitor->deleteMe($client);
 
+            if (method_exists($formMonitor, 'getId')) {
+                $this->integrationsService->delete($formMonitor->getId());
+            }
+
             return $this->asJson(['success' => true]);
         } catch (BadResponseException $exception) {
             $this->loggerService

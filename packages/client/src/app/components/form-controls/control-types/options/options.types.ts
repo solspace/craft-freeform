@@ -31,6 +31,7 @@ export const sourceLabels: OptionCollection = [
 export type Option = {
   label: string;
   value: string;
+  optgroup?: boolean;
 };
 
 export type ElementOptionType = {
@@ -70,5 +71,6 @@ export type ConfigurationProps<
   updateDefaultValue: (value: string | string[]) => void;
   convertToCustomValues?: () => void;
   isMultiple?: boolean;
+  allowOptgroup?: boolean;
   autoUpdateHandle?: boolean;
 };

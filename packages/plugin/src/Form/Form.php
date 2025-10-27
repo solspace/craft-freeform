@@ -430,6 +430,13 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         return !empty($this->getSpamReasons());
     }
 
+    public function removeMarkedAsSpam(): self
+    {
+        $this->getProperties()->set(self::PROPERTY_SPAM_REASONS, []);
+
+        return $this;
+    }
+
     public function getSpamReasons(): array
     {
         return $this->getProperties()->get(self::PROPERTY_SPAM_REASONS, []);

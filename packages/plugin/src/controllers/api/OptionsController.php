@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers\api;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Fields\Properties\Options\OptionTypeProviderInterface;
+use Solspace\Freeform\Library\Translations\TranslationTable;
 use yii\web\Response;
 
 class OptionsController extends BaseApiController
@@ -29,6 +30,8 @@ class OptionsController extends BaseApiController
         $configuration = new $type();
         $this->propertyProvider->setObjectProperties($configuration, $properties);
 
-        return $this->asSerializedJson($configuration->generateOptions()->toArray());
+        return $this->asSerializedJson(
+            $configuration->generateOptions(new TranslationTable())->toArray()
+        );
     }
 }

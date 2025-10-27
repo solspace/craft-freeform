@@ -23,7 +23,6 @@ use craft\services\Fields;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
-use craft\web\View;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
@@ -44,6 +43,7 @@ use Solspace\Freeform\Fields\Implementations\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
+use Solspace\Freeform\Fields\Implementations\Pro\ImageField;
 use Solspace\Freeform\Fields\Implementations\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Implementations\Pro\PasswordField;
@@ -72,6 +72,7 @@ use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\AiService;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DiagnosticsService;
+use Solspace\Freeform\Services\ErrorNotificationsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\FieldsService;
@@ -113,6 +114,7 @@ use Solspace\Freeform\Variables\FreeformVariable;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
+use yii\web\View;
 
 /**
  * Class Plugin.
@@ -125,6 +127,7 @@ use yii\db\Query;
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
  * @property EmailMarketingService       $emailMarketing
+ * @property NotesService                $notes
  * @property NotificationsService        $notifications
  * @property NotificationWrappersService $notificationWrappers
  * @property SettingsService             $settings
@@ -140,6 +143,7 @@ use yii\db\Query;
  * @property ExportService               $export
  * @property ExportProfilesService       $exportProfiles
  * @property ExportNotificationsService  $exportNotifications
+ * @property ErrorNotificationsService   $errorNotifications
  * @property RelationsService            $relations
  * @property DigestService               $digest
  * @property SummaryService              $summary
@@ -404,6 +408,7 @@ class Freeform extends Plugin
         $group->types = [
             HtmlField::class,
             RichTextField::class,
+            ImageField::class,
         ];
         $group->save();
 
@@ -451,6 +456,7 @@ class Freeform extends Plugin
                 'emailMarketing' => EmailMarketingService::class,
                 'export' => ExportService::class,
                 'exportNotifications' => ExportNotificationsService::class,
+                'errorNotifications' => ErrorNotificationsService::class,
                 'exportProfiles' => ExportProfilesService::class,
                 'feed' => FreeformFeedService::class,
                 'field' => FieldsService::class,

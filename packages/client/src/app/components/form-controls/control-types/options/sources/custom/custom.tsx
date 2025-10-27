@@ -42,6 +42,7 @@ const Custom: React.FC<ConfigurationProps<CustomOptionsConfiguration>> = ({
           defaultValue={defaultValue}
           updateDefaultValue={updateDefaultValue}
           isMultiple={isMultiple}
+          allowOptgroup={property.allowOptgroup}
           autoUpdateHandle={autoUpdateHandle}
         />
       </PreviewableComponent>

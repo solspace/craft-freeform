@@ -15,11 +15,17 @@ import { Button, ButtonGroup, Name, TemplateCard } from './item.styles';
 
 type Props = {
   active: boolean;
+  openEditOnClick?: boolean;
   template: NotificationTemplate;
   onClick: NotificationSelectHandler;
 };
 
-export const Item: React.FC<Props> = ({ active, template, onClick }) => {
+export const Item: React.FC<Props> = ({
+  active,
+  openEditOnClick,
+  template,
+  onClick,
+}) => {
   const { id, name } = template;
 
   const queryClient = useQueryClient();
@@ -28,7 +34,13 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
   return (
     <TemplateCard
       className={classes(active ? 'active' : '')}
-      onClick={() => onClick(template)}
+      onClick={() => {
+        if (openEditOnClick) {
+          openModal({ id });
+        } else {
+          onClick(template);
+        }
+      }}
     >
       <Name title={name}>{name}</Name>
 

@@ -2,6 +2,7 @@ import type { Stripe, StripeElements } from '@stripe/stripe-js';
 
 export type Config = {
   apiKey: string;
+  site: string;
   required: boolean;
   integration: string;
   amountFields: string[];

@@ -1,5 +1,33 @@
 # Solspace Freeform Changelog
 
+## 5.13.0 - Unreleased
+
+### Added
+- **PayPal** integration: Accept payments with PayPal.
+- **Square** integration: Accept payments with Square.
+- **Mollie** integration: Accept payments with Mollie.
+- **xAI** integration: Use xAI models to process form submissions.
+- **Anthropic** integration: Use Anthropic models to process form submissions.
+- **SugarCRM** integration: Send submission data to _Leads_, _Opportunities_, _Accounts_, and _Contacts_ endpoints.
+- **Gibberish Spam Blocking**: Block spam when submissions score as gibberish or contain random-looking values (e.g., `X76fddHg8qw8`, `sadjfgasfh`).
+- **Check MX Record** option for _Email Blocking_: Validate email domains against their MX records to ensure they can receive mail.
+- **Check DNS Block Lists** option for _IP Address Blocking_: Check IP addresses against the DNS block lists you provide to help detect spam and abuse.
+- **Image** field type: Select or upload image assets into form layouts.
+- `srcset` support for the _Cards_ field type.
+- `<optgroup>` support for _Dropdown_ and _Multi-select_ field types.
+- Expanded **translation support** for field types, including _HTML_, _Rich Text_, _Date & Time_, _File Upload_, _Tables_, _Cards_, _Stripe_, and more.
+- Granular **default values for field settings** in the form builder.
+- Additional controls for the **Limited Users** feature.
+- **AI Processing Queue** setting: Processes _AI Spam Analysis_ and _AI_ fields in the background so submission handling isn't delayed.
+- **Site picker** in breadcrumbs on the control panel Submission detail/edit page.
+- **Prevent Duplicate Submissions (Idempotency Keys)**: Prevent duplicate submissions even when javascript guards are not present.
+- **Form Groups**: use Twig variables to display a list of form groups on the front end.
+- **Critical Error Notifications**: Immediately notify admins about critical error reports.
+- **Notification Template Manager** in the form builder (handy for creating form-specific templates for _Template-based_ email notifications).
+
+### Changed
+- Whitespaces on values sent to integrations are now trimmed automatically.
+
 ## 5.12.4 - 2025-10-20
 
 ### Fixed

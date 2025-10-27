@@ -14,8 +14,11 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Limitation;
 use Solspace\Freeform\Attributes\Property\Lock;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
@@ -36,12 +39,15 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
     protected bool $required = false;
 
     #[Lock('twigInHtml')]
+    #[Limitation('props.html', 'twig')]
+    #[DefaultValue('props.html.twig')]
     #[Input\Boolean(
         label: 'Allow Twig',
         instructions: 'Used to enable Twig in HTML blocks',
     )]
     protected bool $twig = false;
 
+    #[Translatable]
     #[Input\CodeEditor(
         label: 'HTML',
         instructions: 'The HTML content to be rendered',
@@ -55,7 +61,7 @@ class HtmlField extends AbstractField implements InputOnlyInterface, NoStorageIn
 
     public function getContent(): string
     {
-        return $this->content ?? '';
+        return $this->getTranslationTable()->get('content', $this->content ?? '');
     }
 
     public function getType(): string

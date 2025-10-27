@@ -48,7 +48,7 @@ class CallbackController extends BaseStripeController
             ->paymentIntents
             ->retrieve(
                 $paymentIntentId,
-                ['expand' => ['payment_method', 'invoice.subscription']]
+                ['expand' => ['payment_method', 'invoice.subscription']],
             )
         ;
 

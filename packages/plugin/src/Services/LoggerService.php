@@ -21,6 +21,20 @@ class LoggerService extends BaseService
         return new FileLogReader(FreeformLogger::getLogfilePath($fileName));
     }
 
+    public function getCombinedLogLineCount(array|string|null $level = null): int
+    {
+        $categories = [null, 'freeform-integrations.log', 'freeform-email.log'];
+
+        $count = 0;
+        foreach ($categories as $category) {
+            $logReader = $this->getLogReader($category);
+
+            $count += $logReader->count($level);
+        }
+
+        return $count;
+    }
+
     public function registerJsTranslations(View $view): void
     {
         $view->registerTranslations(Freeform::TRANSLATION_CATEGORY, [

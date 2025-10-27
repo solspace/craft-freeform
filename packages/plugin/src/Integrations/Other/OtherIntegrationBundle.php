@@ -32,7 +32,7 @@ class OtherIntegrationBundle extends FeatureBundle
 
     public static function isProOnly(): bool
     {
-        return true;
+        return false;
     }
 
     public function registerTypes(RegisterIntegrationTypesEvent $event): void

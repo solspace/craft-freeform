@@ -29,6 +29,13 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(
+        label: 'Check MX Record',
+        instructions: "Email addresses will be validated against their domain's MX records to ensure the domain can receive mail.",
+    )]
+    protected bool $checkMxRecord = false;
+
+    #[VisibilityFilter('Boolean(enabled)')]
+    #[Input\Boolean(
         label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
@@ -49,7 +56,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Blocked Email Addresses for this Form',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
+        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
         rows: 8,
     )]
     #[Message('The values entered here will only apply to this form and will be in addition to the default values set for the main integration.')]
@@ -60,7 +67,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
         label: 'Default Blocked Email Addresses',
-        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. *@hotmail.ru), and separate multiples on new lines.',
+        instructions: 'Enter email addresses you would like blocked from being used in Email fields. Use asterisks for wildcards (e.g. `*@hotmail.ru`), and separate multiples on new lines.',
         rows: 8,
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
@@ -68,11 +75,6 @@ class BlockEmailAddresses extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        $emails = $this->getCombinedEmails();
-        if (!$emails) {
-            return;
-        }
-
         $fields = $form->getLayout()->getFields(EmailField::class);
         foreach ($fields as $field) {
             $value = $field->getValue();
@@ -80,6 +82,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                 continue;
             }
 
+            $emails = $this->getCombinedEmails();
             foreach ($emails as $email) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
                     if ($this->errorsBelowFields) {
@@ -87,21 +90,38 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                         $field->addError(Freeform::t($message, ['email' => $value]));
                     }
 
+                    $form->markAsSpam(
+                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                        \sprintf(
+                            'Email field "%s" contains a blocked email address "%s"',
+                            $field->getHandle(),
+                            $email
+                        )
+                    );
+
                     if ($displayErrors) {
                         $form->addError(Freeform::t('Form contains a blocked email'));
-                    } else {
-                        $form->markAsSpam(
-                            SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                            \sprintf(
-                                'Email field "%s" contains a blocked email address "%s"',
-                                $field->getHandle(),
-                                $email
-                            )
-                        );
                     }
 
                     break;
                 }
+            }
+
+            if ($this->checkMxRecord && !$this->hasMXRecord($value)) {
+                $form->markAsSpam(
+                    SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                    \sprintf(
+                        'Email field "%s" with email address "%s" does not have a MX record',
+                        $field->getHandle(),
+                        $value,
+                    )
+                );
+
+                if ($displayErrors) {
+                    $form->addError(Freeform::t('Form contains a blocked email'));
+                }
+
+                break;
             }
         }
     }
@@ -109,5 +129,20 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     private function getCombinedEmails(): array
     {
         return array_merge($this->emails, $this->defaultEmails);
+    }
+
+    private function hasMXRecord(string $email): bool
+    {
+        $at = strrpos($email, '@');
+        if (false === $at) {
+            return false;
+        }
+
+        $domain = substr($email, $at + 1);
+        if (empty($domain)) {
+            return false;
+        }
+
+        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
     }
 }

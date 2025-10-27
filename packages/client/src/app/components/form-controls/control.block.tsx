@@ -28,6 +28,7 @@ export type ControlProps = {
   disabled?: boolean;
   errors?: string[];
   messages?: Message[];
+  preContent?: React.ReactNode;
   extraContent?: React.ReactNode;
 };
 
@@ -45,6 +46,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   errors,
   messages,
   isEncrypted,
+  preContent,
   extraContent,
 }) => {
   return (
@@ -53,6 +55,8 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
       $width={width}
     >
       <LabelGroup>
+        {preContent !== undefined && <ExtraContent>{preContent}</ExtraContent>}
+
         <LabelInstructionsWrapper>
           <FormLabel
             label={label}

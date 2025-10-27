@@ -13,6 +13,7 @@ class Settings
     public bool $populateValuesFromGet = false;
     public bool $disableSubmit = false;
     public bool $autoScroll = false;
+    public bool $useIdempotencyKey = false;
     public string $csrfRefresh = '';
     public string $jsInsertLocation = '';
     public string $jsInsertType = '';
@@ -23,6 +24,7 @@ class Settings
     public ?int $purgeAssetsInterval = null;
     public bool $formattingTemplatesPath = false;
     public bool $sendAlertsOnFailedNotifications = false;
+    public bool $sendErrorNotifications = false;
     public bool $notificationTemplatesPath = false;
     public bool $successTemplatesPath = false;
     public bool $modifiedStatuses = false;

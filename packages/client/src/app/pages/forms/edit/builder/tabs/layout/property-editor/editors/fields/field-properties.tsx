@@ -35,8 +35,8 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const sectionBlocks: React.ReactElement[] = useMemo(() => {
     const blocks: React.ReactElement[] = [];
     sections
-      .sort((a, b) => a.order - b.order)
-      .forEach(({ handle, label, icon }, sectionIndex) => {
+      ?.sort((a, b) => a.order - b.order)
+      ?.forEach(({ handle, label, icon }, sectionIndex) => {
         const properties = type?.properties
           .filter(sectionFilter(handle))
           .filter((property) => property.visible);

@@ -15,6 +15,10 @@ class TableLayout implements \IteratorAggregate, \ArrayAccess
     public function __construct(array $rows = [])
     {
         foreach ($rows as $column) {
+            if (!\is_array($column) && \is_object($column)) {
+                $column = (array) $column;
+            }
+
             $this->add(
                 $column['label'] ?? '',
                 $column['value'] ?? '',

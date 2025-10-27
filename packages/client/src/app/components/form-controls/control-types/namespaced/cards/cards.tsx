@@ -2,18 +2,13 @@ import React from 'react';
 import { Control } from '@components/form-controls/control';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import type { ControlType } from '@components/form-controls/types';
+import type { Field } from '@editor/store/slices/layout/fields';
 import type { CardsProperty } from '@ff-client/types/properties';
 
 import { CardsEditor } from './editor/cards.editor';
 import { CardsPreview } from './preview/cards.preview';
 
-type Context = {
-  properties: {
-    transform?: string;
-  };
-};
-
-const Cards: React.FC<ControlType<CardsProperty, Context>> = ({
+const Cards: React.FC<ControlType<CardsProperty, Field>> = ({
   value,
   property,
   errors,
@@ -21,7 +16,7 @@ const Cards: React.FC<ControlType<CardsProperty, Context>> = ({
   context,
 }) => {
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <PreviewableComponent
         preview={
           <CardsPreview
@@ -30,7 +25,12 @@ const Cards: React.FC<ControlType<CardsProperty, Context>> = ({
           />
         }
       >
-        <CardsEditor value={value} updateValue={updateValue} />
+        <CardsEditor
+          value={value}
+          updateValue={updateValue}
+          property={property}
+          context={context}
+        />
       </PreviewableComponent>
     </Control>
   );

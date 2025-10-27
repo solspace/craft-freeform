@@ -14,6 +14,21 @@ export const TableContainer = styled(PreviewEditorContainer)`
 
 export const TabularOptions = styled.table`
   width: 100%;
+
+  thead {
+    background-color: ${colors.gray050};
+    border: 1px solid red;
+    border-radius: 5px 5px 0 0;
+
+    th {
+      padding: 6px;
+      padding-inline: 10px !important;
+      margin: 0;
+
+      background-color: ${colors.gray050};
+      border: 1px solid ${colors.hairline};
+    }
+  }
 `;
 
 export const Row = styled.tr``;
@@ -50,6 +65,11 @@ export const Input = styled.input`
   &::placeholder {
     color: ${colors.gray200};
   }
+
+  &:disabled {
+    background: #00000004;
+    color: ${colors.gray300};
+  }
 `;
 
 export const Select = styled.select`
@@ -81,4 +101,10 @@ export const Button = styled.button`
   > svg {
     fill: currentColor;
   }
+`;
+
+export const CenterPoint = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;

@@ -14,7 +14,7 @@ Spam Blocking is handled as an integration to give you more control. Spam Blocki
 ### 2. Set the Defaults
 
 - In the **Default Blocked Keywords** textarea below, enter keywords you would like blocked from being used in all text and textarea fields for any form that enables this integration.
-- Use quotes for phrases (e.g. `"generate new leads"`), asterisks for wildcards (e.g. `lead*`), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, make good use of the wildcard character by placing one before and after.
+- Use quotes for phrases (e.g. ``"generate new leads"``), asterisks for wildcards (e.g. ``lead*``), and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, make good use of the wildcard character by placing one before and after.
 - If you ever need to add, remove or change blocked keywords, you can come back to this integration settings page and do so.
 - Save the integration.
 

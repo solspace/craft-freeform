@@ -12,9 +12,10 @@ const Recipients: React.FC<ControlType<RecipientsProperty>> = ({
   property,
   errors,
   updateValue,
+  context,
 }) => {
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <RecipientsController value={value} onChange={updateValue} />
       <HelpText>
         <span

@@ -19,6 +19,8 @@ namespace Solspace\Freeform\Library\DataObjects;
  */
 class DisabledFunctionality
 {
+    private array|bool|null $settings;
+
     private bool $api = false;
     private bool $elements = false;
 
@@ -44,6 +46,8 @@ class DisabledFunctionality
      */
     public function __construct(array|bool|null $settings = null)
     {
+        $this->settings = $settings;
+
         if (true === $settings) {
             $this->api = true;
             $this->elements = true;
@@ -97,6 +101,11 @@ class DisabledFunctionality
     public function __get(string $name)
     {
         return $this->{$name};
+    }
+
+    public function getSettings(): array|bool|null
+    {
+        return $this->settings;
     }
 
     public function isApi(): bool

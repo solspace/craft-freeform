@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\Single\UrlParameterTracking;
 
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Message;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\EnabledByDefault\EnabledByDefaultTrait;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'URL Parameter Tracking',
     type: Type::TYPE_SINGLE,

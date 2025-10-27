@@ -4,6 +4,7 @@ export type ColumnConfiguration = {
   key: string;
   label: string;
   type: ColumnType;
+  translatable?: boolean;
 };
 
 export type TabularData = ColumnConfiguration[];

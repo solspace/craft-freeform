@@ -19,6 +19,7 @@ trait RulesTrait
     #[Input\Boolean(
         label: 'Enable Rules',
         instructions: 'Enable rules to control when this integration is triggered.',
+        order: 998,
     )]
     protected bool $enableRules = false;
 
@@ -29,6 +30,7 @@ trait RulesTrait
     #[Input\Special\ConditionalIntegrationRule(
         label: 'Rules',
         instructions: 'Specify when this integration should be triggered.',
+        order: 999,
     )]
     protected ?IntegrationRule $rule;
 

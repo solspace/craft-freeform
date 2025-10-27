@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\SpamBlocking\AI;
 
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Integrations\IntegrationTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -10,20 +11,23 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\AsyncSpamBlockingIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'AI Spam Analysis',
     type: Type::TYPE_SPAM_BLOCK,
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class AiSpamAnalysis extends SpamBlockingIntegration
+class AiSpamAnalysis extends SpamBlockingIntegration implements AsyncSpamBlockingIntegrationInterface
 {
     private const CONFIDENCE_LEVELS = [
         'DEFINITELY_SPAM',
@@ -141,8 +145,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration
             'max_tokens' => $this->integration->getMaxTokens(),
         ];
 
+        $clientProvider = \Craft::$container->get(IntegrationClientProvider::class);
+        $client = $clientProvider->getAuthorizedClient($this->integration);
+
         try {
-            return $this->integration->processAiRequest($systemPrompt, $content, $options);
+            return $this->integration->processAiRequest($client, $systemPrompt, $content, $options);
         } catch (\Throwable $e) {
             Freeform::getInstance()->logger->getLogger('ai')->error(
                 'AI Spam Analysis failed: '.$e->getMessage(),
@@ -162,11 +169,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration
         $confidence = $this->getSpamConfidence($response);
         $message = $reason ?: $this->formatConfidenceMessage($confidence);
 
+        $spamReason = $this->buildSpamReason($message, $confidence, $response);
+        $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
+
         if ($this->displayErrors || $displayErrors) {
             $form->addError(Freeform::t('Submission flagged as spam by AI: {reason}', ['reason' => $message]));
-        } else {
-            $spamReason = $this->buildSpamReason($message, $confidence, $response);
-            $form->markAsSpam(SpamReason::TYPE_AI, $spamReason);
         }
     }
 

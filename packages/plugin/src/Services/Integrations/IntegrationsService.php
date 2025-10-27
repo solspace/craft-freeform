@@ -24,10 +24,12 @@ use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationTypeProvider;
 use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\FailedRequestEvent;
+use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\FormJobInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -554,10 +556,17 @@ class IntegrationsService extends BaseService
 
         $submission = $freeform->submissions->getSubmissionById($submissionId);
         if ($submission) {
+            if ($submission->isSpam) {
+                return;
+            }
+
             $form->setSubmission($submission);
         }
 
-        $form->valuesFromArray($postedData);
+        $event = new ProcessPostedValuesEvent($form, $submission, $postedData);
+        Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
+
+        $form->valuesFromArray($event->getValues());
 
         /** @var IntegrationInterface[]|PushableInterface $integrations */
         $integrations = $this->getForForm($form, $type, true);

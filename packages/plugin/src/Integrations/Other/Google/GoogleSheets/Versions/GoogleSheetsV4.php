@@ -15,10 +15,12 @@ namespace Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Versions;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\BaseGoogleSheetsIntegration;
 use Solspace\Freeform\Integrations\Other\Google\GoogleSheets\Utilities\SheetsHelper;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Google Sheets',
     type: Type::TYPE_OTHER,

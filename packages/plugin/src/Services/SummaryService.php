@@ -122,6 +122,7 @@ class SummaryService extends Component
         $settings->populateValuesFromGet = (bool) $settingsService->getSettingsModel()->fillWithGet;
         $settings->disableSubmit = $settingsService->isFormSubmitDisable();
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
+        $settings->useIdempotencyKey = $settingsService->isUseIdempotencyKey();
         $settings->csrfRefresh = $settingsService->getSettingsModel()->csrfRefresh;
         $settings->jsInsertLocation = $settingsService->getSettingsModel()->scriptInsertLocation;
         $settings->jsInsertType = $settingsService->getSettingsModel()->scriptInsertType;
@@ -132,6 +133,7 @@ class SummaryService extends Component
         $settings->purgeAssetsInterval = $settingsService->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes ?? 1;
         $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;
         $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
+        $settings->sendErrorNotifications = $settingsService->isErrorNotificationEnabled();
         $settings->notificationTemplatesPath = (bool) $settingsService->getSettingsModel()->emailTemplateDirectory;
         $settings->successTemplatesPath = (bool) $settingsService->getSettingsModel()->successTemplateDirectory;
         $settings->modifiedStatuses = $this->isModifiedStatuses();
@@ -179,6 +181,8 @@ class SummaryService extends Component
         $fields->regex = $this->usesField('regex', $fieldTypes);
         $fields->website = $this->usesField('website', $fieldTypes);
         $fields->opinionScale = $this->usesField('opinion-scale', $fieldTypes);
+        $fields->cards = $this->usesField('cards', $fieldTypes);
+        $fields->image = $this->usesField('image', $fieldTypes);
         $fields->signature = $this->usesField('signature', $fieldTypes);
         $fields->table = $this->usesField('table', $fieldTypes);
         $fields->invisible = $this->usesField('invisible', $fieldTypes);

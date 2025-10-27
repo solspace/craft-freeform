@@ -8,11 +8,17 @@ abstract class BaseConfigItem extends Component implements DefaultConfigInterfac
 {
     public bool $locked = false;
     public mixed $value = '';
+    public string $placeholder = '';
     private string $label = '';
 
     public function setLabel(string $label): void
     {
         $this->label = $label;
+    }
+
+    public function getPlaceholder(): string
+    {
+        return $this->placeholder;
     }
 
     public function getLabel(): string

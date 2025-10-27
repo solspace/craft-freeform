@@ -4,18 +4,11 @@
 	http://jedwatson.github.io/classnames
 */
 
+/*! @license DOMPurify 3.2.4 | (c) Cure53 and other contributors | Released under the Apache license 2.0 and Mozilla Public License 2.0 | github.com/cure53/DOMPurify/blob/3.2.4/LICENSE */
+
 /*! Axios v1.12.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 /*! decimal.js-light v2.5.1 https://github.com/MikeMcl/decimal.js-light/LICENCE */
-
-/**
-     * Prism: Lightweight, robust, elegant syntax highlighting
-     *
-     * @license MIT <https://opensource.org/licenses/MIT>
-     * @author Lea Verou <https://lea.verou.me>
-     * @namespace
-     * @public
-     */
 
 /**
    * match-sorter-utils

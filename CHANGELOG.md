@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.13.0 - Unreleased
+## 5.13.0 - 2025-10-27
 
 ### Added
 - **PayPal** integration: Accept payments with PayPal.

@@ -2,6 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+const iconSize = 20;
+export const Icon = styled.div`
+  display: block;
+  width: ${iconSize}px;
+  height: ${iconSize}px;
+  fill: ${colors.gray550};
+`;
+
 export const Link = styled(NavLink)`
   display: flex;
   align-items: center;
@@ -20,6 +28,10 @@ export const Link = styled(NavLink)`
   &.active {
     color: ${colors.white};
     background-color: ${colors.gray500};
+
+    ${Icon} {
+      fill: ${colors.white};
+    }
   }
 
   &.active.inactive {
@@ -41,13 +53,6 @@ export const Link = styled(NavLink)`
   }
 `;
 
-const iconSize = 20;
-export const Icon = styled.div`
-  display: block;
-  width: ${iconSize}px;
-  height: ${iconSize}px;
-  fill: ${colors.gray550};
-`;
 export const Name = styled.div`
   flex-grow: 1;
   max-width: 90%;

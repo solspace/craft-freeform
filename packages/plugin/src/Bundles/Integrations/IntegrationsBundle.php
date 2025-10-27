@@ -12,7 +12,6 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\APIIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Event;
 
 class IntegrationsBundle extends FeatureBundle
@@ -44,6 +43,10 @@ class IntegrationsBundle extends FeatureBundle
 
         if (FieldObject::TYPE_ARRAY !== $integrationField->getType() && \is_array($value)) {
             $value = implode(', ', $value);
+        }
+
+        if (\is_string($value)) {
+            $value = trim($value);
         }
 
         switch ($integrationField->getType()) {
@@ -144,6 +147,7 @@ class IntegrationsBundle extends FeatureBundle
 
         $context = [
             'integration' => $integration->getHandle(),
+            'exception' => $exception,
         ];
 
         if ($form) {
@@ -157,11 +161,5 @@ class IntegrationsBundle extends FeatureBundle
         }
 
         $logger->error($message, $context);
-
-        $this->plugin()
-            ->logger
-            ->getLogger(FreeformLogger::INTEGRATION)
-            ->error($integration->getTypeDefinition()->name.': '.$message, $context)
-        ;
     }
 }

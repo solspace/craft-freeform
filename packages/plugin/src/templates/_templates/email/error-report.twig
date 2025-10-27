@@ -1,0 +1,120 @@
+{# subject: {{ craft.freeform.name }} Critical Error: {{ log.shortMessage }} #}
+{# fromEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #}
+{# fromName: {{ craft.app.projectConfig.get('email.fromName') }} #}
+{# replyToEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #}
+{# includeAttachments: false #}
+
+{% extends 'freeform/_templates/email/layout/solspace' %}
+{% import 'freeform/_templates/email/layout/macros' as macros %}
+
+{% set contextLines = log.contextDump ? log.contextDump|split("\n") : [] %}
+{% set traceLines = exception and exception.trace ? exception.trace : [] %}
+
+{% block content %}
+
+    {{ macros.heading('{name} Alert' | t('freeform', { name: craft.freeform.name })) }}
+    {{ macros.title('A critical Freeform error was detected' | t('freeform'), true) }}
+
+    {% set intro = "Freeform logged a <b>{level}</b> level exception in the <b>{channel}</b> logger on {date}. Review the details below." | t('freeform', {
+        level: log.level|upper,
+        channel: log.channel,
+        date: log.datetime|datetime
+    }) %}
+    {{ macros.paragraph(intro) }}
+
+    {{ macros.heading('Message' | t('freeform')) }}
+    {{ macros.paragraph(log.message, "", "color: red;") }}
+
+    {% if exception %}
+        {{ macros.heading('Exception' | t('freeform')) }}
+        {% set exceptionSummary = "{class} (Code: {code})" | t('freeform', {
+            class: exception.class,
+            code: exception.code is same as(null) or exception.code is same as('') ? 'n/a' : exception.code
+        }) %}
+        {{ macros.paragraph('<strong>' ~ exceptionSummary ~ '</strong>' | raw) }}
+        {{ macros.paragraph('<quote>' ~ exception.message ~ '<quote>') }}
+        {{ macros.paragraph('<small>' ~ exception.file ~ ':' ~ exception.line ~ '</small>') }}
+        {% if traceLines %}
+            {{ macros.heading('Trace' | t('freeform')) }}
+            {{ macros.code({
+                lines: { first: 1, last: traceLines|length, highlight: 0 },
+                source: traceLines
+            }) }}
+        {% endif %}
+    {% endif %}
+
+    {% if contextLines %}
+        {{ macros.heading('Context' | t('freeform')) }}
+        {{ macros.code({
+            lines: { first: 1, last: contextLines|length, highlight: 0 },
+            source: contextLines
+        }) }}
+    {% endif %}
+
+
+    {% set headingStyle = "padding: 4px 8px; width: 140px; color: #a5a5a5; text-transform: uppercase; text-align: right; vertical-align: top; letter-spacing: 0; font-weight: bold;" %}
+    {% set valueStyle = "padding: 4px 8px;" %}
+
+    {% if request %}
+        {{ macros.heading('Request' | t('freeform')) }}
+        <table style="width: 100%; margin: 0 0 20px; border-collapse: collapse; font-size: 0.9em;">
+            <tbody>
+                {% for key, value in request %}
+                    {% if value %}
+                        <tr>
+                            <td style="{{ headingStyle }}">{{ key }}</td>
+                            <td style="{{ valueStyle }}">{{ value is iterable ? value|json_encode(constant('JSON_UNESCAPED_SLASHES')) : value }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    {{ macros.heading('Environment' | t('freeform')) }}
+    <table style="width: 100%; margin: 0 0 20px; border-collapse: collapse; font-size: 0.9em;">
+        <tbody>
+            {% if site.name %}
+                <tr>
+                    <td style="{{ headingStyle }}">{{ "Site"|t('freeform') }}</td>
+                    <td style="{{ valueStyle }}">{{ site.name }}{% if site.handle %} ({{ site.handle }}){% endif %}</td>
+                </tr>
+            {% endif %}
+            {% if site.baseUrl %}
+                <tr>
+                    <td style="{{ headingStyle }}">{{ "Base URL"|t('freeform') }}</td>
+                    <td style="{{ valueStyle }}">{{ site.baseUrl }}</td>
+                </tr>
+            {% endif %}
+            <tr>
+                <td style="{{ headingStyle }}">{{ "Environment"|t('freeform') }}</td>
+                <td style="{{ valueStyle }}">{{ site.environment }}</td>
+            </tr>
+            <tr>
+                <td style="{{ headingStyle }}">{{ "Fingerprint"|t('freeform') }}</td>
+                <td style="{{ valueStyle }}">{{ log.fingerprint }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {% set cooldownText = "Additional emails for this error will be suppressed for approximately {minutes} minutes." | t('freeform', {
+        minutes: (cooldownSeconds / 60)|round(0, 'ceil')
+    }) %}
+    {{ macros.paragraph(cooldownText, 'small') }}
+
+{% endblock %}
+
+{% block footerText %}
+    {{ "This email was generated automatically by <a href='{link}'>{name}</a>.
+        You are receiving this because error notifications are enabled in your Freeform settings." |
+        t('freeform', {
+            link: 'https://docs.solspace.com/craft/freeform/',
+            name: freeform.name
+        }) | raw }}
+{% endblock %}
+
+{% set links = [
+    { url: cpUrl('freeform'), text: 'Open the Freeform control panel' | t('freeform') },
+    { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update error notification recipients' | t('freeform') }
+] %}
+

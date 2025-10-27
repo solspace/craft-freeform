@@ -45,6 +45,16 @@ class PaymentRecord extends ActiveRecord
         return self::TABLE;
     }
 
+    public static function findOneOfClass(string $class, array $condition = []): ?self
+    {
+        return self::find()
+            ->where($condition)
+            ->andWhere(['integration.class' => $class])
+            ->innerJoin(IntegrationRecord::TABLE.' integration', '[[integration.id]] = [[integrationId]]')
+            ->one()
+        ;
+    }
+
     /**
      * @return ActiveQuery|IntegrationRecord
      */

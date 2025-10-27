@@ -56,7 +56,7 @@ class NoticesController extends BaseApiController
 
         return [
             'notices' => $notices,
-            'errors' => $this->loggerService->getLogReader()->count(),
+            'errors' => $this->loggerService->getCombinedLogLineCount(['error']),
         ];
     }
 

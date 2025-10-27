@@ -55,14 +55,14 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        instructions: 'Enable this if your Zoho account is in Sandbox mode (connects to "sandbox.zohoapis.{domain}" instead of "www.zohoapis.com" or "www.zohoapis.{domain}").',
+        instructions: 'Enable this if your Zoho account is in Sandbox mode (connects to `sandbox.zohoapis.{domain}` instead of `www.zohoapis.com` or `www.zohoapis.{domain}`).',
         order: 1,
     )]
     protected bool $sandboxMode = false;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
-        instructions: 'Enable this if your Zoho account is in Developer mode (connects to "developer.zohoapis.{domain}" instead of "www.zohoapis.com", "www.zohoapis.{domain}" or "sandbox.zohoapis.{domain}").',
+        instructions: 'Enable this if your Zoho account is in Developer mode (connects to `developer.zohoapis.{domain}` instead of `www.zohoapis.com`, `www.zohoapis.{domain}` or `sandbox.zohoapis.{domain}`).',
         order: 2,
     )]
     protected bool $developerMode = false;

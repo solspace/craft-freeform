@@ -34,7 +34,7 @@ class GoogleSheetsTokenListener extends FeatureBundle
         // Join scopes with a space delimiter
         $formattedScopes = implode(' ', $scopes);
 
-        // Add necessary parameters to the authentication event
+        // Add the necessary parameters to the authentication event
         $event
             ->add('scope', $formattedScopes)
             ->add('prompt', 'consent')

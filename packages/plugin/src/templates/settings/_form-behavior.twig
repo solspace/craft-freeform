@@ -49,6 +49,14 @@
         errors: settings.errors("rememberPageSubmitOrder"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Prevent Duplicate Submissions (Idempotency Keys)"|t('freeform'),
+        instructions: "When enabled, Freeform generates a unique token for each form instance to prevent duplicate submissions and actions. If the same data is submitted multiple times in quick succession, only the first submission is processed. This helps avoid duplicate actions, especially for payment or AI-powered forms."|t('freeform'),
+        name: "settings[useIdempotencyKey]",
+        on: settings.useIdempotencyKey,
+        errors: settings.errors("useIdempotencyKey"),
+    }) }}
+
     {% if (craft.app.config.general.asyncCsrfInputs) %}
         {{ forms.selectField({
             label: "CSRF Token Refresh Method"|t('freeform'),
@@ -67,6 +75,15 @@
     <hr>
 
     <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for AI Processing"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger AI processing. Enabling this will speed up submission processing for your users."|t('freeform'),
+        name: "settings[useQueueForAiFields]",
+        on: settings.useQueueForAiFields,
+        errors: settings.errors("useQueueForAiFields"),
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+    }) }}
 
     {{ forms.lightswitchField({
         label: "Use Queue for Email Notifications"|t('freeform'),

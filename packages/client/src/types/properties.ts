@@ -197,6 +197,7 @@ export type OptionsProperty = BaseProperty<
   PropertyType.Options
 > & {
   showEmptyOption?: boolean;
+  allowOptgroup?: boolean;
 };
 export type OptionPickerProperty = BaseProperty<
   string[],

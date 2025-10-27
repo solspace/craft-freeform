@@ -14,6 +14,7 @@ class ColumnConfiguration
         public string $key,
         public string $label,
         public ?string $type,
+        public ?bool $translatable = false,
     ) {
         if (null === $type) {
             $this->type = self::TYPE_TEXT;

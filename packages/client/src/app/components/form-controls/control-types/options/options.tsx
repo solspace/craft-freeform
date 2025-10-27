@@ -58,7 +58,14 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
 
   if (willTranslate(property.handle)) {
     return (
-      <OptionsTranslatable property={property} value={value} field={context} />
+      <OptionsTranslatable
+        property={property}
+        value={value}
+        field={context}
+        defaultValue={defaultValue}
+        isMultiple={isMultiple}
+        context={context}
+      />
     );
   }
 
@@ -87,6 +94,7 @@ const Options: React.FC<ControlType<OptionsProperty, Field>> = ({
         updateDefaultValue={updateDefaultValue}
         convertToCustomValues={convertToCustomValues}
         isMultiple={isMultiple}
+        allowOptgroup={property.allowOptgroup}
         autoUpdateHandle={autoUpdateHandle}
       />
 

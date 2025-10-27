@@ -65,7 +65,7 @@ const DynamicSelect: React.FC<ControlType<DynamicSelectProperty>> = ({
   }, [data, isFetched]);
 
   return (
-    <Control property={property} errors={errors}>
+    <Control property={property} errors={errors} context={context}>
       <DropdownContainer>
         <Dropdown
           loading={isFetching}

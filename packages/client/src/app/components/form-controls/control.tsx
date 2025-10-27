@@ -9,6 +9,7 @@ type Props = {
   property: Property;
   errors?: string[];
   context?: unknown;
+  preContent?: React.ReactNode;
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({
@@ -16,6 +17,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   property,
   errors,
   context,
+  preContent,
 }) => {
   const { hasTranslation, removeTranslation, isTranslationsEnabled } =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -46,6 +48,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
       hasTranslation={hasTranslation(handle)}
       isEncrypted={property?.flags?.includes('encrypted')}
       removeTranslation={() => removeTranslation(handle)}
+      preContent={preContent}
     >
       {children}
     </ControlBlock>

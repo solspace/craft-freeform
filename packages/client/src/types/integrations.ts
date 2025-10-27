@@ -9,6 +9,7 @@ export enum IntegrationType {
   Webhooks = 'webhooks',
   Singles = 'single',
   Other = 'other',
+  Ai = 'ai',
 }
 
 export enum TargetFieldType {

@@ -26,6 +26,7 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseGeneratedOptionsField;
 use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsConfigurationInterface;
+use Solspace\Freeform\Fields\Traits\OptionCollectionTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -36,6 +37,8 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 )]
 class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInterface
 {
+    use OptionCollectionTrait;
+
     #[Input\Hidden]
     protected string $defaultValue = '';
 
@@ -45,6 +48,7 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
         label: 'Options Editor',
         instructions: 'Define your options',
         showEmptyOption: true,
+        allowOptgroup: true,
     )]
     protected ?OptionsConfigurationInterface $optionConfiguration = null;
 
@@ -108,32 +112,11 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             ->set($this->getRequiredAttribute())
         ;
 
-        $output = '';
-        foreach ($this->getOptions() as $index => $option) {
-            $isChecked = $option->getValue() == $this->getValue();
-
-            $optionAttributes = $this->getAttributes()
-                ->getOption()
-                ->clone()
-                ->replace('value', $option->getValue())
-                ->replace('selected', $isChecked)
-            ;
-
-            $output .= Html::tag(
-                $optionAttributes->getTag('option'),
-                $this->translateOptionLabel($option),
-                $optionAttributes->toHtmlTagArray([
-                    'i' => $index,
-                    'index' => $index,
-                    'option' => $option,
-                    'field' => $this,
-                ])
-            );
-        }
+        $optionAttributes = $this->getAttributes()->getOption();
 
         return Html::tag(
             $attributes->getTag('select'),
-            $output,
+            $this->renderCollection($this->getOptions(), $optionAttributes),
             $attributes->toHtmlTagArray(['field' => $this])
         );
     }

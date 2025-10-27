@@ -44,6 +44,16 @@
             errors: settings.getErrors("alertNotificationRecipients"),
         }) }}
 
+        {{ forms.textField({
+            class: "code",
+            label: "Critical System Error Report Recipients"|t('freeform'),
+            instructions: "Provide one or more comma-separated email addresses that should receive critical error reports."|t('freeform'),
+            placeholder: "e.g john@smith.com, bethany@corporation.com",
+            name: "settings[errorNotificationRecipients]",
+            value: settings.errorNotificationRecipients,
+            errors: settings.getErrors("errorNotificationRecipients"),
+        }) }}
+
         <hr>
 
         <h2>{{ "Digest Email Notifications"|t('freeform') }}</h2>

@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.13.0 - Unreleased
+
+### Added
+- **PayPal** integration: Accept payments with PayPal.
+- **Square** integration: Accept payments with Square.
+- **xAI** integration: Use xAI models to process form submissions.
+- **Anthropic** integration: Use Anthropic models to process form submissions.
+- Expanded **translation support** for field types, including _HTML_, _Rich Text_, _Date & Time_, _File Upload_, _Tables_, _Cards_, _Stripe_, and more.
+- Granular **default values for field settings** in the form builder.
+- **AI Field Queue** setting: processes AI fields in the background so form submission handling isn't delayed.
+- **Site picker** in breadcrumbs on the control panel submission detail/edit page.
+
+### Changed
+- TBD: **Template Overrides** now automatically factor in success and error attributes when in AJAX mode.
+- TBD: Improved **Template Overrides** reliability with various minor enhancements.
+- Whitespaces on values sent to integrations are now trimmed automatically.
+
 ## 5.12.4 - 2025-10-20
 
 ### Fixed

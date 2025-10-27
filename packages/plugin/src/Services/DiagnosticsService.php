@@ -471,6 +471,10 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->settings->autoScroll,
                 ),
                 new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Prevent Duplicate Submissions (Idempotency Keys)').'</span>',
+                    $this->getSummary()->statistics->settings->useIdempotencyKey,
+                ),
+                new DiagnosticItem(
                     '<span class="diag-check diag-{{ value == "Never" ? "disabled" : "enabled" }}"></span><span class="item-inline">'.Freeform::t('CSRF Token Refresh Method').'{% if value %}: <b>{{ value }}</b>{% endif %}</span>',
                     $this->getCsrfRefresh()
                 ),
@@ -509,6 +513,10 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Enable Search Index Updating on New Submissions').'</span>',
                     $this->getSettingsService()->getSettingsModel()->updateSearchIndexes
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Processing').'</span>',
+                    $this->getSettingsService()->getSettingsModel()->useQueueForAiFields
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Email Notifications').'</span>',
@@ -748,6 +756,10 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Developer Digest Email').'</span>',
                     \count($this->getSettingsService()->getDigestRecipients()) > 0
+                ),
+                new DiagnosticItem(
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Send System Error Reports').'</span>',
+                    $this->getSummary()->statistics->settings->sendErrorNotifications,
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Update Warnings & Notices').'</span>',

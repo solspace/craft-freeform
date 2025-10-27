@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 
@@ -16,14 +17,16 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 )]
 class RegexField extends TextField implements ExtraFieldInterface
 {
+    #[Translatable]
     #[Input\Text(
         instructions: 'Enter any regex pattern here.',
     )]
     protected string $pattern = '';
 
+    #[Translatable]
     #[Input\TextArea(
         label: 'Error Message',
-        instructions: "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found.",
+        instructions: 'The message a user should receive if an incorrect value is given. It will replace any occurrences of `{{pattern}}` with the supplied regex pattern inside the message if any are found.',
         value: 'Value is not valid',
     )]
     protected string $message = '';
@@ -38,12 +41,12 @@ class RegexField extends TextField implements ExtraFieldInterface
 
     public function getPattern(): string
     {
-        return $this->pattern;
+        return $this->getTranslationTable()->get('pattern', $this->pattern);
     }
 
     public function getMessage(): string
     {
-        return $this->message ?: 'Value is not valid';
+        return $this->getTranslationTable()->get('message', $this->message ?: 'Value is not valid');
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

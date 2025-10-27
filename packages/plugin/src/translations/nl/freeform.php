@@ -469,6 +469,7 @@ return [
     'Notifications' => 'Meldingen',
     'No notifications found' => 'Geen meldingen gevonden',
     'To add a notification, use the sidebar on the left' => 'Gebruik de zijbalk aan de linkerkant om een melding toe te voegen',
+    'Notification Manager' => 'Notificatiebeheerder',
     'Admin' => 'Beheerder',
     'Conditional' => 'Voorwaardelijk',
     'User Select' => 'Gebruiker selecteren',

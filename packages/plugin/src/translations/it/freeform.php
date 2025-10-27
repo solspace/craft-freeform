@@ -469,6 +469,7 @@ return [
     'Notifications' => 'Notifiche',
     'No notifications found' => 'Nessuna notifica trovata',
     'To add a notification, use the sidebar on the left' => 'Per aggiungere una notifica, usa la barra laterale a sinistra',
+    'Notification Manager' => 'Gestore notifiche',
     'Admin' => 'Amministratore',
     'Conditional' => 'Condizionale',
     'User Select' => 'Selezione Utente',

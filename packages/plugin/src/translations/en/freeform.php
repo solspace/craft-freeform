@@ -469,6 +469,7 @@ return [
     'Notifications' => 'Notifications',
     'No notifications found' => 'No notifications found',
     'To add a notification, use the sidebar on the left' => 'To add a notification, use the sidebar on the left',
+    'Notification Manager' => 'Notification Manager',
     'Admin' => 'Admin',
     'Conditional' => 'Conditional',
     'User Select' => 'User Select',

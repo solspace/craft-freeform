@@ -469,6 +469,7 @@ return [
     'Notifications' => 'Benachrichtigungen',
     'No notifications found' => 'Keine Benachrichtigungen gefunden',
     'To add a notification, use the sidebar on the left' => 'Um eine Benachrichtigung hinzuzufügen, verwenden Sie die Seitenleiste auf der linken Seite',
+    'Notification Manager' => 'Benachrichtigungs-Manager',
     'Admin' => 'Admin',
     'Conditional' => 'Bedingt',
     'User Select' => 'Benutzerauswahl',

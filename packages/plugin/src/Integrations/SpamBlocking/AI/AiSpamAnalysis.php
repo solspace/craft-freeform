@@ -13,6 +13,7 @@ use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\AiIntegrationInterface;
+use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Integrations\Types\SpamBlocking\SpamBlockingIntegration;
 
@@ -99,6 +100,11 @@ class AiSpamAnalysis extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
+        $fmProvider = \Craft::$container->get(FormMonitorProvider::class);
+        if ($fmProvider->isRequestFromFormMonitor($form)) {
+            return;
+        }
+
         if (!$this->isValidIntegration()) {
             return;
         }

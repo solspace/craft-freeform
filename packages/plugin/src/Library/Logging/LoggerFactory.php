@@ -42,8 +42,8 @@ class LoggerFactory
             $logger = new Logger($category);
 
             $plugin = Freeform::getInstance();
-            $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, Level::Error));
-            $logger->pushHandler(new StreamHandler($logfilePath, $level ?? Logger::DEBUG));
+            $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
+            $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
             $logger->pushProcessor(new RedactSensitiveInfoProcessor());
             $logger->pushProcessor(function ($record) use ($requestId) {
                 $record['extra']['requestId'] = $requestId;
@@ -55,5 +55,14 @@ class LoggerFactory
         }
 
         return self::$instance[$hash];
+    }
+
+    private static function defaultErrorLevel(): mixed
+    {
+        if (class_exists(Level::class)) {
+            return Level::Error;
+        }
+
+        return Logger::ERROR;
     }
 }

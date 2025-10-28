@@ -6,9 +6,9 @@ use craft\console\Request as ConsoleRequest;
 use craft\helpers\App;
 use craft\helpers\Json;
 use craft\web\Request as WebRequest;
-use Monolog\LogRecord;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Logging\FreeformLogRecord;
 
 class ErrorNotificationsService extends BaseService
 {
@@ -17,7 +17,7 @@ class ErrorNotificationsService extends BaseService
     private const TEMPLATE_PATH = __DIR__.'/../templates/_templates/email/error-report.twig';
     private const MAX_DEPTH = 6;
 
-    public function handle(LogRecord $record): void
+    public function handle(FreeformLogRecord $record): void
     {
         $recipients = $this->getSettingsService()->getErrorNotificationRecipients();
         if (!\count($recipients)) {
@@ -34,7 +34,7 @@ class ErrorNotificationsService extends BaseService
         $cacheKey = \sprintf('%s:%s', self::CACHE_KEY_PREFIX, $fingerprint);
 
         if ($cache->get($cacheKey)) {
-            // return;
+            return;
         }
 
         $cache->set($cacheKey, true, self::CACHE_TTL_SECONDS);
@@ -55,7 +55,7 @@ class ErrorNotificationsService extends BaseService
                 'log' => [
                     'message' => $record->message,
                     'shortMessage' => $this->shorten($record->message),
-                    'level' => $record->level->getName(),
+                    'level' => $record->getLevelName(),
                     'channel' => $record->channel,
                     'datetime' => $record->datetime,
                     'context' => $context,
@@ -85,7 +85,7 @@ class ErrorNotificationsService extends BaseService
         \Craft::$app->view->templateMode = $templateMode;
     }
 
-    private function extractException(LogRecord $record): ?\Throwable
+    private function extractException(FreeformLogRecord $record): ?\Throwable
     {
         $context = $record->context;
         $exception = $context['exception'] ?? null;
@@ -222,11 +222,11 @@ class ErrorNotificationsService extends BaseService
         ];
     }
 
-    private function buildFingerprint(LogRecord $record, ?\Throwable $exception = null, array $context = []): string
+    private function buildFingerprint(FreeformLogRecord $record, ?\Throwable $exception = null, array $context = []): string
     {
         $payload = [
             'channel' => $record->channel,
-            'level' => $record->level->value,
+            'level' => $record->getLevelValue(),
             'message' => $record->message,
         ];
 

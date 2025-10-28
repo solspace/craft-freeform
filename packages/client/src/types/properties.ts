@@ -19,6 +19,7 @@ export enum PropertyType {
   AssetPicker = 'assetPicker',
   Attributes = 'attributes',
   Boolean = 'bool',
+  BooleanEnv = 'boolEnv',
   Calculation = 'calculation',
   Cards = 'cards',
   Checkboxes = 'checkboxes',
@@ -58,6 +59,7 @@ export type Option = {
   value: string;
   label: string;
   icon?: string | JSX.Element;
+  hint?: string;
   shadowIndex?: number;
 };
 export type OptionGroup = {
@@ -140,6 +142,7 @@ export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
   focus?: boolean;
 };
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
+export type BooleanEnvProperty = BaseProperty<string, PropertyType.BooleanEnv>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
@@ -320,6 +323,7 @@ export type Property =
   | AssetPickerProperty
   | AttributeProperty
   | BooleanProperty
+  | BooleanEnvProperty
   | CalculationProperty
   | CardsProperty
   | CheckboxesProperty

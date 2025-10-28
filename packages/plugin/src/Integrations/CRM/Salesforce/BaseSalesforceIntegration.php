@@ -62,11 +62,11 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected ?string $customUrl = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
+    #[Input\BooleanEnv(
         instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to `test.salesforce.com` instead of `login.salesforce.com` or `mycompany.my.salesforce.com`).',
         order: 3,
     )]
-    protected bool $sandboxMode = false;
+    protected string $sandboxMode = 'false';
 
     public function checkConnection(Client $client): bool
     {
@@ -165,7 +165,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     protected function isSandboxMode(): bool
     {
-        return $this->sandboxMode;
+        return $this->getProcessedBoolean($this->sandboxMode);
     }
 
     protected function getDomain(): string

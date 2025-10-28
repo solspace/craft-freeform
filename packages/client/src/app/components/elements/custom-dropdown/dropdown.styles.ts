@@ -141,3 +141,8 @@ export const DropdownWrapper = styled.div`
     }
   }
 `;
+
+export const Icon = styled.span`
+  display: flex;
+  align-items: center;
+`;

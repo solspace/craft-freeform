@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.13.1 - 2025-10-28
+
+### Fixed
+- Fixed an issue where support for older **Monolog** versions did not work in Craft 4.x.
+
 ## 5.13.0 - 2025-10-27
 
 ### Added

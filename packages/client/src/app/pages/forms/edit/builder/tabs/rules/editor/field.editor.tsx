@@ -2,11 +2,13 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 import { useQueryFormRules } from '@ff-client/queries/rules';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
@@ -16,6 +18,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field.editor.styles';
+import { LiteEditor } from './lite-preview.editor';
 
 export const FieldRulesEditor: React.FC = () => {
   const { formId, uid } = useParams();
@@ -33,6 +36,11 @@ export const FieldRulesEditor: React.FC = () => {
 
   const { label } = field.properties;
 
+  const isPro = config.editions.is(Edition.Pro);
+  if (!isPro) {
+    return <LiteEditor label={label} />;
+  }
+
   if (!rule) {
     return (
       <RulesEditorWrapper>
@@ -46,7 +54,8 @@ export const FieldRulesEditor: React.FC = () => {
         </Label>
         {!isFetching && (
           <button
-            className="btn add icon dashed"
+            className={classes('btn add icon dashed')}
+            disabled={!isPro}
             onClick={() => dispatch(fieldRuleActions.add(uid))}
           >
             {translate('Add rules')}
@@ -54,6 +63,10 @@ export const FieldRulesEditor: React.FC = () => {
         )}
       </RulesEditorWrapper>
     );
+  }
+
+  if (!isPro) {
+    return null;
   }
 
   return (

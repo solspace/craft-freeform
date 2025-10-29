@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
 import { buttonRuleActions } from '@editor/store/slices/rules/buttons';
@@ -17,6 +18,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field.editor.styles';
+import { LiteEditor } from './lite-preview.editor';
 
 type Params = {
   formId: string;
@@ -56,6 +58,11 @@ export const ButtonRulesEditor: React.FC = () => {
     default:
       label = translate('Button Group');
       break;
+  }
+
+  const isPro = config.editions.is(Edition.Pro);
+  if (!isPro) {
+    return <LiteEditor label={label} />;
   }
 
   if (!rule) {

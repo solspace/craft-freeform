@@ -33,7 +33,7 @@ export const useFieldOptionCollection = (
 
             const type = findType(field.typeClass);
 
-            if (excludedTypes?.includes(type.type)) {
+            if (excludedTypes?.includes(type?.type)) {
               return null;
             }
 

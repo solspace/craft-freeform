@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { submitFormRuleActions } from '@editor/store/slices/rules/submit-form';
 import { submitFormRuleSelectors } from '@editor/store/slices/rules/submit-form/submit-form.selectors';
@@ -14,6 +15,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field.editor.styles';
+import { LiteEditor } from './lite-preview.editor';
 
 export const SubmitFormRulesEditor: React.FC = () => {
   const { formId } = useParams();
@@ -23,6 +25,11 @@ export const SubmitFormRulesEditor: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const rule = useSelector(submitFormRuleSelectors.one);
+
+  const isPro = config.editions.is(Edition.Pro);
+  if (!isPro) {
+    return <LiteEditor label={translate('Submit Form Early')} />;
+  }
 
   if (!rule) {
     return (

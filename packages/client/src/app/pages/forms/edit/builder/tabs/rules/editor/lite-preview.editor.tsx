@@ -77,9 +77,7 @@ export const LiteEditor: FC<Props> = ({ label }) => {
           dangerouslySetInnerHTML={{
             __html: translate(
               '<a href="{link}" target="_blank">Upgrade to Pro</a> to enable advanced rules for this field',
-              {
-                link: 'https://craft-5.ddev.site/admin/plugin-store/freeform',
-              }
+              { link: Craft.getCpUrl('plugin-store/freeform') }
             ),
           }}
         />

@@ -30,15 +30,13 @@ const String: React.FC<ControlType<StringProperty>> = ({
   const isReadonly = property.flags?.includes('readonly');
   const isEnvSuggest = property.flags?.includes('env-suggest');
 
-  const { data } = useQuery(
-    ['autosuggest', 'env'],
-    () => axios.get('/api/autosuggest/env').then((res) => res.data),
-    {
-      enabled: isEnvSuggest,
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+  const { data } = useQuery({
+    queryKey: ['autosuggest', 'env'],
+    queryFn: () => axios.get('/api/autosuggest/env').then((res) => res.data),
+    enabled: isEnvSuggest,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 
   return (
     <Control property={property} errors={errors} context={context}>

@@ -65,8 +65,10 @@ export const Titlebar: FC<Props> = ({ integration }) => {
       confirm(translate('Are you sure you want to remove this integration?'))
     ) {
       axios.post(`/api/integrations/${integration.id}/delete`).then(() => {
-        queryClient.invalidateQueries(QKIntegrations.navigation);
-        queryClient.invalidateQueries(QKIntegrations.single(integration.id));
+        queryClient.invalidateQueries({ queryKey: QKIntegrations.navigation });
+        queryClient.invalidateQueries({
+          queryKey: QKIntegrations.single(integration.id),
+        });
         navigate('/integrations');
 
         notifications.success(translate('Integration deleted successfully.'));

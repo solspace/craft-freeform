@@ -2,6 +2,7 @@ import { QKGroups } from '@ff-client/queries/groups';
 import type { APIError } from '@ff-client/types/api';
 import type { GroupItem } from '@ff-client/types/groups';
 import type {
+  MutationFunctionContext,
   UseMutationOptions,
   UseMutationResult,
 } from '@tanstack/react-query';
@@ -28,13 +29,17 @@ export const useGroupMutation = (
   options.onSuccess = (
     data: AxiosResponse<GroupItem>,
     variables: GroupItem,
-    context: unknown
+    onMutateResult: unknown,
+    context: MutationFunctionContext
   ) => {
-    originalOnSuccess?.(data, variables, context);
-    queryClient.invalidateQueries(QKGroups.all);
+    originalOnSuccess?.(data, variables, onMutateResult, context);
+    queryClient.invalidateQueries({ queryKey: QKGroups.all });
   };
 
-  return useMutation<AxiosResponse, APIError, GroupItem>((data: GroupItem) => {
-    return axios.post<GroupItem>('/api/fields/types/groups', data);
-  }, options);
+  return useMutation<AxiosResponse, APIError, GroupItem>({
+    ...options,
+    mutationFn: (data: GroupItem) => {
+      return axios.post<GroupItem>('/api/fields/types/groups', data);
+    },
+  });
 };

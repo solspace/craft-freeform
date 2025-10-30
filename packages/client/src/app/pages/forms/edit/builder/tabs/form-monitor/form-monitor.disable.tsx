@@ -82,8 +82,8 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
   const disableAndClearMonitoringMutation =
     useDisableAndClearMonitoringMutation(formId, {
       onSuccess: () => {
-        queryClient.invalidateQueries(QKFormMonitor.base);
-        queryClient.invalidateQueries(QKForms.single(formId));
+        queryClient.invalidateQueries({ queryKey: QKFormMonitor.base });
+        queryClient.invalidateQueries({ queryKey: QKForms.single(formId) });
         onSuccess();
         onClose();
         navigate(`/forms/${formId}`, { replace: true });

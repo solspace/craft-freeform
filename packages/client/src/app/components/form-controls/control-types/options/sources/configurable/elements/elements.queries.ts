@@ -7,9 +7,10 @@ import type { OptionTypeProvider } from '../../sources.types';
 export const useOptionTypesElements = (): UseQueryResult<
   OptionTypeProvider[]
 > => {
-  return useQuery<OptionTypeProvider[]>(
-    ['option-types', 'elements'],
-    () => axios.get('/api/types/options/elements').then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery<OptionTypeProvider[]>({
+    queryKey: ['option-types', 'elements'],
+    queryFn: () =>
+      axios.get('/api/types/options/elements').then((res) => res.data),
+    staleTime: Infinity,
+  });
 };

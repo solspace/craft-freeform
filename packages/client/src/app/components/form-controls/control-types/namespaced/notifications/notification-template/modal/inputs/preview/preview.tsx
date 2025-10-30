@@ -80,10 +80,10 @@ export const TemplatePreview: FC<InputControl> = (props) => {
             className={classes(
               'btn',
               'small',
-              sendTest.isLoading && 'disabled',
+              sendTest.isPending && 'disabled',
               !email && 'disabled'
             )}
-            disabled={sendTest.isLoading || !email}
+            disabled={sendTest.isPending || !email}
             type="button"
             onClick={() =>
               sendTest.mutate({

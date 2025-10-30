@@ -111,7 +111,7 @@ export const LimitedUsersDetail: React.FC = () => {
         extra={
           <button className="btn submit" onClick={triggerSave()}>
             <LoadingText
-              loading={mutation.isLoading}
+              loading={mutation.isPending}
               loadingText={translate('Saving')}
               spinner
             >

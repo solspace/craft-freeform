@@ -79,7 +79,7 @@ export const IntegrationsEditor: FC = () => {
   });
 
   const [errors, setErrors] = useState<ErrorList | ErrorCollection>({});
-  const { mutate, isLoading: isMutating } = useIntegrationMutation(
+  const { mutate, isPending: isMutating } = useIntegrationMutation(
     data?.type.class,
     id,
     (error: APIError) => {

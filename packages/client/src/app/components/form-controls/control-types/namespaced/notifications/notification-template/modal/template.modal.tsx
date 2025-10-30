@@ -195,7 +195,7 @@ export const EditNotificationModal: React.FC<
         <button className="btn submit" onClick={handleSave}>
           <LoadingText
             loadingText={translate('Saving')}
-            loading={mutation.isLoading}
+            loading={mutation.isPending}
             spinner
           >
             {translate('Save')}

@@ -59,7 +59,7 @@ export const DisableMonitoringModal: React.FC<ModalProps> = ({
           <button
             className="btn submit"
             onClick={handleDisable}
-            disabled={disableMonitoringMutation.isLoading}
+            disabled={disableMonitoringMutation.isPending}
           >
             {translate('Disable')}
           </button>
@@ -138,7 +138,7 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
           <button
             className={`btn submit ${!enabled ? 'disabled' : ''}`}
             onClick={handleDisableAndDelete}
-            disabled={disableAndClearMonitoringMutation.isLoading || !enabled}
+            disabled={disableAndClearMonitoringMutation.isPending || !enabled}
           >
             {translate('Disable & Delete')}
           </button>

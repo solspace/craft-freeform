@@ -76,7 +76,7 @@ export type Delimiter = {
 
 type BaseProperty<T, PT extends PropertyType> = {
   type: PT;
-  edition: Edition;
+  edition?: Edition;
   handle: string;
   label?: string;
   instructions?: string;

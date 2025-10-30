@@ -46,16 +46,16 @@ export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
           onClick={() => {
             mutation.mutate({ label, field, type });
           }}
-          disabled={mutation.isLoading}
+          disabled={mutation.isPending}
           className={classes(
             'btn fullwidth',
             !mutation.isSuccess && 'submit',
-            mutation.isLoading && 'disabled'
+            mutation.isPending && 'disabled'
           )}
         >
           <LoadingText
             spinner
-            loading={mutation.isLoading}
+            loading={mutation.isPending}
             loadingText="Saving..."
           >
             {translate(mutation.isSuccess ? 'Saved!' : 'Favorite')}

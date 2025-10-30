@@ -99,14 +99,24 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
 
       padding: ${spacings.md} ${spacings.xl};
 
-      border: 1px solid ${colors.gray200};
+      border: 2px solid ${colors.blue400};
       border-radius: 8px;
       background-color: rgba(255, 255, 255, 0.9);
-      box-shadow: 0 6px 8px #27ab8399;
+      box-shadow: 0 2px 6px rgba(31, 41, 51, 0.2);
 
       font-size: 14px;
+      text-align: center;
       color: ${colors.gray700};
     }
+
+    &.size-small:before {
+      font-size: 12px;
+      left: auto;
+      right: 0;
+      transform: translate(0, -50%);
+
+      padding: ${spacings.xs} ${spacings.xs};
+      width: 120px;
   }
 
   &.spacing-small {

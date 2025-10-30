@@ -16,6 +16,7 @@ import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { capitalize } from 'lodash';
 
+import { useRenderContext } from './context/render.context';
 import { FormErrorList } from './error-list';
 import { FormMessageList } from './message-list';
 
@@ -55,6 +56,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   preContent,
   extraContent,
 }) => {
+  const { size } = useRenderContext();
   const {
     editions: { isAtLeast },
   } = config;
@@ -66,6 +68,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
       className={classes(
         !!errors && 'errors',
         disabled && 'disabled',
+        size && `size-${size}`,
         upsell && 'upsell'
       )}
       data-upsell={translate('Upgrade to {edition} to unlock this field.', {

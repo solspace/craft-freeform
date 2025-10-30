@@ -202,6 +202,7 @@ class Freeform extends Plugin
     public string $schemaVersion = '';
 
     public bool $hasCpSettings = true;
+    public bool $hasReadOnlyCpSettings = true;
 
     /**
      * @return Freeform|Plugin

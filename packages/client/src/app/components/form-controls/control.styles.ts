@@ -81,6 +81,34 @@ export const ControlWrapper = styled.div<ControlWrapperProps>`
     }
   }
 
+  &.upsell {
+    > * {
+      user-select: none;
+      pointer-events: none;
+      filter: blur(1.3px);
+    }
+
+    &:before {
+      content: attr(data-upsell);
+
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 1;
+      transform: translate(-50%, -50%);
+
+      padding: ${spacings.md} ${spacings.xl};
+
+      border: 1px solid ${colors.gray200};
+      border-radius: 8px;
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 8px #27ab8399;
+
+      font-size: 14px;
+      color: ${colors.gray700};
+    }
+  }
+
   &.spacing-small {
     padding-top: 6px;
   }

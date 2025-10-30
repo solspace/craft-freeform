@@ -15,7 +15,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field.editor.styles';
-import { LiteEditor } from './lite-preview.editor';
+import { UpsellEditor } from './upsell.editor';
 
 export const SubmitFormRulesEditor: React.FC = () => {
   const { formId } = useParams();
@@ -28,7 +28,7 @@ export const SubmitFormRulesEditor: React.FC = () => {
 
   const isPro = config.editions.is(Edition.Pro);
   if (!isPro) {
-    return <LiteEditor label={translate('Submit Form Early')} />;
+    return <UpsellEditor label={translate('Submit Form Early')} />;
   }
 
   if (!rule) {

@@ -6,6 +6,7 @@ import type {
   ColumnValue,
   TabularData,
 } from '@components/form-controls/control-types/tabular-data/tabular-data.types';
+import type { Edition } from '@config/freeform/freeform.config';
 
 import type { FieldMapping } from './integrations';
 import type { Recipient, RecipientMapping } from './notifications';
@@ -75,6 +76,7 @@ export type Delimiter = {
 
 type BaseProperty<T, PT extends PropertyType> = {
   type: PT;
+  edition: Edition;
   handle: string;
   label?: string;
   instructions?: string;

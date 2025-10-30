@@ -18,7 +18,7 @@ import { ConditionTable } from '../conditions/table/condition-table';
 import { Remove } from './remove-button/remove';
 import { ConfigurationDescription, Label } from './editor.styles';
 import { RulesEditorWrapper } from './field.editor.styles';
-import { LiteEditor } from './lite-preview.editor';
+import { UpsellEditor } from './upsell.editor';
 
 type Params = {
   formId: string;
@@ -62,7 +62,7 @@ export const ButtonRulesEditor: React.FC = () => {
 
   const isPro = config.editions.is(Edition.Pro);
   if (!isPro) {
-    return <LiteEditor label={label} />;
+    return <UpsellEditor label={label} />;
   }
 
   if (!rule) {

@@ -3,10 +3,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
-import { NoticeItem } from '@ff-client/app/pages/forms/list/notices/notices.styles';
+import { colors, spacings } from '@ff-client/styles/variables';
 import type { FieldRule } from '@ff-client/types/rules';
 import { Combinator, Display, Operator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
+import styled from 'styled-components';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
 import { DisplaySelect } from '../conditions/display/display';
@@ -19,7 +20,7 @@ type Props = {
   label: string;
 };
 
-export const LiteEditor: FC<Props> = ({ label }) => {
+export const UpsellEditor: FC<Props> = ({ label }) => {
   const fields = useSelector(fieldSelectors.all);
 
   const firstField = fields.length > 0 ? fields[0].uid : '';
@@ -55,25 +56,8 @@ export const LiteEditor: FC<Props> = ({ label }) => {
         </LoadingText>
       </Label>
 
-      <div style={{ userSelect: 'none', pointerEvents: 'none', opacity: 0.7 }}>
-        <ConfigurationDescription>
-          <DisplaySelect value={rule.display} />
-
-          {translate('this field when')}
-
-          <CombinatorSelect value={rule.combinator} />
-
-          {translate('of the following rules match:')}
-        </ConfigurationDescription>
-
-        <ConditionTable
-          conditions={rule.conditions}
-          buttonLabel="Upgrade to Pro to add rules"
-        />
-      </div>
-
-      <NoticeItem data-type="new" style={{ marginTop: '2rem' }}>
-        <div
+      <PreviewWrapper>
+        <UpsellBanner
           dangerouslySetInnerHTML={{
             __html: translate(
               '<a href="{link}" target="_blank">Upgrade to Pro</a> to enable advanced rules for this field',
@@ -81,7 +65,68 @@ export const LiteEditor: FC<Props> = ({ label }) => {
             ),
           }}
         />
-      </NoticeItem>
+
+        <LockedContent>
+          <ConfigurationDescription>
+            <DisplaySelect value={rule.display} />
+
+            {translate('this field when')}
+
+            <CombinatorSelect value={rule.combinator} />
+
+            {translate('of the following rules match:')}
+          </ConfigurationDescription>
+
+          <ConditionTable
+            conditions={rule.conditions}
+            buttonLabel="Upgrade to Pro to add rules"
+          />
+        </LockedContent>
+      </PreviewWrapper>
     </RulesEditorWrapper>
   );
 };
+
+const PreviewWrapper = styled.div`
+  position: relative;
+`;
+
+const LockedContent = styled.div`
+  user-select: none;
+  pointer-events: none;
+  filter: blur(1.3px);
+`;
+
+const UpsellBanner = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+
+  padding: ${spacings.md} ${spacings.xl};
+
+  border: 1px solid ${colors.teal500};
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 6px 8px #27ab8399;
+
+  font-size: 14px;
+  color: ${colors.gray700};
+
+  a {
+    color: ${colors.blue500};
+    font-weight: bold;
+    text-decoration: underline;
+  }
+
+  a:hover {
+    color: ${colors.blue600};
+  }
+`;

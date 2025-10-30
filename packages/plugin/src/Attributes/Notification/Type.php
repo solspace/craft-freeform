@@ -2,12 +2,14 @@
 
 namespace Solspace\Freeform\Attributes\Notification;
 
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
     public string $className;
+    public string $edition = Edition::EXPRESS;
     private PropertyCollection $properties;
 
     public function __construct(

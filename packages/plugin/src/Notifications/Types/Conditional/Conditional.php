@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Notifications\Types\Conditional;
 
 use Solspace\Freeform\Attributes\Notification\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -25,6 +26,7 @@ use Solspace\Freeform\Library\Rules\Types\NotificationRule;
 use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
+#[Edition(Edition::PRO)]
 #[Type(
     name: 'Conditional',
     newInstanceName: 'Conditional',

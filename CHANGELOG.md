@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.13.2 - 2025-10-30
+
+### Fixed
+- Fixed an issue where the 5.13 schema version wasn't incremented, which could prevent migrations from running automatically.
+
 ## 5.13.1 - 2025-10-28
 
 ### Fixed

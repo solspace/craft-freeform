@@ -1158,7 +1158,7 @@ return [
     'Page Header' => 'Seitenkopf',
     'Inside Form' => 'Im Formular',
     'None (add manually)' => 'Keine (manuell hinzufügen)',
-    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)." => "Stellen Sie sicher, dass Sie Freeforms JS und CSS manuell mithilfe der Funktion 'freeform.loadScripts()' in Ihren Vorlagen laden.",
+    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadFreeformPlugin()' or 'freeform.loadFreeformPluginJs()' and 'freeform.loadFreeformPluginCss()' function in your template(s)." => "Stellen Sie sicher, dass Sie Freeforms JS und CSS manuell mithilfe der Funktion 'freeform.loadFreeformPlugin()' oder 'freeform.loadFreeformPluginJs()' und 'freeform.loadFreeformPluginCss()' in Ihren Vorlagen laden.",
     'Script Insert Type' => 'Skript-Einfügeart',
     'Specify the way Freeform scripts are inserted.' => 'Geben Sie an, wie Freeform-Skripte eingefügt werden.',
     'Asset Bundles (recommended)' => 'Asset-Bundles (empfohlen)',

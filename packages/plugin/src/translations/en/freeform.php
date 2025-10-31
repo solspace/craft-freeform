@@ -1158,7 +1158,7 @@ return [
     'Page Header' => 'Page Header',
     'Inside Form' => 'Inside Form',
     'None (add manually)' => 'None (add manually)',
-    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)." => "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s).",
+    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadFreeformPlugin()' or 'freeform.loadFreeformPluginJs()' and 'freeform.loadFreeformPluginCss()' function in your template(s)." => "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadFreeformPlugin()' or 'freeform.loadFreeformPluginJs()' and 'freeform.loadFreeformPluginCss()' function in your template(s).",
     'Script Insert Type' => 'Script Insert Type',
     'Specify the way Freeform scripts are inserted.' => 'Specify the way Freeform scripts are inserted.',
     'Asset Bundles (recommended)' => 'Asset Bundles (recommended)',

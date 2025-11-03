@@ -26,6 +26,7 @@
         name: "settings[displayFeed]",
         on: settings.displayFeed,
         errors: settings.getErrors("displayFeed"),
+        disabled: readOnly,
     }) }}
 
     {% if freeform.edition.isAtLeast('lite') %}
@@ -42,6 +43,7 @@
             name: "settings[alertNotificationRecipients]",
             value: settings.alertNotificationRecipients,
             errors: settings.getErrors("alertNotificationRecipients"),
+            disabled: readOnly,
         }) }}
 
         {{ forms.textField({
@@ -52,6 +54,7 @@
             name: "settings[errorNotificationRecipients]",
             value: settings.errorNotificationRecipients,
             errors: settings.getErrors("errorNotificationRecipients"),
+            disabled: readOnly,
         }) }}
 
         <hr>
@@ -66,6 +69,7 @@
             name: "settings[digestRecipients]",
             value: settings.digestRecipients,
             errors: settings.getErrors("digestRecipients"),
+            disabled: readOnly,
         }) }}
 
         {{ forms.selectField({
@@ -74,6 +78,7 @@
             name: "settings[digestFrequency]",
             value: settings.digestFrequency,
             errors: settings.errors("digestFrequency"),
+            disabled: readOnly,
             options: {
                 "-1": "Daily" | t('freeform'),
                 "0": "Weekly on Sundays" | t('freeform'),
@@ -94,6 +99,7 @@
             name: "settings[clientDigestRecipients]",
             value: settings.clientDigestRecipients,
             errors: settings.getErrors("clientDigestRecipients"),
+            disabled: readOnly,
         }) }}
 
         {{ forms.selectField({
@@ -102,6 +108,7 @@
             name: "settings[clientDigestFrequency]",
             value: settings.clientDigestFrequency,
             errors: settings.errors("clientDigestFrequency"),
+            disabled: readOnly,
             options: {
                 "-1": "Daily" | t('freeform'),
                 "0": "Weekly on Sundays" | t('freeform'),
@@ -120,6 +127,7 @@
             name: "settings[digestOnlyOnProduction]",
             on: settings.digestOnlyOnProduction,
             errors: settings.getErrors("digestOnlyOnProduction"),
+            disabled: readOnly,
         }) }}
 
     {% endif %}

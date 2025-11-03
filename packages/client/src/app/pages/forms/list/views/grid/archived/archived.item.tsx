@@ -35,14 +35,14 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
 
   const archiveMutation = useArchiveFormMutation();
   const isDisabled =
-    archiveMutation.isLoading && archiveMutation.context === id;
+    archiveMutation.isPending && archiveMutation.context === id;
   const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
 
   const { canDelete } = config.metadata.freeform;
   const openDeleteFormModal = useDeleteFormModal({ form });
 
   const onNavigate = (): void => {
-    queryClient.invalidateQueries(QKForms.single(Number(id)));
+    queryClient.invalidateQueries({ queryKey: QKForms.single(Number(id)) });
     navigate(`${id}`);
   };
 
@@ -95,12 +95,12 @@ export const ArchivedItem: React.FC<Props> = ({ form }) => {
             onClick={async (event) => {
               if (event.metaKey && event.shiftKey) {
                 await axios.post(`/api/forms/delete`, { id });
-                queryClient.invalidateQueries(
-                  QKGroups.all(getCurrentHandleWithFallback())
-                );
-                queryClient.invalidateQueries(
-                  QKForms.all(getCurrentHandleWithFallback())
-                );
+                queryClient.invalidateQueries({
+                  queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+                });
+                queryClient.invalidateQueries({
+                  queryKey: QKForms.all(getCurrentHandleWithFallback()),
+                });
               } else {
                 openDeleteFormModal();
               }

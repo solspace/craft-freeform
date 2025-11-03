@@ -15,7 +15,8 @@ export const useAuthCheck = (
 ): UseQueryResult<Response> => {
   const { id } = integration;
 
-  return useQuery<Response>(QKIntegrations.authCheck(id), {
+  return useQuery<Response>({
+    queryKey: QKIntegrations.authCheck(id),
     enabled: !!id && integration.implements.includes('apiIntegration'),
     queryFn: async () =>
       axios

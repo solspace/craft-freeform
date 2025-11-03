@@ -29,7 +29,7 @@ type SettingsMutationResult = UseMutationResult<
 >;
 
 export const useSettingsMutation = (): SettingsMutationResult => {
-  return useMutation<AxiosResponse, APIError, Variables, unknown>(
-    settingsMutation
-  );
+  return useMutation<AxiosResponse, APIError, Variables, unknown>({
+    mutationFn: settingsMutation,
+  });
 };

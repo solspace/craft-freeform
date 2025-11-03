@@ -28,6 +28,7 @@
             name: "settings[pluginName]",
             value: settings.pluginName,
             errors: settings.getErrors("pluginName"),
+            disabled: readOnly,
         }) }}
 
     {% endif %}
@@ -38,6 +39,7 @@
         name: "settings[defaultView]",
         value: settings.defaultView,
         errors: settings.errors("defaultView"),
+        disabled: readOnly,
         options: {
             forms: "Forms"|t('freeform'),
             submissions: "Submissions"|t('freeform'),
@@ -50,6 +52,7 @@
         name: "settings[badgeType]",
         value: settings.badgeType,
         errors: settings.errors("badgeType"),
+        disabled: readOnly,
         options: {
             '': "Don't Show"|t('freeform'),
             all: "Update Notices & Logged Errors"|t('freeform'),
@@ -68,6 +71,7 @@
             name: "settings[sitesEnabled]",
             on: settings.sitesEnabled,
             errors: settings.errors("sitesEnabled"),
+            disabled: readOnly,
             tip: "To enable translations on forms per Site, go to the form builder and enable the 'Translatable' setting under the 'Settings' tab."|t('freeform'),
         }) }}
 
@@ -79,6 +83,7 @@
         name: "settings[queuePriority]",
         value: settings.queuePriority,
         errors: settings.errors("queuePriority"),
+        disabled: readOnly,
         placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
 
@@ -88,6 +93,7 @@
         name: "settings[loggingLevel]",
         value: settings.loggingLevel,
         errors: settings.errors("loggingLevel"),
+        disabled: readOnly,
         options: {
             error: "Errors (recommended)"|t('freeform'),
             info: "Info"|t('freeform'),
@@ -105,6 +111,7 @@
         name: "settings[formFieldShowOnlyAllowedForms]",
         on: settings.formFieldShowOnlyAllowedForms,
         errors: settings.errors("formFieldShowOnlyAllowedForms"),
+        disabled: readOnly,
     }) }}
 
     <hr>
@@ -117,6 +124,7 @@
         name: "settings[removeNewlines]",
         on: settings.removeNewlines,
         errors: settings.errors("removeNewlines"),
+        disabled: readOnly,
     }) }}
 
     {{ forms.lightswitchField({
@@ -125,6 +133,7 @@
         name: "settings[exportLabels]",
         on: settings.exportLabels,
         errors: settings.errors("exportLabels"),
+        disabled: readOnly,
     }) }}
 
     {{ forms.lightswitchField({
@@ -133,6 +142,7 @@
         name: "settings[exportHandlesAsNames]",
         on: settings.exportHandlesAsNames,
         errors: settings.errors("exportHandlesAsNames"),
+        disabled: readOnly,
     }) }}
 
     <hr>
@@ -145,6 +155,7 @@
         name: "settings[fillWithGet]",
         on: settings.fillWithGet,
         errors: settings.errors("fillWithGet"),
+        disabled: readOnly,
     }) }}
 
     {{ forms.lightswitchField({
@@ -154,6 +165,7 @@
         name: "settings[allowDashesInFieldHandles]",
         on: settings.allowDashesInFieldHandles,
         errors: settings.errors("allowDashesInFieldHandles"),
+        disabled: readOnly,
     }) }}
 
     <hr>
@@ -166,6 +178,7 @@
         name: "settings[updateSearchIndexes]",
         on: settings.updateSearchIndexes,
         errors: settings.errors("updateSearchIndexes"),
+        disabled: readOnly,
     }) }}
 
     {% if craft.freeform.pro %}
@@ -178,6 +191,7 @@
             on: settings.purgableSubmissionAgeInDays,
             toggle: "purge",
             errors: settings.errors("purgableSubmissionAgeInDays"),
+            disabled: readOnly,
         }) }}
 
         <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
@@ -187,6 +201,7 @@
                 name: "settings[purgableSubmissionAgeInDays]",
                 value: settings.purgableSubmissionAgeInDays,
                 errors: settings.errors("purgableSubmissionAgeInDays"),
+                disabled: readOnly,
                 id: "purge-value",
                 options: {
                     0: "Please select"|t("freeform"),
@@ -217,6 +232,7 @@
         on: settings.purgeAssets,
         toggle: "purge-assets",
         errors: settings.errors("purgeAssets"),
+        disabled: readOnly,
     }) }}
 
     <div id="purge-assets" class="field {{ not settings.purgeAssets ? 'hidden' }}">
@@ -226,6 +242,7 @@
             name: "settings[purgableUnfinalizedAssetAgeInMinutes]",
             value: settings.purgableUnfinalizedAssetAgeInMinutes,
             errors: settings.getErrors("purgableUnfinalizedAssetAgeInMinutes"),
+            disabled: readOnly,
             id: "purgableUnfinalizedAssetAgeInMinutes",
             options: {
                 60: "1 hour"|t("freeform"),

@@ -47,10 +47,12 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
           onClose={() => setShowDisable(false)}
           onConfirm={async () => {
             await disableFormMonitor();
-            queryClient.invalidateQueries(QKIntegrations.navigation);
-            queryClient.invalidateQueries(
-              QKIntegrations.single(Number(integration.id))
-            );
+            queryClient.invalidateQueries({
+              queryKey: QKIntegrations.navigation,
+            });
+            queryClient.invalidateQueries({
+              queryKey: QKIntegrations.single(Number(integration.id)),
+            });
             notifications.success(translate('Monitoring disabled.'));
           }}
         />
@@ -61,10 +63,12 @@ export const FormMonitorTitlebarActions: FC<Props> = ({ integration }) => {
           onClose={() => setShowDisableDelete(false)}
           onConfirm={async () => {
             await disableAndDeleteFormMonitor();
-            queryClient.invalidateQueries(QKIntegrations.navigation);
-            queryClient.invalidateQueries(
-              QKIntegrations.single(Number(integration.id))
-            );
+            queryClient.invalidateQueries({
+              queryKey: QKIntegrations.navigation,
+            });
+            queryClient.invalidateQueries({
+              queryKey: QKIntegrations.single(Number(integration.id)),
+            });
             notifications.success(
               translate('Monitoring disabled and data deleted.')
             );

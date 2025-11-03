@@ -11,21 +11,22 @@ const QKLimitedUsers = {
 } as const;
 
 export const useLimitedUsersQuery = (): UseQueryResult<ListResponse> => {
-  return useQuery<ListResponse>(
-    QKLimitedUsers.all,
-    () => axios.get(`/api/limited-users`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery<ListResponse>({
+    queryKey: QKLimitedUsers.all,
+    queryFn: () => axios.get(`/api/limited-users`).then((res) => res.data),
+    staleTime: Infinity,
+  });
 };
 
 export const useLimitedUsersSingleQuery = (
   id: string | number
 ): UseQueryResult<DetailResponse> => {
-  return useQuery<DetailResponse>(
-    QKLimitedUsers.one(id),
-    () => axios.get(`/api/limited-users/${id}`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery<DetailResponse>({
+    queryKey: QKLimitedUsers.one(id),
+    queryFn: () =>
+      axios.get(`/api/limited-users/${id}`).then((res) => res.data),
+    staleTime: Infinity,
+  });
 };
 
 type Payload = {
@@ -48,7 +49,7 @@ export const useLimitedUsersMutation = (
       });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(QKLimitedUsers.all);
+      queryClient.invalidateQueries({ queryKey: QKLimitedUsers.all });
     },
   });
 };
@@ -61,7 +62,7 @@ export const useLimitedUsersDeleteMutation = (): UseMutationResult => {
       return axios.delete(`/api/limited-users/${id}/delete`);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(QKLimitedUsers.all);
+      queryClient.invalidateQueries({ queryKey: QKLimitedUsers.all });
     },
   });
 };

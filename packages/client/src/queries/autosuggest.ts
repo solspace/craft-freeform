@@ -17,16 +17,14 @@ export type EnvironmentSuggestionCategories = Category[];
 export const useAutosuggestEnvVariables = (
   enabled: boolean = true
 ): UseQueryResult<EnvironmentSuggestionCategories> => {
-  return useQuery(
-    ['autosuggest', 'env'],
-    () =>
+  return useQuery<EnvironmentSuggestionCategories>({
+    queryKey: ['autosuggest', 'env'],
+    queryFn: () =>
       axios
         .get<EnvironmentSuggestionCategories>('/api/autosuggest/env')
         .then((res) => res.data),
-    {
-      enabled,
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    enabled,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };

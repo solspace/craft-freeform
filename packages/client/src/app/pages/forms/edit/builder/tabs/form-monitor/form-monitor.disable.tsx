@@ -59,7 +59,7 @@ export const DisableMonitoringModal: React.FC<ModalProps> = ({
           <button
             className="btn submit"
             onClick={handleDisable}
-            disabled={disableMonitoringMutation.isLoading}
+            disabled={disableMonitoringMutation.isPending}
           >
             {translate('Disable')}
           </button>
@@ -82,8 +82,8 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
   const disableAndClearMonitoringMutation =
     useDisableAndClearMonitoringMutation(formId, {
       onSuccess: () => {
-        queryClient.invalidateQueries(QKFormMonitor.base);
-        queryClient.invalidateQueries(QKForms.single(formId));
+        queryClient.invalidateQueries({ queryKey: QKFormMonitor.base });
+        queryClient.invalidateQueries({ queryKey: QKForms.single(formId) });
         onSuccess();
         onClose();
         navigate(`/forms/${formId}`, { replace: true });
@@ -138,7 +138,7 @@ export const DisableAndDeleteMonitoringModal: React.FC<ModalProps> = ({
           <button
             className={`btn submit ${!enabled ? 'disabled' : ''}`}
             onClick={handleDisableAndDelete}
-            disabled={disableAndClearMonitoringMutation.isLoading || !enabled}
+            disabled={disableAndClearMonitoringMutation.isPending || !enabled}
           >
             {translate('Disable & Delete')}
           </button>

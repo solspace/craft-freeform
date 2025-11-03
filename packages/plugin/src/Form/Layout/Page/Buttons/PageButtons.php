@@ -102,7 +102,7 @@ class PageButtons
     #[Input\Text('Label', placeholder: 'Back')]
     private string $backLabel = 'Back';
 
-    #[Edition(Freeform::EDITION_PRO)]
+    #[Edition(Edition::PRO)]
     #[Section(
         handle: 'save',
         label: 'Save',

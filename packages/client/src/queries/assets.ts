@@ -14,18 +14,16 @@ export const useAssetQuery = (
   assetIds: number[] = [],
   transform?: string
 ): UseQueryResult<AssetUrlRecords> => {
-  return useQuery(
-    ['assets', 'urls', assetIds?.sort(), transform],
-    () =>
+  return useQuery({
+    queryKey: ['assets', 'urls', assetIds?.sort(), transform],
+    queryFn: () =>
       axios
         .get<AssetUrlRecords>(
           `/api/assets/urls?ids=${assetIds.join(',')}&transform=${transform || ''}`
         )
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-      enabled: assetIds.length > 0,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: assetIds.length > 0,
+  });
 };

@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
-import { useAutosuggestEnvVariables } from '@ff-client/queries/autosuggest';
 import type { StringProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 
 import { Suggestions } from './suggestions/suggestions';
 import { EnvLine } from './env.line';
@@ -29,7 +30,13 @@ const String: React.FC<ControlType<StringProperty>> = ({
   const isReadonly = property.flags?.includes('readonly');
   const isEnvSuggest = property.flags?.includes('env-suggest');
 
-  const { data } = useAutosuggestEnvVariables(isEnvSuggest);
+  const { data } = useQuery({
+    queryKey: ['autosuggest', 'env'],
+    queryFn: () => axios.get('/api/autosuggest/env').then((res) => res.data),
+    enabled: isEnvSuggest,
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 
   return (
     <Control property={property} errors={errors} context={context}>

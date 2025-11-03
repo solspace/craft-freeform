@@ -28,11 +28,11 @@ export const SettingsBlock: React.FC<Props> = ({
   toggle,
   changeType,
 }) => {
-  const { mutate, isLoading } = useSettingsMutation();
+  const { mutate, isPending } = useSettingsMutation();
 
   return (
     <SettingsButton
-      className={classes(isLoading && 'loading', isShown && 'open')}
+      className={classes(isPending && 'loading', isShown && 'open')}
       onClick={toggle}
     >
       <SettingsIcon />

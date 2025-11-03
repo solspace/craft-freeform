@@ -46,6 +46,7 @@
         label: "Directory Path"|t('freeform'),
         id: "formTemplateDirectory",
         class: "code",
+        disabled: readOnly,
         suggestEnvVars: false,
         suggestAliases: false,
         suggestions:[{
@@ -66,9 +67,11 @@
         <div id="components-wrapper">
             <div>
                 <div class="btn-group">
-                    <button type="button" class="btn submit small icon add menubtn" id="add-formatting-template">
-                        {{ "Clone a Sample Template"|t('freeform') }}
-                    </button>
+                    {% if not readOnly %}
+                        <button type="button" class="btn submit small icon add menubtn" id="add-formatting-template">
+                            {{ "Clone a Sample Template"|t('freeform') }}
+                        </button>
+                    {% endif %}
                     <div class="menu" id="demo-template-list">
                         <ul>
                             {% for template in solspaceTemplates %}
@@ -99,6 +102,7 @@
         name: "settings[emailTemplateMethod]",
         value: settings.emailTemplateMethod,
         errors: settings.errors("emailTemplateMethod"),
+        disabled: readOnly,
         options: {
             "form": "Form-specific only" | t('freeform'),
             "global": "Global only" | t('freeform'),
@@ -114,6 +118,7 @@
             name: "settings[emailTemplateStorageType]",
             value: settings.emailTemplateStorageType,
             errors: settings.errors("emailTemplateStorageType"),
+            disabled: readOnly,
             options: {
                 "files": "File" | t('freeform'),
                 "database": "Database" | t('freeform'),
@@ -129,6 +134,7 @@
                 name: "settings[allowBuilderTemplateCreation]",
                 value: settings.allowBuilderTemplateCreation,
                 errors: settings.errors("allowBuilderTemplateCreation"),
+                disabled: readOnly,
                 on: settings.allowBuilderTemplateCreation,
             }) }}
 
@@ -142,6 +148,7 @@
                     name: "settings[emailTemplateDefault]",
                     value: settings.emailTemplateDefault,
                     errors: settings.errors("emailTemplateDefault"),
+                    disabled: readOnly,
                     options: {
                         "files": "File" | t('freeform'),
                         "database": "Database" | t('freeform'),
@@ -158,6 +165,7 @@
                 name: "settings[allowFileTemplateEdit]",
                 on: settings.allowFileTemplateEdit,
                 errors: settings.errors("allowFileTemplateEdit"),
+                disabled: readOnly,
             }) }}
 
             {% set suggestionsData = [] %}
@@ -182,6 +190,7 @@
                 name: "settings[emailTemplateDirectory]",
                 value: settings.emailTemplateDirectory,
                 errors: settings.getErrors("emailTemplateDirectory"),
+                disabled: readOnly,
                 instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
                 placeholder: "e.g. _freeform/notifications",
             }) }}
@@ -190,9 +199,11 @@
 
                 <div id="components-wrapper">
                     <div style="margin: 0;">
-                        <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
-                            {{ "Add Sample"|t('freeform') }}
-                        </button>
+                        {% if not readOnly %}
+                            <button type="button" class="btn submit small icon add add-sample-template" id="add-email-template">
+                                {{ "Add Sample"|t('freeform') }}
+                            </button>
+                        {% endif %}
 
                         {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
@@ -212,7 +223,7 @@
                 </div>
             {% endif %}
 
-            {% if craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
+            {% if not readOnly and craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
 
                 <hr>
 
@@ -264,6 +275,7 @@
         name: "settings[defaultFromEmail]",
         value: settings.defaultFromEmail,
         errors: settings.getErrors("defaultFromEmail"),
+        disabled: readOnly,
         instructions: "The default email address to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
     }) }}
 
@@ -277,6 +289,7 @@
         name: "settings[defaultFromName]",
         value: settings.defaultFromName,
         errors: settings.getErrors("defaultFromName"),
+        disabled: readOnly,
         instructions: "The default name to be included in the 'From Email' setting of new email notification templates."|t('freeform'),
     }) }}
 
@@ -306,6 +319,7 @@
         name: "settings[successTemplateDirectory]",
         value: settings.successTemplateDirectory,
         errors: settings.getErrors("successTemplateDirectory"),
+        disabled: readOnly,
         instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
         placeholder: "e.g. _freeform/success",
     }) }}

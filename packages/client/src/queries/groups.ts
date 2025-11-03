@@ -13,11 +13,10 @@ type FetchGroupsQuery = (options?: {
 }) => UseQueryResult<Group, AxiosError>;
 
 export const useFetchGroups: FetchGroupsQuery = ({ select } = {}) =>
-  useQuery<Group, AxiosError>(
-    QKGroups.all,
-    () => axios.get<Group>(`/api/fields/types/groups`).then((res) => res.data),
-    {
-      staleTime: Infinity,
-      select,
-    }
-  );
+  useQuery<Group, AxiosError>({
+    queryKey: QKGroups.all,
+    queryFn: () =>
+      axios.get<Group>(`/api/fields/types/groups`).then((res) => res.data),
+    staleTime: Infinity,
+    select,
+  });

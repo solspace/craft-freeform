@@ -20,35 +20,30 @@ export const useFMFormTestsQuery = (
 ): UseQueryResult<FormTestsResponse, AxiosError> => {
   const { limit = 100, offset = 0 } = params;
 
-  return useQuery(
-    QKFormMonitor.tests(formId, { limit, offset }),
-    () =>
+  return useQuery({
+    queryKey: QKFormMonitor.tests(formId, { limit, offset }),
+    queryFn: () =>
       axios
         .get<FormTestsResponse>(`/api/form-monitor/forms/${formId}/tests`, {
           params: { limit, offset },
         })
         .then((res) => res.data),
-    {
-      keepPreviousData: true,
-      staleTime: 0,
-      refetchOnWindowFocus: false,
-      enabled: !!formId,
-    }
-  );
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    enabled: !!formId,
+  });
 };
 
 export const useFMFormStatsQuery = (
   formId: number,
   options?: { enabled?: boolean }
 ): UseQueryResult<TestStats, AxiosError> => {
-  return useQuery(
-    QKFormMonitor.stats(formId),
-    () =>
+  return useQuery({
+    queryKey: QKFormMonitor.stats(formId),
+    queryFn: () =>
       axios
         .get<TestStats>(`/api/form-monitor/forms/${formId}/stats`)
         .then((res) => res.data),
-    {
-      enabled: options?.enabled ?? !!formId,
-    }
-  );
+    enabled: options?.enabled ?? !!formId,
+  });
 };

@@ -154,7 +154,6 @@ class BehaviorSettings extends SettingsNamespace
     public string $duplicateCheck = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
-    #[Edition(Edition::PRO)]
     #[Edition(Edition::LITE)]
     #[ValueTransformer(DateTimeTransformer::class)]
     #[Input\DatePicker(

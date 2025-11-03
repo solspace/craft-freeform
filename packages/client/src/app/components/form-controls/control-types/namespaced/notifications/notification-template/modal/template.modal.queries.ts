@@ -13,19 +13,17 @@ export const QKNotificationTemplates = {
 export const useQueryNotificationTemplate = (
   templateId?: string | number
 ): UseQueryResult<NotificationTemplate, AxiosError> => {
-  return useQuery(
-    QKNotificationTemplates.one(templateId),
-    () =>
+  return useQuery({
+    queryKey: QKNotificationTemplates.one(templateId),
+    queryFn: () =>
       axios
         .get(
           `/api/notifications/templates/${templateId || 'get-default-metadata'}`
         )
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useNotificationTemplateMutation = (

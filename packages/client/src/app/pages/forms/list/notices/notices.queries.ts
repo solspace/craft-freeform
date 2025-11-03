@@ -15,17 +15,19 @@ type NoticesResponse = {
 };
 
 export const useNoticesQuery = (): UseQueryResult<NoticesResponse> => {
-  return useQuery(
-    QKNotices.all,
-    () => axios.get<NoticesResponse>('/api/notices').then((res) => res.data),
-    { enabled: config.feed }
-  );
+  return useQuery({
+    queryKey: QKNotices.all,
+    queryFn: () =>
+      axios.get<NoticesResponse>('/api/notices').then((res) => res.data),
+    enabled: config.feed,
+  });
 };
 
 export const useNoticeDeleteMutation = (): UseMutationResult => {
   const queryClient = useQueryClient();
 
-  return useMutation((id: number) => axios.delete(`/api/notices/${id}`), {
+  return useMutation({
+    mutationFn: (id: number) => axios.delete(`/api/notices/${id}`),
     onMutate: (id: number) => {
       queryClient.setQueryData<NoticesResponse>(QKNotices.all, (oldData) => {
         return {

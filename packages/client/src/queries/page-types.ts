@@ -11,9 +11,9 @@ const QKPageType = {
 type FetchFieldTypesQuery = () => UseQueryResult<PageType, AxiosError>;
 
 export const useFetchPageButtonType: FetchFieldTypesQuery = () =>
-  useQuery<PageType, AxiosError>(
-    QKPageType.all,
-    () =>
+  useQuery<PageType, AxiosError>({
+    queryKey: QKPageType.all,
+    queryFn: () =>
       axios.get<PageType>(`/api/types/page-buttons`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+    staleTime: Infinity,
+  });

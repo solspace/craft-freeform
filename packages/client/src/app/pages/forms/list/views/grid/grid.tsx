@@ -13,6 +13,7 @@ import { Notices } from '../../notices/notices';
 import { Archived } from './archived/archived';
 import { Card } from './card/card';
 import { CardLoading } from './card/card.loading';
+import { CardPreview } from './card/card.preview';
 import { GridEmpty } from './grid.empty';
 import {
   ArchivedAndGroupWrapper,
@@ -113,6 +114,12 @@ export const FormGrid: React.FC = () => {
                           form={form}
                         />
                       ))}
+                    {isExpressEdition && (
+                      <>
+                        <CardPreview />
+                        <CardPreview />
+                      </>
+                    )}
                   </Cards>
                 </GroupWrap>
               )}
@@ -124,6 +131,17 @@ export const FormGrid: React.FC = () => {
                 </Cards>
               )}
             </CardWrapper>
+          )}
+
+          {isExpressEdition && (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: translate(
+                  'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.',
+                  { link: Craft.getCpUrl('plugin-store/freeform') }
+                ),
+              }}
+            />
           )}
 
           <ArchivedAndGroupWrapper>

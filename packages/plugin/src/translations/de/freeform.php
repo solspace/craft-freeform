@@ -932,6 +932,14 @@ return [
     'No file-based email notification templates exist yet.' => 'Es existieren noch keine dateibasierten E-Mail-Benachrichtigungsvorlagen.',
     'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Um neue Benachrichtigungsvorlagen hinzuzufügen, müssen Sie zunächst <a href="{link}">den Verzeichnispfad in den Einstellungen festlegen</a>.',
 
+    // Pro Upgrade Notices
+    'Upgrade to {edition} to enable.' => 'Upgrade auf {edition} aktivieren.',
+    'Upgrade to {edition} to unlock this setting.' => 'Upgrade auf {edition} zum Freischalten.',
+    'Upgrade to Freeform Pro to access PDF Templates.' => 'Upgrade auf Freeform Pro, um PDF-Vorlagen zu nutzen.',
+    'Upgrade to Freeform Pro to create conditional rules.' => 'Upgrade auf Freeform Pro, um bedingte Regeln zu erstellen.',
+    '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.' => '<a href="{link}" target="_blank">Upgrade auf Freeform Pro</a>, um bedingte Regeln zu erstellen.',
+    'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.' => 'Benötigen Sie mehr Formulare? <a href="{link}" target="_blank">Upgrade auf Lite oder Pro</a>.',
+
     // Import / Export
     'Import / Export' => 'Import / Export',
     'Profiles' => 'Profile',

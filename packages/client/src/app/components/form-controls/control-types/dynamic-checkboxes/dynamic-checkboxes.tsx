@@ -36,12 +36,13 @@ const DynamicCheckboxes: React.FC<ControlType<DynamicCheckboxesProperty>> = ({
     });
   }
 
-  const { data, isFetching, isFetched, refetch } = useQuery(
-    ['dynamic-select', source, params],
-    () =>
+  const { data, isFetching, isFetched, refetch } = useQuery({
+    queryKey: ['dynamic-select', source, params],
+    queryFn: () =>
       axios.get<OptionCollection>(source, { params }).then((res) => res.data),
-    { staleTime: Infinity, cacheTime: Infinity }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 
   useEffect(() => {
     if (isFetching || !isFetched) {

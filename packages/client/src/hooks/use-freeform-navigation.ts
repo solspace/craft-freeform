@@ -16,9 +16,15 @@ export const useFreeformNavigation = (): void => {
       event.preventDefault();
 
       if (formId) {
-        queryClient.invalidateQueries(QKForms.single(Number(formId)));
-        queryClient.invalidateQueries(QKNotifications.single(Number(formId)));
-        queryClient.invalidateQueries(QKIntegrations.single(Number(formId)));
+        queryClient.invalidateQueries({
+          queryKey: QKForms.single(Number(formId)),
+        });
+        queryClient.invalidateQueries({
+          queryKey: QKNotifications.single(Number(formId)),
+        });
+        queryClient.invalidateQueries({
+          queryKey: QKIntegrations.single(Number(formId)),
+        });
       }
 
       navigate('/forms');

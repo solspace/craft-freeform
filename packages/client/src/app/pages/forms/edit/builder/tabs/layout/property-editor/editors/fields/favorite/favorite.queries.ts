@@ -7,6 +7,7 @@ import type {
   PropertyValueCollection,
 } from '@ff-client/types/fields';
 import type {
+  MutationFunctionContext,
   UseMutationOptions,
   UseMutationResult,
 } from '@tanstack/react-query';
@@ -48,14 +49,12 @@ export type FavoriteMutationResult = UseMutationResult<
 export const useFavoritesMutation = (): FavoriteMutationResult => {
   const queryClient = useQueryClient();
 
-  return useMutation<AxiosResponse, APIError, Variables, unknown>(
-    favoritesMutation,
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: QKFavorites.all });
-      },
-    }
-  );
+  return useMutation<AxiosResponse, APIError, Variables, unknown>({
+    mutationFn: favoritesMutation,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QKFavorites.all });
+    },
+  });
 };
 
 type FavoritesPayload = Record<number, PropertyValueCollection>;
@@ -80,15 +79,19 @@ export const useFavoritesUpdateMutation = (
   options.onSuccess = (
     data: AxiosResponse<FavoritesPayload>,
     variables: FavoritesPayload,
-    context: unknown
+    onMutateResult: unknown,
+    context: MutationFunctionContext
   ) => {
-    originalOnSuccess?.(data, variables, context);
-    queryClient.invalidateQueries(QKFavorites.all);
+    originalOnSuccess?.(data, variables, onMutateResult, context);
+    queryClient.invalidateQueries({ queryKey: QKFavorites.all });
   };
 
-  return useMutation((data: FavoritesPayload) => {
-    return axios.post<FavoritesPayload>('/api/fields/favorites/update', data);
-  }, options);
+  return useMutation({
+    ...options,
+    mutationFn: (data: FavoritesPayload) => {
+      return axios.post<FavoritesPayload>('/api/fields/favorites/update', data);
+    },
+  });
 };
 
 type DeleteMutationOptions = Partial<
@@ -104,9 +107,10 @@ export const useFavoritesDeleteMutation = (
   options.onSuccess = (
     data: AxiosResponse<number>,
     variables: number,
-    context: unknown
+    onMutateResult: unknown,
+    context: MutationFunctionContext
   ) => {
-    originalOnSuccess?.(data, variables, context);
+    originalOnSuccess?.(data, variables, onMutateResult, context);
 
     const favoriteId = variables;
     queryClient.setQueryData(QKFavorites.all, (oldData: FieldFavorite[]) =>
@@ -114,7 +118,10 @@ export const useFavoritesDeleteMutation = (
     );
   };
 
-  return useMutation((favoriteId: number) => {
-    return axios.post(`/api/fields/favorites/delete`, { id: favoriteId });
-  }, options);
+  return useMutation({
+    ...options,
+    mutationFn: (favoriteId: number) => {
+      return axios.post(`/api/fields/favorites/delete`, { id: favoriteId });
+    },
+  });
 };

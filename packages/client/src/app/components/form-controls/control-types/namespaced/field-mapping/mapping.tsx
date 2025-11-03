@@ -30,17 +30,18 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
     });
   }
 
-  const { data, isFetching, refetch } = useQuery<SourceField[]>(
-    ['field-mapping', property.source, params],
-    async () => {
+  const { data, isFetching, refetch } = useQuery<SourceField[]>({
+    queryKey: ['field-mapping', property.source, params],
+    queryFn: async () => {
       const response = await axios
         .get<SourceField[]>(property.source, { params })
         .then((res) => res.data);
 
       return response;
     },
-    { staleTime: Infinity, cacheTime: Infinity }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 
   useEffect(() => {
     if (isFetching || data === undefined) {

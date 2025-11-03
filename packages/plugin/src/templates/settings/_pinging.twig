@@ -1,0 +1,141 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set segment3 = craft.app.request.getSegment(3) %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Pinging"|t("freeform"), url: url("freeform/settings" ~ "/" ~ segment3) },
+] %}
+
+{% set title = "Pinging"|t("freeform") %}
+
+{% set pingUrl = siteUrl('freeform/queue/ping', settings.queuePingToken ? { token: settings.queuePingToken } : {}) %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/pinging') }}
+    {{ csrfInput() }}
+
+    <h2 class="first">{{ "Ping & Queue"|t('freeform') }}</h2>
+
+    {% set fmReady = craft.freeformServices.settings.isFormMonitorEnabledAndAuthorized() %}
+    {% if not fmReady %}
+        <p class="instructions">{{ "Please enable and authorize Form Monitor first to use the queue pinging service."|t('freeform') }}</p>
+    {% endif %}
+
+    {% if fmReady %}
+
+    {{ forms.lightswitchField({
+        label: "Enable FM-Managed Pinger"|t('freeform'),
+        instructions: "Let Form Monitor ping your site to process Craft's queue automatically."|t('freeform'),
+        name: "settings[managedPingerEnabled]",
+        on: settings.managedPingerEnabled,
+        errors: settings.getErrors("managedPingerEnabled"),
+    }) }}
+
+    {% set currentMinutes = (settings.queuePingMinIntervalSeconds / 60)|round(0, 'ceil') %}
+    {{ forms.selectField({
+        label: "Minimum Interval"|t('freeform'),
+        instructions: "How often Form Monitor may ping. Stored as seconds."|t('freeform'),
+        name: "settings[queuePingMinIntervalMinutes]",
+        value: currentMinutes,
+        options: [
+            { label: 'Every 1 minute'|t('freeform'), value: 1 },
+            { label: 'Every 5 minutes'|t('freeform'), value: 5 },
+            { label: 'Every 10 minutes'|t('freeform'), value: 10 },
+            { label: 'Every 30 minutes'|t('freeform'), value: 30 },
+            { label: 'Every 1 hour'|t('freeform'), value: 60 },
+            { label: 'Every 6 hours'|t('freeform'), value: 360 },
+        ],
+        errors: settings.getErrors("queuePingMinIntervalMinutes"),
+    }) }}
+
+    <hr>
+
+    <h2>{{ "Queue Ping Endpoint"|t('freeform') }}</h2>
+    <p class="instructions">{{ "The endpoint is automatically enabled when the managed pinger is on."|t('freeform') }}</p>
+
+    {{ forms.textField({
+        label: "Ping URL"|t('freeform'),
+        instructions: "This is the URL the managed pinger will call."|t('freeform'),
+        id: 'pingUrl',
+        name: 'pingUrl',
+        value: pingUrl,
+        readonly: true,
+    }) }}
+
+    {% if settings.managedPingerEnabled %}
+        <hr>
+        <h3>{{ "Manage Pinger Registration"|t('freeform') }}</h3>
+        <div class="buttons">
+            <button type="button" class="btn" id="disable-pinger-btn">
+                {{ "Disable Pinger"|t('freeform') }}
+            </button>
+            <button type="button" class="btn error" id="delete-pinger-btn">
+                {{ "Delete from Form Monitor"|t('freeform') }}
+            </button>
+        </div>
+        <p class="light">
+            <strong>{{ "Disable:"|t('freeform') }}</strong> {{ "Temporarily stops Form Monitor from pinging your site (can be re-enabled)."|t('freeform') }}<br>
+            <strong>{{ "Delete:"|t('freeform') }}</strong> {{ "Permanently removes your site from Form Monitor's pinger service."|t('freeform') }}
+        </p>
+    {% endif %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% if settings.managedPingerEnabled %}
+    {% js %}
+        var csrfData = {};
+        csrfData["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
+
+        $("#disable-pinger-btn").on("click", function() {
+            if (!confirm('{{ "Disable pinger? Form Monitor will stop pinging your site."|t('freeform') }}')) {
+                return;
+            }
+            
+            $.ajax({
+                url: "{{ actionUrl('freeform/settings/disable-pinger') }}",
+                type: "post",
+                dataType: "json",
+                data: csrfData,
+                success: function(response) {
+                    if (response.success) {
+                        Craft.cp.displayNotice('{{ "Pinger disabled successfully"|t('freeform') }}');
+                        window.location.reload();
+                    } else {
+                        Craft.cp.displayError(response.error || '{{ "Failed to disable pinger"|t('freeform') }}');
+                    }
+                }
+            });
+        });
+
+        $("#delete-pinger-btn").on("click", function() {
+            if (!confirm('{{ "Permanently delete this site from Form Monitor? This cannot be undone."|t('freeform') }}')) {
+                return;
+            }
+            
+            $.ajax({
+                url: "{{ actionUrl('freeform/settings/delete-pinger') }}",
+                type: "post",
+                dataType: "json",
+                data: csrfData,
+                success: function(response) {
+                    if (response.success) {
+                        Craft.cp.displayNotice('{{ "Pinger deleted successfully"|t('freeform') }}');
+                        window.location.reload();
+                    } else {
+                        Craft.cp.displayError(response.error || '{{ "Failed to delete pinger"|t('freeform') }}');
+                    }
+                }
+            });
+        });
+    {% endjs %}
+{% endif %}
+
+

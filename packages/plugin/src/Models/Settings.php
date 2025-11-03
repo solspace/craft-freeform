@@ -293,6 +293,11 @@ class Settings extends Model
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
+    // Queue ping & FM-managed pinger
+    public bool $managedPingerEnabled = false;
+    public ?string $queuePingToken = null;
+    public int $queuePingMinIntervalSeconds = 600;
+
     /**
      * Settings constructor.
      */

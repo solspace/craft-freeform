@@ -19,6 +19,7 @@ use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\StringHelper;
@@ -26,6 +27,7 @@ use Solspace\Freeform\Library\Templates\TemplateLocator;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 
@@ -234,6 +236,24 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->queuePriority;
     }
 
+    public function getQueuePingToken(): ?string
+    {
+        return $this->getSettingsModel()->queuePingToken;
+    }
+
+    public function isManagedPingerEnabled(): bool
+    {
+        return (bool) $this->getSettingsModel()->managedPingerEnabled;
+    }
+
+    public function disablePinging(): void
+    {
+        $settings = $this->getSettingsModel();
+        $settings->managedPingerEnabled = false;
+
+        \Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray());
+    }
+
     public function getSettingsModel(): Settings
     {
         if (null === self::$settingsModel) {
@@ -253,6 +273,7 @@ class SettingsService extends BaseService
         $nav = [
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
+            'pinging' => ['title' => Freeform::t('Pinging')],
             'form-builder' => ['title' => Freeform::t('Form Builder')],
             'limited-users' => ['title' => Freeform::t('Limited Users')],
             'template-manager' => ['title' => Freeform::t('Template Manager')],
@@ -399,6 +420,9 @@ class SettingsService extends BaseService
 
     public function saveSettings(array $data): bool
     {
+        // Normalize pinging-related settings before saving
+        $data = $this->normalizePingingSettings($data);
+
         $plugin = Freeform::getInstance();
         $plugin->setSettings($data);
 
@@ -433,6 +457,61 @@ class SettingsService extends BaseService
     public function isAiFieldQueueEnabled(): bool
     {
         return $this->getSettingsModel()->useQueueForAiFields;
+    }
+
+    public function isFormMonitorEnabledAndAuthorized(): bool
+    {
+        try {
+            $record = IntegrationRecord::find()
+                ->where(['class' => FormMonitor::class])
+                ->one()
+            ;
+
+            if (!$record || !$record->enabled) {
+                return false;
+            }
+
+            $model = Freeform::getInstance()->integrations->getById((int) $record->id);
+            if (!$model) {
+                return false;
+            }
+
+            $integration = $model->getIntegrationObject();
+            if (!$integration instanceof FormMonitor) {
+                return false;
+            }
+
+            return (bool) ($integration->getApiKey() && $integration->getRequestToken());
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    private function normalizePingingSettings(array $data): array
+    {
+        // Auto-manage endpoint when managed pinger is toggled
+        if (\array_key_exists('managedPingerEnabled', $data)) {
+            $managed = (bool) $data['managedPingerEnabled'];
+            if ($managed) {
+                // Ensure token exists
+                $existingToken = $this->getSettingsModel()->queuePingToken;
+
+                if (empty($data['queuePingToken']) && !$existingToken) {
+                    $data['queuePingToken'] = \Craft::$app->getSecurity()->generateRandomString(32);
+                }
+            }
+        }
+
+        // Convert UI minutes to seconds if provided
+        if (\array_key_exists('queuePingMinIntervalMinutes', $data)) {
+            $minutes = (int) $data['queuePingMinIntervalMinutes'];
+            if ($minutes > 0) {
+                $data['queuePingMinIntervalSeconds'] = max(5, $minutes * 60);
+            }
+            unset($data['queuePingMinIntervalMinutes']);
+        }
+
+        return $data;
     }
 
     private function getTemplatesIn(?string $path): array

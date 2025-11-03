@@ -17,6 +17,8 @@ use craft\helpers\FileHelper;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\ManagedPingerDeleteJob;
+use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -202,6 +204,68 @@ class SettingsController extends BaseController
         \Craft::$app->session->setError(
             implode("\n", FreeformStringHelper::flattenArrayValues($errors))
         );
+    }
+
+    public function actionDisablePinger(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $this->requirePostRequest();
+
+        try {
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+
+            // Disable the managed pinger in Freeform settings
+            $settings->managedPingerEnabled = false;
+
+            // Save the settings
+            if (!\Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray())) {
+                throw new \Exception('Failed to save settings');
+            }
+
+            // Queue the deregister job to notify Form Monitor (soft delete)
+            \Craft::$app->queue->push(new ManagedPingerDeregisterJob());
+
+            return $this->asJson([
+                'success' => true,
+                'message' => Freeform::t('Pinger disabled successfully.'),
+            ]);
+        } catch (\Throwable $e) {
+            return $this->asJson([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function actionDeletePinger(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $this->requirePostRequest();
+
+        try {
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+
+            // Disable the managed pinger in Freeform settings
+            $settings->managedPingerEnabled = false;
+
+            // Save the settings
+            if (!\Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray())) {
+                throw new \Exception('Failed to save settings');
+            }
+
+            // Queue the delete job to permanently remove from Form Monitor
+            \Craft::$app->queue->push(new ManagedPingerDeleteJob());
+
+            return $this->asJson([
+                'success' => true,
+                'message' => Freeform::t('Pinger deleted successfully.'),
+            ]);
+        } catch (\Throwable $e) {
+            return $this->asJson([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
     }
 
     public function actionProvideSetting(): Response

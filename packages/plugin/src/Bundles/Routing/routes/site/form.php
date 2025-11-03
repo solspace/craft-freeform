@@ -6,4 +6,5 @@ return [
     'freeform/submit' => 'freeform/submit',
     'freeform/validate' => 'freeform/submit/validate',
     'freeform/tokens' => 'freeform/api/tokens',
+    'freeform/queue/ping' => 'freeform/queue/ping',
 ];

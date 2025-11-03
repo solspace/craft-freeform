@@ -15,11 +15,14 @@ namespace Solspace\Freeform;
 
 use craft\base\Plugin;
 use craft\events\IndexKeywordsEvent;
+use craft\events\PluginEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\SearchEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
+use craft\helpers\Queue;
 use craft\services\Fields;
+use craft\services\Plugins;
 use craft\services\Search;
 use craft\services\Sites;
 use craft\web\twig\variables\CraftVariable;
@@ -60,6 +63,8 @@ use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
+use Solspace\Freeform\Jobs\ManagedPingerRegisterJob;
 use Solspace\Freeform\Library\Bundles\BundleLoader;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SearchHelper;
@@ -595,6 +600,28 @@ class Freeform extends Plugin
             function (IndexKeywordsEvent $event) {
                 if ($event->element instanceof Submission) {
                     SearchHelper::alignSearchableAttributes($event);
+                }
+            }
+        );
+
+        // Handle Managed Pinger registration when Freeform settings are saved
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_SAVE_PLUGIN_SETTINGS,
+            function (PluginEvent $event) {
+                if (!$event->plugin || 'freeform' !== $event->plugin->handle) {
+                    return;
+                }
+
+                try {
+                    $settings = self::getInstance()->settings->getSettingsModel();
+                    if ($settings->managedPingerEnabled) {
+                        Queue::push(new ManagedPingerRegisterJob());
+                    } else {
+                        Queue::push(new ManagedPingerDeregisterJob());
+                    }
+                } catch (\Throwable $e) {
+                    // ignore
                 }
             }
         );

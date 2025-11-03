@@ -584,6 +584,7 @@ return [
     'To add an integration, click the button below' => 'Um eine Integration hinzuzufügen, klicken Sie auf die Schaltfläche unten',
     'Add integration' => 'Integration hinzufügen',
     'This can begin with an environment variable.' => 'Dies kann mit einer Umgebungsvariablen beginnen.',
+    'This can be set to an environment variable with a boolean value (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).' => 'Dies kann als boolesche Umgebungsvariable gesetzt werden (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).',
     'Learn more' => 'Mehr erfahren',
     'Enable Rules' => 'Regeln aktivieren',
     'Enable rules to control when this integration is triggered.' => 'Aktivieren Sie Regeln, um zu steuern, wann diese Integration ausgelöst wird.',

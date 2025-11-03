@@ -49,7 +49,7 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
               <i className="fa-thin fa-star-exclamation" />
             </Icon>
             <span className={classes('edition-label')}>
-              {translate('Upgrade to {edition} to enable', {
+              {translate('Upgrade to {edition} to enable.', {
                 edition: capitalize(edition),
               })}
             </span>

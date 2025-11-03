@@ -137,7 +137,7 @@ export const FormGrid: React.FC = () => {
             <div
               dangerouslySetInnerHTML={{
                 __html: translate(
-                  '<a href="{link}" target="_blank">Upgrade to Lite or Pro</a> to get more forms.',
+                  'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.',
                   { link: Craft.getCpUrl('plugin-store/freeform') }
                 ),
               }}

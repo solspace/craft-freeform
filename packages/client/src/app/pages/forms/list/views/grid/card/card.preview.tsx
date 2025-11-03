@@ -21,16 +21,12 @@ const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 const titles = [
-  'FM Form',
-  'Demo FM Form',
-  'Test FM Form',
-  'Sample FM Form',
   'Contact Us',
-  'Feedback Form',
-  'Survey Form',
-  'Registration Form',
-  'Application Form',
-  'Subscription Form',
+  'Feedback',
+  'Survey',
+  'Registration',
+  'Application',
+  'Subscription',
 ];
 
 export const CardPreview: React.FC = () => {

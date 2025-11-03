@@ -116,6 +116,7 @@ export const CardWrapper = styled.li`
 
   &.blurred {
     filter: blur(3px);
+    opacity: 0.35;
     pointer-events: none;
     user-select: none;
   }

@@ -60,7 +60,7 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
         <UpsellBanner
           dangerouslySetInnerHTML={{
             __html: translate(
-              '<a href="{link}" target="_blank">Upgrade to Pro</a> to enable advanced rules for this field',
+              '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.',
               { link: Craft.getCpUrl('plugin-store/freeform') }
             ),
           }}
@@ -79,7 +79,7 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
 
           <ConditionTable
             conditions={rule.conditions}
-            buttonLabel="Upgrade to Pro to add rules"
+            buttonLabel="Upgrade to Freeform Pro to create conditional rules."
           />
         </LockedContent>
       </PreviewWrapper>

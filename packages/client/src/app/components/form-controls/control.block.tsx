@@ -71,7 +71,7 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
         size && `size-${size}`,
         upsell && 'upsell'
       )}
-      data-upsell={translate('Upgrade to {edition} to unlock this field.', {
+      data-upsell={translate('Upgrade to {edition} to unlock this setting.', {
         edition: capitalize(edition),
       })}
       $width={width}

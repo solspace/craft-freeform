@@ -87,7 +87,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         \Craft::$app->language = $sites->getCurrentSite()->language;
 
         $submission = $freeform->submissions->getSubmissionById($this->submissionId);
-        if ($submission->isSpam) {
+        if (!$submission || $submission->isSpam) {
             return;
         }
 

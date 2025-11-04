@@ -44,12 +44,12 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     protected string $instanceUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Use Custom URL?',
         instructions: 'Enable this if you connect to your Salesforce account with a custom company URL.',
         order: 1,
     )]
-    protected bool $useCustomUrl = false;
+    protected string $useCustomUrl = 'false';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
@@ -155,7 +155,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     protected function isCustomUrl(): bool
     {
-        return $this->useCustomUrl;
+        return $this->getProcessedBoolean($this->useCustomUrl);
     }
 
     protected function getCustomUrl(): ?string

@@ -54,18 +54,18 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     protected string $apiDomain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
+    #[Input\BooleanEnv(
         instructions: 'Enable this if your Zoho account is in Sandbox mode (connects to `sandbox.zohoapis.{domain}` instead of `www.zohoapis.com` or `www.zohoapis.{domain}`).',
         order: 1,
     )]
-    protected bool $sandboxMode = false;
+    protected string $sandboxMode = 'false';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Text(
+    #[Input\BooleanEnv(
         instructions: 'Enable this if your Zoho account is in Developer mode (connects to `developer.zohoapis.{domain}` instead of `www.zohoapis.com`, `www.zohoapis.{domain}` or `sandbox.zohoapis.{domain}`).',
         order: 2,
     )]
-    protected bool $developerMode = false;
+    protected string $developerMode = 'false';
 
     public function checkConnection(Client $client): bool
     {
@@ -159,12 +159,12 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     protected function isSandboxMode(): bool
     {
-        return $this->sandboxMode;
+        return $this->getProcessedBoolean($this->sandboxMode);
     }
 
     protected function isDeveloperMode(): bool
     {
-        return $this->developerMode;
+        return $this->getProcessedBoolean($this->developerMode);
     }
 
     protected function getDomain(): string

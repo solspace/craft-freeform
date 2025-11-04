@@ -49,11 +49,11 @@ class BlockIpAddresses extends SpamBlockingIntegration
     protected array $defaultIps = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Check DNS Block Lists',
         instructions: 'IP addresses will be checked against the DNS block lists provided below to help detect spam and abusive activity.',
     )]
-    protected bool $checkDnsBlockLists = false;
+    protected string $checkDnsBlockLists = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.checkDnsBlockLists)')]

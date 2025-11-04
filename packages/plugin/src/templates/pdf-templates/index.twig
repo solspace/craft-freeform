@@ -2,7 +2,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-pdfTemplatesManage") %}
+    {% if not readOnly and currentUser.can("freeform-pdfTemplatesManage") %}
         {% if craft.freeform.pro == "pro" %}
             <div class="buttons">
                 <div class="btngroup submit">

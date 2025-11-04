@@ -30,6 +30,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <form method="post">
         <input type="hidden" name="action" value="freeform/codepack/install">
         {{ redirectInput('freeform/settings/demo-templates') }}

@@ -29,6 +29,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/template-manager') }}
     {{ csrfInput() }}

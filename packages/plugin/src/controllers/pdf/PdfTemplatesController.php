@@ -37,6 +37,7 @@ class PdfTemplatesController extends BaseController
             [
                 'title' => Freeform::t('PDF Templates'),
                 'templates' => $templates,
+                'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
             ]
         );
     }
@@ -118,6 +119,7 @@ class PdfTemplatesController extends BaseController
             'continueEditingUrl' => 'freeform/settings/pdf-templates/{id}',
             'action' => 'freeform/pdf-templates/save',
             'title' => $record->name ?: 'New PDF Template',
+            'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
         ];
 
         return $this->renderTemplate('freeform/pdf-templates/edit', $variables);

@@ -77,6 +77,7 @@
         name: "settings[managedPingerEnabled]",
         on: settings.managedPingerEnabled,
         errors: settings.getErrors("managedPingerEnabled"),
+        disabled: readOnly,
     }) }}
 
     {% set currentMinutes = (settings.queuePingMinIntervalSeconds / 60)|round(0, 'ceil') %}
@@ -93,15 +94,18 @@
             { label: 'Every 6 hours'|t('freeform'), value: 360 },
         ],
         errors: settings.getErrors("queuePingMinIntervalMinutes"),
+        disabled: readOnly,
     }) }}
+
+    {% set disabled = not craft.app.config.general.allowAdminChanges ? 'disabled' : '' %}
 
     {% if settings.managedPingerEnabled %}
         <h3>{{ "Manage Queue Pinging Service"|t('freeform') }}</h3>
         <div class="buttons">
-            <button type="button" class="btn" id="disable-pinger-btn">
+            <button type="button" class="btn {{ disabled }}" id="disable-pinger-btn" {{ disabled }}>
                 {{ "Temporarily Disable Service"|t('freeform') }}
             </button>
-            <button type="button" class="btn error" id="delete-pinger-btn">
+            <button type="button" class="btn error {{ disabled }}" id="delete-pinger-btn" {{ disabled }}>
                 {{ "Cancel Service"|t('freeform') }}
             </button>
         </div>

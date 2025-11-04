@@ -48,6 +48,7 @@ class DiagnosticsController extends BaseController
                 'modules' => $modules,
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
+                'readOnly' => false,
             ]
         );
     }
@@ -65,6 +66,7 @@ class DiagnosticsController extends BaseController
             [
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
+                'readOnly' => false,
             ]
         );
     }

@@ -18,11 +18,6 @@ class RegisterSettings extends FeatureBundle
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
             function (RegisterSettingsNavigationEvent $event) {
-                $allowAdminChanges = \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-                if (!$allowAdminChanges) {
-                    return;
-                }
-
                 if (!PermissionHelper::checkPermission(SurveysBundle::PERMISSION_SURVEYS_ACCESS)) {
                     return;
                 }

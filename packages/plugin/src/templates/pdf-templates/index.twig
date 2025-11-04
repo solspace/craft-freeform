@@ -2,7 +2,7 @@
 
 {% block actionButton %}
 
-    {% if not readOnly and currentUser.can("freeform-pdfTemplatesManage") %}
+    {% if currentUser.can("freeform-pdfTemplatesManage") %}
         {% if craft.freeform.pro == "pro" %}
             <div class="buttons">
                 <div class="btngroup submit">
@@ -21,7 +21,7 @@
     { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
 ] %}
 
-{% set content %}
+{% block content %}
 
     {% if craft.freeform.pro == "pro" %}
 
@@ -89,7 +89,7 @@
 
     {% endif %}
 
-{% endset %}
+{% endblock %}
 
 
 {% js %}

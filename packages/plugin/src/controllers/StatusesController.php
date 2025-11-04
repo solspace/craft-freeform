@@ -36,7 +36,7 @@ class StatusesController extends BaseController
             [
                 'statuses' => $statuses,
                 'defaultStatusId' => $this->getStatusesService()->getDefaultStatusId(),
-                'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
+                'readOnly' => false,
             ]
         );
     }
@@ -162,7 +162,7 @@ class StatusesController extends BaseController
             'status' => $model,
             'title' => $title,
             'continueEditingUrl' => 'freeform/settings/statuses/{id}',
-            'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
+            'readOnly' => false,
         ];
 
         return $this->renderTemplate('freeform/statuses/edit', $variables);

@@ -16,6 +16,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <h2 class="first">{{ "Queue Processing"|t('freeform') }}</h2>
     <p>{{ "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically."|t('freeform') }}</p>
 

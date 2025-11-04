@@ -35,13 +35,14 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     protected string $checkMxRecord = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\BooleanEnv(
+    #[Input\Boolean(
         label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
-    protected string $errorsBelowFields = 'false';
+    protected bool $errorsBelowFields = false;
 
     #[VisibilityFilter('Boolean(enabled)')]
+    #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',

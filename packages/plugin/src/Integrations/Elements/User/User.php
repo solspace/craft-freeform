@@ -26,13 +26,14 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 class User extends ElementIntegration
 {
     #[VisibilityFilter('enabled')]
-    #[Input\BooleanEnv(
+    #[Input\Boolean(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
-    protected string $active = 'true';
+    protected bool $active = true;
 
     #[VisibilityFilter('enabled')]
+    #[VisibilityFilter('!values.active')]
     #[Input\BooleanEnv(
         label: 'Send Activation Email',
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',
@@ -90,7 +91,7 @@ class User extends ElementIntegration
 
     public function isRegisterInactiveUsers(): bool
     {
-        return $this->getProcessedBoolean($this->registerInactiveUsers);
+        return $this->registerInactiveUsers;
     }
 
     public function isActive(): bool

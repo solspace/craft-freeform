@@ -221,7 +221,9 @@ class SaveForm extends FeatureBundle
             return;
         }
 
-        $limit = (int) Freeform::getInstance()->settings->getSettingsModel()->saveFormSessionLimit;
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $limit = $settingsModel->saveFormSessionLimit;
         if ($limit <= 0) {
             return;
         }

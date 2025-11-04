@@ -460,6 +460,9 @@ class DiagnosticsService extends BaseService
         $rawScriptInsertLocation = Freeform::getInstance()->settings->getSettingsModel()->scriptInsertLocation;
         $emailTemplateMethod = Freeform::getInstance()->settings->getSettingsModel()->emailTemplateMethod;
 
+        $settings = Freeform::getInstance()->settings;
+        $settingsModel = $settings->getSettingsModel();
+
         return [
             Freeform::t('General Settings') => [
                 new DiagnosticItem(
@@ -503,28 +506,24 @@ class DiagnosticsService extends BaseService
                 new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Freeform Session Context').': <b>'.Freeform::t('{{ value }}').'</b></span>',
                     Freeform::t(
-                        match (Freeform::getInstance()->settings->getSettingsModel()->sessionContext) {
-                            Settings::CONTEXT_TYPE_PAYLOAD => Freeform::t('Encrypted Payload'),
-                            Settings::CONTEXT_TYPE_SESSION => Freeform::t('PHP Session'),
-                            Settings::CONTEXT_TYPE_DATABASE => Freeform::t('Database'),
-                        }
+                        $settingsModel->getSessionContextHumanReadable()
                     ),
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Enable Search Index Updating on New Submissions').'</span>',
-                    $this->getSettingsService()->isUpdateSearchIndexes()
+                    $settings->isUpdateSearchIndexes()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Processing').'</span>',
-                    $this->getSettingsService()->getSettingsModel()->useQueueForAiFields
+                    $settings->getSettingsModel()->useQueueForAiFields
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Email Notifications').'</span>',
-                    $this->getSettingsService()->isNotificationQueueEnabled()
+                    $settings->isNotificationQueueEnabled()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Integrations').'</span>',
-                    $this->getSettingsService()->isIntegrationQueueEnabled()
+                    $settings->isIntegrationQueueEnabled()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value.enabled ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Automatically Purge Submission Data').'{{ value.enabled ? ": <b>"~value.interval~" '.Freeform::t('days').'</b>" : "" }}</span>',
@@ -542,7 +541,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Site-Aware Forms').'</span>',
-                    $this->getSettingsService()->isSitesEnabled(),
+                    $settings->isSitesEnabled(),
                 ),
             ],
             Freeform::t('Spam Controls') => [
@@ -665,7 +664,7 @@ class DiagnosticsService extends BaseService
             Freeform::t('Templates') => [
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Formatting Templates Directory Path').'{% if value %}: <code>'.Freeform::t('{{ value ? value : "" }}').'</code>{% endif %}</span>',
-                    $this->getSettingsService()->getSettingsModel()->formTemplateDirectory,
+                    $settingsModel->formTemplateDirectory,
                     [
                         new WarningValidator(
                             function ($value) {
@@ -686,12 +685,12 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t("Include Freeform's Sample Formatting Templates").'</span>',
-                    $this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates,
+                    $settingsModel->defaults->includeSampleTemplates,
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Template Method').': <b>{{ value }}</b></span>',
                     Freeform::t(
-                        match (Freeform::getInstance()->settings->getSettingsModel()->emailTemplateMethod) {
+                        match ($settingsModel->emailTemplateMethod) {
                             Settings::EMAIL_TEMPLATE_METHOD_FORM => Freeform::t('Form-specific only'),
                             Settings::EMAIL_TEMPLATE_METHOD_GLOBAL => Freeform::t('Global only'),
                             Settings::EMAIL_TEMPLATE_METHOD_ALL => Freeform::t('Form-specific & Global'),
@@ -700,12 +699,12 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Email Templates Directory Path').'{% if value %}: <code>'.Freeform::t('{{ value ? value : "" }}').'</code>{% endif %}</span>',
-                    $this->getSettingsService()->getSettingsModel()->emailTemplateDirectory,
+                    $settings->getSettingsModel()->emailTemplateDirectory,
                     [
                         new WarningValidator(
                             function ($value) {
                                 if ($value) {
-                                    if ('/' !== substr($value, 0, 1)) {
+                                    if (!str_starts_with($value, '/')) {
                                         $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
                                     }
 
@@ -731,12 +730,12 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Success Templates Directory Path').'{% if value %}: <code>'.Freeform::t('{{ value ? value : "" }}').'</code>{% endif %}</span>',
-                    $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
+                    $settingsModel->successTemplateDirectory,
                     [
                         new WarningValidator(
                             function ($value) {
                                 if ($value) {
-                                    if ('/' !== substr($value, 0, 1)) {
+                                    if (!str_starts_with($value, '/')) {
                                         $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
                                     }
 
@@ -755,7 +754,7 @@ class DiagnosticsService extends BaseService
             Freeform::t('Notices & Alerts') => [
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Developer Digest Email').'</span>',
-                    \count($this->getSettingsService()->getDigestRecipients()) > 0
+                    \count($settings->getDigestRecipients()) > 0
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Send System Error Reports').'</span>',
@@ -763,7 +762,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Update Warnings & Notices').'</span>',
-                    $this->getSettingsService()->isDisplayFeed()
+                    $settings->isDisplayFeed()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Level').': <b>{{ value }}</b></span>',
@@ -800,7 +799,7 @@ class DiagnosticsService extends BaseService
                     '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Integrations Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
                     [
                         'count' => Freeform::getInstance()->logger->getLogReader(IntegrationLoggerProvider::LOG_FILE)->count(),
-                        'level' => ucfirst($this->getSettingsService()->getSettingsModel()->loggingLevel),
+                        'level' => ucfirst($settingsModel->loggingLevel),
                     ],
                     [
                         new SuggestionValidator(
@@ -822,7 +821,7 @@ class DiagnosticsService extends BaseService
                     '<span class="diag-check diag-{{ value.level != "Error" ? (value.count ? "info" : "enabled") : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Email Log').': <b>{{ value.count }} '.Freeform::t('item{{ value.count == "1" ? "" : "s" }} found').'</b></span>',
                     [
                         'count' => Freeform::getInstance()->logger->getLogReader(NotificationLoggerProvider::LOG_FILE)->count(),
-                        'level' => ucfirst($this->getSettingsService()->getSettingsModel()->loggingLevel),
+                        'level' => ucfirst($settingsModel->loggingLevel),
                     ],
                     [
                         new SuggestionValidator(

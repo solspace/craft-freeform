@@ -19,31 +19,34 @@
     <h2 class="first">{{ "Queue Processing"|t('freeform') }}</h2>
     <p>{{ "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically."|t('freeform') }}</p>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for AI Processing"|t('freeform'),
         instructions: "Use Craft's queue system to trigger AI processing."|t('freeform'),
         name: "settings[useQueueForAiFields]",
-        on: settings.useQueueForAiFields,
+        value: settings.useQueueForAiFields,
         errors: settings.errors("useQueueForAiFields"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for Email Notifications"|t('freeform'),
         instructions: "Use Craft's queue system to trigger emails."|t('freeform'),
         name: "settings[useQueueForEmailNotifications]",
-        on: settings.useQueueForEmailNotifications,
+        value: settings.useQueueForEmailNotifications,
         errors: settings.errors("useQueueForEmailNotifications"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for Integrations"|t('freeform'),
         instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing)."|t('freeform'),
         name: "settings[useQueueForIntegrations]",
-        on: settings.useQueueForIntegrations,
+        value: settings.useQueueForIntegrations,
         errors: settings.errors("useQueueForIntegrations"),
         disabled: readOnly,
         warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),

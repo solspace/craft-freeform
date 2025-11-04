@@ -16,7 +16,6 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -53,7 +52,6 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
-    #[VisibilityFilter('Boolean(values.useCustomUrl)')]
     #[Input\Text(
         label: 'Custom URL',
         instructions: 'Enter the custom URL, e.g. `https://mycompany.develop.my.salesforce.com`',

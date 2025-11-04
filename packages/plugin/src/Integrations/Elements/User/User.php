@@ -33,7 +33,6 @@ class User extends ElementIntegration
     protected string $active = 'true';
 
     #[VisibilityFilter('enabled')]
-    #[VisibilityFilter('!values.active')]
     #[Input\BooleanEnv(
         label: 'Send Activation Email',
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',

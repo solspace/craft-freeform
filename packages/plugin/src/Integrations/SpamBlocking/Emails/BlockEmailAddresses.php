@@ -42,7 +42,6 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     protected string $errorsBelowFields = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
     #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Error Message',

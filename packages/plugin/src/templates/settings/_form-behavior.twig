@@ -85,43 +85,6 @@
 
     <hr>
 
-    <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
-
-    {{ forms.booleanMenuField({
-        includeEnvVars: true,
-        label: "Use Queue for AI Processing"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger AI processing. Enabling this will speed up submission processing for your users."|t('freeform'),
-        name: "settings[useQueueForAiFields]",
-        value: settings.useQueueForAiFields,
-        errors: settings.errors("useQueueForAiFields"),
-        disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
-    }) }}
-
-    {{ forms.booleanMenuField({
-        includeEnvVars: true,
-        label: "Use Queue for Email Notifications"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users."|t('freeform'),
-        name: "settings[useQueueForEmailNotifications]",
-        value: settings.useQueueForEmailNotifications,
-        errors: settings.errors("useQueueForEmailNotifications"),
-        disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
-    }) }}
-
-    {{ forms.booleanMenuField({
-        includeEnvVars: true,
-        label: "Use Queue for Integrations"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users."|t('freeform'),
-        name: "settings[useQueueForIntegrations]",
-        value: settings.useQueueForIntegrations,
-        errors: settings.errors("useQueueForIntegrations"),
-        disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
-    }) }}
-
-    <hr>
-
     <h2>{{ "Freeform Scripts"|t('freeform') }}</h2>
 
     {{ forms.selectField({

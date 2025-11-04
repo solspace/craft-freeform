@@ -72,7 +72,7 @@ class FormAttributesBundle extends FeatureBundle
             $attributes->replace('enctype', 'multipart/form-data');
         }
 
-        $autoScroll = Freeform::getInstance()->settings->getSettingsModel()->autoScroll;
+        $autoScroll = Freeform::getInstance()->settings->isAutoScroll();
         if ($autoScroll) {
             $attributes->replace('data-auto-scroll', $autoScroll);
         }

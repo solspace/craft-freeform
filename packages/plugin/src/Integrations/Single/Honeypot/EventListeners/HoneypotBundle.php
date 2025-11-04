@@ -84,9 +84,7 @@ class HoneypotBundle extends FeatureBundle
 
         $honeypotName = $integration->getInputName();
         $settings = $this->getSettingsService();
-
-        $settingsModel = $settings->getSettingsModel();
-        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             $logger->debug('Skipping honeypot check for logged in user');
 
             return;

@@ -210,9 +210,8 @@ class ReCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function validate(Form $form): void
     {
-        $settings = Freeform::getInstance()->settings->getSettingsModel();
-
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        $settings = Freeform::getInstance()->settings;
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 

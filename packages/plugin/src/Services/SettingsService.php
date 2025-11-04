@@ -13,6 +13,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\helpers\App;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
@@ -46,9 +47,7 @@ class SettingsService extends BaseService
 
     public function isFreeformHoneypotEnabled(?Form $form = null): bool
     {
-        $settingsModel = $this->getSettingsModel();
-
-        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($this->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return false;
         }
 
@@ -168,27 +167,62 @@ class SettingsService extends BaseService
 
     public function isFormSubmitDisable(): bool
     {
-        return (bool) $this->getSettingsModel()->formSubmitDisable;
+        return App::parseBooleanEnv($this->getSettingsModel()->formSubmitDisable);
     }
 
     public function isRememberSubmitOrder(): bool
     {
-        return (bool) $this->getSettingsModel()->rememberPageSubmitOrder;
+        return App::parseBooleanEnv($this->getSettingsModel()->rememberPageSubmitOrder);
     }
 
     public function isAutoScrollToErrors(): bool
     {
-        return (bool) $this->getSettingsModel()->autoScrollToErrors;
+        return App::parseBooleanEnv($this->getSettingsModel()->autoScrollToErrors);
+    }
+
+    public function isAutoScroll(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->autoScroll);
     }
 
     public function isUseIdempotencyKey(): bool
     {
-        return (bool) $this->getSettingsModel()->useIdempotencyKey;
+        return App::parseBooleanEnv($this->getSettingsModel()->useIdempotencyKey);
     }
 
     public function isRemoveNewlines(): bool
     {
-        return (bool) $this->getSettingsModel()->removeNewlines;
+        return App::parseBooleanEnv($this->getSettingsModel()->removeNewlines);
+    }
+
+    public function isExportLabels(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->exportLabels);
+    }
+
+    public function isExportHandlesAsNames(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->exportHandlesAsNames);
+    }
+
+    public function isSitesEnabled(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->sitesEnabled);
+    }
+
+    public function isFillWithGet(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->fillWithGet);
+    }
+
+    public function isAllowDashesInFieldHandles(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->allowDashesInFieldHandles);
+    }
+
+    public function isUpdateSearchIndexes(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->updateSearchIndexes);
     }
 
     public function getPurgableSubmissionAgeInDays(): ?int
@@ -279,7 +313,12 @@ class SettingsService extends BaseService
 
     public function isSpamFolderEnabled(): bool
     {
-        return $this->getSettingsModel()->spamFolderEnabled;
+        return App::parseBooleanEnv($this->getSettingsModel()->spamFolderEnabled);
+    }
+
+    public function isDisplayFeed(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->displayFeed);
     }
 
     public function isAjaxEnabledByDefault(): bool
@@ -357,7 +396,7 @@ class SettingsService extends BaseService
 
     public function isDigestOnlyOnProduction(): bool
     {
-        return $this->getSettingsModel()->digestOnlyOnProduction;
+        return App::parseBooleanEnv($this->getSettingsModel()->digestOnlyOnProduction);
     }
 
     public function getBadgeCount(): ?int
@@ -408,22 +447,27 @@ class SettingsService extends BaseService
 
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
-        return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
+        return App::parseBooleanEnv($this->getSettingsModel()->formFieldShowOnlyAllowedForms);
     }
 
     public function isNotificationQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForEmailNotifications;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForEmailNotifications);
     }
 
     public function isIntegrationQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForIntegrations;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForIntegrations);
     }
 
     public function isAiFieldQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForAiFields;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForAiFields);
+    }
+
+    public function isBypassSpamCheckOnLoggedInUsers(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->bypassSpamCheckOnLoggedInUsers);
     }
 
     private function getTemplatesIn(?string $path): array

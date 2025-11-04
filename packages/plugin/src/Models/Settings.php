@@ -103,14 +103,9 @@ class Settings extends Model
     /** @var string */
     public $defaultView;
 
-    /** @var bool */
-    public $removeNewlines;
-
-    /** @var bool */
-    public $exportLabels;
-
-    /** @var bool */
-    public $exportHandlesAsNames;
+    public string $removeNewlines = 'false';
+    public string $exportLabels = 'false';
+    public string $exportHandlesAsNames = 'false';
 
     /** @deprecated use $scriptInsertLocation instead */
     public $footerScripts;
@@ -121,11 +116,8 @@ class Settings extends Model
     /** @var string */
     public $scriptInsertType;
 
-    /** @var bool */
-    public $formSubmitDisable;
-
-    /** @var bool */
-    public $rememberPageSubmitOrder;
+    public string $formSubmitDisable = 'true';
+    public string $rememberPageSubmitOrder = 'true';
 
     /** @var int */
     public $formSubmitExpiration;
@@ -133,8 +125,7 @@ class Settings extends Model
     /** @var int */
     public $minimumSubmitTime;
 
-    /** @var string */
-    public $spamProtectionBehavior;
+    public string $spamProtectionBehavior = self::PROTECTION_SIMULATE_SUCCESS;
 
     /** @var int */
     public $submissionThrottlingCount;
@@ -184,37 +175,20 @@ class Settings extends Model
      */
     public $showErrorsForBlockedKeywords;
 
-    /**
-     * @var string
-     *
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public $blockedIpAddresses;
-
-    /** @var int */
-    public $purgableSubmissionAgeInDays;
-
-    /** @var int */
-    public $purgableSpamAgeInDays;
-
-    /** @var int */
-    public $purgableUnfinalizedAssetAgeInMinutes;
+    public ?string $blockedIpAddresses = null;
+    public ?int $purgableSubmissionAgeInDays = null;
+    public ?int $purgableSpamAgeInDays = null;
+    public int $purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
     public bool $purgeAssets = true;
 
-    /** @var bool */
-    public $spamFolderEnabled;
+    public string $spamFolderEnabled = 'true';
 
     /** @var bool */
     public $renderFormHtmlInCpViews;
 
-    /** @var bool */
-    public $autoScrollToErrors;
-
-    /** @var bool */
-    public $autoScroll;
-
-    /** @var bool */
-    public $fillWithGet;
+    public string $autoScrollToErrors = 'true';
+    public string $autoScroll = 'true';
+    public string $fillWithGet = 'false';
 
     /** @var string */
     public $formattingTemplate;
@@ -240,20 +214,14 @@ class Settings extends Model
     /** @var string */
     public $clientDigestFrequency;
 
-    /** @var bool */
-    public $digestOnlyOnProduction;
-
-    /** @var array */
-    public $displayFeed;
+    public string $digestOnlyOnProduction = 'false';
+    public string $displayFeed = 'true';
 
     /** @var string */
     public $badgeType;
 
-    /** @var bool */
-    public $updateSearchIndexes;
-
-    /** @var bool */
-    public $formFieldShowOnlyAllowedForms;
+    public string $updateSearchIndexes = 'true';
+    public string $formFieldShowOnlyAllowedForms = 'false';
 
     /** @var string */
     public $sessionContext;
@@ -273,23 +241,22 @@ class Settings extends Model
     /** @var int */
     public $saveFormSessionLimit;
 
-    /** @var bool */
-    public $bypassSpamCheckOnLoggedInUsers;
+    public string $bypassSpamCheckOnLoggedInUsers = 'false';
 
     public ?int $queuePriority = null;
     public array $hiddenFieldTypes = [];
     public array $surveys = [];
-    public bool $allowDashesInFieldHandles = false;
-    public bool $sitesEnabled = false;
+    public string $allowDashesInFieldHandles = 'false';
+    public string $sitesEnabled = 'false';
     public string $defaultFromEmail = '{{ general.systemEmail }}';
     public string $defaultFromName = '{{ general.systemName }}';
     public Defaults $defaults;
-    public bool $useQueueForEmailNotifications = false;
-    public bool $useQueueForIntegrations = false;
-    public bool $useQueueForAiFields = false;
+    public string $useQueueForEmailNotifications = 'false';
+    public string $useQueueForIntegrations = 'false';
+    public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
     public string $csrfRefresh = self::CSRF_REFRESH_NONE;
-    public bool $useIdempotencyKey = false;
+    public string $useIdempotencyKey = 'false';
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
@@ -302,34 +269,19 @@ class Settings extends Model
         $this->formTemplateDirectory = null;
         $this->successTemplateDirectory = null;
         $this->defaultView = Freeform::VIEW_FORMS;
-        $this->removeNewlines = false;
-        $this->exportLabels = false;
-        $this->exportHandlesAsNames = false;
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
         $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_FILES;
-        $this->formSubmitDisable = true;
-        $this->rememberPageSubmitOrder = true;
 
-        $this->spamProtectionBehavior = self::PROTECTION_SIMULATE_SUCCESS;
         $this->blockedEmails = null;
         $this->blockedKeywords = null;
         $this->blockedEmailsError = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
         $this->blockedKeywordsError = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-        $this->blockedIpAddresses = null;
         $this->showErrorsForBlockedKeywords = false;
         $this->showErrorsForBlockedEmails = false;
-        $this->spamFolderEnabled = true;
         $this->submissionThrottlingCount = null;
         $this->submissionThrottlingTimeFrame = null;
-        $this->purgableSubmissionAgeInDays = null;
-        $this->purgableSpamAgeInDays = null;
-        $this->purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
         $this->renderFormHtmlInCpViews = true;
-        $this->autoScrollToErrors = true;
-        $this->autoScroll = true;
-        $this->useIdempotencyKey = true;
-        $this->fillWithGet = false;
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;
         $this->errorNotificationRecipients = null;
@@ -337,8 +289,6 @@ class Settings extends Model
         $this->digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
         $this->clientDigestRecipients = null;
         $this->clientDigestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
-        $this->digestOnlyOnProduction = false;
-        $this->displayFeed = true;
         $this->badgeType = 'all';
 
         $this->allowFileTemplateEdit = true;
@@ -349,10 +299,6 @@ class Settings extends Model
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
 
-        $this->updateSearchIndexes = true;
-
-        $this->formFieldShowOnlyAllowedForms = false;
-
         $this->sessionContext = self::CONTEXT_TYPE_PAYLOAD;
         $this->sessionContextTimeToLiveMinutes = 180;
         $this->sessionContextCount = 100;
@@ -361,11 +307,7 @@ class Settings extends Model
         $this->saveFormTtl = self::SAVE_FORM_TTL;
         $this->saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
 
-        $this->bypassSpamCheckOnLoggedInUsers = false;
-
         $this->hiddenFieldTypes = [];
-
-        $this->allowDashesInFieldHandles = false;
 
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);

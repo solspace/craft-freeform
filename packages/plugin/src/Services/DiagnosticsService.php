@@ -512,7 +512,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Enable Search Index Updating on New Submissions').'</span>',
-                    $this->getSettingsService()->getSettingsModel()->updateSearchIndexes
+                    $this->getSettingsService()->isUpdateSearchIndexes()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for AI Processing').'</span>',
@@ -520,11 +520,11 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Email Notifications').'</span>',
-                    $this->getSettingsService()->getSettingsModel()->useQueueForEmailNotifications
+                    $this->getSettingsService()->isNotificationQueueEnabled()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Use Queue for Integrations').'</span>',
-                    $this->getSettingsService()->getSettingsModel()->useQueueForIntegrations
+                    $this->getSettingsService()->isIntegrationQueueEnabled()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value.enabled ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Automatically Purge Submission Data').'{{ value.enabled ? ": <b>"~value.interval~" '.Freeform::t('days').'</b>" : "" }}</span>',
@@ -542,7 +542,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Site-Aware Forms').'</span>',
-                    $this->getSettingsService()->getSettingsModel()->sitesEnabled,
+                    $this->getSettingsService()->isSitesEnabled(),
                 ),
             ],
             Freeform::t('Spam Controls') => [
@@ -763,7 +763,7 @@ class DiagnosticsService extends BaseService
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Update Warnings & Notices').'</span>',
-                    (bool) $this->getSettingsService()->getSettingsModel()->displayFeed
+                    $this->getSettingsService()->isDisplayFeed()
                 ),
                 new DiagnosticItem(
                     '<span class="diag-check diag-spacer"></span><span class="item-inline">'.Freeform::t('Logging Level').': <b>{{ value }}</b></span>',

@@ -47,6 +47,6 @@ class ManagedPingerDeregisterJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Deregister Managed Pinger');
+        return Freeform::t('Freeform: Disable Pinging Service');
     }
 }

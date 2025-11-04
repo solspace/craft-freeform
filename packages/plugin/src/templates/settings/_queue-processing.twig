@@ -25,7 +25,7 @@
         on: settings.useQueueForAiFields,
         errors: settings.errors("useQueueForAiFields"),
         disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
     {{ forms.lightswitchField({
@@ -35,7 +35,7 @@
         on: settings.useQueueForEmailNotifications,
         errors: settings.errors("useQueueForEmailNotifications"),
         disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
     {{ forms.lightswitchField({
@@ -45,7 +45,7 @@
         on: settings.useQueueForIntegrations,
         errors: settings.errors("useQueueForIntegrations"),
         disabled: readOnly,
-        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+        warning: "This feature requires Craft's queue runner to process tasks. You can enable Freeform's free pinging service below to trigger it automatically. <a class='go' href='https://docs.solspace.com/craft/freeform/v5/configuration/queue-processing' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
     <hr>

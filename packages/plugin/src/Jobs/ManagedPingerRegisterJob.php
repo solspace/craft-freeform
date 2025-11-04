@@ -59,6 +59,6 @@ class ManagedPingerRegisterJob extends BaseJob
 
     protected function defaultDescription(): ?string
     {
-        return Freeform::t('Freeform: Register Managed Pinger');
+        return Freeform::t('Freeform: Enable Pinging Service');
     }
 }

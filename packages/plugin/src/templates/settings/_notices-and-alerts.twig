@@ -20,11 +20,12 @@
 
     <h2 class="first">{{ "Control Panel Notices"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Display Update Warnings & Notices"|t('freeform'),
         instructions: "Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes to bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com."|t('freeform'),
         name: "settings[displayFeed]",
-        on: settings.displayFeed,
+        value: settings.displayFeed,
         errors: settings.getErrors("displayFeed"),
         disabled: readOnly,
     }) }}
@@ -121,11 +122,12 @@
             },
         }) }}
 
-        {{ forms.lightswitchField({
+        {{ forms.booleanMenuField({
+            includeEnvVars: true,
             label: "Send Notifications on Live Environment only"|t('freeform'),
             instructions: "If this setting is enabled, Freeform will only send out Digest emails when the Craft environment is set to production."|t('freeform'),
             name: "settings[digestOnlyOnProduction]",
-            on: settings.digestOnlyOnProduction,
+            value: settings.digestOnlyOnProduction,
             errors: settings.getErrors("digestOnlyOnProduction"),
             disabled: readOnly,
         }) }}

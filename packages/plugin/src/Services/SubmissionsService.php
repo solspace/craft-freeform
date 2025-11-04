@@ -93,7 +93,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function getSubmissionCount(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false): int
     {
-        $isSitesEnabled = $this->getSettingsService()->getSettingsModel()->sitesEnabled;
+        $isSitesEnabled = $this->getSettingsService()->isSitesEnabled();
         if ($isSitesEnabled) {
             $siteId = SitesHelper::getCurrentCpPageSiteId();
             $availableFormIds = (new Query())
@@ -231,7 +231,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             return false;
         }
 
-        $updateSearchIndex = (bool) $this->getSettingsService()->getSettingsModel()->updateSearchIndexes;
+        $updateSearchIndex = $this->getSettingsService()->isUpdateSearchIndexes();
         if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 

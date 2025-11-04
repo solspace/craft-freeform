@@ -222,9 +222,9 @@ class ExportProfilesService extends Component
 
         return new ExportSettings(
             $settings->isRemoveNewlines(),
-            $settings->getSettingsModel()->exportLabels,
+            $settings->isExportLabels(),
             \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? date_default_timezone_get(),
-            $settings->getSettingsModel()->exportHandlesAsNames
+            $settings->isExportHandlesAsNames()
         );
     }
 

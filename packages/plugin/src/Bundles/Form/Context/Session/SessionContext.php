@@ -32,10 +32,12 @@ class SessionContext
 
     public function __construct()
     {
-        $context = Freeform::getInstance()->settings->getSettingsModel()->sessionContext;
-        $ttl = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextTimeToLiveMinutes();
-        $count = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextCount();
-        $secret = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextSecret();
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $context = $settingsModel->sessionContext;
+        $ttl = $settingsModel->getSessionContextTimeToLiveMinutes();
+        $count = $settingsModel->getSessionContextCount();
+        $secret = $settingsModel->getSessionContextSecret();
 
         switch ($context) {
             case Settings::CONTEXT_TYPE_DATABASE:

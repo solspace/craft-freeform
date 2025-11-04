@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use craft\helpers\App;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Form\Defaults\Defaults;
@@ -76,220 +77,127 @@ class Settings extends Model
     public const LOGGING_LEVEL_INFO = 'info';
     public const LOGGING_LEVEL_DEBUG = 'debug';
 
-    /** @var string */
-    public $pluginName;
-
-    /** @var string */
-    public $formTemplateDirectory;
-
-    /** @var bool */
-    public $allowFileTemplateEdit;
-
-    /** @var string */
-    public $emailTemplateDirectory;
-
-    /** @var string */
-    public $emailTemplateStorageType;
+    public ?string $pluginName = null;
+    public ?string $formTemplateDirectory = null;
+    public bool $allowFileTemplateEdit = true;
+    public ?string $emailTemplateDirectory = null;
+    public string $emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
     public string $emailTemplateMethod = self::EMAIL_TEMPLATE_METHOD_FORM;
-
-    /** @var string */
-    public $emailTemplateDefault;
+    public string $emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
 
     public bool $allowBuilderTemplateCreation = true;
+    public ?string $successTemplateDirectory = null;
 
-    /** @var string */
-    public $successTemplateDirectory;
+    public string $defaultView = Freeform::VIEW_FORMS;
 
-    /** @var string */
-    public $defaultView;
-
-    /** @var bool */
-    public $removeNewlines;
-
-    /** @var bool */
-    public $exportLabels;
-
-    /** @var bool */
-    public $exportHandlesAsNames;
+    public string $removeNewlines = 'false';
+    public string $exportLabels = 'false';
+    public string $exportHandlesAsNames = 'false';
 
     /** @deprecated use $scriptInsertLocation instead */
-    public $footerScripts;
+    public bool $footerScripts = false;
 
-    /** @var string */
-    public $scriptInsertLocation;
+    public string $scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
+    public string $scriptInsertType = self::SCRIPT_INSERT_TYPE_FILES;
 
-    /** @var string */
-    public $scriptInsertType;
+    public string $formSubmitDisable = 'true';
+    public string $rememberPageSubmitOrder = 'true';
 
-    /** @var bool */
-    public $formSubmitDisable;
+    public ?int $formSubmitExpiration = null;
+    public ?int $minimumSubmitTime = null;
 
-    /** @var bool */
-    public $rememberPageSubmitOrder;
+    public string $spamProtectionBehavior = self::PROTECTION_SIMULATE_SUCCESS;
 
-    /** @var int */
-    public $formSubmitExpiration;
-
-    /** @var int */
-    public $minimumSubmitTime;
-
-    /** @var string */
-    public $spamProtectionBehavior;
-
-    /** @var int */
-    public $submissionThrottlingCount;
-
-    /** @var string */
-    public $submissionThrottlingTimeFrame;
+    public ?int $submissionThrottlingCount = null;
+    public ?string $submissionThrottlingTimeFrame = null;
 
     /**
-     * @var string
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $blockedEmails;
+    public ?string $blockedEmails = null;
 
     /**
-     * @var string
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $blockedKeywords;
+    public ?string $blockedKeywords = null;
 
     /**
-     * @var string
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $blockedKeywordsError;
+    public string $blockedKeywordsError = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
 
     /**
-     * @var string
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $blockedEmailsError;
+    public string $blockedEmailsError = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
 
     /**
-     * @var bool
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $showErrorsForBlockedEmails;
+    public bool $showErrorsForBlockedEmails = false;
 
     /**
-     * @var bool
-     *
      * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
      */
-    public $showErrorsForBlockedKeywords;
+    public bool $showErrorsForBlockedKeywords = false;
 
-    /**
-     * @var string
-     *
-     * @deprecated No longer used in Freeform 5.4.1. This is achieved by creating spam block integrations.
-     */
-    public $blockedIpAddresses;
-
-    /** @var int */
-    public $purgableSubmissionAgeInDays;
-
-    /** @var int */
-    public $purgableSpamAgeInDays;
-
-    /** @var int */
-    public $purgableUnfinalizedAssetAgeInMinutes;
+    public ?string $blockedIpAddresses = null;
+    public ?int $purgableSubmissionAgeInDays = null;
+    public ?int $purgableSpamAgeInDays = null;
+    public int $purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
     public bool $purgeAssets = true;
 
-    /** @var bool */
-    public $spamFolderEnabled;
+    public string $spamFolderEnabled = 'true';
 
-    /** @var bool */
-    public $renderFormHtmlInCpViews;
+    public bool $renderFormHtmlInCpViews = true;
 
-    /** @var bool */
-    public $autoScrollToErrors;
+    public string $autoScrollToErrors = 'true';
+    public string $autoScroll = 'true';
+    public string $fillWithGet = 'false';
 
-    /** @var bool */
-    public $autoScroll;
+    public string $formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
 
-    /** @var bool */
-    public $fillWithGet;
-
-    /** @var string */
-    public $formattingTemplate;
-
-    /** @var int */
-    public $sessionEntryMaxCount;
-
-    /** @var int */
-    public $sessionEntryTTL;
+    public int $sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
+    public int $sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
 
     public ?string $alertNotificationRecipients = null;
     public ?string $errorNotificationRecipients = null;
 
-    /** @var string */
-    public $digestRecipients;
+    public ?string $digestRecipients = null;
+    public int $digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
+    public ?string $clientDigestRecipients = null;
+    public int $clientDigestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
 
-    /** @var string */
-    public $digestFrequency;
+    public string $digestOnlyOnProduction = 'false';
+    public string $displayFeed = 'true';
+    public string $badgeType = 'all';
+    public string $updateSearchIndexes = 'true';
+    public string $formFieldShowOnlyAllowedForms = 'false';
 
-    /** @var string */
-    public $clientDigestRecipients;
+    public string $sessionContext = self::CONTEXT_TYPE_PAYLOAD;
+    public int $sessionContextTimeToLiveMinutes = 180;
+    public int $sessionContextCount = 100;
+    public string $sessionContextSecret = '';
 
-    /** @var string */
-    public $clientDigestFrequency;
+    public int $saveFormTtl = self::SAVE_FORM_TTL;
+    public int $saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
 
-    /** @var bool */
-    public $digestOnlyOnProduction;
-
-    /** @var array */
-    public $displayFeed;
-
-    /** @var string */
-    public $badgeType;
-
-    /** @var bool */
-    public $updateSearchIndexes;
-
-    /** @var bool */
-    public $formFieldShowOnlyAllowedForms;
-
-    /** @var string */
-    public $sessionContext;
-
-    /** @var int */
-    public $sessionContextTimeToLiveMinutes;
-
-    /** @var int */
-    public $sessionContextCount;
-
-    /** @var string */
-    public $sessionContextSecret;
-
-    /** @var int */
-    public $saveFormTtl;
-
-    /** @var int */
-    public $saveFormSessionLimit;
-
-    /** @var bool */
-    public $bypassSpamCheckOnLoggedInUsers;
+    public string $bypassSpamCheckOnLoggedInUsers = 'false';
 
     public ?int $queuePriority = null;
     public array $hiddenFieldTypes = [];
     public array $surveys = [];
-    public bool $allowDashesInFieldHandles = false;
-    public bool $sitesEnabled = false;
+    public string $allowDashesInFieldHandles = 'false';
+    public string $sitesEnabled = 'false';
     public string $defaultFromEmail = '{{ general.systemEmail }}';
     public string $defaultFromName = '{{ general.systemName }}';
     public Defaults $defaults;
-    public bool $useQueueForEmailNotifications = false;
-    public bool $useQueueForIntegrations = false;
-    public bool $useQueueForAiFields = false;
+    public string $useQueueForEmailNotifications = 'false';
+    public string $useQueueForIntegrations = 'false';
+    public string $useQueueForAiFields = 'false';
     public string $loggingLevel = self::LOGGING_LEVEL_ERROR;
     public string $csrfRefresh = self::CSRF_REFRESH_NONE;
-    public bool $useIdempotencyKey = false;
+    public string $useIdempotencyKey = 'false';
 
     public string $emailNotificationToolbarConfiguration = Defaults::DEFAULT_TOOLBAR_CONFIGURATION;
 
@@ -298,80 +206,8 @@ class Settings extends Model
     public ?string $queuePingToken = null;
     public int $queuePingMinIntervalSeconds = 600;
 
-    /**
-     * Settings constructor.
-     */
     public function __construct(array $config = [])
     {
-        $this->pluginName = null;
-        $this->formTemplateDirectory = null;
-        $this->successTemplateDirectory = null;
-        $this->defaultView = Freeform::VIEW_FORMS;
-        $this->removeNewlines = false;
-        $this->exportLabels = false;
-        $this->exportHandlesAsNames = false;
-        $this->footerScripts = false;
-        $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
-        $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_FILES;
-        $this->formSubmitDisable = true;
-        $this->rememberPageSubmitOrder = true;
-
-        $this->spamProtectionBehavior = self::PROTECTION_SIMULATE_SUCCESS;
-        $this->blockedEmails = null;
-        $this->blockedKeywords = null;
-        $this->blockedEmailsError = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
-        $this->blockedKeywordsError = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-        $this->blockedIpAddresses = null;
-        $this->showErrorsForBlockedKeywords = false;
-        $this->showErrorsForBlockedEmails = false;
-        $this->spamFolderEnabled = true;
-        $this->submissionThrottlingCount = null;
-        $this->submissionThrottlingTimeFrame = null;
-        $this->purgableSubmissionAgeInDays = null;
-        $this->purgableSpamAgeInDays = null;
-        $this->purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
-        $this->renderFormHtmlInCpViews = true;
-        $this->autoScrollToErrors = true;
-        $this->autoScroll = true;
-        $this->useIdempotencyKey = true;
-        $this->fillWithGet = false;
-        $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
-        $this->alertNotificationRecipients = null;
-        $this->errorNotificationRecipients = null;
-        $this->digestRecipients = null;
-        $this->digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
-        $this->clientDigestRecipients = null;
-        $this->clientDigestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
-        $this->digestOnlyOnProduction = false;
-        $this->displayFeed = true;
-        $this->badgeType = 'all';
-
-        $this->allowFileTemplateEdit = true;
-        $this->emailTemplateDirectory = null;
-        $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
-        $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE;
-
-        $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
-        $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
-
-        $this->updateSearchIndexes = true;
-
-        $this->formFieldShowOnlyAllowedForms = false;
-
-        $this->sessionContext = self::CONTEXT_TYPE_PAYLOAD;
-        $this->sessionContextTimeToLiveMinutes = 180;
-        $this->sessionContextCount = 100;
-        $this->sessionContextSecret = '';
-
-        $this->saveFormTtl = self::SAVE_FORM_TTL;
-        $this->saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
-
-        $this->bypassSpamCheckOnLoggedInUsers = false;
-
-        $this->hiddenFieldTypes = [];
-
-        $this->allowDashesInFieldHandles = false;
-
         $this->defaults = new Defaults($config['defaults'] ?? []);
         unset($config['defaults']);
 
@@ -390,14 +226,14 @@ class Settings extends Model
         }
 
         if ($this->emailTemplateDirectory) {
-            $emailTemplatesPath = FileHelper::absolutePath($this->emailTemplateDirectory ?? '', $templatesPath);
+            $emailTemplatesPath = FileHelper::absolutePath($this->emailTemplateDirectory, $templatesPath);
             if (!is_dir($emailTemplatesPath)) {
                 FileHelper::createDirectory($emailTemplatesPath, 0777);
             }
         }
 
         if ($this->successTemplateDirectory) {
-            $successTemplatesPath = FileHelper::absolutePath($this->successTemplateDirectory ?? '', $templatesPath);
+            $successTemplatesPath = FileHelper::absolutePath($this->successTemplateDirectory, $templatesPath);
             if (!is_dir($successTemplatesPath)) {
                 FileHelper::createDirectory($successTemplatesPath, 0777);
             }
@@ -602,32 +438,26 @@ class Settings extends Model
 
     public function getSessionContextTimeToLiveMinutes(): int
     {
-        return (int) \Craft::parseEnv($this->sessionContextTimeToLiveMinutes);
+        return (int) App::parseEnv($this->sessionContextTimeToLiveMinutes);
     }
 
     public function getSessionContextCount(): int
     {
-        return (int) \Craft::parseEnv($this->sessionContextCount);
+        return (int) App::parseEnv($this->sessionContextCount);
     }
 
     public function getSessionContextSecret(): string
     {
-        return \Craft::parseEnv($this->sessionContextSecret);
+        return App::parseEnv($this->sessionContextSecret);
     }
 
     public function getSessionContextHumanReadable(): string
     {
-        switch ($this->sessionContext) {
-            case self::CONTEXT_TYPE_SESSION:
-                return 'PHP Session';
-
-            case self::CONTEXT_TYPE_DATABASE:
-                return 'Database Table';
-
-            case self::CONTEXT_TYPE_PAYLOAD:
-            default:
-                return 'Encrypted Payload';
-        }
+        return match ($this->sessionContext) {
+            self::CONTEXT_TYPE_SESSION => 'PHP Session',
+            self::CONTEXT_TYPE_DATABASE => 'Database Table',
+            default => 'Encrypted Payload',
+        };
     }
 
     /**

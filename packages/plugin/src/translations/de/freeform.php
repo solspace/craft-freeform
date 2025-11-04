@@ -584,6 +584,7 @@ return [
     'To add an integration, click the button below' => 'Um eine Integration hinzuzufügen, klicken Sie auf die Schaltfläche unten',
     'Add integration' => 'Integration hinzufügen',
     'This can begin with an environment variable.' => 'Dies kann mit einer Umgebungsvariablen beginnen.',
+    'This can be set to an environment variable with a boolean value (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).' => 'Dies kann als boolesche Umgebungsvariable gesetzt werden (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).',
     'Learn more' => 'Mehr erfahren',
     'Enable Rules' => 'Regeln aktivieren',
     'Enable rules to control when this integration is triggered.' => 'Aktivieren Sie Regeln, um zu steuern, wann diese Integration ausgelöst wird.',
@@ -931,6 +932,14 @@ return [
     'No database-based email notification templates exist yet.' => 'Es existieren noch keine datenbankbasierten E-Mail-Benachrichtigungsvorlagen.',
     'No file-based email notification templates exist yet.' => 'Es existieren noch keine dateibasierten E-Mail-Benachrichtigungsvorlagen.',
     'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Um neue Benachrichtigungsvorlagen hinzuzufügen, müssen Sie zunächst <a href="{link}">den Verzeichnispfad in den Einstellungen festlegen</a>.',
+
+    // Pro Upgrade Notices
+    'Upgrade to {edition} to enable.' => 'Upgrade auf {edition} aktivieren.',
+    'Upgrade to {edition} to unlock this setting.' => 'Upgrade auf {edition} zum Freischalten.',
+    'Upgrade to Freeform Pro to access PDF Templates.' => 'Upgrade auf Freeform Pro, um PDF-Vorlagen zu nutzen.',
+    'Upgrade to Freeform Pro to create conditional rules.' => 'Upgrade auf Freeform Pro, um bedingte Regeln zu erstellen.',
+    '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.' => '<a href="{link}" target="_blank">Upgrade auf Freeform Pro</a>, um bedingte Regeln zu erstellen.',
+    'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.' => 'Benötigen Sie mehr Formulare? <a href="{link}" target="_blank">Upgrade auf Lite oder Pro</a>.',
 
     // Import / Export
     'Import / Export' => 'Import / Export',

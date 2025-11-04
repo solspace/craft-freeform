@@ -26,7 +26,6 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use Solspace\Freeform\Services\SettingsService;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SettingsController extends BaseController
@@ -187,6 +186,12 @@ class SettingsController extends BaseController
 
         $this->requirePostRequest();
 
+        $settingsService = $this->getSettingsService();
+        $readOnly = !$settingsService->isAllowAdminEdit();
+        if ($readOnly) {
+            return;
+        }
+
         $postData = \Craft::$app->request->post('settings', []);
 
         if ($this->getSettingsService()->saveSettings($postData)) {
@@ -273,10 +278,6 @@ class SettingsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $section = \Craft::$app->request->getSegment(3);
-        $settingsService = $this->getSettingsService();
-        if (!$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section)) {
-            throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
-        }
 
         $formattingTemplateList = [];
         if ($this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
@@ -297,6 +298,9 @@ class SettingsController extends BaseController
             ];
         }
 
+        $settingsService = $this->getSettingsService();
+        $readOnly = !$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section);
+
         $this->view->registerAssetBundle(CodepackBundle::class);
         $this->view->registerAssetBundle(SettingsBundle::class);
 
@@ -306,6 +310,7 @@ class SettingsController extends BaseController
                 'settings' => $this->getSettingsModel(),
                 'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,
+                'readOnly' => $readOnly,
             ]
         );
     }

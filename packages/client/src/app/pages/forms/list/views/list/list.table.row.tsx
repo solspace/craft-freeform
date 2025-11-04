@@ -192,12 +192,12 @@ export const ListTableRow: React.FC<Props> = ({ form, hasFormMonitor }) => {
                 onClick={async (event) => {
                   if (event.metaKey && event.shiftKey) {
                     await axios.post(`/api/forms/delete`, { id });
-                    queryClient.invalidateQueries(
-                      QKGroups.all(getCurrentHandleWithFallback())
-                    );
-                    queryClient.invalidateQueries(
-                      QKForms.all(getCurrentHandleWithFallback())
-                    );
+                    queryClient.invalidateQueries({
+                      queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+                    });
+                    queryClient.invalidateQueries({
+                      queryKey: QKForms.all(getCurrentHandleWithFallback()),
+                    });
                   } else {
                     openDeleteFormModal();
                   }

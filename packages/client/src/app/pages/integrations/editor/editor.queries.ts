@@ -27,19 +27,21 @@ export const useIntegrationProperties = (
     url += `${type}/${integration}`;
   }
 
-  return useQuery(QKIntegrations.properties(type, integration, id), () =>
-    axios
-      .get(url)
-      .then((response) => response.data)
-      .then((data) => {
-        return {
-          ...data,
-          supported:
-            data.type.editions.length === 0 ||
-            data.type.editions.includes(edition),
-        };
-      })
-  );
+  return useQuery({
+    queryKey: QKIntegrations.properties(type, integration, id),
+    queryFn: () =>
+      axios
+        .get(url)
+        .then((response) => response.data)
+        .then((data) => {
+          return {
+            ...data,
+            supported:
+              data.type.editions.length === 0 ||
+              data.type.editions.includes(edition),
+          };
+        }),
+  });
 };
 
 export const useIntegrationMutation = (
@@ -66,8 +68,8 @@ export const useIntegrationMutation = (
 
       notifications.success(translate('Integration saved successfully'));
 
-      queryClient.invalidateQueries(QKIntegrations.navigation);
-      queryClient.invalidateQueries(QKIntegrations.single(id));
+      queryClient.invalidateQueries({ queryKey: QKIntegrations.navigation });
+      queryClient.invalidateQueries({ queryKey: QKIntegrations.single(id) });
 
       if (id) {
         navigate(`/integrations/${type}/${integration}/${id}`);

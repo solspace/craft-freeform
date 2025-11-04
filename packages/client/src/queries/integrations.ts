@@ -19,7 +19,7 @@ export const useFormIntegrationsQueryReset = (): (() => void) => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.removeQueries(QKIntegrations.all);
+    queryClient.removeQueries({ queryKey: QKIntegrations.all });
   };
 };
 
@@ -28,9 +28,9 @@ export const useQueryFormIntegrations = (
 ): UseQueryResult<Integration[], AxiosError> => {
   const dispatch = useDispatch();
 
-  return useQuery<Integration[], AxiosError>(
-    QKIntegrations.single(formId),
-    () => {
+  return useQuery<Integration[], AxiosError>({
+    queryKey: QKIntegrations.single(formId),
+    queryFn: () => {
       if (!formId) {
         return Promise.resolve([]);
       }
@@ -44,9 +44,7 @@ export const useQueryFormIntegrations = (
           return res;
         });
     },
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };

@@ -82,12 +82,12 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
     )]
     protected ?int $offset = null;
 
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Process User-inputted Formulas and Formats',
         instructions: 'Any user-inputted values with formula and formatting syntax will be respected and parsed in the spreadsheet. When disabled, these values will be escaped.',
         order: 6,
     )]
-    protected bool $processValues = false;
+    protected string $processValues = 'false';
 
     #[Input\Select(
         label: 'Row Insert Behavior',
@@ -128,7 +128,7 @@ abstract class BaseGoogleSheetsIntegration extends APIIntegration implements OAu
 
     public function isProcessValues(): bool
     {
-        return $this->processValues;
+        return $this->getProcessedBoolean($this->processValues);
     }
 
     public function getInsertOption(): string

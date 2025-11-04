@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Events\Notifications;
 
 use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Notifications\NotificationInterface;
 
 class RegisterNotificationTypesEvent extends ArrayableEvent
@@ -45,6 +47,11 @@ class RegisterNotificationTypesEvent extends ArrayableEvent
         $type->className = $class;
         $type->icon = $type->icon ? file_get_contents($type->icon) : null;
         $type->setProperties($this->propertyProvider->getEditableProperties($class));
+
+        $edition = AttributeHelper::findAttribute($reflection, Edition::class);
+        if ($edition) {
+            $type->edition = $edition->name;
+        }
 
         $this->types[] = $type;
     }

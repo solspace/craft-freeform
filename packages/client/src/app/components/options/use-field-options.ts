@@ -55,9 +55,9 @@ export const useFieldOptions: FieldOptions = (field, type) => {
 
   const isCustomOptions = optionsConfiguration?.source === Source.Custom;
 
-  const { data, isFetching } = useQuery(
-    ['field-options', optionsConfiguration],
-    async () => {
+  const { data, isFetching } = useQuery({
+    queryKey: ['field-options', optionsConfiguration],
+    queryFn: async () => {
       if (!optionsConfiguration || isCustomOptions) {
         return [];
       }
@@ -82,8 +82,10 @@ export const useFieldOptions: FieldOptions = (field, type) => {
         return [];
       }
     },
-    { staleTime: Infinity, cacheTime: Infinity, enabled: !isCustomOptions }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: !isCustomOptions,
+  });
 
   const isFetchingAsync =
     !!optionsConfiguration && !isCustomOptions && isFetching;

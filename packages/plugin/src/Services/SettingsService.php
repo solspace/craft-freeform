@@ -290,15 +290,6 @@ class SettingsService extends BaseService
             'email-log' => ['title' => Freeform::t('Emails <span class="badge">{count}</span>', ['count' => $emailCount])],
         ];
 
-        if (!$this->isAllowAdminEdit()) {
-            unset($nav['hdspam']);
-            foreach ($nav as $key => $value) {
-                if (!isset($value['heading']) && $this->isSectionASetting($key)) {
-                    unset($nav[$key]);
-                }
-            }
-        }
-
         $nav = array_filter($nav);
 
         $event = new RegisterSettingsNavigationEvent($nav);

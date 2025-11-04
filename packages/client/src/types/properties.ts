@@ -6,6 +6,7 @@ import type {
   ColumnValue,
   TabularData,
 } from '@components/form-controls/control-types/tabular-data/tabular-data.types';
+import type { Edition } from '@config/freeform/freeform.config';
 
 import type { FieldMapping } from './integrations';
 import type { Recipient, RecipientMapping } from './notifications';
@@ -19,6 +20,7 @@ export enum PropertyType {
   AssetPicker = 'assetPicker',
   Attributes = 'attributes',
   Boolean = 'bool',
+  BooleanEnv = 'boolEnv',
   Calculation = 'calculation',
   Cards = 'cards',
   Checkboxes = 'checkboxes',
@@ -58,6 +60,7 @@ export type Option = {
   value: string;
   label: string;
   icon?: string | JSX.Element;
+  hint?: string;
   shadowIndex?: number;
 };
 export type OptionGroup = {
@@ -75,6 +78,7 @@ export type Delimiter = {
 
 type BaseProperty<T, PT extends PropertyType> = {
   type: PT;
+  edition?: Edition;
   handle: string;
   label?: string;
   instructions?: string;
@@ -140,6 +144,7 @@ export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
   focus?: boolean;
 };
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
+export type BooleanEnvProperty = BaseProperty<string, PropertyType.BooleanEnv>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
@@ -320,6 +325,7 @@ export type Property =
   | AssetPickerProperty
   | AttributeProperty
   | BooleanProperty
+  | BooleanEnvProperty
   | CalculationProperty
   | CardsProperty
   | CheckboxesProperty

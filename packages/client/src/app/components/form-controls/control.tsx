@@ -24,6 +24,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
     useTranslations(context as any);
 
   const {
+    edition,
     label,
     handle,
     required,
@@ -36,6 +37,7 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
 
   return (
     <ControlBlock
+      edition={edition}
       label={label}
       handle={handle}
       required={required}

@@ -62,11 +62,15 @@ class CodepackController extends BaseController
             );
         }
 
+        $settingsService = $this->getSettingsService();
+        $readOnly = !$settingsService->isAllowAdminEdit();
+
         return $this->renderTemplate(
             'freeform/codepack',
             [
                 'codePack' => $codePack,
                 'prefix' => 'freeform-demo',
+                'readOnly' => $readOnly,
             ]
         );
     }

@@ -75,10 +75,12 @@ export const Item: React.FC<Props> = ({
                     id,
                   })
                   .then(() => {
-                    queryClient.invalidateQueries(QKNotifications.templates());
-                    queryClient.invalidateQueries(
-                      QKNotifications.formTemplates(template.formId)
-                    );
+                    queryClient.invalidateQueries({
+                      queryKey: QKNotifications.templates(),
+                    });
+                    queryClient.invalidateQueries({
+                      queryKey: QKNotifications.formTemplates(template.formId),
+                    });
                   })
                   .catch((error: APIError) => {
                     const errors = Object.values(error.errors).join(', ');

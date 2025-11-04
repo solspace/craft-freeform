@@ -27,29 +27,27 @@ export const useQueryFormsWithStats = (): UseQueryResult<
 > => {
   const { current, getCurrentHandleWithFallback } = useSiteContext();
 
-  return useQuery<FormWithStats[], AxiosError>(
-    QKForms.all(getCurrentHandleWithFallback()),
-    () =>
+  return useQuery<FormWithStats[], AxiosError>({
+    queryKey: QKForms.all(getCurrentHandleWithFallback()),
+    queryFn: () =>
       axios
         .get<FormWithStats[]>('/api/forms', {
           params: { site: current?.handle },
         })
-        .then((res) => res.data)
-  );
+        .then((res) => res.data),
+  });
 };
 
 export const useQuerySingleForm = (
   id?: number
 ): UseQueryResult<ExtendedFormType, AxiosError> => {
-  return useQuery<ExtendedFormType, AxiosError>(
-    QKForms.single(id),
-    () =>
+  return useQuery<ExtendedFormType, AxiosError>({
+    queryKey: QKForms.single(id),
+    queryFn: () =>
       axios.get<ExtendedFormType>(`/api/forms/${id}`).then((res) => res.data),
-    {
-      staleTime: Infinity,
-      enabled: !!id,
-    }
-  );
+    staleTime: Infinity,
+    enabled: !!id,
+  });
 };
 
 export const useQueryFormSettings = (): UseQueryResult<
@@ -58,9 +56,9 @@ export const useQueryFormSettings = (): UseQueryResult<
 > => {
   const dispatch = useAppDispatch();
 
-  return useQuery<FormSettingNamespace[], AxiosError>(
-    QKForms.settings(),
-    () =>
+  return useQuery<FormSettingNamespace[], AxiosError>({
+    queryKey: QKForms.settings(),
+    queryFn: () =>
       axios
         .get<FormSettingNamespace[]>(`/api/forms/settings`)
         .then((res) => res.data)
@@ -70,8 +68,9 @@ export const useQueryFormSettings = (): UseQueryResult<
 
           return res;
         }),
-    { staleTime: Infinity, cacheTime: Infinity }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 type FormUsage = Array<{
@@ -86,7 +85,8 @@ export const useQueryFormUsage = (): UseQueryResult<FormUsage, AxiosError> => {
   const { formId } = useParams();
   const { current } = useSiteContext();
 
-  return useQuery(QKForms.usage(Number(formId), current.id), {
+  return useQuery({
+    queryKey: QKForms.usage(Number(formId), current.id),
     queryFn: () =>
       axios
         .get(`/api/forms/${formId}/elements?site=${current.id}`)

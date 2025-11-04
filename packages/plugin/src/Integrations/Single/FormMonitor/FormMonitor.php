@@ -38,12 +38,12 @@ class FormMonitor extends APIIntegration
     protected bool $testEmails = true;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Boolean(
+    #[Input\BooleanEnv(
         label: 'Test Email Notifications on Live Environment only',
         instructions: 'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
         order: 7
     )]
-    protected bool $liveOnly = true;
+    protected string $liveOnly = 'true';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]
@@ -133,7 +133,7 @@ class FormMonitor extends APIIntegration
 
     public function getLiveOnly(): bool
     {
-        return $this->liveOnly;
+        return $this->getProcessedBoolean($this->liveOnly);
     }
 
     public function getApiRootUrl(): string

@@ -584,6 +584,7 @@ return [
     'To add an integration, click the button below' => 'Per aggiungere un’integrazione, clicca il pulsante qui sotto',
     'Add integration' => 'Aggiungi integrazione',
     'This can begin with an environment variable.' => 'Può iniziare con una variabile di ambiente.',
+    'This can be set to an environment variable with a boolean value (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).' => 'Può essere impostato come variabile ambiente booleana (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).',
     'Learn more' => 'Scopri di più',
     'Enable Rules' => 'Abilita regole',
     'Enable rules to control when this integration is triggered.' => 'Abilita regole per controllare quando viene attivata l’integrazione.',
@@ -931,6 +932,14 @@ return [
     'No database-based email notification templates exist yet.' => 'Non esistono ancora modelli di notifica e-mail basati sul database.',
     'No file-based email notification templates exist yet.' => 'Non esistono ancora modelli di notifica e-mail basati su file.',
     'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Per aggiungere nuovi file di modelli di notifica, devi prima <a href="{link}">impostare il percorso della directory nelle impostazioni</a>.',
+
+    // Pro Upgrade Notices
+    'Upgrade to {edition} to enable.' => 'Aggiorna a {edition} per attivare.',
+    'Upgrade to {edition} to unlock this setting.' => 'Aggiorna a {edition} per sbloccare.',
+    'Upgrade to Freeform Pro to access PDF Templates.' => 'Aggiorna a Freeform Pro per accedere ai modelli PDF.',
+    'Upgrade to Freeform Pro to create conditional rules.' => 'Aggiorna a Freeform Pro per creare regole condizionali.',
+    '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.' => '<a href="{link}" target="_blank">Aggiorna a Freeform Pro</a> per creare regole condizionali.',
+    'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.' => 'Hai bisogno di più moduli? <a href="{link}" target="_blank">Aggiorna a Lite o Pro</a>.',
 
     // Import / Export
     'Import / Export' => 'Importa / Esporta',

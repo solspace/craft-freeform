@@ -26,26 +26,26 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 class User extends ElementIntegration
 {
     #[VisibilityFilter('enabled')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
-    protected bool $active = true;
+    protected string $active = 'true';
 
     #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!values.active')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Send Activation Email',
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',
     )]
-    protected bool $sendActivation = false;
+    protected string $sendActivation = 'false';
 
     #[VisibilityFilter('enabled')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Take Over Inactive Accounts',
         instructions: 'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.',
     )]
-    protected bool $registerInactiveUsers = false;
+    protected string $registerInactiveUsers = 'false';
 
     #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -91,17 +91,17 @@ class User extends ElementIntegration
 
     public function isRegisterInactiveUsers(): bool
     {
-        return $this->registerInactiveUsers;
+        return $this->getProcessedBoolean($this->registerInactiveUsers);
     }
 
     public function isActive(): bool
     {
-        return $this->active;
+        return $this->getProcessedBoolean($this->active);
     }
 
     public function isSendActivation(): bool
     {
-        return $this->sendActivation;
+        return $this->getProcessedBoolean($this->sendActivation);
     }
 
     public function buildElement(Form $form): Element

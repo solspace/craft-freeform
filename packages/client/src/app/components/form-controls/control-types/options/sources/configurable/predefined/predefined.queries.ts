@@ -7,9 +7,10 @@ import type { OptionTypeProvider } from '../../sources.types';
 export const useOptionTypesPredefined = (): UseQueryResult<
   OptionTypeProvider[]
 > => {
-  return useQuery<OptionTypeProvider[]>(
-    ['option-types', 'predefined'],
-    () => axios.get('/api/types/options/predefined').then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery<OptionTypeProvider[]>({
+    queryKey: ['option-types', 'predefined'],
+    queryFn: () =>
+      axios.get('/api/types/options/predefined').then((res) => res.data),
+    staleTime: Infinity,
+  });
 };

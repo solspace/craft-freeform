@@ -28,11 +28,11 @@ class BlockKeywords extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Display Errors about Blocked Keywords under each Field',
         instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
-    protected bool $errorsBelowFields = false;
+    protected string $errorsBelowFields = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]

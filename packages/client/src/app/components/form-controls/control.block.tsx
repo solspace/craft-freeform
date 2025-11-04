@@ -9,13 +9,19 @@ import {
 } from '@components/form-controls/control.styles';
 import FormInstructions from '@components/form-controls/instructions';
 import FormLabel from '@components/form-controls/label';
+import { Edition } from '@config/freeform/freeform.config';
+import config from '@config/freeform/freeform.config';
 import type { Message } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
+import { capitalize } from 'lodash';
 
+import { useRenderContext } from './context/render.context';
 import { FormErrorList } from './error-list';
 import { FormMessageList } from './message-list';
 
 export type ControlProps = {
+  edition?: Edition;
   label?: string;
   handle?: string;
   required?: boolean;
@@ -33,6 +39,7 @@ export type ControlProps = {
 };
 
 export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
+  edition,
   label,
   handle,
   required,
@@ -49,9 +56,24 @@ export const ControlBlock: React.FC<PropsWithChildren<ControlProps>> = ({
   preContent,
   extraContent,
 }) => {
+  const { size } = useRenderContext();
+  const {
+    editions: { isAtLeast },
+  } = config;
+  const upsell =
+    edition !== Edition.Express && !isAtLeast(edition || Edition.Express);
+
   return (
     <ControlWrapper
-      className={classes(!!errors && 'errors', disabled && 'disabled')}
+      className={classes(
+        !!errors && 'errors',
+        disabled && 'disabled',
+        size && `size-${size}`,
+        upsell && 'upsell'
+      )}
+      data-upsell={translate('Upgrade to {edition} to unlock this setting.', {
+        edition: capitalize(edition),
+      })}
       $width={width}
     >
       <LabelGroup>

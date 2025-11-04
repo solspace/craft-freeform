@@ -584,6 +584,7 @@ return [
     'To add an integration, click the button below' => 'Om een integratie toe te voegen, klik op onderstaande knop',
     'Add integration' => 'Integratie toevoegen',
     'This can begin with an environment variable.' => 'Dit kan beginnen met een omgevingsvariabele.',
+    'This can be set to an environment variable with a boolean value (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).' => 'Kan als booleaanse omgevingsvariabele worden ingesteld (`yes`/`no`/`true`/`false`/`on`/`off`/`0`/`1`).',
     'Learn more' => 'Meer informatie',
     'Enable Rules' => 'Regels inschakelen',
     'Enable rules to control when this integration is triggered.' => 'Schakel regels in om te bepalen wanneer deze integratie wordt geactiveerd.',
@@ -931,6 +932,14 @@ return [
     'No database-based email notification templates exist yet.' => 'Er bestaan nog geen databasegebaseerde e-mailnotificatiesjablonen.',
     'No file-based email notification templates exist yet.' => 'Er bestaan nog geen bestandsgebaseerde e-mailnotificatiesjablonen.',
     'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.' => 'Om nieuwe notificatiesjabloonbestanden toe te voegen, moet je eerst <a href="{link}">het pad naar de map instellen in de instellingen</a>.',
+
+    // Pro Upgrade Notices
+    'Upgrade to {edition} to enable.' => 'Upgrade naar {edition} om te activeren.',
+    'Upgrade to {edition} to unlock this setting.' => 'Upgrade naar {edition} om te ontgrendelen.',
+    'Upgrade to Freeform Pro to access PDF Templates.' => 'Upgrade naar Freeform Pro om toegang te krijgen tot PDF-sjablonen.',
+    'Upgrade to Freeform Pro to create conditional rules.' => 'Upgrade naar Freeform Pro om voorwaardelijke regels te maken.',
+    '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.' => '<a href="{link}" target="_blank">Upgrade naar Freeform Pro</a> om voorwaardelijke regels te maken.',
+    'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.' => 'Meer formulieren nodig? <a href="{link}" target="_blank">Upgrade naar Lite of Pro</a>.',
 
     // Import / Export
     'Import / Export' => 'Importeren/Exporteren',

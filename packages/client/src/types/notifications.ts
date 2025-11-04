@@ -1,3 +1,5 @@
+import type { Edition } from '@config/freeform/freeform.config';
+
 import type { GenericValue, Property } from './properties';
 
 type TemplateID = string | number;
@@ -15,6 +17,7 @@ export type Notification = {
 
 export type NotificationType = {
   name: string;
+  edition: Edition;
   newInstanceName: string;
   order: number;
   icon: string;

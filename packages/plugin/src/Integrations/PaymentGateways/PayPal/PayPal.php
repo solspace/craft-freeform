@@ -41,11 +41,11 @@ class PayPal extends PaymentGatewayIntegration
     )]
     protected string $clientSecret = '';
 
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Use Sandbox',
         instructions: 'Enable to use PayPal Sandbox environment.',
     )]
-    protected bool $useSandbox = true;
+    protected string $useSandbox = 'true';
 
     // Token management properties (stored in metadata)
     #[Flag(self::FLAG_ENCRYPTED)]
@@ -73,7 +73,7 @@ class PayPal extends PaymentGatewayIntegration
 
     public function isSandbox(): bool
     {
-        return $this->useSandbox;
+        return $this->getProcessedBoolean($this->useSandbox);
     }
 
     // Token management methods

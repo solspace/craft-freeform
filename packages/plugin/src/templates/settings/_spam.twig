@@ -65,6 +65,7 @@
             instructions: "Select the behavior you'd like Freeform to take when it detects a submission as being spam."|t('freeform'),
             name: "settings[spamProtectionBehavior]",
             value: settings.spamProtectionBehavior,
+            disabled: readOnly,
             options: {
                 "simulate_success": "Simulate Success (recommended)"|t('freeform'),
                 "display_errors": "Display Errors (for debugging)"|t('freeform'),
@@ -77,6 +78,7 @@
             name: "settings[bypassSpamCheckOnLoggedInUsers]",
             on: settings.bypassSpamCheckOnLoggedInUsers,
             errors: settings.errors("bypassSpamCheckOnLoggedInUsers"),
+            disabled: readOnly,
         }) }}
 
         <hr>
@@ -90,6 +92,7 @@
             on: settings.spamFolderEnabled,
             toggle: "spam-features",
             errors: settings.errors("spamFolderEnabled"),
+            disabled: readOnly,
         }) }}
 
         <div id="spam-features" class="field {{ not settings.spamFolderEnabled ? 'hidden' }}">
@@ -101,6 +104,7 @@
                 on: settings.purgableSpamAgeInDays,
                 toggle: "purge",
                 errors: settings.errors("purgableSpamAgeInDays"),
+                disabled: readOnly,
             }) }}
 
             <div id="purge" class="field {{ not settings.purgableSpamAgeInDays ? 'hidden' }}">
@@ -110,6 +114,7 @@
                     name: "settings[purgableSpamAgeInDays]",
                     value: settings.purgableSpamAgeInDays,
                     errors: settings.errors("purgableSpamAgeInDays"),
+                    disabled: readOnly,
                     id: "purge-value",
                     options: {
                         0: "Please select"|t("freeform"),
@@ -138,12 +143,14 @@
                 name: "settings[submissionThrottlingCount]",
                 value: settings.submissionThrottlingCount,
                 placeholder: "unlimited"|t('freeform'),
+                disabled: readOnly,
             }) }}
 
             {{ forms.select({
                 id: "throttling-time-frame",
                 name: "settings[submissionThrottlingTimeFrame]",
                 value: settings.submissionThrottlingTimeFrame,
+                disabled: readOnly,
                 options: {
                     m: "per minute"|t("freeform"),
                     s: "per second"|t("freeform"),
@@ -155,6 +162,7 @@
             label: "Form Submission Throttling"|t("freeform"),
             instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
             errors: settings.errors("submissionThrottlingCount"),
+            disabled: readOnly,
             warning: "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. For example, if you set it to '1 per minute', once one user submits any form, any other user will not be able to submit a form within that timeframe. A more realistic value for smaller websites is something like 50 per minute. Use extreme caution for larger and more active sites."|t('freeform'),
         }, input) }}
 
@@ -164,6 +172,7 @@
             name: "settings[minimumSubmitTime]",
             value: settings.minimumSubmitTime,
             errors: settings.errors("minimumSubmitTime"),
+            disabled: readOnly,
         }) }}
 
         {{ forms.textField({
@@ -172,6 +181,7 @@
             name: "settings[formSubmitExpiration]",
             value: settings.formSubmitExpiration,
             errors: settings.errors("formSubmitExpiration"),
+            disabled: readOnly,
         }) }}
 
     </form>

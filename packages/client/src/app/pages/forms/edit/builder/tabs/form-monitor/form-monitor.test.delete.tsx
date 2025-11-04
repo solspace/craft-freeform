@@ -72,7 +72,7 @@ export const DeleteTestModal: React.FC<Props> = ({
   }, [inputValue, isBulkDelete]);
 
   const isLoading =
-    deleteTestMutation.isLoading || clearAllTestsMutation.isLoading;
+    deleteTestMutation.isPending || clearAllTestsMutation.isPending;
 
   return (
     <Modal closeModal={onClose}>

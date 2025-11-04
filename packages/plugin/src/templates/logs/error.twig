@@ -60,7 +60,7 @@
     {% endif %}
 {% endmacro %}
 
-{% set content %}
+{% block content %}
 
     <div class="paginator-wrapper upper">
         {{ _self.pager(logReader, perPage, currentPage, segment3) }}
@@ -129,7 +129,7 @@
         {{ _self.pager(logReader, perPage, currentPage, segment3) }}
     </div>
 
-{% endset %}
+{% endblock %}
 
 {% css %}
     #content { padding: 0; }

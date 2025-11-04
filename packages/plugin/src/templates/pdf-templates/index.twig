@@ -21,7 +21,7 @@
     { label: "PDF Templates"|t("freeform"), url: url("freeform/settings/pdf-templates") },
 ] %}
 
-{% set content %}
+{% block content %}
 
     {% if craft.freeform.pro == "pro" %}
 
@@ -89,7 +89,7 @@
 
     {% endif %}
 
-{% endset %}
+{% endblock %}
 
 
 {% js %}

@@ -9,6 +9,7 @@ use GuzzleHttp\Exception\ServerException;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -298,6 +299,11 @@ class FormMonitorController extends BaseApiController
         try {
             $formMonitor = $this->getFormMonitor();
             $client = $this->clientProvider->getAuthorizedClient($formMonitor);
+            $settingsService = Freeform::getInstance()->get('settings');
+
+            if ($settingsService->isManagedPingerEnabled()) {
+                $settingsService->disablePinging();
+            }
             $formMonitor->disableMe($client);
 
             return $this->asJson(['success' => true]);
@@ -316,6 +322,11 @@ class FormMonitorController extends BaseApiController
         try {
             $formMonitor = $this->getFormMonitor();
             $client = $this->clientProvider->getAuthorizedClient($formMonitor);
+            $settingsService = Freeform::getInstance()->get('settings');
+
+            if ($settingsService->isManagedPingerEnabled()) {
+                $settingsService->disablePinging();
+            }
             $formMonitor->deleteMe($client);
 
             if (method_exists($formMonitor, 'getId')) {

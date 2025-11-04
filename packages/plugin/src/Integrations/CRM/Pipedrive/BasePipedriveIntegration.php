@@ -53,11 +53,11 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
     protected ?int $userId = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         instructions: 'Enable this setting to prevent creation of organizations or persons with overlapping names and/or email addresses.',
         order: 2,
     )]
-    protected bool $detectDuplicates = false;
+    protected string $detectDuplicates = 'false';
 
     public function checkConnection(Client $client): bool
     {
@@ -165,6 +165,6 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
 
     protected function isDetectDuplicates(): bool
     {
-        return $this->detectDuplicates;
+        return $this->getProcessedBoolean($this->detectDuplicates);
     }
 }

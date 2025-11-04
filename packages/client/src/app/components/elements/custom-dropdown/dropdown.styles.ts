@@ -124,6 +124,7 @@ export const CloseButton = styled.button`
 
 export const DropdownWrapper = styled.div`
   position: relative;
+  width: 25em;
 
   &.open {
     ${DropdownRollout} {
@@ -140,4 +141,9 @@ export const DropdownWrapper = styled.div`
       }
     }
   }
+`;
+
+export const Icon = styled.span`
+  display: flex;
+  align-items: center;
 `;

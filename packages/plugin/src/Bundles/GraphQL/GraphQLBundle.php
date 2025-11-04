@@ -53,7 +53,7 @@ class GraphQLBundle extends FeatureBundle
         }
 
         $freeform = Freeform::getInstance();
-        if ($freeform->settings->getSettingsModel()->allowDashesInFieldHandles) {
+        if ($freeform->settings->isAllowDashesInFieldHandles()) {
             return;
         }
 

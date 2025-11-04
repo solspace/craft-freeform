@@ -28,6 +28,7 @@ abstract class BaseOpenAIIntegration extends APIIntegration implements AiIntegra
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Model',
         instructions: 'The OpenAI model to use for AI processing.',

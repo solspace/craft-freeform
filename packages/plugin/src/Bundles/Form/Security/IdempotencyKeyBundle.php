@@ -117,6 +117,6 @@ class IdempotencyKeyBundle extends FeatureBundle
 
     public function isIdempotencyDisabled(): bool
     {
-        return !$this->plugin()->settings->getSettingsModel()->useIdempotencyKey;
+        return !$this->plugin()->settings->isUseIdempotencyKey();
     }
 }

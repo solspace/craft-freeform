@@ -1,5 +1,6 @@
 import type { FC, MutableRefObject } from 'react';
 import React from 'react';
+import type { EnvironmentSuggestionCategories } from '@ff-client/queries/autosuggest';
 
 import { useFilteredSuggestions } from './suggestions.filter';
 import { useFocusTracking } from './suggestions.hooks';
@@ -14,20 +15,10 @@ import {
   Title,
 } from './suggestions.styles';
 
-type Suggestion = {
-  name: string;
-  hint: string;
-};
-
-export type SuggestionCategory = {
-  label: string;
-  data: Suggestion[];
-};
-
 type Props = {
   inputRef?: MutableRefObject<HTMLInputElement>;
   filter?: string;
-  suggestions: SuggestionCategory[];
+  suggestions: EnvironmentSuggestionCategories;
   update: (value: string) => void;
 };
 

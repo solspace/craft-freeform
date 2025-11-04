@@ -52,6 +52,30 @@ export const findFirstValue = (
   }
 };
 
+export const findOptionByValue = (
+  options: OptionCollection,
+  value: string
+): Option | undefined => {
+  if (!options) {
+    return;
+  }
+
+  for (const option of options) {
+    if ('value' in option) {
+      if (String(option.value) === String(value)) {
+        return option;
+      }
+    }
+
+    if ('children' in option) {
+      const foundOption = findOptionByValue(option.children, value);
+      if (foundOption !== undefined) {
+        return foundOption;
+      }
+    }
+  }
+};
+
 export const findLabelByValue = (
   options: OptionCollection,
   value: string

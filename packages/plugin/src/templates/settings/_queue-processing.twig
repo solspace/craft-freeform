@@ -16,11 +16,12 @@
 
 {% block content %}
 
-    <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
+    <h2 class="first">{{ "Queue Processing"|t('freeform') }}</h2>
+    <p>{{ "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically."|t('freeform') }}</p>
 
     {{ forms.lightswitchField({
         label: "Use Queue for AI Processing"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger AI processing. Enabling this will speed up submission processing for your users."|t('freeform'),
+        instructions: "Use Craft's queue system to trigger AI processing."|t('freeform'),
         name: "settings[useQueueForAiFields]",
         on: settings.useQueueForAiFields,
         errors: settings.errors("useQueueForAiFields"),
@@ -30,7 +31,7 @@
 
     {{ forms.lightswitchField({
         label: "Use Queue for Email Notifications"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users."|t('freeform'),
+        instructions: "Use Craft's queue system to trigger emails."|t('freeform'),
         name: "settings[useQueueForEmailNotifications]",
         on: settings.useQueueForEmailNotifications,
         errors: settings.errors("useQueueForEmailNotifications"),
@@ -40,7 +41,7 @@
 
     {{ forms.lightswitchField({
         label: "Use Queue for Integrations"|t('freeform'),
-        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users."|t('freeform'),
+        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing)."|t('freeform'),
         name: "settings[useQueueForIntegrations]",
         on: settings.useQueueForIntegrations,
         errors: settings.errors("useQueueForIntegrations"),

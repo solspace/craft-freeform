@@ -56,10 +56,10 @@ class SpamBlockingBundle extends FeatureBundle
     public function validate(ValidationEvent $event): void
     {
         $form = $event->getForm();
-        $settings = $this->plugin()->settings->getSettingsModel();
-        $isDisplayErrors = $this->plugin()->settings->isSpamBehaviorDisplayErrors();
+        $settings = $this->plugin()->settings;
+        $isDisplayErrors = $settings->isSpamBehaviorDisplayErrors();
 
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 
@@ -80,10 +80,10 @@ class SpamBlockingBundle extends FeatureBundle
     public function validateAsync(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        $settings = $this->plugin()->settings->getSettingsModel();
-        $isQueueEnabled = $settings->useQueueForAiFields;
+        $settings = $this->plugin()->settings;
+        $isQueueEnabled = $settings->isAiFieldQueueEnabled();
 
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 

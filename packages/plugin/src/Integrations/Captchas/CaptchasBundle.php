@@ -143,8 +143,8 @@ class CaptchasBundle extends FeatureBundle
             return;
         }
 
-        $settingsModel = $this->settingsService->getSettingsModel();
-        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        $settings = $this->settingsService;
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 

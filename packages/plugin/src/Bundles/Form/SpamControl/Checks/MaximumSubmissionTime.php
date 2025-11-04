@@ -10,7 +10,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 
 class MaximumSubmissionTime extends AbstractCheck
 {
-    public function handleCheck(ValidationEvent $event)
+    public function handleCheck(ValidationEvent $event): void
     {
         if (!$this->isMaximumSubmissionTimePassed($event->getForm())) {
             return;

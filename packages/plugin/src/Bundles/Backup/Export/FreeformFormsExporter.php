@@ -177,7 +177,7 @@ class FreeformFormsExporter extends BaseExporter
             $exported->order = $index;
             $exported->settings = $form->getSettings();
 
-            $isSitesEnabled = Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
+            $isSitesEnabled = Freeform::getInstance()->settings->isSitesEnabled();
             if ($isSitesEnabled) {
                 $exported->sites = new SitesCollection();
 

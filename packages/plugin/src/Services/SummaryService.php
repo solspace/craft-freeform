@@ -45,6 +45,8 @@ class SummaryService extends Component
     {
         $freeform = Freeform::getInstance();
         $craft = \Craft::$app;
+        $settingsService = Freeform::getInstance()->settings;
+        $settingsModel = $settingsService->getSettingsModel();
 
         $craftFields = \Craft::$app->fields->getAllFields();
 
@@ -110,53 +112,51 @@ class SummaryService extends Component
 
         $summary->statistics->general = $general;
 
-        $settingsService = Freeform::getInstance()->settings;
-
         $settings = new Settings();
         $settings->customPluginName = (bool) $settingsService->getPluginName();
-        $settings->defaultView = $settingsService->getSettingsModel()->defaultView;
+        $settings->defaultView = $settingsModel->defaultView;
         $settings->renderHtmlInComposer = $settingsService->isRenderFormHtmlInCpViews();
         $settings->ajaxEnabledByDefault = $settingsService->isAjaxEnabledByDefault();
-        $settings->includeDefaultFormattingTemplates = $settingsService->getSettingsModel()->defaults->includeSampleTemplates;
+        $settings->includeDefaultFormattingTemplates = $settingsModel->defaults->includeSampleTemplates;
         $settings->removeNewlinesOnExport = $settingsService->isRemoveNewlines();
-        $settings->populateValuesFromGet = (bool) $settingsService->getSettingsModel()->fillWithGet;
+        $settings->populateValuesFromGet = $settingsService->isFillWithGet();
         $settings->disableSubmit = $settingsService->isFormSubmitDisable();
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
         $settings->useIdempotencyKey = $settingsService->isUseIdempotencyKey();
-        $settings->csrfRefresh = $settingsService->getSettingsModel()->csrfRefresh;
-        $settings->jsInsertLocation = $settingsService->getSettingsModel()->scriptInsertLocation;
-        $settings->jsInsertType = $settingsService->getSettingsModel()->scriptInsertType;
-        $settings->sessionContextType = $settingsService->getSettingsModel()->sessionContext;
+        $settings->csrfRefresh = $settingsModel->csrfRefresh;
+        $settings->jsInsertLocation = $settingsModel->scriptInsertLocation;
+        $settings->jsInsertType = $settingsModel->scriptInsertType;
+        $settings->sessionContextType = $settingsModel->sessionContext;
         $settings->purgeSubmissions = (bool) $settingsService->getPurgableSubmissionAgeInDays();
         $settings->purgeInterval = $settingsService->getPurgableSubmissionAgeInDays();
-        $settings->purgeAssets = $settingsService->getSettingsModel()->purgeAssets;
-        $settings->purgeAssetsInterval = $settingsService->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes ?? 1;
-        $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;
+        $settings->purgeAssets = $settingsModel->purgeAssets;
+        $settings->purgeAssetsInterval = $settingsModel->purgableUnfinalizedAssetAgeInMinutes ?? 1;
+        $settings->formattingTemplatesPath = (bool) $settingsModel->formTemplateDirectory;
         $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
         $settings->sendErrorNotifications = $settingsService->isErrorNotificationEnabled();
-        $settings->notificationTemplatesPath = (bool) $settingsService->getSettingsModel()->emailTemplateDirectory;
-        $settings->successTemplatesPath = (bool) $settingsService->getSettingsModel()->successTemplateDirectory;
+        $settings->notificationTemplatesPath = (bool) $settingsModel->emailTemplateDirectory;
+        $settings->successTemplatesPath = (bool) $settingsModel->successTemplateDirectory;
         $settings->modifiedStatuses = $this->isModifiedStatuses();
         $settings->demoTemplatesInstalled = $this->isDemoTemplatesInstalled();
 
         $summary->statistics->settings = $settings;
 
         $spam = new Spam();
-        $spam->spamProtectionBehavior = $settingsService->getSettingsModel()->spamProtectionBehavior;
+        $spam->spamProtectionBehavior = $settingsModel->spamProtectionBehavior;
         $spam->spamFolder = $settingsService->isSpamFolderEnabled();
         $spam->purgeSpam = (bool) $settingsService->getPurgableSpamAgeInDays();
         $spam->purgeInterval = $settingsService->getPurgableSpamAgeInDays();
-        $spam->blockEmail = (bool) $settingsService->getSettingsModel()->blockedEmails;
-        $spam->blockKeywords = (bool) $settingsService->getSettingsModel()->blockedKeywords;
-        $spam->blockIp = (bool) $settingsService->getSettingsModel()->blockedIpAddresses;
-        $spam->submissionThrottling = (bool) $settingsService->getSettingsModel()->submissionThrottlingCount;
-        $spam->minSubmitTime = (bool) $settingsService->getSettingsModel()->minimumSubmitTime;
-        $spam->minSubmitTimeInterval = $settingsService->getSettingsModel()->minimumSubmitTime;
-        $spam->submitExpiration = (bool) $settingsService->getSettingsModel()->formSubmitExpiration;
-        $spam->submitExpirationInterval = $settingsService->getSettingsModel()->formSubmitExpiration;
-        $spam->submissionThrottlingCount = (int) $settingsService->getSettingsModel()->submissionThrottlingCount;
-        $spam->submissionThrottlingTimeFrame = $settingsService->getSettingsModel()->submissionThrottlingTimeFrame;
-        $spam->bypassSpamCheckOnLoggedInUsers = $settingsService->getSettingsModel()->bypassSpamCheckOnLoggedInUsers;
+        $spam->blockEmail = (bool) $settingsModel->blockedEmails;
+        $spam->blockKeywords = (bool) $settingsModel->blockedKeywords;
+        $spam->blockIp = (bool) $settingsModel->blockedIpAddresses;
+        $spam->submissionThrottling = (bool) $settingsModel->submissionThrottlingCount;
+        $spam->minSubmitTime = (bool) $settingsModel->minimumSubmitTime;
+        $spam->minSubmitTimeInterval = $settingsModel->minimumSubmitTime;
+        $spam->submitExpiration = (bool) $settingsModel->formSubmitExpiration;
+        $spam->submitExpirationInterval = $settingsModel->formSubmitExpiration;
+        $spam->submissionThrottlingCount = (int) $settingsModel->submissionThrottlingCount;
+        $spam->submissionThrottlingTimeFrame = $settingsModel->submissionThrottlingTimeFrame;
+        $spam->bypassSpamCheckOnLoggedInUsers = $settingsService->isBypassSpamCheckOnLoggedInUsers();
 
         $summary->statistics->spam = $spam;
 

@@ -17,47 +17,52 @@
 
     <h2 class="first">{{ "Submit Behavior"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Disable Submit Button on Form Submit"|t('freeform'),
         instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
         name: "settings[formSubmitDisable]",
-        on: settings.formSubmitDisable,
+        value: settings.formSubmitDisable,
         errors: settings.errors("formSubmitDisable"),
         disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Automatically Scroll to Form on Errors and Multipage forms"|t('freeform'),
         instructions: "Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms."|t('freeform'),
         name: "settings[autoScrollToErrors]",
-        on: settings.autoScrollToErrors,
+        value: settings.autoScrollToErrors,
         errors: settings.errors("autoScrollToErrors"),
         disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Automatically Scroll to top of the Form on AJAX submit"|t('freeform'),
         instructions: "Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight."|t('freeform'),
         name: "settings[autoScroll]",
-        on: settings.autoScroll,
+        value: settings.autoScroll,
         errors: settings.errors("autoScroll"),
         disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Remember the Page Order in Multi-page forms"|t('freeform'),
         instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
         name: "settings[rememberPageSubmitOrder]",
-        on: settings.rememberPageSubmitOrder,
+        value: settings.rememberPageSubmitOrder,
         errors: settings.errors("rememberPageSubmitOrder"),
         disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Prevent Duplicate Submissions (Idempotency Keys)"|t('freeform'),
         instructions: "When enabled, Freeform generates a unique token for each form instance to prevent duplicate submissions and actions. If the same data is submitted multiple times in quick succession, only the first submission is processed. This helps avoid duplicate actions, especially for payment or AI-powered forms."|t('freeform'),
         name: "settings[useIdempotencyKey]",
-        on: settings.useIdempotencyKey,
+        value: settings.useIdempotencyKey,
         errors: settings.errors("useIdempotencyKey"),
         disabled: readOnly,
     }) }}
@@ -82,31 +87,34 @@
 
     <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for AI Processing"|t('freeform'),
         instructions: "Use Craft's queue system to trigger AI processing. Enabling this will speed up submission processing for your users."|t('freeform'),
         name: "settings[useQueueForAiFields]",
-        on: settings.useQueueForAiFields,
+        value: settings.useQueueForAiFields,
         errors: settings.errors("useQueueForAiFields"),
         disabled: readOnly,
         warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for Email Notifications"|t('freeform'),
         instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users."|t('freeform'),
         name: "settings[useQueueForEmailNotifications]",
-        on: settings.useQueueForEmailNotifications,
+        value: settings.useQueueForEmailNotifications,
         errors: settings.errors("useQueueForEmailNotifications"),
         disabled: readOnly,
         warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Queue for Integrations"|t('freeform'),
         instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users."|t('freeform'),
         name: "settings[useQueueForIntegrations]",
-        on: settings.useQueueForIntegrations,
+        value: settings.useQueueForIntegrations,
         errors: settings.errors("useQueueForIntegrations"),
         disabled: readOnly,
         warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),

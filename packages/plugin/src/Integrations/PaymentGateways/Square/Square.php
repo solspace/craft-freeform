@@ -51,11 +51,11 @@ class Square extends PaymentGatewayIntegration
     )]
     protected string $locationId = '';
 
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Use Sandbox',
         instructions: 'Enable to use Square Sandbox environment.',
     )]
-    protected bool $useSandbox = true;
+    protected string $useSandbox = 'true';
 
     public function getApplicationId(): string
     {

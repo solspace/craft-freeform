@@ -72,11 +72,12 @@
             }
         }) }}
 
-        {{ forms.lightswitchField({
+        {{ forms.booleanMenuField({
+            includeEnvVars: true,
             label: "Bypass All Spam Checks for Logged in Users"|t('freeform'),
             instructions: "When enabled, Freeform will not run any spam protection measures for logged in users."|t('freeform'),
             name: "settings[bypassSpamCheckOnLoggedInUsers]",
-            on: settings.bypassSpamCheckOnLoggedInUsers,
+            value: settings.bypassSpamCheckOnLoggedInUsers,
             errors: settings.errors("bypassSpamCheckOnLoggedInUsers"),
             disabled: readOnly,
         }) }}
@@ -85,11 +86,12 @@
 
         <h2>{{ "Spam Folder"|t('freeform') }}</h2>
 
-        {{ forms.lightswitchField({
+        {{ forms.booleanMenuField({
+            includeEnvVars: true,
             label: "Use Spam Folder"|t('freeform'),
             instructions: "When enabled, all submissions caught by the honeypot or blocked email addresses, keywords and IP addresses will be flagged as spam and stored in the database, but available to manage in a separate menu inside Freeform."|t('freeform'),
             name: "settings[spamFolderEnabled]",
-            on: settings.spamFolderEnabled,
+            value: settings.spamFolderEnabled,
             toggle: "spam-features",
             errors: settings.errors("spamFolderEnabled"),
             disabled: readOnly,

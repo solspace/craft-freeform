@@ -3,6 +3,7 @@ export { default as appStateSelect } from './app-state-select/app-state-select';
 export { default as assetPicker } from './asset-picker/asset-picker';
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
+export { default as boolEnv } from './bool-env/bool-env';
 export { default as buttonGroup } from './button-group/button-group';
 export { default as calculationBox } from './calculation-box/calculation-box';
 export { default as checkboxes } from './checkboxes/checkboxes';

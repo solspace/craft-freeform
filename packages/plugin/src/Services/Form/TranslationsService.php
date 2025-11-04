@@ -21,7 +21,7 @@ class TranslationsService extends BaseService
     public function isTranslationsEnabled(Form $form): bool
     {
         if (null === $this->sitesEnabled) {
-            $this->sitesEnabled = $this->getSettingsService()->getSettingsModel()->sitesEnabled;
+            $this->sitesEnabled = $this->getSettingsService()->isSitesEnabled();
         }
 
         if (!$form->getSettings()->getGeneral()->translations) {

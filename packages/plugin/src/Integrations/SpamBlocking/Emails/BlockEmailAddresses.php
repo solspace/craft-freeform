@@ -28,11 +28,11 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Check MX Record',
         instructions: "Email addresses will be validated against their domain's MX records to ensure the domain can receive mail.",
     )]
-    protected bool $checkMxRecord = false;
+    protected string $checkMxRecord = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[Input\Boolean(

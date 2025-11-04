@@ -1,0 +1,155 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set segment3 = craft.app.request.getSegment(3) %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+    { label: "Queue Processing"|t("freeform"), url: url("freeform/settings" ~ "/" ~ segment3) },
+] %}
+
+{% set title = "Queue Processing"|t("freeform") %}
+
+{% set pingUrl = siteUrl('freeform/queue/ping', settings.queuePingToken ? { token: settings.queuePingToken } : {}) %}
+
+{% block content %}
+
+    <h2 class="first">{{ "Form Processing"|t('freeform') }}</h2>
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for AI Processing"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger AI processing. Enabling this will speed up submission processing for your users."|t('freeform'),
+        name: "settings[useQueueForAiFields]",
+        on: settings.useQueueForAiFields,
+        errors: settings.errors("useQueueForAiFields"),
+        disabled: readOnly,
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for Email Notifications"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger emails. Enabling this will speed up submission processing for your users."|t('freeform'),
+        name: "settings[useQueueForEmailNotifications]",
+        on: settings.useQueueForEmailNotifications,
+        errors: settings.errors("useQueueForEmailNotifications"),
+        disabled: readOnly,
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Use Queue for Integrations"|t('freeform'),
+        instructions: "Use Craft's queue system to trigger integrations (CRM and Email Marketing). Enabling this will speed up submission processing for your users."|t('freeform'),
+        name: "settings[useQueueForIntegrations]",
+        on: settings.useQueueForIntegrations,
+        errors: settings.errors("useQueueForIntegrations"),
+        disabled: readOnly,
+        warning: "This feature relies on either regular traffic to your Craft control panel or implementing a proper queue-processing method that does not depend on someone visiting your control panel. <a class='go' href='https://craftcms.com/docs/5.x/system/queue.html' rel='noopener' target='_blank'>Learn more</a>"|t('freeform'),
+    }) }}
+
+    <hr>
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/queue-processing') }}
+    {{ csrfInput() }}
+
+    <h2 class="first">{{ "Queue Pinging Service"|t('freeform') }}</h2>
+
+    {% set fmReady = craft.freeformServices.settings.isFormMonitorEnabledAndAuthorized() %}
+    {% if not fmReady %}
+        <p class="instructions">{{ "Freeform can routinely ping your site at the interval you configure, using the free <a href='{link}'>Form Monitor</a> service, to trigger Craft's queue automatically. To use this feature, <a href='{link}'>enable and authorize Form Monitor</a> first."|t('freeform', { link: cpUrl('freeform/integrations/single/FormMonitor')})|raw }}</p>
+    {% else %}
+        <p class="instructions">{{ "When enabled, the Form Monitor service will automatically ping the following URL:"|t('freeform') }} <code>{{ pingUrl|split('ping')[0] ~ 'ping' }}</code></p>
+    {% endif %}
+
+    {% if fmReady %}
+
+    {{ forms.lightswitchField({
+        label: "Use Queue Pinging Service"|t('freeform'),
+        instructions: "Allow Freeform to routinely ping your site through the free 'Form Monitor' service to keep Craft's queue running automatically."|t('freeform'),
+        name: "settings[managedPingerEnabled]",
+        on: settings.managedPingerEnabled,
+        errors: settings.getErrors("managedPingerEnabled"),
+    }) }}
+
+    {% set currentMinutes = (settings.queuePingMinIntervalSeconds / 60)|round(0, 'ceil') %}
+    {{ forms.selectField({
+        label: "Pinging Interval"|t('freeform'),
+        instructions: "Defines how frequently the 'Form Monitor' service should ping your site to trigger Craft's queue."|t('freeform'),
+        name: "settings[queuePingMinIntervalMinutes]",
+        value: currentMinutes,
+        options: [
+            { label: 'Every 5 minutes'|t('freeform'), value: 5 },
+            { label: 'Every 10 minutes'|t('freeform'), value: 10 },
+            { label: 'Every 30 minutes'|t('freeform'), value: 30 },
+            { label: 'Every 1 hour'|t('freeform'), value: 60 },
+            { label: 'Every 6 hours'|t('freeform'), value: 360 },
+        ],
+        errors: settings.getErrors("queuePingMinIntervalMinutes"),
+    }) }}
+
+    {% if settings.managedPingerEnabled %}
+        <h3>{{ "Manage Queue Pinging Service"|t('freeform') }}</h3>
+        <div class="buttons">
+            <button type="button" class="btn" id="disable-pinger-btn">
+                {{ "Temporarily Disable Service"|t('freeform') }}
+            </button>
+            <button type="button" class="btn error" id="delete-pinger-btn">
+                {{ "Cancel Service"|t('freeform') }}
+            </button>
+        </div>
+    {% endif %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% if settings.managedPingerEnabled %}
+    {% js %}
+        var csrfData = {};
+        csrfData["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
+
+        $("#disable-pinger-btn").on("click", function() {
+            if (!confirm('{{ "Are you sure you want to disable the pinging service?"|t('freeform') }}')) {
+                return;
+            }
+            
+            $.ajax({
+                url: "{{ actionUrl('freeform/settings/disable-pinger') }}",
+                type: "post",
+                dataType: "json",
+                data: csrfData,
+                success: function(response) {
+                    if (response.success) {
+                        Craft.cp.displayNotice('{{ "Pinging service has been disabled successfully."|t('freeform') }}');
+                        window.location.reload();
+                    } else {
+                        Craft.cp.displayError(response.error || '{{ "Unable to disable the pinging service."|t('freeform') }}');
+                    }
+                }
+            });
+        });
+
+        $("#delete-pinger-btn").on("click", function() {
+            if (!confirm('{{ "Are you sure you want to cancel the pinging service?"|t('freeform') }}')) {
+                return;
+            }
+            
+            $.ajax({
+                url: "{{ actionUrl('freeform/settings/delete-pinger') }}",
+                type: "post",
+                dataType: "json",
+                data: csrfData,
+                success: function(response) {
+                    if (response.success) {
+                        Craft.cp.displayNotice('{{ "Pinging service has been cancelled successfully."|t('freeform') }}');
+                        window.location.reload();
+                    } else {
+                        Craft.cp.displayError(response.error || '{{ "Unable to cancel the pinging service."|t('freeform') }}');
+                    }
+                }
+            });
+        });
+    {% endjs %}
+{% endif %}

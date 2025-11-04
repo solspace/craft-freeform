@@ -273,7 +273,7 @@ class SettingsService extends BaseService
         $nav = [
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
-            'pinging' => ['title' => Freeform::t('Pinging')],
+            'queue-processing' => ['title' => Freeform::t('Queue Processing')],
             'form-builder' => ['title' => Freeform::t('Form Builder')],
             'limited-users' => ['title' => Freeform::t('Limited Users')],
             'template-manager' => ['title' => Freeform::t('Template Manager')],

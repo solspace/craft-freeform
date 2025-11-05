@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\Single\PostForwarding;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
@@ -26,6 +27,7 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     public const EVENT_POST_FORWARDING = 'post-forwarding';
 
     #[VisibilityFilter('enabled')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Text(
         label: 'URL',
         instructions: 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',

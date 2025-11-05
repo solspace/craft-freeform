@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.13.3 - 2025-11-05
+
+### Fixed
+- Fixed an issue where static translations were not being applied on frontend forms. This restores expected localization for labels, instructions, and other translatable strings rendered in the form.
+- Fixed an issue that could trigger errors when a submission record or an email notification definition was missing.
+- Fixed an issue where queued email notification jobs could fail if the related submission had been deleted or was otherwise unavailable by the time the job ran.
+
 ## 5.13.2 - 2025-10-30
 
 ### Fixed

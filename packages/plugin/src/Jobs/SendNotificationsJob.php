@@ -115,7 +115,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         return Freeform::t('Freeform: Processing Notifications');
     }
 
-    private function getLogger(NotificationInterface $notification, Form $form): LoggerInterface
+    private function getLogger(?NotificationInterface $notification, Form $form): LoggerInterface
     {
         $loggerProvider = \Craft::$container->get(NotificationLoggerProvider::class);
 

@@ -10,7 +10,7 @@ class ProcessPostedValuesEvent extends Event
 {
     public function __construct(
         private Form $form,
-        private Submission $submission,
+        private ?Submission $submission,
         private array $values,
     ) {
         parent::__construct();
@@ -21,7 +21,7 @@ class ProcessPostedValuesEvent extends Event
         return $this->form;
     }
 
-    public function getSubmission(): Submission
+    public function getSubmission(): ?Submission
     {
         return $this->submission;
     }

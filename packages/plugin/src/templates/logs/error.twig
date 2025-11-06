@@ -94,7 +94,7 @@
                                 {{ line.date.format('Y-m-d H:i:s') }}
                             </div>
 
-                            {% if line.extra %}
+                            {% if line.extra.requestId is defined %}
                                 <div data-request-id class="code">
                                     #{{ line.extra.requestId }}
                                 </div>

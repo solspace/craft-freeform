@@ -29,7 +29,6 @@ class NavigationBundle extends FeatureBundle
     {
         $freeform = $this->plugin();
 
-        $isPro = $freeform->isPro();
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
@@ -65,14 +64,29 @@ class NavigationBundle extends FeatureBundle
         }
 
         if ($canAccessExportProfiles) {
+            $request = \Craft::$app->getRequest();
+            $path = $request->getFullPath();
+
+            $subnav = [
+                'profiles' => [
+                    'id' => 'profiles',
+                    'label' => Freeform::t('Profiles'),
+                    'url' => 'freeform/export/profiles',
+                    'sel' => str_starts_with($path, 'freeform/export/profiles'),
+                ],
+                'files' => [
+                    'id' => 'files',
+                    'label' => Freeform::t('Files'),
+                    'url' => 'freeform/export/files',
+                    'sel' => str_starts_with($path, 'freeform/export/files'),
+                ],
+            ];
+
             $event->addSubnavItem(
                 'export',
                 Freeform::t('Import / Export'),
                 'freeform/export/profiles',
-                extraOptions: ['subnav' => [
-                    'profiles' => ['label' => Freeform::t('Profiles'), 'url' => 'freeform/export/profiles'],
-                    'files' => ['label' => Freeform::t('Files'), 'url' => 'freeform/export/files'],
-                ]]
+                extraOptions: ['subnav' => $subnav],
             );
         }
 

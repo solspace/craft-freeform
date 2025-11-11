@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.13.4 - 2025-11-11
+
+### Fixed
+- The **Google Sheets** integration now only escapes formulas in values.
+- Replaced usages of `remoteIp` with `userIp` to align with Craft's request attributes and avoid missing IPs in logs/integrations.
+- The **Resend Notifications** feature now respects the **Site ID**, ensuring templates and content resolve in the correct site context.
+- **Conditional Email Notifications** now evaluate trimmed values, fixing cases where leading/trailing whitespace prevented sends.
+- The **User** integration now respects the Craft `disableByDefault` setting when creating new user accounts.
+- The **Resend Notifications** feature was not including values from **Invisible** fields.
+- Fixed a PHP error in the **AI bundle** that occurred when a queued job had no associated submission; the handler now detects this and exits gracefully with proper logging.
+- Fixed a Twig error in the Import/Export sub-nav by providing a fallback when the `sel` key is missing in Craft 5.8.18+.
+
 ## 5.13.3 - 2025-11-05
 
 ### Fixed

@@ -57,7 +57,9 @@ class NotificationsBundle extends FeatureBundle
             return;
         }
 
-        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer);
+        $siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+
+        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer, $siteId);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 

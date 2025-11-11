@@ -13,7 +13,8 @@ class SendNotificationsEvent extends CancelableArrayableEvent
     public function __construct(
         private Form $form,
         private Submission $submission,
-        private MailerService $mailer
+        private MailerService $mailer,
+        private ?int $siteId = null,
     ) {
         parent::__construct();
     }
@@ -36,5 +37,10 @@ class SendNotificationsEvent extends CancelableArrayableEvent
     public function getMailer(): MailerService
     {
         return $this->mailer;
+    }
+
+    public function getSiteId(): ?int
+    {
+        return $this->siteId;
     }
 }

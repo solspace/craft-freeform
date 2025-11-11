@@ -88,6 +88,7 @@ class ConditionalNotifications extends NotificationListener
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
                     'submissionId' => $event->getSubmission()->id,
+                    'siteId' => $event->getSiteId(),
                     'postedData' => $postedData,
                     'recipients' => $recipients,
                     'template' => $template,

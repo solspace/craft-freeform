@@ -50,7 +50,9 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
             new PrepareSendNotificationEvent($this)
         );
 
-        $this->siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+        if (!$this->siteId) {
+            $this->siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+        }
     }
 
     public function execute($queue): void

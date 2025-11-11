@@ -1020,7 +1020,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $fields = $submission->getFieldCollection();
 
         foreach ($this->getLayout()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+            if (!$field->getHandle()) {
                 continue;
             }
 

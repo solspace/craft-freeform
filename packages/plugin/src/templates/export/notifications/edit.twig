@@ -43,8 +43,17 @@
         {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
         {{ csrfInput() }}
 
-        {{ forms.textField({
+        {{ forms.lightswitchField({
             first: true,
+            label: "Enabled"|t('freeform'),
+            instructions: "Determines if the notification is currently active or not"|t('freeform'),
+            id: 'enabled',
+            name: 'enabled',
+            on: notification.enabled,
+            errors: notification.getErrors('enabled'),
+        }) }}
+
+        {{ forms.textField({
             label: "Name"|t('freeform'),
             instructions: "What this export notification will be called in the control panel."|t('freeform'),
             id: 'name',

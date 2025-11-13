@@ -48,6 +48,66 @@ class GibberishHelperTest extends TestCase
             // --- Readable English (should PASS) ---
             [
                 'payload' => [
+                    'state' => 'ny',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'CA',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'us',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'tues',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'dutch',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'amy',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'eva',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'euro',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'peru',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
+                    'state' => 'iraq',
+                ],
+                'contains_gibberish' => false,
+            ],
+            [
+                'payload' => [
                     'message' => 'cat',
                 ],
                 'contains_gibberish' => false,

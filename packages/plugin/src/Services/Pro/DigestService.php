@@ -179,19 +179,30 @@ class DigestService extends Component
             return;
         }
 
+        // Use the Craft site timezone
+        $siteTimezone = new \DateTimeZone(\Craft::$app->getTimeZone());
+        $refDate = $refDate->copy()->setTimezone($siteTimezone);
+
+        // "Today" at start of day in site timezone
         $lookupStart = $refDate->clone()->startOfDay();
 
+        $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - lookupStart (Site Timezone) - {$lookupStart}");
+
+        // Frequency check:
+        // - Daily (-1) -> always run
+        // - Weekly (0–6) -> only run on that weekday in site timezone
         if (-1 !== $frequency && $lookupStart->dayOfWeek !== $frequency) {
-            $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Skipped - Frequency mismatch");
+            $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Skipped - Frequency mismatch (dayOfWeek={$lookupStart->dayOfWeek}, expected={$frequency})");
             $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Finished processing");
 
             return;
         }
 
+        // Prevent duplicates: 1 digest per day per type
         $exists = NotificationLogRecord::find()
             ->where([
                 'type' => $type,
-                'digestDate' => $lookupStart->toDateString(),
+                'digestDate' => $lookupStart->toDateString(), // e.g. '2025-11-19'
             ])
             ->exists()
         ;
@@ -203,14 +214,20 @@ class DigestService extends Component
             return;
         }
 
-        // Time range for actual digest data
-        $rangeStart = (-1 === $frequency)
-            ? $lookupStart->copy()->subDay()
-            : $lookupStart->copy()->subWeek();
+        // Get time range in site timezone
+        if (self::FREQUENCY_DAILY === $frequency) {
+            // Daily: "yesterday" in site timezone
+            $rangeStart = $lookupStart->copy()->subDay()->startOfDay();
+            $rangeEnd = $lookupStart->copy()->subDay()->endOfDay();
+        } else {
+            // Weekly: previous 7 full days, ending yesterday in site timezone
+            // e.g. "Weekly on Wednesdays", run Wed 19th:
+            // rangeStart = Wed 12th 00:00, rangeEnd = Tue 18th 23:59:59
+            $rangeStart = $lookupStart->copy()->subWeek()->startOfDay();
+            $rangeEnd = $lookupStart->copy()->subDay()->endOfDay();
+        }
 
-        $rangeEnd = $lookupStart->copy()->subDay()->endOfDay();
-
-        $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type}", [
+        $this->loggerProvider->getLogger()->info("DigestService parseDigest - {$type} - Range (site timezone)", [
             'rangeStart' => $rangeStart,
             'rangeEnd' => $rangeEnd,
         ]);
@@ -252,6 +269,11 @@ class DigestService extends Component
 
     private function getFormData(Carbon $rangeStart, Carbon $rangeEnd): array
     {
+        $this->loggerProvider->getLogger()->info('DigestService getFormData - Range', [
+            'rangeStart' => $rangeStart->toIso8601String(),
+            'rangeEnd' => $rangeEnd->toIso8601String(),
+        ]);
+
         $freeform = Freeform::getInstance();
 
         $formService = $freeform->forms;

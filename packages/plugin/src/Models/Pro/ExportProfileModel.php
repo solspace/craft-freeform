@@ -235,7 +235,7 @@ class ExportProfileModel extends Model
     {
         static $timezone;
         if (null === $timezone) {
-            $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? false;
+            $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? new \DateTimeZone(\Craft::$app->getTimeZone());
         }
 
         return $timezone ?: null;

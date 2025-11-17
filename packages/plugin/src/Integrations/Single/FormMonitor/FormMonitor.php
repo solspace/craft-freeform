@@ -28,14 +28,22 @@ use Solspace\Freeform\Library\Integrations\APIIntegration;
 )]
 class FormMonitor extends APIIntegration
 {
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Input\FormMonitorTools(
+        label: 'Form Monitor Tools',
+        instructions: 'Before enabling email notification testing, use this to verify that your Craft email notifications can successfully send emails to Form Monitor\'s inbound address.',
+        order: 5
+    )]
+    protected string $tools = '';
+
     #[Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Boolean(
         label: 'Test Email Notifications',
         instructions: 'Allow Form Monitor to test any email notifications configured for this form.',
-        order: 5
+        order: 6
     )]
-    protected bool $testEmails = true;
+    protected bool $testEmails = false;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\BooleanEnv(
@@ -361,6 +369,30 @@ class FormMonitor extends APIIntegration
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/tests/all');
         $client->delete($endpoint);
+    }
+
+    public function sendTestEmail(Client $client): array
+    {
+        $endpoint = $this->getEndpoint('/test-email');
+        $response = $client->post($endpoint);
+
+        return json_decode((string) $response->getBody(), true);
+    }
+
+    public function getTestEmailHistory(Client $client, array $options = []): array
+    {
+        $endpoint = $this->getEndpoint('/test-email/history');
+        $response = $client->get($endpoint, ['query' => $options]);
+
+        return json_decode((string) $response->getBody(), true);
+    }
+
+    public function getTestEmailStatus(Client $client, string $testToken): array
+    {
+        $endpoint = $this->getEndpoint('/test-email/status');
+        $response = $client->get($endpoint, ['query' => ['token' => $testToken]]);
+
+        return json_decode((string) $response->getBody(), true);
     }
 
     public function getStoredLicenseKey(): string

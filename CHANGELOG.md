@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 5.13.5 - 2025-11-17
+
+### Fixed
+- Fixed an issue where **Gibberish** spam blocking could falsely flag short words as spam (e.g., the `CA` state code for _California_).
+- Fixed a GraphQL issue where **Dropdown** and **Multi-Select** fields with dynamically generated options (e.g., _Calendar_ events) could break schema generation.
+- Fixed an issue where **Digest** email submission totals used date ranges that bled into adjacent days due to timezone differences.
+- Fixed an issue where **XML export** did not sanitize field handles before using them as element names, which could produce invalid XML when handles began with numbers.
+
+## 5.13.4 - 2025-11-11
+
+### Fixed
+- The **Google Sheets** integration now only escapes formulas in values.
+- Replaced usages of `remoteIp` with `userIp` to align with Craft's request attributes and avoid missing IPs in logs/integrations.
+- The **Resend Notifications** feature now respects the **Site ID**, ensuring templates and content resolve in the correct site context.
+- **Conditional Email Notifications** now evaluate trimmed values, fixing cases where leading/trailing whitespace prevented sends.
+- The **User** integration now respects the Craft `disableByDefault` setting when creating new user accounts.
+- The **Resend Notifications** feature was not including values from **Invisible** fields.
+- Fixed a PHP error in the **AI bundle** that occurred when a queued job had no associated submission; the handler now detects this and exits gracefully with proper logging.
+- Fixed a Twig error in the Import/Export sub-nav by providing a fallback when the `sel` key is missing in Craft 5.8.18+.
+
 ## 5.13.3 - 2025-11-05
 
 ### Fixed
@@ -997,7 +1017,7 @@
 - Added the ability to organize form cards into groups on the Forms dashboard page.
 - Added the ability to switch the Forms dashboard page from Cards to a List table view.
 - Added the ability to check in Twig to see if an integration is enabled for a form. Use `{% if form.isIntegrationEnabled("integrationHandle") %}`.
-- Added template-level overrides for POST Forwarding, allowing for Twig in the POST Forwarding URL and error phrase.
+- Added Twig support in the POST Forwarding URL and error phrase settings.
 - Added the ability to hide advanced settings for Submit buttons with the Limited Users feature.
 - Added compatibility of Hubspot tracking code to the Hubspot CRM integration.
 - Added French translation. Thanks @scandella!

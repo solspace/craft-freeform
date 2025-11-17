@@ -160,11 +160,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         ;
 
         if ($rangeStart) {
-            $query->andWhere(['>=', "{$submissions}.[[dateCreated]]", $rangeStart]);
+            $query->andWhere(['>=', "{$submissions}.[[dateCreated]]", Db::prepareDateForDb($rangeStart)]);
         }
 
         if ($rangeEnd) {
-            $query->andWhere(['<=', "{$submissions}.[[dateCreated]]", $rangeEnd]);
+            $query->andWhere(['<=', "{$submissions}.[[dateCreated]]", Db::prepareDateForDb($rangeEnd)]);
         }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {

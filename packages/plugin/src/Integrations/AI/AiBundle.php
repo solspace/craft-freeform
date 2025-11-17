@@ -75,6 +75,11 @@ class AiBundle extends FeatureBundle
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();
+
+        if (!$form || !$submission) {
+            return;
+        }
+
         $submissionValues = $submission->getFormFieldValues();
 
         $fields = $form->getFields()->getList(AiField::class);

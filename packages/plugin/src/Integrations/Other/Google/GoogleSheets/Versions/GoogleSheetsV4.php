@@ -71,7 +71,7 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
     public function push(Form $form, Client $client): void
     {
         $query = http_build_query([
-            'valueInputOption' => $this->isProcessValues() ? 'USER_ENTERED' : 'RAW',
+            'valueInputOption' => 'USER_ENTERED',
             'insertDataOption' => $this->getInsertOption() ?? self::INSERT_OPTION_OVERWRITE,
         ]);
 
@@ -88,10 +88,19 @@ class GoogleSheetsV4 extends BaseGoogleSheetsIntegration
         $rangeEnd = SheetsHelper::getA1($lastColumn, $offset);
         $range = $rangeStart.':'.$rangeEnd;
 
+        $processValues = $this->isProcessValues();
+
         $values = [];
         for ($i = $firstColumn; $i <= $lastColumn; ++$i) {
             if (\array_key_exists($i, $mapping)) {
-                $values[] = $mapping[$i];
+                $value = $mapping[$i];
+                if (!$processValues) {
+                    $value = ltrim($value, "\t\r");
+                    if (preg_match('/^[=+\-@]/u', $value)) {
+                        $value = "'".$value;
+                    }
+                }
+                $values[] = $value;
             } else {
                 $values[] = null;
             }

@@ -23,6 +23,7 @@ class ResendNotificationsAction extends ElementAction
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
+        $siteId = $query->siteId ?: \Craft::$app->getSites()->getCurrentSite()->id;
         $mailer = Freeform::getInstance()->mailer;
 
         /** @var Submission $submission */
@@ -30,7 +31,7 @@ class ResendNotificationsAction extends ElementAction
             $form = $submission->getForm();
             $form->valuesFromSubmission($submission);
 
-            $event = new SendNotificationsEvent($form, $submission, $mailer);
+            $event = new SendNotificationsEvent($form, $submission, $mailer, $siteId);
             Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
         }
 

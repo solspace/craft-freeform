@@ -17,6 +17,8 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\FieldAttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\Option;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Limitation;
@@ -126,9 +128,27 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';
 
-        $values = [];
+        $flatOptions = [];
 
         foreach ($this->getOptions() as $option) {
+            if ($option instanceof OptionCollection) {
+                foreach ($option->getOptions() as $child) {
+                    if ($child instanceof Option) {
+                        $flatOptions[] = $child;
+                    }
+                }
+
+                continue;
+            }
+
+            if ($option instanceof Option) {
+                $flatOptions[] = $option;
+            }
+        }
+
+        $values = [];
+
+        foreach ($flatOptions as $option) {
             $values[] = '"'.$option->getValue().'"';
         }
 
@@ -136,12 +156,10 @@ class DropdownField extends BaseGeneratedOptionsField implements DefaultValueInt
             $description[] = 'Options include '.implode(', ', $values).'.';
         }
 
-        $description = implode("\n", $description);
-
         return [
             'name' => $this->getContentGqlHandle(),
             'type' => $this->getContentGqlType(),
-            'description' => trim($description),
+            'description' => implode("\n", $description),
         ];
     }
 }

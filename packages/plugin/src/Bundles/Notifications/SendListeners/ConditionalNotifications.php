@@ -14,7 +14,6 @@
 namespace Solspace\Freeform\Bundles\Notifications\SendListeners;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
-use Solspace\Freeform\Bundles\Rules\ConditionValidator;
 use Solspace\Freeform\Bundles\Rules\Types\NotificationRuleValidator;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
@@ -30,7 +29,6 @@ class ConditionalNotifications extends NotificationListener
     public function __construct(
         private NotificationsProvider $notificationsProvider,
         private NotificationRuleValidator $ruleValidator,
-        private ConditionValidator $conditionValidator,
         private FreeformQueueHandler $queueHandler
     ) {
         Event::on(
@@ -88,6 +86,7 @@ class ConditionalNotifications extends NotificationListener
                 new SendNotificationsJob([
                     'formId' => $form->getId(),
                     'submissionId' => $event->getSubmission()->id,
+                    'siteId' => $event->getSiteId(),
                     'postedData' => $postedData,
                     'recipients' => $recipients,
                     'template' => $template,

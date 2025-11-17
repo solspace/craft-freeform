@@ -4,27 +4,101 @@ namespace Solspace\Freeform\Library\Helpers;
 
 class GibberishHelper
 {
-    private static array $shortWordWhitelist = [
+    private static array $whitelist = [
         // 1 letter
         'a', 'i',
-        // 2 letters
-        'am', 'an', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'if', 'in', 'is', 'it', 'me', 'my', 'no', 'of', 'on', 'or', 'so', 'to', 'up', 'us', 'we',
+
+        // 2 letters - common short words
+        'am', 'an', 'as', 'at', 'be', 'by', 'do', 'go', 'he', 'if', 'in', 'is', 'it', 'me', 'my',
+        'no', 'of', 'on', 'or', 'so', 'to', 'up', 'us', 'we',
+
+        // us states & territories
+        'al', 'ak', 'az', 'ar', 'ca', 'co', 'ct', 'de', 'fl', 'ga', 'hi', 'id', 'il', 'in', 'ia', 'ks', 'ky', 'la', 'me', 'md',
+        'ma', 'mi', 'mn', 'ms', 'mo', 'mt', 'ne', 'nv', 'nh', 'nj', 'nm', 'ny', 'nyc', 'nc', 'nd', 'oh', 'ok', 'or', 'pa', 'ri', 'sc',
+        'sd', 'tn', 'tx', 'ut', 'vt', 'va', 'wa', 'wv', 'wi', 'wy', 'dc', 'as', 'gu', 'mp', 'pr', 'vi', 'um',
+        'alabama', 'alaska', 'arizona', 'arkansas', 'california', 'colorado', 'connecticut',
+        'delaware', 'florida', 'georgia', 'hawaii', 'idaho', 'illinois', 'indiana', 'iowa',
+        'kansas', 'kentucky', 'louisiana', 'maine', 'maryland', 'massachusetts', 'michigan',
+        'minnesota', 'mississippi', 'missouri', 'montana', 'nebraska', 'nevada',
+        'newhampshire', 'newjersey', 'newmexico', 'newyork', 'northcarolina', 'northdakota',
+        'ohio', 'oklahoma', 'oregon', 'pennsylvania', 'rhodeisland', 'southcarolina',
+        'southdakota', 'tennessee', 'texas', 'utah', 'vermont', 'virginia', 'washington',
+        'westvirginia', 'wisconsin', 'wyoming',
+        'districtcolumbia', 'districtofcolumbia',
+        'americanSamoa', 'guam', 'northernmarianaislands', 'puertorico', 'virginislands',
+
+        // canadian provinces & territories
+        'ab', 'bc', 'mb', 'nb', 'nl', 'ns', 'nt', 'nu', 'on', 'pe', 'qc', 'sk', 'yt',
+        'alberta', 'britishcolumbia', 'manitoba', 'newbrunswick', 'newfoundlandandlabrador', 'novascotia',
+        'ontario', 'princeedwardisland', 'quebec', 'saskatchewan', 'northwestterritories', 'nunavut', 'yukon',
+
+        // 2–3 letters - australian state & territories
+        'nsw', 'qld', 'sa', 'tas', 'vic', 'wa', 'act', 'nt',
+        'newsouthwales', 'queensland', 'southaustralia', 'tasmania', 'victoria', 'westernaustralia',
+        'australiancapitalterritory', 'northernterritory',
+
+        // countries
+        'usa', 'uk', 'uae', 'india', 'canada', 'ireland', 'scotland', 'wales', 'england',
+        'france', 'germany', 'spain', 'italy', 'china', 'japan', 'korea', 'mexico',
+        'brazil', 'argentina', 'chile', 'peru', 'colombia', 'australia', 'newzealand',
+        'sweden', 'norway', 'denmark', 'finland', 'poland', 'switzerland', 'austria',
+        'belgium', 'netherlands',
+
         // 3 letters
-        'and', 'any', 'are', 'can', 'did', 'for', 'get', 'had', 'has', 'her', 'him', 'his', 'how', 'its', 'let', 'man', 'may', 'new', 'not', 'six',
-        'now', 'off', 'old', 'one', 'our', 'out', 'put', 'see', 'set', 'she', 'the', 'too', 'two', 'use', 'war', 'was', 'way', 'who', 'why', 'you',
-        // 4 letters
-        'also', 'able', 'back', 'best', 'both', 'call', 'come', 'done', 'door', 'down', 'each', 'even', 'ever', 'from', 'good', 'have', 'here',
-        'high', 'into', 'just', 'keep', 'kind', 'know', 'lake', 'last', 'left', 'like', 'long', 'look', 'made', 'make', 'many', 'more', 'most',
-        'much', 'near', 'need', 'once', 'only', 'park', 'part', 'past', 'pool', 'rest', 'road', 'same', 'some', 'soon', 'take', 'tell', 'test',
-        'than', 'that', 'them', 'then', 'they', 'this', 'time', 'turn', 'walk', 'well', 'went', 'what', 'when', 'where', 'with', 'work', 'your',
-        'four', 'five',
-        // 5 letters
+        'and', 'any', 'are', 'can', 'did', 'for', 'get', 'had', 'has', 'her', 'him', 'his', 'how', 'its', 'let', 'man', 'may',
+        'new', 'not', 'six', 'now', 'off', 'old', 'one', 'our', 'out', 'put', 'see', 'set', 'she', 'the', 'too', 'two', 'use',
+        'war', 'was', 'way', 'who', 'why', 'you',
+
+        // 4+ letters – existing common words
+        'also', 'able', 'back', 'best', 'both', 'call', 'come', 'done', 'door', 'down', 'each', 'even', 'ever', 'from',
+        'good', 'have', 'here', 'high', 'into', 'just', 'keep', 'kind', 'know', 'lake', 'last', 'left', 'like', 'long',
+        'look', 'made', 'make', 'many', 'more', 'most', 'much', 'near', 'need', 'once', 'only', 'park', 'part', 'past',
+        'pool', 'rest', 'road', 'same', 'some', 'soon', 'take', 'tell', 'test', 'than', 'that', 'them', 'then', 'they',
+        'this', 'time', 'turn', 'walk', 'well', 'went', 'what', 'when', 'where', 'with', 'work', 'your', 'four', 'five',
         'three',
+
+        // days of the week + abbreviations
+        'mon', 'tue', 'tues', 'wed', 'thu', 'thur', 'fri', 'sat', 'sun',
+        'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+
+        // months + abbreviations
+        'jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'sept', 'oct', 'nov', 'dec',
+        'january', 'february', 'march', 'april', 'june', 'july', 'august', 'september', 'october', 'november', 'december',
+
+        // common languages
+        'english', 'french', 'spanish', 'german', 'italian', 'portuguese', 'dutch',
+        'chinese', 'japanese', 'korean', 'arabic', 'hindi', 'urdu', 'punjabi', 'bengali',
+        'tagalog', 'vietnamese', 'swedish', 'norwegian', 'polish', 'russian',
+
+        // currency codes & names
+        'usd', 'eur', 'gbp', 'cad', 'aud', 'nzd', 'jpy', 'cny', 'inr', 'chf', 'sek', 'nok',
+        'dollar', 'euro', 'pound', 'yen', 'rupee', 'franc', 'peso', 'lira',
+
+        // number words
+        'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+        'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen',
+        'eighteen', 'nineteen', 'twenty',
+        'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety',
+        'hundred', 'thousand',
+
+        // common given names (male-ish)
+        'john', 'james', 'robert', 'michael', 'william', 'david', 'richard', 'joseph', 'thomas', 'charles',
+        'christopher', 'daniel', 'matthew', 'anthony', 'mark', 'donald', 'steven', 'paul', 'andrew', 'joshua',
+        'kenneth', 'kevin', 'brian', 'george', 'timothy', 'ronald', 'edward', 'jason', 'jeffrey', 'ryan', 'jacob',
+        'gary', 'nicholas', 'eric', 'stephen', 'larry', 'justin', 'scott', 'brandon', 'benjamin', 'adam', 'alexander',
+        'patrick', 'jack', 'liam', 'noah', 'oliver', 'sean',
+
+        // common given names (female-ish)
+        'mary', 'patricia', 'jennifer', 'linda', 'elizabeth', 'barbara', 'susan', 'jessica', 'sarah', 'karen',
+        'nancy', 'lisa', 'betty', 'margaret', 'sandra', 'ashley', 'kimberly', 'emily', 'donna', 'michelle',
+        'carol', 'amanda', 'dorothy', 'melissa', 'deborah', 'stephanie', 'rebecca', 'laura', 'sharon', 'cynthia',
+        'kathleen', 'amy', 'angela', 'shirley', 'anna', 'brenda', 'pamela', 'emma', 'chloe', 'olivia', 'sophia',
+        'isabella', 'ava', 'mia', 'grace', 'ella', 'victoria', 'hannah', 'abigail', 'madison', 'lucy',
     ];
 
     public static function analyzeGibberish(string $value, int $gibberishWordMinimumLength = 6, array $combinedAllowedTerms = []): array
     {
-        $combinedAllowedTerms = array_merge($combinedAllowedTerms, self::$shortWordWhitelist);
+        $combinedAllowedTerms = array_merge($combinedAllowedTerms, self::$whitelist);
 
         $value = trim($value);
         if (empty($value)) {
@@ -156,29 +230,40 @@ class GibberishHelper
                     ];
                     $tetrads = ['qwer', 'asdf', 'zxcv'];
 
-                    if (3 === $length && \in_array($lettersLowerCase, $triads, true)) {
-                        $badWordCount += 2;
+                    // 2-letter tokens: auto-allow except extremely obvious junk
+                    if (2 === $length) {
+                        // Only treat as junk if no vowels AND both characters are the same (e.g. "zz", "qq", "bb")
+                        if (!$hasVowel && 1 === $unique) {
+                            ++$shortWordJunkCount;
 
-                        $reasons[] = 'keyboard_triad';
-                    }
+                            $reasons[] = 'short_two_letter_repeated_consonant';
+                        }
+                    } else {
+                        // 3-4 letters: keep existing keyboard-run + low-variety logic
+                        if (3 === $length && \in_array($lettersLowerCase, $triads, true)) {
+                            $badWordCount += 2;
 
-                    if (4 === $length && \in_array($lettersLowerCase, $tetrads, true)) {
-                        $badWordCount += 2;
+                            $reasons[] = 'keyboard_triad';
+                        }
 
-                        $reasons[] = 'keyboard_run';
-                    }
+                        if (4 === $length && \in_array($lettersLowerCase, $tetrads, true)) {
+                            $badWordCount += 2;
 
-                    // 2–3 letters: only if very low variety (less than 2 uniques)
-                    if ($length <= 3 && $unique <= 2) {
-                        ++$shortWordJunkCount;
+                            $reasons[] = 'keyboard_run';
+                        }
 
-                        $reasons[] = 'short_low_variety';
-                    }
-                    // 4 letters: only if very low variety (less than 2 uniques) AND no vowels
-                    elseif (4 === $length && $unique <= 2 && !$hasVowel) {
-                        ++$shortWordJunkCount;
+                        // 3 letters: only if very low variety
+                        if (3 === $length && $unique <= 2) {
+                            ++$shortWordJunkCount;
 
-                        $reasons[] = 'short_no_vowels_low_variety';
+                            $reasons[] = 'short_low_variety';
+                        }
+                        // 4 letters: only if very low variety AND no vowels
+                        elseif (4 === $length && $unique <= 2 && !$hasVowel) {
+                            ++$shortWordJunkCount;
+
+                            $reasons[] = 'short_no_vowels_low_variety';
+                        }
                     }
                 }
 

@@ -1,10 +1,12 @@
 # Solspace Freeform Changelog
 
-## 5.13.5 - Unreleased
+## 5.13.5 - 2025-11-17
 
 ### Fixed
-- Fixed a bug where Digest email report submission totals where date ranges where spilling into previous/next days due to differences in timezones.
-- Fixed a bug where XML export was not sanitizing field handles before using them as element names, preventing invalid XML when handles begin with numbers or contain special characters.
+- Fixed an issue where **Gibberish** spam blocking could falsely flag short words as spam (e.g., the `CA` state code for _California_).
+- Fixed a GraphQL issue where **Dropdown** and **Multi-Select** fields with dynamically generated options (e.g., _Calendar_ events) could break schema generation.
+- Fixed an issue where **Digest** email submission totals used date ranges that bled into adjacent days due to timezone differences.
+- Fixed an issue where **XML export** did not sanitize field handles before using them as element names, which could produce invalid XML when handles began with numbers.
 
 ## 5.13.4 - 2025-11-11
 

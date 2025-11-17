@@ -231,7 +231,7 @@ class ExportProfileModel extends Model
         return $query;
     }
 
-    private function getTimezoneOverride(): ?string
+    private function getTimezoneOverride(): \DateTimeZone|string|null
     {
         static $timezone;
         if (null === $timezone) {

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.13.5 - Unreleased
+
+### Fixed
+- Fixed a bug where Digest email report submission totals where date ranges where spilling into previous/next days due to differences in timezones.
+- Fixed a bug where XML export was not sanitizing field handles before using them as element names, preventing invalid XML when handles begin with numbers or contain special characters.
+
 ## 5.13.4 - 2025-11-11
 
 ### Fixed

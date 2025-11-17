@@ -219,11 +219,16 @@ class ExportProfilesService extends Component
     public function getExportSettings(): ExportSettings
     {
         $settings = Freeform::getInstance()->settings;
+        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? new \DateTimeZone(\Craft::$app->getTimeZone());
+
+        if ($timezone instanceof \DateTimeZone) {
+            $timezone = $timezone->getName();
+        }
 
         return new ExportSettings(
             $settings->isRemoveNewlines(),
             $settings->isExportLabels(),
-            \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? date_default_timezone_get(),
+            $timezone,
             $settings->isExportHandlesAsNames()
         );
     }

@@ -79,7 +79,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
 
     public function validate(Form $form, bool $displayErrors): void
     {
-        $remoteIp = \Craft::$app->request->getRemoteIP();
+        $remoteIp = \Craft::$app->request->getUserIP();
         $dnsBlockLists = $this->getCombinedDnsBlockLists();
         $ips = $this->getCombinedIps();
 

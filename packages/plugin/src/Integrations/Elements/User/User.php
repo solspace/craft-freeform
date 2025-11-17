@@ -137,7 +137,14 @@ class User extends ElementIntegration
 
         if (!$user) {
             $user = new CraftUser();
-            $user->pending = !$this->active;
+
+            $deactivateByDefault = \Craft::$app->projectConfig->get('users.deactivateByDefault');
+            if ($deactivateByDefault) {
+                $user->pending = false;
+                $user->active = false;
+            } else {
+                $user->pending = !$this->isActive();
+            }
         }
 
         $this->processMapping($user, $form, $this->attributeMapping);
@@ -182,7 +189,7 @@ class User extends ElementIntegration
             }
         }
 
-        $isDisabled = !$this->active;
+        $isDisabled = !$this->isActive();
         $isSendActivation = $this->sendActivation;
         $isInPendingState = \in_array($element->status, [CraftUser::STATUS_PENDING, CraftUser::STATUS_INACTIVE], true);
 
@@ -202,7 +209,7 @@ class User extends ElementIntegration
             }
         }
 
-        if ($this->active) {
+        if ($this->isActive()) {
             \Craft::$app->users->activateUser($element);
 
             if (\Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {

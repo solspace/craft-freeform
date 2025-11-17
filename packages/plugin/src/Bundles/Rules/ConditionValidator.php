@@ -13,6 +13,8 @@ class ConditionValidator
         if (\is_array($value)) {
             if (preg_match('/^[\[{].*[]}]$/', $expectedValue)) {
                 $expectedValue = json_decode($expectedValue, true);
+                $expectedValue = array_map('trim', $expectedValue);
+
                 $hasCommonValue = [] !== array_intersect($value, $expectedValue);
 
                 return match ($condition->getOperator()) {
@@ -36,6 +38,8 @@ class ConditionValidator
                 default => false,
             };
         }
+
+        $expectedValue = trim($expectedValue);
 
         return match ($condition->getOperator()) {
             Condition::TYPE_EQUALS => strtolower($value) === strtolower($expectedValue),

@@ -239,7 +239,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             'form_params' => [
                 'secret' => $secret,
                 'response' => $captchaResponse,
-                'remoteip' => \Craft::$app->request->getRemoteIP(),
+                'remoteip' => \Craft::$app->request->getUserIP(),
             ],
         ]);
 

@@ -143,7 +143,7 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
           <TestActionSection>
             <DescriptionText>
               {translate(
-                'A simple dummy email will be sent to inbound@test.formmonitor.com to verify that delivery and inbound processing are working.'
+                "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly."
               )}
             </DescriptionText>
 

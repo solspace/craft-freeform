@@ -28,14 +28,6 @@ use Solspace\Freeform\Library\Integrations\APIIntegration;
 )]
 class FormMonitor extends APIIntegration
 {
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[Input\FormMonitorTools(
-        label: 'Form Monitor Tools',
-        instructions: 'Before enabling email notification testing, use this to verify that your Craft email notifications can successfully send emails to Form Monitor\'s inbound address.',
-        order: 5
-    )]
-    protected string $tools = '';
-
     #[Required]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Boolean(
@@ -52,6 +44,14 @@ class FormMonitor extends APIIntegration
         order: 7
     )]
     protected string $liveOnly = 'true';
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Input\FormMonitorTools(
+        label: 'Test Email Delivery',
+        instructions: "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address.",
+        order: 5
+    )]
+    protected string $tools = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]

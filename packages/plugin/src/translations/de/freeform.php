@@ -653,6 +653,14 @@ return [
     'The name of your Craft site. Form Monitor will use this in email notifications.' => 'Der Name Ihrer Craft-Website. Der Formularmonitor verwendet diesen in E-Mail-Benachrichtigungen.',
     'Test Email Notifications on Live Environment only' => 'E-Mail-Benachrichtigungen nur in der Live-Umgebung testen',
     'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Wenn aktiviert, testet der Formularmonitor E-Mail-Benachrichtigungen nur, wenn die Craft-Umgebung auf Produktion gesetzt ist.',
+    'Test Email Delivery' => 'E-Mail-Zustellung testen',
+    "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address." => 'Bevor Sie den Test der E-Mail-Benachrichtigungen aktivieren, verwenden Sie diese Funktion, um sicherzustellen, dass Craft E-Mails erfolgreich an die eingehende Adresse von Form Monitor senden kann.',
+    'Test it now' => 'Jetzt testen',
+    'Testing...' => 'Wird getestet...',
+    "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly." => 'Eine Test-E-Mail wird an »inbound@test.formmonitor.com« gesendet, um zu prüfen, ob der E-Mail-Versand und die eingehende Verarbeitung korrekt funktionieren.',
+    'Test Email History' => 'Test-E-Mail-Verlauf',
+    'Date & Time' => 'Datum & Uhrzeit',
+    'No test emails sent yet.' => 'Noch keine Test-E-Mails gesendet.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Benutzer',

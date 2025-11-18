@@ -1003,6 +1003,7 @@ return [
     'Weekly on Saturdays' => 'Wekelijks op zaterdag',
     'New Export Notification' => 'Nieuwe exportmelding',
     'Create a new Export Notification' => 'Maak een nieuwe exportmelding aan',
+    'Controls whether this notification is currently active.' => 'Bepaalt of deze notificatie momenteel actief is.',
     'What this export notification will be called in the control panel.' => 'Hoe deze exportmelding heet in het controlepaneel.',
     'Export Profile' => 'Profiel exporteren',
     'Choose the Export Profile to use for this notification.' => 'Kies het exportprofiel dat u voor deze melding wilt gebruiken.',

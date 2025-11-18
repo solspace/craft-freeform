@@ -10,6 +10,7 @@ use Solspace\Freeform\Models\Pro\ExportProfileModel;
 /**
  * @property int    $id
  * @property int    $profileId
+ * @property bool   $enabled
  * @property string $name
  * @property string $fileType
  * @property string $fileName
@@ -41,6 +42,7 @@ class ExportNotificationRecord extends ActiveRecord
     {
         return [
             'profileId',
+            'enabled',
             'name',
             'fileType',
             'fileName',

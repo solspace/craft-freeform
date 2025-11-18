@@ -47,7 +47,7 @@ class ExportXml extends AbstractSubmissionExport
                         $handle = $field->getHandle();
                     }
 
-                    $xml->startElement($handle);
+                    $xml->startElement($this->sanitizeTagName($handle));
 
                     if ($field instanceof MultiValueInterface) {
                         if ($field instanceof TableField) {
@@ -114,8 +114,10 @@ class ExportXml extends AbstractSubmissionExport
                     $field = $column->getField();
                     $value = $column->getValue();
 
+                    $handle = $this->sanitizeTagName($column->getHandle());
+
                     if ($field instanceof MultiValueInterface) {
-                        $node = $submission->addChild($column->getHandle());
+                        $node = $submission->addChild($handle);
 
                         if ($field instanceof TableField) {
                             $layout = $field->getTableLayout();
@@ -145,7 +147,7 @@ class ExportXml extends AbstractSubmissionExport
                         }
                     } else {
                         $node = $submission->addChild(
-                            $column->getHandle(),
+                            $handle,
                             htmlspecialchars($column->getValue(), \ENT_QUOTES | \ENT_SUBSTITUTE | \ENT_HTML401)
                         );
                     }
@@ -164,5 +166,17 @@ class ExportXml extends AbstractSubmissionExport
         $xmlDocument->loadXML($element->asXML());
 
         return $xmlDocument->saveXML();
+    }
+
+    private function sanitizeTagName(?string $name): string
+    {
+        $name = (string) $name;
+        $name = preg_replace('/[^A-Za-z0-9_\-\.]+/', '_', $name) ?: '';
+
+        if ('' === $name || !preg_match('/^[A-Za-z_]/', $name)) {
+            $name = 'field_'.$name;
+        }
+
+        return $name;
     }
 }

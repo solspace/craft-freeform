@@ -114,6 +114,13 @@ class EmailOverrides extends FeatureBundle
         $this->setHeader($message, 'X-Form-Monitor-Reply-To', $replyTo);
         $this->setHeader($message, 'X-Form-Monitor-Cc', $cc);
         $this->setHeader($message, 'X-Form-Monitor-Bcc', $bcc);
+
+        // Check if this is a test email (has test token header)
+        $testTokenHeader = $message->getHeader('X-Form-Monitor-Test-Email-Token');
+        if ($testTokenHeader) {
+            $testToken = $this->normalizeHeaderValue($testTokenHeader);
+            $this->setHeader($message, 'X-Form-Monitor-Test-Email-Token', $testToken);
+        }
     }
 
     private function normalizeHeaderValue($value): string

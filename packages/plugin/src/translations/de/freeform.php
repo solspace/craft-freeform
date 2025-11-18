@@ -1003,6 +1003,7 @@ return [
     'Weekly on Saturdays' => 'Wöchentlich am Samstag',
     'New Export Notification' => 'Neue Export-Benachrichtigung',
     'Create a new Export Notification' => 'Eine neue Export-Benachrichtigung erstellen',
+    'Controls whether this notification is currently active.' => 'Legt fest, ob diese Benachrichtigung derzeit aktiv ist.',
     'What this export notification will be called in the control panel.' => 'Wie diese Export-Benachrichtigung im Kontrollpanel genannt wird.',
     'Export Profile' => 'Export-Profil',
     'Choose the Export Profile to use for this notification.' => 'Wählen Sie das Export-Profil, das für diese Benachrichtigung verwendet werden soll.',

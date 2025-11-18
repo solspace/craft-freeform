@@ -52,6 +52,7 @@
                 {% for notification in exportNotifications %}
                     <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
                         <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                            <span class="status {{ notification.enabled ? 'enabled' : 'disabled' }}"></span>
                             {% if currentUser.can("freeform-pro-exportProfilesManage") %}
                                 <a href="{{ url('freeform/export/notifications/' ~ notification.id) }}">
                                     {{ notification.name }}
@@ -112,6 +113,7 @@
 
 {% css %}
     #content { padding: 0; }
+    .status { margin-bottom: -1px; margin-right: 5px; }
 {% endcss %}
 
 {% js %}

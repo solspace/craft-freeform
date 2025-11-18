@@ -46,10 +46,10 @@
         {{ forms.lightswitchField({
             first: true,
             label: "Enabled"|t('freeform'),
-            instructions: "Determines if the notification is currently active or not"|t('freeform'),
+            instructions: "Controls whether this notification is currently active."|t('freeform'),
             id: 'enabled',
             name: 'enabled',
-            on: notification.enabled,
+            on: (notification.id ? notification.enabled : true),
             errors: notification.getErrors('enabled'),
         }) }}
 

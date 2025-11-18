@@ -21,6 +21,7 @@ export enum PropertyType {
   Attributes = 'attributes',
   Boolean = 'bool',
   BooleanEnv = 'boolEnv',
+  FormMonitorTools = 'formMonitorTools',
   Calculation = 'calculation',
   Cards = 'cards',
   Checkboxes = 'checkboxes',
@@ -145,6 +146,10 @@ export type TextareaProperty = BaseProperty<string, PropertyType.Textarea> & {
 };
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type BooleanEnvProperty = BaseProperty<string, PropertyType.BooleanEnv>;
+export type FormMonitorToolsProperty = BaseProperty<
+  string,
+  PropertyType.FormMonitorTools
+>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionGroup>;
   emptyOption?: string;
@@ -326,6 +331,7 @@ export type Property =
   | AttributeProperty
   | BooleanProperty
   | BooleanEnvProperty
+  | FormMonitorToolsProperty
   | CalculationProperty
   | CardsProperty
   | CheckboxesProperty

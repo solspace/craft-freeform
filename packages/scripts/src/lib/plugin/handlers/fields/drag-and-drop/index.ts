@@ -130,13 +130,13 @@ class DragAndDropFile implements FreeformHandler {
 
     for (let i = 0; i < files.length; i++) {
       if (fileCount >= parseInt(maxFiles)) {
-        showError(container, messageFiles);
+        showError(container, messageFiles, this.freeform);
         break;
       }
 
       const file = files.item(i);
       if (file.size > parseInt(maxSize)) {
-        showError(container, messageSize);
+        showError(container, messageSize, this.freeform);
         continue;
       }
 

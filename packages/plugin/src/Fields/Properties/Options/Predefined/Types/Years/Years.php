@@ -20,7 +20,7 @@ class Years implements PredefinedSourceTypeInterface
         return 'Years';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $currentYear = (int) date('Y');
         $first = $this->first ?? 0;

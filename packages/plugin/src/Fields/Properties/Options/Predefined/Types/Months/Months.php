@@ -39,7 +39,7 @@ class Months implements PredefinedSourceTypeInterface
         return 'Months';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $collection = new OptionCollection();
 

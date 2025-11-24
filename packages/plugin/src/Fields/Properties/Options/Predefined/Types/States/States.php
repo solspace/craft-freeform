@@ -36,7 +36,7 @@ class States implements PredefinedSourceTypeInterface
         return 'USA States';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         static $states;
         if (null === $states) {

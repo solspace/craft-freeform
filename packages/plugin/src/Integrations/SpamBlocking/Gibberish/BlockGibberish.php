@@ -9,6 +9,8 @@ use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArrayTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -62,17 +64,27 @@ class BlockGibberish extends SpamBlockingIntegration
         $debugReports = [];
         $gibberishHits = 0;
 
-        foreach ($form->getSubmission()->getFormFieldValues() as $field => $value) {
-            if (!empty($value)) {
-                $analysis = GibberishHelper::analyzeGibberish($value, $this->getGibberishWordMinimumLength(), $this->getCombinedAllowedTerms());
-                if ($analysis['is_gibberish']) {
-                    ++$gibberishHits;
-                }
+        foreach ($form->getLayout()->getFields() as $field) {
+            if (!$field instanceof PersistentValueInterface) {
+                continue;
+            }
 
-                // Always keep the analysis for debugging/reporting:
-                if (!empty($analysis['bad_word_count']) || !empty($analysis['short_word_junk_count']) || !empty($analysis['words'])) {
-                    $debugReports[$field] = $analysis;
-                }
+            if ($field instanceof SkipGibberishCheckInterface) {
+                continue;
+            }
+
+            if (empty($field->getValue())) {
+                continue;
+            }
+
+            $analysis = GibberishHelper::analyzeGibberish($field->getValue(), $this->getGibberishWordMinimumLength(), $this->getCombinedAllowedTerms());
+            if ($analysis['is_gibberish']) {
+                ++$gibberishHits;
+            }
+
+            // Always keep the analysis for debugging/reporting:
+            if (!empty($analysis['bad_word_count']) || !empty($analysis['short_word_junk_count']) || !empty($analysis['words'])) {
+                $debugReports[$field->getHandle()] = $analysis;
             }
         }
 

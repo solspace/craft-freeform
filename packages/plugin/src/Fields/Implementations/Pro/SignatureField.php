@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -24,7 +25,7 @@ use Twig\Markup;
     iconPath: __DIR__.'/../Icons/signature.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
-class SignatureField extends AbstractField implements ExtraFieldInterface, EncryptionInterface, NoEmailPresenceInterface
+class SignatureField extends AbstractField implements ExtraFieldInterface, EncryptionInterface, NoEmailPresenceInterface, SkipGibberishCheckInterface
 {
     use EncryptionTrait;
 

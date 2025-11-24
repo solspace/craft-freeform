@@ -36,7 +36,7 @@ class Languages implements PredefinedSourceTypeInterface
         return 'Languages';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         static $languages;
         if (null === $languages) {

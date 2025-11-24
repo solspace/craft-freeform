@@ -655,12 +655,14 @@ return [
     'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
     'Test Email Delivery' => 'Test Email Delivery',
     "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address." => "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address.",
+    "It's recommended to test email delivery first before enabling Test Email Notifications. Most email providers reject messages from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com)." => "It's recommended to test email delivery first before enabling Test Email Notifications. Most email providers reject messages from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com).",
     'Test it now' => 'Test it now',
     'Testing...' => 'Testing...',
     "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly." => "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly.",
     'Test Email History' => 'Test Email History',
     'Date & Time' => 'Date & Time',
     'No test emails sent yet.' => 'No test emails sent yet.',
+    'Warning: You are using Sendmail for email delivery. Sendmail can be unreliable, and most email providers reject messages from unknown IP addresses as a spam prevention measure. This may cause emails to not reach Form Monitor\'s inbound address (inbound@test.formmonitor.com), resulting in false positive "Email Issues Detected" alerts.' => 'Warning: You are using Sendmail for email delivery. Sendmail can be unreliable, and most email providers reject messages from unknown IP addresses as a spam prevention measure. This may cause emails to not reach Form Monitor\'s inbound address (inbound@test.formmonitor.com), resulting in false positive "Email Issues Detected" alerts.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Users',

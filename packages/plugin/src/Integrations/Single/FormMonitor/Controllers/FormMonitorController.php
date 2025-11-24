@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\Integrations\Single\FormMonitor\Controllers;
 
 use craft\db\Query;
+use craft\helpers\App;
+use craft\mail\transportadapters\Sendmail;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\ServerException;
@@ -600,6 +602,17 @@ class FormMonitorController extends BaseApiController
                 ],
             ]);
         }
+    }
+
+    public function actionMailerInfo(): Response
+    {
+        $transportType = App::mailSettings()->transportType;
+        $isSendmail = Sendmail::class === $transportType;
+
+        return $this->asJson([
+            'transportType' => $transportType,
+            'isSendmail' => $isSendmail,
+        ]);
     }
 
     /**

@@ -34,6 +34,7 @@ class NavigationBundle extends FeatureBundle
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
+        $canAccessExportNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_NOTIFICATIONS_ACCESS);
         $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         if ($canAccessForms) {
@@ -63,17 +64,30 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
-        if ($canAccessExportProfiles) {
+        if ($canAccessExportProfiles || $canAccessExportNotifications) {
             $request = \Craft::$app->getRequest();
             $path = $request->getFullPath();
 
-            $subnav = [
-                'profiles' => [
+            if ($canAccessExportProfiles) {
+                $defaultExportUrl = 'freeform/export/profiles';
+                $profiles = [
                     'id' => 'profiles',
                     'label' => Freeform::t('Profiles'),
                     'url' => 'freeform/export/profiles',
                     'sel' => str_starts_with($path, 'freeform/export/profiles'),
-                ],
+                ];
+            } else {
+                $defaultExportUrl = 'freeform/export/notifications';
+                $profiles = [
+                    'id' => 'notifications',
+                    'label' => Freeform::t('Notifications'),
+                    'url' => 'freeform/export/notifications',
+                    'sel' => str_starts_with($path, 'freeform/export/notifications'),
+                ];
+            }
+
+            $subnav = [
+                'profiles' => $profiles,
                 'files' => [
                     'id' => 'files',
                     'label' => Freeform::t('Files'),
@@ -85,7 +99,7 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem(
                 'export',
                 Freeform::t('Import / Export'),
-                'freeform/export/profiles',
+                $defaultExportUrl,
                 extraOptions: ['subnav' => $subnav],
             );
         }

@@ -117,12 +117,14 @@ class User extends ElementIntegration
         $canEdit = !$isGuest && ($isOwnAccount || $isAdmin || $canEditUsers);
 
         $user = null;
+        $isExistingUser = false;
         if ($element instanceof CraftUser && $canEdit && !$currentUser->getIsGuest()) {
             $user = $element;
+            $isExistingUser = true;
             self::$existingUserCache[$user->id] = $user;
         }
 
-        if ($this->isRegisterInactiveUsers()) {
+        if (!$user && $this->isRegisterInactiveUsers()) {
             // Find any inactive members with this email
             $isEmailMapped = $this->attributeMapping->isSourceMapped('email');
             if ($isEmailMapped) {
@@ -156,7 +158,7 @@ class User extends ElementIntegration
             $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
         }
 
-        if (!$this->isActive() && $this->isSendActivation()) {
+        if (!$isExistingUser && !$this->isActive() && $this->isSendActivation()) {
             $user->unverifiedEmail = $user->email;
         }
 

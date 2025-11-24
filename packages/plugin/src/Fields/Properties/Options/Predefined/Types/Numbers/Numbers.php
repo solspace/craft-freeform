@@ -32,7 +32,7 @@ class Numbers implements PredefinedSourceTypeInterface
         return 'Numbers';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $collection = new OptionCollection();
 

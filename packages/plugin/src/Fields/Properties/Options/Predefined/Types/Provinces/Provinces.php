@@ -46,7 +46,7 @@ class Provinces implements PredefinedSourceTypeInterface
         return 'Canadian Provinces';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         static $countries;
         if (null === $countries) {

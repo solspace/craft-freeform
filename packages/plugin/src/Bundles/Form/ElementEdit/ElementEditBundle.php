@@ -96,7 +96,7 @@ class ElementEditBundle extends FeatureBundle
 
                 $craftField = null;
                 foreach ($customFields as $field) {
-                    if ((int) $field->id === (int) $item->getSource()) {
+                    if ($field->handle === $item->getSource()) {
                         $craftField = $field;
 
                         break;
@@ -125,6 +125,8 @@ class ElementEditBundle extends FeatureBundle
 
                     if (!$field instanceof MultiValueInterface) {
                         $value = implode(', ', $values);
+                    } else {
+                        $value = $values;
                     }
                 }
 

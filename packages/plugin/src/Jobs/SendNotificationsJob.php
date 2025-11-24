@@ -13,10 +13,12 @@
 
 namespace Solspace\Freeform\Jobs;
 
+use craft\helpers\StringHelper;
 use craft\queue\BaseJob;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\ProcessPostedValuesEvent;
 use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Form\Form;
@@ -88,8 +90,14 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         // Set the application language to the site's primary language
         \Craft::$app->language = $sites->getCurrentSite()->language;
 
-        $submission = $freeform->submissions->getSubmissionById($this->submissionId);
-        if (!$submission || $submission->isSpam) {
+        if ($this->submissionId) {
+            $submission = $freeform->submissions->getSubmissionById($this->submissionId);
+        } else {
+            // fabricate one in-memory
+            $submission = $this->createTmpSubmission($form);
+        }
+
+        if ($submission && $submission->isSpam) {
             return;
         }
 
@@ -122,5 +130,24 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         $loggerProvider = \Craft::$container->get(NotificationLoggerProvider::class);
 
         return $loggerProvider->getLogger($notification, $form);
+    }
+
+    private function createTmpSubmission(Form $form): Submission
+    {
+        $submission = Submission::create($form);
+        $submission->setFormFieldValues($this->postedData);
+
+        $submission->id = 0;
+        $submission->incrementalId = 0;
+        $submission->uid = StringHelper::UUID();
+        $submission->siteId = $this->siteId;
+        $submission->ip = \Craft::$app->getRequest()->getUserIP();
+        $submission->statusId = $form->getSettings()->getGeneral()->defaultStatus;
+        $submission->dateCreated = new \DateTime();
+        $submission->title = Submission::generateTitle($submission, $form);
+
+        $form->setSubmission($submission);
+
+        return $submission;
     }
 }

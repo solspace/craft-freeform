@@ -35,7 +35,7 @@ class Days implements PredefinedSourceTypeInterface
         return 'Days';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $collection = new OptionCollection();
         foreach (range(1, 31) as $dayIndex) {

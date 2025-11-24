@@ -48,6 +48,7 @@ class SearchHelper
         $submission = $event->element;
         $attribute = CraftStringHelper::toLowerCase($event->attribute);
 
+        // if we have already indexed this attribute for this submission, skip it
         if ($submission->hasIndexedAttribute($attribute)) {
             $event->isValid = false;
 
@@ -55,5 +56,39 @@ class SearchHelper
         }
 
         $submission->addIndexedAttribute($attribute);
+
+        // always allow some core attributes (title etc)
+        $alwaysAllow = ['title'];
+        if (\in_array($attribute, $alwaysAllow, true)) {
+            return;
+        }
+
+        // only allow attributes that belong to this submission's form
+        $form = $submission->getForm();
+        if (!$form) {
+            // No form? Don't index this attribute
+            $event->isValid = false;
+
+            return;
+        }
+
+        static $allowedByForm = [];
+
+        $formId = $form->getId();
+
+        if (!isset($allowedByForm[$formId])) {
+            $handles = [];
+
+            foreach ($form->getLayout()->getFields() as $field) {
+                $handles[] = CraftStringHelper::toLowerCase(self::maybeTruncateHandle($field->getHandle()));
+            }
+
+            $allowedByForm[$formId] = array_unique($handles);
+        }
+
+        if (!\in_array($attribute, $allowedByForm[$formId], true)) {
+            // Attribute does not belong to this form so don't index
+            $event->isValid = false;
+        }
     }
 }

@@ -20,6 +20,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MaxLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
 
@@ -29,7 +30,7 @@ use Solspace\Freeform\Fields\Traits\MaxLengthTrait;
     iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
-class DatetimeField extends AbstractField implements PlaceholderInterface, DatePickerInterface, ExtraFieldInterface, EncryptionInterface, MaxLengthInterface
+class DatetimeField extends AbstractField implements PlaceholderInterface, DatePickerInterface, ExtraFieldInterface, EncryptionInterface, MaxLengthInterface, SkipGibberishCheckInterface
 {
     use EncryptionTrait;
     use MaxLengthTrait;

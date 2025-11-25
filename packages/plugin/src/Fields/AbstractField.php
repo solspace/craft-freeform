@@ -362,9 +362,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return !empty($errors);
     }
 
-    /**
-     * @return $this
-     */
     public function addErrors(?array $errors = null): self
     {
         if (empty($errors)) {
@@ -381,12 +378,19 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function addError(...$error): self
     {
         $this->addErrors($error);
+
+        return $this;
+    }
+
+    public function removeError(string $error): self
+    {
+        $this->errors = array_filter(
+            $this->errors,
+            fn ($existingError) => $existingError !== $error,
+        );
 
         return $this;
     }

@@ -7,7 +7,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Helpers\ArrayHelper;
+use Solspace\Freeform\Library\Helpers\RecursiveArrayHelper;
 use yii\base\Event;
 
 class TableValidation extends FeatureBundle
@@ -76,7 +76,7 @@ class TableValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, fn ($item) => !empty($item));
+        $isSomeFilled = RecursiveArrayHelper::some($value, fn ($item) => !empty($item));
         if (!$isSomeFilled) {
             $message = $field->getRequiredErrorMessage() ?: Freeform::t('This field is required');
 
@@ -106,7 +106,7 @@ class TableValidation extends FeatureBundle
         $message = Freeform::t($field->getRequiredErrorMessage() ?: 'This field is required');
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, fn ($item) => !empty($item));
+        $isSomeFilled = RecursiveArrayHelper::some($value, fn ($item) => !empty($item));
 
         if (!$isSomeFilled) {
             $field->addError($message);

@@ -270,6 +270,36 @@ class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializ
         return \count($this->attributes);
     }
 
+    public function diff(self $attributes): self
+    {
+        $diff = new static();
+        $reflection = new \ReflectionClass($this);
+
+        foreach ($this->attributes as $key => $value) {
+            if ($attributes->get($key) !== $value) {
+                $a = explode(' ', $value);
+                $b = explode(' ', $attributes->get($key));
+
+                $arrayDiff = array_merge(
+                    array_diff($a, $b),
+                    array_diff($b, $a),
+                );
+                $string = implode(' ', $arrayDiff);
+
+                $diff->replace($key, $string);
+            }
+        }
+
+        foreach ($reflection->getProperties() as $property) {
+            $type = $property->getType();
+            if ($type && self::class === $type->getName()) {
+                $diff->{$property->getName()} = $this->{$property->getName()}->diff($attributes->{$property->getName()});
+            }
+        }
+
+        return $diff;
+    }
+
     public function toArray(): array
     {
         $reflection = new \ReflectionClass($this);

@@ -46,6 +46,11 @@ export type FreeformActionsEvent = FreeformResponseEvent & {
   actions: Action[];
 };
 
+export type FreeformErrorsEvent = FreeformResponseEvent & {
+  errors: Record<string, string[]>;
+  formErrors: string[];
+};
+
 export type StorageResponse = {
   token: string;
 };

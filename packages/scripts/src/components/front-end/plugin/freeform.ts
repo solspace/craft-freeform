@@ -14,12 +14,13 @@ import RuleHandler from '@lib/plugin/handlers/form/rules';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { ajax } from '@lib/plugin/helpers/ajax';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
-import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { fetchCsrf } from '@lib/plugin/helpers/csrf';
-import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import type { Callback, FreeformResponseWithToken } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
+
+import { removeFieldMessages, removeMessages } from './errors/errors.remove';
+import { renderErrors, renderFieldErrors, renderSuccess } from './errors/errors.render';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
@@ -346,7 +347,7 @@ export default class Freeform {
     const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
     inputs.forEach((input) =>
       input.addEventListener('change', (event) => {
-        this._removeMessageFrom(event.target as HTMLInputElement);
+        this._removeMessageFromField(event.target as HTMLInputElement);
       })
     );
   };
@@ -440,44 +441,17 @@ export default class Freeform {
       return this.options.removeMessages();
     }
 
-    const { form, options } = this;
-    const { successClassBanner, errorClassBanner, errorClassList, errorClassField } = options;
-
-    // Remove any existing errors that are being shown
-    removeElement(form.querySelectorAll(`.${getClassArray(errorClassList).join('.')}`));
-
-    const fieldsWithErrors = form.querySelectorAll<HTMLInputElement>(`.${getClassArray(errorClassField).join('.')}`);
-    fieldsWithErrors.forEach((field) => {
-      this._removeMessageFrom(field);
-    });
-
-    // Remove success messages
-    removeElement(form.querySelectorAll(getClassQuery(successClassBanner)));
-    removeElement(document.querySelectorAll(getClassQuery(errorClassBanner)));
+    removeMessages.call(this);
   };
 
-  _removeMessageFrom = (field: HTMLInputElement): void => {
+  _removeMessageFromField = (field: HTMLInputElement): void => {
     const event = this._dispatchEvent(events.form.fieldRemoveMessages, { field });
     if (event.defaultPrevented) {
       return;
     }
 
-    const { options } = this;
-    const { errorClassList, errorClassField } = options;
-
-    let errorContainerNode = field.parentNode;
-    if (field.type) {
-      if (field.type === 'radio' || (field.type === 'checkbox' && /\[]$/.test(field.name))) {
-        errorContainerNode = field.parentNode.parentNode;
-      }
-    }
-
-    removeElement(errorContainerNode.querySelector<HTMLElement>(getClassQuery(errorClassList)));
-
-    const fields = errorContainerNode.querySelectorAll<HTMLInputElement>('input, select, textarea');
-    for (let i = 0; i < fields.length; i++) {
-      removeClass(fields[i], errorClassField);
-    }
+    const container = field.closest<HTMLElement>('[data-field-container]');
+    removeFieldMessages(container);
   };
 
   /**
@@ -497,18 +471,7 @@ export default class Freeform {
       return this.options.renderSuccess();
     }
 
-    const { form, options } = this;
-    const { successBannerMessage, successClassBanner } = options;
-
-    const successMessage = document.createElement('div');
-    addClass(successMessage, successClassBanner);
-
-    const paragraph = document.createElement('p');
-    paragraph.appendChild(document.createTextNode(successBannerMessage));
-
-    successMessage.appendChild(paragraph);
-
-    form.insertBefore(successMessage, form.childNodes[0]);
+    renderSuccess.call(this);
   };
 
   _renderFieldErrors = (errors: Record<string, string[]>) => {
@@ -522,51 +485,7 @@ export default class Freeform {
       return this.options.renderFieldErrors(errors);
     }
 
-    const { form, options } = this;
-    const { errorClassList, errorClassField } = options;
-
-    for (const key in errors) {
-      const messages = errors[key];
-      const errorsList = document.createElement('ul');
-      errorsList.setAttribute('data-field-errors', '');
-      addClass(errorsList, errorClassList);
-
-      for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
-        const message = messages[messageIndex];
-        const listItem = document.createElement('li');
-        listItem.appendChild(document.createTextNode(message));
-        errorsList.appendChild(listItem);
-      }
-
-      const container = form.querySelector<HTMLElement>(`[data-field-container="${key}"]`);
-      const errorAppendTarget = form.querySelector<HTMLElement>(`[data-error-append-target="${key}"]`);
-      const inputList = form.querySelectorAll(
-        `
-          [name="${key}"],
-          [type=file][name="${key}"],
-          [type=file][name="${key}[]"],
-          [type=checkbox][name="${key}[]"],
-          [type=radio][name="${key}"],
-          select[multiple][name="${key}[]"],
-          [data-freeform-file-upload="${key}"]
-        `
-      );
-
-      if (!container) {
-        return;
-      }
-
-      for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
-        const input = inputList[inputIndex] as HTMLInputElement;
-        addClass(input, errorClassField);
-      }
-
-      if (errorAppendTarget) {
-        errorAppendTarget.appendChild(errorsList);
-      } else {
-        container.appendChild(errorsList);
-      }
-    }
+    renderFieldErrors.call(this, errors);
   };
 
   _renderFormErrors = (errors: string[]) => {
@@ -580,30 +499,7 @@ export default class Freeform {
       return this.options.renderFormErrors(errors);
     }
 
-    const { form, options } = this;
-    const { errorClassBanner, errorBannerMessage } = options;
-
-    const errorBlock = document.createElement('div');
-    addClass(errorBlock, errorClassBanner);
-
-    const paragraph = document.createElement('p');
-    paragraph.appendChild(document.createTextNode(errorBannerMessage));
-    errorBlock.appendChild(paragraph);
-
-    if (errors.length) {
-      const errorsList = document.createElement('ul');
-      for (let messageIndex = 0; messageIndex < errors.length; messageIndex++) {
-        const message = errors[messageIndex];
-        const listItem = document.createElement('li');
-
-        listItem.appendChild(document.createTextNode(message));
-        errorsList.appendChild(listItem);
-      }
-
-      errorBlock.appendChild(errorsList);
-    }
-
-    form.insertBefore(errorBlock, form.childNodes[0]);
+    renderErrors.call(this, errors);
   };
 
   _prepareFormData = () => {

@@ -1,3 +1,4 @@
+import { getAttributeSnapshot, restoreElementAttributes } from '@components/front-end/plugin/errors/errors.attributes';
 import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 
@@ -37,6 +38,7 @@ export const registerAddButton = (instance: Freeform) => {
 
       button.addEventListener('click', () => {
         const referenceRow = table.querySelector<HTMLTableRowElement>('tbody > tr:last-child');
+        const referenceInputs = referenceRow?.querySelectorAll<HTMLInputElement>('textarea, input, select');
 
         if (referenceRow) {
           const cloneRow = referenceRow.cloneNode(true) as HTMLTableRowElement;
@@ -44,6 +46,9 @@ export const registerAddButton = (instance: Freeform) => {
           const maxIndex = getNextMaxIndex();
           for (let i = 0; i < inputs.length; i++) {
             const item = inputs[i];
+            const snapshot = getAttributeSnapshot(referenceInputs[i]);
+            restoreElementAttributes(item, snapshot);
+
             const defaultValue = item.dataset.defaultValue || '';
             item.name = item.name.replace(PATTERN, `$1[${maxIndex}]$3`);
 

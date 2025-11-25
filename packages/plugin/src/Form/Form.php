@@ -153,6 +153,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
     private ?Submission $submission = null;
 
+    private ?int $siteId = null;
+    private ?string $siteUid = null;
+    private ?string $siteName = null;
+    private ?string $siteHandle = null;
+
     public function __construct(
         array $config,
         private Settings $settings,
@@ -174,6 +179,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
         $this->attributes->merge($settings->getGeneral()->attributes);
+
+        $this->siteId = $config['siteId'] ?? null;
+        $this->siteUid = $config['siteUid'] ?? null;
+        $this->siteName = $config['siteName'] ?? null;
+        $this->siteHandle = $config['siteHandle'] ?? null;
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -931,6 +941,10 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
                 'behavior' => $settings->getBehavior(),
                 'general' => $settings->getGeneral(),
             ],
+            'siteId' => $this->getSiteId(),
+            'siteUid' => $this->getSiteUid(),
+            'siteName' => $this->getSiteName(),
+            'siteHandle' => $this->getSiteHandle(),
         ];
 
         $event = new OutputAsJsonEvent($this, $object);
@@ -1000,6 +1014,16 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
         );
     }
 
+    public function getProcessingText(): string
+    {
+        return $this->translationProvider->getTranslation(
+            $this,
+            'behavior',
+            'processingText',
+            $this->getSettings()->getBehavior()->getProcessingText(),
+        );
+    }
+
     public function valuesFromArray(array $values): void
     {
         foreach ($this->getLayout()->getFields() as $field) {
@@ -1037,6 +1061,26 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
 
             $field->setValue($event->getValue());
         }
+    }
+
+    public function getSiteId(): ?int
+    {
+        return $this->siteId;
+    }
+
+    public function getSiteUid(): ?string
+    {
+        return $this->siteUid;
+    }
+
+    public function getSiteName(): ?string
+    {
+        return $this->siteName;
+    }
+
+    public function getSiteHandle(): ?string
+    {
+        return $this->siteHandle;
     }
 
     private function createSubmission(): void

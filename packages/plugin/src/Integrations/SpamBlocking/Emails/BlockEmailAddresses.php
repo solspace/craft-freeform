@@ -143,6 +143,18 @@ class BlockEmailAddresses extends SpamBlockingIntegration
             return false;
         }
 
-        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+        $previousTimeout = ini_set('default_socket_timeout', '2');
+
+        try {
+            $result
+                = @checkdnsrr($domain, 'MX')
+                || @checkdnsrr($domain, 'A');
+        } finally {
+            if (false !== $previousTimeout) {
+                ini_set('default_socket_timeout', $previousTimeout);
+            }
+        }
+
+        return $result;
     }
 }

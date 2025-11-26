@@ -1,18 +1,33 @@
+import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { addDnDClass } from '@lib/plugin/helpers/classes';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
 const DEFAULT_TTL = 4000;
 const ANIMATION_DELAY = 300;
 
-export const showError = (container: HTMLElement, message: string, ttl: number = DEFAULT_TTL): void => {
+type RenderShowGlobalMessageEvent = Event & {
+  name: string;
+  messageItem: HTMLLIElement;
+  container: HTMLElement;
+};
+
+export const showError = (
+  container: HTMLElement,
+  message: string,
+  freeform: Freeform,
+  ttl: number = DEFAULT_TTL
+): void => {
   const messageItem = document.createElement('li');
   messageItem.setAttribute('data-error', '');
   messageItem.innerText = message;
   addDnDClass(messageItem, 'messages', 'message');
   addDnDClass(messageItem, 'messages', 'message', 'error');
 
-  const event = dispatchCustomEvent(events.dragAndDrop.showGlobalMessage, { messageItem }, container);
+  const event = freeform._dispatchEvent(
+    events.dragAndDrop.showGlobalMessage,
+    { messageItem },
+    container
+  ) as RenderShowGlobalMessageEvent;
   appendToErrorList(container, event.messageItem, ttl);
 };
 

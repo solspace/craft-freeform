@@ -63,6 +63,23 @@ class FormMonitorProvider
         return $this->integrationsProvider->getFirstForForm($form, FormMonitor::class);
     }
 
+    /**
+     * Check if headers indicate this is a Form Monitor request.
+     * Useful when checking job headers that were set during job preparation.
+     */
+    public function isFormMonitorRequestFromHeaders(array $headers): bool
+    {
+        if (!isset($headers['X-Form-Monitor']) || 'true' !== (string) $headers['X-Form-Monitor']) {
+            return false;
+        }
+
+        if (!isset($headers['X-Form-Monitor-Request-Id']) || empty($headers['X-Form-Monitor-Request-Id'])) {
+            return false;
+        }
+
+        return true;
+    }
+
     private function handleRequest(Form $form): bool
     {
         $request = $this->getRequest();

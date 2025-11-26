@@ -188,8 +188,11 @@ class FormsService extends BaseService implements FormHandlerInterface
             $query->andWhere(['sites.handle' => $siteHandles]);
         }
 
-        if (!empty($arguments)) {
-            $query->andWhere($arguments);
+        foreach ($arguments as $key => $value) {
+            if (!str_contains($key, '.')) {
+                $key = "forms.{$key}";
+            }
+            $query->andWhere([$key => $value]);
         }
 
         if (!str_contains($orderBy, '.')) {

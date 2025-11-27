@@ -45,20 +45,24 @@ class TranslationsService extends BaseService
 
     public function getTranslationTable(Form $form, string $type, string $namespace): TranslationTable
     {
-        if (!isset($this->translationTableCache[$form->getId()][$type][$namespace])) {
-            if (!$this->isTranslationsEnabled($form)) {
-                $this->translationTableCache[$form->getId()][$type][$namespace] = new TranslationTable();
-            } else {
-                $siteId = $this->getCurrentSiteId();
+        /**
+         * Make sure each site gets its own TranslationTable and we're not reusing site 1's translations for sites 2, 3 or N.
+         * Prefer the form's siteId and fall back to current site as a safety net.
+         */
+        $siteId = $form->getSiteId() ?? $this->getCurrentSiteId();
 
-                $translationTable = $this->getFormTranslations($form);
+        if (!isset($this->translationTableCache[$form->getId()][$siteId][$type][$namespace])) {
+            if (!$this->isTranslationsEnabled($form)) {
+                $this->translationTableCache[$form->getId()][$siteId][$type][$namespace] = new TranslationTable();
+            } else {
+                $translationTable = $this->getFormTranslations($form); // stdClass keyed by siteId
                 $translations = $translationTable->{$siteId}->{$type}->{$namespace} ?? null;
 
-                $this->translationTableCache[$form->getId()][$type][$namespace] = new TranslationTable($translations);
+                $this->translationTableCache[$form->getId()][$siteId][$type][$namespace] = new TranslationTable($translations);
             }
         }
 
-        return $this->translationTableCache[$form->getId()][$type][$namespace];
+        return $this->translationTableCache[$form->getId()][$siteId][$type][$namespace];
     }
 
     public function getFormTranslations(Form $form): ?\stdClass

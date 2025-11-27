@@ -58,9 +58,6 @@ class FormInterface extends AbstractInterface
                 'name' => 'name',
                 'type' => Type::string(),
                 'description' => "The form's name",
-                'resolve' => function ($source) {
-                    return $source->getSettings()->name;
-                },
             ],
             'handle' => [
                 'name' => 'handle',
@@ -90,9 +87,6 @@ class FormInterface extends AbstractInterface
                 'name' => 'description',
                 'type' => Type::string(),
                 'description' => "The form's handle",
-                'resolve' => function ($source) {
-                    return $source->getSettings()->description;
-                },
             ],
             'successBehavior' => [
                 'name' => 'successBehavior',
@@ -202,15 +196,12 @@ class FormInterface extends AbstractInterface
                 'name' => 'processingText',
                 'type' => Type::string(),
                 'description' => 'The submit button processing label text',
-                'resolve' => function ($source) {
-                    return $source->getSettings()->processingText;
-                },
             ],
             'pages' => [
                 'name' => 'pages',
                 'type' => Type::listOf(PageInterface::getType()),
                 'resolve' => PageResolver::class.'::resolve',
-                'description' => 'The form’s pages.',
+                'description' => "The form's pages.",
             ],
             'fields' => [
                 'name' => 'fields',
@@ -222,23 +213,17 @@ class FormInterface extends AbstractInterface
             'successMessage' => [
                 'name' => 'successMessage',
                 'type' => Type::string(),
-                'description' => 'The form’s success message',
-                'resolve' => function ($source) {
-                    return $source->getSettings()->successMessage;
-                },
+                'description' => "The form's success message",
             ],
             'errorMessage' => [
                 'name' => 'errorMessage',
                 'type' => Type::string(),
-                'description' => 'The form’s error message',
-                'resolve' => function ($source) {
-                    return $source->getSettings()->errorMessage;
-                },
+                'description' => "The form's error message",
             ],
             'duplicateCheck' => [
                 'name' => 'duplicateCheck',
                 'type' => Type::string(),
-                'description' => 'The form’s duplicate check rule',
+                'description' => "The form's duplicate check rule",
                 'resolve' => function ($source) {
                     return $source->getSettings()->duplicateCheck;
                 },
@@ -246,7 +231,7 @@ class FormInterface extends AbstractInterface
             'stopSubmissionsAfter' => [
                 'name' => 'stopSubmissionsAfter',
                 'type' => Type::string(),
-                'description' => 'The form’s stop submissions after date',
+                'description' => "The form's stop submissions after date",
                 'resolve' => function ($source) {
                     return $source->getSettings()->stopSubmissionsAfter;
                 },
@@ -254,7 +239,7 @@ class FormInterface extends AbstractInterface
             'disableSubmit' => [
                 'name' => 'disableSubmit',
                 'type' => Type::boolean(),
-                'description' => 'Should the form’s submit button be disabled when the form is submitted',
+                'description' => "Should the form's submit button be disabled when the form is submitted",
                 'resolve' => function () {
                     return Freeform::getInstance()->forms->isFormSubmitDisable();
                 },
@@ -262,7 +247,7 @@ class FormInterface extends AbstractInterface
             'disableReset' => [
                 'name' => 'disableReset',
                 'type' => Type::boolean(),
-                'description' => 'Should the form’s submit button be disabled state be reset',
+                'description' => "Should the form's submit button be disabled state be reset",
                 'resolve' => function ($source) {
                     return $source->isAjaxResetDisabled();
                 },
@@ -270,7 +255,7 @@ class FormInterface extends AbstractInterface
             'enctype' => [
                 'name' => 'enctype',
                 'type' => Type::string(),
-                'description' => 'The form’s enctype',
+                'description' => "The form's enctype",
                 'resolve' => function ($source) {
                     $isMultipart = $source->getLayout()->hasFields(FileUploadInterface::class);
 
@@ -329,6 +314,26 @@ class FormInterface extends AbstractInterface
                 'type' => JavascriptTestInterface::getType(),
                 'resolve' => JavascriptTestResolver::class.'::resolve',
                 'description' => 'The Javascript Test for this form',
+            ],
+            'siteId' => [
+                'name' => 'siteId',
+                'type' => Type::int(),
+                'description' => 'The site ID for this form',
+            ],
+            'siteUid' => [
+                'name' => 'siteUid',
+                'type' => Type::string(),
+                'description' => 'The site UID for this form',
+            ],
+            'siteName' => [
+                'name' => 'siteName',
+                'type' => Type::string(),
+                'description' => 'The site name for this form',
+            ],
+            'siteHandle' => [
+                'name' => 'siteHandle',
+                'type' => Type::string(),
+                'description' => 'The site handle for this form',
             ],
         ];
 

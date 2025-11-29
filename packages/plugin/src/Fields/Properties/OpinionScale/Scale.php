@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\OpinionScale;
 
-class Scale
+class Scale implements \Stringable
 {
     public function __construct(
         private string $value,

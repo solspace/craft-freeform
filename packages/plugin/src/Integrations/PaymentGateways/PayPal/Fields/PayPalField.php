@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Interfaces\TextInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\Currency\CurrencyOptionsGenerator;
 use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
@@ -26,7 +27,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     iconPath: __DIR__.'/../icon.svg',
     previewTemplatePath: __DIR__.'/../Templates/paypal-field-preview.ejs',
 )]
-class PayPalField extends AbstractField implements PaymentFieldInterface
+class PayPalField extends AbstractField implements PaymentFieldInterface, SkipGibberishCheckInterface
 {
     public const AMOUNT_TYPE_FIXED = 'fixed';
     public const AMOUNT_TYPE_DYNAMIC = 'dynamic';

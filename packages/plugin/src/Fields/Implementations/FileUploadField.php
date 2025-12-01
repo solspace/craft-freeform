@@ -30,6 +30,7 @@ use Solspace\Freeform\Fields\Interfaces\EncryptionInterface;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\NoEmailPresenceInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Fields\Traits\EncryptionTrait;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 
@@ -39,7 +40,7 @@ use Solspace\Freeform\Fields\Traits\FileUploadTrait;
     iconPath: __DIR__.'/Icons/file-upload.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/file-upload.ejs',
 )]
-class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface, EncryptionInterface, NoEmailPresenceInterface
+class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface, EncryptionInterface, NoEmailPresenceInterface, SkipGibberishCheckInterface
 {
     use EncryptionTrait;
     use FileUploadTrait;

@@ -64,30 +64,7 @@ class NavigationBundle extends FeatureBundle
         }
 
         if ($canAccessExportProfiles) {
-            $request = \Craft::$app->getRequest();
-            $path = $request->getFullPath();
-
-            $subnav = [
-                'profiles' => [
-                    'id' => 'profiles',
-                    'label' => Freeform::t('Profiles'),
-                    'url' => 'freeform/export/profiles',
-                    'sel' => str_starts_with($path, 'freeform/export/profiles'),
-                ],
-                'files' => [
-                    'id' => 'files',
-                    'label' => Freeform::t('Files'),
-                    'url' => 'freeform/export/files',
-                    'sel' => str_starts_with($path, 'freeform/export/files'),
-                ],
-            ];
-
-            $event->addSubnavItem(
-                'export',
-                Freeform::t('Import / Export'),
-                'freeform/export/profiles',
-                extraOptions: ['subnav' => $subnav],
-            );
+            $event->addSubnavItem('export', Freeform::t('Import / Export'), 'freeform/export/profiles');
         }
 
         if ($canAccessSettings) {

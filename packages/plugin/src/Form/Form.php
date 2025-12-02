@@ -68,7 +68,7 @@ use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
 
-abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNormalizerInterface, \JsonSerializable
+abstract class Form implements \Stringable, FormTypeInterface, \IteratorAggregate, CustomNormalizerInterface, \JsonSerializable
 {
     public const HASH_KEY = 'hash';
     public const ACTION_KEY = 'freeform-action';

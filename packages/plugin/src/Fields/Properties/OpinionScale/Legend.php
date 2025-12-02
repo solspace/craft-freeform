@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\OpinionScale;
 
-class Legend
+class Legend implements \Stringable
 {
     public function __construct(private string $label) {}
 

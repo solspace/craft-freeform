@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 use Symfony\Component\Serializer\Attribute\Groups;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
-class Type
+class Type implements \Stringable
 {
     public const TYPE_CAPTCHAS = 'captchas';
     public const TYPE_CRM = 'crm';

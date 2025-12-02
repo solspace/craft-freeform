@@ -9,13 +9,18 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
 
 abstract class BaseOptionProvider implements OptionTypeProviderInterface
 {
-    public function generateOptions(?TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $collection = new OptionCollection();
 
         foreach ($this->getElements($translationTable) as $element) {
-            $value = $translationTable->get('optionConfiguration.properties.value', $this->getValue());
-            $label = $translationTable->get('optionConfiguration.properties.label', $this->getLabel());
+            if ($translationTable) {
+                $value = $translationTable->get('optionConfiguration.properties.value', $this->getValue());
+                $label = $translationTable->get('optionConfiguration.properties.label', $this->getLabel());
+            } else {
+                $value = $this->getValue();
+                $label = $this->getLabel();
+            }
 
             $value = ElementHelper::extractFieldValue($element, $value);
             $label = ElementHelper::extractFieldValue($element, $label);

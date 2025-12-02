@@ -172,4 +172,9 @@ class BehaviorSettings extends SettingsNamespace
     {
         return $this->errorMessage ?: self::DEFAULT_ERROR_MESSAGE;
     }
+
+    public function getProcessingText(): string
+    {
+        return $this->processingText;
+    }
 }

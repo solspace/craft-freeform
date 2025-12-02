@@ -4,10 +4,11 @@ namespace Solspace\Freeform\Events\Integrations\ElementIntegrations;
 
 use craft\base\ElementInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 
-class ValidateEvent extends CancelableArrayableEvent
+class ValidateEvent extends CancelableArrayableEvent implements FormEventInterface
 {
     public function __construct(
         private Form $form,

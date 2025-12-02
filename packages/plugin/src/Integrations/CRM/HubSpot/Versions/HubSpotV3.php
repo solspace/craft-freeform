@@ -121,6 +121,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private ?int $companyId = null;
     private ?int $contactId = null;
     private ?int $dealId = null;
+    private ?bool $supportsHighlySensitive = null;
 
     public function checkConnection(Client $client): bool
     {
@@ -135,24 +136,35 @@ class HubSpotV3 extends BaseHubSpotIntegration
     {
         $record = $this->getRecord($category);
 
-        $response = $client->get($this->getEndpoint('/properties/'.$record));
-        $json = json_decode((string) $response->getBody());
-        if (empty($json)) {
+        // Collect all field definitions keyed by property name
+        $fieldsList = [];
+
+        // Default properties
+        $this->appendPropertiesForSensitivity($client, $record, null, $fieldsList);
+
+        // Sensitive properties
+        $this->appendPropertiesForSensitivity($client, $record, 'sensitive', $fieldsList);
+
+        // Highly sensitive properties
+        $this->appendPropertiesForSensitivity($client, $record, 'highly_sensitive', $fieldsList);
+
+        if (empty($fieldsList)) {
             throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $fieldList = [];
-        foreach ($json->results as $field) {
-            $isReadOnly = $field->modificationMetadata->readOnlyValue;
-            $isHidden = $field->hidden;
-            $isCalculated = $field->calculated;
+        foreach ($fieldsList as $field) {
+            $isReadOnly = $field->modificationMetadata->readOnlyValue ?? false;
+            $isHidden = $field->hidden ?? false;
+            $isCalculated = $field->calculated ?? false;
 
             if ($isReadOnly || $isHidden || $isCalculated) {
                 continue;
             }
 
             $options = null;
-            if (\count($field->options)) {
+            if (!empty($field->options) && \is_array($field->options)) {
+                $options = [];
                 foreach ($field->options as $option) {
                     $options[] = [
                         'key' => $option->value,
@@ -609,6 +621,57 @@ class HubSpotV3 extends BaseHubSpotIntegration
             }
 
             throw $e;
+        }
+    }
+
+    /**
+     * Append properties for a given dataSensitivity to the fieldsList array.
+     * If $sensitivity is null, no dataSensitivity is sent.
+     */
+    private function appendPropertiesForSensitivity(Client $client, string $record, ?string $sensitivity, array &$fieldsList): void
+    {
+        // highly_sensitive is not supported, skip.
+        if ('highly_sensitive' === $sensitivity && false === $this->supportsHighlySensitive) {
+            return;
+        }
+
+        $options = [];
+
+        if (null !== $sensitivity) {
+            $options['query'] = ['dataSensitivity' => $sensitivity];
+        }
+
+        try {
+            $response = $client->get($this->getEndpoint('/properties/'.$record), $options);
+        } catch (ClientException $exception) {
+            $status = $exception->getResponse() ? $exception->getResponse()->getStatusCode() : 0;
+
+            // Incorrect scopes / permissions for highly_sensitive data
+            if (403 === $status && 'highly_sensitive' === $sensitivity) {
+                $this->supportsHighlySensitive = false;
+
+                $this->logger->warning('HubSpot API forbids access to highly_sensitive properties. Check that the app has the correct scopes and the user is a super admin.');
+
+                return;
+            }
+
+            throw $exception;
+        }
+
+        // Successful response for highly_sensitive data, mark as supported.
+        if ('highly_sensitive' === $sensitivity) {
+            $this->supportsHighlySensitive = true;
+        }
+
+        $json = json_decode((string) $response->getBody());
+        if (empty($json) || empty($json->results)) {
+            return;
+        }
+
+        foreach ($json->results as $field) {
+            if (!empty($field->name)) {
+                $fieldsList[$field->name] = $field;
+            }
         }
     }
 }

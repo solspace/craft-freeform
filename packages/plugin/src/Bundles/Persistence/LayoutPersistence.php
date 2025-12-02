@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\ActiveRecord;
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Fields\RemoveFieldRecordEvent;
@@ -193,7 +194,13 @@ class LayoutPersistence extends FeatureBundle
 
     private function getStarterPack(Form $form, array $data, string $recordType): array
     {
-        $usedUids = array_map(fn ($item) => $item->uid, $data);
+        $usedUids = array_map(function ($item) {
+            if (!isset($item->uid)) {
+                $item->uid = StringHelper::UUID();
+            }
+
+            return $item->uid;
+        }, $data);
         $existingRecords = $this->getRecords($recordType, $form);
         $existingUids = array_keys($existingRecords);
 

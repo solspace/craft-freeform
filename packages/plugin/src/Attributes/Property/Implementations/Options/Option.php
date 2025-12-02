@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Attributes\Property\Implementations\Options;
 
-class Option
+class Option implements \Stringable
 {
     public function __construct(
         private string $value,

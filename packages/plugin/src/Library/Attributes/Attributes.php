@@ -8,7 +8,7 @@ use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-class Attributes implements CustomNormalizerInterface, \Countable, \JsonSerializable, \IteratorAggregate
+class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, \JsonSerializable, \IteratorAggregate
 {
     public const STRATEGY_APPEND = 'append';
     public const STRATEGY_REMOVE = 'remove';

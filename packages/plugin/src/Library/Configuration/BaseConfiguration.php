@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Configuration;
 
 use Solspace\Freeform\Library\Exceptions\Configurations\ConfigurationException;
 
-abstract class BaseConfiguration
+abstract class BaseConfiguration implements \Stringable
 {
     /**
      * BaseConfiguration constructor.

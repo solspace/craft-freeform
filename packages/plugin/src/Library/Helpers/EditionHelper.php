@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Helpers;
 
-class EditionHelper
+class EditionHelper implements \Stringable
 {
     private ?int $editionIndex = null;
 

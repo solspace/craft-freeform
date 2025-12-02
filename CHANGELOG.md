@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 5.13.7 - 2025-12-02
+
+### Fixed
+- Fixed a PostgreSQL migration error when dropping the wrapper index, ensuring the migration runs correctly across all supported databases.
+- Fixed an issue where the notification log migration could fail if the `freeform_notification_log` table was missing, and corrected digestDate handling for full cross-database compatibility.
+- Fixed a bug where the **File Upload Drag & Drop** field type's image thumbnail appearance was not correctly scaled.
+- Fixed a bug where some outdated additional CP sidebar subnav code could potentially cause some issues.
+
 ## 5.13.6 - 2025-11-27
 
 ### Added

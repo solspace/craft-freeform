@@ -1,5 +1,35 @@
 # Solspace Freeform Changelog
 
+## 5.13.7 - 2025-12-02
+
+### Fixed
+- Fixed a PostgreSQL migration error when dropping the wrapper index, ensuring the migration runs correctly across all supported databases.
+- Fixed an issue where the notification log migration could fail if the `freeform_notification_log` table was missing, and corrected digestDate handling for full cross-database compatibility.
+- Fixed a bug where the **File Upload Drag & Drop** field type's image thumbnail appearance was not correctly scaled.
+- Fixed a bug where some outdated additional CP sidebar subnav code could potentially cause some issues.
+
+## 5.13.6 - 2025-11-27
+
+### Added
+- **GraphQL**: Narrow form queries by one or more `siteIds` or `siteHandles`.
+- **GraphQL**: Expose each form's `siteName`, `siteHandle`, `siteId`, and `siteUid`.
+
+### Changed
+- **Gibberish Spam Blocking** now skips checks for irrelevant field types (e.g., Payments, File Uploads, Signature) to reduce false positives.
+- **Email Blocking (MX check)**: Added a DNS lookup timeout to improve performance and prevent PHP timeouts during submissions.
+- **HubSpot**: Can now fetch **Sensitive** and **Highly Sensitive** fields.
+- Made the translation table parameter to `generateOptions()` optional.
+
+### Fixed
+- Fixed an issue where Craft search indexing of submissions included every field for every form, bloating the `searchindex` table. Recommend reindexing all submissions with `php craft freeform/submissions/reindex`.
+- Fixed **File Upload Drag & Drop** fields not firing all expected JavaScript events, which affected previews, errors, and other UI behaviors.
+- Fixed an `Undefined property: stdClass::$uid` error when saving a form layout if one or more field objects in the builder payload were missing UIDs.
+- Fixed a bug where the **Stripe Payment Element** container could be initialized multiple times in some scenarios.
+- Fixed editing of existing **User** elements via the User element integration.
+- Fixed email notifications not sending when **Store Submitted Data for this Form** was disabled.
+- Fixed the Freeform navigation badge so it reflects the combined error count across the Error, Email, and Integration logs.
+- Fixed a PHP error where `tmpfile()` resolved in the Freeform namespace, causing export failures on some environments.
+
 ## 5.13.5 - 2025-11-17
 
 ### Fixed

@@ -51,7 +51,7 @@ use yii\base\Event;
 /**
  * @template T
  */
-abstract class AbstractField implements FieldInterface, IdentificatorInterface
+abstract class AbstractField implements \Stringable, FieldInterface, IdentificatorInterface
 {
     #[Translatable]
     #[Validators\Required]

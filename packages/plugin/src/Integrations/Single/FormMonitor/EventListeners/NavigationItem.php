@@ -60,5 +60,6 @@ class NavigationItem extends FeatureBundle
         $event->rules['freeform/api/form-monitor/test-email'] = 'freeform/form-monitor/send-test-email';
         $event->rules['freeform/api/form-monitor/test-email/history'] = 'freeform/form-monitor/test-email-history';
         $event->rules['freeform/api/form-monitor/test-email/status'] = 'freeform/form-monitor/test-email-status';
+        $event->rules['freeform/api/form-monitor/mailer-info'] = 'freeform/form-monitor/mailer-info';
     }
 }

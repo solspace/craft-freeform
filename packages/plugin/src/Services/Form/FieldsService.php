@@ -124,12 +124,17 @@ class FieldsService extends BaseService
 
     public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
-        $fieldCacheKey = $record->id.$form->getUniqueId();
+        /**
+         * Make cache key unique per *Form instance* so fields are not shared across base *Form instance*.
+         * Now every *Form instance* gets its own set of Field objects, each with the correct $this->form and correct siteId.
+         */
+        $fieldCacheKey = $record->id.':'.spl_object_id($form);
         if (isset($this->fieldCache[$fieldCacheKey])) {
             return $this->fieldCache[$fieldCacheKey];
         }
 
-        $rowCacheKey = $record->rowId.$form->getUniqueId();
+        // Row UID cache can stay global per row id (it doesn't contain the form)
+        $rowCacheKey = $record->rowId;
         if (empty($this->fieldRowUidCache[$rowCacheKey])) { // Don't cache null values
             $this->fieldRowUidCache[$rowCacheKey] = $record->getRow()->one()?->uid;
         }

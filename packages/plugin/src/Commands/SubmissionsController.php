@@ -102,6 +102,11 @@ class SubmissionsController extends Controller
                 'limit',
                 'siteId',
             ],
+            'reindex' => [
+                'limit',
+                'siteId',
+                'dryRun',
+            ],
         };
     }
 
@@ -294,6 +299,51 @@ class SubmissionsController extends Controller
 
         $label = 'resaving';
         $this->stdout("Done {$label} {$elementsText}.".\PHP_EOL.\PHP_EOL, Console::FG_YELLOW);
+
+        return ExitCode::OK;
+    }
+
+    /**
+     * Re-indexes submissions.
+     */
+    public function actionReindex(): int
+    {
+        if ($this->limit) {
+            $limit = $this->limit;
+        } else {
+            $limit = 200;
+        }
+
+        if ($this->siteId) {
+            if (\is_array($this->siteId)) {
+                $siteIds = array_map('intval', $this->siteId);
+            } else {
+                $siteIds = (int) $this->siteId;
+            }
+        } else {
+            $siteIds = \Craft::$app->sites->getAllSiteIds();
+        }
+
+        $query = Submission::find()
+            ->trashed(null)
+            ->siteId($siteIds)
+        ;
+
+        $total = $query->count();
+
+        $this->stdout("Reindexing {$total} Freeform submissions...\n");
+
+        if ($this->dryRun) {
+            $this->stdout("Dry run enabled. No submissions will be saved.\n\n", Console::FG_YELLOW);
+        } else {
+            foreach ($query->batch($limit) as $submissions) {
+                foreach ($submissions as $submission) {
+                    \Craft::$app->elements->saveElement($submission, false, false, true);
+                }
+            }
+        }
+
+        $this->stdout("Done.\n");
 
         return ExitCode::OK;
     }

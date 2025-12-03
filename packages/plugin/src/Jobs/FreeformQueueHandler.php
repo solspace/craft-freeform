@@ -17,10 +17,14 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\helpers\Queue;
 use craft\queue\JobInterface;
+use Solspace\Freeform\Events\Jobs\QueueJobEvent;
 use Solspace\Freeform\Services\SettingsService;
+use yii\base\Event;
 
 class FreeformQueueHandler
 {
+    public const EVENT_BEFORE_QUEUE_JOB = 'before-queue-job';
+
     private ?int $queuePriority;
 
     public function __construct(
@@ -40,10 +44,13 @@ class FreeformQueueHandler
 
     public function queueJob(JobInterface $job, ?int $priority = null, bool $queuedExecution = true): void
     {
+        $event = new QueueJobEvent($job, $priority, $queuedExecution);
+        Event::trigger($this, self::EVENT_BEFORE_QUEUE_JOB, $event);
+
         $queue = \Craft::$app->getQueue();
 
-        if ($queuedExecution) {
-            Queue::push($job, $priority ?? $this->queuePriority);
+        if ($event->shouldQueue()) {
+            Queue::push($job, $event->getPriority() ?? $this->queuePriority);
         } else {
             $job->execute($queue);
         }

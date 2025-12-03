@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Migrations;
 
 use yii\db\ColumnSchemaBuilder;
 
-class Field
+class Field implements \Stringable
 {
     private string $name;
 

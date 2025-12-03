@@ -62,7 +62,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         if (!isset(self::$submissionCache[$id])) {
-            self::$submissionCache[$id] = Submission::find()->id($id)->one();
+            self::$submissionCache[$id] = Submission::find()
+                ->id($id)
+                ->isHidden(null)
+                ->one()
+            ;
         }
 
         return self::$submissionCache[$id];

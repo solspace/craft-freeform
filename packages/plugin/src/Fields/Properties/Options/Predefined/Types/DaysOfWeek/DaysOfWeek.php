@@ -37,7 +37,7 @@ class DaysOfWeek implements PredefinedSourceTypeInterface
         return 'Days of Week';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         $collection = new OptionCollection();
 

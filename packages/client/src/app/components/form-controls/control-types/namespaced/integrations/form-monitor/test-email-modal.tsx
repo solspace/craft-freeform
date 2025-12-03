@@ -9,6 +9,7 @@ import {
 import { Modal } from '@ff-client/app/components/modals/modal';
 import {
   type TestEmailHistoryItem,
+  useMailerInfoQuery,
   useSendTestEmailMutation,
   useTestEmailHistoryQuery,
   useTestEmailStatusQuery,
@@ -48,6 +49,8 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
     isFetching: isLoadingHistory,
     refetch: refetchHistory,
   } = useTestEmailHistoryQuery(formId);
+
+  const { data: mailerInfo } = useMailerInfoQuery();
 
   const [shouldPoll, setShouldPoll] = useState(false);
 
@@ -146,6 +149,14 @@ export const TestEmailModal: React.FC<Props> = ({ formId, onClose }) => {
                 "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly."
               )}
             </DescriptionText>
+
+            {mailerInfo?.isSendmail && (
+              <WarningMessage>
+                {translate(
+                  'Warning: You are currently using Sendmail for email delivery. Sendmail is often unreliable, and many email providers block messages sent from unknown servers as a spam-prevention measure. This may prevent messages from reaching Form Monitor\'s inbound address (inbound@test.formmonitor.com), which can trigger false "Email Issues Detected" alerts.'
+                )}
+              </WarningMessage>
+            )}
 
             {testResultStatus !== 'success' && (
               <TestButton

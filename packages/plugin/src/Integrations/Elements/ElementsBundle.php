@@ -7,12 +7,12 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Rules\Types\IntegrationRuleValidator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ConnectEvent;
 use Solspace\Freeform\Events\Integrations\ElementIntegrations\ValidateEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
-use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -103,7 +103,7 @@ class ElementsBundle extends FeatureBundle
         }
     }
 
-    public function connect(ProcessSubmissionEvent $event): void
+    public function connect(FormEventInterface $event): void
     {
         $edition = Freeform::getInstance()->edition();
         $form = $event->getForm();

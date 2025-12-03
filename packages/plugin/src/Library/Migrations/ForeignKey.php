@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Migrations;
 
 use Solspace\Freeform\Library\Exceptions\Database\DatabaseException;
 
-class ForeignKey
+class ForeignKey implements \Stringable
 {
     public const CASCADE = 'CASCADE';
     public const UPDATE = 'UPDATE';

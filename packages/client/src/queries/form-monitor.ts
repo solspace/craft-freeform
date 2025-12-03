@@ -16,6 +16,7 @@ export const QKFormMonitor = {
     [...QKFormMonitor.base, 'test-email-history', params] as const,
   testEmailStatus: (token: string) =>
     [...QKFormMonitor.base, 'test-email-status', token] as const,
+  mailerInfo: () => [...QKFormMonitor.base, 'mailer-info'] as const,
 };
 
 export const useFMFormTestsQuery = (
@@ -137,5 +138,24 @@ export const useSendTestEmailMutation = (
       options?.onSuccess?.(data);
     },
     onError: options?.onError,
+  });
+};
+
+export type MailerInfoResponse = {
+  transportType: string;
+  isSendmail: boolean;
+};
+
+export const useMailerInfoQuery = (): UseQueryResult<
+  MailerInfoResponse,
+  AxiosError
+> => {
+  return useQuery({
+    queryKey: QKFormMonitor.mailerInfo(),
+    queryFn: () =>
+      axios
+        .get<MailerInfoResponse>(`/api/form-monitor/mailer-info`)
+        .then((res) => res.data),
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
   });
 };

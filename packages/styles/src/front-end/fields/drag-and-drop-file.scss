@@ -131,7 +131,8 @@ $color-fill: #077bff;
         padding-bottom: 100%;
 
         background-size: cover;
-        background: #969797 center center;
+        background-color: #969797;
+        background-position: center center;
 
         [data-extension-label] {
           position: absolute;

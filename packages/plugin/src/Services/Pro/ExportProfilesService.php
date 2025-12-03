@@ -259,7 +259,7 @@ class ExportProfilesService extends Component
             $exporter->getFileExtension()
         );
 
-        $resource = tmpfile();
+        $resource = \tmpfile();
         $exporter->export($resource);
 
         $this->outputFile($resource, $fileName, $exporter->getMimeType());

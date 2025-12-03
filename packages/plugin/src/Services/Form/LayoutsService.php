@@ -38,7 +38,9 @@ class LayoutsService extends BaseService
 
     public function getLayout(Form $form): FormLayout
     {
-        $key = $form->getId().$form->getUniqueId();
+        // Make layout cache key instance-aware so cache per *Form instance*, not per id/site/uniqueId
+        $key = spl_object_id($form);
+
         if (!isset($this->formLayouts[$key])) {
             $formLayout = new FormLayout();
 

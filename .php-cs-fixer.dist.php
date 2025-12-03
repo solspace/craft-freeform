@@ -18,6 +18,7 @@ return (new PhpCsFixer\Config())
         '@PHP80Migration' => true,
         '@PHPUnit75Migration:risky' => true,
         '@PhpCsFixer' => true,
+        'native_function_invocation' => [ 'strict' => false ],
         'array_indentation' => true,
         'array_syntax' => ['syntax' => 'short'],
         'combine_nested_dirname' => true,

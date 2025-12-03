@@ -3,9 +3,11 @@
 namespace Solspace\Freeform\Integrations\Single\FormMonitor\EventListeners;
 
 use craft\mail\Message;
+use Solspace\Freeform\Events\Jobs\QueueJobEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
 use Solspace\Freeform\Events\Notifications\PrepareSendNotificationEvent;
 use Solspace\Freeform\Integrations\Single\FormMonitor\Providers\FormMonitorProvider;
+use Solspace\Freeform\Jobs\FreeformQueueHandler;
 use Solspace\Freeform\Jobs\SendNotificationsJob;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
@@ -23,6 +25,12 @@ class EmailOverrides extends FeatureBundle
             SendNotificationsJob::class,
             SendNotificationsJob::EVENT_PREPARE_NOTIFICATION_JOB,
             [$this, 'handleJobPreparation'],
+        );
+
+        Event::on(
+            FreeformQueueHandler::class,
+            FreeformQueueHandler::EVENT_BEFORE_QUEUE_JOB,
+            [$this, 'handleQueueJob'],
         );
 
         Event::on(
@@ -75,27 +83,40 @@ class EmailOverrides extends FeatureBundle
         ];
     }
 
+    public function handleQueueJob(QueueJobEvent $event): void
+    {
+        $job = $event->getJob();
+
+        if (!$job instanceof SendNotificationsJob) {
+            return;
+        }
+
+        $headers = $job->headers ?? [];
+
+        if (!$this->formMonitorProvider->isFormMonitorRequestFromHeaders($headers)) {
+            return;
+        }
+
+        $event->bypassQueue();
+    }
+
     public function handleEmails(SendEmailEvent $event): void
     {
         $message = $event->getMessage();
         $formMonitorHeader = $message->getHeader('X-Form-Monitor');
 
-        // If there is no such header - skip this handler
         if (null === $formMonitorHeader) {
             return;
         }
 
-        // Normalize header value to string
         $headerValue = $this->normalizeHeaderValue($formMonitorHeader);
 
-        // If the header is present, but set to `false` => prevent the email from being sent
         if ('false' === $headerValue) {
             $event->isValid = false;
 
             return;
         }
 
-        // Only process if this is actually a Form Monitor request
         if ('true' !== $headerValue) {
             return;
         }
@@ -115,7 +136,6 @@ class EmailOverrides extends FeatureBundle
         $this->setHeader($message, 'X-Form-Monitor-Cc', $cc);
         $this->setHeader($message, 'X-Form-Monitor-Bcc', $bcc);
 
-        // Check if this is a test email (has test token header)
         $testTokenHeader = $message->getHeader('X-Form-Monitor-Test-Email-Token');
         if ($testTokenHeader) {
             $testToken = $this->normalizeHeaderValue($testTokenHeader);

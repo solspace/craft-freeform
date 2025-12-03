@@ -654,13 +654,14 @@ return [
     'Test Email Notifications on Live Environment only' => 'Test e-mailnotificaties alleen in live-omgeving',
     'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Indien ingeschakeld, test Formuliermonitor alleen e-mailnotificaties als de Craft-omgeving is ingesteld op productie.',
     'Test Email Delivery' => 'E-mailbezorging testen',
-    "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address." => 'Voordat u het testen van e-mailmeldingen inschakelt, gebruikt u deze functie om te bevestigen dat Craft succesvol e-mails kan versturen naar het inkomende adres van Form Monitor.',
+    "It's recommended to verify that email delivery is working before enabling Test Email Notifications. Many email providers reject messages sent from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com)." => 'Het wordt aanbevolen om eerst te controleren of de e-mailbezorging werkt voordat u Test E-mailmeldingen inschakelt. Veel e-mailproviders weigeren berichten die vanaf onbekende IP-adressen worden verzonden, wat kan voorkomen dat e-mails het inkomende adres van Form Monitor (inbound@test.formmonitor.com) bereiken.',
     'Test it now' => 'Nu testen',
     'Testing...' => 'Bezig met testen...',
-    "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly." => 'Er wordt een test-e-mail verzonden naar »inbound@test.formmonitor.com« om te controleren of de e-mailbezorging en inkomende verwerking correct werken.',
+    "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly." => "Er wordt een test-e-mail verzonden naar 'inbound@test.formmonitor.com' om te controleren of de e-mailbezorging en inkomende verwerking correct werken.",
     'Test Email History' => 'Test-e-mailgeschiedenis',
     'Date & Time' => 'Datum & tijd',
     'No test emails sent yet.' => 'Nog geen test-e-mails verzonden.',
+    'Warning: You are currently using Sendmail for email delivery. Sendmail is often unreliable, and many email providers block messages sent from unknown servers as a spam-prevention measure. This may prevent messages from reaching Form Monitor\'s inbound address (inbound@test.formmonitor.com), which can trigger false "Email Issues Detected" alerts.' => 'Waarschuwing: U gebruikt momenteel Sendmail voor e-mailbezorging. Sendmail is vaak onbetrouwbaar en veel e-mailproviders blokkeren berichten die vanaf onbekende servers worden verzonden als spammaatregel. Dit kan voorkomen dat berichten het inkomende adres van Form Monitor (inbound@test.formmonitor.com) bereiken, wat valse meldingen van "E-mailproblemen gedetecteerd" kan veroorzaken.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Gebruikers',

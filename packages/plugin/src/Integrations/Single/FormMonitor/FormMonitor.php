@@ -48,7 +48,7 @@ class FormMonitor extends APIIntegration
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\FormMonitorTools(
         label: 'Test Email Delivery',
-        instructions: "It's recommended to test email delivery first before enabling Test Email Notifications. Most email providers reject messages from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com).",
+        instructions: "It's recommended to verify that email delivery is working before enabling Test Email Notifications. Many email providers reject messages sent from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com).",
         order: 5
     )]
     protected string $tools = '';

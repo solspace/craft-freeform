@@ -654,13 +654,14 @@ return [
     'Test Email Notifications on Live Environment only' => 'E-Mail-Benachrichtigungen nur in der Live-Umgebung testen',
     'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.' => 'Wenn aktiviert, testet der Formularmonitor E-Mail-Benachrichtigungen nur, wenn die Craft-Umgebung auf Produktion gesetzt ist.',
     'Test Email Delivery' => 'E-Mail-Zustellung testen',
-    "Before enabling email notification testing, use this to confirm that Craft can successfully send emails to Form Monitor's inbound address." => 'Bevor Sie den Test der E-Mail-Benachrichtigungen aktivieren, verwenden Sie diese Funktion, um sicherzustellen, dass Craft E-Mails erfolgreich an die eingehende Adresse von Form Monitor senden kann.',
+    "It's recommended to verify that email delivery is working before enabling Test Email Notifications. Many email providers reject messages sent from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com)." => 'Es wird empfohlen zu prüfen, ob die E-Mail-Zustellung funktioniert, bevor Sie Test-E-Mail-Benachrichtigungen aktivieren. Viele E-Mail-Anbieter blockieren Nachrichten, die von unbekannten IP-Adressen gesendet werden, was verhindern kann, dass E-Mails die Eingangsadresse von Form Monitor (inbound@test.formmonitor.com) erreichen.',
     'Test it now' => 'Jetzt testen',
     'Testing...' => 'Wird getestet...',
     "A test email will be sent to 'inbound@test.formmonitor.com' to confirm that your email delivery and inbound processing are functioning correctly." => 'Eine Test-E-Mail wird an »inbound@test.formmonitor.com« gesendet, um zu prüfen, ob der E-Mail-Versand und die eingehende Verarbeitung korrekt funktionieren.',
     'Test Email History' => 'Test-E-Mail-Verlauf',
     'Date & Time' => 'Datum & Uhrzeit',
     'No test emails sent yet.' => 'Noch keine Test-E-Mails gesendet.',
+    'Warning: You are currently using Sendmail for email delivery. Sendmail is often unreliable, and many email providers block messages sent from unknown servers as a spam-prevention measure. This may prevent messages from reaching Form Monitor\'s inbound address (inbound@test.formmonitor.com), which can trigger false "Email Issues Detected" alerts.' => 'Warnung: Sie verwenden derzeit Sendmail für die E-Mail-Zustellung. Sendmail ist häufig unzuverlässig, und viele E-Mail-Anbieter blockieren Nachrichten von unbekannten Servern als Maßnahme zur Spamvermeidung. Dies kann verhindern, dass Nachrichten die Eingangsadresse von Form Monitor (inbound@test.formmonitor.com) erreichen, was zu falschen "E-Mail-Probleme erkannt"-Warnungen führen kann.',
 
     // Form Builder // Integrations // Elements
     'Users' => 'Benutzer',

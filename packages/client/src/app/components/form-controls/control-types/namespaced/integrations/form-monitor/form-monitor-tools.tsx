@@ -41,7 +41,7 @@ const FormMonitorTools: React.FC<ControlType<FormMonitorToolsProperty>> = ({
         {isSendmail && (
           <WarningMessage>
             {translate(
-              'Warning: You are using Sendmail for email delivery. Sendmail can be unreliable, and most email providers reject messages from unknown IP addresses as a spam prevention measure. This may cause emails to not reach Form Monitor\'s inbound address (inbound@test.formmonitor.com), resulting in false positive "Email Issues Detected" alerts.'
+              'Warning: You are currently using Sendmail for email delivery. Sendmail is often unreliable, and many email providers block messages sent from unknown servers as a spam-prevention measure. This may prevent messages from reaching Form Monitor\'s inbound address (inbound@test.formmonitor.com), which can trigger false "Email Issues Detected" alerts.'
             )}
           </WarningMessage>
         )}

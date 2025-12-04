@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.13.8 - 2025-12-04
+
+### Fixed
+- Fixed an issue where empty `rangeStart` and `rangeEnd` values could trigger errors when creating **Export Profiles** on some sites.
+- Fixed a bug where the **Space** date/time separator for the **Date & Time** field was behaving like **None**. It now applies a space as intended.
+
 ## 5.13.7 - 2025-12-02
 
 ### Fixed

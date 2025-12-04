@@ -1169,7 +1169,7 @@ return [
     'Page Header' => 'En-tête de page',
     'Inside Form' => 'À l’intérieur du formulaire',
     'None (add manually)' => 'Aucun (ajouter manuellement)',
-    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadFreeformPlugin()' or 'freeform.loadFreeformPluginJs()' and 'freeform.loadFreeformPluginCss()' function in your template(s)." => "Veuillez vous assurer de charger manuellement le JS et le CSS de Freeform en utilisant la fonction 'freeform.loadFreeformPlugin()' ou 'freeform.loadFreeformPluginJs()' et 'freeform.loadFreeformPluginCss()' dans votre(vos) modèle(s).",
+    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)." => "Veuillez vous assurer de charger manuellement le JS et le CSS de Freeform en utilisant la fonction 'freeform.loadScripts()' dans votre(vos) modèle(s).",
     'Script Insert Type' => 'Type d’insertion de script',
     'Specify the way Freeform scripts are inserted.' => 'Spécifiez la façon dont les scripts Freeform sont insérés.',
     'Asset Bundles (recommended)' => 'Bundles d’actifs (recommandé)',

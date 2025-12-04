@@ -1169,7 +1169,7 @@ return [
     'Page Header' => 'Pagina hoofd',
     'Inside Form' => 'In het formulier',
     'None (add manually)' => 'Geen (handmatig toevoegen)',
-    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadFreeformPlugin()' or 'freeform.loadFreeformPluginJs()' and 'freeform.loadFreeformPluginCss()' function in your template(s)." => "Als u 'Geen' hebt gekozen, zorg er dan voor dat u de JS en CSS van Freeform handmatig laadt met de functie 'freeform.loadFreeformPlugin()' of 'freeform.loadFreeformPluginJs()' en 'freeform.loadFreeformPluginCss()' in uw sjabloon(s).",
+    "Please ensure that you manually load Freeform's JS and CSS using the 'freeform.loadScripts()' function in your template(s)." => "Als u 'Geen' hebt gekozen, zorg er dan voor dat u de JS en CSS van Freeform handmatig laadt met de functie 'freeform.loadScripts()' in uw sjabloon(s).",
     'Script Insert Type' => 'Type scriptinvoeging',
     'Specify the way Freeform scripts are inserted.' => 'Specificeer de manier waarop Freeform-scripts worden ingevoegd.',
     'Asset Bundles (recommended)' => 'Bestandsbundels (aanbevolen)',

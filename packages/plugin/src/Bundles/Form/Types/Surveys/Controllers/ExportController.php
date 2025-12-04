@@ -8,24 +8,21 @@ use JetBrains\PhpStorm\NoReturn;
 class ExportController extends Controller
 {
     #[NoReturn]
-    public function actionPdf(): void
+    public function actionPdf()
     {
-        $images = \Craft::$app->request->post('imageData');
+        $image = \Craft::$app->request->post('image');
 
         $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT);
-        $pdf->setAuthor(\Craft::$app->getUser()->getIdentity()->getFullName());
+        $pdf->setAuthor(\Craft::$app->getUser()->getIdentity()->fullName);
         $pdf->setTitle('Export of data');
 
         $pdf->setJPEGQuality(75);
 
-        foreach ($images as $image) {
-            [$_, $encoded] = explode(',', $image);
-            $decoded = base64_decode($encoded);
+        [$_, $encoded] = explode(',', $image);
+        $decoded = base64_decode($encoded);
 
-            $pdf->AddPage();
-            $pdf->Image('@'.$decoded, 10, 20, 190);
-        }
-
+        $pdf->AddPage();
+        $pdf->Image('@'.$decoded, 10, 20, 190);
         $pdf->lastPage();
 
         $pdf->Output('some_pdf');

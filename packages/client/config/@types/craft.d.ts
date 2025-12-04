@@ -20,4 +20,7 @@ declare namespace Craft {
   ): Promise<void>;
 
   function getCpUrl(path: string): string;
+
+  const csrfTokenName: string;
+  const csrfTokenValue: string;
 }

@@ -231,6 +231,16 @@
                     365: "365 days"|t("freeform"),
                 }
             }) }}
+
+            {{ forms.checkboxSelectField({
+                label: "Purge Forms",
+                instructions: "Select which form data should be purged when submissions are purged."|t('freeform'),
+                name: "settings[purgableFormIds]",
+                values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
+                showAllOption: true,
+                options: forms|sort,
+                errors: settings.errors("purgableFormIds"),
+            }) }}
         </div>
 
     {% endif %}

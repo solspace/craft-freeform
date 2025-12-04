@@ -393,7 +393,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      *
      * @return array [submissions purged, assets purged]
      */
-    public function purgeSubmissions(?int $age = null): array
+    public function purgeSubmissions(?int $age = null, ?array $formIds = null): array
     {
         if (!$this instanceof SpamSubmissionsService) {
             if (!Freeform::getInstance()->isPro()) {
@@ -422,6 +422,14 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 )
             )
         ;
+
+        if (null !== $formIds) {
+            $formIds = array_map('intval', $formIds);
+            $formIds = array_unique($formIds);
+            $formIds = array_filter($formIds);
+
+            $query->andWhere(['in', 'formId', $formIds]);
+        }
 
         foreach ($query->batch() as $results) {
             $assetIds = [];

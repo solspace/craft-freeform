@@ -11,9 +11,10 @@ const QKFormModal = {
 type FetchFormModalQuery = () => UseQueryResult<Property[], AxiosError>;
 
 export const useFetchFormModalType: FetchFormModalQuery = () => {
-  return useQuery<Property[], AxiosError>(
-    QKFormModal.all,
-    () => axios.get<Property[]>(`/api/forms/modal`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery<Property[], AxiosError>({
+    queryKey: QKFormModal.all,
+    queryFn: () =>
+      axios.get<Property[]>(`/api/forms/modal`).then((res) => res.data),
+    staleTime: Infinity,
+  });
 };

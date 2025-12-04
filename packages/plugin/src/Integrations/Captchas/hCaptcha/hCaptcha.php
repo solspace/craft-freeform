@@ -64,11 +64,11 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
     private ?string $secretKey = null;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Only load Captcha scripts once the user interacts with the form',
         instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting.",
     )]
-    private bool $triggerOnInteract = false;
+    private string $triggerOnInteract = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('values.version === "checkbox"')]
@@ -132,7 +132,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function isTriggerOnInteract(): bool
     {
-        return $this->triggerOnInteract;
+        return $this->getProcessedBoolean($this->triggerOnInteract);
     }
 
     public function getVersion(): string
@@ -167,9 +167,8 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
 
     public function validate(Form $form): void
     {
-        $settings = Freeform::getInstance()->settings->getSettingsModel();
-
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        $settings = Freeform::getInstance()->settings;
+        if ($settings->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return;
         }
 
@@ -240,7 +239,7 @@ class hCaptcha extends BaseIntegration implements CaptchaIntegrationInterface
             'form_params' => [
                 'secret' => $secret,
                 'response' => $captchaResponse,
-                'remoteip' => \Craft::$app->request->getRemoteIP(),
+                'remoteip' => \Craft::$app->request->getUserIP(),
             ],
         ]);
 

@@ -143,23 +143,74 @@ class FormsService extends BaseService implements FormHandlerInterface
     public function getResolvedForms(array $arguments = []): array
     {
         $limit = $arguments['limit'] ?? null;
+
         $sort = strtolower($arguments['sort'] ?? 'asc');
         $sort = 'desc' === $sort ? \SORT_DESC : \SORT_ASC;
 
         $orderBy = $arguments['orderBy'] ?? 'order';
-        $orderBy = [$orderBy => $sort];
 
         $offset = $arguments['offset'] ?? null;
 
-        unset($arguments['limit'], $arguments['orderBy'], $arguments['sort'], $arguments['offset']);
+        $siteIds = $arguments['siteIds'] ?? null;
+        $siteHandles = $arguments['siteHandles'] ?? null;
 
-        $query = $this
-            ->getFormQuery()
-            ->where($arguments)
-            ->orderBy($orderBy)
-            ->limit($limit)
-            ->offset($offset)
+        unset($arguments['limit'], $arguments['orderBy'], $arguments['sort'], $arguments['offset'], $arguments['siteIds'], $arguments['siteHandles']);
+
+        $query = (new Query())
+            ->select([
+                'forms.uid',
+                'forms.id',
+                'forms.type',
+                'forms.name',
+                'forms.handle',
+                'forms.metadata',
+                'forms.spamBlockCount',
+                'forms.createdByUserId',
+                'forms.dateCreated',
+                'forms.updatedByUserId',
+                'forms.dateUpdated',
+                'forms.dateArchived',
+                'sites.id AS siteId',
+                'sites.uid AS siteUid',
+                'sites.handle AS siteHandle',
+                'sites.name AS siteName',
+            ])
+            ->from(FormRecord::TABLE.' forms')
+            ->innerJoin(FormSiteRecord::TABLE.' forms_sites', 'forms_sites.[[formId]] = forms.[[id]]')
+            ->innerJoin(Table::SITES.' sites', 'sites.[[id]] = forms_sites.[[siteId]]')
         ;
+
+        if ($siteIds) {
+            $query->andWhere(['sites.id' => $siteIds]);
+        }
+
+        if ($siteHandles) {
+            $query->andWhere(['sites.handle' => $siteHandles]);
+        }
+
+        foreach ($arguments as $key => $value) {
+            if (!str_contains($key, '.')) {
+                $key = "forms.{$key}";
+            }
+            $query->andWhere([$key => $value]);
+        }
+
+        if (!str_contains($orderBy, '.')) {
+            $orderBy = 'forms.'.$orderBy;
+        }
+
+        $query->orderBy([
+            $orderBy => $sort,
+            'forms.name' => \SORT_ASC,
+        ]);
+
+        if (null !== $limit) {
+            $query->limit($limit);
+        }
+
+        if (null !== $offset) {
+            $query->offset($offset);
+        }
 
         $results = $query->all();
 
@@ -204,6 +255,30 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
+    }
+
+    public function getAllowedWriteFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+            return $this->getFormsService()->getAllFormIds();
+        }
+
+        return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+    }
+
+    public function getAllowedReadFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ)) {
+            return $this->getFormsService()->getAllFormIds();
+        }
+
+        $writeIds = $this->getAllowedWriteFormIds();
+        $readIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_READ);
+
+        $ids = array_merge($writeIds, $readIds);
+        $ids = array_filter($ids);
+
+        return array_unique($ids);
     }
 
     public function getFormById(int $id, bool $refresh = false, ?string $site = null, ?string $uniqueId = null): ?Form

@@ -11,6 +11,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/form-builder') }}
     {{ csrfInput() }}
@@ -20,6 +22,7 @@
             {{ forms.lightswitch({
                 name: "settings[defaults][previewHtml]",
                 on: settings.defaults.previewHtml,
+                disabled: readOnly,
             }) }}
         </div>
         <div>
@@ -35,6 +38,7 @@
             {{ forms.lightswitch({
                 name: "settings[defaults][twigInHtml]",
                 on: settings.defaults.twigInHtml,
+                disabled: readOnly,
             }) }}
         </div>
         <div>
@@ -50,6 +54,7 @@
             {{ forms.lightswitch({
                 name: "settings[defaults][twigIsolation]",
                 on: settings.defaults.twigIsolation,
+                disabled: readOnly,
             }) }}
         </div>
         <div>
@@ -70,6 +75,7 @@
                 name: "settings[defaults][richTextFieldToolbarConfiguration]",
                 value: settings.defaults.richTextFieldToolbarConfiguration,
                 errors: settings.getErrors("defaults.richTextFieldToolbarConfiguration"),
+                disabled: readOnly,
                 suggestEnvVars: true,
             }) }}
         </div>
@@ -82,6 +88,7 @@
                 name: "settings[emailNotificationToolbarConfiguration]",
                 value: settings.emailNotificationToolbarConfiguration,
                 errors: settings.getErrors("emailNotificationToolbarConfiguration"),
+                disabled: readOnly,
                 suggestEnvVars: true,
             }) }}
         </div>
@@ -93,6 +100,7 @@
             {{ forms.lightswitch({
                 name: "settings[defaults][includeSampleTemplates]",
                 on: settings.defaults.includeSampleTemplates,
+                disabled: readOnly,
             }) }}
         </div>
         <div>
@@ -130,7 +138,8 @@
                                             name: path~"[value]",
                                             values: item.value,
                                             options: item.options.toTwigArray(),
-                                            class: 'fullwidth'
+                                            class: 'fullwidth',
+                                            disabled: readOnly,
                                         }) }}
                                     {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\SelectItem') %}
                                         {{ forms.select({
@@ -138,41 +147,47 @@
                                             value: item.value,
                                             options: item.options.toTwigArray(),
                                             class: 'fullwidth',
+                                            disabled: readOnly,
                                             columns: 2
                                         }) }}
                                     {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\BoolItem') %}
                                         {{ forms.lightswitch({
                                             name: path~"[value]",
                                             on: item.value,
+                                            disabled: readOnly,
                                         }) }}
                                     {% elseif item|implementsClass('Solspace\\Freeform\\Library\\DataObjects\\Form\\Defaults\\ConfigItems\\ColorItem') %}
                                         {{ forms.color({
                                             name: path~"[value]",
                                             value: item.value,
+                                            disabled: readOnly,
                                         }) }}
                                     {% else %}
                                         {{ forms.text({
                                             name: path~"[value]",
                                             value: item.value,
                                             placeholder: item.placeholder,
+                                            disabled: readOnly,
                                         }) }}
                                     {% endif %}
                                 </div>
 
-                                <button type="button" tabindex="-1" class="lock-button {{ item.locked ? "locked" }}">
-                                    <input
-                                            type="hidden"
-                                            class="{{ item.locked ? "locked" }}"
-                                            name="{{ path }}[locked]"
-                                            value="{{ item.locked ? '1' : '0' }}"
-                                    />
-                                    <span class="locked">
-                                        {{ include("freeform/settings/locked-icon.svg") }}
-                                    </span>
-                                    <span class="unlocked">
-                                        {{ include("freeform/settings/unlocked-icon.svg") }}
-                                    </span>
-                                </button>
+                                {% if not readOnly %}
+                                    <button type="button" tabindex="-1" class="lock-button {{ item.locked ? "locked" }}">
+                                        <input
+                                                type="hidden"
+                                                class="{{ item.locked ? "locked" }}"
+                                                name="{{ path }}[locked]"
+                                                value="{{ item.locked ? '1' : '0' }}"
+                                        />
+                                        <span class="locked">
+                                            {{ include("freeform/settings/locked-icon.svg") }}
+                                        </span>
+                                        <span class="unlocked">
+                                            {{ include("freeform/settings/unlocked-icon.svg") }}
+                                        </span>
+                                    </button>
+                                {% endif %}
                             </li>
                         {% endfor %}
                     </ul>

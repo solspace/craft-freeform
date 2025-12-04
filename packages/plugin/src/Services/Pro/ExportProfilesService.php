@@ -219,12 +219,17 @@ class ExportProfilesService extends Component
     public function getExportSettings(): ExportSettings
     {
         $settings = Freeform::getInstance()->settings;
+        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? new \DateTimeZone(\Craft::$app->getTimeZone());
+
+        if ($timezone instanceof \DateTimeZone) {
+            $timezone = $timezone->getName();
+        }
 
         return new ExportSettings(
             $settings->isRemoveNewlines(),
-            $settings->getSettingsModel()->exportLabels,
-            \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? date_default_timezone_get(),
-            $settings->getSettingsModel()->exportHandlesAsNames
+            $settings->isExportLabels(),
+            $timezone,
+            $settings->isExportHandlesAsNames()
         );
     }
 
@@ -254,7 +259,7 @@ class ExportProfilesService extends Component
             $exporter->getFileExtension()
         );
 
-        $resource = tmpfile();
+        $resource = \tmpfile();
         $exporter->export($resource);
 
         $this->outputFile($resource, $fileName, $exporter->getMimeType());

@@ -29,7 +29,7 @@ export const ExportFreeform: React.FC = () => {
   } = progressEvent;
 
   const { data, isFetching } = useFormsDataQuery();
-  const { mutate, isLoading } = useFormsExportMutation({
+  const { mutate, isPending } = useFormsExportMutation({
     onSuccess: (res) => {
       const token = res.data.token;
       triggerProgress(generateUrl(`/api/export?token=${token}`));
@@ -63,7 +63,7 @@ export const ExportFreeform: React.FC = () => {
     mutate(options);
   };
 
-  const isCurrentlyActive = isFetching || active || progressActive || isLoading;
+  const isCurrentlyActive = isFetching || active || progressActive || isPending;
 
   if (isFetching) {
     return <ContentContainer>{translate('Loading...')}</ContentContainer>;

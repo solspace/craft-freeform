@@ -26,26 +26,26 @@ use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
 class User extends ElementIntegration
 {
     #[VisibilityFilter('enabled')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Activate Users',
         instructions: 'When enabled, new users will automatically be activated upon creation. Will be set to pending otherwise.',
     )]
-    protected bool $active = true;
+    protected string $active = 'true';
 
     #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!values.active')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Send Activation Email',
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',
     )]
-    protected bool $sendActivation = false;
+    protected string $sendActivation = 'false';
 
     #[VisibilityFilter('enabled')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Take Over Inactive Accounts',
         instructions: 'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.',
     )]
-    protected bool $registerInactiveUsers = false;
+    protected string $registerInactiveUsers = 'false';
 
     #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -91,17 +91,17 @@ class User extends ElementIntegration
 
     public function isRegisterInactiveUsers(): bool
     {
-        return $this->registerInactiveUsers;
+        return $this->getProcessedBoolean($this->registerInactiveUsers);
     }
 
     public function isActive(): bool
     {
-        return $this->active;
+        return $this->getProcessedBoolean($this->active);
     }
 
     public function isSendActivation(): bool
     {
-        return $this->sendActivation;
+        return $this->getProcessedBoolean($this->sendActivation);
     }
 
     public function buildElement(Form $form): Element
@@ -117,12 +117,14 @@ class User extends ElementIntegration
         $canEdit = !$isGuest && ($isOwnAccount || $isAdmin || $canEditUsers);
 
         $user = null;
+        $isExistingUser = false;
         if ($element instanceof CraftUser && $canEdit && !$currentUser->getIsGuest()) {
             $user = $element;
+            $isExistingUser = true;
             self::$existingUserCache[$user->id] = $user;
         }
 
-        if ($this->isRegisterInactiveUsers()) {
+        if (!$user && $this->isRegisterInactiveUsers()) {
             // Find any inactive members with this email
             $isEmailMapped = $this->attributeMapping->isSourceMapped('email');
             if ($isEmailMapped) {
@@ -137,7 +139,14 @@ class User extends ElementIntegration
 
         if (!$user) {
             $user = new CraftUser();
-            $user->pending = !$this->active;
+
+            $deactivateByDefault = \Craft::$app->projectConfig->get('users.deactivateByDefault');
+            if ($deactivateByDefault) {
+                $user->pending = false;
+                $user->active = false;
+            } else {
+                $user->pending = !$this->isActive();
+            }
         }
 
         $this->processMapping($user, $form, $this->attributeMapping);
@@ -149,7 +158,7 @@ class User extends ElementIntegration
             $user->fullName = trim(trim($user->firstName).' '.trim($user->lastName));
         }
 
-        if (!$this->isActive() && $this->isSendActivation()) {
+        if (!$isExistingUser && !$this->isActive() && $this->isSendActivation()) {
             $user->unverifiedEmail = $user->email;
         }
 
@@ -182,7 +191,7 @@ class User extends ElementIntegration
             }
         }
 
-        $isDisabled = !$this->active;
+        $isDisabled = !$this->isActive();
         $isSendActivation = $this->sendActivation;
         $isInPendingState = \in_array($element->status, [CraftUser::STATUS_PENDING, CraftUser::STATUS_INACTIVE], true);
 
@@ -202,7 +211,7 @@ class User extends ElementIntegration
             }
         }
 
-        if ($this->active) {
+        if ($this->isActive()) {
             \Craft::$app->users->activateUser($element);
 
             if (\Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {

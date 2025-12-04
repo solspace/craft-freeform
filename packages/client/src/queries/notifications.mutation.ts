@@ -35,14 +35,12 @@ export const useNewNotificationMutation =
   (): NewNotificationTemplateMutationResult => {
     const queryClient = useQueryClient();
 
-    return useMutation<AxiosResponse<NotificationTemplate>, APIError, Payload>(
-      newNotificationTemplateMutation,
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({
-            queryKey: QKNotifications.templates(),
-          });
-        },
-      }
-    );
+    return useMutation<AxiosResponse<NotificationTemplate>, APIError, Payload>({
+      mutationFn: newNotificationTemplateMutation,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: QKNotifications.templates(),
+        });
+      },
+    });
   };

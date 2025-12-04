@@ -51,7 +51,7 @@ use yii\base\Event;
 /**
  * @template T
  */
-abstract class AbstractField implements FieldInterface, IdentificatorInterface
+abstract class AbstractField implements \Stringable, FieldInterface, IdentificatorInterface
 {
     #[Translatable]
     #[Validators\Required]
@@ -747,7 +747,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected function translate(?string $handle, mixed $defaultValue = null): mixed
     {
-        return $this->getTranslationTable()->get($handle, $defaultValue);
+        $builderTranslation = $this->getTranslationTable()->get($handle, $defaultValue);
+
+        return null === $builderTranslation ? '' : Freeform::t($builderTranslation);
     }
 
     protected function getTranslationTable(): TranslationTable

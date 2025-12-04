@@ -51,7 +51,7 @@ class SetSubmissionStatusAction extends SetStatus
 
         static $allowedFormIds;
         if (null === $allowedFormIds) {
-            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedWriteFormIds();
+            $allowedFormIds = Freeform::getInstance()->forms->getAllowedWriteFormIds();
         }
 
         foreach ($submissions as $submission) {

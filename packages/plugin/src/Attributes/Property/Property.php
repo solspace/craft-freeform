@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Attributes\Property;
 
+use Solspace\Freeform\Freeform;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
@@ -25,9 +26,7 @@ abstract class Property
 
     public bool $visible = true;
     public bool $translatable = false;
-
-    /** @var Edition[] */
-    public ?array $editions = null;
+    public string $edition = Edition::EXPRESS;
 
     /** @var Flag[] */
     public array $flags = [];
@@ -63,19 +62,9 @@ abstract class Property
         return false;
     }
 
-    public function matchesEdition(string $edition): bool
+    public function matchesEdition(): bool
     {
-        if (empty($this->editions)) {
-            return true;
-        }
-
-        foreach ($this->editions as $item) {
-            if ($item === $edition) {
-                return true;
-            }
-        }
-
-        return false;
+        return Freeform::getInstance()->edition()->isAtLeast($this->edition);
     }
 
     #[Ignore]

@@ -79,18 +79,18 @@ class Stripe extends PaymentGatewayIntegration
     protected string $webhookSecret = '';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Suppress Email Notifications & Integrations when Payments Fail',
         instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
     )]
-    protected bool $suppressOnFail = false;
+    protected string $suppressOnFail = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Send Success Email from Stripe to Submitter',
         instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, automatically triggering Stripe to send a successful email notification.",
     )]
-    protected bool $sendSuccessMail = false;
+    protected string $sendSuccessMail = 'false';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('Boolean(enabled)')]
@@ -145,12 +145,12 @@ class Stripe extends PaymentGatewayIntegration
 
     public function isSuppressOnFail(): bool
     {
-        return $this->suppressOnFail;
+        return $this->getProcessedBoolean($this->suppressOnFail);
     }
 
     public function isSendSuccessMail(): bool
     {
-        return $this->sendSuccessMail;
+        return $this->getProcessedBoolean($this->sendSuccessMail);
     }
 
     public function checkConnection(Client $client): bool

@@ -2,7 +2,6 @@ import type Freeform from '@components/front-end/plugin/freeform';
 import events from '@lib/plugin/constants/event-types';
 import { ajax } from '@lib/plugin/helpers/ajax';
 import { CancelToken } from '@lib/plugin/helpers/ajax/ajax.classes';
-import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import { filesize } from 'filesize';
 
 import { askForConfirmation } from './confirm';
@@ -10,6 +9,20 @@ import { addFieldErrors } from './error-handling';
 import { createInput, createPreviewContainer } from './preview';
 import type { FieldError, FileMetadata } from './types';
 import { ErrorTypes, isImage } from './types';
+
+type OnUploadProgressEvent = Event & {
+  name: string;
+  total: number;
+  loaded: number;
+  percent: number;
+  container: HTMLElement;
+};
+
+type OnChangeEvent = Event & {
+  name: string;
+  freeform: Freeform;
+  container: HTMLElement;
+};
 
 export const loadExistingUploads = (container: HTMLElement, freeform: Freeform): void => {
   const fileCount = parseInt(container.dataset.fileCount || '0');
@@ -117,7 +130,11 @@ export const handleFileUpload = (
         const { total, loaded } = progress;
         const percent = Math.ceil(loaded / (total / 100));
 
-        dispatchCustomEvent(events.dragAndDrop.onUploadProgress, { total, loaded, percent }, container);
+        freeform._dispatchEvent(
+          events.dragAndDrop.onUploadProgress,
+          { total, loaded, percent },
+          container
+        ) as OnUploadProgressEvent;
 
         previewContainer.style.setProperty('--progress', `${percent}%`);
 
@@ -180,5 +197,5 @@ export const handleFileUpload = (
 };
 
 const dispatchChange = (container: HTMLElement, freeform: Freeform) => {
-  dispatchCustomEvent(events.dragAndDrop.onChange, { freeform, container }, container);
+  freeform._dispatchEvent(events.dragAndDrop.onChange, { freeform, container }, container) as OnChangeEvent;
 };

@@ -40,7 +40,7 @@ class ExportProfileModel extends Model
         return $model;
     }
 
-    public function getForm(): Form
+    public function getForm(): ?Form
     {
         return Freeform::getInstance()->forms->getFormById($this->formId);
     }
@@ -231,11 +231,11 @@ class ExportProfileModel extends Model
         return $query;
     }
 
-    private function getTimezoneOverride(): ?string
+    private function getTimezoneOverride(): \DateTimeZone|string|null
     {
         static $timezone;
         if (null === $timezone) {
-            $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? false;
+            $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? new \DateTimeZone(\Craft::$app->getTimeZone());
         }
 
         return $timezone ?: null;

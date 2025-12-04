@@ -13,7 +13,7 @@
 
 namespace Solspace\Freeform\Fields\DataContainers;
 
-class Option
+class Option implements \Stringable
 {
     public function __construct(
         private string $label,

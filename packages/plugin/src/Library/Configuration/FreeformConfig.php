@@ -37,7 +37,7 @@ class FreeformConfig implements \JsonSerializable
                 'toolbar' => $settingsModel->emailNotificationToolbarConfiguration,
                 'method' => $settingsModel->emailTemplateMethod,
             ],
-            'feed' => (bool) $settingsModel->displayFeed,
+            'feed' => $settings->isDisplayFeed(),
             'limits' => [
                 'forms' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FORMS,
                 'fields' => $edition->isAtLeast(Freeform::EDITION_LITE) ? 0 : self::EXPRESS_LIMIT_FIELDS,

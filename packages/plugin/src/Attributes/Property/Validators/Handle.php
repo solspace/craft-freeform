@@ -14,7 +14,7 @@ class Handle implements PropertyValidatorInterface
         private string $message = 'Value is not a valid handle.',
     ) {
         $pattern = '/^[a-zA-Z_0-9]+$/u';
-        if (Freeform::getInstance()->settings->getSettingsModel()->allowDashesInFieldHandles) {
+        if (Freeform::getInstance()->settings->isAllowDashesInFieldHandles()) {
             $pattern = '/^[a-zA-Z\-_0-9]+$/u';
         }
 

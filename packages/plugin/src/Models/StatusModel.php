@@ -26,7 +26,7 @@ use Solspace\Freeform\Records\StatusRecord;
  * @property string $color
  * @property int    $sortOrder
  */
-class StatusModel extends Model implements \JsonSerializable
+class StatusModel extends Model implements \Stringable, \JsonSerializable
 {
     public ?int $id = null;
     public string $name = '';

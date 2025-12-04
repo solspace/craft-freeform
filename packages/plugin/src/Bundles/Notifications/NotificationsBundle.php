@@ -19,7 +19,6 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Events\Notifications\RegisterNotificationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
@@ -57,7 +56,9 @@ class NotificationsBundle extends FeatureBundle
             return;
         }
 
-        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer);
+        $siteId = \Craft::$app->getSites()->getCurrentSite()->id;
+
+        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer, $siteId);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 
@@ -65,13 +66,7 @@ class NotificationsBundle extends FeatureBundle
     {
         $event->addType(Admin::class);
         $event->addType(EmailField::class);
-
-        if ($this->plugin()->edition()->isAtLeast(Freeform::EDITION_LITE)) {
-            $event->addType(Dynamic::class);
-        }
-
-        if ($this->plugin()->edition()->isAtLeast(Freeform::EDITION_PRO)) {
-            $event->addType(Conditional::class);
-        }
+        $event->addType(Dynamic::class);
+        $event->addType(Conditional::class);
     }
 }

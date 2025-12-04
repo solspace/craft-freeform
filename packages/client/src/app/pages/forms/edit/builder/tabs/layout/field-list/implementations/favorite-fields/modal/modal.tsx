@@ -70,7 +70,7 @@ export const FavoriteFieldsManagerModal: ModalType = ({ closeModal }) => {
     setState(collection);
   }, [data]);
 
-  const isLoading = updateMutation.isLoading || deleteMutation.isLoading;
+  const isLoading = updateMutation.isPending || deleteMutation.isPending;
 
   return (
     <ModalContainer style={{ maxWidth: '70%' }}>

@@ -29,11 +29,14 @@ export const ListProvider: React.FC = () => {
   const isCraft5 = config.metadata.craft.is5;
   const { canCreate } = config.metadata.freeform;
 
-  queryClient.prefetchQuery(QKFieldTypes.all, fetchFieldTypes);
-  queryClient.prefetchQuery(
-    QKFieldTypes.propertySections(),
-    fetchFieldPropertySections
-  );
+  queryClient.prefetchQuery({
+    queryKey: QKFieldTypes.all,
+    queryFn: fetchFieldTypes,
+  });
+  queryClient.prefetchQuery({
+    queryKey: QKFieldTypes.propertySections(),
+    queryFn: fetchFieldPropertySections,
+  });
 
   return (
     <>

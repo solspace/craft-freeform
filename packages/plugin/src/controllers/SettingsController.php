@@ -17,6 +17,9 @@ use craft\helpers\FileHelper;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Jobs\ManagedPingerDeleteJob;
+use Solspace\Freeform\Jobs\ManagedPingerDeregisterJob;
+use Solspace\Freeform\Jobs\ManagedPingerRegisterJob;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper as FreeformStringHelper;
@@ -24,7 +27,6 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use Solspace\Freeform\Services\SettingsService;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SettingsController extends BaseController
@@ -185,13 +187,35 @@ class SettingsController extends BaseController
 
         $this->requirePostRequest();
 
+        $settingsService = $this->getSettingsService();
+        $readOnly = !$settingsService->isAllowAdminEdit();
+        if ($readOnly) {
+            return;
+        }
+
         $postData = \Craft::$app->request->post('settings', []);
+
+        $oldSettings = $this->getSettingsModel();
+        $oldManagedPingerEnabled = isset($postData['managedPingerEnabled']) ? (bool) $oldSettings->managedPingerEnabled : null;
+        $oldIntervalSeconds = isset($postData['queuePingMinIntervalMinutes']) ? (int) $oldSettings->queuePingMinIntervalSeconds : null;
 
         if ($this->getSettingsService()->saveSettings($postData)) {
             \Craft::$app->session->setSuccess(Freeform::t('Freeform settings saved.'));
 
             if (isset($postData['purgableSubmissionAgeInDays']) || isset($postData['purgableSpamAgeInDays'])) {
                 \Craft::$app->cache->delete(SettingsService::CACHE_KEY_PURGE);
+            }
+
+            if (isset($postData['managedPingerEnabled']) || isset($postData['queuePingMinIntervalMinutes'])) {
+                $settings = $this->getSettingsModel();
+                $newManagedPingerEnabled = (bool) $settings->managedPingerEnabled;
+                $newIntervalSeconds = (int) $settings->queuePingMinIntervalSeconds;
+
+                if (isset($postData['managedPingerEnabled']) && $oldManagedPingerEnabled !== $newManagedPingerEnabled) {
+                    \Craft::$app->queue->push($newManagedPingerEnabled ? new ManagedPingerRegisterJob() : new ManagedPingerDeregisterJob());
+                } elseif (isset($postData['queuePingMinIntervalMinutes']) && $oldIntervalSeconds !== $newIntervalSeconds && $newManagedPingerEnabled) {
+                    \Craft::$app->queue->push(new ManagedPingerRegisterJob());
+                }
             }
 
             return $this->redirectToPostedUrl();
@@ -204,15 +228,73 @@ class SettingsController extends BaseController
         );
     }
 
+    public function actionDisablePinger(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $this->requirePostRequest();
+
+        try {
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+
+            // Disable the managed pinger in Freeform settings
+            $settings->managedPingerEnabled = false;
+
+            // Save the settings
+            if (!\Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray())) {
+                throw new \Exception('Failed to save settings');
+            }
+
+            // Queue the deregister job to notify Form Monitor (soft delete)
+            \Craft::$app->queue->push(new ManagedPingerDeregisterJob());
+
+            return $this->asJson([
+                'success' => true,
+                'message' => Freeform::t('Pinger disabled successfully.'),
+            ]);
+        } catch (\Throwable $e) {
+            return $this->asJson([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
+    public function actionDeletePinger(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $this->requirePostRequest();
+
+        try {
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+
+            // Disable the managed pinger in Freeform settings
+            $settings->managedPingerEnabled = false;
+
+            // Save the settings
+            if (!\Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray())) {
+                throw new \Exception('Failed to save settings');
+            }
+
+            // Queue the delete job to permanently remove from Form Monitor
+            \Craft::$app->queue->push(new ManagedPingerDeleteJob());
+
+            return $this->asJson([
+                'success' => true,
+                'message' => Freeform::t('Pinger deleted successfully.'),
+            ]);
+        } catch (\Throwable $e) {
+            return $this->asJson([
+                'success' => false,
+                'error' => $e->getMessage(),
+            ]);
+        }
+    }
+
     public function actionProvideSetting(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $section = \Craft::$app->request->getSegment(3);
-        $settingsService = $this->getSettingsService();
-        if (!$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section)) {
-            throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
-        }
 
         $formattingTemplateList = [];
         if ($this->getSettingsService()->getSettingsModel()->defaults->includeSampleTemplates) {
@@ -233,6 +315,9 @@ class SettingsController extends BaseController
             ];
         }
 
+        $settingsService = $this->getSettingsService();
+        $readOnly = !$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section);
+
         $this->view->registerAssetBundle(CodepackBundle::class);
         $this->view->registerAssetBundle(SettingsBundle::class);
 
@@ -242,6 +327,7 @@ class SettingsController extends BaseController
                 'settings' => $this->getSettingsModel(),
                 'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,
+                'readOnly' => $readOnly,
             ]
         );
     }

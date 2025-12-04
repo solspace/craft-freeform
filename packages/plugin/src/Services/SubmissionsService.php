@@ -33,7 +33,6 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
-use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
 use Solspace\Freeform\Records\Form\FormSiteRecord;
 use Solspace\Freeform\Records\FormRecord;
@@ -63,7 +62,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         if (!isset(self::$submissionCache[$id])) {
-            self::$submissionCache[$id] = Submission::find()->id($id)->one();
+            self::$submissionCache[$id] = Submission::find()
+                ->id($id)
+                ->isHidden(null)
+                ->one()
+            ;
         }
 
         return self::$submissionCache[$id];
@@ -93,7 +96,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function getSubmissionCount(?array $formIds = null, ?array $statusIds = null, bool $isSpam = false): int
     {
-        $isSitesEnabled = $this->getSettingsService()->getSettingsModel()->sitesEnabled;
+        $isSitesEnabled = $this->getSettingsService()->isSitesEnabled();
         if ($isSitesEnabled) {
             $siteId = SitesHelper::getCurrentCpPageSiteId();
             $availableFormIds = (new Query())
@@ -160,11 +163,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         ;
 
         if ($rangeStart) {
-            $query->andWhere(['>=', "{$submissions}.[[dateCreated]]", $rangeStart]);
+            $query->andWhere(['>=', "{$submissions}.[[dateCreated]]", Db::prepareDateForDb($rangeStart)]);
         }
 
         if ($rangeEnd) {
-            $query->andWhere(['<=', "{$submissions}.[[dateCreated]]", $rangeEnd]);
+            $query->andWhere(['<=', "{$submissions}.[[dateCreated]]", Db::prepareDateForDb($rangeEnd)]);
         }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
@@ -231,7 +234,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             return false;
         }
 
-        $updateSearchIndex = (bool) $this->getSettingsService()->getSettingsModel()->updateSearchIndexes;
+        $updateSearchIndex = $this->getSettingsService()->isUpdateSearchIndexes();
         if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
@@ -249,7 +252,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
-        $allowedFormIds = $this->getAllowedWriteFormIds();
+        $allowedFormIds = $this->getFormsService()->getAllowedWriteFormIds();
         if (!$query->count()) {
             return false;
         }
@@ -344,28 +347,20 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $form->getId() === (int) $submittedForm;
     }
 
+    /**
+     * @deprecated use `formsService->getAllowedWriteFormIds()` instead
+     */
     public function getAllowedWriteFormIds(): array
     {
-        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
-            return $this->getFormsService()->getAllFormIds();
-        }
-
-        return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        return $this->getFormsService()->getAllowedWriteFormIds();
     }
 
+    /**
+     * @deprecated use `formsService->getAllowedReadFormIds()` instead
+     */
     public function getAllowedReadFormIds(): array
     {
-        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ)) {
-            return $this->getFormsService()->getAllFormIds();
-        }
-
-        $writeIds = $this->getAllowedWriteFormIds();
-        $readIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_READ);
-
-        $ids = array_merge($writeIds, $readIds);
-        $ids = array_filter($ids);
-
-        return array_unique($ids);
+        return $this->getFormsService()->getAllowedReadFormIds();
     }
 
     public function renderSubmissionField(

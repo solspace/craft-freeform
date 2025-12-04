@@ -32,7 +32,9 @@ class FileUploadBundle extends FeatureBundle
 
     public function prolongUnfinalizedAssets(SaveFormEvent $event): void
     {
-        $saveTimeDays = (int) Freeform::getInstance()->settings->getSettingsModel()->saveFormTtl;
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $saveTimeDays = $settingsModel->saveFormTtl;
         $newDate = new Carbon('now +'.$saveTimeDays.' days', 'UTC');
 
         $form = $event->getForm();

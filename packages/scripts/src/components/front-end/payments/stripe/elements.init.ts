@@ -10,11 +10,18 @@ import { isHidden } from './elements.selectors';
 import type { StripeFunctionConstructorProps } from './elements.types';
 
 const workers: string[] = [];
+const initializedContainers = new WeakSet<HTMLDivElement>();
 
 export const initStripe = (props: StripeFunctionConstructorProps) => async (container: HTMLDivElement) => {
   if (isHidden(container)) {
     return;
   }
+
+  if (initializedContainers.has(container)) {
+    return;
+  }
+
+  initializedContainers.add(container);
 
   const {
     site,
@@ -29,7 +36,7 @@ export const initStripe = (props: StripeFunctionConstructorProps) => async (cont
   const { elementMap, form } = props;
 
   const field = container.querySelector<HTMLDivElement>('[data-freeform-stripe-card]');
-  if (elementMap.has(field)) {
+  if (!field || elementMap.has(field)) {
     return;
   }
 

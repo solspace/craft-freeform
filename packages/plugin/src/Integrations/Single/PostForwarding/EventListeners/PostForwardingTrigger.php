@@ -210,21 +210,23 @@ class PostForwardingTrigger extends FeatureBundle
 
                 $logger->info('POST forwarding successful', $logContext);
             } else {
-                $baseLogger->error('POST forwarding failed', ['form' => $form->getHandle(), $logContext]);
+                $logger->error('POST forwarding failed', $logContext);
             }
         } catch (\Exception $e) {
+            $message = $e->getMessage();
+
             $logContext = [
                 'url' => $url,
                 'form' => $form->getHandle(),
                 'submission' => $submission?->id,
-                'message' => $e->getMessage(),
+                'message' => $message,
             ];
 
             if (method_exists($e, 'getResponse') && $e->getResponse()) {
                 $logContext['response'] = (string) $e->getResponse()->getBody();
             }
 
-            $baseLogger->error('POST forwarding could not send payload', ['form' => $form->getHandle(), $logContext]);
+            $logger->error('POST forwarding could not send payload', $logContext);
         }
     }
 

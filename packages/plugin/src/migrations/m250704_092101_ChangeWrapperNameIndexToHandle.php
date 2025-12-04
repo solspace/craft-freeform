@@ -8,28 +8,30 @@ class m250704_092101_ChangeWrapperNameIndexToHandle extends Migration
 {
     public function safeUp(): bool
     {
-        if (!\Craft::$app->getDb()->tableExists('{{%freeform_notification_template_wrappers}}')) {
+        $table = '{{%freeform_notification_template_wrappers}}';
+
+        if (!\Craft::$app->getDb()->tableExists($table)) {
             return true;
         }
 
-        // Drop the existing name index
+        // Drop the old "name" index if it exists
         $this->dropIndexIfExists(
-            '{{%freeform_notification_template_wrappers}}',
+            $table,
             ['name'],
-            true,
+            true
         );
 
-        // Drop an index literally named "handle" if it exists
-        try {
-            $this->dropIndex('handle', '{{%freeform_notification_template_wrappers}}');
-        } catch (\Throwable $e) {
-            // ignore if it doesn't exist
-        }
+        // Drop any existing index on the "handle" column if it exists
+        $this->dropIndexIfExists(
+            $table,
+            ['handle'],
+            true
+        );
 
-        // Create a new index on the handle column
+        // Create a new unique index on "handle"
         $this->createIndex(
-            'handle',
-            '{{%freeform_notification_template_wrappers}}',
+            'freeform_notification_template_wrappers_handle_idx',
+            $table,
             ['handle'],
             true
         );
@@ -39,28 +41,23 @@ class m250704_092101_ChangeWrapperNameIndexToHandle extends Migration
 
     public function safeDown(): bool
     {
-        if (!\Craft::$app->getDb()->tableExists('{{%freeform_notification_template_wrappers}}')) {
+        $table = '{{%freeform_notification_template_wrappers}}';
+
+        if (!\Craft::$app->getDb()->tableExists($table)) {
             return true;
         }
 
-        // Drop the handle index by name
-        try {
-            $this->dropIndex('handle', '{{%freeform_notification_template_wrappers}}');
-        } catch (\Throwable $e) {
-            // ignore if it doesn't exist
-        }
-
-        // Also try dropping by columns in case a canonical one exists
+        // Drop the "handle" index if it exists
         $this->dropIndexIfExists(
-            '{{%freeform_notification_template_wrappers}}',
+            $table,
             ['handle'],
-            true,
+            true
         );
 
-        // Recreate the name index
+        // Recreate the unique index on "name"
         $this->createIndex(
-            'name',
-            '{{%freeform_notification_template_wrappers}}',
+            'freeform_notification_template_wrappers_name_idx',
+            $table,
             ['name'],
             true
         );

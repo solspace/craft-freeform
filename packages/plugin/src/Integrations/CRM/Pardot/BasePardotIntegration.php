@@ -17,7 +17,6 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -54,16 +53,15 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     protected string $businessUnitId = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Use Custom URL?',
         instructions: 'Enable this if you connect to your Salesforce account with a custom company URL.',
         order: 2,
     )]
-    protected bool $useCustomUrl = false;
+    protected string $useCustomUrl = 'false';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
-    #[VisibilityFilter('Boolean(values.useCustomUrl)')]
     #[Input\Text(
         label: 'Custom URL',
         instructions: 'Enter the custom URL, e.g. `https://mycompany.develop.my.salesforce.com`',
@@ -73,11 +71,11 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENV_SUGGEST)]
-    #[Input\Text(
+    #[Input\BooleanEnv(
         instructions: 'Enable this if your Salesforce account is in Sandbox mode (connects to `test.salesforce.com` instead of `login.salesforce.com` or `mycompany.my.salesforce.com`).',
         order: 4,
     )]
-    protected bool $sandboxMode = false;
+    protected string $sandboxMode = 'false';
 
     public function checkConnection(Client $client): bool
     {
@@ -134,7 +132,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     protected function isCustomUrl(): bool
     {
-        return $this->useCustomUrl;
+        return $this->getProcessedBoolean($this->useCustomUrl);
     }
 
     protected function getCustomUrl(): ?string
@@ -144,7 +142,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     protected function isSandboxMode(): bool
     {
-        return $this->sandboxMode;
+        return $this->getProcessedBoolean($this->sandboxMode);
     }
 
     protected function getDomain(): string

@@ -37,6 +37,7 @@ use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Stringy\Stringy;
 use yii\di\Container;
 
@@ -179,10 +180,6 @@ class PropertyProvider
 
     public function processType(\ReflectionProperty $property, Property $attribute): string
     {
-        if (!$attribute->matchesEdition($this->getPluginEdition())) {
-            return 'hidden';
-        }
-
         if ($attribute->type) {
             return $attribute->type;
         }
@@ -197,9 +194,9 @@ class PropertyProvider
         return lcfirst($class->getShortName());
     }
 
-    protected function getPluginEdition(): string
+    protected function getPluginEdition(): EditionHelper
     {
-        return Freeform::getInstance()->edition;
+        return Freeform::getInstance()->edition();
     }
 
     private function processToolbarConfigurations(Property $attribute): void
@@ -369,10 +366,8 @@ class PropertyProvider
 
     private function processEditions(\ReflectionProperty $property, Property $attribute): void
     {
-        $editions = AttributeHelper::findAttributes($property, Edition::class);
-        foreach ($editions as $edition) {
-            $attribute->editions[] = $edition->name;
-        }
+        $edition = AttributeHelper::findAttribute($property, Edition::class);
+        $attribute->edition = $edition?->name ?? Edition::EXPRESS;
     }
 
     private function processFlags(\ReflectionProperty $property, Property $attribute): void

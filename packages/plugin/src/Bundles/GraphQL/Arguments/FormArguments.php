@@ -45,6 +45,16 @@ class FormArguments extends Arguments
                 'type' => Type::string(),
                 'description' => 'Sort the forms by `asc` or `desc` order',
             ],
+            'siteIds' => [
+                'name' => 'siteIds',
+                'type' => Type::listOf(Type::int()),
+                'description' => 'Filter forms by their site IDs',
+            ],
+            'siteHandles' => [
+                'name' => 'siteHandles',
+                'type' => Type::listOf(Type::string()),
+                'description' => 'Filter forms by their site handles',
+            ],
         ];
     }
 }

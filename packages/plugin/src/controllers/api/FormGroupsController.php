@@ -129,7 +129,7 @@ class FormGroupsController extends BaseApiController
 
         $freeform = Freeform::getInstance();
         $currentSite = \Craft::$app->sites->getCurrentSite();
-        $sitesEnabled = $freeform->settings->getSettingsModel()->sitesEnabled;
+        $sitesEnabled = $freeform->settings->isSitesEnabled();
 
         $params = $this->request->getQueryParams();
         $siteHandle = $params['siteHandle'] ?? $currentSite->handle;

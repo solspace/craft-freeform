@@ -182,7 +182,7 @@ const ConfigurationPanel: React.FC<{
                   ) : (
                     <ReactivateButton
                       onClick={handleReactivate}
-                      disabled={reactivateMutation.isLoading}
+                      disabled={reactivateMutation.isPending}
                     >
                       {translate('Reactivate')}
                     </ReactivateButton>

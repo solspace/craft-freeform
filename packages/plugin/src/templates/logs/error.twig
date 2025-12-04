@@ -60,7 +60,7 @@
     {% endif %}
 {% endmacro %}
 
-{% set content %}
+{% block content %}
 
     <div class="paginator-wrapper upper">
         {{ _self.pager(logReader, perPage, currentPage, segment3) }}
@@ -94,7 +94,7 @@
                                 {{ line.date.format('Y-m-d H:i:s') }}
                             </div>
 
-                            {% if line.extra %}
+                            {% if line.extra.requestId is defined %}
                                 <div data-request-id class="code">
                                     #{{ line.extra.requestId }}
                                 </div>
@@ -129,7 +129,7 @@
         {{ _self.pager(logReader, perPage, currentPage, segment3) }}
     </div>
 
-{% endset %}
+{% endblock %}
 
 {% css %}
     #content { padding: 0; }

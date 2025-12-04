@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 
 #[Type(
     name: 'Regex',
@@ -15,7 +16,7 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
     iconPath: __DIR__.'/../Icons/regex.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
-class RegexField extends TextField implements ExtraFieldInterface
+class RegexField extends TextField implements ExtraFieldInterface, SkipGibberishCheckInterface
 {
     #[Translatable]
     #[Input\Text(

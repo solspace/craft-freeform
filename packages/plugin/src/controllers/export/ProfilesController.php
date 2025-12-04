@@ -24,8 +24,10 @@ class ProfilesController extends BaseController
 
         $site = SitesHelper::getCurrentCpSite();
         $sites = SitesHelper::getEditableSites();
+        $formIds = $this->getFormsService()->getAllowedReadFormIds();
+
         $forms = $this->getFormsService()->getAllForms(sites: $site?->handle);
-        $formIds = array_map(fn (Form $form) => $form->getId(), $forms);
+        $forms = array_filter($forms, fn (Form $form) => \in_array($form->getId(), $formIds));
 
         $exportProfileService = $this->getExportProfileService();
         $exportProfiles = $exportProfileService->getAllProfiles();

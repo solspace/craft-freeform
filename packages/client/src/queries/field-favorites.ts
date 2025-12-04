@@ -13,14 +13,12 @@ type FetchFavoritesQuery = (options?: {
 }) => UseQueryResult<FieldFavorite[], AxiosError>;
 
 export const useFetchFavorites: FetchFavoritesQuery = ({ select } = {}) =>
-  useQuery<FieldFavorite[], AxiosError>(
-    QKFavorites.all,
-    () =>
+  useQuery<FieldFavorite[], AxiosError>({
+    queryKey: QKFavorites.all,
+    queryFn: () =>
       axios
         .get<FieldFavorite[]>(`/api/fields/favorites`)
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      select,
-    }
-  );
+    staleTime: Infinity,
+    select,
+  });

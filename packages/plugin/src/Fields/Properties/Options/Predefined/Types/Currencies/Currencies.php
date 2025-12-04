@@ -32,7 +32,7 @@ class Currencies implements PredefinedSourceTypeInterface
         return 'Currencies';
     }
 
-    public function generateOptions(TranslationTable $translationTable): OptionCollection
+    public function generateOptions(?TranslationTable $translationTable = null): OptionCollection
     {
         static $countries;
         if (null === $countries) {

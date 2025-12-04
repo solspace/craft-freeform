@@ -28,18 +28,18 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Check MX Record',
         instructions: "Email addresses will be validated against their domain's MX records to ensure the domain can receive mail.",
     )]
-    protected bool $checkMxRecord = false;
+    protected string $checkMxRecord = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Display Errors about Blocked Emails under each Email Field',
         instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
-    protected bool $errorsBelowFields = false;
+    protected string $errorsBelowFields = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
@@ -143,6 +143,18 @@ class BlockEmailAddresses extends SpamBlockingIntegration
             return false;
         }
 
-        return checkdnsrr($domain, 'MX') || checkdnsrr($domain, 'A');
+        $previousTimeout = ini_set('default_socket_timeout', '2');
+
+        try {
+            $result
+                = @checkdnsrr($domain, 'MX')
+                || @checkdnsrr($domain, 'A');
+        } finally {
+            if (false !== $previousTimeout) {
+                ini_set('default_socket_timeout', $previousTimeout);
+            }
+        }
+
+        return $result;
     }
 }

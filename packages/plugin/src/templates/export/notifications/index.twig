@@ -11,7 +11,7 @@
 
 {% block actionButton %}
 
-    {% if craft.freeform.pro and currentUser.can("freeform-pro-exportProfilesManage") %}
+    {% if craft.freeform.pro and currentUser.can("freeform-pro-exportNotificationsManage") %}
 
         <div class="buttons">
             <a class="btn submit add icon" href="{{ url('freeform/export/notifications/new') }}">
@@ -53,7 +53,7 @@
                     <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
                         <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                             <span class="status {{ notification.enabled ? 'enabled' : 'disabled' }}"></span>
-                            {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                            {% if currentUser.can("freeform-pro-exportNotificationsManage") %}
                                 <a href="{{ url('freeform/export/notifications/' ~ notification.id) }}">
                                     {{ notification.name }}
                                 </a>
@@ -62,7 +62,11 @@
                             {% endif %}
                         </th>
                         <td>
-                            {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                            {% set form = notification.profile.form %}
+                            {% set canManageForm = form and (currentUser.can("freeform-formsManage") or currentUser.can("freeform-formsManage:" ~ form.id)) %}
+                            {% set canManageProfile = currentUser.can("freeform-pro-exportProfilesManage") %}
+
+                            {% if canManageProfile and canManageForm %}
                                 <a href="{{ url('freeform/export/profiles/' ~ notification.profile.id) }}">
                                     {{ notification.profile.name }}
                                 </a>

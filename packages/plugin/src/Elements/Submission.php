@@ -663,7 +663,7 @@ class Submission extends Element
             $formsService = Freeform::getInstance()->forms;
             $forms = $formsService->getAllForms(sites: $site?->handle);
 
-            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedReadFormIds();
+            $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();
 
             $items = [
                 [

@@ -189,8 +189,7 @@ class PermissionsBundle extends FeatureBundle
                     ],
                 ],
             ],
-            Freeform::PERMISSION_IMPORT_DATA_UTILITY_ACCESS => ['label' => Freeform::t('Access Import Data Utility')],
-            Freeform::PERMISSION_EXPORT_DATA_UTILITY_ACCESS => ['label' => Freeform::t('Access Export Data Utility')],
+            Freeform::PERMISSION_EXPORT_DATA_UTILITY_ACCESS => ['label' => Freeform::t('Access Import/Export Data Utility')],
         ];
     }
 

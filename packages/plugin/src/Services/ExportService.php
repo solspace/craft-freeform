@@ -22,7 +22,6 @@ class ExportService extends BaseService
     {
         $canAccessProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_NOTIFICATIONS_ACCESS);
-        $canAccessImport = PermissionHelper::checkPermission(Freeform::PERMISSION_IMPORT_DATA_UTILITY_ACCESS);
         $canAccessExport = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_DATA_UTILITY_ACCESS);
 
         $navigation = [
@@ -43,7 +42,7 @@ class ExportService extends BaseService
             ];
         }
 
-        if ($canAccessImport) {
+        if ($canAccessExport) {
             $navigation[] = [
                 'title' => Freeform::t('Freeform'),
                 'url' => 'freeform/export/forms',

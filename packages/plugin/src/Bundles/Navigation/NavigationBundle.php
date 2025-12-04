@@ -33,8 +33,11 @@ class NavigationBundle extends FeatureBundle
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
+
         $canAccessExportProfiles = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
         $canAccessExportNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_NOTIFICATIONS_ACCESS);
+        $canAccessExportDataUtility = PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_DATA_UTILITY_ACCESS);
+
         $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         if ($canAccessForms) {
@@ -64,21 +67,38 @@ class NavigationBundle extends FeatureBundle
             $event->addSubnavItem('integrations', Freeform::t('Integrations'), 'freeform/integrations');
         }
 
-        if ($canAccessExportProfiles || $canAccessExportNotifications) {
+        $showImportExport = (
+            $canAccessExportProfiles
+            || $canAccessExportNotifications
+            || $canAccessExportDataUtility
+        );
+
+        if ($showImportExport) {
             $request = \Craft::$app->getRequest();
             $path = $request->getFullPath();
 
+            // Determine default subnav landing
             if ($canAccessExportProfiles) {
                 $defaultExportUrl = 'freeform/export/profiles';
-                $profiles = [
+            } elseif ($canAccessExportNotifications) {
+                $defaultExportUrl = 'freeform/export/notifications';
+            } else {
+                $defaultExportUrl = 'freeform/export/forms';
+            }
+
+            $subnav = [];
+
+            if ($canAccessExportProfiles) {
+                $subnav['profiles'] = [
                     'id' => 'profiles',
                     'label' => Freeform::t('Profiles'),
                     'url' => 'freeform/export/profiles',
                     'sel' => str_starts_with($path, 'freeform/export/profiles'),
                 ];
-            } else {
-                $defaultExportUrl = 'freeform/export/notifications';
-                $profiles = [
+            }
+
+            if ($canAccessExportNotifications) {
+                $subnav['notifications'] = [
                     'id' => 'notifications',
                     'label' => Freeform::t('Notifications'),
                     'url' => 'freeform/export/notifications',
@@ -86,15 +106,21 @@ class NavigationBundle extends FeatureBundle
                 ];
             }
 
-            $subnav = [
-                'profiles' => $profiles,
-                'files' => [
-                    'id' => 'files',
-                    'label' => Freeform::t('Files'),
-                    'url' => 'freeform/export/files',
-                    'sel' => str_starts_with($path, 'freeform/export/files'),
-                ],
-            ];
+            if ($canAccessExportDataUtility) {
+                $subnav['forms-export'] = [
+                    'id' => 'forms-export',
+                    'label' => Freeform::t('Export Forms'),
+                    'url' => 'freeform/export/forms',
+                    'sel' => str_starts_with($path, 'freeform/export/forms'),
+                ];
+
+                $subnav['forms-import'] = [
+                    'id' => 'forms-import',
+                    'label' => Freeform::t('Import Forms'),
+                    'url' => 'freeform/import/forms',
+                    'sel' => str_starts_with($path, 'freeform/import/forms'),
+                ];
+            }
 
             $event->addSubnavItem(
                 'export',

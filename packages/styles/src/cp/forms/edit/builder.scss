@@ -134,6 +134,36 @@ $sidebarMinWidth: 18%;
       padding-left: 5px;
     }
   }
+
+  ol {
+    list-style: none;
+    counter-reset: preview-ol;
+  }
+
+  ol > li {
+    position: relative;
+  }
+
+  ol > li::before {
+    position: absolute;
+    left: -20px;
+    width: 1.2em;
+    text-align: right;
+  }
+
+  /* bullets for bullet items, decimals for ordered */
+  ol > li[data-list="bullet"]::before {
+    content: '\2022';
+  }
+
+  ol > li[data-list="ordered"]::before {
+    counter-increment: preview-ol;
+    content: counter(preview-ol, decimal) '. ';
+  }
+}
+
+.composer-html-content .ql-ui {
+  display: none;
 }
 
 #freeform-builder {

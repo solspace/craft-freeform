@@ -12,20 +12,76 @@ class ExportController extends Controller
     {
         $image = \Craft::$app->request->post('image');
 
-        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT);
-        $pdf->setAuthor(\Craft::$app->getUser()->getIdentity()->fullName);
-        $pdf->setTitle('Export of data');
-
-        $pdf->setJPEGQuality(75);
-
         [$_, $encoded] = explode(',', $image);
         $decoded = base64_decode($encoded);
 
-        $pdf->AddPage();
-        $pdf->Image('@'.$decoded, 10, 20, 190);
+        $tmp = tempnam(sys_get_temp_dir(), 'survey_').'.png';
+        file_put_contents($tmp, $decoded);
+
+        $src = imagecreatefrompng($tmp);
+        $srcWidth = imagesx($src);
+        $srcHeight = imagesy($src);
+
+        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT);
+        $pdf->setAuthor(\Craft::$app->getUser()->getIdentity()->fullName);
+        $pdf->setTitle('Export of data');
+        $pdf->setJPEGQuality(80);
+
+        $margins = $pdf->getMargins();
+        $pageWidthMm = $pdf->getPageWidth() - $margins['left'] - $margins['right'];
+        $pageHeightMm = $pdf->getPageHeight() - $margins['top'] - $margins['bottom'];
+
+        $pxToMm = $pageWidthMm / $srcWidth;
+
+        $sliceHeightPx = (int) round($pageHeightMm / $pxToMm);
+
+        $offset = 0;
+        $sliceIndex = 0;
+
+        while ($offset < $srcHeight) {
+            ++$sliceIndex;
+
+            $currentSliceHeight = min($sliceHeightPx, $srcHeight - $offset);
+
+            $slice = imagecreatetruecolor($srcWidth, $currentSliceHeight);
+
+            imagealphablending($slice, false);
+            imagesavealpha($slice, true);
+
+            $transparent = imagecolorallocatealpha($slice, 0, 0, 0, 127);
+            imagefilledrectangle($slice, 0, 0, $srcWidth, $currentSliceHeight, $transparent);
+
+            imagecopy(
+                $slice,
+                $src,
+                0,
+                0,
+                0,
+                $offset,
+                $srcWidth,
+                $currentSliceHeight
+            );
+
+            $slicePath = tempnam(sys_get_temp_dir(), 'slice_').'.png';
+            imagepng($slice, $slicePath);
+            imagedestroy($slice);
+
+            $pdf->AddPage();
+            $pdf->Image(
+                $slicePath,
+                $margins['left'],
+                $margins['top'],
+                $pageWidthMm,
+                0
+            );
+
+            $offset += $currentSliceHeight;
+        }
+
         $pdf->lastPage();
 
-        $pdf->Output('some_pdf');
+        $filename = 'survey-'.date('Y-m-d-His').'.pdf';
+        $pdf->Output($filename, 'D');
 
         exit;
     }

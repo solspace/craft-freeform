@@ -1,6 +1,8 @@
 import React, { memo, useState } from 'react';
 import { DragPreviewImage } from 'react-dnd';
+import { DuplicateButton } from '@components/elements/duplicate-button/duplicate';
 import { RemoveButton } from '@components/elements/remove-button/remove';
+import type { Row } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import type { Field as FieldPropType } from '@editor/store/slices/layout/fields';
@@ -14,6 +16,7 @@ import { FieldWrapper } from './field.styles';
 
 type Props = {
   field: FieldPropType;
+  row: Row;
   index: number;
   width?: number;
   isOver: boolean;
@@ -26,6 +29,7 @@ type Props = {
 export const Field: React.FC<Props> = memo(
   ({
     field,
+    row,
     index,
     width,
     isOver,
@@ -60,6 +64,13 @@ export const Field: React.FC<Props> = memo(
           ref={drag}
           style={style}
         >
+          <DuplicateButton
+            active={hovering}
+            onClick={() => {
+              dispatch(contextActions.unfocus());
+              dispatch(fieldThunks.duplicate(field, row));
+            }}
+          />
           <RemoveButton
             active={hovering}
             onClick={() => {

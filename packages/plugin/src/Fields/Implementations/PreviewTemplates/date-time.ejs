@@ -25,6 +25,10 @@
         break;
     }
 
+    if (dateSeparator === 'space') {
+      dateSeparator = ' ';
+    }
+
     formatParts.push(trio.join(dateSeparator));
   }
 
@@ -37,6 +41,10 @@
     } else {
       hours = 'g';
       ampm = (clockAMPMSeparate ? ' ' : '') + 'A';
+    }
+
+    if (clockSeparator === 'space') {
+      clockSeparator = ' ';
     }
 
     formatParts.push(hours + clockSeparator + minutes + ampm);

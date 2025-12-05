@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.29 - 2025-12-05
+
+### Fixed
+- Fixed an issue where **Rich Text** fields rendered unordered lists as numbered (ordered) lists.
+
 ## 4.1.28 - 2025-07-25
 
 ### Added

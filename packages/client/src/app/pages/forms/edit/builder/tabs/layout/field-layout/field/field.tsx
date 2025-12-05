@@ -2,6 +2,7 @@ import React, { memo, useState } from 'react';
 import { DragPreviewImage } from 'react-dnd';
 import { DuplicateButton } from '@components/elements/duplicate-button/duplicate';
 import { RemoveButton } from '@components/elements/remove-button/remove';
+import config from '@config/freeform/freeform.config';
 import type { Row } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
@@ -52,6 +53,8 @@ export const Field: React.FC<Props> = memo(
       hoverPosition,
     });
 
+    const canDuplicate = config.limitations.can('layout.fields.clone');
+
     return (
       <>
         <DragPreviewImage
@@ -64,13 +67,15 @@ export const Field: React.FC<Props> = memo(
           ref={drag}
           style={style}
         >
-          <DuplicateButton
-            active={hovering}
-            onClick={() => {
-              dispatch(contextActions.unfocus());
-              dispatch(fieldThunks.duplicate(field, row));
-            }}
-          />
+          {canDuplicate && (
+            <DuplicateButton
+              active={hovering}
+              onClick={() => {
+                dispatch(contextActions.unfocus());
+                dispatch(fieldThunks.duplicate(field, row));
+              }}
+            />
+          )}
           <RemoveButton
             active={hovering}
             onClick={() => {

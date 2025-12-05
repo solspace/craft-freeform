@@ -36,6 +36,8 @@ export default class RichText extends BasePropertyEditor {
     ],
   };
 
+  static formats = ['header', 'bold', 'italic', 'underline', 'link', 'list'];
+
   constructor(props, context) {
     super(props, context);
 
@@ -83,6 +85,7 @@ export default class RichText extends BasePropertyEditor {
           onChange={this.updateValue}
           theme="snow"
           modules={this.modules}
+          formats={RichText.formats}
         />
 
         <Button
@@ -105,8 +108,6 @@ export default class RichText extends BasePropertyEditor {
    */
   updateValue = (value) => {
     const { updateField } = this.context;
-
-    console.log(value);
 
     updateField({
       value: value,

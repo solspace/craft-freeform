@@ -55,6 +55,7 @@ export default class RichText extends BasePropertyEditor {
     const style = !fullscreen
       ? { height: 200, marginBottom: 40 }
       : {
+          background: 'white',
           width: 'auto',
           height: 'calc(100% - 42px)',
           position: 'absolute',

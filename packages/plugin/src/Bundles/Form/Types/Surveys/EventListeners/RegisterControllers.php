@@ -58,13 +58,13 @@ class RegisterControllers extends FeatureBundle
                 ]);
 
                 $event->rules[] = new UrlRule([
-                    'pattern' => 'freeform/surveys/export/pdf',
+                    'pattern' => 'freeform/export/surveys/pdf',
                     'route' => 'freeform/surveys-export/pdf',
                     'verb' => ['POST'],
                 ]);
 
                 $event->rules[] = new UrlRule([
-                    'pattern' => 'freeform/surveys/export/images',
+                    'pattern' => 'freeform/export/surveys/images',
                     'route' => 'freeform/surveys-export/images',
                     'verb' => ['POST'],
                 ]);

@@ -15,8 +15,8 @@
     "axios": "^1.12.2",
     "globals": "^15.14.0",
     "install": "^0.13.0",
-    "lerna": "^8.1.9",
-    "npm": "^9.8.1",
+    "lerna": "^9.0.3",
+    "npm": "^11.6.4",
     "react-router-dom": "^6.30.1"
   },
   "devDependencies": {

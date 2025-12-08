@@ -887,6 +887,7 @@ return [
     'Average' => 'Average',
     '{count} Responses' => '{count} Responses',
     '{count} questions' => '{count} questions',
+    'Export as PDF' => 'Export as PDF',
 
     // Email Notifications
     'Email Notifications' => 'Email Notifications',

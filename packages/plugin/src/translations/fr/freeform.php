@@ -887,6 +887,7 @@ return [
     'Average' => 'Moyenne',
     '{count} Responses' => '{count} Réponses',
     '{count} questions' => '{count} questions',
+    'Export as PDF' => 'Exporter en PDF',
 
     // Email Notifications
     'Email Notifications' => 'Notifications par e-mail',

@@ -160,7 +160,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         instructions: 'Used to separate date values.',
         emptyOption: 'None',
         options: [
-            ' ' => 'Space',
+            'space' => 'Space',
             '/' => '/',
             '-' => '-',
             '.' => '.',
@@ -213,7 +213,7 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
         instructions: 'Used to separate clock values.',
         emptyOption: 'None',
         options: [
-            ' ' => 'Space',
+            'space' => 'Space',
             ':' => ':',
             '-' => '-',
             '.' => '.',
@@ -312,7 +312,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getDateSeparator(): string
     {
-        return $this->translate('dateSeparator', $this->dateSeparator);
+        $separator = $this->translate('dateSeparator', $this->dateSeparator);
+
+        return match ($separator) {
+            'space' => ' ',
+            'empty' => '',
+            default => $separator,
+        };
     }
 
     public function isClock24h(): bool
@@ -322,7 +328,13 @@ class DatetimeField extends AbstractField implements PlaceholderInterface, DateP
 
     public function getClockSeparator(): string
     {
-        return $this->translate('clockSeparator', $this->clockSeparator);
+        $separator = $this->translate('clockSeparator', $this->clockSeparator);
+
+        return match ($separator) {
+            'space' => ' ',
+            'empty' => '',
+            default => $separator,
+        };
     }
 
     public function isClockAMPMSeparate(): bool

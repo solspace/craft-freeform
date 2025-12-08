@@ -887,6 +887,7 @@ return [
     'Average' => 'Gemiddeld',
     '{count} Responses' => '{count} Reacties',
     '{count} questions' => '{count} vragen',
+    'Export as PDF' => 'Exporteren als PDF',
 
     // Email Notifications
     'Email Notifications' => 'E-mail notificaties',

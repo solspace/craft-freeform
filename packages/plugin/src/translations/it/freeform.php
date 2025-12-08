@@ -887,6 +887,7 @@ return [
     'Average' => 'Media',
     '{count} Responses' => '{count} Risposte',
     '{count} questions' => '{count} domande',
+    'Export as PDF' => 'Esporta come PDF',
 
     // Email Notifications
     'Email Notifications' => 'Notifiche Email',

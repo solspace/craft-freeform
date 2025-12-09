@@ -27,7 +27,7 @@ export const duplicateField = (
     rowActions.add({
       layoutUid,
       uid: rowUid,
-      order: row?.order,
+      order: row?.order + 1,
     })
   );
 

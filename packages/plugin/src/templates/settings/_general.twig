@@ -233,6 +233,7 @@
             }) }}
 
             {{ forms.checkboxSelectField({
+                id: "purge-forms",
                 label: "Purge Forms",
                 instructions: "Select which form data should be purged when submissions are purged."|t('freeform'),
                 name: "settings[purgableFormIds]",

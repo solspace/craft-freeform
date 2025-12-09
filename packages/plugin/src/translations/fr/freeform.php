@@ -1253,6 +1253,7 @@ return [
     'Field Attribute Editor' => "Éditeur d'attributs de champs",
     'Encrypt Field Data' => 'Chiffrer les données des champs',
     'Field Type Switcher' => 'Commutateur de type de champ',
+    'Clone Fields' => 'Cloner les champs',
     'Advanced Settings on Submit Buttons' => 'Paramètres avancés sur les boutons de contribution',
     'Access Field Type Manager' => 'Accéder au gestionnaire des types de champs',
     'Access Fields from other Forms' => 'Accéder au champs d’autres formulaires',

@@ -1,4 +1,5 @@
 import { animated } from 'react-spring';
+import { DuplicateButtonWrapper } from '@components/elements/duplicate-button/duplicate.styles';
 import { RemoveButtonWrapper } from '@components/elements/remove-button/remove.styles';
 import styled from 'styled-components';
 
@@ -14,6 +15,13 @@ export const FieldWrapper = styled(animated.div)`
     position: absolute;
     top: 4px;
     right: 4px;
+    z-index: 2;
+  }
+
+  ${DuplicateButtonWrapper} {
+    position: absolute;
+    top: 4px;
+    right: 28px;
     z-index: 2;
   }
 `;

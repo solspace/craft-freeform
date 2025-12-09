@@ -1253,6 +1253,7 @@ return [
     'Field Attribute Editor' => 'Field Attribute Editor',
     'Encrypt Field Data' => 'Encrypt Field Data',
     'Field Type Switcher' => 'Field Type Switcher',
+    'Clone Fields' => 'Clone Fields',
     'Advanced Settings on Submit Buttons' => 'Advanced Settings on Submit Buttons',
     'Access Field Type Manager' => 'Access Field Type Manager',
     'Access Fields from other Forms' => 'Access Fields from other Forms',

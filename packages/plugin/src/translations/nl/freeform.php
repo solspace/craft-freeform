@@ -1253,6 +1253,7 @@ return [
     'Field Attribute Editor' => 'Veldkenmerkeditor',
     'Encrypt Field Data' => 'Veldgegevens coderen',
     'Field Type Switcher' => 'Veldtypeschakelaar',
+    'Clone Fields' => 'Velden klonen',
     'Advanced Settings on Submit Buttons' => 'Geavanceerde instellingen op verzendknoppen',
     'Access Field Type Manager' => 'Toegang tot veldtypebeheer',
     'Access Fields from other Forms' => 'Toegang tot velden uit andere formulieren',

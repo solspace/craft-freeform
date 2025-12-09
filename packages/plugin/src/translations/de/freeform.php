@@ -1186,7 +1186,7 @@ return [
     "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number. Once the maximum has been reached, Freeform will begin overwriting existing older entries to create new ones." => 'Die maximale Anzahl gespeicherter Formulare pro Sitzung (pro Benutzer, obwohl es möglich ist, dass ein Benutzer mehrere Sitzungen hat, wenn er über mehrere Tage hinweg zur Website zurückkehrt). Der Standardwert ist 10, was eine angenehme und vernünftige Anzahl sein sollte. Sobald das Maximum erreicht ist, beginnt Freeform, bestehende ältere Einträge zu überschreiben, um neue zu erstellen.',
 
     // Settings // Queue Processing
-    'Queue Processing' => 'Warteschlangenverarbeitung',
+    'Queue Processing' => 'Queue-Verarbeitung',
     "The following settings enable Freeform to use Craft's queue to process submissions in the background. This improves performance for users when submitting forms. Enable the free Queue Pinging service to ensure tasks continue running automatically." => 'Mit diesen Einstellungen kann Freeform die Warteschlange von Craft nutzen, um Übermittlungen im Hintergrund zu verarbeiten. Dies verbessert die Leistung für Benutzer beim Absenden von Formularen. Aktivieren Sie den kostenlosen Queue-Ping-Service, um Aufgaben automatisch ausführen zu lassen.',
     'Use Queue for AI Processing' => 'Warteschlange für KI-Verarbeitung verwenden',
     "Use Craft's queue system to trigger AI processing." => 'Verwenden Sie das Warteschlangensystem von Craft, um die KI-Verarbeitung auszulösen.',
@@ -1253,6 +1253,7 @@ return [
     'Field Attribute Editor' => 'Feldattribut-Editor',
     'Encrypt Field Data' => 'Felddaten verschlüsseln',
     'Field Type Switcher' => 'Feldtyp-Umschalter',
+    'Clone Fields' => 'Felder duplizieren',
     'Advanced Settings on Submit Buttons' => 'Erweiterte Einstellungen für Senden-Schaltflächen',
     'Access Field Type Manager' => 'Zugriff auf Feldtyp-Manager',
     'Access Fields from other Forms' => 'Zugriff auf Felder aus anderen Formularen',

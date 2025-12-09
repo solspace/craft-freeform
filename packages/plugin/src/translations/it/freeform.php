@@ -1253,6 +1253,7 @@ return [
     'Field Attribute Editor' => 'Editor degli Attributi dei Campi',
     'Encrypt Field Data' => 'Crittografa i Dati dei Campi',
     'Field Type Switcher' => 'Selettore del Tipo di Campo',
+    'Clone Fields' => 'Clona campi',
     'Advanced Settings on Submit Buttons' => 'Impostazioni Avanzate sui Pulsanti di Invio',
     'Access Field Type Manager' => 'Accedi al gestore dei tipi di campo',
     'Access Fields from other Forms' => 'Accedi al campi di altri moduli',

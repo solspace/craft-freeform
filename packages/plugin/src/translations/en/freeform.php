@@ -1128,6 +1128,8 @@ return [
     '120 days' => '120 days',
     '180 days' => '180 days',
     '365 days' => '365 days',
+    'Apply to Forms' => 'Apply to Forms',
+    'Choose which forms the automatic submission purge should apply to.' => 'Choose which forms the automatic submission purge should apply to.',
     'Automatically Purge Unfinalized Assets' => 'Automatically Purge Unfinalized Assets',
     'Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time.' => 'Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time.',
     'Time to Wait Before Purging Assets' => 'Time to Wait Before Purging Assets',

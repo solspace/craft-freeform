@@ -1128,6 +1128,8 @@ return [
     '120 days' => '120 dagen',
     '180 days' => '180 dagen',
     '365 days' => '365 dagen',
+    'Apply to Forms' => 'Toepassen op formulieren',
+    'Choose which forms the automatic submission purge should apply to.' => 'Kies op welke formulieren de automatische inzendingopschoning van toepassing moet zijn.',
     'Automatically Purge Unfinalized Assets' => 'Niet-gefinaliseerde activa automatisch opschonen',
     'Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time.' => 'Schakel dit in om ervoor te zorgen dat Freeform niet-gefinaliseerde activabestanden na een bepaalde periode automatisch opschoont.',
     'Time to Wait Before Purging Assets' => 'Tijd om te wachten voordat activa worden opgeschoond',

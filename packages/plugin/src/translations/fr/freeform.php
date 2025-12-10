@@ -1128,6 +1128,8 @@ return [
     '120 days' => '120 jours',
     '180 days' => '180 jours',
     '365 days' => '365 jours',
+    'Apply to Forms' => 'Appliquer aux formulaires',
+    'Choose which forms the automatic submission purge should apply to.' => 'Choisissez à quels formulaires la purge automatique des soumissions doit s’appliquer.',
     'Automatically Purge Unfinalized Assets' => 'Purger automatiquement les actifs non finalisés',
     'Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time.' => 'Activez cette option pour que Freeform purge automatiquement les fichiers d’actifs non finalisés après une période de temps spécifiée.',
     'Time to Wait Before Purging Assets' => 'Temps d’attente avant de purger les actifs',

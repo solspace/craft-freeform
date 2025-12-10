@@ -1128,6 +1128,8 @@ return [
     '120 days' => '120 giorni',
     '180 days' => '180 giorni',
     '365 days' => '365 giorni',
+    'Apply to Forms' => 'Applica ai moduli',
+    'Choose which forms the automatic submission purge should apply to.' => 'Scegli a quali moduli applicare la pulizia automatica delle invii.',
     'Automatically Purge Unfinalized Assets' => 'Elimina automaticamente le risorse non finalizzate',
     'Enable this to have Freeform automatically purge unfinalized asset files after a specified period of time.' => 'Abilita questa opzione per fare in modo che Freeform elimini automaticamente i file di risorse non finalizzati dopo un periodo di tempo specificato.',
     'Time to Wait Before Purging Assets' => 'È tempo di aspettare prima di eliminare le risorse',

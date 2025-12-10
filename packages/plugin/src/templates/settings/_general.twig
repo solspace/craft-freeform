@@ -234,8 +234,8 @@
 
             {{ forms.checkboxSelectField({
                 id: "purge-forms",
-                label: "Purge Forms",
-                instructions: "Select which form data should be purged when submissions are purged."|t('freeform'),
+                label: "Apply to Forms"|t('freeform'),
+                instructions: "Choose which forms the automatic submission purge should apply to."|t('freeform'),
                 name: "settings[purgableFormIds]",
                 values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
                 showAllOption: true,

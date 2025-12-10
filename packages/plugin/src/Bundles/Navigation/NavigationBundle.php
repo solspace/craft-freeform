@@ -31,6 +31,7 @@ class NavigationBundle extends FeatureBundle
 
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
+        $canAccessAb = PermissionHelper::checkPermission(Freeform::PERMISSION_AB_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessIntegrations = PermissionHelper::checkPermission(Freeform::PERMISSION_INTEGRATIONS_ACCESS);
 
@@ -46,6 +47,10 @@ class NavigationBundle extends FeatureBundle
 
         if ($canAccessSubmissions) {
             $event->addSubnavItem('submissions', Freeform::t('Submissions'), 'freeform/submissions');
+        }
+
+        if ($canAccessAb) {
+            $event->addSubnavItem('ab-tests', Freeform::t('A/B Tests'), 'freeform/ab-tests');
         }
 
         $isSpamFolderEnabled = $freeform->settings->isSpamFolderEnabled();

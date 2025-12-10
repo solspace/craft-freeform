@@ -78,6 +78,11 @@ class BlockEmailAddresses extends SpamBlockingIntegration
         return $this->getProcessedBoolean($this->checkMxRecord);
     }
 
+    public function isErrorsBelowFields(): bool
+    {
+        return $this->getProcessedBoolean($this->errorsBelowFields);
+    }
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $fields = $form->getLayout()->getFields(EmailField::class);
@@ -90,7 +95,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
             $emails = $this->getCombinedEmails();
             foreach ($emails as $email) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
-                    if ($this->errorsBelowFields) {
+                    if ($this->isErrorsBelowFields()) {
                         $message = $this->errorMessage ?: 'Invalid Email Address';
                         $field->addError(Freeform::t($message, ['email' => $value]));
                     }

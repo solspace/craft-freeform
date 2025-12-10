@@ -144,6 +144,7 @@ class Settings extends Model
     public ?string $blockedIpAddresses = null;
     public ?int $purgableSubmissionAgeInDays = null;
     public ?int $purgableSpamAgeInDays = null;
+    public ?array $purgableFormIds = null;
     public int $purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
     public bool $purgeAssets = true;
 

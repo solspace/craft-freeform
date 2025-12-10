@@ -118,6 +118,12 @@ export const fieldsSlice = createSlice({
       }>
     ) => {
       const { uid, rowUid, field } = action.payload;
+      const highestOrder = Math.max(
+        -1,
+        ...state
+          .filter((fieldItem) => fieldItem.rowUid === rowUid)
+          .map((fieldItem) => fieldItem.order ?? -1)
+      );
 
       const properties = { ...field.properties };
 
@@ -139,6 +145,7 @@ export const fieldsSlice = createSlice({
         rowUid,
         typeClass: field.typeClass,
         properties,
+        order: highestOrder + 1,
       });
     },
     remove: (state, { payload: uid }: PayloadAction<string>) => {

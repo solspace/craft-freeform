@@ -73,6 +73,11 @@ class BlockEmailAddresses extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultEmails = [];
 
+    public function isCheckMxRecord(): bool
+    {
+        return $this->getProcessedBoolean($this->checkMxRecord);
+    }
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $fields = $form->getLayout()->getFields(EmailField::class);
@@ -107,7 +112,7 @@ class BlockEmailAddresses extends SpamBlockingIntegration
                 }
             }
 
-            if ($this->checkMxRecord && !$this->hasMXRecord($value)) {
+            if ($this->isCheckMxRecord() && !$this->hasMXRecord($value)) {
                 $form->markAsSpam(
                     SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
                     \sprintf(

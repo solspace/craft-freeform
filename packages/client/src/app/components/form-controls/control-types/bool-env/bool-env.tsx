@@ -26,6 +26,10 @@ const BoolEnv = ({
   const { data, isFetching } = useAutosuggestEnvVariables();
   const options = useEnvOptions();
 
+  if (value === '') {
+    value = 'false';
+  }
+
   return (
     <Control property={property} errors={errors} context={context}>
       <Dropdown

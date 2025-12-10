@@ -66,6 +66,11 @@ class BlockKeywords extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultKeywords = [];
 
+    public function isErrorsBelowFields(): bool
+    {
+        return $this->getProcessedBoolean($this->errorsBelowFields);
+    }
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $keywords = $this->getCombinedKeywords();
@@ -82,7 +87,7 @@ class BlockKeywords extends SpamBlockingIntegration
 
             foreach ($keywords as $keyword) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $value)) {
-                    if ($this->errorsBelowFields) {
+                    if ($this->isErrorsBelowFields()) {
                         $message = $this->errorMessage ?: 'Invalid Entry Data';
                         $field->addError(Freeform::t($message, [
                             'value' => $value,

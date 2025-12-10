@@ -192,7 +192,7 @@ class User extends ElementIntegration
         }
 
         $isDisabled = !$this->isActive();
-        $isSendActivation = $this->sendActivation;
+        $isSendActivation = $this->isSendActivation();
         $isInPendingState = \in_array($element->status, [CraftUser::STATUS_PENDING, CraftUser::STATUS_INACTIVE], true);
 
         if ($isDisabled && $isSendActivation && $isInPendingState) {

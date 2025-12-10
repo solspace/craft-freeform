@@ -77,6 +77,11 @@ class BlockIpAddresses extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultDnsBlockLists = ['zen.spamhaus.org', 'bl.spamcop.net'];
 
+    public function isCheckDnsBlockLists(): bool
+    {
+        return $this->getProcessedBoolean($this->checkDnsBlockLists);
+    }
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $remoteIp = \Craft::$app->request->getUserIP();
@@ -97,7 +102,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
             }
         }
 
-        if ($this->checkDnsBlockLists && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
+        if ($this->isCheckDnsBlockLists() && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
             $form->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,
                 \sprintf(

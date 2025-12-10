@@ -26,8 +26,10 @@ const BoolEnv = ({
   const { data, isFetching } = useAutosuggestEnvVariables();
   const options = useEnvOptions();
 
-  if (value === '') {
+  if (['', '0', 'no', 'off'].includes(String(value).toLowerCase())) {
     value = 'false';
+  } else if (['1', 'yes', 'on'].includes(String(value).toLowerCase())) {
+    value = 'true';
   }
 
   return (

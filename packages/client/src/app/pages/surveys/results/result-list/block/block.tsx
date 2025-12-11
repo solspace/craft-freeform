@@ -103,7 +103,7 @@ export const Block: React.FC<Props> = ({
   }
 
   return (
-    <Wrapper ref={ref}>
+    <Wrapper ref={ref} data-chart-id={field.id}>
       <Bulletin>
         <span>{bulletin}</span>
       </Bulletin>

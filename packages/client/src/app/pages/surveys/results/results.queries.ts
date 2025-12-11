@@ -29,17 +29,15 @@ export const useQuerySurveyResults = (): UseQueryResult<
 > => {
   const { handle } = useParams<RouteParams>();
 
-  return useQuery<SurveyData, AxiosError>(
-    QKSurveyResults.single(handle),
-    () =>
+  return useQuery<SurveyData, AxiosError>({
+    queryKey: QKSurveyResults.single(handle),
+    queryFn: () =>
       axios
         .get<SurveyData>(`/api/surveys/form/${handle}`)
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      enabled: !!handle,
-    }
-  );
+    staleTime: Infinity,
+    enabled: !!handle,
+  });
 };
 
 export const useQuerySurveyPreferences = (): UseQueryResult<
@@ -48,12 +46,12 @@ export const useQuerySurveyPreferences = (): UseQueryResult<
 > => {
   const { handle } = useParams<RouteParams>();
 
-  return useQuery<SurveyPreferences, AxiosError>(
-    QKSurveyResults.preferences(handle),
-    () =>
+  return useQuery<SurveyPreferences, AxiosError>({
+    queryKey: QKSurveyResults.preferences(handle),
+    queryFn: () =>
       axios.get(`/api/surveys/preferences/${handle}`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+    staleTime: Infinity,
+  });
 };
 
 export const useQuerySurveyChart = (): UseQueryResult<
@@ -62,9 +60,10 @@ export const useQuerySurveyChart = (): UseQueryResult<
 > => {
   const { handle } = useParams<RouteParams>();
 
-  return useQuery(
-    QKSurveyResults.chart(handle),
-    () => axios.get(`/api/surveys/chart/${handle}`).then((res) => res.data),
-    { staleTime: Infinity }
-  );
+  return useQuery({
+    queryKey: QKSurveyResults.chart(handle),
+    queryFn: () =>
+      axios.get(`/api/surveys/chart/${handle}`).then((res) => res.data),
+    staleTime: Infinity,
+  });
 };

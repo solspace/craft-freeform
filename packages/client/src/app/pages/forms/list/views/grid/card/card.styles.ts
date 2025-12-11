@@ -114,6 +114,13 @@ export const CardWrapper = styled.li`
     background-color 0.2s ease-out,
     border-color 0.2s ease-out;
 
+  &.blurred {
+    filter: blur(3px);
+    opacity: 0.35;
+    pointer-events: none;
+    user-select: none;
+  }
+
   &.disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -148,8 +155,8 @@ export const PaddedChartFooter = styled.div<{ $color: string }>`
 
   height: 5px;
 
-  font-size: 1px;
-  line-height: 1px;
+  font-size: 0px;
+  line-height: 0px;
 
   overflow: hidden;
 `;

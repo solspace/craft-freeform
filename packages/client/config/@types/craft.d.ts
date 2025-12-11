@@ -13,11 +13,14 @@ declare namespace Craft {
     settings: {
       multiSelect?: boolean;
       sources?: string | string[];
-      criteria?: Record<string, any>;
+      criteria?: Record<string, unknown>;
       storageKey?: string;
       onSelect: (elements: Array<CraftElement>) => void;
     }
-  ): any;
+  ): Promise<void>;
 
   function getCpUrl(path: string): string;
+
+  const csrfTokenName: string;
+  const csrfTokenValue: string;
 }

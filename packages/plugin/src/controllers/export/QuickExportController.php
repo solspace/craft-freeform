@@ -6,7 +6,6 @@ use Solspace\Freeform\Bundles\Export\Collections\FieldDescriptorCollection;
 use Solspace\Freeform\Bundles\Export\Objects\FieldDescriptor;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\JsonHelper;
@@ -25,19 +24,18 @@ class QuickExportController extends BaseController
         $formId = \Craft::$app->request->getParam('formId');
         $isSpam = 'true' === \Craft::$app->request->getParam('isSpam');
 
-        $allowedFormIds = $this->getSubmissionsService()->getAllowedReadFormIds();
+        $allowedFormIds = $this->getFormsService()->getAllowedReadFormIds();
 
-        /** @var Form[] $forms */
-        $forms = [];
-
-        $fields = [];
-        $forms = $this->getFormsService()->getAllForms();
-        foreach ($forms as $form) {
+        $forms = $fields = [];
+        $formList = $this->getFormsService()->getAllForms();
+        foreach ($formList as $form) {
             if (null !== $allowedFormIds) {
                 if (!\in_array($form->getId(), $allowedFormIds)) {
                     continue;
                 }
             }
+
+            $forms[$form->getId()] = $form;
 
             foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
                 $fields[$field->getId()] = $field;

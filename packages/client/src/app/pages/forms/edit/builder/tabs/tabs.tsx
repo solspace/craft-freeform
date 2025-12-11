@@ -77,7 +77,7 @@ export const Tabs: React.FC = () => {
             <span>{translate('Notifications')}</span>
           </NavLink>
         )}
-        {config.editions.is(Edition.Pro) && limitations.can('rules.tab') && (
+        {limitations.can('rules.tab') && (
           <NavLink to="rules">
             <span>{translate('Rules')}</span>
           </NavLink>

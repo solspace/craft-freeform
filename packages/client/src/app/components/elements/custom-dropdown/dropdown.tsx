@@ -18,7 +18,7 @@ import { PopUpPortal } from '../pop-up-portal';
 
 import CloseIcon from './close.svg';
 import {
-  findLabelByValue,
+  findOptionByValue,
   findShadowIndexByValue,
   findValueByShadowIndex,
   useFilteredOptions,
@@ -29,6 +29,7 @@ import {
   CurrentValue,
   DropdownRollout,
   DropdownWrapper,
+  Icon,
   ListWrapper,
   Search,
   SpinnerWrapper,
@@ -40,6 +41,8 @@ export type DropdownProps = {
   options?: OptionCollection;
   value?: string;
   showValues?: boolean;
+  showHints?: boolean;
+  showSelectedIcon?: boolean;
   onChange?: (value: string) => void;
 };
 
@@ -48,6 +51,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
   value,
   options,
   showValues,
+  showHints,
+  showSelectedIcon,
   onChange,
   loading = false,
 }) => {
@@ -81,8 +86,8 @@ export const Dropdown: React.FC<DropdownProps> = ({
     emptyOption
   );
 
-  const selectedValue = useMemo(
-    () => findLabelByValue(options, value) || translate(emptyOption),
+  const selectedOption = useMemo(
+    () => findOptionByValue(options, value),
     [options, value, loading]
   );
 
@@ -160,7 +165,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
           (value === '' || value === null) && 'empty'
         )}
       >
-        <span dangerouslySetInnerHTML={{ __html: selectedValue }} />
+        {showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>}
+        <span
+          dangerouslySetInnerHTML={{
+            __html: selectedOption?.label || translate(emptyOption),
+          }}
+        />
 
         {loading && (
           <SpinnerWrapper>
@@ -196,6 +206,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
                 value={value}
                 focusIndex={focusIndex}
                 showValues={showValues}
+                showHints={showHints}
                 onChange={onOptionClick}
               />
             </ListWrapper>

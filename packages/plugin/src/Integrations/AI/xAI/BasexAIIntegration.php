@@ -19,6 +19,7 @@ abstract class BasexAIIntegration extends APIIntegration implements AiIntegratio
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
@@ -27,6 +28,7 @@ abstract class BasexAIIntegration extends APIIntegration implements AiIntegratio
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Model',
         instructions: 'The xAI model to use for AI processing.',

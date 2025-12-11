@@ -4,7 +4,8 @@ namespace Solspace\Freeform\Integrations\Single\PostForwarding;
 
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Edition;
-use Solspace\Freeform\Attributes\Property\Input\Boolean;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Text;
 use Solspace\Freeform\Attributes\Property\Input\TextArea;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -26,6 +27,7 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     public const EVENT_POST_FORWARDING = 'post-forwarding';
 
     #[VisibilityFilter('enabled')]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Text(
         label: 'URL',
         instructions: 'Enter the URL where the POST request should be sent. You can use Twig variables for `form` and `submission` to process the URL.',
@@ -41,11 +43,11 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
     protected string $errorTrigger = '';
 
     #[VisibilityFilter('enabled')]
-    #[Boolean(
+    #[Input\BooleanEnv(
         label: 'Include Uploaded Files',
         instructions: 'If files are present in the form submission, they will be attached to the payload and sent as multipart form data.',
     )]
-    protected bool $sendFiles = false;
+    protected string $sendFiles = 'false';
 
     public function getUrl(): string
     {
@@ -59,6 +61,6 @@ class PostForwarding extends BaseIntegration implements SingletonIntegrationInte
 
     public function isSendFiles(): bool
     {
-        return $this->sendFiles;
+        return $this->getProcessedBoolean($this->sendFiles);
     }
 }

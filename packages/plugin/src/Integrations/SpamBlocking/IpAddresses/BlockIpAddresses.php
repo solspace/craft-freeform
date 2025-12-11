@@ -49,14 +49,13 @@ class BlockIpAddresses extends SpamBlockingIntegration
     protected array $defaultIps = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Check DNS Block Lists',
         instructions: 'IP addresses will be checked against the DNS block lists provided below to help detect spam and abusive activity.',
     )]
-    protected bool $checkDnsBlockLists = false;
+    protected string $checkDnsBlockLists = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[VisibilityFilter('Boolean(values.checkDnsBlockLists)')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
@@ -68,7 +67,6 @@ class BlockIpAddresses extends SpamBlockingIntegration
     protected array $dnsBlockLists = [];
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[VisibilityFilter('Boolean(values.checkDnsBlockLists)')]
     #[Flag(self::FLAG_AS_READONLY_IN_INSTANCE)]
     #[ValueTransformer(SeparatedStringToArrayTransformer::class)]
     #[Input\TextArea(
@@ -78,6 +76,11 @@ class BlockIpAddresses extends SpamBlockingIntegration
     )]
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultDnsBlockLists = ['zen.spamhaus.org', 'bl.spamcop.net'];
+
+    public function isCheckDnsBlockLists(): bool
+    {
+        return $this->getProcessedBoolean($this->checkDnsBlockLists);
+    }
 
     public function validate(Form $form, bool $displayErrors): void
     {
@@ -99,7 +102,7 @@ class BlockIpAddresses extends SpamBlockingIntegration
             }
         }
 
-        if ($this->checkDnsBlockLists && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
+        if ($this->isCheckDnsBlockLists() && IpUtils::checkDnsBlockLists($remoteIp, $dnsBlockLists)) {
             $form->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,
                 \sprintf(

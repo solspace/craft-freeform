@@ -40,7 +40,7 @@ class ExportProfileModel extends Model
         return $model;
     }
 
-    public function getForm(): Form
+    public function getForm(): ?Form
     {
         return Freeform::getInstance()->forms->getFormById($this->formId);
     }

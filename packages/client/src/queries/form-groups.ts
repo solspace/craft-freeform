@@ -17,13 +17,13 @@ type FetchFormGroupsQuery = (options?: {
 export const useFetchFormGroups: FetchFormGroupsQuery = () => {
   const { current, getCurrentHandleWithFallback } = useSiteContext();
 
-  return useQuery<FormWithGroup, AxiosError>(
-    QKGroups.all(getCurrentHandleWithFallback()),
-    () =>
+  return useQuery<FormWithGroup, AxiosError>({
+    queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+    queryFn: () =>
       axios
         .get<FormWithGroup>(`/api/forms/groups`, {
           params: { siteHandle: current?.handle, siteId: current?.id },
         })
-        .then((res) => res.data)
-  );
+        .then((res) => res.data),
+  });
 };

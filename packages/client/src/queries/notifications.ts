@@ -27,7 +27,7 @@ export const useNotificationQueryReset = (): (() => void) => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.removeQueries(QKNotifications.all);
+    queryClient.removeQueries({ queryKey: QKNotifications.all });
   };
 };
 
@@ -35,35 +35,31 @@ export const useQueryNotificationTypes = (): UseQueryResult<
   NotificationType[],
   AxiosError
 > => {
-  return useQuery<NotificationType[], AxiosError>(
-    QKNotifications.types(),
-    () =>
+  return useQuery<NotificationType[], AxiosError>({
+    queryKey: QKNotifications.types(),
+    queryFn: () =>
       axios
         .get<NotificationType[]>('/api/notifications/types')
         .then((res) => res.data)
         .then((res) => res.sort((a, b) => a.order - b.order)),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useQueryNotificationSuggestions = (): UseQueryResult<
   SuggestionCategory[],
   AxiosError
 > => {
-  return useQuery<SuggestionCategory[], AxiosError>(
-    QKNotifications.suggestions(),
-    () =>
+  return useQuery<SuggestionCategory[], AxiosError>({
+    queryKey: QKNotifications.suggestions(),
+    queryFn: () =>
       axios
         .get<SuggestionCategory[]>('/api/templates/notifications/suggestions')
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useQueryFormNotifications = (
@@ -71,9 +67,9 @@ export const useQueryFormNotifications = (
 ): UseQueryResult<Notification[], AxiosError> => {
   const dispatch = useDispatch();
 
-  return useQuery<Notification[], AxiosError>(
-    QKNotifications.single(formId),
-    () => {
+  return useQuery<Notification[], AxiosError>({
+    queryKey: QKNotifications.single(formId),
+    queryFn: () => {
       if (!formId) {
         return Promise.resolve([]);
       }
@@ -87,11 +83,9 @@ export const useQueryFormNotifications = (
           return res;
         });
     },
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export type NotificationTemplateGroups = {
@@ -108,17 +102,15 @@ export const useQueryNotificationTemplates = (): UseQueryResult<
   NotificationTemplatePayload,
   AxiosError
 > => {
-  return useQuery<NotificationTemplatePayload, AxiosError>(
-    QKNotifications.templates(),
-    () =>
+  return useQuery<NotificationTemplatePayload, AxiosError>({
+    queryKey: QKNotifications.templates(),
+    queryFn: () =>
       axios
         .get<NotificationTemplatePayload>('/api/notifications/templates')
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useQueryFormNotificationTemplates = (
@@ -128,16 +120,14 @@ export const useQueryFormNotificationTemplates = (
     templates: { method },
   } = config;
 
-  return useQuery(
-    QKNotifications.formTemplates(formId),
-    () =>
+  return useQuery({
+    queryKey: QKNotifications.formTemplates(formId),
+    queryFn: () =>
       axios
         .get(`/api/forms/${formId}/notifications/templates`)
         .then((res) => res.data),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-      enabled: method !== TemplateMethod.Global,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: method !== TemplateMethod.Global,
+  });
 };

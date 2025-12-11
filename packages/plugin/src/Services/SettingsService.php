@@ -13,12 +13,14 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\helpers\App;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationLoggerProvider;
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationLoggerProvider;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\Single\FormMonitor\FormMonitor;
 use Solspace\Freeform\Integrations\Single\Honeypot\Honeypot;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\StringHelper;
@@ -26,6 +28,7 @@ use Solspace\Freeform\Library\Templates\TemplateLocator;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 
@@ -46,9 +49,7 @@ class SettingsService extends BaseService
 
     public function isFreeformHoneypotEnabled(?Form $form = null): bool
     {
-        $settingsModel = $this->getSettingsModel();
-
-        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($this->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
             return false;
         }
 
@@ -168,27 +169,62 @@ class SettingsService extends BaseService
 
     public function isFormSubmitDisable(): bool
     {
-        return (bool) $this->getSettingsModel()->formSubmitDisable;
+        return App::parseBooleanEnv($this->getSettingsModel()->formSubmitDisable);
     }
 
     public function isRememberSubmitOrder(): bool
     {
-        return (bool) $this->getSettingsModel()->rememberPageSubmitOrder;
+        return App::parseBooleanEnv($this->getSettingsModel()->rememberPageSubmitOrder);
     }
 
     public function isAutoScrollToErrors(): bool
     {
-        return (bool) $this->getSettingsModel()->autoScrollToErrors;
+        return App::parseBooleanEnv($this->getSettingsModel()->autoScrollToErrors);
+    }
+
+    public function isAutoScroll(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->autoScroll);
     }
 
     public function isUseIdempotencyKey(): bool
     {
-        return (bool) $this->getSettingsModel()->useIdempotencyKey;
+        return App::parseBooleanEnv($this->getSettingsModel()->useIdempotencyKey);
     }
 
     public function isRemoveNewlines(): bool
     {
-        return (bool) $this->getSettingsModel()->removeNewlines;
+        return App::parseBooleanEnv($this->getSettingsModel()->removeNewlines);
+    }
+
+    public function isExportLabels(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->exportLabels);
+    }
+
+    public function isExportHandlesAsNames(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->exportHandlesAsNames);
+    }
+
+    public function isSitesEnabled(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->sitesEnabled);
+    }
+
+    public function isFillWithGet(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->fillWithGet);
+    }
+
+    public function isAllowDashesInFieldHandles(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->allowDashesInFieldHandles);
+    }
+
+    public function isUpdateSearchIndexes(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->updateSearchIndexes);
     }
 
     public function getPurgableSubmissionAgeInDays(): ?int
@@ -234,6 +270,24 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->queuePriority;
     }
 
+    public function getQueuePingToken(): ?string
+    {
+        return $this->getSettingsModel()->queuePingToken;
+    }
+
+    public function isManagedPingerEnabled(): bool
+    {
+        return (bool) $this->getSettingsModel()->managedPingerEnabled;
+    }
+
+    public function disablePinging(): void
+    {
+        $settings = $this->getSettingsModel();
+        $settings->managedPingerEnabled = false;
+
+        \Craft::$app->plugins->savePluginSettings(Freeform::getInstance(), $settings->toArray());
+    }
+
     public function getSettingsModel(): Settings
     {
         if (null === self::$settingsModel) {
@@ -253,6 +307,7 @@ class SettingsService extends BaseService
         $nav = [
             'general' => ['title' => Freeform::t('General Settings')],
             'form-behavior' => ['title' => Freeform::t('Form Behavior')],
+            'queue-processing' => ['title' => Freeform::t('Queue Processing')],
             'form-builder' => ['title' => Freeform::t('Form Builder')],
             'limited-users' => ['title' => Freeform::t('Limited Users')],
             'template-manager' => ['title' => Freeform::t('Template Manager')],
@@ -269,15 +324,6 @@ class SettingsService extends BaseService
             'email-log' => ['title' => Freeform::t('Emails <span class="badge">{count}</span>', ['count' => $emailCount])],
         ];
 
-        if (!$this->isAllowAdminEdit()) {
-            unset($nav['hdspam']);
-            foreach ($nav as $key => $value) {
-                if (!isset($value['heading']) && $this->isSectionASetting($key)) {
-                    unset($nav[$key]);
-                }
-            }
-        }
-
         $nav = array_filter($nav);
 
         $event = new RegisterSettingsNavigationEvent($nav);
@@ -288,7 +334,12 @@ class SettingsService extends BaseService
 
     public function isSpamFolderEnabled(): bool
     {
-        return $this->getSettingsModel()->spamFolderEnabled;
+        return App::parseBooleanEnv($this->getSettingsModel()->spamFolderEnabled);
+    }
+
+    public function isDisplayFeed(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->displayFeed);
     }
 
     public function isAjaxEnabledByDefault(): bool
@@ -366,7 +417,7 @@ class SettingsService extends BaseService
 
     public function isDigestOnlyOnProduction(): bool
     {
-        return $this->getSettingsModel()->digestOnlyOnProduction;
+        return App::parseBooleanEnv($this->getSettingsModel()->digestOnlyOnProduction);
     }
 
     public function getBadgeCount(): ?int
@@ -399,6 +450,9 @@ class SettingsService extends BaseService
 
     public function saveSettings(array $data): bool
     {
+        // Normalize pinging-related settings before saving
+        $data = $this->normalizePingingSettings($data);
+
         $plugin = Freeform::getInstance();
         $plugin->setSettings($data);
 
@@ -417,22 +471,82 @@ class SettingsService extends BaseService
 
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
-        return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
+        return App::parseBooleanEnv($this->getSettingsModel()->formFieldShowOnlyAllowedForms);
     }
 
     public function isNotificationQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForEmailNotifications;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForEmailNotifications);
     }
 
     public function isIntegrationQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForIntegrations;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForIntegrations);
     }
 
     public function isAiFieldQueueEnabled(): bool
     {
-        return $this->getSettingsModel()->useQueueForAiFields;
+        return App::parseBooleanEnv($this->getSettingsModel()->useQueueForAiFields);
+    }
+
+    public function isBypassSpamCheckOnLoggedInUsers(): bool
+    {
+        return App::parseBooleanEnv($this->getSettingsModel()->bypassSpamCheckOnLoggedInUsers);
+    }
+
+    public function isFormMonitorEnabledAndAuthorized(): bool
+    {
+        try {
+            $record = IntegrationRecord::find()
+                ->where(['class' => FormMonitor::class])
+                ->one()
+            ;
+
+            if (!$record || !$record->enabled) {
+                return false;
+            }
+
+            $model = Freeform::getInstance()->integrations->getById((int) $record->id);
+            if (!$model) {
+                return false;
+            }
+
+            $integration = $model->getIntegrationObject();
+            if (!$integration instanceof FormMonitor) {
+                return false;
+            }
+
+            return (bool) ($integration->getApiKey() && $integration->getRequestToken());
+        } catch (\Throwable $e) {
+            return false;
+        }
+    }
+
+    private function normalizePingingSettings(array $data): array
+    {
+        // Auto-manage endpoint when managed pinger is toggled
+        if (\array_key_exists('managedPingerEnabled', $data)) {
+            $managed = (bool) $data['managedPingerEnabled'];
+            if ($managed) {
+                // Ensure token exists
+                $existingToken = $this->getSettingsModel()->queuePingToken;
+
+                if (empty($data['queuePingToken']) && !$existingToken) {
+                    $data['queuePingToken'] = \Craft::$app->getSecurity()->generateRandomString(32);
+                }
+            }
+        }
+
+        // Convert UI minutes to seconds if provided
+        if (\array_key_exists('queuePingMinIntervalMinutes', $data)) {
+            $minutes = (int) $data['queuePingMinIntervalMinutes'];
+            if ($minutes > 0) {
+                $data['queuePingMinIntervalSeconds'] = max(5, $minutes * 60);
+            }
+            unset($data['queuePingMinIntervalMinutes']);
+        }
+
+        return $data;
     }
 
     private function getTemplatesIn(?string $path): array

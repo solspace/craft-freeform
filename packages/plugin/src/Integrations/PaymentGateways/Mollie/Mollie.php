@@ -36,11 +36,11 @@ class Mollie extends PaymentGatewayIntegration
     )]
     protected string $apiKey = '';
 
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Use Test Mode',
         instructions: 'Enable to use Mollie test mode. Make sure to use your test API key when this is enabled.',
     )]
-    protected bool $useTestMode = true;
+    protected string $useTestMode = 'true';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
@@ -67,7 +67,7 @@ class Mollie extends PaymentGatewayIntegration
 
     public function isTestMode(): bool
     {
-        return $this->useTestMode;
+        return $this->getProcessedBoolean($this->useTestMode);
     }
 
     public function getWebhookSecret(): string

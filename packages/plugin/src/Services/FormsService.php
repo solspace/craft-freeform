@@ -257,6 +257,30 @@ class FormsService extends BaseService implements FormHandlerInterface
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
+    public function getAllowedWriteFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+            return $this->getFormsService()->getAllFormIds();
+        }
+
+        return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+    }
+
+    public function getAllowedReadFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ)) {
+            return $this->getFormsService()->getAllFormIds();
+        }
+
+        $writeIds = $this->getAllowedWriteFormIds();
+        $readIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_READ);
+
+        $ids = array_merge($writeIds, $readIds);
+        $ids = array_filter($ids);
+
+        return array_unique($ids);
+    }
+
     public function getFormById(int $id, bool $refresh = false, ?string $site = null, ?string $uniqueId = null): ?Form
     {
         $key = $id.$uniqueId;

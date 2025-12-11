@@ -12,12 +12,14 @@ const QKCraftAssetPreviews = {
 export const useAssetPreviewQuery = (
   ids: number[]
 ): UseQueryResult<CraftAsset[]> => {
-  return useQuery(
-    QKCraftAssetPreviews.byIds(ids),
-    () =>
+  return useQuery({
+    queryKey: QKCraftAssetPreviews.byIds(ids),
+    queryFn: () =>
       axios
         .get<CraftAsset[]>(`api/assets?ids=${ids.join(',')}`)
         .then((res) => res.data),
-    { staleTime: Infinity, cacheTime: Infinity, enabled: ids?.length > 0 }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+    enabled: ids?.length > 0,
+  });
 };

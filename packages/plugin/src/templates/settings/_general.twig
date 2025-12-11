@@ -11,6 +11,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/general') }}
     {{ csrfInput() }}
@@ -28,6 +30,7 @@
             name: "settings[pluginName]",
             value: settings.pluginName,
             errors: settings.getErrors("pluginName"),
+            disabled: readOnly,
         }) }}
 
     {% endif %}
@@ -38,6 +41,7 @@
         name: "settings[defaultView]",
         value: settings.defaultView,
         errors: settings.errors("defaultView"),
+        disabled: readOnly,
         options: {
             forms: "Forms"|t('freeform'),
             submissions: "Submissions"|t('freeform'),
@@ -50,6 +54,7 @@
         name: "settings[badgeType]",
         value: settings.badgeType,
         errors: settings.errors("badgeType"),
+        disabled: readOnly,
         options: {
             '': "Don't Show"|t('freeform'),
             all: "Update Notices & Logged Errors"|t('freeform'),
@@ -62,12 +67,14 @@
 
     {% if craft.freeform.pro %}
 
-        {{ forms.lightswitchField({
+        {{ forms.booleanMenuField({
+            includeEnvVars: true,
             label: "Site-Aware Forms"|t('freeform'),
             instructions: "When enabled, forms become aware of the currently active Site when loaded on the front end. In the control panel, you can filter form lists by Site and prevent other admins from accessing forms that belong to Sites they don't have access to. By default, any new forms created will be visible for the Site they were created on (with the ability to enable additional sites)."|t('freeform'),
             name: "settings[sitesEnabled]",
-            on: settings.sitesEnabled,
+            value: settings.sitesEnabled,
             errors: settings.errors("sitesEnabled"),
+            disabled: readOnly,
             tip: "To enable translations on forms per Site, go to the form builder and enable the 'Translatable' setting under the 'Settings' tab."|t('freeform'),
         }) }}
 
@@ -79,6 +86,7 @@
         name: "settings[queuePriority]",
         value: settings.queuePriority,
         errors: settings.errors("queuePriority"),
+        disabled: readOnly,
         placeholder: "Leave empty to use the Craft default of 1024."|t('freeform'),
     }) }}
 
@@ -88,6 +96,7 @@
         name: "settings[loggingLevel]",
         value: settings.loggingLevel,
         errors: settings.errors("loggingLevel"),
+        disabled: readOnly,
         options: {
             error: "Errors (recommended)"|t('freeform'),
             info: "Info"|t('freeform'),
@@ -99,73 +108,87 @@
 
     <h2>{{ "Element Field Type"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Restrict Form options in Form Field Type to User permissions"|t('freeform'),
         instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Element Field Type (relating forms in Entries, etc)."|t('freeform'),
         name: "settings[formFieldShowOnlyAllowedForms]",
-        on: settings.formFieldShowOnlyAllowedForms,
+        value: settings.formFieldShowOnlyAllowedForms,
         errors: settings.errors("formFieldShowOnlyAllowedForms"),
+        disabled: readOnly,
     }) }}
 
     <hr>
 
     <h2>{{ "Exporting"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
         instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
         name: "settings[removeNewlines]",
-        on: settings.removeNewlines,
+        value: settings.removeNewlines,
         errors: settings.errors("removeNewlines"),
+        disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Option Labels when Exporting"|t('freeform'),
         instructions: "Enable this to have fields with options use the submission's option labels instead of values when exporting."|t('freeform'),
         name: "settings[exportLabels]",
-        on: settings.exportLabels,
+        value: settings.exportLabels,
         errors: settings.errors("exportLabels"),
+        disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Use Field Handles for Headings when Exporting"|t('freeform'),
         instructions: "Enable this to use field handles as headings instead of field labels when exporting submissions."|t('freeform'),
         name: "settings[exportHandlesAsNames]",
-        on: settings.exportHandlesAsNames,
+        value: settings.exportHandlesAsNames,
         errors: settings.errors("exportHandlesAsNames"),
+        disabled: readOnly,
     }) }}
 
     <hr>
 
     <h2>{{ "Fields"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Fill Form Values from the GET Query String"|t('freeform'),
         instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
         name: "settings[fillWithGet]",
-        on: settings.fillWithGet,
+        value: settings.fillWithGet,
         errors: settings.errors("fillWithGet"),
+        disabled: readOnly,
     }) }}
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Allow Dashes in Field Handles"|t('freeform'),
         instructions: "Enable this to be able to allow users to include dashes in field handle names in the form builder."|t('freeform'),
         warning: "Dashes in field handle names are not allowed by default. Enabling this could negatively affect other parts of Craft, especially GraphQL functionality. Use with caution and only if necessary."|t('freeform'),
         name: "settings[allowDashesInFieldHandles]",
-        on: settings.allowDashesInFieldHandles,
+        value: settings.allowDashesInFieldHandles,
         errors: settings.errors("allowDashesInFieldHandles"),
+        disabled: readOnly,
     }) }}
 
     <hr>
 
     <h2>{{ "Submission Data"|t('freeform') }}</h2>
 
-    {{ forms.lightswitchField({
+    {{ forms.booleanMenuField({
+        includeEnvVars: true,
         label: "Enable Search Index Updating on New Submissions"|t('freeform'),
         instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
         name: "settings[updateSearchIndexes]",
-        on: settings.updateSearchIndexes,
+        value: settings.updateSearchIndexes,
         errors: settings.errors("updateSearchIndexes"),
+        disabled: readOnly,
     }) }}
 
     {% if craft.freeform.pro %}
@@ -178,6 +201,7 @@
             on: settings.purgableSubmissionAgeInDays,
             toggle: "purge",
             errors: settings.errors("purgableSubmissionAgeInDays"),
+            disabled: readOnly,
         }) }}
 
         <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
@@ -187,6 +211,7 @@
                 name: "settings[purgableSubmissionAgeInDays]",
                 value: settings.purgableSubmissionAgeInDays,
                 errors: settings.errors("purgableSubmissionAgeInDays"),
+                disabled: readOnly,
                 id: "purge-value",
                 options: {
                     0: "Please select"|t("freeform"),
@@ -206,6 +231,17 @@
                     365: "365 days"|t("freeform"),
                 }
             }) }}
+
+            {{ forms.checkboxSelectField({
+                id: "purge-forms",
+                label: "Apply to Forms"|t('freeform'),
+                instructions: "Choose which forms the automatic submission purge should apply to."|t('freeform'),
+                name: "settings[purgableFormIds]",
+                values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
+                showAllOption: true,
+                options: forms|sort,
+                errors: settings.errors("purgableFormIds"),
+            }) }}
         </div>
 
     {% endif %}
@@ -217,6 +253,7 @@
         on: settings.purgeAssets,
         toggle: "purge-assets",
         errors: settings.errors("purgeAssets"),
+        disabled: readOnly,
     }) }}
 
     <div id="purge-assets" class="field {{ not settings.purgeAssets ? 'hidden' }}">
@@ -226,6 +263,7 @@
             name: "settings[purgableUnfinalizedAssetAgeInMinutes]",
             value: settings.purgableUnfinalizedAssetAgeInMinutes,
             errors: settings.getErrors("purgableUnfinalizedAssetAgeInMinutes"),
+            disabled: readOnly,
             id: "purgableUnfinalizedAssetAgeInMinutes",
             options: {
                 60: "1 hour"|t("freeform"),

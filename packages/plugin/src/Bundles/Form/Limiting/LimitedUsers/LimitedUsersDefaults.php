@@ -78,6 +78,7 @@ class LimitedUsersDefaults
                             new Boolean('attributes', 'Field Attribute Editor', true),
                             new Boolean('encrypted', 'Encrypt Field Data'),
                             new Boolean('types', 'Field Type Switcher'),
+                            new Boolean('clone', 'Clone Fields', true),
                         ]),
 
                     new Boolean('buttons', 'Advanced Settings on Submit Buttons', true),

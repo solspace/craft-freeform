@@ -87,9 +87,9 @@ export const Card: React.FC<Props> = ({
   const { color } = settings.general;
 
   const isArchiving =
-    archiveMutation.isLoading && archiveMutation.context === id;
+    archiveMutation.isPending && archiveMutation.context === id;
   const isSuccess = archiveMutation.isSuccess && archiveMutation.context === id;
-  const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
+  const isCloning = cloneMutation.isPending && cloneMutation.context === id;
   const isDisabled = isCloning || isArchiving;
 
   const openDeleteFormModal = useDeleteFormModal({ form });
@@ -98,7 +98,7 @@ export const Card: React.FC<Props> = ({
     if (event.metaKey || event.ctrlKey || event.button === 1) {
       window.open(generateUrl(`forms/${id}`), '_blank');
     } else {
-      queryClient.invalidateQueries(QKForms.single(Number(id)));
+      queryClient.invalidateQueries({ queryKey: QKForms.single(Number(id)) });
       navigate(`${id}`);
     }
   };
@@ -157,12 +157,12 @@ export const Card: React.FC<Props> = ({
               onClick={async (event) => {
                 if (event.metaKey && event.shiftKey) {
                   await axios.post(`/api/forms/delete`, { id });
-                  queryClient.invalidateQueries(
-                    QKGroups.all(getCurrentHandleWithFallback())
-                  );
-                  queryClient.invalidateQueries(
-                    QKForms.all(getCurrentHandleWithFallback())
-                  );
+                  queryClient.invalidateQueries({
+                    queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+                  });
+                  queryClient.invalidateQueries({
+                    queryKey: QKForms.all(getCurrentHandleWithFallback()),
+                  });
                 } else {
                   openDeleteFormModal();
                 }

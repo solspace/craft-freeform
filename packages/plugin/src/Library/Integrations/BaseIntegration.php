@@ -124,4 +124,9 @@ abstract class BaseIntegration implements IntegrationInterface
     {
         return App::parseEnv($value);
     }
+
+    protected function getProcessedBoolean(mixed $value): bool
+    {
+        return (bool) App::parseBooleanEnv($value);
+    }
 }

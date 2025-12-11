@@ -118,3 +118,13 @@ ul.freeform-settings-list {
     }
   }
 }
+
+#purge-forms {
+  max-height: 200px;
+  overflow-y: auto;
+
+  input[disabled], input[disabled] + label {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

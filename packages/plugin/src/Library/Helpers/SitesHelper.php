@@ -103,6 +103,6 @@ class SitesHelper
             return false;
         }
 
-        return Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
+        return Freeform::getInstance()->settings->isSitesEnabled();
     }
 }

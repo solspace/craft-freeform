@@ -28,11 +28,11 @@ class BlockKeywords extends SpamBlockingIntegration
     use EnabledByDefaultTrait;
 
     #[VisibilityFilter('Boolean(enabled)')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Display Errors about Blocked Keywords under each Field',
         instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues.",
     )]
-    protected bool $errorsBelowFields = false;
+    protected string $errorsBelowFields = 'false';
 
     #[VisibilityFilter('Boolean(enabled)')]
     #[VisibilityFilter('Boolean(values.errorsBelowFields)')]
@@ -66,6 +66,11 @@ class BlockKeywords extends SpamBlockingIntegration
     #[Message('The values entered here will apply to all forms that use this integration. Additionally, form-specific blocks can be set inside the form builder.')]
     protected array $defaultKeywords = [];
 
+    public function isErrorsBelowFields(): bool
+    {
+        return $this->getProcessedBoolean($this->errorsBelowFields);
+    }
+
     public function validate(Form $form, bool $displayErrors): void
     {
         $keywords = $this->getCombinedKeywords();
@@ -82,7 +87,7 @@ class BlockKeywords extends SpamBlockingIntegration
 
             foreach ($keywords as $keyword) {
                 if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $value)) {
-                    if ($this->errorsBelowFields) {
+                    if ($this->isErrorsBelowFields()) {
                         $message = $this->errorMessage ?: 'Invalid Entry Data';
                         $field->addError(Freeform::t($message, [
                             'value' => $value,

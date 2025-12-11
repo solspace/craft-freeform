@@ -28,7 +28,7 @@ class SubmissionsController extends BaseController
             $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
             if (!$isAdmin && !$manageAll) {
-                $formId = Freeform::getInstance()->submissions->getAllowedReadFormIds();
+                $formId = Freeform::getInstance()->forms->getAllowedReadFormIds();
             }
         }
 

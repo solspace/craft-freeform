@@ -14,5 +14,5 @@ const queryFunction = (): Promise<FormImportData> =>
     .then((res) => res.data);
 
 export const useExpressFormsDataQuery = (): UseQueryResult<FormImportData> => {
-  return useQuery(QKExpressForms.data, queryFunction);
+  return useQuery({ queryKey: QKExpressForms.data, queryFn: queryFunction });
 };

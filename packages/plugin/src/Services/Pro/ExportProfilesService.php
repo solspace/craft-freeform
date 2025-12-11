@@ -227,9 +227,9 @@ class ExportProfilesService extends Component
 
         return new ExportSettings(
             $settings->isRemoveNewlines(),
-            $settings->getSettingsModel()->exportLabels,
+            $settings->isExportLabels(),
             $timezone,
-            $settings->getSettingsModel()->exportHandlesAsNames
+            $settings->isExportHandlesAsNames()
         );
     }
 

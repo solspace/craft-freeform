@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Notifications\Types\Dynamic;
 
 use Solspace\Freeform\Attributes\Notification\Type;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
+use Solspace\Freeform\Attributes\Property\Edition;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientMappingTransformer;
@@ -19,6 +20,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollection;
 
+#[Edition(Edition::LITE)]
 #[Type(
     name: 'User Select',
     newInstanceName: 'User Select',

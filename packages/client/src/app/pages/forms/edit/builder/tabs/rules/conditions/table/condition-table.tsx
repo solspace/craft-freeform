@@ -13,12 +13,14 @@ import { Action, Table } from './condition-table.styles';
 
 type Props = {
   conditions: Condition[];
+  buttonLabel?: string;
   loading?: boolean;
   onChange?: (conditions: Condition[]) => void;
 };
 
 export const ConditionTable: React.FC<Props> = ({
   conditions,
+  buttonLabel,
   loading,
   onChange,
 }) => {
@@ -111,7 +113,7 @@ export const ConditionTable: React.FC<Props> = ({
                   ]);
                 }}
               >
-                {translate('Add a condition')}
+                {translate(buttonLabel || 'Add a condition')}
               </button>
             </td>
           </tr>

@@ -67,7 +67,7 @@ root.render(
                     <ModalProvider>
                       <Breadcrumb id="root" label="Freeform" url="/forms" />
                       <ManualStyles />
-                      <ReactQueryDevtools />
+                      <ReactQueryDevtools initialIsOpen={false} />
                       <CpNavigation />
                       <Routes>
                         <Route path="/" element={<App />}>

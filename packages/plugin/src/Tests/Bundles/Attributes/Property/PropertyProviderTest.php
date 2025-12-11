@@ -19,12 +19,14 @@ use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Bundles\Form\Limiting\LimitedUsers\LimitedUserChecker;
 use Solspace\Freeform\Bundles\Settings\DefaultsProvider;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Helpers\EditionHelper;
 use yii\di\Container;
 
 #[CoversClass(PropertyProvider::class)]
 class PropertyProviderTest extends TestCase
 {
     private PropertyProvider $provider;
+    private EditionHelper $editionHelper;
 
     protected function setUp(): void
     {
@@ -56,9 +58,10 @@ class PropertyProviderTest extends TestCase
             ->getMock()
         ;
 
+        $this->editionHelper = new EditionHelper('lite', ['express', 'lite', 'pro']);
         $this->provider
             ->method('getPluginEdition')
-            ->willReturn('lite')
+            ->willReturn($this->editionHelper)
         ;
     }
 
@@ -140,8 +143,8 @@ class PropertyProviderTest extends TestCase
                 'required' => false,
             ]],
             [[
-                'type' => 'hidden',
-                'editions' => ['pro'],
+                'type' => 'int',
+                'edition' => 'pro',
                 'handle' => 'optionalInt',
                 'label' => 'Optional Integer',
                 'instructions' => null,
@@ -156,7 +159,7 @@ class PropertyProviderTest extends TestCase
             ]],
             [[
                 'type' => 'select',
-                'editions' => ['pro', 'lite'],
+                'edition' => 'lite',
                 'handle' => 'boolWithDefaultTrue',
                 'label' => 'Bool With Default True',
                 'instructions' => 'instructions',
@@ -272,7 +275,6 @@ class TestAttributesClass
     )]
     private ?int $optionalInt;
 
-    #[Edition('pro')]
     #[Edition('lite')]
     #[Input\Select(
         instructions: 'instructions',

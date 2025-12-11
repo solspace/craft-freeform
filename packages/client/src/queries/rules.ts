@@ -38,7 +38,7 @@ export const useRulesQueryReset = (): (() => void) => {
   const queryClient = useQueryClient();
 
   return () => {
-    queryClient.removeQueries(QKRules.all);
+    queryClient.removeQueries({ queryKey: QKRules.all });
   };
 };
 
@@ -47,9 +47,9 @@ export const useQueryFormRules = (
 ): UseQueryResult<FormRules, AxiosError> => {
   const dispatch = useDispatch();
 
-  return useQuery<FormRules, AxiosError>(
-    QKRules.form(formId),
-    () =>
+  return useQuery<FormRules, AxiosError>({
+    queryKey: QKRules.form(formId),
+    queryFn: () =>
       axios
         .get<FormRules>(`/api/forms/${formId}/rules`)
         .then((res) => res.data)
@@ -61,11 +61,9 @@ export const useQueryFormRules = (
 
           return res;
         }),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useQueryNotificationRules = (
@@ -73,9 +71,9 @@ export const useQueryNotificationRules = (
 ): UseQueryResult<NotificationRule[]> => {
   const dispatch = useDispatch();
 
-  return useQuery(
-    QKRules.notifications(formId),
-    () =>
+  return useQuery({
+    queryKey: QKRules.notifications(formId),
+    queryFn: () =>
       axios
         .get<NotificationRule[]>(
           `/api/forms/${formId || 0}/rules/notifications`
@@ -86,11 +84,9 @@ export const useQueryNotificationRules = (
 
           return res;
         }),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };
 
 export const useQueryIntegrationRules = (
@@ -98,9 +94,9 @@ export const useQueryIntegrationRules = (
 ): UseQueryResult<IntegrationRule[]> => {
   const dispatch = useDispatch();
 
-  return useQuery(
-    QKRules.integrations(formId),
-    () =>
+  return useQuery({
+    queryKey: QKRules.integrations(formId),
+    queryFn: () =>
       axios
         .get<IntegrationRule[]>(`/api/forms/${formId || 0}/rules/integrations`)
         .then((res) => res.data)
@@ -109,9 +105,8 @@ export const useQueryIntegrationRules = (
 
           return res;
         }),
-    {
-      staleTime: Infinity,
-      cacheTime: Infinity,
-    }
-  );
+
+    staleTime: Infinity,
+    gcTime: Infinity,
+  });
 };

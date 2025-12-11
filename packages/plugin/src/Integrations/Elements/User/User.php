@@ -34,18 +34,18 @@ class User extends ElementIntegration
 
     #[VisibilityFilter('enabled')]
     #[VisibilityFilter('!values.active')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Send Activation Email',
         instructions: 'Users will receive a Craft email with activation details if this is enabled.',
     )]
-    protected bool $sendActivation = false;
+    protected string $sendActivation = 'false';
 
     #[VisibilityFilter('enabled')]
-    #[Input\Boolean(
+    #[Input\BooleanEnv(
         label: 'Take Over Inactive Accounts',
         instructions: 'If this feature is enabled and the submitted email belongs to an "Inactive" user on this site, the new registration will take over that account. We strongly recommend disabling the "Activate Users" setting when using this feature.',
     )]
-    protected bool $registerInactiveUsers = false;
+    protected string $registerInactiveUsers = 'false';
 
     #[VisibilityFilter('enabled')]
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -91,7 +91,7 @@ class User extends ElementIntegration
 
     public function isRegisterInactiveUsers(): bool
     {
-        return $this->registerInactiveUsers;
+        return $this->getProcessedBoolean($this->registerInactiveUsers);
     }
 
     public function isActive(): bool
@@ -101,7 +101,7 @@ class User extends ElementIntegration
 
     public function isSendActivation(): bool
     {
-        return $this->sendActivation;
+        return $this->getProcessedBoolean($this->sendActivation);
     }
 
     public function buildElement(Form $form): Element
@@ -192,7 +192,7 @@ class User extends ElementIntegration
         }
 
         $isDisabled = !$this->isActive();
-        $isSendActivation = $this->sendActivation;
+        $isSendActivation = $this->isSendActivation();
         $isInPendingState = \in_array($element->status, [CraftUser::STATUS_PENDING, CraftUser::STATUS_INACTIVE], true);
 
         if ($isDisabled && $isSendActivation && $isInPendingState) {

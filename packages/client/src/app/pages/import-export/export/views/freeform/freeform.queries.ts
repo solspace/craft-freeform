@@ -18,7 +18,7 @@ const queryFunction = (): Promise<FormImportData> =>
   axios.get<FormImportData>('/export/forms/data').then((res) => res.data);
 
 export const useFormsDataQuery = (): UseQueryResult<FormImportData> => {
-  return useQuery(QKExportForms.data, queryFunction);
+  return useQuery({ queryKey: QKExportForms.data, queryFn: queryFunction });
 };
 
 type Response = AxiosResponse<{
@@ -28,5 +28,8 @@ type Response = AxiosResponse<{
 export const useFormsExportMutation = (
   options?: UseMutationOptions<Response, unknown, ExportOptions, unknown>
 ): UseMutationResult<Response, unknown, ExportOptions, unknown> => {
-  return useMutation((data) => axios.post('/export/forms/init', data), options);
+  return useMutation({
+    mutationFn: (data) => axios.post('/export/forms/init', data),
+    ...options,
+  });
 };

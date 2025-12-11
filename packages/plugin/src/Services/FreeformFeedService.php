@@ -88,7 +88,7 @@ class FreeformFeedService extends Component
             return;
         }
 
-        if (!Freeform::getInstance()->settings->getSettingsModel()->displayFeed) {
+        if (!Freeform::getInstance()->settings->isDisplayFeed()) {
             return;
         }
 

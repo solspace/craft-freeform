@@ -7,6 +7,7 @@ export const Icon = styled.div`
   display: block;
   width: ${iconSize}px;
   height: ${iconSize}px;
+  font-size: ${iconSize}px;
   fill: ${colors.gray550};
 `;
 

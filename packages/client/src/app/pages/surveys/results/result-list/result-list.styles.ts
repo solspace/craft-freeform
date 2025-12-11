@@ -7,6 +7,11 @@ export const Wrapper = styled.ul`
   padding: ${spacings.xl};
 `;
 
+export const Container = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 export const Heading = styled.div`
   position: relative;
 

@@ -2,11 +2,6 @@ import { APIError } from '@ff-client/types/api';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
-declare const Craft: {
-  csrfTokenName: string;
-  csrfTokenValue: string;
-};
-
 interface CraftGlobal {
   Craft: {
     csrfTokenName: string;

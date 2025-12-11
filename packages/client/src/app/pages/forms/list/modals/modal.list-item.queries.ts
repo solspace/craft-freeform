@@ -3,6 +3,7 @@ import { QKGroups } from '@ff-client/queries/form-groups';
 import type { APIError } from '@ff-client/types/api';
 import type { UpdateFormGroup } from '@ff-client/types/form-groups';
 import type {
+  MutationFunctionContext,
   UseMutationOptions,
   UseMutationResult,
 } from '@tanstack/react-query';
@@ -25,14 +26,18 @@ export const useFormGroupsMutation = (
   options.onSuccess = (
     data: unknown,
     variables: UpdateFormGroup,
-    context: unknown
+    onMutateResult: unknown,
+    context: MutationFunctionContext
   ) => {
-    originalOnSuccess?.(data, variables, context);
-    queryClient.invalidateQueries(QKGroups.all(getCurrentHandleWithFallback()));
+    originalOnSuccess?.(data, variables, onMutateResult, context);
+    queryClient.invalidateQueries({
+      queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+    });
   };
 
-  return useMutation<unknown, APIError, UpdateFormGroup>(
-    async (data: UpdateFormGroup) => {
+  return useMutation<unknown, APIError, UpdateFormGroup>({
+    ...options,
+    mutationFn: async (data: UpdateFormGroup) => {
       const { orderedFormIds, ...formGroupsData } = data;
 
       await axios.post('/api/forms/groups', formGroupsData);
@@ -43,6 +48,5 @@ export const useFormGroupsMutation = (
         });
       }
     },
-    options
-  );
+  });
 };

@@ -242,18 +242,22 @@ class FreeformVariable
         return Template::raw($output);
     }
 
-    public function loadFreeformPlugin(?string $attributes = null, ?string $styleAttributes = null): Markup
+    public function loadFreeformPlugin(?string $scriptAttributes = null, ?string $styleAttributes = null): Markup
     {
-        $jsPath = $this->getSettingsService()->getPluginJsPath();
-        $cssPath = $this->getSettingsService()->getPluginCssPath();
-
-        $js = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $jsPath);
-        $css = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $cssPath);
-
-        $output = '<script type="text/javascript" src="'.$js.'" '.$attributes.'></script>'.\PHP_EOL;
-        $output .= '<link rel="stylesheet" href="'.$css.'" '.$styleAttributes.' />';
+        $output = $this->getFreeformPluginJs($scriptAttributes);
+        $output .= $this->getFreeformPluginCss($styleAttributes);
 
         return Template::raw($output);
+    }
+
+    public function loadFreeformPluginJs(?string $scriptAttributes = null): Markup
+    {
+        return Template::raw($this->getFreeformPluginJs($scriptAttributes));
+    }
+
+    public function loadFreeformPluginCss(?string $styleAttributes = null): Markup
+    {
+        return Template::raw($this->getFreeformPluginCss($styleAttributes));
     }
 
     public function getLoggerService(): LoggerService
@@ -370,5 +374,21 @@ class FreeformVariable
     private function getFormService(): FormsService
     {
         return Freeform::getInstance()->forms;
+    }
+
+    private function getFreeformPluginJs(?string $scriptAttributes = null): string
+    {
+        $jsPath = $this->getSettingsService()->getPluginJsPath();
+        $js = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $jsPath);
+
+        return '<script type="text/javascript" src="'.$js.'" '.$scriptAttributes.'></script>'.\PHP_EOL;
+    }
+
+    private function getFreeformPluginCss(?string $styleAttributes = null): string
+    {
+        $cssPath = $this->getSettingsService()->getPluginCssPath();
+        $css = \Craft::$app->assetManager->getPublishedUrl('@freeform-resources', true, $cssPath);
+
+        return '<link rel="stylesheet" href="'.$css.'" '.$styleAttributes.' />';
     }
 }

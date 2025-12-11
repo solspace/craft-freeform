@@ -56,7 +56,10 @@ class ExportNotifications extends FeatureBundle
         $exportService = $freeform->exportProfiles;
 
         /** @var ExportNotificationRecord[] $notifications */
-        $notifications = ExportNotificationRecord::find()->all();
+        $notifications = ExportNotificationRecord::find()
+            ->where(['enabled' => true])
+            ->all()
+        ;
 
         foreach ($notifications as $notification) {
             if (!$this->checkLock($notification)) {

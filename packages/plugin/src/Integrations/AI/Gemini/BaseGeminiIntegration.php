@@ -16,6 +16,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
@@ -24,6 +25,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Model',
         instructions: 'The Google Gemini model to use for AI processing.',
@@ -41,6 +43,7 @@ abstract class BaseGeminiIntegration extends APIIntegration implements AiIntegra
     protected int $maxTokens = 15000;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_ENV_SUGGEST)]
     #[Input\Text(
         label: 'Temperature',
         instructions: 'Controls randomness in the response (`0.0` = deterministic, `1.0` = very random). Enter a value between `0.0` and `1.0`.',

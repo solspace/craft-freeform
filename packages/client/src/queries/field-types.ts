@@ -18,7 +18,9 @@ export const fetchFieldTypes = (): Promise<FieldType[]> =>
   axios.get<FieldType[]>(`/api/fields/types`).then((res) => res.data);
 
 export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select } = {}) =>
-  useQuery<FieldType[], AxiosError>(QKFieldTypes.all, fetchFieldTypes, {
+  useQuery<FieldType[], AxiosError>({
+    queryKey: QKFieldTypes.all,
+    queryFn: fetchFieldTypes,
     staleTime: Infinity,
     select,
   });
@@ -33,13 +35,11 @@ export const useFetchFieldPropertySections = (): UseQueryResult<
   Section[],
   AxiosError
 > =>
-  useQuery<Section[], AxiosError>(
-    QKFieldTypes.propertySections(),
-    fetchFieldPropertySections,
-    {
-      staleTime: Infinity,
-    }
-  );
+  useQuery<Section[], AxiosError>({
+    queryKey: QKFieldTypes.propertySections(),
+    queryFn: fetchFieldPropertySections,
+    staleTime: Infinity,
+  });
 
 export const useFieldType = (typeClass?: string): FieldType | undefined => {
   const { data } = useFetchFieldTypes();

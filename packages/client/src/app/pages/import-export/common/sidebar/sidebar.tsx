@@ -22,15 +22,13 @@ const localLinks = ['forms', 'express-forms', 'formie'];
 
 export const Sidebar: React.FC = () => {
   const { pathname: currentUrl } = useLocation();
-  const { data, isFetching } = useQuery<Response>(
-    ['import-export', 'navigation'],
-    {
-      queryFn: () =>
-        axios
-          .get<Response>('/api/import-export/navigation')
-          .then((res) => res.data),
-    }
-  );
+  const { data, isFetching } = useQuery<Response>({
+    queryKey: ['import-export', 'navigation'],
+    queryFn: () =>
+      axios
+        .get<Response>('/api/import-export/navigation')
+        .then((res) => res.data),
+  });
 
   if (isFetching && !data) {
     return (

@@ -60,7 +60,7 @@ export const EditNotificationModal: React.FC<
     return () => {
       setState(undefined);
       setErrors({});
-      queryClient.removeQueries(QKPreview.preview);
+      queryClient.removeQueries({ queryKey: QKPreview.preview });
     };
   }, []);
 
@@ -72,11 +72,15 @@ export const EditNotificationModal: React.FC<
           id: response.id,
         }));
 
-        queryClient.invalidateQueries(QKNotificationTemplates.one(id));
-        queryClient.invalidateQueries(QKNotifications.templates());
-        queryClient.invalidateQueries(
-          QKNotifications.formTemplates(Number(formId))
-        );
+        queryClient.invalidateQueries({
+          queryKey: QKNotificationTemplates.one(id),
+        });
+        queryClient.invalidateQueries({
+          queryKey: QKNotifications.templates(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: QKNotifications.formTemplates(Number(formId)),
+        });
 
         closeModal();
 
@@ -191,7 +195,7 @@ export const EditNotificationModal: React.FC<
         <button className="btn submit" onClick={handleSave}>
           <LoadingText
             loadingText={translate('Saving')}
-            loading={mutation.isLoading}
+            loading={mutation.isPending}
             spinner
           >
             {translate('Save')}

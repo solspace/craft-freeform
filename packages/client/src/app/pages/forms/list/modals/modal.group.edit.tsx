@@ -73,7 +73,7 @@ export const EditGroupModal: React.FC<ModalContainerProps> = ({
     },
   });
 
-  const isLoading = updateMutation.isLoading;
+  const isLoading = updateMutation.isPending;
 
   return (
     <ModalContainer style={{ maxWidth: '60%' }}>

@@ -2,15 +2,15 @@
 
 namespace Solspace\Freeform\Bundles\Form\Types\Surveys\Controllers;
 
-use craft\web\Controller;
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Form\Types\Surveys\Models\SurveySettings;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\Helpers\StringHelper;
 use yii\web\Response;
 
-class SurveySettingsController extends Controller
+class SurveySettingsController extends BaseController
 {
     public function __construct($id, $module, $config, private FieldTypesProvider $fieldTypesProvider)
     {
@@ -47,6 +47,7 @@ class SurveySettingsController extends Controller
                     SurveySettings::CHART_HIDDEN => SurveySettings::CHART_HIDDEN,
                     SurveySettings::CHART_TEXT => SurveySettings::CHART_TEXT,
                 ],
+                'readOnly' => !$this->getSettingsService()->isAllowAdminEdit(),
             ],
         );
     }

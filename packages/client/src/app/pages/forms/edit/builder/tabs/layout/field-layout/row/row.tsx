@@ -63,6 +63,7 @@ const Row: React.FC<Props> = memo(({ row }) => {
         {fields.map((field, idx) => (
           <Field
             field={field}
+            row={row}
             isOver={isOver}
             hoverPosition={hoverPosition}
             isCurrentRow={isCurrentRow}

@@ -17,7 +17,7 @@ class GetContext
 
     public function handleRequest(FormEventInterface $event): void
     {
-        if (!Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
+        if (!Freeform::getInstance()->settings->isFillWithGet()) {
             return;
         }
 

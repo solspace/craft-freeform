@@ -33,17 +33,25 @@ class FormMonitor extends APIIntegration
     #[Boolean(
         label: 'Test Email Notifications',
         instructions: 'Allow Form Monitor to test any email notifications configured for this form.',
-        order: 5
+        order: 6
     )]
-    protected bool $testEmails = true;
+    protected bool $testEmails = false;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Boolean(
+    #[Input\BooleanEnv(
         label: 'Test Email Notifications on Live Environment only',
         instructions: 'When enabled, Form Monitor will only test email notifications when the Craft environment is set to production.',
         order: 7
     )]
-    protected bool $liveOnly = true;
+    protected string $liveOnly = 'true';
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[Input\FormMonitorTools(
+        label: 'Test Email Delivery',
+        instructions: "It's recommended to verify that email delivery is working before enabling Test Email Notifications. Many email providers reject messages sent from unknown IP addresses, which may prevent emails from reaching Form Monitor's inbound address (inbound@test.formmonitor.com).",
+        order: 5
+    )]
+    protected string $tools = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Hidden]
@@ -133,7 +141,7 @@ class FormMonitor extends APIIntegration
 
     public function getLiveOnly(): bool
     {
-        return $this->liveOnly;
+        return $this->getProcessedBoolean($this->liveOnly);
     }
 
     public function getApiRootUrl(): string
@@ -361,6 +369,30 @@ class FormMonitor extends APIIntegration
     {
         $endpoint = $this->getEndpoint('forms/'.$form->getId().'/tests/all');
         $client->delete($endpoint);
+    }
+
+    public function sendTestEmail(Client $client): array
+    {
+        $endpoint = $this->getEndpoint('/test-email');
+        $response = $client->post($endpoint);
+
+        return json_decode((string) $response->getBody(), true);
+    }
+
+    public function getTestEmailHistory(Client $client, array $options = []): array
+    {
+        $endpoint = $this->getEndpoint('/test-email/history');
+        $response = $client->get($endpoint, ['query' => $options]);
+
+        return json_decode((string) $response->getBody(), true);
+    }
+
+    public function getTestEmailStatus(Client $client, string $testToken): array
+    {
+        $endpoint = $this->getEndpoint('/test-email/status');
+        $response = $client->get($endpoint, ['query' => ['token' => $testToken]]);
+
+        return json_decode((string) $response->getBody(), true);
     }
 
     public function getStoredLicenseKey(): string

@@ -13,11 +13,10 @@ type FetchFormsQuery = (options?: {
 }) => UseQueryResult<FieldForm[], AxiosError>;
 
 export const useFetchForms: FetchFormsQuery = ({ select }) =>
-  useQuery<FieldForm[], AxiosError>(
-    QKForms.all,
-    () => axios.get<FieldForm[]>(`/api/fields/forms`).then((res) => res.data),
-    {
-      staleTime: Infinity,
-      select,
-    }
-  );
+  useQuery<FieldForm[], AxiosError>({
+    queryKey: QKForms.all,
+    queryFn: () =>
+      axios.get<FieldForm[]>(`/api/fields/forms`).then((res) => res.data),
+    staleTime: Infinity,
+    select,
+  });

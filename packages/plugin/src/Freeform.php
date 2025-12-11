@@ -196,12 +196,14 @@ class Freeform extends Plugin
     public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
     public const PERMISSION_EXPORT_NOTIFICATIONS_ACCESS = 'freeform-pro-exportNotificationsAccess';
     public const PERMISSION_EXPORT_NOTIFICATIONS_MANAGE = 'freeform-pro-exportNotificationsManage';
+    public const PERMISSION_EXPORT_DATA_UTILITY_ACCESS = 'freeform-pro-exportDataUtilityAccess';
 
     public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
     public string $schemaVersion = '';
 
     public bool $hasCpSettings = true;
+    public bool $hasReadOnlyCpSettings = true;
 
     /**
      * @return Freeform|Plugin

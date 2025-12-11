@@ -27,12 +27,13 @@ type NavigationResponse = Category[];
 
 export const useIntegrationNavigation =
   (): UseQueryResult<NavigationResponse> => {
-    return useQuery<NavigationResponse>(QKIntegrations.navigation, {
-      cacheTime: Infinity,
-      staleTime: Infinity,
+    return useQuery<NavigationResponse>({
+      queryKey: QKIntegrations.navigation,
       queryFn: () =>
         axios
           .get<NavigationResponse>('/api/integrations/navigation')
           .then((res) => res.data),
+      gcTime: Infinity,
+      staleTime: Infinity,
     });
   };

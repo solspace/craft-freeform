@@ -177,7 +177,7 @@ class FreeformFormsExporter extends BaseExporter
             $exported->order = $index;
             $exported->settings = $form->getSettings();
 
-            $isSitesEnabled = Freeform::getInstance()->settings->getSettingsModel()->sitesEnabled;
+            $isSitesEnabled = Freeform::getInstance()->settings->isSitesEnabled();
             if ($isSitesEnabled) {
                 $exported->sites = new SitesCollection();
 
@@ -326,7 +326,7 @@ class FreeformFormsExporter extends BaseExporter
             $entryRecords = $record->getEntries()->with('form')->all();
             foreach ($entryRecords as $entryRecord) {
                 $entry = new FormGroupEntry();
-                $entry->formUid = $entryRecord->getForm()->one()->uid;
+                $entry->formUid = $entryRecord->getForm()->one()?->uid ?? '';
                 $entry->order = $entryRecord->order;
 
                 $group->entries->add($entry);

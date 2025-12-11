@@ -18,12 +18,13 @@ import { getClassQuery } from '@lib/plugin/helpers/classes';
 import { fetchCsrf } from '@lib/plugin/helpers/csrf';
 import { addClass, getClassArray, removeClass, removeElement } from '@lib/plugin/helpers/elements';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
-import type { Callback, FreeformResponseWithToken } from 'types/events';
+import type { Callback, FreeformEvent, FreeformResponseWithToken } from 'types/events';
 import type { FreeformEventParameters, FreeformHandler, FreeformHandlerConstructor, FreeformOptions } from 'types/form';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
   static instances = new WeakMap<HTMLFormElement, Freeform>();
+  static instantiatedForms = new WeakMap<HTMLFormElement, boolean>();
 
   id: string;
   form: HTMLFormElement;
@@ -303,15 +304,10 @@ export default class Freeform {
    */
   _attachListeners = (): void => {
     const form = this.form;
-    const hasFormListeners = form.dataset.formListenersAttached === '1';
-    if (!hasFormListeners) {
-      form.dataset.formListenersAttached = '1';
-    }
 
     const actionInput = this.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
-    const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
-
     if (actionInput) {
+      const actionButtons = form.querySelectorAll<HTMLButtonElement>('[data-freeform-action]');
       actionButtons.forEach((button) =>
         button.addEventListener('click', () => {
           this._lastButtonPressed = button;
@@ -320,12 +316,22 @@ export default class Freeform {
       );
     }
 
-    if (!hasFormListeners) {
-      if (actionInput) {
-        form.addEventListener(events.form.ajaxAfterSubmit, () => {
+    const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
+    inputs.forEach((input) =>
+      input.addEventListener('change', (event) => {
+        this._removeMessageFrom(event.target as HTMLInputElement);
+      })
+    );
+
+    if (!Freeform.instantiatedForms.has(form)) {
+      Freeform.instantiatedForms.set(form, true);
+
+      form.addEventListener(events.form.ajaxAfterSubmit, (event: FreeformEvent) => {
+        const actionInput = event.form.querySelector<HTMLInputElement>('input[name=freeform-action]');
+        if (actionInput) {
           actionInput.value = 'submit';
-        });
-      }
+        }
+      });
 
       form.addEventListener('submit', this._onSubmit);
       form.addEventListener('keydown', (event: KeyboardEvent) => {
@@ -342,13 +348,6 @@ export default class Freeform {
         }
       });
     }
-
-    const inputs = form.querySelectorAll<HTMLInputElement>('input, select, textarea');
-    inputs.forEach((input) =>
-      input.addEventListener('change', (event) => {
-        this._removeMessageFrom(event.target as HTMLInputElement);
-      })
-    );
   };
 
   /**

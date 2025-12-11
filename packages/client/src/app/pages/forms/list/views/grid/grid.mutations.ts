@@ -15,24 +15,22 @@ export const useArchiveFormMutation = (): UseMutationResult<
   const queryClient = useQueryClient();
   const { getCurrentHandleWithFallback } = useSiteContext();
 
-  return useMutation(
-    (id) =>
+  return useMutation({
+    mutationFn: (id) =>
       axios.post(`/api/forms/${id}/archive`, {
         site: getCurrentHandleWithFallback(),
       }),
-    {
-      onMutate: (id) => id,
-      onSuccess: () => {
-        queryClient.invalidateQueries(
-          QKGroups.all(getCurrentHandleWithFallback())
-        );
+    onMutate: (id) => id,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+      });
 
-        queryClient.invalidateQueries(
-          QKForms.all(getCurrentHandleWithFallback())
-        );
-      },
-    }
-  );
+      queryClient.invalidateQueries({
+        queryKey: QKForms.all(getCurrentHandleWithFallback()),
+      });
+    },
+  });
 };
 
 export const useCloneFormMutation = (): UseMutationResult<
@@ -44,16 +42,17 @@ export const useCloneFormMutation = (): UseMutationResult<
   const queryClient = useQueryClient();
   const { getCurrentHandleWithFallback } = useSiteContext();
 
-  return useMutation((id) => axios.post(`/api/forms/${id}/clone`), {
+  return useMutation({
+    mutationFn: (id) => axios.post(`/api/forms/${id}/clone`),
     onMutate: (id) => id,
     onSuccess: () => {
-      queryClient.invalidateQueries(
-        QKGroups.all(getCurrentHandleWithFallback())
-      );
+      queryClient.invalidateQueries({
+        queryKey: QKGroups.all(getCurrentHandleWithFallback()),
+      });
 
-      queryClient.invalidateQueries(
-        QKForms.all(getCurrentHandleWithFallback())
-      );
+      queryClient.invalidateQueries({
+        queryKey: QKForms.all(getCurrentHandleWithFallback()),
+      });
     },
   });
 };

@@ -30,6 +30,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <form method="post">
         <input type="hidden" name="action" value="freeform/codepack/install">
         {{ redirectInput('freeform/settings/demo-templates') }}
@@ -45,12 +47,13 @@
                         name: 'prefix',
                         value: prefix,
                         placeholder: "e.g. freeform-demo",
+                        disabled: readOnly,
                         autofocus: true
                     }) }}
                 </td>
                 <td>
                     <div class="buttons" style="margin: 40px 0 0 5px !important;">
-                        <input type="submit" class="btn submit" value="{{ 'Install'|t('app') }}" />
+                        <input type="submit" class="btn submit {{ readOnly ? "disabled" }}" value="{{ 'Install'|t('app') }}" {{ readOnly ? 'disabled="disabled"'}} />
                     </div>
                 </td>
             </tr>

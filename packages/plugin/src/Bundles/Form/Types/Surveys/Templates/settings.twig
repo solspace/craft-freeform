@@ -11,6 +11,8 @@
 
 {% block content %}
 
+    {{ parent() }}
+
     <input type="hidden" name="action" value="freeform/surveys-settings/save">
     {{ redirectInput('freeform/settings/surveys') }}
     {{ csrfInput() }}
@@ -22,6 +24,7 @@
         name: "highlightHighest",
         on: settings.highlightHighest,
         errors: settings.errors("highlightHighest"),
+        disabled: readOnly,
     }) }}
 
     <hr>
@@ -42,6 +45,7 @@
                             name: "chartTypes["~fieldClass~"]",
                             value: settings.chartTypes[fieldClass],
                             options: options,
+                            disabled: readOnly,
                         }) }}
                     </td>
                 </tr>

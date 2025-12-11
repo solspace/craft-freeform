@@ -25,7 +25,7 @@ abstract class AbstractCheck extends FeatureBundle
             Form::class,
             Form::EVENT_BEFORE_VALIDATE,
             function (ValidationEvent $event) {
-                if ($this->settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+                if ($this->settingsService->isBypassSpamCheckOnLoggedInUsers() && \Craft::$app->getUser()->id) {
                     return;
                 }
 

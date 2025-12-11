@@ -109,6 +109,45 @@ export const fieldsSlice = createSlice({
           });
       }
     },
+    duplicate: (
+      state,
+      action: PayloadAction<{
+        uid: string;
+        rowUid: string;
+        field: Field;
+      }>
+    ) => {
+      const { uid, rowUid, field } = action.payload;
+      const highestOrder = Math.max(
+        -1,
+        ...state
+          .filter((fieldItem) => fieldItem.rowUid === rowUid)
+          .map((fieldItem) => fieldItem.order ?? -1)
+      );
+
+      const properties = { ...field.properties };
+
+      const originalHandle = properties.handle.replace(/_\d+$/, '');
+      let newHandle = properties.handle;
+      let matchingHandle = true;
+      let handleIteration = 1;
+      do {
+        newHandle = `${originalHandle}_${handleIteration}`;
+        matchingHandle = state.some(
+          (fieldItem) => fieldItem.properties.handle === newHandle
+        );
+      } while (matchingHandle && handleIteration++ < 500);
+
+      properties.handle = newHandle;
+
+      state.push({
+        uid,
+        rowUid,
+        typeClass: field.typeClass,
+        properties,
+        order: highestOrder + 1,
+      });
+    },
     remove: (state, { payload: uid }: PayloadAction<string>) => {
       state.splice(
         state.findIndex((item) => item.uid === uid),

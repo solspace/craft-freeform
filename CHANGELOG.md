@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 5.14.0 - Unreleased
+## 5.14.0 - 2025-12-11
 
 ### Added
 - **Per-form purge controls**: Apply the Automatic Purge Submission Data feature on a per-form basis.

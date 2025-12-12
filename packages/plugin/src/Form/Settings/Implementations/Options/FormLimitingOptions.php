@@ -14,27 +14,27 @@ class FormLimitingOptions implements OptionsGeneratorInterface
         return (new OptionCollection())
             ->add(
                 FormLimiting::NO_LIMIT,
-                \Craft::t('freeform', 'Do not limit'),
+                \Craft::t('freeform', 'No restrictions'),
             )
             ->add(
                 FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,
-                \Craft::t('freeform', 'Logged in Users Only - No Limit'),
+                \Craft::t('freeform', 'Logged-in users — unlimited'),
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY,
-                \Craft::t('freeform', 'Logged in Users Only - Once per Form'),
+                \Craft::t('freeform', 'Logged-in users — once per form'),
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_EMAIL,
-                \Craft::t('freeform', 'Anyone - Once per Email Address'),
+                \Craft::t('freeform', 'Anyone — once per email'),
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_USER_OR_COOKIE,
-                \Craft::t('freeform', 'Anyone - Once per Logged in User or Guest Cookie'),
+                \Craft::t('freeform', 'Anyone — once per user or cookie'),
             )
             ->add(
                 FormLimiting::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE,
-                \Craft::t('freeform', 'Anyone - Once per Logged in User or Guest IP or Cookie'),
+                \Craft::t('freeform', 'Anyone — once per user, IP, or cookie'),
             )
         ;
     }

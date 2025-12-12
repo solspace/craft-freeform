@@ -124,7 +124,7 @@ export const CloseButton = styled.button`
 
 export const DropdownWrapper = styled.div`
   position: relative;
-  width: 25em;
+  width: 19em;
 
   &.open {
     ${DropdownRollout} {

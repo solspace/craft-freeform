@@ -25,7 +25,7 @@ class RoutingBundle extends FeatureBundle
         );
     }
 
-    private function registerRoutesIn(string $directory, RegisterUrlRulesEvent $event)
+    private function registerRoutesIn(string $directory, RegisterUrlRulesEvent $event): void
     {
         $routeFiles = $this->finder
             ->files()

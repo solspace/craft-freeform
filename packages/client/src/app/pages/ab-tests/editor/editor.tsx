@@ -7,8 +7,9 @@ import Textarea from '@components/form-controls/control-types/textarea/textarea'
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
-import type { ABTest } from '../ab-tests.types';
+import type { ABTestWithVariants } from '../ab-tests.types';
 
+import { Variants } from './variants/variants';
 import { EditorLoader } from './editor.loader';
 import { useAbTest, useAbTestMutation } from './editor.queries';
 import { EditorContainer, EditorWrapper } from './editor.styles';
@@ -18,10 +19,11 @@ export const AbTestsEditor: FC = () => {
   const { data, isFetching } = useAbTest(id);
   const mutation = useAbTestMutation(id);
 
-  const [state, setState] = useState<ABTest>({
+  const [state, setState] = useState<ABTestWithVariants>({
     id: undefined,
     name: '',
     description: '',
+    variants: [],
   });
 
   useEffect(() => {
@@ -36,6 +38,7 @@ export const AbTestsEditor: FC = () => {
         id: undefined,
         name: '',
         description: '',
+        variants: [],
       });
     }
   }, [id]);
@@ -76,6 +79,13 @@ export const AbTestsEditor: FC = () => {
             label: translate('Description'),
             rows: 4,
           }}
+        />
+
+        <Variants
+          variants={state.variants}
+          updateVariants={(variants) =>
+            setState((prev) => ({ ...prev, variants }))
+          }
         />
 
         <button

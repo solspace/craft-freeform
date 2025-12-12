@@ -6,13 +6,15 @@ import type { UseMutationResult, UseQueryResult } from '@tanstack/react-query';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 
-import type { ABTest } from '../ab-tests.types';
+import type { ABTestWithVariants } from '../ab-tests.types';
 
-export const useAbTest = (id: string): UseQueryResult<ABTest> => {
+export const useAbTest = (id: string): UseQueryResult<ABTestWithVariants> => {
   return useQuery({
     queryKey: ['ab-tests', id],
     queryFn: () =>
-      axios.get<ABTest>(`/api/ab-tests/${id}`).then((res) => res.data),
+      axios
+        .get<ABTestWithVariants>(`/api/ab-tests/${id}`)
+        .then((res) => res.data),
     gcTime: Infinity,
     staleTime: Infinity,
     enabled: Number.isInteger(Number(id)),
@@ -27,7 +29,7 @@ export const useAbTestMutation = (
   const navigate = useNavigate();
 
   return useMutation({
-    mutationFn: (values: ABTest) => {
+    mutationFn: (values: ABTestWithVariants) => {
       const payload = { ...values };
 
       if (!Number.isInteger(Number(id))) {

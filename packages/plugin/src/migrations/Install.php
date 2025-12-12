@@ -469,6 +469,16 @@ class Install extends StreamlinedInstallMigration
                 ->addField('description', $this->text())
                 ->addField('startDate', $this->dateTime()),
 
+            (new Table('freeform_ab_tests_assignments'))
+                ->addField('id', $this->primaryKey())
+                ->addField('userId', $this->integer()->notNull())
+                ->addField('abTestId', $this->integer()->notNull())
+                ->addField('abVariantId', $this->integer()->notNull())
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_userId')
+                ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abTestId')
+                ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_assignments_abVariantId')
+                ->addIndex(['userId', 'abTestId'], true, name: 'idx_ab_tests_assignments_userId_abTestId'),
+
             (new Table('freeform_ab_tests_variants'))
                 ->addField('id', $this->primaryKey())
                 ->addField('abTestId', $this->integer()->notNull())

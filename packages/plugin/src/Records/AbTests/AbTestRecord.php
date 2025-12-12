@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Records\AbTests;
 
 use craft\db\ActiveRecord;
+use yii\db\ActiveQuery;
 
 /**
  * @property int    $id
@@ -14,9 +15,6 @@ class AbTestRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_ab_tests}}';
 
-    /**
-     * Returns the name of the associated database table.
-     */
     public static function tableName(): string
     {
         return self::TABLE;
@@ -27,5 +25,10 @@ class AbTestRecord extends ActiveRecord
         return [
             [['name'], 'unique'],
         ];
+    }
+
+    public function getVariants(): ActiveQuery
+    {
+        return $this->hasMany(AbTestVariantRecord::class, ['abTestId' => 'id']);
     }
 }

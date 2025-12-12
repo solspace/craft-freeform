@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
+use Solspace\Freeform\Bundles\ABTesting\Providers\ABTestVariantProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
@@ -118,6 +119,13 @@ class FreeformVariable
             ],
             $service->getAllFormGroupsBySiteId($siteId)
         );
+    }
+
+    public function abTest(string $testName): ?Form
+    {
+        $provider = \Craft::$container->get(ABTestVariantProvider::class);
+
+        return $provider->getVariant($testName)?->getForm();
     }
 
     public function plugin(): Freeform

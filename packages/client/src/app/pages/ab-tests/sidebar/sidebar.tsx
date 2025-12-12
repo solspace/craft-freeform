@@ -1,8 +1,11 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import { useAbTestsList } from './sidebar.queries';
 import {
+  CategoryTitle,
   SidebarNavigation,
   Test,
   TestDescription,
@@ -20,11 +23,12 @@ export const Sidebar: React.FC = () => {
   return (
     <SidebarNavigation>
       <TestList>
+        <CategoryTitle>{translate('A/B Test Groups')}</CategoryTitle>
         {data.map((test) => (
           <Test key={test.id}>
             <NavLink
               to={`${test.id}`}
-              className={({ isActive }) => isActive && 'active'}
+              className={({ isActive }) => classes(isActive && 'active')}
             >
               <TestTitle>{test.name}</TestTitle>
               {!!test.description && (
@@ -33,11 +37,12 @@ export const Sidebar: React.FC = () => {
             </NavLink>
           </Test>
         ))}
-
+      </TestList>
+      <TestList>
+        <CategoryTitle>{translate('Actions')}</CategoryTitle>
         <Test>
           <NavLink to="new">
             <TestTitle>Create New A/B Test</TestTitle>
-            <TestDescription>Click here to create a new test</TestDescription>
           </NavLink>
         </Test>
       </TestList>

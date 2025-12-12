@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Records\AbTests\AbTestRecord;
+use Solspace\Freeform\Records\AbTests\AbTestVariantRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -14,6 +15,7 @@ class AbTestsController extends BaseController
     {
         return $this->asJson(
             AbTestRecord::find()
+                ->with('variants')
                 ->where(['id' => $id])
                 ->asArray()
                 ->one()
@@ -34,13 +36,52 @@ class AbTestsController extends BaseController
             $record = new AbTestRecord();
         }
 
+        $errorCollection = new ErrorCollection();
+
         $record->name = $post['name'] ?? '';
         $record->description = $post['description'] ?? '';
         $record->save();
 
-        if ($record->hasErrors()) {
-            throw new ApiException(400, (new ErrorCollection())->fromRecord('abTest', $record));
+        $usedIds = [];
+        $variants = $post['variants'] ?? [];
+        foreach ($variants as $variant) {
+            $formId = $variant['formId'] ?? null;
+            if (!$formId) {
+                continue;
+            }
+
+            $variantRecord = AbTestVariantRecord::findOne(['abTestId' => $record->id, 'id' => $variant['id']]);
+            if (!$variantRecord) {
+                $variantRecord = new AbTestVariantRecord(['abTestId' => $record->id]);
+            }
+
+            $variantRecord->formId = $formId;
+            $variantRecord->weight = $variant['weight'] ?? 1;
+            $variantRecord->save();
+
+            if ($variantRecord->hasErrors()) {
+                $errorCollection->fromRecord('abTestVariant-'.($variant['id'] ?? ''), $variantRecord);
+            } else {
+                $usedIds[] = $variantRecord->id;
+            }
         }
+
+        if ($record->hasErrors()) {
+            $errorCollection->fromRecord('abTest', $record);
+        }
+
+        if ($errorCollection->hasErrors()) {
+            throw new ApiException(400, $errorCollection);
+        }
+
+        $existingIds = AbTestVariantRecord::find()
+            ->select(['id'])
+            ->where(['abTestId' => $record->id])
+            ->column()
+        ;
+
+        $idsToDelete = array_diff($existingIds, $usedIds);
+        AbTestVariantRecord::deleteAll(['id' => $idsToDelete]);
 
         return $this->asJson($record->toArray());
     }
@@ -49,6 +90,7 @@ class AbTestsController extends BaseController
     {
         return $this->asJson(
             AbTestRecord::find()
+                ->with('variants')
                 ->asArray()
                 ->all()
         );

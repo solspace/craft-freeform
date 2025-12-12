@@ -1,4 +1,4 @@
-import { borderRadius, colors } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const SidebarNavigation = styled.nav`
@@ -30,12 +30,17 @@ export const TestList = styled.ul`
 export const Test = styled.li`
   > a {
     display: block;
-    padding: 3px 10px;
+    padding: 3px 18px;
     margin: 0;
 
     color: ${colors.gray700};
     text-decoration: none;
     border-radius: 4px;
+
+    &.placeholder {
+      border-radius: 8px;
+      border: 2px dashed ${colors.gray200};
+    }
 
     &.unsupported {
       opacity: 0.5;
@@ -59,6 +64,12 @@ export const Test = styled.li`
       background: ${colors.gray500};
     }
   }
+`;
+
+export const CategoryTitle = styled.h3`
+  font-weight: bold;
+  padding: 0 ${spacings.lg} 0;
+  margin: 0 0 ${spacings.sm};
 `;
 
 export const TestTitle = styled.span``;

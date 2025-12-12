@@ -35,6 +35,8 @@ export const useQueryFormsWithStats = (): UseQueryResult<
           params: { site: current?.handle },
         })
         .then((res) => res.data),
+    staleTime: Infinity,
+    gcTime: Infinity,
   });
 };
 

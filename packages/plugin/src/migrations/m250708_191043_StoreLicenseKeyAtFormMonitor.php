@@ -25,7 +25,7 @@ class m250708_191043_StoreLicenseKeyAtFormMonitor extends Migration
         $row = (new Query())
             ->select(['id', 'metadata'])
             ->from($table)
-            ->where(['class' => $class, 'enabled' => 1])
+            ->where(['class' => $class, 'enabled' => true])
             ->one()
         ;
 

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 5.14.1 - 2025-12-15
+
+### Fixed
+- Fixed a PostgreSQL compatibility issue in a **Form Monitor** migration.
+- Fixed visual issues with dropdown settings in the form builder.
+
 ## 5.14.0 - 2025-12-11
 
 ### Added

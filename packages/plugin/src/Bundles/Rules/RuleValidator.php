@@ -16,6 +16,18 @@ class RuleValidator
 {
     public const EVENT_PROCESS_POSTED_RULE_VALUE = 'process-posted-rule-value';
 
+    /** @var array<int, array<string, bool>> */
+    private array $fieldHiddenCache = [];
+
+    /** @var array<int, array<int, array<int, bool>>> */
+    private array $ruleTriggerCache = [];
+
+    /** @var array<int, array<string, mixed>> */
+    private array $postedValueCache = [];
+
+    /** @var array<int, array<string, true>> */
+    private array $availableFieldHandleCache = [];
+
     public function __construct(
         private RuleProvider $ruleProvider,
         private ConditionValidator $conditionValidator,
@@ -23,23 +35,29 @@ class RuleValidator
 
     public function isFieldHidden(Form $form, FieldInterface $field): bool
     {
+        $formKey = $this->getFormCacheKey($form);
+        $fieldKey = $this->getFieldCacheKey($field);
+        if (\array_key_exists($fieldKey, $this->fieldHiddenCache[$formKey] ?? [])) {
+            return $this->fieldHiddenCache[$formKey][$fieldKey];
+        }
+
         if ($this->isParentHidden($form, $field)) {
-            return true;
+            return $this->fieldHiddenCache[$formKey][$fieldKey] = true;
         }
 
         $rule = $this->ruleProvider->getFieldRule($form, $field);
         if (!$rule) {
-            return false;
+            return $this->fieldHiddenCache[$formKey][$fieldKey] = false;
         }
 
         if (0 === $rule->getConditions()->count()) {
-            return false;
+            return $this->fieldHiddenCache[$formKey][$fieldKey] = false;
         }
 
         $shouldShow = FieldRule::DISPLAY_SHOW === $rule->getDisplay();
         $triggersRule = $this->triggersRule($form, $rule);
 
-        return $shouldShow ? !$triggersRule : $triggersRule;
+        return $this->fieldHiddenCache[$formKey][$fieldKey] = $shouldShow ? !$triggersRule : $triggersRule;
     }
 
     public function isButtonHidden(Form $form, string $button): bool
@@ -102,47 +120,48 @@ class RuleValidator
 
     private function triggersRule(Form $form, RuleInterface $rule, ?PageCollection $availablePages = null): bool
     {
+        $formKey = $this->getFormCacheKey($form);
+        $ruleKey = \spl_object_id($rule);
+        $availableKey = $availablePages ? \spl_object_id($availablePages) : 0;
+        if (isset($this->ruleTriggerCache[$formKey][$availableKey][$ruleKey])) {
+            return $this->ruleTriggerCache[$formKey][$availableKey][$ruleKey];
+        }
+
         $conditions = $rule->getConditions();
+        $availableFieldHandles = $availablePages ? $this->getAvailableFieldHandles($availablePages) : null;
+        $combinator = $rule->getCombinator();
 
         $matchesSome = false;
         $matchesAll = true;
         foreach ($conditions as $condition) {
             $field = $condition->getField();
 
-            if ($availablePages) {
-                $hasField = false;
-                foreach ($availablePages as $page) {
-                    if ($page->getFields()->has($field)) {
-                        $hasField = true;
-
-                        break;
-                    }
-                }
-
-                if (!$hasField) {
-                    continue;
-                }
+            if ($availableFieldHandles && !isset($availableFieldHandles[$this->getFieldCacheKey($field)])) {
+                continue;
             }
 
             $isConditionFieldHidden = $this->isFieldHidden($form, $field);
             if ($isConditionFieldHidden) {
                 $postedValue = null;
             } else {
-                $event = new ProcessPostedRuleValueEvent($field);
-                Event::trigger($this, self::EVENT_PROCESS_POSTED_RULE_VALUE, $event);
-
-                $postedValue = $event->getValue();
+                $postedValue = $this->getPostedValue($form, $field);
             }
 
             $valueMatch = $this->conditionValidator->validate($condition, $postedValue);
             if ($valueMatch) {
                 $matchesSome = true;
+                if (Rule::COMBINATOR_OR === $combinator) {
+                    return $this->ruleTriggerCache[$formKey][$availableKey][$ruleKey] = true;
+                }
             } else {
                 $matchesAll = false;
+                if (Rule::COMBINATOR_AND === $combinator) {
+                    return $this->ruleTriggerCache[$formKey][$availableKey][$ruleKey] = false;
+                }
             }
         }
 
-        return match ($rule->getCombinator()) {
+        return $this->ruleTriggerCache[$formKey][$availableKey][$ruleKey] = match ($combinator) {
             Rule::COMBINATOR_AND => $matchesAll,
             Rule::COMBINATOR_OR => $matchesSome,
         };
@@ -161,5 +180,46 @@ class RuleValidator
         }
 
         return $this->isParentHidden($form, $parent);
+    }
+
+    private function getPostedValue(Form $form, FieldInterface $field): mixed
+    {
+        $formKey = $this->getFormCacheKey($form);
+        $fieldKey = $this->getFieldCacheKey($field);
+        if (\array_key_exists($fieldKey, $this->postedValueCache[$formKey] ?? [])) {
+            return $this->postedValueCache[$formKey][$fieldKey];
+        }
+
+        $event = new ProcessPostedRuleValueEvent($field);
+        Event::trigger($this, self::EVENT_PROCESS_POSTED_RULE_VALUE, $event);
+
+        return $this->postedValueCache[$formKey][$fieldKey] = $event->getValue();
+    }
+
+    private function getAvailableFieldHandles(PageCollection $availablePages): array
+    {
+        $key = \spl_object_id($availablePages);
+        if (isset($this->availableFieldHandleCache[$key])) {
+            return $this->availableFieldHandleCache[$key];
+        }
+
+        $handles = [];
+        foreach ($availablePages as $page) {
+            foreach ($page->getFields() as $field) {
+                $handles[$this->getFieldCacheKey($field)] = true;
+            }
+        }
+
+        return $this->availableFieldHandleCache[$key] = $handles;
+    }
+
+    private function getFormCacheKey(Form $form): int
+    {
+        return \spl_object_id($form);
+    }
+
+    private function getFieldCacheKey(FieldInterface $field): string
+    {
+        return $field->getHandle();
     }
 }

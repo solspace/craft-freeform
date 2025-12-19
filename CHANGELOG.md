@@ -1,5 +1,32 @@
 # Solspace Freeform Changelog
 
+## 5.14.1 - 2025-12-15
+
+### Fixed
+- Fixed a PostgreSQL compatibility issue in a **Form Monitor** migration.
+- Fixed visual issues with dropdown settings in the form builder.
+
+## 5.14.0 - 2025-12-11
+
+### Added
+- **Per-form purge controls**: Apply the Automatic Purge Submission Data feature on a per-form basis.
+- **Field cloning** in the form builder, with a **Limited Users** permission to allow/deny cloning.
+- **Survey Results Export to PDF** for Surveys & Polls forms.
+- **Export Notifications** now have the ability to be enabled or disabled.
+- **Form Monitor** includes an email testing feature and added a **Sendmail** transport warning to make potential delivery issues clearer.
+- **Automated Queue Pinging Service** integrated via Form Monitor for turn-key automated cron/pinging to Craft Queue.
+- **.env boolean support** for most Lightswitch settings (enable/disable via environment variables).
+- **Read-only settings** when `allowAdminChanges` is `false` (uses Craft's read-only feature).
+- Ability to load Freeform **JS** and **CSS** assets **individually**.
+
+### Changed
+- Allow **Form Monitor** to **bypass the Email Queue** (if enabled) when testing email notifications.
+- Settings UX updates for **non-Pro** editions.
+
+### Fixed
+- Form `<form>` element now retains its **AJAX submit** handler even if the node is cloned (more resilient event attaching).
+- Corrected **permission checks** for Import/Export and Quick Export.
+
 ## 5.13.8 - 2025-12-04
 
 ### Fixed

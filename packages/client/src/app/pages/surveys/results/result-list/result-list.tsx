@@ -22,7 +22,7 @@ export const ResultList: React.FC = () => {
       return;
     }
 
-    DomToImage.toPng(ref.current).then(async (dataUrl) => {
+    DomToImage.toPng(ref.current).then(async (dataUrl: string) => {
       const url = generateUrl('/export/surveys/pdf');
       const res = await fetch(url, {
         method: 'POST',

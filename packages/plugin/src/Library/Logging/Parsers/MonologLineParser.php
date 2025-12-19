@@ -58,7 +58,7 @@ class MonologLineParser implements LogParserInterface
     {
         // 1. Match the prefix
         if (!preg_match(
-            '/^\[(?<datetime>[^\]]+)\]\s+(?<channel>[^\.\s]+)\.(?<level>[A-Z]+):\s+(?<rest>.+)$/',
+            '/^\[(?<datetime>[^\]]+)\]\s+(?<channel>[^.]+)\.(?<level>[A-Z]+):\s+(?<rest>.+)$/',
             $line,
             $m
         )) {

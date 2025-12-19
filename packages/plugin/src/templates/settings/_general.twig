@@ -231,6 +231,17 @@
                     365: "365 days"|t("freeform"),
                 }
             }) }}
+
+            {{ forms.checkboxSelectField({
+                id: "purge-forms",
+                label: "Apply to Forms"|t('freeform'),
+                instructions: "Choose which forms the automatic submission purge should apply to."|t('freeform'),
+                name: "settings[purgableFormIds]",
+                values: settings.purgableFormIds is null ? '*' : settings.purgableFormIds,
+                showAllOption: true,
+                options: forms|sort,
+                errors: settings.errors("purgableFormIds"),
+            }) }}
         </div>
 
     {% endif %}

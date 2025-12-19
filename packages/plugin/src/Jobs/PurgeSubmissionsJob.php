@@ -8,10 +8,11 @@ use Solspace\Freeform\Freeform;
 class PurgeSubmissionsJob extends BaseJob
 {
     public $age;
+    public ?array $formIds = null;
 
     public function execute($queue): void
     {
-        Freeform::getInstance()->submissions->purgeSubmissions($this->age);
+        Freeform::getInstance()->submissions->purgeSubmissions($this->age, $this->formIds);
     }
 
     protected function defaultDescription(): ?string

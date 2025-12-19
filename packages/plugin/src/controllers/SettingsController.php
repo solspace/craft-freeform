@@ -195,6 +195,13 @@ class SettingsController extends BaseController
 
         $postData = \Craft::$app->request->post('settings', []);
 
+        if (\array_key_exists('purgableFormIds', $postData)) {
+            $purgableFormIds = $postData['purgableFormIds'];
+            if ('*' === $purgableFormIds) {
+                $postData['purgableFormIds'] = null;
+            }
+        }
+
         $oldSettings = $this->getSettingsModel();
         $oldManagedPingerEnabled = isset($postData['managedPingerEnabled']) ? (bool) $oldSettings->managedPingerEnabled : null;
         $oldIntervalSeconds = isset($postData['queuePingMinIntervalMinutes']) ? (int) $oldSettings->queuePingMinIntervalSeconds : null;
@@ -324,6 +331,7 @@ class SettingsController extends BaseController
         return $this->renderTemplate(
             'freeform/settings/'.($section ? '_'.(string) $section : ''),
             [
+                'forms' => $this->getFormsService()->getAllFormNames(),
                 'settings' => $this->getSettingsModel(),
                 'solspaceTemplates' => $this->getSettingsService()->getSolspaceFormTemplates(),
                 'formattingTemplateList' => $formattingTemplateList,

@@ -38,8 +38,9 @@ class PurgeSubmissions extends FeatureBundle
         }
 
         $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
+        $purgeForms = $this->settings->getSettingsModel()->purgableFormIds;
         if ($submissionAge > 0) {
-            $this->queueHandler->queueSingleJobInstance(new PurgeSubmissionsJob(['age' => $submissionAge]));
+            $this->queueHandler->queueSingleJobInstance(new PurgeSubmissionsJob(['age' => $submissionAge, 'formIds' => $purgeForms]));
         }
 
         $spamAge = $this->settings->getPurgableSpamAgeInDays();

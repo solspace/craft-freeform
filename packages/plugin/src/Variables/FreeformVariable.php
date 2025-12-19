@@ -14,10 +14,12 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
+use Solspace\Freeform\Bundles\ABTesting\ABTestingBundle;
 use Solspace\Freeform\Bundles\ABTesting\Providers\ABTestVariantProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Event;
 use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
@@ -26,6 +28,7 @@ use Solspace\Freeform\Integrations\PaymentGateways\Common\PaymentFieldInterface;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Services\StripePaymentService;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
 use Solspace\Freeform\Library\Helpers\SitesHelper;
+use Solspace\Freeform\Library\Helpers\StringHelper;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
@@ -35,7 +38,6 @@ use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
-use yii\base\Event;
 use yii\db\Exception;
 use yii\web\NotFoundHttpException;
 
@@ -121,11 +123,35 @@ class FreeformVariable
         );
     }
 
-    public function abTest(string $testName): ?Form
+    public function abTest(string $testName, ?array $renderProperties = null): ?Form
     {
         $provider = \Craft::$container->get(ABTestVariantProvider::class);
+        $testingBundle = \Craft::$container->get(ABTestingBundle::class);
 
-        return $provider->getVariant($testName)?->getForm();
+        $variant = $provider->getVariant($testName);
+        if (!$variant) {
+            return null;
+        }
+
+        if (!$renderProperties) {
+            $renderProperties = [];
+        }
+
+        $renderProperties['abTest'] = [
+            'variant' => $variant->uid,
+            'sessionId' => StringHelper::UUID(),
+        ];
+
+        $form = $variant->getForm();
+        $form->setProperties($renderProperties);
+
+        Event::once(
+            Form::class,
+            Form::EVENT_RENDER_AFTER_OPEN_TAG,
+            [$testingBundle, 'registerTest'],
+        );
+
+        return $form;
     }
 
     public function plugin(): Freeform

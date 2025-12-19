@@ -26,4 +26,9 @@ return [
         'route' => 'freeform/ab-tests/post',
         'verb' => ['POST'],
     ]),
+    new UrlRule([
+        'pattern' => 'freeform/api/ab-tests/statistics',
+        'route' => 'freeform/ab-tests/statistics',
+        'verb' => ['GET'],
+    ]),
 ];

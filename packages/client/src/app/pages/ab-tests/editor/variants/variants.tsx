@@ -1,9 +1,10 @@
 import type { FC } from 'react';
 import React from 'react';
+import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
 import { VariantCard } from './variants.card';
-import { VariantsContainer } from './variants.styles';
+import { CreateButton, VariantsContainer } from './variants.styles';
 import type { Variant } from './variants.types';
 
 type Props = {
@@ -20,24 +21,41 @@ export const Variants: FC<Props> = ({ variants, updateVariants }) => {
     updateVariants([...variants.slice(0, index), ...variants.slice(index + 1)]);
   };
 
-  return (
-    <VariantsContainer>
-      {variants?.map((variant, idx) => (
-        <VariantCard
-          variant={variant}
-          removeVariant={() => removeVariand(idx)}
-          updateVariant={(updatedVariant) =>
-            updateVariants([
-              ...variants.slice(0, idx),
-              updatedVariant,
-              ...variants.slice(idx + 1),
-            ])
-          }
-          key={variant.id || idx}
-        />
-      ))}
+  const usedFormIds = variants
+    .map((variant) => variant.formId)
+    .filter((id): id is number => id !== undefined);
 
-      {<div onClick={handleAddVariant}>add new variant</div>}
-    </VariantsContainer>
+  return (
+    <>
+      <VariantsContainer>
+        {variants?.map((variant, idx) => (
+          <VariantCard
+            variant={variant}
+            usedFormIds={usedFormIds}
+            removeVariant={() => {
+              if (confirm(translate('Are you sure?'))) {
+                removeVariand(idx);
+              }
+            }}
+            updateVariant={(updatedVariant) =>
+              updateVariants([
+                ...variants.slice(0, idx),
+                updatedVariant,
+                ...variants.slice(idx + 1),
+              ])
+            }
+            key={variant.id || idx}
+          />
+        ))}
+      </VariantsContainer>
+
+      <CreateButton
+        type="button"
+        className="btn icon add"
+        onClick={handleAddVariant}
+      >
+        {translate('Add Variant')}
+      </CreateButton>
+    </>
   );
 };

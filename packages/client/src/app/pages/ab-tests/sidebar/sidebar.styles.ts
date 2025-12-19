@@ -78,3 +78,23 @@ export const TestDescription = styled.span`
   font-size: 12px;
   color: ${colors.gray600};
 `;
+
+export const Stats = styled.ul`
+  > li {
+    display: flex;
+    justify-content: start;
+    gap: 5px;
+    font-size: 12px;
+    color: ${colors.gray700};
+  }
+`;
+
+export const StatLabel = styled.span`
+  font-family: monospace;
+  font-size: 10px;
+`;
+
+export const StatValue = styled.span`
+  font-weight: bold;
+  font-family: monospace;
+`;

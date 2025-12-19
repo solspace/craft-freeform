@@ -2,9 +2,9 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
-import type { ABTest } from '../ab-tests.types';
+import type { ABTestWithVariants } from '../ab-tests.types';
 
-type NavigationResponse = ABTest[];
+type NavigationResponse = ABTestWithVariants[];
 
 export const useAbTestsList = (): UseQueryResult<NavigationResponse> => {
   return useQuery<NavigationResponse>({

@@ -39,3 +39,9 @@ export const ActionsWrapper = styled.div`
   top: -44px;
   z-index: 2;
 `;
+
+export const SaveButton = styled.button`
+  position: absolute;
+  right: 0;
+  top: -44px;
+`;

@@ -490,14 +490,17 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_ab_tests_statistics'))
                 ->addField('id', $this->primaryKey())
                 ->addField('abTestId', $this->integer()->notNull())
+                ->addField('abVariantId', $this->integer()->notNull())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('sessionId', $this->string()->notNull())
                 ->addField('status', $this->string(20)->notNull())
                 ->addField('lastError', $this->text())
                 ->addField('lastField', $this->string(255))
                 ->addIndex(['abTestId', 'status'], name: 'idx_ab_tests_statistics_abTestId_status')
-                ->addIndex(['abTestId', 'formId', 'status'], name: 'idx_ab_tests_statistics_abTestId_formId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'status'], name: 'idx_ab_tests_statistics_abTestId_abVariantId_formId_status')
+                ->addIndex(['abTestId', 'abVariantId', 'formId', 'sessionId'], name: 'idx_ab_tests_statistics_abTestId_abVariantId_formId_sessionId')
                 ->addForeignKey('abTestId', 'freeform_ab_tests', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abTestId')
+                ->addForeignKey('abVariantId', 'freeform_ab_tests_variants', 'id', ForeignKey::CASCADE, name: 'fk_ab_tests_statistics_abVariantId')
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE, 'fk_ab_tests_statistics_formId'),
         ];
     }

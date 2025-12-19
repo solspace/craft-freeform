@@ -12,7 +12,7 @@ import type { ABTestWithVariants } from '../ab-tests.types';
 import { Variants } from './variants/variants';
 import { EditorLoader } from './editor.loader';
 import { useAbTest, useAbTestMutation } from './editor.queries';
-import { EditorContainer, EditorWrapper } from './editor.styles';
+import { EditorContainer, EditorWrapper, SaveButton } from './editor.styles';
 
 export const AbTestsEditor: FC = () => {
   const { id } = useParams();
@@ -49,6 +49,14 @@ export const AbTestsEditor: FC = () => {
 
   return (
     <EditorContainer>
+      <SaveButton
+        onClick={() => mutation.mutate(state!)}
+        type="button"
+        className="btn submit"
+      >
+        {translate('Save')}
+      </SaveButton>
+
       <Breadcrumb
         id={`ab-tests-editor`}
         label={`${state?.name || translate('New A/B Test')}`}
@@ -87,14 +95,6 @@ export const AbTestsEditor: FC = () => {
             setState((prev) => ({ ...prev, variants }))
           }
         />
-
-        <button
-          onClick={() => mutation.mutate(state!)}
-          type="button"
-          className="btn submit"
-        >
-          {translate('Save')}
-        </button>
       </EditorWrapper>
     </EditorContainer>
   );

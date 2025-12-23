@@ -28,16 +28,31 @@ class FormResolver extends Resolver
             return null; // NONE allowed
         }
 
-        $arguments['limit'] = 1;
-
+        // Resolve via Entry field
         if ($source instanceof ElementInterface) {
-            return $source->getFieldValue($resolveInfo->fieldName);
+            $storedForm = $source->getFieldValue($resolveInfo->fieldName);
+
+            if (!$storedForm instanceof Form) {
+                return null;
+            }
+
+            // Force resolution through the canonical pipeline
+            $arguments['id'] = [$storedForm->getId()];
+            $arguments['limit'] = 1;
+
+            // Always call getResolvedForms to ensure site context
+            $forms = Freeform::getInstance()->forms->getResolvedForms($arguments);
+
+            return reset($forms) ?: null;
         }
 
-        $forms = Freeform::getInstance()->forms->getResolvedForms($arguments);
-        $form = reset($forms);
+        // Normal freeform { form } resolver
+        $arguments['limit'] = 1;
 
-        return $form ?: null;
+        // Always call getResolvedForms to ensure site context
+        $forms = Freeform::getInstance()->forms->getResolvedForms($arguments);
+
+        return reset($forms) ?: null;
     }
 
     /**

@@ -132,33 +132,34 @@ class RuleHandler implements FreeformHandler {
         return;
       }
 
+      const matchedFieldRuleSet = new Set(matchedFieldRules);
       // Create a callback which will be called when a field is changed
-      const callback =
-        (rule: FieldRule | ButtonRule): EventListenerOrEventListenerObject =>
-        () => {
-          // Trigger the main rule applying for this field
-          this.applyRule(rule);
+      const callback: EventListenerOrEventListenerObject = () => {
+        // Trigger the main rule applying for this field
+        combinedRules.forEach((rule) => this.applyRule(rule));
 
-          // Trigger any related rules which are affected by this field
-          // this allows for nested rules to work
-          rules.fields.filter((r) => r !== rule).forEach((r) => this.applyRule(r));
-        };
+        // Trigger any related rules which are affected by this field
+        // this allows for nested rules to work
+        rules.fields.forEach((rule) => {
+          if (!matchedFieldRuleSet.has(rule)) {
+            this.applyRule(rule);
+          }
+        });
+      };
 
       const listeners: string[] = !Array.isArray(listener) ? [listener] : listener;
 
       // Attach event listeners
-      combinedRules.forEach((rule) => {
-        listeners.forEach((listener) => element.addEventListener(listener, callback(rule)));
-      });
+      listeners.forEach((listener) => element.addEventListener(listener, callback));
     });
 
     triggerUntilStateSettled(this.form, () => {
-      rules.fields.forEach((rule) => this.applyRule(rule));
-      rules.buttons.forEach((rule) => this.applyRule(rule));
+      rules.fields.forEach((rule) => this.applyRule(rule, false));
+      rules.buttons.forEach((rule) => this.applyRule(rule, false));
     });
   };
 
-  applyRule = (rule: FieldRule | ButtonRule) => {
+  applyRule = (rule: FieldRule | ButtonRule, emitEvent = true) => {
     const selector =
       'field' in rule ? `[data-field-container="${rule.field}"]` : `[data-button-container="${rule.button}"]`;
 
@@ -174,24 +175,35 @@ class RuleHandler implements FreeformHandler {
     const shouldDisplay =
       combinator === 'and' ? conditions.every(this.verifyCondition) : conditions.some(this.verifyCondition);
 
+    const prevDisplay = container.style.display || '';
+    const prevHidden = container.dataset.hidden !== undefined;
+
     // Change the `display` property in the styles based on the the rule's "show"/"hide" setting
+    let nextDisplay = '';
+    let nextHidden = false;
     if (display === 'show') {
-      container.style.display = shouldDisplay ? '' : 'none';
-      if (shouldDisplay) {
-        delete container.dataset.hidden;
-      } else {
-        container.dataset.hidden = '';
-      }
+      nextDisplay = shouldDisplay ? '' : 'none';
+      nextHidden = !shouldDisplay;
     } else {
-      container.style.display = shouldDisplay ? 'none' : '';
-      if (!shouldDisplay) {
-        delete container.dataset.hidden;
-      } else {
-        container.dataset.hidden = '';
-      }
+      nextDisplay = shouldDisplay ? 'none' : '';
+      nextHidden = shouldDisplay;
     }
 
-    dispatchCustomEvent(events.rules.applied, { rule }, container);
+    const displayChanged = prevDisplay !== nextDisplay || prevHidden !== nextHidden;
+    if (!displayChanged) {
+      return false;
+    }
+
+    container.style.display = nextDisplay;
+    if (nextHidden) {
+      container.dataset.hidden = '';
+    } else {
+      delete container.dataset.hidden;
+    }
+
+    if (emitEvent) {
+      dispatchCustomEvent(events.rules.applied, { rule }, container);
+    }
 
     return true;
   };

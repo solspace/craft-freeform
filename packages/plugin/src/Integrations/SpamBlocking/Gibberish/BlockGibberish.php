@@ -9,7 +9,6 @@ use Solspace\Freeform\Attributes\Property\Message;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\ValueTransformers\SeparatedStringToArrayTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Fields\Interfaces\SkipGibberishCheckInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -65,10 +64,6 @@ class BlockGibberish extends SpamBlockingIntegration
         $gibberishHits = 0;
 
         foreach ($form->getLayout()->getFields() as $field) {
-            if (!$field instanceof PersistentValueInterface) {
-                continue;
-            }
-
             if ($field instanceof SkipGibberishCheckInterface) {
                 continue;
             }

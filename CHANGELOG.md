@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.14.2 - 2025-12-23
+
+### Changed
+- Optimized frontend conditional logic to improve performance on forms with a large number of rules.
+- **GraphQL**: Site filtering and site metadata now work with Freeform element field types.
+
+### Fixed
+- Fixed an issue where **Gibberish Spam Blocking** was not functioning correctly.
+
 ## 5.14.1 - 2025-12-15
 
 ### Fixed

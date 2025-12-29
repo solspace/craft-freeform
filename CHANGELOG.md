@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 5.14.3 - 2025-12-29
+
+### Fixed
+- Fixed an issue with the install migration for export notifications.
+
 ## 5.14.2 - 2025-12-23
 
 ### Changed

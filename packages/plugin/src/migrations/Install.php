@@ -266,6 +266,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_export_notifications'))
                 ->addField('id', $this->primaryKey())
                 ->addField('profileId', $this->integer()->notNull())
+                ->addField('enabled', $this->boolean()->defaultValue(true))
                 ->addField('name', $this->string(255)->notNull()->unique())
                 ->addField('fileType', $this->string(30)->notNull())
                 ->addField('fileName', $this->string(255))

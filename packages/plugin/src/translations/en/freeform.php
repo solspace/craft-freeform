@@ -1416,6 +1416,7 @@ return [
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.',
     'Critical System Error Report Recipients' => 'Critical System Error Report Recipients',
     'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Provide one or more comma-separated email addresses that should receive critical error reports.',
+    'Send Critical System Error Reports' => 'Send Critical System Error Reports',
     'Digest Email Notifications' => 'Digest Email Notifications',
     'Developer Digest Email' => 'Developer Digest Email',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices.",

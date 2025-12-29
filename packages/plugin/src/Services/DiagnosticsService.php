@@ -757,7 +757,7 @@ class DiagnosticsService extends BaseService
                     \count($settings->getDigestRecipients()) > 0
                 ),
                 new DiagnosticItem(
-                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Send System Error Reports').'</span>',
+                    '<span class="diag-check diag-{{ value ? "enabled" : "disabled" }}"></span><span class="item-inline">'.Freeform::t('Send Critical System Error Reports').'</span>',
                     $this->getSummary()->statistics->settings->sendErrorNotifications,
                 ),
                 new DiagnosticItem(

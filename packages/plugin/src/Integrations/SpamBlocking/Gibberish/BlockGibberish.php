@@ -72,6 +72,12 @@ class BlockGibberish extends SpamBlockingIntegration
                 continue;
             }
 
+            $value = $field->getValue();
+
+            if (!\is_string($value)) {
+                continue;
+            }
+
             $analysis = GibberishHelper::analyzeGibberish($field->getValue(), $this->getGibberishWordMinimumLength(), $this->getCombinedAllowedTerms());
             if ($analysis['is_gibberish']) {
                 ++$gibberishHits;

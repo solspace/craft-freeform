@@ -1416,6 +1416,7 @@ return [
     'Send an email notification alerting the email address(es) below when an email notification cannot be delivered.' => 'Senden Sie eine E-Mail-Benachrichtigung an die unten angegebenen E-Mail-Adressen, wenn eine E-Mail-Benachrichtigung nicht zugestellt werden kann.',
     'Critical System Error Report Recipients' => 'Empfänger von kritischen Systemfehlermeldungen',
     'Provide one or more comma-separated email addresses that should receive critical error reports.' => 'Geben Sie eine oder mehrere durch Kommas getrennte E-Mail-Adressen an, die kritische Fehlermeldungen erhalten sollen.',
+    'Send Critical System Error Reports' => 'Kritische Systemfehlerberichte senden',
     'Digest Email Notifications' => 'E-Mail-Zusammenfassungen',
     'Developer Digest Email' => 'Entwickler-Zusammenfassungs-E-Mail',
     "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices." => "Senden Sie wöchentliche oder tägliche E-Mails am angegebenen Tag (bei Verwendung von 'Wöchentlich') an die unten angegebenen E-Mail-Adressen. Dies enthält eine Momentaufnahme der Leistung des vorherigen Zeitraums sowie protokollierte Fehler und Upgrade-Hinweise.",

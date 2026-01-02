@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.14.4 - 2026-01-02
+
+### Fixed
+- Fixed a bug where conditionally hidden fields were still appearing via `allFields` in email notifications.
+- Fixed issues with **Gibberish** spam blocking that could cause incorrect spam detection.
+- Fixed some payment gateway data being lost after re-saving a submission and then resending notifications.
+
+## 5.14.3 - 2025-12-29
+
+### Fixed
+- Fixed an issue with the install migration for export notifications.
+
 ## 5.14.2 - 2025-12-23
 
 ### Changed

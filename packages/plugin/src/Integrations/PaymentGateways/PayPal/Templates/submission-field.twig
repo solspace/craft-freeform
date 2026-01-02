@@ -29,6 +29,7 @@
         <label class="paypal-label"><span>{{ field.label }}</span></label>
     </div>
     <div class="paypal-payment">
+        <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle].value }}" />
         <ul>
             <li>
                 <div>

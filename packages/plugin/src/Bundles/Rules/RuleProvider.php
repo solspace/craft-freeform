@@ -78,7 +78,7 @@ class RuleProvider
     {
         $rules = $this->getFieldRules($form);
         foreach ($rules as $rule) {
-            if ($rule->getField() === $field) {
+            if ($rule->getField()->getUid() === $field->getUid()) {
                 return $rule;
             }
         }

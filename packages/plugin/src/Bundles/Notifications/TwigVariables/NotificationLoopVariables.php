@@ -32,6 +32,9 @@ class NotificationLoopVariables extends FeatureBundle
             ->getFiltered(
                 fn (FieldInterface $field) => !$field instanceof NoEmailPresenceInterface
             )
+            ->getFiltered(
+                fn (FieldInterface $field) => !$this->validator->isFieldHidden($event->getForm(), $field)
+            )
         ;
 
         if (!\count($fields)) {

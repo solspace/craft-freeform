@@ -30,6 +30,7 @@
         </label>
     </div>
     <div class="mollie">
+        <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle].value }}" />
         <ul>
             <li>
                 <div>{{ 'Amount'|t('freeform') }}</div>

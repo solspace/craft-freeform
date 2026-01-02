@@ -47,7 +47,7 @@ class GibberishHelper
         // 3 letters
         'and', 'any', 'are', 'can', 'did', 'for', 'get', 'had', 'has', 'her', 'him', 'his', 'how', 'its', 'let', 'man', 'may',
         'new', 'not', 'six', 'now', 'off', 'old', 'one', 'our', 'out', 'put', 'see', 'set', 'she', 'the', 'too', 'two', 'use',
-        'war', 'was', 'way', 'who', 'why', 'you',
+        'war', 'was', 'way', 'who', 'why', 'you', 'non',
 
         // 4+ letters – existing common words
         'also', 'able', 'back', 'best', 'both', 'call', 'come', 'done', 'door', 'down', 'each', 'even', 'ever', 'from',
@@ -86,7 +86,7 @@ class GibberishHelper
         'christopher', 'daniel', 'matthew', 'anthony', 'mark', 'donald', 'steven', 'paul', 'andrew', 'joshua',
         'kenneth', 'kevin', 'brian', 'george', 'timothy', 'ronald', 'edward', 'jason', 'jeffrey', 'ryan', 'jacob',
         'gary', 'nicholas', 'eric', 'stephen', 'larry', 'justin', 'scott', 'brandon', 'benjamin', 'adam', 'alexander',
-        'patrick', 'jack', 'liam', 'noah', 'oliver', 'sean',
+        'patrick', 'jack', 'liam', 'noah', 'oliver', 'sean', 'bob',
 
         // common given names (female-ish)
         'mary', 'patricia', 'jennifer', 'linda', 'elizabeth', 'barbara', 'susan', 'jessica', 'sarah', 'karen',

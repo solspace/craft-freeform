@@ -4,18 +4,24 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 
-class m250903_063546_AddIdentifierToNotificationLogs extends Migration
+/**
+ * m260107_132759_AddIdentifierToNotificationLogs migration.
+ */
+class m260107_132759_AddIdentifierToNotificationLogs extends Migration
 {
     public function safeUp(): bool
     {
         $table = '{{%freeform_notification_log}}';
 
         // Check if table exists before touching anything
-        $schema = $this->db->getTableSchema($table, true);
+        $schema = $this->db->getTableSchema($table);
         if (!$schema) {
+            \Craft::warning("Skipping identifier migration: {$table} does not exist", __METHOD__);
+
             return true;
         }
 
+        // Already handled in m250903_063546_AddIdentifierToNotificationLogs
         if ($this->db->columnExists($table, 'identifier')) {
             return true;
         }
@@ -37,10 +43,8 @@ class m250903_063546_AddIdentifierToNotificationLogs extends Migration
 
     public function safeDown(): bool
     {
-        if ($this->db->columnExists('{{%freeform_notification_log}}', 'identifier')) {
-            $this->dropColumn('{{%freeform_notification_log}}', 'identifier');
-        }
+        echo "m260107_132759_AddIdentifierToNotificationLogs cannot be reverted.\n";
 
-        return true;
+        return false;
     }
 }

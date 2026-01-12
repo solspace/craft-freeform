@@ -8,7 +8,6 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 /**
  * @template T
  */
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
 abstract class Property
 {
     #[Ignore] public ?TransformerInterface $transformer = null;

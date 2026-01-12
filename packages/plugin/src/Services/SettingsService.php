@@ -456,7 +456,9 @@ class SettingsService extends BaseService
         $plugin = Freeform::getInstance();
         $plugin->setSettings($data);
 
-        return \Craft::$app->plugins->savePluginSettings($plugin, $data);
+        $allSettings = $plugin->getSettings()->toArray();
+
+        return \Craft::$app->plugins->savePluginSettings($plugin, $allSettings);
     }
 
     public function getPluginJsPath(): string

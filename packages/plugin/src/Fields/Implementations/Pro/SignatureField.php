@@ -146,7 +146,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface, Encry
             );
         }
 
-        return $image;
+        return $image ?: '';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

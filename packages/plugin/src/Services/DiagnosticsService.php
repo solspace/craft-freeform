@@ -43,7 +43,7 @@ class DiagnosticsService extends BaseService
         $minCraftVersion = '4.0.0';
         $maxCraftVersion = '5.9.0';
         $minPhpVersion = '8.0.2';
-        $maxPhpVersion = '8.4.0';
+        $maxPhpVersion = '8.5.99';
         $latestVersion = $this->getLatestFreeformVersion();
         $hasUpdate = version_compare($this->getLatestFreeformVersion(), Freeform::getInstance()->version, '>');
 

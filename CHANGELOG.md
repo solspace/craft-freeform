@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 5.14.5 - 2026-01-12
+
+### Fixed
+- Fixed a **Craft 5.8.22+** compatibility issue where saving Freeform settings could partially save and drop values from other settings pages.
+- Fixed an error that could occur in **Signature** fields when the value was `null` in some cases.
+- Fixed a compatibility issue with **PHP 8.5**.
+
 ## 5.14.4 - 2026-01-02
 
 ### Fixed

@@ -184,9 +184,14 @@ class FreeformFormsExporter extends BaseExporter
                 /** @var FormSiteRecord[] $siteRecords */
                 $siteRecords = FormSiteRecord::find()->where(['formId' => $form->getId()])->all();
                 foreach ($siteRecords as $siteRecord) {
+                    $siteInstance = $siteRecord->getSite();
+                    if (!$siteInstance) {
+                        continue;
+                    }
+
                     $exportedSite = new Site();
-                    $exportedSite->id = $siteRecord->getSite()->id;
-                    $exportedSite->handle = $siteRecord->getSite()->handle;
+                    $exportedSite->id = $siteInstance->id;
+                    $exportedSite->handle = $siteInstance->handle;
 
                     $exported->sites->add($exportedSite, $exportedSite->id);
                 }

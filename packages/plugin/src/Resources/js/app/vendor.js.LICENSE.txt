@@ -4,7 +4,7 @@ object-assign
 @license MIT
 */
 
-/*! Axios v1.10.0 Copyright (c) 2025 Matt Zabriskie and contributors */
+/*! Axios v1.13.2 Copyright (c) 2025 Matt Zabriskie and contributors */
 
 /** @license React v0.19.1
  * scheduler.production.min.js

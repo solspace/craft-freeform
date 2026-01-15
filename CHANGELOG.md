@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.30 - 2026-01-15
+
+### Security
+- Updated **Axios** to a patched version to address a security vulnerability.
+
 ## 4.1.29 - 2025-12-05
 
 ### Fixed

@@ -2019,6 +2019,16 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.30 - 2026-01-15
+
+### Security
+- Updated **Axios** to a patched version to address a security vulnerability.
+
+## 4.1.29 - 2025-12-05
+
+### Fixed
+- Fixed an issue where **Rich Text** fields rendered unordered lists as numbered (ordered) lists.
+
 ## 4.1.28 - 2025-07-25
 
 ### Added

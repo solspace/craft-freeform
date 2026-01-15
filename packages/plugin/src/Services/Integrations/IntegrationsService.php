@@ -56,6 +56,9 @@ class IntegrationsService extends BaseService
     private array $cacheById = [];
     private array $cacheByHandle = [];
 
+    private ?array $installedIntegrationClassMap = null;
+    private ?array $enabledIntegrationTypeMap = null;
+
     public function __construct(
         $config,
         protected IntegrationClientProvider $clientProvider,
@@ -65,6 +68,36 @@ class IntegrationsService extends BaseService
         private IntegrationRuleValidator $integrationRuleValidator,
     ) {
         parent::__construct($config);
+    }
+
+    public function isIntegrationInstalled(string $integrationClass): bool
+    {
+        if (null === $this->installedIntegrationClassMap) {
+            $classes = IntegrationRecord::find()
+                ->select(['class'])
+                ->column()
+            ;
+
+            $this->installedIntegrationClassMap = array_fill_keys($classes, true);
+        }
+
+        return isset($this->installedIntegrationClassMap[$integrationClass]);
+    }
+
+    public function isIntegrationTypeEnabled(string $type): bool
+    {
+        if (null === $this->enabledIntegrationTypeMap) {
+            $types = IntegrationRecord::find()
+                ->select(['type'])
+                ->where(['enabled' => true])
+                ->distinct()
+                ->column()
+            ;
+
+            $this->enabledIntegrationTypeMap = array_fill_keys($types, true);
+        }
+
+        return isset($this->enabledIntegrationTypeMap[$type]);
     }
 
     /**

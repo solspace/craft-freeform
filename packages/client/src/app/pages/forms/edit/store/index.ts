@@ -3,7 +3,6 @@ import { useDispatch, useSelector, useStore } from 'react-redux';
 import type { Action, AnyAction, Store } from '@reduxjs/toolkit';
 import { configureStore } from '@reduxjs/toolkit';
 import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import thunk from 'redux-thunk';
 
 import { statePersistMiddleware } from './middleware/state-persist';
 import context from './slices/context';
@@ -16,7 +15,8 @@ import search from './slices/search';
 import translations from './slices/translations';
 
 export const store = configureStore({
-  middleware: [thunk, statePersistMiddleware],
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(statePersistMiddleware),
   reducer: {
     form,
     layout,

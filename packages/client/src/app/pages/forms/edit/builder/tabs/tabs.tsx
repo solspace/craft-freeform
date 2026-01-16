@@ -66,32 +66,36 @@ export const Tabs: React.FC = () => {
       </Heading>
 
       <TabsWrapper className="main-tabs">
-        <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
+        <NavLink
+          to={`/forms/${form.id}`}
+          end
+          className={classes(fieldsHaveErrors && 'errors')}
+        >
           <span>{translate('Layout')}</span>
         </NavLink>
         {limitations.can('notifications.tab') && (
           <NavLink
-            to="notifications"
+            to={`/forms/${form.id}/notifications`}
             className={classes(notificationsHaveErrors && 'errors')}
           >
             <span>{translate('Notifications')}</span>
           </NavLink>
         )}
         {limitations.can('rules.tab') && (
-          <NavLink to="rules">
+          <NavLink to={`/forms/${form.id}/rules`}>
             <span>{translate('Rules')}</span>
           </NavLink>
         )}
         {config.limitations.can('integrations.tab') && (
           <NavLink
-            to="integrations"
+            to={`/forms/${form.id}/integrations`}
             className={classes(hasIntegrationErrors && 'errors')}
           >
             <span>{translate('Integrations')}</span>
           </NavLink>
         )}
         {config.editions.is(Edition.Pro) && form.formMonitor.enabled && (
-          <NavLink to="form-monitor">
+          <NavLink to={`/forms/${form.id}/form-monitor`}>
             <span>
               {translate('Monitoring')}
               <BetaLabel>BETA</BetaLabel>
@@ -100,7 +104,7 @@ export const Tabs: React.FC = () => {
         )}
         {formSettingsData && config.limitations.can('settings.tab') && (
           <NavLink
-            to="settings"
+            to={`/forms/${form.id}/settings`}
             className={classes(
               (hasErrors(formErrors?.general) ||
                 hasErrors(formErrors?.behavior)) &&

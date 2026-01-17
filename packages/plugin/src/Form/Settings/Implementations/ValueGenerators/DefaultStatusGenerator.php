@@ -11,18 +11,27 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
 
     public function generateValue(?object $referenceObject, ?object $context): int
     {
+        // Skip DB work on CP GraphQL explorer
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsCpRequest()) {
+            $path = '/'.ltrim($request->getPathInfo(), '/');
+            if (preg_match('#(^|/)(graphiql|graphql)(/|$)#', $path)) {
+                return 0;
+            }
+        }
+
         try {
-            $statuses = $this->statusesService->getAllStatuses();
-            foreach ($statuses as $status) {
-                if ('open' === $status->handle) {
-                    return $status->id;
-                }
+            $status = $this->statusesService->getStatusByHandle('open');
+            if ($status) {
+                return $status->id;
             }
 
+            // fallback: get first status id if needed
+            $statuses = $this->statusesService->getAllStatuses();
             $first = reset($statuses);
 
             return $first?->id ?? 1;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return 0;
         }
     }

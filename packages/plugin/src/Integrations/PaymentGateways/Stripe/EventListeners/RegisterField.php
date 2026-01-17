@@ -8,10 +8,10 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Fields\StripeField;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe\Stripe;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class RegisterField extends FeatureBundle
@@ -40,9 +40,9 @@ class RegisterField extends FeatureBundle
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
-        $hasStripe = IntegrationRecord::find()
-            ->where(['class' => Stripe::class])
-            ->count()
+        $hasStripe = Freeform::getInstance()
+            ->integrations
+            ->isIntegrationInstalled(Stripe::class)
         ;
 
         if ($hasStripe) {

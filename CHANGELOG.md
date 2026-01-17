@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.14.6 - 2026-01-17
+
+### Fixed
+- Fixed an error when exporting a form assigned to a site that no longer exists.
+- Fixed excessive duplicate queries when using **GraphQL**.
+- Fixed **Invisible** field values not appearing in email notifications.
+
+### Security
+- Addressed potential vulnerabilities in third-party dependencies.
+- Updated `dompdf/dompdf`: dropped support for **1.x** and added support for **3.x**.
+- Dropped support for `nesbot/carbon` **1.x**.
+
 ## 5.14.5 - 2026-01-12
 
 ### Fixed

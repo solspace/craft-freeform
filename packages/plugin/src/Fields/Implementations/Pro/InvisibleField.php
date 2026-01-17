@@ -33,4 +33,9 @@ class InvisibleField extends HiddenField implements ExtraFieldInterface, Persist
     {
         return '';
     }
+
+    public function getValue(): string
+    {
+        return $this->getDefaultValue();
+    }
 }

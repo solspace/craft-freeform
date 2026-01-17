@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Integrations\AI\EventListeners;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\AI\Fields\AiField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class RegisterField extends FeatureBundle
@@ -22,10 +22,9 @@ class RegisterField extends FeatureBundle
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
-        $hasAiIntegration = IntegrationRecord::find()
-            ->where(['type' => 'ai'])
-            ->andWhere(['enabled' => true])
-            ->count()
+        $hasAiIntegration = Freeform::getInstance()
+            ->integrations
+            ->isIntegrationTypeEnabled('ai')
         ;
 
         if ($hasAiIntegration) {

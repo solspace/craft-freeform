@@ -44,6 +44,15 @@ class GraphQLBundle extends FeatureBundle
 {
     public function __construct()
     {
+        // Skip DB work on CP GraphQL explorer
+        $request = \Craft::$app->getRequest();
+        if ($request->getIsCpRequest()) {
+            $path = '/'.ltrim($request->getPathInfo(), '/');
+            if (preg_match('#(^|/)(graphiql|graphql)(/|$)#', $path)) {
+                return;
+            }
+        }
+
         if (version_compare(\Craft::$app->version, '3.5.0', '<')) {
             return;
         }

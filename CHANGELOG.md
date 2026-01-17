@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 5.14.6 - 2026-01-17
+
+### Fixed
+- Fixed an error when exporting a form assigned to a site that no longer exists.
+- Fixed excessive duplicate queries when using **GraphQL**.
+- Fixed **Invisible** field values not appearing in email notifications.
+
+### Security
+- Addressed potential vulnerabilities in third-party dependencies.
+- Updated `dompdf/dompdf`: dropped support for **1.x** and added support for **3.x**.
+- Dropped support for `nesbot/carbon` **1.x**.
+
 ## 5.14.5 - 2026-01-12
 
 ### Fixed
@@ -2018,6 +2030,16 @@
     - The `hash` field has been removed from `FreeformFieldInterface` in GraphQL as it is no longer relevant.
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
+
+## 4.1.30 - 2026-01-15
+
+### Security
+- Updated **Axios** to a patched version to address a security vulnerability.
+
+## 4.1.29 - 2025-12-05
+
+### Fixed
+- Fixed an issue where **Rich Text** fields rendered unordered lists as numbered (ordered) lists.
 
 ## 4.1.28 - 2025-07-25
 

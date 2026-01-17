@@ -120,7 +120,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
 
     public function getStatusByHandle(string $handle): ?StatusModel
     {
-        if (!isset(self::$statusByHandleCache[$handle])) {
+        if (!\array_key_exists($handle, self::$statusByHandleCache)) {
             $result = $this->getStatusQuery()
                 ->where(['handle' => $handle])
                 ->one()

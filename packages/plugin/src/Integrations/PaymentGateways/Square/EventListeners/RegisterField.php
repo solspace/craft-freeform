@@ -8,10 +8,10 @@ use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Forms\CollectScriptsEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Fields\SquareField;
 use Solspace\Freeform\Integrations\PaymentGateways\Square\Square;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\IntegrationRecord;
 use yii\base\Event;
 
 class RegisterField extends FeatureBundle
@@ -40,9 +40,9 @@ class RegisterField extends FeatureBundle
 
     public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
-        $hasSquare = IntegrationRecord::find()
-            ->where(['class' => Square::class])
-            ->count()
+        $hasSquare = Freeform::getInstance()
+            ->integrations
+            ->isIntegrationInstalled(Square::class)
         ;
 
         if ($hasSquare) {

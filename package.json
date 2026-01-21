@@ -14,8 +14,8 @@
     "axios": "^1.13.2",
     "globals": "^15.14.0",
     "install": "^0.13.0",
-    "lerna": "^9.0.3",
     "dom-to-image": "^2.6.0",
+    "dompurify": "^3.3.1",
     "qs": ">=6.14.1"
   },
   "devDependencies": {
@@ -39,20 +39,21 @@
     "postcss": "^8.5.0",
     "prettier": "^3.4.2",
     "prettier-eslint": "^16.3.0",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "concurrently": "^9.1.2"
   },
   "overrides": {
     "diff": "^8.0.3"
   },
   "scripts": {
-    "dev": "lerna run dev",
-    "client": "lerna run dev --scope=@ff/client",
-    "front-end": "lerna run dev --scope='{@ff/scripts,@ff/styles}'",
-    "build": "lerna run build",
+    "dev": "concurrently -n client,scripts,styles \"npm run -w @ff/client dev\" \"npm run -w @ff/scripts dev\" \"npm run -w @ff/styles dev\"",
+    "client": "npm run -w @ff/client dev",
+    "front-end": "concurrently -n scripts,styles \"npm run -w @ff/scripts dev\" \"npm run -w @ff/styles dev\"",
+    "build": "npm run -ws --if-present build",
     "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",
     "format:verify": "prettier --list-different '**/*.{ts,tsx,md,json,js,jsx,css}'",
-    "lint": "lerna run lint",
-    "test": "lerna run test",
+    "lint": "npm run -ws --if-present lint",
+    "test": "npm run -ws --if-present test",
     "prepare": "husky"
   },
   "author": "Solspace, Inc.",

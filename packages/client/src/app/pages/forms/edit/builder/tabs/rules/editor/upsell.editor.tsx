@@ -7,6 +7,7 @@ import { colors, spacings } from '@ff-client/styles/variables';
 import type { FieldRule } from '@ff-client/types/rules';
 import { Combinator, Display, Operator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 import styled from 'styled-components';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
@@ -52,16 +53,18 @@ export const UpsellEditor: FC<Props> = ({ label }) => {
     <RulesEditorWrapper>
       <Label>
         <LoadingText>
-          <span dangerouslySetInnerHTML={{ __html: label }} />
+          <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
         </LoadingText>
       </Label>
 
       <PreviewWrapper>
         <UpsellBanner
           dangerouslySetInnerHTML={{
-            __html: translate(
-              '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.',
-              { link: Craft.getCpUrl('plugin-store/freeform') }
+            __html: sanitize(
+              translate(
+                '<a href="{link}" target="_blank">Upgrade to Freeform Pro</a> to create conditional rules.',
+                { link: Craft.getCpUrl('plugin-store/freeform') }
+              )
             ),
           }}
         />

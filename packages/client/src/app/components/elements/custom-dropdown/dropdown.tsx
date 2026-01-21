@@ -13,6 +13,7 @@ import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { PopUpPortal } from '../pop-up-portal';
 
@@ -168,7 +169,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
         {showSelectedIcon && <Icon>{selectedOption?.icon}</Icon>}
         <span
           dangerouslySetInnerHTML={{
-            __html: selectedOption?.label || translate(emptyOption),
+            __html: sanitize(selectedOption?.label || translate(emptyOption)),
           }}
         />
 

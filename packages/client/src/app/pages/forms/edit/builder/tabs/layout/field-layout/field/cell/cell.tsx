@@ -10,6 +10,7 @@ import { useFieldType } from '@ff-client/queries/field-types';
 import { Type } from '@ff-client/types/fields';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
+import { sanitize } from 'dompurify';
 
 import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-layout';
 
@@ -87,7 +88,7 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
             </Icon>
             <Icon
               style={iconAnimation}
-              dangerouslySetInnerHTML={{ __html: type.icon }}
+              dangerouslySetInnerHTML={{ __html: sanitize(type.icon) }}
             />
           </LabelIcon>
 
@@ -110,12 +111,12 @@ export const FieldCell: React.FC<Props> = ({ field }) => {
           {noLabel ? (
             <Row>
               <HtmlPreviewElement
-                dangerouslySetInnerHTML={{ __html: preview }}
+                dangerouslySetInnerHTML={{ __html: sanitize(preview) }}
               />
               <FieldAssociationsBadges uid={uid} />
             </Row>
           ) : (
-            <div dangerouslySetInnerHTML={{ __html: preview }} />
+            <div dangerouslySetInnerHTML={{ __html: sanitize(preview) }} />
           )}
         </>
       )}

@@ -9,6 +9,7 @@ import { pageRuleActions } from '@editor/store/slices/rules/pages';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import { useQueryFormRules } from '@ff-client/queries/rules';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
 import { ConditionTable } from '../conditions/table/condition-table';
@@ -47,7 +48,7 @@ export const PageRulesEditor: React.FC = () => {
             loadingText={translate('Loading data')}
             loading={isFetching}
           >
-            <span dangerouslySetInnerHTML={{ __html: label }} />
+            <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
           </LoadingText>
         </Label>
         {!isFetching && (
@@ -76,7 +77,7 @@ export const PageRulesEditor: React.FC = () => {
           loadingText={translate('Loading data')}
           loading={isFetching}
         >
-          <span dangerouslySetInnerHTML={{ __html: label }} />
+          <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
         </LoadingText>
       </Label>
       {!isFetching && (

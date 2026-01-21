@@ -9,6 +9,7 @@ import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { useLastTab } from '../tabs.hooks';
 
@@ -67,7 +68,7 @@ export const SettingsSidebar: React.FC = () => {
                 )}
               >
                 <SectionIcon
-                  dangerouslySetInnerHTML={{ __html: section.icon }}
+                  dangerouslySetInnerHTML={{ __html: sanitize(section.icon) }}
                 />
                 {translate(section.label)}
               </SectionLink>

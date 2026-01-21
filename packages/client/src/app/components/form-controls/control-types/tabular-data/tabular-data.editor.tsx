@@ -19,6 +19,7 @@ import type {
   TabularDataProperty,
 } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import {
   addRow,
@@ -180,8 +181,10 @@ export const TabularDataEditor: React.FC<Props> = ({
       <HelpText>
         <span
           dangerouslySetInnerHTML={{
-            __html: translate(
-              'Press <b>enter</b> while editing a cell to add a new row.'
+            __html: sanitize(
+              translate(
+                'Press <b>enter</b> while editing a cell to add a new row.'
+              )
             ),
           }}
         />

@@ -1,10 +1,16 @@
 import type Freeform from '@components/front-end/plugin/freeform';
 import { createLink, createScript } from '@lib/plugin/helpers/html';
+import { getFlatpickr, hasFlatpickr, hasFlatpickrInstance } from '@lib/vendors/flatpickr';
 import type { FreeformHandler } from 'types/form';
 
 class DatePicker implements FreeformHandler {
-  loadedLocales: Record<string, HTMLScriptElement> = {};
+  static flatpickrLoading = false;
+
+  static loadedLocales: Record<string, HTMLScriptElement> = {};
+
   freeform: Freeform;
+
+  loadedLocales = DatePicker.loadedLocales;
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;
@@ -13,18 +19,73 @@ class DatePicker implements FreeformHandler {
       return;
     }
 
-    createScript('//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js', { onLoad: this.reload });
+    // CSS can be added anytime
     createLink('//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css');
+
+    // If flatpickr is already on the page (after a re-render), bind now
+    if (hasFlatpickr()) {
+      this.reload();
+
+      return;
+    }
+
+    // If another DatePicker instance already kicked off loading, just wait for it
+    if (DatePicker.flatpickrLoading) {
+      this.waitForFlatpickrThenReload();
+
+      return;
+    }
+
+    DatePicker.flatpickrLoading = true;
+
+    createScript('//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js', {
+      onLoad: () => {
+        DatePicker.flatpickrLoading = false;
+
+        this.reload();
+      },
+    });
+
+    this.waitForFlatpickrThenReload();
   }
+
+  waitForFlatpickrThenReload = (retries = 40, interval = 50) => {
+    if (hasFlatpickr()) {
+      this.reload();
+
+      return;
+    }
+
+    if (retries <= 0) {
+      return;
+    }
+
+    setTimeout(() => this.waitForFlatpickrThenReload(retries - 1, interval), interval);
+  };
 
   reload = () => {
     if (!this.freeform.has('data-scripts-datepicker')) {
       return;
     }
 
+    const flatpickr = getFlatpickr();
+    if (!flatpickr) {
+      return;
+    }
+
     const pickers = this.freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
     pickers.forEach((picker) => {
-      const locale = picker.getAttribute('data-datepicker-locale');
+      const enabledAttribute = picker.getAttribute('data-datepicker-enabled');
+      if (enabledAttribute === '0' || enabledAttribute === 'false') {
+        return;
+      }
+
+      // Already bound (after multiple freeform-ready runs)
+      if (hasFlatpickrInstance(picker)) {
+        return;
+      }
+
+      const locale = picker.getAttribute('data-datepicker-locale') || 'default';
       const options = {
         disableMobile: true,
         allowInput: true,
@@ -45,7 +106,6 @@ class DatePicker implements FreeformHandler {
         ...optionsEvent.options,
       };
 
-      // @ts-expect-error: Flatpickr types are not included
       const instance = flatpickr(picker, assembledOptions);
       picker.setAttribute('autocomplete', 'off');
 

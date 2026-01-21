@@ -5,6 +5,7 @@ import { useLastTab } from '@editor/builder/tabs/tabs.hooks';
 import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import type { Integration as IntegrationType } from '@ff-client/types/integrations';
 import classes from '@ff-client/utils/classes';
+import { sanitize } from 'dompurify';
 
 import CogIcon from './cog-icon.svg';
 import { Icon, Name, Status, Wrapper } from './integration.styles';
@@ -40,7 +41,9 @@ export const Integration: React.FC<IntegrationType> = ({
             <CogIcon />
           </Icon>
         )}
-        {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
+        {!!icon && (
+          <Icon dangerouslySetInnerHTML={{ __html: sanitize(icon) }} />
+        )}
         <Name>{name}</Name>
         <Status
           $enabled={integration.enabled}

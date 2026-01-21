@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React from 'react';
 import classes from '@ff-client/utils/classes';
+import { sanitize } from 'dompurify';
 import { marked } from 'marked';
 
 import { Content, Instructions, MarkdownWrapper } from './readme.styles';
@@ -13,7 +14,7 @@ type Props = {
 };
 
 export const Readme: FC<Props> = ({ active, content }) => {
-  const parsedContent = marked.parse(content, { gfm: true });
+  const parsedContent = marked.parse(content, { gfm: true, async: false });
 
   if (!content) {
     return <MarkdownWrapper />;
@@ -22,7 +23,9 @@ export const Readme: FC<Props> = ({ active, content }) => {
   return (
     <MarkdownWrapper>
       <Instructions className={classes('markdown-body', active && 'active')}>
-        <Content dangerouslySetInnerHTML={{ __html: parsedContent }} />
+        <Content
+          dangerouslySetInnerHTML={{ __html: sanitize(parsedContent) }}
+        />
       </Instructions>
     </MarkdownWrapper>
   );

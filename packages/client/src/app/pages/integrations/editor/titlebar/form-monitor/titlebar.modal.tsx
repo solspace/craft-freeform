@@ -8,6 +8,7 @@ import { Modal } from '@ff-client/app/components/modals/modal';
 import { FormWrapper } from '@ff-client/app/pages/forms/edit/builder/tabs/form-monitor/form-monitor.action.modal.styles';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 type Props = {
   onClose: () => void;
@@ -51,8 +52,10 @@ export const DisableMonitoringModal: React.FC<Props> = ({
           </div>
           <div
             dangerouslySetInnerHTML={{
-              __html: translate(
-                'To disable monitoring, please type <strong>CONFIRM</strong> in the box below:'
+              __html: sanitize(
+                translate(
+                  'To disable monitoring, please type <strong>CONFIRM</strong> in the box below:'
+                )
               ),
             }}
           />
@@ -119,8 +122,10 @@ export const DisableAndDeleteMonitoringModal: React.FC<Props> = ({
           </div>
           <div
             dangerouslySetInnerHTML={{
-              __html: translate(
-                'To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:'
+              __html: sanitize(
+                translate(
+                  'To disable monitoring and delete all data, please type <strong>CONFIRM</strong> in the box below:'
+                )
               ),
             }}
           />

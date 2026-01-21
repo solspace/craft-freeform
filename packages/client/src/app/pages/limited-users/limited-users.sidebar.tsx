@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { generateUrl } from '@ff-client/utils/urls';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
+import { sanitize } from 'dompurify';
 
 type Item = {
   title?: string;
@@ -38,7 +39,9 @@ export const SettingsSidebar: React.FC = () => {
                     {key !== 'limited-users' && (
                       <a
                         href={generateUrl(`settings/${key}`)}
-                        dangerouslySetInnerHTML={{ __html: item.title }}
+                        dangerouslySetInnerHTML={{
+                          __html: sanitize(item.title),
+                        }}
                       />
                     )}
                   </li>

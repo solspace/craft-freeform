@@ -2,6 +2,7 @@ import React from 'react';
 import { indexedColumn } from '@ff-client/utils/arrays';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { isAllOptionsSelected } from '../../export/export.operations';
 import {
@@ -113,7 +114,7 @@ export const Preview: React.FC<Props> = ({
               return (
                 <Icon
                   dangerouslySetInnerHTML={{
-                    __html: integration.icon,
+                    __html: sanitize(integration.icon),
                   }}
                 />
               );

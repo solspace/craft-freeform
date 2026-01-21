@@ -8,6 +8,7 @@ import type {
 } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { useCellNavigation } from '../../hooks/use-cell-navigation';
 import {
@@ -203,8 +204,10 @@ export const AttributesEditor: React.FC<Props> = ({
         <HelpText>
           <span
             dangerouslySetInnerHTML={{
-              __html: translate(
-                'Press <b>enter</b> while editing a cell to add a new row.'
+              __html: sanitize(
+                translate(
+                  'Press <b>enter</b> while editing a cell to add a new row.'
+                )
               ),
             }}
           />

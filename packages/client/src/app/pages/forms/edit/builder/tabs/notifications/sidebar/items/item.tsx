@@ -5,6 +5,7 @@ import { notificationSelectors } from '@editor/store/slices/notifications/notifi
 import type { Notification } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
+import { sanitize } from 'dompurify';
 
 import { Icon, Link, Name, Status } from './item.styles';
 
@@ -26,7 +27,7 @@ export const NotificationItem: React.FC<Props> = ({
       to={`${uid}`}
       className={classes(hasErrors(errors) && 'errors', !enabled && 'inactive')}
     >
-      {icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
+      {icon && <Icon dangerouslySetInnerHTML={{ __html: sanitize(icon) }} />}
       <Name>{name}</Name>
       <Status $enabled={enabled} className={classes('status-dot')} />
     </Link>

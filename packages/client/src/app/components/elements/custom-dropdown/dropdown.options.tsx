@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import classes from '@ff-client/utils/classes';
+import { sanitize } from 'dompurify';
 
 import CheckIcon from './check.svg';
 import type { DropdownProps } from './dropdown';
@@ -95,7 +96,11 @@ export const Options: React.FC<Props> = ({
                 <LabelContainer>
                   {option.icon && option.icon}
                   <div>
-                    <span dangerouslySetInnerHTML={{ __html: option.label }} />
+                    <span
+                      dangerouslySetInnerHTML={{
+                        __html: sanitize(option.label),
+                      }}
+                    />
                   </div>
                 </LabelContainer>
 

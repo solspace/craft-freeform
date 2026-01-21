@@ -13,6 +13,7 @@ import {
 } from '@ff-client/queries/form-monitor.mutations';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { FormWrapper } from './form-monitor.action.modal.styles';
 
@@ -95,8 +96,10 @@ export const DeleteTestModal: React.FC<Props> = ({
             <>
               <div
                 dangerouslySetInnerHTML={{
-                  __html: translate(
-                    'To clear all test history, please type <strong>DELETE</strong> in the box below:'
+                  __html: sanitize(
+                    translate(
+                      'To clear all test history, please type <strong>DELETE</strong> in the box below:'
+                    )
                   ),
                 }}
               />

@@ -10,6 +10,7 @@ import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rule
 import { useQueryFormRules } from '@ff-client/queries/rules';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import { CombinatorSelect } from '../conditions/combinator/combinator';
 import { DisplaySelect } from '../conditions/display/display';
@@ -49,7 +50,7 @@ export const FieldRulesEditor: React.FC = () => {
             loadingText={translate('Loading data')}
             loading={isFetching}
           >
-            <span dangerouslySetInnerHTML={{ __html: label }} />
+            <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
           </LoadingText>
         </Label>
         {!isFetching && (
@@ -83,7 +84,7 @@ export const FieldRulesEditor: React.FC = () => {
           loadingText={translate('Loading data')}
           loading={isFetching}
         >
-          <span dangerouslySetInnerHTML={{ __html: label }} />
+          <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
         </LoadingText>
       </Label>
       {!isFetching && (

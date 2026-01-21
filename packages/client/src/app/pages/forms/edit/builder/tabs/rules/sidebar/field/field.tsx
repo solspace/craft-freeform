@@ -12,6 +12,7 @@ import { useFieldType } from '@ff-client/queries/field-types';
 import type { PageButtonType } from '@ff-client/types/rules';
 import { operatorTypes } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
+import { sanitize } from 'dompurify';
 
 import { Layout } from '../layout/layout';
 
@@ -91,10 +92,10 @@ export const Field: React.FC<Props> = ({ field }) => {
       )}
     >
       <FieldInfo>
-        <Icon dangerouslySetInnerHTML={{ __html: type?.icon }} />
+        <Icon dangerouslySetInnerHTML={{ __html: sanitize(type?.icon) }} />
         <Label
           dangerouslySetInnerHTML={{
-            __html: field.properties.label || type?.name,
+            __html: sanitize(field.properties.label || type?.name),
           }}
         />
       </FieldInfo>

@@ -32,18 +32,14 @@ export const NotificationItemWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.xs};
   padding: ${spacings.xs} 0;
+`;
 
-  &:empty {
-    &:after {
-      content: 'None configured';
+export const NotificationItemEmpty = styled.div`
+  padding: 2px;
+  margin-left: 12px;
 
-      padding: 2px};
-      margin-left: 12px;
+  font-style: italic;
+  font-size: 12px;
 
-      font-style: italic;
-      font-size: 12px;
-
-      color: ${colors.gray300};
-    }
-  }
+  color: ${colors.gray300};
 `;

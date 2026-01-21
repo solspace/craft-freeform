@@ -2,6 +2,7 @@ import React from 'react';
 import { Checkbox } from '@components/elements/checkbox/checkbox';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+import { sanitize } from 'dompurify';
 
 import type { Integration } from '../../../import/import.types';
 import {
@@ -72,7 +73,11 @@ export const PreviewIntegrations: React.FC<Props> = ({
               </BlockItem>
               <Spacer $dash />
               {!!integration.icon && (
-                <Icon dangerouslySetInnerHTML={{ __html: integration.icon }} />
+                <Icon
+                  dangerouslySetInnerHTML={{
+                    __html: sanitize(integration.icon),
+                  }}
+                />
               )}
               {!integration.icon && <Icon className="fa-duotone fa-gear" />}
               <Label $light htmlFor={`integration-${integration.uid}`}>

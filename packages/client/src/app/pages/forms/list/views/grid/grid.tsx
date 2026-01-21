@@ -5,6 +5,7 @@ import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import EditIcon from '@ff-icons/actions/edit.svg';
 import axios from 'axios';
+import { sanitize } from 'dompurify';
 import Sortable from 'sortablejs';
 
 import { useEditGroupModal } from '../../modals/hooks/use-edit-group-modal';
@@ -136,9 +137,11 @@ export const FormGrid: React.FC = () => {
           {isExpressEdition && (
             <div
               dangerouslySetInnerHTML={{
-                __html: translate(
-                  'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.',
-                  { link: Craft.getCpUrl('plugin-store/freeform') }
+                __html: sanitize(
+                  translate(
+                    'Need more forms? <a href="{link}" target="_blank">Upgrade to Lite or Pro</a>.',
+                    { link: Craft.getCpUrl('plugin-store/freeform') }
+                  )
                 ),
               }}
             />

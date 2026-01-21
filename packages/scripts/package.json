@@ -38,7 +38,7 @@
     "@paypal/paypal-js": "^8.4.2",
     "@stripe/stripe-js": "^2.1.9",
     "clsx": "^2.0.0",
-    "expression-language": "^1.1.4",
+    "expression-language": "^2.5.1",
     "filesize": "^10.0.12",
     "locutus": "^2.0.16"
   }

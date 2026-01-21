@@ -41,7 +41,11 @@ const extractValue = (element: HTMLInputElement | HTMLSelectElement): string | n
     return false;
   }
 
-  return isNaN(Number(value)) ? value : Number(value);
+  if (isNaN(Number(value))) {
+    return value;
+  }
+
+  return Number(value);
 };
 
 const attachCalculations = (input: HTMLInputElement) => {

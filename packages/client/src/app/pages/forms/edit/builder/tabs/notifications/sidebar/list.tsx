@@ -16,6 +16,7 @@ import { useLastTab } from '../../tabs.hooks';
 
 import { NotificationItem } from './items/item';
 import { Icon, Link, Name } from './items/item.styles';
+import { NotificationItemEmpty } from './items/type.styles';
 import IconManager from './icon.manager.svg';
 import { ScrollableList } from './list.styles';
 
@@ -83,6 +84,14 @@ export const List: React.FC = () => {
                       notification={notification}
                     />
                   ))}
+
+              {!notifications?.filter(
+                (notification) => notification.className === type.className
+              )?.length && (
+                <NotificationItemEmpty>
+                  {translate('None configured')}
+                </NotificationItemEmpty>
+              )}
             </NotificationTypeItem>
           ))}
 

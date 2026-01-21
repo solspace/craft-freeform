@@ -8,6 +8,7 @@ import { notifications } from '@ff-client/utils/notifications';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { sanitize } from 'dompurify';
 
 import type { AuthState, Integration } from '../../integration.types';
 import { Readme } from '../readme/readme';
@@ -93,7 +94,11 @@ export const Titlebar: FC<Props> = ({ integration }) => {
   return (
     <>
       <Title>
-        <Icon dangerouslySetInnerHTML={{ __html: integration.type.iconSvg }} />
+        <Icon
+          dangerouslySetInnerHTML={{
+            __html: sanitize(integration.type.iconSvg),
+          }}
+        />
         <span>{integration.name || integration.type.name}</span>
 
         {integration.type.version && (

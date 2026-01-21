@@ -20,7 +20,12 @@ export const createScript: ScriptCreator = (src, options = {}) => {
 
   if (!scriptCache.has(key)) {
     const script = document.createElement('script');
-    script.src = src;
+    const safeSrc = normalizeUrl(src);
+    if (!safeSrc) {
+      throw new Error(`Unsafe script URL: ${src}`);
+    }
+
+    script.src = safeSrc;
     script.async = async ?? false;
     script.defer = defer ?? false;
 
@@ -66,8 +71,14 @@ export const createLink: LinkCreator = (href, options = {}) => {
 
   if (!linkCache.has(key)) {
     const link = document.createElement('link');
+
+    const safeHref = normalizeUrl(href);
+    if (!safeHref) {
+      throw new Error(`Unsafe stylesheet URL: ${href}`);
+    }
+
     link.rel = 'stylesheet';
-    link.href = href;
+    link.href = safeHref;
 
     link.addEventListener('load', () => {
       if (onLoad) {
@@ -94,4 +105,19 @@ export const createLink: LinkCreator = (href, options = {}) => {
   }
 
   return linkCache.get(key) as HTMLLinkElement;
+};
+
+const normalizeUrl = (raw: string): string => {
+  try {
+    const url = new URL(raw, window.location.href);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+      return '';
+    }
+
+    return url.toString();
+  } catch {
+    // Invalid URL
+  }
+
+  return '';
 };

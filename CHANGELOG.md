@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 5.14.7 - 2026-01-22
+
+### Added
+- Added batching support to the `freeform/submissions/resave` console command.
+
+### Changed
+- Increased translation coverage in the form builder (e.g., default labels for new Submit buttons, page tabs, etc.).
+- Updated the `freeform/submissions/resave` console command to be site-aware per form.
+
+### Fixed
+- Fixed a `TypeError` when an **Email** field value is `null` in an email notification.
+- Fixed an issue where required fields inside **Group** fields were omitted by the **Form Monitor** service.
+- Fixed DOM re-renders causing loss of third-party **Flatpickr** bindings.
+
+### Security
+- Resolved several potential security vulnerabilities.
+
 ## 5.14.6 - 2026-01-17
 
 ### Fixed

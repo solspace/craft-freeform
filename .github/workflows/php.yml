@@ -4,6 +4,9 @@ on:
   pull_request:
     branches: [v5]
 
+permissions:
+  contents: read
+
 jobs:
   php-lint:
     runs-on: ubuntu-latest

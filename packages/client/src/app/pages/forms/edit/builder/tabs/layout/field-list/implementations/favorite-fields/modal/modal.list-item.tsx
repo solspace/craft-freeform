@@ -4,6 +4,7 @@ import { useHover } from '@ff-client/hooks/use-hover';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { FieldFavorite } from '@ff-client/types/fields';
 import classes from '@ff-client/utils/classes';
+import { sanitize } from 'dompurify';
 
 import { FieldListItem, Icon } from './modal.styles';
 
@@ -40,8 +41,8 @@ export const FavoriteListItem: React.FC<Props> = ({
       onClick={onClick}
       className={classes(isActive && 'active', hasErrors && 'errors')}
     >
-      <Icon dangerouslySetInnerHTML={{ __html: fieldType.icon }} />
-      <span dangerouslySetInnerHTML={{ __html: label }} />
+      <Icon dangerouslySetInnerHTML={{ __html: sanitize(fieldType.icon) }} />
+      <span dangerouslySetInnerHTML={{ __html: sanitize(label) }} />
       <RemoveButton active={hovering} onClick={onDelete} />
     </FieldListItem>
   );

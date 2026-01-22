@@ -89,6 +89,7 @@ return [
     // Form Builder // Layout
     'Layout' => 'Layout',
     'Drag or click fields to add them to the layout' => 'Ziehen oder klicken Sie Felder, um sie dem Layout hinzuzufügen',
+    'Page {number}' => 'Seite {number}',
     'Are you sure?' => 'Sind Sie sicher?',
     'Conditional rules are applied to this field' => 'Bedingte Regeln werden auf dieses Feld angewendet',
     'Email notifications are applied to this field' => 'E-Mail-Benachrichtigungen werden auf dieses Feld angewendet',

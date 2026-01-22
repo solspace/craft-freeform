@@ -89,6 +89,7 @@ return [
     // Form Builder // Layout
     'Layout' => 'Layout',
     'Drag or click fields to add them to the layout' => 'Drag or click fields to add them to the layout',
+    'Page {number}' => 'Page {number}',
     'Are you sure?' => 'Are you sure?',
     'Conditional rules are applied to this field' => 'Conditional rules are applied to this field',
     'Email notifications are applied to this field' => 'Email notifications are applied to this field',
@@ -1439,7 +1440,6 @@ return [
     'Clear' => 'Clear',
     'Are you sure you want to clear this log?' => 'Are you sure you want to clear this log?',
     'Page {current} of {total}' => 'Page {current} of {total}',
-    'Page {number}' => 'Page {number}',
     'Everything appears to be okay right now! No errors were found.' => 'Everything appears to be okay right now! No errors were found.',
     'No log items were found.' => 'No log items were found.',
     'Level' => 'Level',

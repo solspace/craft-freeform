@@ -89,6 +89,7 @@ return [
     // Form Builder // Layout
     'Layout' => 'Indeling',
     'Drag or click fields to add them to the layout' => 'Sleep of klik op velden om ze aan de lay-out toe te voegen',
+    'Page {number}' => 'Pagina {number}',
     'Are you sure?' => 'Weet je het zeker?',
     'Conditional rules are applied to this field' => 'Voorwaardelijke regels worden toegepast op dit veld',
     'Email notifications are applied to this field' => 'E-mailmeldingen worden op dit veld toegepast',
@@ -1439,7 +1440,6 @@ return [
     'Clear' => 'Wissen',
     'Are you sure you want to clear this log?' => 'Weet u zeker dat u dit logboek wilt wissen?',
     'Page {current} of {total}' => 'Pagina {current} van {total}',
-    'Page {number}' => 'Pagina {number}',
     'Everything appears to be okay right now! No errors were found.' => 'Alles lijkt op dit moment in orde te zijn! Er zijn geen fouten gevonden.',
     'No log items were found.' => 'Er zijn geen logitems gevonden.',
     'Level' => 'Niveau',

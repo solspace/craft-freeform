@@ -4,7 +4,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2025, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2026, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -63,11 +63,11 @@ class EmailRecipientNotifications extends NotificationListener
             }
 
             $recipient = $field->getValue();
-            
+
             if (empty($recipient)) {
                 continue;
             }
-            
+
             $notificationTemplate = $notification->getTemplate();
 
             $recipientCollection = new RecipientCollection();

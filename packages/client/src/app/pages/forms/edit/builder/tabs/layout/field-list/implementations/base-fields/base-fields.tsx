@@ -37,7 +37,7 @@ const Group: React.FC<{ group: GroupData }> = ({ group }) => {
 
   return (
     <GroupWrapper key={group.uid} color={group.color}>
-      {group.label && <GroupName>{group.label}</GroupName>}
+      {group.label && <GroupName>{translate(group.label)}</GroupName>}
       <List>{fields}</List>
     </GroupWrapper>
   );

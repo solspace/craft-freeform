@@ -16,6 +16,7 @@ import type {
 } from '@ff-client/types/fields';
 import type { GenericValue } from '@ff-client/types/properties';
 import { type Property } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import { sanitize } from 'dompurify';
 
 import { FavoriteFieldComponent } from './modal.editor.field';
@@ -44,6 +45,7 @@ export const FavoritesEditor: React.FC<Props> = ({
   }
 
   const sectionBlocks: React.ReactElement[] = [];
+  const displayName = values?.label || translate(type.name);
   sections
     .sort((a, b) => a.order - b.order)
     .forEach(({ handle, label, icon }) => {
@@ -53,7 +55,7 @@ export const FavoritesEditor: React.FC<Props> = ({
       }
 
       sectionBlocks.push(
-        <SectionBlock label={label} icon={icon} key={handle}>
+        <SectionBlock label={translate(label)} icon={icon} key={handle}>
           {properties.map((property) => (
             <FavoriteFieldComponent
               key={property.handle}
@@ -74,7 +76,7 @@ export const FavoritesEditor: React.FC<Props> = ({
         <Icon dangerouslySetInnerHTML={{ __html: sanitize(type.icon) }} />
         <span
           dangerouslySetInnerHTML={{
-            __html: sanitize(values?.label || type.name),
+            __html: sanitize(displayName),
           }}
         />
       </Title>

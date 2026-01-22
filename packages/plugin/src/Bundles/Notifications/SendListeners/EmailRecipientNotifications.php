@@ -63,6 +63,11 @@ class EmailRecipientNotifications extends NotificationListener
             }
 
             $recipient = $field->getValue();
+            
+            if (empty($recipient)) {
+                continue;
+            }
+            
             $notificationTemplate = $notification->getTemplate();
 
             $recipientCollection = new RecipientCollection();

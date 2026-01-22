@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Elements\Db;
 
+use craft\console\Application;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\db\ElementQuery;
@@ -29,7 +30,15 @@ class SubmissionQuery extends ElementQuery
     public array $fieldSearch = [];
     public ?string $spamReason = null;
     public bool $skipContent = false;
+    public mixed $formSiteId = null;
     private mixed $freeformStatus = null;
+
+    public function formSiteId(mixed $value): self
+    {
+        $this->formSiteId = $value;
+
+        return $this;
+    }
 
     public function formId(mixed $value): self
     {
@@ -206,12 +215,34 @@ class SubmissionQuery extends ElementQuery
         }
 
         if (SitesHelper::isEnabled()) {
-            $site = SitesHelper::getCurrentCpSite();
-            $this->subQuery->innerJoin(
-                FormSiteRecord::TABLE.' form_sites',
-                'form_sites.[[formId]] = '.$table.'.[[formId]] AND form_sites.[[siteId]] = :siteId',
-                ['siteId' => $site->id]
-            );
+            $isConsole = \Craft::$app instanceof Application;
+
+            // Only apply forms_sites filtering if:
+            // - we are NOT in console (CP behavior), OR
+            // - the caller explicitly set formSiteId (CLI behavior)
+            $formSiteIds = $this->formSiteId;
+
+            if (!$isConsole && null === $formSiteIds) {
+                // CP request: default to current CP site
+                $site = SitesHelper::getCurrentCpSite();
+                $formSiteIds = $site?->id;
+            }
+
+            // Console request: if not explicitly passed, DO NOT filter by forms_sites
+            if (null !== $formSiteIds) {
+                if (!\is_array($formSiteIds)) {
+                    $formSiteIds = [(int) $formSiteIds];
+                } else {
+                    $formSiteIds = array_map('intval', $formSiteIds);
+                }
+
+                $this->subQuery->innerJoin(
+                    FormSiteRecord::TABLE.' form_sites',
+                    'form_sites.[[formId]] = '.$table.'.[[formId]]'
+                );
+
+                $this->subQuery->andWhere(['form_sites.[[siteId]]' => $formSiteIds]);
+            }
         }
 
         $this->query->select($select);

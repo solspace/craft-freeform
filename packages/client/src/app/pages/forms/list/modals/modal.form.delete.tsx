@@ -15,6 +15,7 @@ import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import { sanitize } from 'dompurify';
 
 import { FormWrapper } from './modal.form.styles';
 
@@ -89,8 +90,10 @@ export const DeleteFormModal: React.FC<ModalContainerProps> = ({
         </div>
         <div
           dangerouslySetInnerHTML={{
-            __html: translate(
-              'To delete this form, please type <strong>DELETE</strong> in the box below:'
+            __html: sanitize(
+              translate(
+                'To delete this form, please type <strong>DELETE</strong> in the box below:'
+              )
             ),
           }}
         />

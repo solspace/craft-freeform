@@ -4,7 +4,7 @@
  * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2025, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2026, Solspace, Inc.
  *
  * @see           https://docs.solspace.com/craft/freeform
  *
@@ -89,6 +89,7 @@ return [
     // Form Builder // Layout
     'Layout' => 'Mise en page',
     'Drag or click fields to add them to the layout' => 'Faites glisser ou cliquez sur les champs pour les ajouter à la mise en page',
+    'Page {number}' => 'Page {number}',
     'Are you sure?' => 'Êtes-vous certain ?',
     'Conditional rules are applied to this field' => 'Des règles conditionnelles sont appliquées à ce champ',
     'Email notifications are applied to this field' => 'Des notifications par e-mail sont appliquées à ce champ',

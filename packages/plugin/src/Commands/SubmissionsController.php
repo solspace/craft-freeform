@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Commands;
 
 use craft\console\Controller;
+use craft\db\Query;
 use craft\helpers\Queue;
 use craft\queue\jobs\ResaveElements;
 use Faker\Factory;
@@ -11,6 +12,7 @@ use Solspace\Freeform\Commands\Fix\TitleFixMigration;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Records\Form\FormSiteRecord;
 use yii\console\ExitCode;
 use yii\helpers\Console;
 
@@ -62,6 +64,9 @@ class SubmissionsController extends Controller
     public ?bool $verbose = false;
     public ?bool $dryRun = false;
 
+    public ?int $batch = 200;
+    public ?int $afterId = null;
+
     public function optionAliases(): array
     {
         return [
@@ -101,6 +106,10 @@ class SubmissionsController extends Controller
                 'offset',
                 'limit',
                 'siteId',
+                'batch',
+                'afterId',
+                'verbose',
+                'dryRun',
             ],
             'reindex' => [
                 'limit',
@@ -243,62 +252,153 @@ class SubmissionsController extends Controller
      */
     public function actionResave(): int
     {
+        if ($this->dryRun) {
+            $this->stdout("Dry run enabled. No submissions will be resaved.\n\n", Console::FG_YELLOW);
+        }
+
         $elementType = Submission::class;
         $criteria = $this->collectCriteria();
 
-        if ($this->queue) {
-            Queue::push(
-                new ResaveElements([
-                    'elementType' => $elementType,
-                    'criteria' => $criteria,
-                    'updateSearchIndex' => $this->updateSearchIndex,
-                ]),
-                Freeform::getInstance()->settings->getQueuePriority()
-            );
+        /*
+         * If siteId provided, translate it to:
+         * - formId(s) enabled for that site (so we only touch submissions for forms on that site)
+         * - formSiteId(s) so SubmissionQuery can join forms_sites and enforce site assignment
+         *
+         * IMPORTANT: unset element siteId so we don't apply Craft element localization filtering.
+         */
+        if (null !== $this->siteId) {
+            $siteIds = \is_array($this->siteId)
+                ? array_map('intval', $this->siteId)
+                : [(int) $this->siteId];
 
-            $this->stdout($elementType::pluralDisplayName().' queued to be resaved.'.\PHP_EOL);
+            $formIdsForSites = $this->getFormIdsForSiteIds($siteIds);
 
-            return ExitCode::OK;
+            if (empty($formIdsForSites)) {
+                $this->stdout(
+                    'No Freeform forms are enabled for siteId(s): '.implode(',', $siteIds).\PHP_EOL,
+                    Console::FG_YELLOW
+                );
+
+                return ExitCode::OK;
+            }
+
+            // Filter submissions to only those forms (and enforce forms_sites)
+            $criteria['formId'] = $formIdsForSites;
+            $criteria['formSiteId'] = $siteIds;
+
+            // DO NOT localize submissions query by element siteId
+            unset($criteria['siteId']);
         }
 
-        $query = $elementType::find();
-        \Craft::configure($query, $criteria);
-
-        $count = (int) $query->count();
-
-        $pluralLowerDisplayName = $elementType::pluralLowerDisplayName();
-        $lowerDisplayName = $elementType::lowerDisplayName();
-
-        if (0 === $count) {
-            $this->stdout('No '.$pluralLowerDisplayName.' exist for that criteria.'.\PHP_EOL, Console::FG_YELLOW);
-
-            return ExitCode::OK;
+        if ($this->verbose) {
+            $this->stdout('Criteria: '.json_encode($criteria).\PHP_EOL, Console::FG_YELLOW);
         }
 
-        if ($query->offset) {
-            $count = max($count - (int) $query->offset, 0);
+        // Base query (we'll use this to fetch IDs in chunks)
+        $baseQuery = $elementType::find();
+        \Craft::configure($baseQuery, $criteria);
+
+        $afterId = (int) ($this->afterId ?? 0);
+        if ($afterId > 0) {
+            $baseQuery->andWhere(['>', 'elements.id', $afterId]);
         }
 
-        if ($query->limit) {
-            $count = min($count, (int) $query->limit);
+        $batchSize = (int) ($this->batch ?? 200);
+        if ($batchSize < 1) {
+            $batchSize = 200;
         }
 
-        $label = 'Resaving';
-        $elementsText = 1 === $count ? $lowerDisplayName : $pluralLowerDisplayName;
-        $this->stdout("{$label} {$count} {$elementsText} ...".\PHP_EOL, Console::FG_YELLOW);
+        $total = (int) $baseQuery->count();
 
-        \Craft::$app
-            ->getElements()
-            ->resaveElements(
-                $query,
+        $elementsText = 1 === $total ? $elementType::lowerDisplayName() : $elementType::pluralLowerDisplayName();
+
+        if (!$this->dryRun) {
+            $this->stdout("Resaving {$total} {$elementsText} ...\n", Console::FG_YELLOW);
+        }
+
+        $processed = 0;
+        $lastId = $afterId;
+
+        while (true) {
+            $idQuery = clone $baseQuery;
+
+            $ids = $idQuery
+                ->select(['elements.id'])
+                ->orderBy(['elements.id' => \SORT_ASC])
+                ->limit($batchSize)
+                ->column()
+            ;
+
+            if (!$ids) {
+                break;
+            }
+
+            $lastId = (int) end($ids);
+            $chunkCount = \count($ids);
+
+            $baseQuery->andWhere(['>', 'elements.id', $lastId]);
+
+            if ($this->queue) {
+                if ($this->dryRun) {
+                    $processed += $chunkCount;
+
+                    if ($this->verbose) {
+                        $this->stdout("Queued {$chunkCount} (Queued {$processed}/{$total})\n");
+                    }
+
+                    continue;
+                }
+
+                // Enqueue ONE job per chunk, with tight criteria
+                $jobCriteria = $criteria;
+                $jobCriteria['id'] = $ids;
+
+                // Ensure no accidental offset/limit carry through into chunk jobs
+                unset($jobCriteria['offset'], $jobCriteria['limit']);
+
+                Queue::push(
+                    new ResaveElements([
+                        'elementType' => $elementType,
+                        'criteria' => $jobCriteria,
+                        'updateSearchIndex' => $this->updateSearchIndex,
+                    ]),
+                    Freeform::getInstance()->settings->getQueuePriority()
+                );
+
+                $processed += $chunkCount;
+
+                if ($this->verbose) {
+                    $this->stdout("Queued {$chunkCount} (Queued {$processed}/{$total})\n");
+                }
+
+                continue;
+            }
+
+            // Non-queue: resave this chunk immediately
+            $chunkQuery = $elementType::find()->id($ids);
+
+            // Keep localization off unless we explicitly want it (If we ever do want localization, pass a real siteId into $chunkQuery)
+            $chunkQuery->siteId(null);
+
+            \Craft::$app->elements->resaveElements(
+                $chunkQuery,
                 true,
                 true,
                 $this->updateSearchIndex
-            )
-        ;
+            );
 
-        $label = 'resaving';
-        $this->stdout("Done {$label} {$elementsText}.".\PHP_EOL.\PHP_EOL, Console::FG_YELLOW);
+            $processed += $chunkCount;
+
+            if ($this->verbose) {
+                $this->stdout("Resaved {$chunkCount} submissions. (Processed {$processed}/{$total})\n");
+            }
+        }
+
+        if ($this->queue) {
+            $this->stdout("Done queueing {$processed} {$elementsText}.\n", Console::FG_YELLOW);
+        } else {
+            $this->stdout("Done resaving {$processed} {$elementsText}.\n", Console::FG_YELLOW);
+        }
 
         return ExitCode::OK;
     }
@@ -382,10 +482,20 @@ class SubmissionsController extends Controller
             }
 
             $criteria['siteId'] = $this->siteId;
-        } else {
-            $criteria['siteId'] = \Craft::$app->sites->getAllSiteIds();
         }
 
         return $criteria;
+    }
+
+    private function getFormIdsForSiteIds(array $siteIds): array
+    {
+        $ids = (new Query())
+            ->select(['formId'])
+            ->from(FormSiteRecord::TABLE)
+            ->where(['siteId' => $siteIds])
+            ->column()
+        ;
+
+        return array_values(array_unique(array_map('intval', $ids)));
     }
 }

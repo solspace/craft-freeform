@@ -30,7 +30,7 @@ function updateFilePrefixes() {
   firstFileLists.each(function () {
     const $fileList = $(this);
     $('> li > span[data-name]', $fileList).each(function () {
-      $(this).html($prefix.val() + $(this).data('name'));
+      $(this).text($prefix.val() + $(this).data('name'));
     });
   });
 }

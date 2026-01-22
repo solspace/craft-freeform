@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { ControlBlock } from '@components/form-controls/control.block';
 import { useAppStore } from '@editor/store';
 import type { Suggestion } from '@ff-client/types/notifications';
+import { sanitize } from 'dompurify';
 
 import type { InputControl } from '../../template.modal.types';
 import { hide, show } from '../html-body/tokens/operations/dropdown';
@@ -64,7 +65,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         const span = document.createElement('span');
         span.contentEditable = 'false';
         span.dataset.freeformToken = item.token;
-        span.innerHTML = item.name;
+        span.innerHTML = sanitize(item.name);
 
         tokenRange.deleteContents();
         tokenRange.insertNode(span);
@@ -77,7 +78,7 @@ export const TextTokens: FC<InputControl> = (props) => {
         selection.addRange(newRange);
 
         // Update your state if needed
-        onChange(wrapperRef.current?.innerHTML ?? '');
+        onChange(sanitize(wrapperRef.current?.innerHTML ?? ''));
       },
       store,
       handlers: {
@@ -119,13 +120,13 @@ export const TextTokens: FC<InputControl> = (props) => {
       const span = document.createElement('span');
       span.contentEditable = 'false';
       span.dataset.freeformToken = item.token;
-      span.innerHTML = item.name;
+      span.innerHTML = sanitize(item.name);
 
       const range = lastRangeRef.current;
       // if no range is selected, we insert at the end of the text
       if (!range) {
         wrapperRef.current?.appendChild(span);
-        onChange(wrapperRef.current.innerHTML);
+        onChange(sanitize(wrapperRef.current.innerHTML));
         return;
       }
 
@@ -157,7 +158,7 @@ export const TextTokens: FC<InputControl> = (props) => {
       selection.addRange(newRange);
 
       // Update your state if needed
-      onChange(wrapperRef.current?.innerHTML ?? '');
+      onChange(sanitize(wrapperRef.current?.innerHTML ?? ''));
     },
     store,
     handlers: {
@@ -203,7 +204,7 @@ export const TextTokens: FC<InputControl> = (props) => {
 
   useEffect(() => {
     if (wrapperRef.current && wrapperRef.current.innerHTML !== value) {
-      wrapperRef.current.innerHTML = value;
+      wrapperRef.current.innerHTML = sanitize(value);
     }
   }, [value]);
 
@@ -217,7 +218,7 @@ export const TextTokens: FC<InputControl> = (props) => {
       }
 
       if (wrapperRef.current) {
-        onChange(wrapperRef.current.innerHTML);
+        onChange(sanitize(wrapperRef.current.innerHTML));
       }
     },
     [backend, onChange]

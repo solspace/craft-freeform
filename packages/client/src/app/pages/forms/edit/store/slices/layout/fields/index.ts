@@ -1,6 +1,7 @@
 import type { FieldType } from '@ff-client/types/fields';
 import { type PropertyValueCollection } from '@ff-client/types/fields';
 import type { GenericValue } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { camelCase } from 'lodash';
@@ -80,7 +81,7 @@ export const fieldsSlice = createSlice({
           (field) => field.typeClass === fieldType.typeClass
         ).length;
 
-        let label = fieldType.name;
+        let label = translate(fieldType.name);
         if (count > 0) {
           label += ` ${count}`;
         }

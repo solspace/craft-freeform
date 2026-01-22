@@ -1,5 +1,6 @@
 import { type Page } from '@editor/builder/types/layout';
 import type { AppDispatch, AppThunk } from '@editor/store';
+import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
 import { contextActions } from '../slices/context';
@@ -26,7 +27,7 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
   dispatch(
     pageActions.add({
       uid: pageUid,
-      label: `Page ${nextPageNumber}`,
+      label: translate('Page {number}', { number: nextPageNumber }),
       layoutUid,
       buttons: lastPage?.buttons ?? {
         layout: 'save back|submit',
@@ -37,15 +38,15 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
           back: {},
           save: {},
         },
-        submitLabel: 'Submit',
+        submitLabel: translate('Submit'),
         submitIcon: [],
         submitIconPosition: 'left',
         back: true,
-        backLabel: 'Back',
+        backLabel: translate('Back'),
         backIcon: [],
         backIconPosition: 'left',
         save: false,
-        saveLabel: 'Save',
+        saveLabel: translate('Save'),
         saveIcon: [],
         saveIconPosition: 'left',
       },

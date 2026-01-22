@@ -1439,6 +1439,7 @@ return [
     'Clear' => 'Wissen',
     'Are you sure you want to clear this log?' => 'Weet u zeker dat u dit logboek wilt wissen?',
     'Page {current} of {total}' => 'Pagina {current} van {total}',
+    'Page {number}' => 'Pagina {number}',
     'Everything appears to be okay right now! No errors were found.' => 'Alles lijkt op dit moment in orde te zijn! Er zijn geen fouten gevonden.',
     'No log items were found.' => 'Er zijn geen logitems gevonden.',
     'Level' => 'Niveau',

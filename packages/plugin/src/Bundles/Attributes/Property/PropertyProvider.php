@@ -163,6 +163,10 @@ class PropertyProvider
             $attribute->order ??= $collection->getNextOrder();
             $attribute->translatable = (bool) AttributeHelper::findAttribute($property, Translatable::class);
 
+            if ($attribute->placeholder) {
+                $attribute->placeholder = Freeform::t($attribute->placeholder);
+            }
+
             $collection->add($attribute);
 
             if (!$accessible) {

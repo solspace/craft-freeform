@@ -1439,6 +1439,7 @@ return [
     'Clear' => 'Clear',
     'Are you sure you want to clear this log?' => 'Are you sure you want to clear this log?',
     'Page {current} of {total}' => 'Page {current} of {total}',
+    'Page {number}' => 'Page {number}',
     'Everything appears to be okay right now! No errors were found.' => 'Everything appears to be okay right now! No errors were found.',
     'No log items were found.' => 'No log items were found.',
     'Level' => 'Level',

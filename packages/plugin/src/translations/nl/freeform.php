@@ -465,6 +465,15 @@ return [
     'Srcset Sizes' => 'Srcset-groottes',
     'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Voer een door komma’s gescheiden lijst in van afbeeldingsgroottes voor het genereren van het `srcset`-attribuut.',
     'Select an image for this field.' => 'Selecteer een afbeelding voor dit veld.',
+    'unchecked by default' => 'standaard uitgeschakeld',
+    'checked by default' => 'standaard ingeschakeld',
+    'Abbreviated' => 'Afgekort',
+    'Full' => 'Volledig',
+    'English' => 'Engels',
+    'French' => 'Frans',
+    'Bilingual' => 'Tweetalig',
+    'Single number' => 'Enkel cijfer',
+    '2-digit number' => '2-cijferig nummer',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',

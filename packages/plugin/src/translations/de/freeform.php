@@ -465,6 +465,15 @@ return [
     'Srcset Sizes' => 'Srcset-Größen',
     'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Geben Sie eine durch Kommas getrennte Liste von Bildgrößen ein, um das `srcset`-Attribut zu generieren.',
     'Select an image for this field.' => 'Wählen Sie ein Bild für dieses Feld aus.',
+    'unchecked by default' => 'standardmäßig deaktiviert',
+    'checked by default' => 'standardmäßig aktiviert',
+    'Abbreviated' => 'Abgekürzt',
+    'Full' => 'Vollständig',
+    'English' => 'Englisch',
+    'French' => 'Französisch',
+    'Bilingual' => 'Zweisprachig',
+    'Single number' => 'Einstellige Zahl',
+    '2-digit number' => 'Zweistellige Zahl',
 
     // Form Builder // Notifications
     'Notifications' => 'Benachrichtigungen',

@@ -465,6 +465,15 @@ return [
     'Srcset Sizes' => 'Srcset Sizes',
     'Enter a comma separated list of image size numbers for `srcset` attribute generation.' => 'Enter a comma separated list of image size numbers for `srcset` attribute generation.',
     'Select an image for this field.' => 'Select an image for this field.',
+    'unchecked by default' => 'unchecked by default',
+    'checked by default' => 'checked by default',
+    'Abbreviated' => 'Abbreviated',
+    'Full' => 'Full',
+    'English' => 'English',
+    'French' => 'French',
+    'Bilingual' => 'Bilingual',
+    'Single number' => 'Single number',
+    '2-digit number' => '2-digit number',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',

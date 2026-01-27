@@ -18,9 +18,17 @@
         </li>
     <% }) %>
 
+    <%
+        const emptyLabel =
+            (typeof Craft !== 'undefined' && Craft.t)
+                ? Craft.t('freeform', 'Empty')
+                : 'Empty';
+    %>
+
     <% if (layout.length === 0) { %>
         <li class="ff-cards__empty">
-            Empty
+            <%= emptyLabel %>
         </li>
     <% } %>
+
 </ul>

@@ -22,6 +22,13 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
   updateValue,
   context,
 }) => {
+  interface CraftGlobal {
+    t: (namespace: string, message: string) => string;
+  }
+
+  const t = (message: string): string =>
+    (Craft as unknown as CraftGlobal).t('freeform', message);
+
   const initialMode = useMemo((): EditorMode => {
     if (!property.toggleEditor) {
       return EditorMode.Rich;
@@ -50,8 +57,8 @@ const Wysiwyg: React.FC<ControlType<WYSIWYGProperty>> = ({
           <ButtonGroup
             value={mode}
             options={[
-              { value: EditorMode.Plain, label: 'Plain Text' },
-              { value: EditorMode.Rich, label: 'Rich Text' },
+              { value: EditorMode.Plain, label: t('Plain Text') },
+              { value: EditorMode.Rich, label: t('Rich Text') },
             ]}
             onClick={handleModeChange}
           />

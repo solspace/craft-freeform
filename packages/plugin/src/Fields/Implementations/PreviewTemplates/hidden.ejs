@@ -1,4 +1,12 @@
+<%
+    const noDefaultValueText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'This field has no default value set.')
+            : 'This field has no default value set.';
+%>
+
 <% if (!defaultValue) { %>
-    This field has no default value set.
+    <%= noDefaultValueText %>
 <% } %>
+
 <%= defaultValue %>

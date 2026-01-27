@@ -1,6 +1,7 @@
 import { animated } from 'react-spring';
 import { CardCell } from '@ff-client/styles/field-cells/cards';
 import { RatingCell } from '@ff-client/styles/field-cells/rating';
+import { SquareCell } from '@ff-client/styles/field-cells/square';
 import { StripeCell } from '@ff-client/styles/field-cells/stripe';
 import { TableCell } from '@ff-client/styles/field-cells/table';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
@@ -233,6 +234,7 @@ export const FieldCellWrapper = styled.div`
   }
 
   ${StripeCell}
+  ${SquareCell}
   ${CardCell}
   ${RatingCell}
   ${TableCell}

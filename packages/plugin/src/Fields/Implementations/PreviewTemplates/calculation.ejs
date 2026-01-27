@@ -1,10 +1,29 @@
+<%
+    const notConfiguredText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'This Calculation field has not been configured yet.')
+            : 'This Calculation field has not been configured yet.';
+
+    const visibleText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', '(Visible)')
+            : '(Visible)';
+
+    const hiddenText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', '(Hidden)')
+            : '(Hidden)';
+%>
+
 <% if (!calculations) { %>
-    This Calculation field has not been configured yet.
+    <%= notConfiguredText %>
 <% } else { %>
     <%
         const cleanedCalculations = calculations.replace(/field:/g, '');
         const displayValue = defaultValue || cleanedCalculations;
-        const displayText = inputType === 'plainText' ? '(Visible)' : '(Hidden)';
+        const displayText = inputType === 'plainText'
+            ? visibleText
+            : hiddenText;
     %>
 
     <% if (inputType === 'regularTextInput') { %>

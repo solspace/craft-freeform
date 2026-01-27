@@ -32,6 +32,7 @@ return [
   'Convert to Custom Values' => 'Convert to Custom Values',
   'Use custom values' => 'Use custom values',
   'empty' => 'empty',
+  'Empty' => 'Empty',
   'Options' => 'Options',
   'Type' => 'Type',
   'Created by' => 'Created by',

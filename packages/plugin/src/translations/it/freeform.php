@@ -474,6 +474,7 @@ return [
     'Bilingual' => 'Bilingue',
     'Single number' => 'Numero a una cifra',
     '2-digit number' => 'Numero a due cifre',
+    'Add a row' => 'Aggiungi riga',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifiche',

@@ -474,6 +474,7 @@ return [
     'Bilingual' => 'Tweetalig',
     'Single number' => 'Enkel cijfer',
     '2-digit number' => '2-cijferig nummer',
+    'Add a row' => 'Rij toevoegen',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',

@@ -474,6 +474,7 @@ return [
     'Bilingual' => 'Bilingual',
     'Single number' => 'Single number',
     '2-digit number' => '2-digit number',
+    'Add a row' => 'Add a row',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',

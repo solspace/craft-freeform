@@ -46,7 +46,7 @@ export const GroupFieldLayout: React.FC<Props> = ({ field, layoutUid }) => {
 
   return (
     <GroupFieldLayoutWrapper ref={dropRef}>
-      {!rows.length && <EmptyLayout>Add fields</EmptyLayout>}
+      {!rows.length && <EmptyLayout>{translate('Add fields')}</EmptyLayout>}
       {rows.map((row) => (
         <Row row={row} key={row.uid} />
       ))}

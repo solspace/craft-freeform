@@ -317,6 +317,7 @@ return [
     'Error Message' => 'Foutmelding',
     "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found." => "Het bericht dat een gebruiker zou moeten ontvangen als er een onjuiste waarde wordt opgegeven. Het zal alle voorkomens van '{{pattern}}' vervangen door het opgegeven regex-patroon in het bericht als er een wordt gevonden.",
     'Table field has not been configured yet.' => 'Tabelveld is nog niet geconfigureerd.',
+    'Sample data' => 'Voorbeeldgegevens',
     'Table Layout' => 'Tabelindeling',
     'Use semicolon ";" separated values for dropdown options.' => 'Gebruik puntkomma ";" gescheiden waarden voor vervolgkeuzeopties.',
     'Use built-in javascript for adding and removing rows' => 'Gebruik ingebouwd javascript voor het toevoegen en verwijderen van rijen',

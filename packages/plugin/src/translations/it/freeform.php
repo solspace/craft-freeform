@@ -317,6 +317,7 @@ return [
     'Error Message' => 'Messaggio di errore',
     "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found." => "Il messaggio che un utente dovrebbe ricevere se viene fornito un valore errato. Sostituirà ogni occorrenza di '{{pattern}}' con il pattern regex fornito all’interno del messaggio, se presente.",
     'Table field has not been configured yet.' => 'Il campo tabella non è stato ancora configurato.',
+    'Sample data' => 'Dati di esempio',
     'Table Layout' => 'Layout della tabella',
     'Use semicolon ";" separated values for dropdown options.' => 'Usa valori separati da punto e virgola ";" per le opzioni a discesa.',
     'Use built-in javascript for adding and removing rows' => 'Usa JavaScript integrato per aggiungere e rimuovere righe',

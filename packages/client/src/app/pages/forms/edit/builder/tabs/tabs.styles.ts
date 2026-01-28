@@ -19,6 +19,9 @@ export const TabWrapper = styled.nav`
 export const Heading = styled.h1`
   position: relative;
   margin: 0;
+  display: flex;
+  align-items: center;
+  gap: ${spacings.sm};
 `;
 
 export const FormName = styled.span`
@@ -90,10 +93,38 @@ export const TabsWrapper = styled.div`
 
 export const SaveButtonWrapper = styled.div`
   display: flex;
+  align-items: center;
   justify-content: end;
+  gap: ${spacings.md};
 `;
 
 export const SaveButton = styled.button``;
+
+export const SubmissionsShortcut = styled.a`
+  display: inline-flex;
+  align-items: center;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+
+  /* Craft-like “badge link” styling */
+  margin-block: 0;
+  margin-inline: 2px;
+  min-height: var(--input-height);
+  padding-block: 4px;
+  padding-inline: 5px;
+
+  border: 1px solid rgba(154, 165, 177, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(154, 165, 177, 0.08);
+  color: var(--link-color);
+
+  &:hover {
+    text-decoration: none;
+    border-color: rgba(154, 165, 177, 0.6);
+    background: rgba(154, 165, 177, 0.14);
+  }
+`;
 
 export const BetaLabel = styled.span`
   color: ${colors.gray700};

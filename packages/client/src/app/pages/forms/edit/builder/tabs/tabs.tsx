@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Breadcrumb } from '@components/breadcrumbs/breadcrumbs';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
+import { useModal } from '@components/modals/modal.context';
 import config, { Edition } from '@config/freeform/freeform.config';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
@@ -18,13 +19,16 @@ import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
+import { generateUrl } from '@ff-client/utils/urls';
 
+import { ConfirmSubmissionsModal } from './modals/confirm-submissions.modal';
 import {
   BetaLabel,
   FormName,
   Heading,
   SaveButton,
   SaveButtonWrapper,
+  SubmissionsShortcut,
   TabsWrapper,
   TabWrapper,
 } from './tabs.styles';
@@ -34,6 +38,7 @@ export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
   const state = useSelector(contextSelectors.state);
+  const { openModal } = useModal();
 
   const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(fieldSelectors.hasErrors);
@@ -53,6 +58,26 @@ export const Tabs: React.FC = () => {
   const triggerSave = (): void => void dispatch(save());
   useSaveShortcut(triggerSave);
 
+  const storeDataEnabled = form.settings?.dataStorage?.storeData !== false;
+  const canManageSubmissions = Boolean(form.canManageSubmissions);
+  const showSubmissionsShortcut =
+    Boolean(form.id) && storeDataEnabled && canManageSubmissions;
+  const submissionCount = form.submissionCount ?? 0;
+
+  const onSubmissionsClick = (
+    event: React.MouseEvent<HTMLAnchorElement>
+  ): void => {
+    event.preventDefault();
+
+    if (!form?.id) {
+      return;
+    }
+
+    openModal(ConfirmSubmissionsModal, {
+      url: generateUrl(`submissions?source=form:${form.id}`),
+    });
+  };
+
   return (
     <TabWrapper>
       <Breadcrumb
@@ -63,6 +88,16 @@ export const Tabs: React.FC = () => {
 
       <Heading>
         <FormName>{formName || translate('Create a new Form')}</FormName>
+        {showSubmissionsShortcut && (
+          <SubmissionsShortcut
+            href={generateUrl(`submissions?source=form:${form.id}`)}
+            onClick={onSubmissionsClick}
+            title={translate('View submissions')}
+            className="go"
+          >
+            {submissionCount} {translate('submissions')}
+          </SubmissionsShortcut>
+        )}
       </Heading>
 
       <TabsWrapper className="main-tabs">

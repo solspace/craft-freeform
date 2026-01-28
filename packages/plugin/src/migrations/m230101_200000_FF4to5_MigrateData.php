@@ -421,8 +421,8 @@ class m230101_200000_FF4to5_MigrateData extends Migration
                     'typeClass' => 'Solspace\Freeform\Fields\Properties\Options\Elements\Types\Users\Users',
                     'properties' => [
                         'sort' => $configuration->sort ?? 'asc',
-                        'label' => $configuration->label ?? 'username',
-                        'value' => $configuration->value ?? 'id',
+                        'label' => $configuration->labelField ?? 'username',
+                        'value' => $configuration->valueField ?? 'id',
                         'siteId' => $configuration->siteId ?? null,
                         'orderBy' => $configuration->orderBy ?? 'id',
                         'groupId' => $data->target ?? null,

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
 import { HelpText } from '@components/elements/help-text';
 import { LightSwitch } from '@components/elements/lightswitch/lightswitch';
 import Bool from '@components/form-controls/control-types/bool/bool';
@@ -29,7 +30,12 @@ import type {
 
 import { Bulk } from './custom.bulk';
 import { CopyToClipboardButton } from './custom.clipboard-button';
-import { BulkButton, BulkWrapper, ChoiceWrapper } from './custom.editor.styles';
+import {
+  BulkButton,
+  BulkWrapper,
+  ChoiceWrapper,
+  TableWithButtonWrapper,
+} from './custom.editor.styles';
 import {
   addOption,
   deleteOption,
@@ -163,94 +169,61 @@ export const CustomEditor: React.FC<
       </ChoiceWrapper>
 
       {!!options.length && (
-        <TableContainer>
-          <TabularOptions>
-            <thead>
-              <tr>
-                {allowOptgroup && <th>{translate('Optgroup')}</th>}
-                <th>{translate('Label')}</th>
-                {useCustomValues && <th>{translate('Value')}</th>}
-                {options.length > 1 && (
-                  <th colSpan={3}>{translate('Actions')}</th>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {options.map((option, index) => (
-                <DraggableRow
-                  key={index}
-                  index={index}
-                  dragRef={refs.current[index]}
-                  onDrop={(fromIndex, toIndex) =>
-                    setLocalValue(moveOption(localValue, fromIndex, toIndex))
-                  }
-                >
-                  {allowOptgroup && (
-                    <Cell $tiny>
-                      <CenterPoint>
-                        <LightSwitch
-                          enabled={option.optgroup}
-                          onClick={(enabled) =>
-                            setLocalValue(
-                              updateOption(
-                                index,
-                                {
-                                  ...option,
-                                  optgroup: enabled,
-                                },
-                                localValue
-                              )
-                            )
-                          }
-                        />
-                      </CenterPoint>
-                    </Cell>
+        <TableWithButtonWrapper>
+          <TableContainer>
+            <TabularOptions>
+              <thead>
+                <tr>
+                  {allowOptgroup && <th>{translate('Optgroup')}</th>}
+                  <th>{translate('Label')}</th>
+                  {useCustomValues && <th>{translate('Value')}</th>}
+                  {options.length > 1 && (
+                    <th colSpan={3}>{translate('Actions')}</th>
                   )}
-                  <Cell>
-                    <Input
-                      type="text"
-                      value={option.label}
-                      placeholder={translate('Label')}
-                      autoFocus={activeCell === `${index}:0`}
-                      ref={(element) => setCellRef(element, index, 0)}
-                      onFocus={() => setActiveCell(index, 0)}
-                      onKeyDown={keyPressHandler({
-                        onEnter: ({ shiftKey }) => {
-                          addCell(0, shiftKey ? index : undefined);
-                        },
-                      })}
-                      onChange={(event) =>
-                        setLocalValue(
-                          updateOption(
-                            index,
-                            {
-                              ...option,
-                              label: event.target.value,
-                              value:
-                                autoUpdateHandle || !useCustomValues
-                                  ? event.target.value
-                                  : option.value,
-                            },
-                            localValue
-                          )
-                        )
-                      }
-                    />
-                  </Cell>
-
-                  {useCustomValues && (
+                </tr>
+              </thead>
+              <tbody>
+                {options.map((option, index) => (
+                  <DraggableRow
+                    key={index}
+                    index={index}
+                    dragRef={refs.current[index]}
+                    onDrop={(fromIndex, toIndex) =>
+                      setLocalValue(moveOption(localValue, fromIndex, toIndex))
+                    }
+                  >
+                    {allowOptgroup && (
+                      <Cell $tiny>
+                        <CenterPoint>
+                          <LightSwitch
+                            enabled={option.optgroup}
+                            onClick={(enabled) =>
+                              setLocalValue(
+                                updateOption(
+                                  index,
+                                  {
+                                    ...option,
+                                    optgroup: enabled,
+                                  },
+                                  localValue
+                                )
+                              )
+                            }
+                          />
+                        </CenterPoint>
+                      </Cell>
+                    )}
                     <Cell>
                       <Input
                         type="text"
-                        className="code"
-                        value={option.value}
-                        placeholder={translate('Value')}
-                        autoFocus={activeCell === `${index}:1`}
-                        ref={(element) => setCellRef(element, index, 1)}
-                        onFocus={() => setActiveCell(index, 1)}
+                        value={option.label}
+                        placeholder={translate('Label')}
+                        autoFocus={activeCell === `${index}:0`}
+                        ref={(element) => setCellRef(element, index, 0)}
+                        onFocus={() => setActiveCell(index, 0)}
                         onKeyDown={keyPressHandler({
                           onEnter: ({ shiftKey }) => {
-                            addCell(1, shiftKey ? index : undefined);
+                            addCell(0, shiftKey ? index : undefined);
                           },
                         })}
                         onChange={(event) =>
@@ -259,7 +232,11 @@ export const CustomEditor: React.FC<
                               index,
                               {
                                 ...option,
-                                value: event.target.value,
+                                label: event.target.value,
+                                value:
+                                  autoUpdateHandle || !useCustomValues
+                                    ? event.target.value
+                                    : option.value,
                               },
                               localValue
                             )
@@ -267,65 +244,97 @@ export const CustomEditor: React.FC<
                         }
                       />
                     </Cell>
-                  )}
 
-                  {options.length > 1 && (
-                    <>
-                      <Cell $tiny>
-                        <Bool
-                          property={{
-                            label: '',
-                            handle: `${index}-check`,
-                            type: PropertyType.Boolean,
-                          }}
-                          value={
-                            isMultiple
-                              ? defaultValue.includes(option.value)
-                              : option.value === defaultValue
+                    {useCustomValues && (
+                      <Cell>
+                        <Input
+                          type="text"
+                          className="code"
+                          value={option.value}
+                          placeholder={translate('Value')}
+                          autoFocus={activeCell === `${index}:1`}
+                          ref={(element) => setCellRef(element, index, 1)}
+                          onFocus={() => setActiveCell(index, 1)}
+                          onKeyDown={keyPressHandler({
+                            onEnter: ({ shiftKey }) => {
+                              addCell(1, shiftKey ? index : undefined);
+                            },
+                          })}
+                          onChange={(event) =>
+                            setLocalValue(
+                              updateOption(
+                                index,
+                                {
+                                  ...option,
+                                  value: event.target.value,
+                                },
+                                localValue
+                              )
+                            )
                           }
-                          updateValue={() => {
-                            if (isMultiple) {
-                              const val = defaultValue as string[];
-
-                              updateDefaultValue(
-                                val.includes(option.value)
-                                  ? val.filter(
-                                      (value) => value !== option.value
-                                    )
-                                  : [...val, option.value]
-                              );
-                            } else {
-                              updateDefaultValue(
-                                option.value === defaultValue
-                                  ? ''
-                                  : option.value
-                              );
-                            }
-                          }}
                         />
                       </Cell>
-                      <Cell $tiny>
-                        <Button ref={refs.current[index]} className="handle">
-                          <MoveIcon />
-                        </Button>
-                      </Cell>
-                      <Cell $tiny>
-                        <Button
-                          onClick={() => {
-                            setLocalValue(deleteOption(index, localValue));
-                            setActiveCell(Math.max(index - 1, 0), 0);
-                          }}
-                        >
-                          <CrossIcon />
-                        </Button>
-                      </Cell>
-                    </>
-                  )}
-                </DraggableRow>
-              ))}
-            </tbody>
-          </TabularOptions>
-        </TableContainer>
+                    )}
+
+                    {options.length > 1 && (
+                      <>
+                        <Cell $tiny>
+                          <Bool
+                            property={{
+                              label: '',
+                              handle: `${index}-check`,
+                              type: PropertyType.Boolean,
+                            }}
+                            value={
+                              isMultiple
+                                ? defaultValue.includes(option.value)
+                                : option.value === defaultValue
+                            }
+                            updateValue={() => {
+                              if (isMultiple) {
+                                const val = defaultValue as string[];
+
+                                updateDefaultValue(
+                                  val.includes(option.value)
+                                    ? val.filter(
+                                        (value) => value !== option.value
+                                      )
+                                    : [...val, option.value]
+                                );
+                              } else {
+                                updateDefaultValue(
+                                  option.value === defaultValue
+                                    ? ''
+                                    : option.value
+                                );
+                              }
+                            }}
+                          />
+                        </Cell>
+                        <Cell $tiny>
+                          <Button ref={refs.current[index]} className="handle">
+                            <MoveIcon />
+                          </Button>
+                        </Cell>
+                        <Cell $tiny>
+                          <Button
+                            onClick={() => {
+                              setLocalValue(deleteOption(index, localValue));
+                              setActiveCell(Math.max(index - 1, 0), 0);
+                            }}
+                          >
+                            <CrossIcon />
+                          </Button>
+                        </Cell>
+                      </>
+                    )}
+                  </DraggableRow>
+                ))}
+              </tbody>
+            </TabularOptions>
+          </TableContainer>
+          <AddButtonArea label="Add an option" onClick={() => addCell(0)} />
+        </TableWithButtonWrapper>
       )}
 
       <HelpText>

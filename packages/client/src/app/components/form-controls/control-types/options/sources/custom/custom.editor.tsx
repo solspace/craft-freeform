@@ -171,7 +171,10 @@ export const CustomEditor: React.FC<
                 <th>{translate('Label')}</th>
                 {useCustomValues && <th>{translate('Value')}</th>}
                 {options.length > 1 && (
-                  <th colSpan={3}>{translate('Actions')}</th>
+                  <>
+                    <th>{translate('Selected')}</th>
+                    <th colSpan={2}>{translate('Actions')}</th>
+                  </>
                 )}
               </tr>
             </thead>
@@ -272,52 +275,59 @@ export const CustomEditor: React.FC<
                   {options.length > 1 && (
                     <>
                       <Cell $tiny>
-                        <Bool
-                          property={{
-                            label: '',
-                            handle: `${index}-check`,
-                            type: PropertyType.Boolean,
-                          }}
-                          value={
-                            isMultiple
-                              ? defaultValue.includes(option.value)
-                              : option.value === defaultValue
-                          }
-                          updateValue={() => {
-                            if (isMultiple) {
-                              const val = defaultValue as string[];
-
-                              updateDefaultValue(
-                                val.includes(option.value)
-                                  ? val.filter(
-                                      (value) => value !== option.value
-                                    )
-                                  : [...val, option.value]
-                              );
-                            } else {
-                              updateDefaultValue(
-                                option.value === defaultValue
-                                  ? ''
-                                  : option.value
-                              );
+                        <CenterPoint>
+                          <Bool
+                            property={{
+                              label: '',
+                              handle: `${index}-check`,
+                              type: PropertyType.Boolean,
+                              width: 50,
+                            }}
+                            value={
+                              isMultiple
+                                ? defaultValue.includes(option.value)
+                                : option.value === defaultValue
                             }
-                          }}
-                        />
+                            updateValue={() => {
+                              if (isMultiple) {
+                                const val = defaultValue as string[];
+
+                                updateDefaultValue(
+                                  val.includes(option.value)
+                                    ? val.filter(
+                                        (value) => value !== option.value
+                                      )
+                                    : [...val, option.value]
+                                );
+                              } else {
+                                updateDefaultValue(
+                                  option.value === defaultValue
+                                    ? ''
+                                    : option.value
+                                );
+                              }
+                            }}
+                          />
+                        </CenterPoint>
                       </Cell>
                       <Cell $tiny>
-                        <Button ref={refs.current[index]} className="handle">
-                          <MoveIcon />
-                        </Button>
+                        <CenterPoint>
+                          <Button ref={refs.current[index]} className="handle">
+                            <MoveIcon />
+                          </Button>
+                        </CenterPoint>
                       </Cell>
                       <Cell $tiny>
-                        <Button
-                          onClick={() => {
-                            setLocalValue(deleteOption(index, localValue));
-                            setActiveCell(Math.max(index - 1, 0), 0);
-                          }}
-                        >
-                          <CrossIcon />
-                        </Button>
+                        <CenterPoint>
+                          <Button
+                            onClick={() => {
+                              setLocalValue(deleteOption(index, localValue));
+                              setActiveCell(Math.max(index - 1, 0), 0);
+                            }}
+                          >
+                            <CrossIcon />
+                          </Button>
+                        </CenterPoint>
                       </Cell>
                     </>
                   )}

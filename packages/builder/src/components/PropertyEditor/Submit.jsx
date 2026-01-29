@@ -8,7 +8,6 @@ import DualPositionProperty from './Components/Submit/DualPositionProperty';
 import PositionProperty from './Components/Submit/PositionProperty';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
 import TextProperty from './PropertyItems/TextProperty';
 
 @connect((state) => ({

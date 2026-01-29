@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import BasePropertyEditor from './BasePropertyEditor';
-import { AttributeEditorProperty } from './PropertyItems';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
 import TextProperty from './PropertyItems/TextProperty';
 
 export default class Invisible extends BasePropertyEditor {

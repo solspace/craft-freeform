@@ -18,6 +18,7 @@ export default class CheckboxGroup extends BasePropertyEditor {
       required: PropTypes.bool.isRequired,
       showCustomValues: PropTypes.bool.isRequired,
       oneLine: PropTypes.bool,
+      value: PropTypes.string,
       values: PropTypes.array,
       options: PropTypes.array.isRequired,
       source: PropTypes.string,
@@ -70,6 +71,8 @@ export default class CheckboxGroup extends BasePropertyEditor {
         <hr />
 
         <ExternalOptionsProperty
+          showEmptyOptionInput={true}
+          value={''}
           values={values}
           customOptions={options}
           showCustomValues={showCustomValues}

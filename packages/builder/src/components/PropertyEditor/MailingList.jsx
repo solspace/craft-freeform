@@ -9,7 +9,6 @@ import IntegrationMappingTable from './Components/IntegrationMappingTable/Integr
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
 import CustomProperty from './PropertyItems/CustomProperty';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
 import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';

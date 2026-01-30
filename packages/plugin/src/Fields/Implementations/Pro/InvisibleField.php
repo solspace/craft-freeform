@@ -36,6 +36,6 @@ class InvisibleField extends HiddenField implements ExtraFieldInterface, Persist
 
     public function getValue(): string
     {
-        return $this->getDefaultValue();
+        return $this->value ?? $this->getDefaultValue();
     }
 }

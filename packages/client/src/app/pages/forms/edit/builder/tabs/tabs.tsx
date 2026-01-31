@@ -58,11 +58,13 @@ export const Tabs: React.FC = () => {
   const triggerSave = (): void => void dispatch(save());
   useSaveShortcut(triggerSave);
 
-  const storeDataEnabled = form.settings?.dataStorage?.storeData !== false;
+  const storeDataEnabled = form.settings?.general?.storeData !== false;
   const canManageSubmissions = Boolean(form.canManageSubmissions);
   const showSubmissionsShortcut =
     Boolean(form.id) && storeDataEnabled && canManageSubmissions;
   const submissionCount = form.submissionCount ?? 0;
+  const params = new URLSearchParams(window.location.search);
+  const siteHandle = params.get('site');
 
   const onSubmissionsClick = (
     event: React.MouseEvent<HTMLAnchorElement>
@@ -74,7 +76,9 @@ export const Tabs: React.FC = () => {
     }
 
     openModal(ConfirmSubmissionsModal, {
-      url: generateUrl(`submissions?source=form:${form.id}`),
+      url: generateUrl(`
+        submissions?${siteHandle ? `site=${siteHandle}&` : ''}source=form:${form.id}
+      `),
     });
   };
 
@@ -88,16 +92,6 @@ export const Tabs: React.FC = () => {
 
       <Heading>
         <FormName>{formName || translate('Create a new Form')}</FormName>
-        {showSubmissionsShortcut && (
-          <SubmissionsShortcut
-            href={generateUrl(`submissions?source=form:${form.id}`)}
-            onClick={onSubmissionsClick}
-            title={translate('View submissions')}
-            className="go"
-          >
-            {submissionCount} {translate('submissions')}
-          </SubmissionsShortcut>
-        )}
       </Heading>
 
       <TabsWrapper className="main-tabs">
@@ -150,6 +144,19 @@ export const Tabs: React.FC = () => {
           </NavLink>
         )}
       </TabsWrapper>
+
+      {showSubmissionsShortcut && (
+        <SubmissionsShortcut
+          href={generateUrl(`
+            submissions?${siteHandle ? `site=${siteHandle}&` : ''}source=form:${form.id}
+          `)}
+          onClick={onSubmissionsClick}
+          title={translate('View submissions')}
+          className="go"
+        >
+          {submissionCount} {translate('submissions')}
+        </SubmissionsShortcut>
+      )}
 
       <SaveButtonWrapper>
         <SaveButton

@@ -24,12 +24,12 @@ export const ConfirmSubmissionsModal: React.FC<
     <Modal closeModal={closeModal}>
       <ModalContainer>
         <ModalHeader>
-          <h1>{translate('Leave form builder?')}</h1>
+          <h1>{translate('Leave the form builder?')}</h1>
         </ModalHeader>
 
         <div style={{ padding: 20 }}>
           {translate(
-            'You are about to leave the form builder. Any unsaved changes will be lost. Continue?'
+            'You are about to leave the form builder. Any unsaved changes may be lost if you continue.'
           )}
         </div>
 

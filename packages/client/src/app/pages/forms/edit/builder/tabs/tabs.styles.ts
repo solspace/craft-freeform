@@ -6,7 +6,7 @@ export const TabWrapper = styled.nav`
   position: relative;
 
   display: grid;
-  grid-template-columns: 300px min-content auto;
+  grid-template-columns: 300px max-content 1fr max-content;
   align-items: center;
 
   height: 50px;
@@ -19,9 +19,6 @@ export const TabWrapper = styled.nav`
 export const Heading = styled.h1`
   position: relative;
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: ${spacings.sm};
 `;
 
 export const FormName = styled.span`
@@ -94,7 +91,7 @@ export const TabsWrapper = styled.div`
 export const SaveButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: end;
+  justify-self: end;
   gap: ${spacings.md};
 `;
 
@@ -103,13 +100,15 @@ export const SaveButton = styled.button``;
 export const SubmissionsShortcut = styled.a`
   display: inline-flex;
   align-items: center;
+  justify-self: start;
+  width: max-content;
   font-size: 13px;
   white-space: nowrap;
   text-decoration: none;
 
-  /* Craft-like “badge link” styling */
   margin-block: 0;
   margin-inline: 2px;
+  margin-left: ${spacings.sm};
   min-height: var(--input-height);
   padding-block: 4px;
   padding-inline: 5px;

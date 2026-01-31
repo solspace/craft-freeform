@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Attributes\Property;
 
 use Carbon\Carbon;
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\DefaultValue;
 use Solspace\Freeform\Attributes\Property\Delimiter;
 use Solspace\Freeform\Attributes\Property\Edition;
@@ -38,7 +39,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Solspace\Freeform\Library\Helpers\EditionHelper;
-use Stringy\Stringy;
 use yii\di\Container;
 
 /**
@@ -150,11 +150,9 @@ class PropertyProvider
             $this->processValue($property, $attribute, $referenceObject, $context);
 
             /** @var Section $section */
-            $fallbackLabel = Stringy::create($property->getName())
-                ->underscored()
-                ->replace('_', ' ')
-                ->toTitleCase()
-            ;
+            $fallbackLabel = StringHelper::dasherize($property->getName());
+            $fallbackLabel = StringHelper::replace($fallbackLabel, '-', ' ');
+            $fallbackLabel = StringHelper::toTitleCase($fallbackLabel);
 
             $attribute->section = $section?->handle;
             $attribute->type = $this->processType($property, $attribute);

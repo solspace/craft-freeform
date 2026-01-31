@@ -65,6 +65,7 @@ export const Tabs: React.FC = () => {
   const submissionCount = form.submissionCount ?? 0;
   const params = new URLSearchParams(window.location.search);
   const siteHandle = params.get('site');
+  const submissionsUrl = `submissions?${siteHandle ? `site=${siteHandle}&` : ''}source=form:${form.id}`;
 
   const onSubmissionsClick = (
     event: React.MouseEvent<HTMLAnchorElement>
@@ -76,9 +77,7 @@ export const Tabs: React.FC = () => {
     }
 
     openModal(ConfirmSubmissionsModal, {
-      url: generateUrl(`
-        submissions?${siteHandle ? `site=${siteHandle}&` : ''}source=form:${form.id}
-      `),
+      url: generateUrl(submissionsUrl),
     });
   };
 
@@ -147,9 +146,7 @@ export const Tabs: React.FC = () => {
 
       {showSubmissionsShortcut && (
         <SubmissionsShortcut
-          href={generateUrl(`
-            submissions?${siteHandle ? `site=${siteHandle}&` : ''}source=form:${form.id}
-          `)}
+          href={generateUrl(submissionsUrl)}
           onClick={onSubmissionsClick}
           title={translate('View submissions')}
           className="go"

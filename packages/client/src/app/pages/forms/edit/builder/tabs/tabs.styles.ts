@@ -111,7 +111,7 @@ export const SubmissionsShortcut = styled.a`
   margin-left: ${spacings.sm};
   min-height: var(--input-height);
   padding-block: 4px;
-  padding-inline: 5px;
+  padding: 5px 10px;
 
   border: 1px solid rgba(154, 165, 177, 0.35);
   border-radius: var(--radius-md);

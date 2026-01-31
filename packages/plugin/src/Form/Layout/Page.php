@@ -60,7 +60,7 @@ class Page implements \IteratorAggregate
             ->translationProvider
             ->getTranslation(
                 $this,
-                $this->getUid(),
+                $this->getUid() ?? 'page',
                 'label',
                 $this->label
             )

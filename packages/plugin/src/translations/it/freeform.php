@@ -86,6 +86,11 @@ return [
     'Invisible' => 'Invisibile',
     'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => 'Non hai ancora nessun modulo. Crea subito il tuo primo modulo...',
+    'submissions' => 'invii',
+    'View submissions' => 'Visualizza invii',
+    'Leave the form builder?' => 'Lasciare il generatore di moduli?',
+    'You are about to leave the form builder. Any unsaved changes may be lost if you continue.' => 'Stai per lasciare il generatore di moduli. Le modifiche non salvate potrebbero andare perse se continui.',
+    'Continue' => 'Continua',
 
     // Form Builder // Layout
     'Layout' => 'Layout',

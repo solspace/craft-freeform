@@ -86,6 +86,11 @@ return [
     'Invisible' => 'Invisible',
     'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => "You don't have any forms yet. Create your first form now...",
+    'submissions' => 'submissions',
+    'View submissions' => 'View submissions',
+    'Leave the form builder?' => 'Leave the form builder?',
+    'You are about to leave the form builder. Any unsaved changes may be lost if you continue.' => 'You are about to leave the form builder. Any unsaved changes may be lost if you continue.',
+    'Continue' => 'Continue',
 
     // Form Builder // Layout
     'Layout' => 'Layout',

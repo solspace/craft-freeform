@@ -121,6 +121,19 @@ class FormTransformer
         // Only forms made in the last hour are considered new
         $isNew = $form->getDateCreated()->greaterThanOrEqualTo(Carbon::now()->subHour());
 
+        $submissions = $this->submissionsService->getSubmissionCountByForm();
+        $submissionCount = $submissions[$form->getId()] ?? 0;
+
+        $canManageSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        if (!$canManageSubmissions) {
+            $canManageSubmissions = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $form->getId()
+                )
+            );
+        }
+
         return (object) [
             'id' => $form->getId(),
             'uid' => $form->getUid(),
@@ -133,6 +146,8 @@ class FormTransformer
             'isNew' => $isNew,
             'dateArchived' => $form->getDateArchived(),
             'formMonitor' => $this->formMonitorService->getStatus($form),
+            'canManageSubmissions' => $canManageSubmissions,
+            'submissionCount' => $submissionCount,
         ];
     }
 

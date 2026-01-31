@@ -6,7 +6,7 @@ export const TabWrapper = styled.nav`
   position: relative;
 
   display: grid;
-  grid-template-columns: 300px min-content auto;
+  grid-template-columns: 300px max-content 1fr max-content;
   align-items: center;
 
   height: 50px;
@@ -90,10 +90,40 @@ export const TabsWrapper = styled.div`
 
 export const SaveButtonWrapper = styled.div`
   display: flex;
-  justify-content: end;
+  align-items: center;
+  justify-self: end;
+  gap: ${spacings.md};
 `;
 
 export const SaveButton = styled.button``;
+
+export const SubmissionsShortcut = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  width: max-content;
+  font-size: 13px;
+  white-space: nowrap;
+  text-decoration: none;
+
+  margin-block: 0;
+  margin-inline: 2px;
+  margin-left: ${spacings.sm};
+  min-height: var(--input-height);
+  padding-block: 4px;
+  padding: 5px 10px;
+
+  border: 1px solid rgba(154, 165, 177, 0.35);
+  border-radius: var(--radius-md);
+  background: rgba(154, 165, 177, 0.08);
+  color: var(--link-color);
+
+  &:hover {
+    text-decoration: none;
+    border-color: rgba(154, 165, 177, 0.6);
+    background: rgba(154, 165, 177, 0.14);
+  }
+`;
 
 export const BetaLabel = styled.span`
   color: ${colors.gray700};

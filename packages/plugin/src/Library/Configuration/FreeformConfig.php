@@ -46,6 +46,7 @@ class FreeformConfig implements \JsonSerializable
                 'craft' => [
                     'is5' => version_compare(\Craft::$app->version, '5.0.0', '>='),
                     'version' => \Craft::$app->version,
+                    'locale' => \Craft::$app->locale->id,
                 ],
                 'freeform' => [
                     'version' => $plugin->getVersion(),

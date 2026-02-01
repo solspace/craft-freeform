@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Entries extends BaseOptionProvider
 {
+    #[VisibilityFilter('context.config.sites.list.length > 1')]
     #[Input\Select(
         label: 'Site ID',
         emptyOption: 'All Sites',
@@ -85,7 +86,17 @@ class Entries extends BaseOptionProvider
 
     public function getSiteId(): ?string
     {
-        return $this->siteId;
+        if (null !== $this->siteId) {
+            return $this->siteId;
+        }
+
+        // Auto-set to single site if only one exists
+        $sites = \Craft::$app->sites->getAllSites();
+        if (1 === \count($sites)) {
+            return (string) $sites[0]->id;
+        }
+
+        return null;
     }
 
     public function getSectionId(): ?int

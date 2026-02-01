@@ -7,7 +7,7 @@ import { useCreateFormModal } from '../../modals/hooks/use-create-form-modal';
 
 import { ListTableRow } from './list.table.row';
 import { ListTableRowLoading } from './list.table.row.loading';
-import { Table } from './list.table.styles';
+import { Table, TableScrollWrapper } from './list.table.styles';
 
 type Props = {
   forms: FormWithStats[] | undefined;
@@ -21,67 +21,69 @@ export const ListTable: React.FC<Props> = ({ forms, isFetching }) => {
   const hasFormMonitor = forms?.some((form) => form.formMonitor?.enabled);
 
   return (
-    <Table className="table data">
-      <thead>
-        <tr>
-          <th>{translate('Name')}</th>
-          <th>{translate('Handle')}</th>
-          <th>{translate('Description')}</th>
-          <th>{translate('Chart')}</th>
-          {hasFormMonitor && <th>{translate('Monitoring')}</th>}
-          {hasFormMonitor && <th>{translate('Last Test')}</th>}
-          <th>{translate('Submissions')}</th>
-          <th>{translate('Spam')}</th>
-          <th>{translate('Manage')}</th>
-        </tr>
-      </thead>
-      <tbody>
-        {isFetching && forms === undefined && (
-          <>
-            <ListTableRowLoading />
-            <ListTableRowLoading />
-            <ListTableRowLoading />
-            <ListTableRowLoading />
-          </>
-        )}
-
-        {!isFetching && !forms?.length && canCreate && (
+    <TableScrollWrapper>
+      <Table className="table data">
+        <thead>
           <tr>
-            <td colSpan={hasFormMonitor ? 9 : 7}>
-              <p>
-                {translate(
-                  `You don't have any forms yet. Create your first form now...`
-                )}
-              </p>
-
-              <button
-                className="btn submit add icon"
-                onClick={openCreateFormModal}
-              >
-                {translate('Create a new Form')}
-              </button>
-            </td>
+            <th>{translate('Name')}</th>
+            <th>{translate('Handle')}</th>
+            <th>{translate('Description')}</th>
+            <th>{translate('Chart')}</th>
+            {hasFormMonitor && <th>{translate('Monitoring')}</th>}
+            {hasFormMonitor && <th>{translate('Last Test')}</th>}
+            <th>{translate('Submissions')}</th>
+            <th>{translate('Spam')}</th>
+            <th>{translate('Manage')}</th>
           </tr>
-        )}
+        </thead>
+        <tbody>
+          {isFetching && forms === undefined && (
+            <>
+              <ListTableRowLoading />
+              <ListTableRowLoading />
+              <ListTableRowLoading />
+              <ListTableRowLoading />
+            </>
+          )}
 
-        {!isFetching && !forms?.length && !canCreate && (
-          <tr>
-            <td colSpan={hasFormMonitor ? 9 : 7}>
-              <p>{translate(`You don't have any forms yet.`)}</p>
-            </td>
-          </tr>
-        )}
+          {!isFetching && !forms?.length && canCreate && (
+            <tr>
+              <td colSpan={hasFormMonitor ? 9 : 7}>
+                <p>
+                  {translate(
+                    `You don't have any forms yet. Create your first form now...`
+                  )}
+                </p>
 
-        {forms
-          ?.sort((a, b) => a.name.localeCompare(b.name))
-          ?.map((form) => (
-            <ListTableRow
-              key={form.id}
-              form={form}
-              hasFormMonitor={hasFormMonitor}
-            />
-          ))}
-      </tbody>
-    </Table>
+                <button
+                  className="btn submit add icon"
+                  onClick={openCreateFormModal}
+                >
+                  {translate('Create a new Form')}
+                </button>
+              </td>
+            </tr>
+          )}
+
+          {!isFetching && !forms?.length && !canCreate && (
+            <tr>
+              <td colSpan={hasFormMonitor ? 9 : 7}>
+                <p>{translate(`You don't have any forms yet.`)}</p>
+              </td>
+            </tr>
+          )}
+
+          {forms
+            ?.sort((a, b) => a.name.localeCompare(b.name))
+            ?.map((form) => (
+              <ListTableRow
+                key={form.id}
+                form={form}
+                hasFormMonitor={hasFormMonitor}
+              />
+            ))}
+        </tbody>
+      </Table>
+    </TableScrollWrapper>
   );
 };

@@ -519,7 +519,7 @@ class FreeformFormsExporter extends BaseExporter
             $formSubmissions->setProcessor(
                 function (FFSubmission $row) use ($form) {
                     $exported = new Submission();
-                    $exported->title = $row->title;
+                    $exported->title = $row->title ?? 'Submission #'.$row->id;
                     $exported->status = $row->status;
 
                     foreach ($form->getLayout()->getFields() as $field) {

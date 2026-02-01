@@ -558,15 +558,19 @@ class Submission extends Element
                 ->execute()
             ;
         } else {
-            \Craft::$app->db->createCommand()
-                ->update(self::TABLE, $insertData, ['id' => $this->id])
-                ->execute()
-            ;
+            if (!empty($insertData)) {
+                \Craft::$app->db->createCommand()
+                    ->update(self::TABLE, $insertData, ['id' => $this->id])
+                    ->execute()
+                ;
+            }
 
-            \Craft::$app->db->createCommand()
-                ->update($contentTable, $contentData, ['id' => $this->id])
-                ->execute()
-            ;
+            if (!empty($contentData)) {
+                \Craft::$app->db->createCommand()
+                    ->update($contentTable, $contentData, ['id' => $this->id])
+                    ->execute()
+                ;
+            }
 
             $notesService = $this->getNotesService();
             $notesService->saveNote($this->id);

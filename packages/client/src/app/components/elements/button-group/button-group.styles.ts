@@ -13,6 +13,7 @@ export const ButtonGroupWrapper = styled.div`
   align-items: stretch;
 
   width: 100%;
+  padding-top: ${spacings.sm};
 `;
 
 export const Button = styled.button`

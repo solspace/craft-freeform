@@ -18,6 +18,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
+use Solspace\Freeform\Library\Helpers\BooleanHelper;
 use yii\base\Event;
 
 abstract class BaseIntegration implements IntegrationInterface
@@ -127,6 +128,6 @@ abstract class BaseIntegration implements IntegrationInterface
 
     protected function getProcessedBoolean(mixed $value): bool
     {
-        return (bool) App::parseBooleanEnv($value);
+        return BooleanHelper::normalize($value);
     }
 }

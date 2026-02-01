@@ -86,6 +86,11 @@ return [
     'Invisible' => 'Onzichtbaar',
     'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => 'Je hebt nog geen formulieren. Maak nu je eerste formulier aan...',
+    'submissions' => 'inzendingen',
+    'View submissions' => 'Inzendingen bekijken',
+    'Leave the form builder?' => 'Formulierbouwer verlaten?',
+    'You are about to leave the form builder. Any unsaved changes may be lost if you continue.' => 'U staat op het punt de formulierbouwer te verlaten. Niet-opgeslagen wijzigingen kunnen verloren gaan als u doorgaat.',
+    'Continue' => 'Doorgaan',
 
     // Form Builder // Layout
     'Layout' => 'Indeling',

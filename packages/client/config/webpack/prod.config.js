@@ -5,6 +5,10 @@ const { merge } = require('webpack-merge');
 const baseConfig = require('./base.config.js');
 
 module.exports = merge(baseConfig, {
+  performance: {
+    maxAssetSize: 1024 * 1024 * 5,      // 5 MB
+    maxEntrypointSize: 1024 * 1024 * 5, // 5 MB
+  },
   module: {
     rules: [
       {

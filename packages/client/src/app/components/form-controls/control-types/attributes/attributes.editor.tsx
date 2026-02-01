@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import CrossIcon from '@components/form-controls/icons/cross.svg';
@@ -200,6 +201,18 @@ export const AttributesEditor: React.FC<Props> = ({
             </tbody>
           </TabularOptions>
         </AttributeContainer>
+        {currentAttributes.length > 0 && (
+          <AddButtonArea
+            label="Add an attribute"
+            onClick={() =>
+              appendAndFocus(
+                currentAttributes.length,
+                0,
+                currentAttributes.length - 1
+              )
+            }
+          />
+        )}
         <br />
         <HelpText>
           <span

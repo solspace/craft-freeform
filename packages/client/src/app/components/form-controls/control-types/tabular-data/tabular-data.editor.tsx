@@ -1,4 +1,5 @@
 import React, { useRef } from 'react';
+import { AddButtonArea } from '@components/elements/add-button-area/add-button-area';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import {
@@ -177,6 +178,12 @@ export const TabularDataEditor: React.FC<Props> = ({
           </tbody>
         </TabularOptions>
       </TableContainer>
+
+      <AddButtonArea
+        label="Add a row"
+        onClick={() => appendAndFocus(0)}
+        disabled={isTranslating}
+      />
 
       <HelpText>
         <span

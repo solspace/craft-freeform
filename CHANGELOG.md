@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 5.14.8 - 2026-01-28
+
+### Added
+- Verified support for **Craft 5.9.x**.
+
+### Fixed
+- Fixed compatibility issues with **Craft 5.9.x** and **4.17.x**.
+- Fixed missing translations in the form builder.
+
 ## 5.14.7 - 2026-01-22
 
 ### Added

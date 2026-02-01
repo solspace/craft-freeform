@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
-use Stringy\Stringy;
 
 class ImplementationProvider
 {
@@ -58,10 +58,10 @@ class ImplementationProvider
 
                 if (!empty($matches)) {
                     $match = $matches[1];
-                    $name = str_replace($match, Stringy::create($match)->toLowerCase(), $name);
+                    $name = str_replace($match, StringHelper::toLowerCase($match), $name);
                 }
 
-                return Stringy::create($name)->camelize()->toString();
+                return StringHelper::toCamelCase($name);
             },
             $interfaces
         );

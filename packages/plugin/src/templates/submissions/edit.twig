@@ -30,7 +30,7 @@
   { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ]) %}
 
-{% if not isCraft5 %}
+{% if not isCraft5 and showSiteLabel|default(false) %}
   {% set contextMenu %}
     {% include '_includes/revisionmenu' with {element: submission, showDrafts: false, hasMoreRevisions: false} %}
   {% endset %}

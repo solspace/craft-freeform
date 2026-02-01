@@ -86,6 +86,11 @@ return [
     'Invisible' => 'Unsichtbar',
     'Stripe' => 'Stripe',
     "You don't have any forms yet. Create your first form now..." => 'Sie haben noch keine Formulare. Erstellen Sie jetzt Ihr erstes Formular...',
+    'submissions' => 'einreichungen',
+    'View submissions' => 'Einreichungen anzeigen',
+    'Leave the form builder?' => 'Formular-Builder verlassen?',
+    'You are about to leave the form builder. Any unsaved changes may be lost if you continue.' => 'Sie sind dabei, den Formular-Builder zu verlassen. Nicht gespeicherte Änderungen können verloren gehen, wenn Sie fortfahren.',
+    'Continue' => 'Fortfahren',
 
     // Form Builder // Layout
     'Layout' => 'Layout',

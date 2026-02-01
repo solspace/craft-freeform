@@ -35,7 +35,20 @@ export const useFieldOptions: FieldOptions = (field, type) => {
       })),
       useCustomValues: true,
     };
+  } else if (type?.type === Type.Rating) {
+    optionsConfiguration = {
+      source: Source.Custom,
+      options: Array.from(
+        { length: field.properties.maxValue },
+        (_: number, index: number) => ({
+          label: String(index + 1),
+          value: String(index + 1),
+        })
+      ),
+      useCustomValues: true,
+    };
   } else {
+    // Fields that extend BaseGeneratedOptionsField such as CheckboxesField, RadiosField, DropdownField and MultipleSelectField
     if (type?.implements.includes(Implementation.GeneratedOptions)) {
       const optionsProperty = type?.properties.find(
         (property) => property.type === PropertyType.Options

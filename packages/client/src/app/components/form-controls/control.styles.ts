@@ -11,6 +11,7 @@ export const Instructions = styled.span`
   line-height: 16px;
   font-size: 12px;
   font-style: italic;
+  margin: ${spacings.xs} 0;
 
   &:not(:last-child) {
     padding-bottom: 6px;
@@ -144,7 +145,6 @@ export const LabelGroup = styled.div`
   gap: ${spacings.sm};
 
   width: 100%;
-  padding-bottom: ${spacings.xs};
 `;
 
 export const LabelInstructionsWrapper = styled.div`

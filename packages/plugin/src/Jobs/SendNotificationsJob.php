@@ -104,7 +104,7 @@ class SendNotificationsJob extends BaseJob implements NotificationJobInterface
         $event = new ProcessPostedValuesEvent($form, $submission, $this->postedData);
         Event::trigger(FormJobInterface::class, FormJobInterface::EVENT_PROCESS_POSTED_DATA, $event);
 
-        $form->valuesFromArray($event->getValues());
+        $form->valuesFromSubmission($event->getSubmission());
 
         $freeform->mailer->sendEmail(
             $form,

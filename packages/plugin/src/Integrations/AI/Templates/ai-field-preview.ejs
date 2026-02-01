@@ -1,27 +1,56 @@
+<%
+  const fieldsLabel =
+    (typeof Craft !== 'undefined' && Craft.t)
+      ? Craft.t('freeform', 'Fields:')
+      : 'Fields:';
+
+  const allFieldsLabel =
+    (typeof Craft !== 'undefined' && Craft.t)
+      ? Craft.t('freeform', 'All fields')
+      : 'All fields';
+
+  const moreLabel =
+    (typeof Craft !== 'undefined' && Craft.t)
+      ? Craft.t('freeform', '(+{count} more)')
+      : '(+{count} more)';
+
+  const statusText =
+    (typeof Craft !== 'undefined' && Craft.t)
+      ? Craft.t('freeform', 'AI processing field (hidden from frontend)')
+      : 'AI processing field (hidden from frontend)';
+%>
+
 <div class="field-preview">
   <% if (fieldsToAnalyze) { %>
     <div class="field-preview__fields">
-      <strong>Fields:</strong> 
+      <strong><%= fieldsLabel %></strong>
       <% if (fieldsToAnalyze.trim() === '@') { %>
-        All fields
+        <%= allFieldsLabel %>
       <% } else { %>
-        <% 
+        <%
           // Extract field handles from the raw format
           const fieldHandles = fieldsToAnalyze.match(/field:([a-zA-Z0-9_]+)/g);
+
           if (fieldHandles) {
             const cleanHandles = fieldHandles.map(f => f.replace('field:', ''));
-            const displayText = cleanHandles.length > 3 ? 
-              cleanHandles.slice(0, 3).join(', ') + ' (+' + (cleanHandles.length - 3) + ' more)' :
-              cleanHandles.join(', ');
+
+            const displayText = cleanHandles.length > 3
+              ? cleanHandles.slice(0, 3).join(', ')
+                + ' '
+                + moreLabel.replace('{count}', cleanHandles.length - 3)
+              : cleanHandles.join(', ');
         %>
           <%= displayText %>
         <% } else { %>
-          <%= fieldsToAnalyze.length > 30 ? fieldsToAnalyze.substring(0, 30) + '...' : fieldsToAnalyze %>
+          <%= fieldsToAnalyze.length > 30
+            ? fieldsToAnalyze.substring(0, 30) + '...'
+            : fieldsToAnalyze %>
         <% } %>
       <% } %>
     </div>
   <% } %>
+
   <div class="field-preview__status">
-    <em>AI processing field (hidden from frontend)</em>
+    <em><%= statusText %></em>
   </div>
-</div> 
+</div>

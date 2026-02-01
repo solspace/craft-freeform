@@ -55,6 +55,7 @@ class File extends BaseCategory
 
     #[Label('Placeholder')]
     #[SetPlaceholder(FileDragAndDropField::DEFAULT_PLACEHOLDER)]
+    #[SetDefaultValue(FileDragAndDropField::DEFAULT_PLACEHOLDER)]
     public TextItem $placeholder;
 
     #[Label('Remove File Confirmation Message')]

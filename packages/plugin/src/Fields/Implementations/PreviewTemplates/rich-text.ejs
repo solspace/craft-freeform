@@ -1,4 +1,12 @@
+<%
+    const notConfiguredText =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'This Rich Text field has not been configured yet.')
+            : 'This Rich Text field has not been configured yet.';
+%>
+
 <% if (!content) { %>
-    This Rich Text field has not been configured yet.
+    <%= notConfiguredText %>
 <% } %>
+
 <%= content %>

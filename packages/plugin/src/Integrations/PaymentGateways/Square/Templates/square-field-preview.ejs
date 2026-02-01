@@ -1,43 +1,37 @@
-<style>
-    .square-demo {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+<%
+    const cardNumberPlaceholder =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'Card number')
+            : 'Card number';
 
-        > div {
-            display: grid;
-            gap: 10px;
-            grid-template-columns: 2fr 1fr 1fr;
-            grid-template-areas: 'cc-number expiry cvc';
+    const expiryPlaceholder =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'MM/YY')
+            : 'MM/YY';
 
-            .cc-number {
-                grid-area: cc-number;
-            }
-            .expiry {
-                grid-area: expiry;
-            }
-            .cvc {
-                grid-area: cvc;
-            }
-        }
-    }
-</style>
+    const cvcPlaceholder =
+        (typeof Craft !== 'undefined' && Craft.t)
+            ? Craft.t('freeform', 'CVV')
+            : 'CVV';
+%>
 
 <div class="square-demo">
     <div>
         <div class="cc-number">
             <div>
-                <input type="text" placeholder="Card number" />
+                <input type="text" placeholder="<%= cardNumberPlaceholder %>" />
             </div>
         </div>
+
         <div class="expiry">
             <div>
-                <input type="text" placeholder="MM/YY" />
+                <input type="text" placeholder="<%= expiryPlaceholder %>" />
             </div>
         </div>
+
         <div class="cvc">
             <div>
-                <input type="text" placeholder="CVV" />
+                <input type="text" placeholder="<%= cvcPlaceholder %>" />
             </div>
         </div>
     </div>

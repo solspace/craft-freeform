@@ -502,6 +502,8 @@ return [
     'Single number' => 'Single number',
     '2-digit number' => '2-digit number',
     'Add a row' => 'Add a row',
+    'Add a recipient' => 'Add a recipient',
+    'Add an attribute' => 'Add an attribute',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
@@ -1034,6 +1036,7 @@ return [
     'Like' => 'Like',
     'Not Like' => 'Not Like',
     'Add an option' => 'Add an option',
+    'Selected' => 'Selected',
     'Export Notifications' => 'Export Notifications',
     'Profile' => 'Profile',
     'Frequency' => 'Frequency',

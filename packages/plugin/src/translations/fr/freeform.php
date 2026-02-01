@@ -502,6 +502,8 @@ return [
     'Single number' => 'Nombre à un chiffre',
     '2-digit number' => 'Nombre à deux chiffres',
     'Add a row' => 'Ajouter une ligne',
+    'Add a recipient' => 'Ajouter un destinataire',
+    'Add an attribute' => 'Ajouter un attribut',
 
     // Form Builder // Notifications
     'Notifications' => 'Notifications',
@@ -1034,6 +1036,7 @@ return [
     'Like' => 'Ressemble à',
     'Not Like' => 'Ne ressemble pas à',
     'Add an option' => 'Ajouter une option',
+    'Selected' => 'Sélectionné',
     'Export Notifications' => 'Notifications d’exportation',
     'Profile' => 'Profil',
     'Frequency' => 'Fréquence',

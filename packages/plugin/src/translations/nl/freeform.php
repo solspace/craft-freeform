@@ -502,6 +502,8 @@ return [
     'Single number' => 'Enkel cijfer',
     '2-digit number' => '2-cijferig nummer',
     'Add a row' => 'Rij toevoegen',
+    'Add a recipient' => 'Ontvanger toevoegen',
+    'Add an attribute' => 'Attribuut toevoegen',
 
     // Form Builder // Notifications
     'Notifications' => 'Meldingen',
@@ -1034,6 +1036,7 @@ return [
     'Like' => 'Bevat',
     'Not Like' => 'Bevat geen',
     'Add an option' => 'Voeg een optie toe',
+    'Selected' => 'Geselecteerd',
     'Export Notifications' => 'Meldingen Exporteren',
     'Profile' => 'Profiel',
     'Frequency' => 'Frequentie',

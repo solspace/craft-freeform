@@ -48,6 +48,8 @@ export type Form = {
   formMonitor?: {
     enabled: boolean;
   };
+  canManageSubmissions?: boolean;
+  submissionCount?: number;
 };
 
 export type ExtendedFormType = Form & {

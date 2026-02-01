@@ -67,7 +67,7 @@ export const SectionBlockContainer = styled.section`
 
     position: absolute;
     left: -5px;
-    top: -7px;
+    top: -9px;
 
     display: block;
     padding: 0 5px 0 26px;

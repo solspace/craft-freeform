@@ -6,8 +6,8 @@ const baseConfig = require('./base.config.js');
 
 module.exports = merge(baseConfig, {
   performance: {
-    maxAssetSize: 1024 * 1024 * 5,      // 5 MB
-    maxEntrypointSize: 1024 * 1024 * 5, // 5 MB
+    maxAssetSize: 1024 * 1024 * 5,
+    maxEntrypointSize: 1024 * 1024 * 5,
   },
   module: {
     rules: [

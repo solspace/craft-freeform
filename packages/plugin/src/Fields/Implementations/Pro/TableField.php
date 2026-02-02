@@ -119,7 +119,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     protected ?int $minRows = null;
 
     #[Section('limits')]
-    #[VisibilityFilter('properties.limitRows === "'.self::LIMIT_ROWS_MAXIMUM.'" || properties.limitRows === "'.self::LIMIT_ROWS_RANGE.'"')]
+    #[VisibilityFilter('properties.limitRows === "'.self::LIMIT_ROWS_MAXIMUM.'" || properties.limitRows === "'.self::LIMIT_ROWS_RANGE.'" || properties.limitRows === ""')]
     #[Limitation('props.table', 'maxRows')]
     #[DefaultValue('props.table.maxRows')]
     #[Input\Integer(

@@ -1,5 +1,30 @@
 # Solspace Freeform Changelog
 
+## 5.14.9 - 2026-02-02
+
+### Added
+- Added a **Submissions** management shortcut link in the form builder for quicker access to submissions.
+- Added _Add new item_ buttons throughout the builder to improve add-item interactions in forms.
+
+### Changed
+- **Dropdowns:** improved Structure sorting to account for leading whitespaces in option labels.
+- **Option-based fields:** moved the _Selected_ toggle into its own column for better readability.
+
+### Fixed
+- The **Site ID** option in Entries element populator now displays only when more than one site exists.
+- Options for **Rating** fields now appear correctly in **User Select** notifications.
+- Fixed display issues on smaller screens in the **Form List** view.
+- Fixed translation issues in the date picker for the **Stop Submissions After Date** setting.
+- Fixed a blank **Site** dropdown on the CP submission detail page in Craft 4.
+- Fixed an error when saving submissions that have no storable fields.
+- Fixed an error when translating page labels that are missing a UID.
+- Fixed a bug where **Invisible** field values set at the template level were not appearing in the CP Submissions views and email notifications.
+- Prevented a crash in **Export** when a submission title is `null`.
+- Corrected user-element mapping for label/value fields in the Freeform 4 migration.
+
+### Security
+- Updated **lodash** to the latest compatible version.
+
 ## 5.14.8 - 2026-01-28
 
 ### Added

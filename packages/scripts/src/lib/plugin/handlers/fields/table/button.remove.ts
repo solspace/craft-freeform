@@ -27,13 +27,33 @@ export const registerRemoveButtons = (instance: Freeform) => {
 };
 
 const handleRemove = (instance: Freeform) => (event: Event) => {
-  const target = event.target as HTMLTableRowElement;
-  if (target.closest('tbody').querySelectorAll('tr').length === 1) {
+  const target = event.target as HTMLElement;
+  const tbody = target.closest('tbody');
+  const table = target.closest('table');
+  const row = target.closest('tr');
+
+  if (!tbody || !table || !row) {
     return;
   }
 
-  const table = target.closest('table');
-  const row = target.closest('tr');
+  const totalRows = tbody.querySelectorAll('tr').length;
+
+  if (totalRows <= 1) {
+    return;
+  }
+
+  const exactRows = table.getAttribute('data-exact-rows');
+  if (exactRows) {
+    return;
+  }
+
+  const minRows = table.getAttribute('data-min-rows');
+  if (minRows) {
+    const min = parseInt(minRows, 10);
+    if (totalRows - 1 < min) {
+      return;
+    }
+  }
 
   instance._dispatchEvent(events.table.onRemoveRow, { table, row });
   removeElement(row);

@@ -41,25 +41,50 @@ class TableValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        if (empty($value)) {
+        $rows = \is_array($value) ? \count($value) : 0;
+
+        $limitRows = $field->getLimitRows();
+
+        if (TableField::LIMIT_ROWS_EXACT === $limitRows) {
+            $exactRows = $field->getExactRows();
+            if (null !== $exactRows && $exactRows > 0) {
+                if ($rows !== $exactRows) {
+                    $field->addError(Freeform::t('This table must have exactly {exactRows} rows.', ['exactRows' => $exactRows]));
+
+                    return;
+                }
+                if (!$this->allRowsFilled($field, $value)) {
+                    $field->addError(Freeform::t('All {exactRows} rows must be filled out.', ['exactRows' => $exactRows]));
+
+                    return;
+                }
+            }
+
             return;
         }
 
-        $maxRows = $field->getMaxRows();
-        if (empty($maxRows)) {
-            return;
+        if (TableField::LIMIT_ROWS_MINIMUM === $limitRows || TableField::LIMIT_ROWS_RANGE === $limitRows) {
+            $minRows = $field->getMinRows();
+            if (null !== $minRows && $minRows > 0) {
+                if ($rows < $minRows) {
+                    $field->addError(Freeform::t('This table must have at least {minRows} rows.', ['minRows' => $minRows]));
+
+                    return;
+                }
+                $value = \is_array($value) ? $value : [];
+                if (!$this->allRowsFilled($field, \array_slice($value, 0, $minRows))) {
+                    $field->addError(Freeform::t('At least the first {minRows} rows must be filled out.', ['minRows' => $minRows]));
+
+                    return;
+                }
+            }
         }
 
-        $rows = \count($value);
-
-        if ($rows > $maxRows) {
-            $message = str_replace(
-                '{{maxRows}}',
-                $maxRows,
-                Freeform::t('The maximum number of rows is {{maxRows}}.')
-            );
-
-            $field->addError($message);
+        if (TableField::LIMIT_ROWS_MAXIMUM === $limitRows || TableField::LIMIT_ROWS_RANGE === $limitRows || '' === $limitRows) {
+            $maxRows = $field->getMaxRows();
+            if (null !== $maxRows && $maxRows > 0 && $rows > $maxRows) {
+                $field->addError(Freeform::t('The maximum number of rows is {maxRows}.', ['maxRows' => $maxRows]));
+            }
         }
     }
 
@@ -123,5 +148,12 @@ class TableValidation extends FeatureBundle
                 }
             }
         }
+    }
+
+    private function allRowsFilled(TableField $field, array $rows): bool
+    {
+        return ArrayHelper::every($rows, function (array $row) {
+            return ArrayHelper::someRecursive($row, fn ($item) => '' !== $item && null !== $item);
+        });
     }
 }

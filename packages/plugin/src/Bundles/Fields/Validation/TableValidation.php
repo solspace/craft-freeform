@@ -152,8 +152,8 @@ class TableValidation extends FeatureBundle
 
     private function allRowsFilled(TableField $field, array $rows): bool
     {
-        return ArrayHelper::every($rows, function (array $row) {
-            return ArrayHelper::someRecursive($row, fn ($item) => '' !== $item && null !== $item);
+        return ArrayHelper::every($rows, static function (array $row) {
+            return ArrayHelper::someRecursive($row, static fn ($item) => '' !== $item && null !== $item);
         });
     }
 }

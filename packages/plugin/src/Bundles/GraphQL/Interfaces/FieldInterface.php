@@ -65,7 +65,7 @@ class FieldInterface extends AbstractInterface
                 'name' => 'requiredMessage',
                 'type' => Type::string(),
                 'description' => "Field's custom required message",
-                'resolve' => function ($source) {
+                'resolve' => static function ($source) {
                     return $source->getRequiredErrorMessage();
                 },
             ],
@@ -78,7 +78,7 @@ class FieldInterface extends AbstractInterface
                 'name' => 'attributes',
                 'type' => AttributesInterface::getType(),
                 'description' => "Field's attributes",
-                'resolve' => function ($source) {
+                'resolve' => static function ($source) {
                     return $source->getAttributes();
                 },
             ],

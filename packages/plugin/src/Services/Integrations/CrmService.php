@@ -85,7 +85,7 @@ class CrmService extends IntegrationsService
         }
 
         return array_map(
-            fn (CrmFieldRecord $record) => new FieldObject(
+            static fn (CrmFieldRecord $record) => new FieldObject(
                 $record->handle,
                 $record->label,
                 $record->type,

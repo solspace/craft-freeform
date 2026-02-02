@@ -208,7 +208,7 @@ class FreeformImporter
                 // Convert form site IDs to new IDs
                 $formSiteIds = $form->settings->getGeneral()->sites;
                 $updatedSiteIds = array_map(
-                    function (int $oldSiteId) use ($formSites) {
+                    static function (int $oldSiteId) use ($formSites) {
                         $oldSite = $formSites->get($oldSiteId);
                         if (!$oldSite) {
                             return null;

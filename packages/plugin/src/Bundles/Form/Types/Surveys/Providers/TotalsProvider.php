@@ -71,7 +71,7 @@ class TotalsProvider
 
             $fields = $this->getProcessableFields($form);
             $searchableFields = array_map(
-                fn (FieldInterface $field) => 'sc.[['.Submission::getFieldColumnName($field).']]',
+                static fn (FieldInterface $field) => 'sc.[['.Submission::getFieldColumnName($field).']]',
                 $fields
             );
 

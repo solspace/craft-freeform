@@ -194,7 +194,7 @@ class LayoutPersistence extends FeatureBundle
 
     private function getStarterPack(Form $form, array $data, string $recordType): array
     {
-        $usedUids = array_map(function ($item) {
+        $usedUids = array_map(static function ($item) {
             if (!isset($item->uid)) {
                 $item->uid = StringHelper::UUID();
             }

@@ -84,7 +84,7 @@ class RulesBundle extends FeatureBundle
             $values[$field->getHandle()] = $processEvent->getValue();
         }
 
-        $filterRules = fn ($rule) => $rule->getConditions()->count() > 0;
+        $filterRules = static fn ($rule) => $rule->getConditions()->count() > 0;
 
         $rules = [
             'values' => $values,

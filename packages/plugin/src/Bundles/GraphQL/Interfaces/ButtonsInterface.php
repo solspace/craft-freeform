@@ -80,7 +80,7 @@ class ButtonsInterface extends AbstractInterface
                 'name' => 'attributes',
                 'type' => ButtonsAttributesInterface::getType(),
                 'description' => 'The button attributes',
-                'resolve' => function ($source) {
+                'resolve' => static function ($source) {
                     return $source->getAttributes();
                 },
             ],

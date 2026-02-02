@@ -47,7 +47,7 @@ class WidgetsService extends Component
 
         array_walk(
             $dateRanges,
-            function (&$value) {
+            static function (&$value) {
                 $value = Freeform::t($value);
             }
         );

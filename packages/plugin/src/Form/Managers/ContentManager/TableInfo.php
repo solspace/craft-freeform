@@ -24,10 +24,10 @@ class TableInfo
     public function getFieldColumnFieldIds(): array
     {
         return array_map(
-            fn ($column) => (int) preg_replace('/^.+_(\d+)$/', '$1', $column),
+            static fn ($column) => (int) preg_replace('/^.+_(\d+)$/', '$1', $column),
             array_filter(
                 $this->columns,
-                fn ($column) => preg_match('/^.+_\d+$/', $column)
+                static fn ($column) => preg_match('/^.+_\d+$/', $column)
             )
         );
     }

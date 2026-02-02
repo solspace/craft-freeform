@@ -107,7 +107,7 @@ class FieldTypesProvider
     public function getTypeShorthands(): array
     {
         return array_map(
-            fn (FieldType $type) => $type->getType(),
+            static fn (FieldType $type) => $type->getType(),
             $this->getTypes()
         );
     }

@@ -128,7 +128,7 @@ class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface,
 
             $translations = [];
             foreach ($scales as $scale) {
-                $found = array_find($translatedScales, fn ($item) => $item[0] === $scale->getValue());
+                $found = array_find($translatedScales, static fn ($item) => $item[0] === $scale->getValue());
                 if ($found) {
                     $translations[] = new Scale($found[0], $found[1]);
                 } else {

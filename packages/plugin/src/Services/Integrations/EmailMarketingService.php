@@ -93,7 +93,7 @@ class EmailMarketingService extends IntegrationsService
         }
 
         return array_map(
-            fn (EmailMarketingListRecord $record) => new ListObject(
+            static fn (EmailMarketingListRecord $record) => new ListObject(
                 $record->resourceId,
                 $record->name,
                 $record->memberCount,
@@ -161,7 +161,7 @@ class EmailMarketingService extends IntegrationsService
         }
 
         return array_map(
-            fn (EmailMarketingFieldRecord $record) => new FieldObject(
+            static fn (EmailMarketingFieldRecord $record) => new FieldObject(
                 $record->handle,
                 $record->label,
                 $record->type,

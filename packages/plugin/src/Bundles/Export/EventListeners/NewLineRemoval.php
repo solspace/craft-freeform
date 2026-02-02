@@ -15,7 +15,7 @@ class NewLineRemoval extends FeatureBundle
         Event::on(
             SubmissionExportInterface::class,
             SubmissionExportInterface::EVENT_PREPARE_EXPORT_VALUE,
-            function (PrepareExportValueEvent $event) {
+            static function (PrepareExportValueEvent $event) {
                 $field = $event->getField();
                 if (!$field instanceof TextareaField) {
                     return;

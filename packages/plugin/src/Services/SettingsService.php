@@ -565,7 +565,7 @@ class SettingsService extends BaseService
     private function getRecipientCollection(string $emails): RecipientCollection
     {
         $recipients = array_map(
-            fn (string $email) => new Recipient($email),
+            static fn (string $email) => new Recipient($email),
             StringHelper::extractSeparatedValues($emails)
         );
 

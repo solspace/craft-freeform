@@ -24,7 +24,7 @@ class CaptchaInputArguments extends Arguments
             return [];
         }
 
-        $enabled = array_filter($integrations, fn ($integration) => $integration->isEnabled());
+        $enabled = array_filter($integrations, static fn ($integration) => $integration->isEnabled());
         if (!$enabled) {
             return [];
         }

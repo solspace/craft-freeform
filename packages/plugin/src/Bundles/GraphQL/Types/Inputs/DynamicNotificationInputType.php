@@ -26,7 +26,7 @@ class DynamicNotificationInputType extends InputObjectType
 
         return GqlEntityRegistry::createEntity(self::getName(), new self([
             'name' => self::getName(),
-            'fields' => function () use ($fields) {
+            'fields' => static function () use ($fields) {
                 return $fields;
             },
         ]));

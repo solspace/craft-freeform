@@ -18,7 +18,7 @@ class RegisterControllers extends FeatureBundle
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            static function (RegisterUrlRulesEvent $event) {
                 $event->rules[] = new UrlRule([
                     'pattern' => 'freeform/api/google-sheets/sheets',
                     'route' => 'freeform/google-sheets/sheets',

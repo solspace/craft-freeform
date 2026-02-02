@@ -79,7 +79,7 @@ class CollectionTest extends TestCase
 
         $this->assertCount(10, $collection);
 
-        $filtered = $collection->filter(function ($item) {
+        $filtered = $collection->filter(static function ($item) {
             return 0 === $item % 2;
         });
 
@@ -93,7 +93,7 @@ class CollectionTest extends TestCase
             public function __construct(array $items = [])
             {
                 parent::__construct($items);
-                $this->keySelector = fn ($item) => $item->id;
+                $this->keySelector = static fn ($item) => $item->id;
             }
         };
 

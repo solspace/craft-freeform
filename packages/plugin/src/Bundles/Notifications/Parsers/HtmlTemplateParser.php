@@ -19,7 +19,7 @@ class HtmlTemplateParser
 
                 $parsedTemplate = preg_replace_callback(
                     '/{{\s*([^}]+)\s*}}/',
-                    function ($matches) use ($name, $token) {
+                    static function ($matches) use ($name, $token) {
                         $match = trim($matches[1]);
                         if ($match === $token) {
                             return \sprintf(
@@ -43,7 +43,7 @@ class HtmlTemplateParser
         // Replace Field tokens
         return preg_replace_callback(
             '/{{\s*fieldUids\[\'([^]\']+)\']\s*}}/',
-            function ($matches) use ($form) {
+            static function ($matches) use ($form) {
                 $fieldUid = trim($matches[1]);
                 $fieldLabel = $form->get($fieldUid)?->getLabel() ?? $fieldUid;
 
@@ -61,7 +61,7 @@ class HtmlTemplateParser
     {
         return preg_replace_callback(
             '/<span contenteditable="false" data-freeform-token="([^\"]+)">.*?<\/span>/',
-            fn ($matches) => \sprintf('{{ %s }}', $matches[1]),
+            static fn ($matches) => \sprintf('{{ %s }}', $matches[1]),
             $template
         );
     }

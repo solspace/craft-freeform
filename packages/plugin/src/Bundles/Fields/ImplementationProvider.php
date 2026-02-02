@@ -35,7 +35,7 @@ class ImplementationProvider
             $this->cleanUpInterfaceNames(
                 $this->filterExcludedInterfaces(
                     array_map(
-                        fn ($interface) => new \ReflectionClass($interface),
+                        static fn ($interface) => new \ReflectionClass($interface),
                         $implementations
                     )
                 )
@@ -46,7 +46,7 @@ class ImplementationProvider
     private function cleanUpInterfaceNames(array $interfaces): array
     {
         return array_map(
-            function ($interface) {
+            static function ($interface) {
                 $name = $interface->getShortName();
                 $name = preg_replace(
                     '/Interface$/',
@@ -71,7 +71,7 @@ class ImplementationProvider
     {
         return array_filter(
             $interfaces,
-            fn ($interfaceReflection) => !\in_array(
+            static fn ($interfaceReflection) => !\in_array(
                 $interfaceReflection->getName(),
                 self::EXCLUDED_INTERFACES,
                 true

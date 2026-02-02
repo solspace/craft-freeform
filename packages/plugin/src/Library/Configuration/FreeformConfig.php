@@ -65,7 +65,7 @@ class FreeformConfig implements \JsonSerializable
                 'enabled' => SitesHelper::isEnabled(),
                 'current' => $currentSiteId,
                 'list' => array_map(
-                    fn (Site $site) => [
+                    static fn (Site $site) => [
                         'id' => $site->id,
                         'name' => $site->name,
                         'handle' => $site->handle,

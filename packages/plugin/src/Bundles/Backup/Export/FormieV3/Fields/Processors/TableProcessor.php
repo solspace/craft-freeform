@@ -212,7 +212,7 @@ class TableProcessor extends AbstractFieldProcessor
             }
         }
 
-        return array_values(array_filter($strings, fn ($v) => '' !== $v));
+        return array_values(array_filter($strings, static fn ($v) => '' !== $v));
     }
 
     private function readFirstString(array $source, array $keys, string $default): string

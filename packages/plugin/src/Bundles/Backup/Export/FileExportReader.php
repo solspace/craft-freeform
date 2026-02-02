@@ -412,7 +412,7 @@ class FileExportReader extends BaseExporter
             $formSubmissions->formUid = $uid;
             $formSubmissions->submissionBatchProcessor = new FileLineProcessor($file);
             $formSubmissions->setProcessor(
-                function (array $json) {
+                static function (array $json) {
                     $exported = new Submission();
                     $exported->title = $json['title'];
                     $exported->status = $json['status'];

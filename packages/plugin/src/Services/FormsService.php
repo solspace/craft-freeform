@@ -413,7 +413,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
             foreach ($submissionQuery->batch() as $submissions) {
                 $ids = array_map(
-                    fn (Submission $submission) => $submission->getId(),
+                    static fn (Submission $submission) => $submission->getId(),
                     $submissions
                 );
 

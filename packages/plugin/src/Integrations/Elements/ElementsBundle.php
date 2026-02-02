@@ -166,7 +166,7 @@ class ElementsBundle extends FeatureBundle
             Event::on(
                 MailerService::class,
                 MailerService::EVENT_BEFORE_RENDER,
-                function (RenderEmailEvent $event) use ($element) {
+                static function (RenderEmailEvent $event) use ($element) {
                     $value = $event->getFieldValue('element');
                     if (null === $value) {
                         $value = $element;
@@ -192,7 +192,7 @@ class ElementsBundle extends FeatureBundle
         return array_values(
             array_filter(
                 $integrations,
-                fn (ElementIntegrationInterface $integration) => $integration->isConnectable()
+                static fn (ElementIntegrationInterface $integration) => $integration->isConnectable()
             )
         );
     }

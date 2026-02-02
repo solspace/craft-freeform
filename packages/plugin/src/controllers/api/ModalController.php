@@ -21,7 +21,7 @@ class ModalController extends BaseController
         $freeform = Freeform::getInstance();
 
         $types = array_map(
-            function ($type) {
+            static function ($type) {
                 return [
                     'className' => $type['class'],
                     'name' => $type['name'],
@@ -32,7 +32,7 @@ class ModalController extends BaseController
         );
 
         $statuses = array_map(
-            function ($status) {
+            static function ($status) {
                 return [
                     'name' => $status->name,
                     'id' => $status->id,

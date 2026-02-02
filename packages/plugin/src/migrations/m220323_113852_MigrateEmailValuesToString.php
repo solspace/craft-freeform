@@ -16,7 +16,7 @@ class m220323_113852_MigrateEmailValuesToString extends Migration
             ->column()
         ;
 
-        $columnNames = array_map(fn ($id) => "field_{$id}", $emailFieldIds);
+        $columnNames = array_map(static fn ($id) => "field_{$id}", $emailFieldIds);
 
         $query = (new Query())
             ->select(array_merge(['id'], $columnNames))

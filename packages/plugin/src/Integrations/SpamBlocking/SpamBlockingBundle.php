@@ -68,7 +68,7 @@ class SpamBlockingBundle extends FeatureBundle
             ->getForForm(
                 $form,
                 SpamBlockingIntegrationInterface::class,
-                filter: fn ($integration) => !$integration instanceof AsyncSpamBlockingIntegrationInterface
+                filter: static fn ($integration) => !$integration instanceof AsyncSpamBlockingIntegrationInterface
             )
         ;
 

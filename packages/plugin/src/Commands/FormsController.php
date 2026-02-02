@@ -45,7 +45,7 @@ class FormsController extends BaseCommand
             return ExitCode::DATAERR;
         }
 
-        $siteIds = array_map(fn (Site $site) => $site->id, $sites);
+        $siteIds = array_map(static fn (Site $site) => $site->id, $sites);
 
         foreach ($forms as $record) {
             FormSiteRecord::updateSitesForForm($record->id, $siteIds);

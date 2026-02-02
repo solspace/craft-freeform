@@ -44,7 +44,7 @@ class NoticesController extends BaseApiController
 
         usort(
             $notices,
-            function (Notification $a, Notification $b) {
+            static function (Notification $a, Notification $b) {
                 $categorySortOrder = Notification::CATEGORY_SORT_ORDER;
 
                 $aIndex = array_search($a->getType(), $categorySortOrder, true);

@@ -84,7 +84,7 @@ class SitesHelper
     public static function getEditableSiteHandles(): ?array
     {
         return array_map(
-            fn ($site) => $site->handle,
+            static fn ($site) => $site->handle,
             self::getEditableSites()
         );
     }
@@ -92,7 +92,7 @@ class SitesHelper
     public static function getEditableSiteIds(): ?array
     {
         return array_map(
-            fn ($site) => $site->id,
+            static fn ($site) => $site->id,
             self::getEditableSites()
         );
     }

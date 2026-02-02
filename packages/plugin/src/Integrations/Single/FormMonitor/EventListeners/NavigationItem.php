@@ -30,7 +30,7 @@ class NavigationItem extends FeatureBundle
         Event::on(
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
-            function (RegisterSettingsNavigationEvent $event) {
+            static function (RegisterSettingsNavigationEvent $event) {
                 $freeform = Freeform::getInstance();
 
                 $event->addNavigationItem(

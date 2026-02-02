@@ -31,7 +31,7 @@ class FormsController extends BaseApiController
         $results = [];
         foreach ($forms as $form) {
             $fields = $form->getLayout()->getFields()->getIterator()->getArrayCopy();
-            $fields = array_filter($fields, fn ($field) => !$field instanceof GroupField);
+            $fields = array_filter($fields, static fn ($field) => !$field instanceof GroupField);
 
             $transformedFields = [];
             foreach ($fields as $field) {

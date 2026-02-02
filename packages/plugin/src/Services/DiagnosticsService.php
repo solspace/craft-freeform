@@ -38,7 +38,7 @@ class DiagnosticsService extends BaseService
      */
     public function getServerChecks(): array
     {
-        $trueOrFalse = function ($value) { return (bool) $value; };
+        $trueOrFalse = static function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         $minCraftVersion = '4.0.0';
         $maxCraftVersion = '5.10.0';
@@ -58,7 +58,7 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new SuggestionValidator(
-                        fn ($value) => !$value['hasUpdate'],
+                        static fn ($value) => !$value['hasUpdate'],
                         'Version Outdated',
                         Freeform::t(
                             'An update is available for Freeform. Please update to <b><a href="{url}">v{latestVersion}</a></b> now for access to the latest features, bug fixes, and improvements.',
@@ -78,12 +78,12 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new WarningValidator(
-                        fn ($value) => version_compare($value['version'], $minCraftVersion, '>='),
+                        static fn ($value) => version_compare($value['version'], $minCraftVersion, '>='),
                         'Craft compatibility issue',
                         'The current minimum Craft version Freeform supports is '.$minCraftVersion.' or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], $maxCraftVersion, '<'),
+                        static fn ($value) => version_compare($value['version'], $maxCraftVersion, '<'),
                         'Potential Craft Compatibility issue',
                         'This version of Freeform may not be fully compatible with your version of Craft CMS and could cause issues. Please check for available updates.'
                     ),
@@ -94,12 +94,12 @@ class DiagnosticsService extends BaseService
                 $system->phpVersion,
                 [
                     new WarningValidator(
-                        fn ($value) => version_compare($value, $minPhpVersion, '>='),
+                        static fn ($value) => version_compare($value, $minPhpVersion, '>='),
                         'PHP Compatibility issue',
                         'The current minimum PHP version Freeform supports is '.$minPhpVersion.' or greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value, $maxPhpVersion, '<='),
+                        static fn ($value) => version_compare($value, $maxPhpVersion, '<='),
                         'Potential PHP Compatibility issue',
                         'This version of Freeform may not be fully compatible with this version of PHP and may encounter issues. Please check if there are any updates available.'
                     ),
@@ -113,7 +113,7 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new WarningValidator(
-                        function ($value) {
+                        static function ($value) {
                             if ('mysql' !== $value['driver']) {
                                 return true;
                             }
@@ -124,7 +124,7 @@ class DiagnosticsService extends BaseService
                         'The current minimum MySQL version Freeform supports is 5.5.x or greater.'
                     ),
                     new WarningValidator(
-                        function ($value) {
+                        static function ($value) {
                             if ('pgsql' !== $value['driver']) {
                                 return true;
                             }
@@ -146,7 +146,7 @@ class DiagnosticsService extends BaseService
                 [
                     // Suggestion validator for memory limits between 256M and 511M
                     new SuggestionValidator(
-                        function ($value) {
+                        static function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
                             $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
@@ -170,7 +170,7 @@ class DiagnosticsService extends BaseService
                     ),
                     // Warning validator for memory limits below 256M
                     new WarningValidator(
-                        function ($value) {
+                        static function ($value) {
                             preg_match('/^(-?\d+)(\w)?/', $value, $matches);
                             $number = (int) ($matches[1] ?? -1);
                             $measurement = isset($matches[2]) ? strtolower($matches[2]) : null;
@@ -260,7 +260,7 @@ class DiagnosticsService extends BaseService
                 $this->isModSecurityEnabled(),
                 [
                     new SuggestionValidator(
-                        fn ($value) => !$value,
+                        static fn ($value) => !$value,
                         '',
                         'ModSecurity is enabled on the server. This may cause issues with form submissions and API requests. Consider disabling it or adjusting its rules.'
                     ),
@@ -274,7 +274,7 @@ class DiagnosticsService extends BaseService
      */
     public function getSiteChecks(): array
     {
-        $trueOrFalse = function ($value) { return (bool) $value; };
+        $trueOrFalse = static function ($value) { return (bool) $value; };
         $system = $this->getSummary()->statistics->system;
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
@@ -311,7 +311,7 @@ class DiagnosticsService extends BaseService
                 \Craft::$app->getConfig()->getGeneral()->runQueueAutomatically,
                 [
                     new SuggestionValidator(
-                        fn ($value) => $value,
+                        static fn ($value) => $value,
                         '',
                         'Freeform relies on the Craft Queue to work when using the Queue for processing Email Notifications and/or Integrations.'
                     ),
@@ -493,7 +493,7 @@ class DiagnosticsService extends BaseService
                     ),
                     [
                         new SuggestionValidator(
-                            fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $rawScriptInsertLocation,
+                            static fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $rawScriptInsertLocation,
                             '',
                             'Please make sure you are adding Freeform’s scripts manually.'
                         ),
@@ -550,7 +550,7 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->spam->spamFolder,
                     [
                         new SuggestionValidator(
-                            fn ($value) => $value,
+                            static fn ($value) => $value,
                             '',
                             'Most websites can benefit from using this feature because it helps detect false positives.'
                         ),
@@ -567,7 +567,7 @@ class DiagnosticsService extends BaseService
                     ),
                     [
                         new SuggestionValidator(
-                            fn ($value) => 'Display Errors' != $value,
+                            static fn ($value) => 'Display Errors' != $value,
                             '',
                             'We recommend using this solely for debugging during initial site setup, testing adjustments, or troubleshooting Freeform spam issues. Displaying an error can inform spam bots of their failures, leading them to attempt different methods.',
                         ),
@@ -585,7 +585,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ('' == $value['interval']) {
                                     return true;
                                 }
@@ -596,7 +596,7 @@ class DiagnosticsService extends BaseService
                             'Setting a value of more than 10 seconds will lead to many false positives for spam. We strongly recommend setting this to a value of no more than 5 seconds.'
                         ),
                         new SuggestionValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ('' == $value['interval']) {
                                     return true;
                                 }
@@ -619,7 +619,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ('' == $value['interval']) {
                                     return true;
                                 }
@@ -630,7 +630,7 @@ class DiagnosticsService extends BaseService
                             'Setting a value of less than 10 minutes will lead to many false positives for spam. We strongly recommend setting this to a value of no less than 30 minutes.'
                         ),
                         new SuggestionValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ('' == $value['interval']) {
                                     return true;
                                 }
@@ -653,7 +653,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new WarningValidator(
-                            fn ($value) => version_compare($value['count'], '0', '<='),
+                            static fn ($value) => version_compare($value['count'], '0', '<='),
                             '',
                             "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. Use extreme caution for larger and more active sites."
                         ),
@@ -667,7 +667,7 @@ class DiagnosticsService extends BaseService
                     $settingsModel->formTemplateDirectory,
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ($value) {
                                     if ('/' !== substr($value, 0, 1)) {
                                         $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
@@ -702,7 +702,7 @@ class DiagnosticsService extends BaseService
                     $settings->getSettingsModel()->emailTemplateDirectory,
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ($value) {
                                     if (!str_starts_with($value, '/')) {
                                         $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
@@ -733,7 +733,7 @@ class DiagnosticsService extends BaseService
                     $settingsModel->successTemplateDirectory,
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 if ($value) {
                                     if (!str_starts_with($value, '/')) {
                                         $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
@@ -781,7 +781,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new WarningValidator(
-                            function ($value) {
+                            static function ($value) {
                                 return !$value['count'];
                             },
                             '',
@@ -803,7 +803,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new SuggestionValidator(
-                            function ($value) {
+                            static function ($value) {
                                 return !$value['count'];
                             },
                             '',
@@ -825,7 +825,7 @@ class DiagnosticsService extends BaseService
                     ],
                     [
                         new SuggestionValidator(
-                            function ($value) {
+                            static function ($value) {
                                 return !$value['count'];
                             },
                             '',

@@ -24,7 +24,7 @@ class IntegrationRuleProvider
         $rules = $this->getAllIntegrations();
         $rules = array_filter(
             $rules,
-            fn (IntegrationRuleRecord $record) => $record->getIntegration()->one()->formId === $form->getId()
+            static fn (IntegrationRuleRecord $record) => $record->getIntegration()->one()->formId === $form->getId()
         );
 
         $integrationRules = [];

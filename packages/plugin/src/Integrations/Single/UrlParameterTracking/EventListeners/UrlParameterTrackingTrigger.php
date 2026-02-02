@@ -52,7 +52,7 @@ class UrlParameterTrackingTrigger extends FeatureBundle
                 UrlTrackingParameterRecord::TABLE,
                 ['submissionId', 'name', 'value'],
                 array_map(
-                    fn (string $name, string $value) => [$submission->getId(), $name, $value],
+                    static fn (string $name, string $value) => [$submission->getId(), $name, $value],
                     array_keys($trackedParameters),
                     $trackedParameters
                 )

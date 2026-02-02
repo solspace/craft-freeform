@@ -95,11 +95,11 @@ class GroupsController extends BaseApiController
             return $response;
         }
 
-        $filteredGroups = array_map(function ($group) use ($types) {
+        $filteredGroups = array_map(static function ($group) use ($types) {
             $groupTypes = JsonHelper::decode($group->types);
             $filteredTypes = array_filter(
                 $groupTypes,
-                fn ($type) => \in_array($type, $types)
+                static fn ($type) => \in_array($type, $types)
             );
 
             return (object) [
@@ -123,7 +123,7 @@ class GroupsController extends BaseApiController
         $response->groups['grouped'] = array_values(
             array_filter(
                 $filteredGroups,
-                fn ($group) => !empty($group->types)
+                static fn ($group) => !empty($group->types)
             )
         );
 

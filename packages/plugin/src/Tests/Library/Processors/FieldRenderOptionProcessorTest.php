@@ -22,7 +22,7 @@ class FieldRenderOptionProcessorTest extends TestCase
     {
         $containerMock = $this->createMock(Container::class);
         $containerMock->method('get')->willReturnCallback(
-            fn (string $className) => new $className()
+            static fn (string $className) => new $className()
         );
 
         $this->processor = $this->createPartialMock(FieldRenderOptionProcessor::class, ['getContainer']);

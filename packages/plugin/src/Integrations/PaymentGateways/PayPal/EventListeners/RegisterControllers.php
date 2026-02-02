@@ -18,7 +18,7 @@ class RegisterControllers extends FeatureBundle
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            static function (RegisterUrlRulesEvent $event) {
                 // Create PayPal order for popup integration
                 $event->rules[] = new UrlRule([
                     'pattern' => 'freeform/payments/paypal/orders',

@@ -238,14 +238,14 @@ class JiraCards extends BaseJiraIntegration
         );
 
         $logOptions = array_map(
-            fn ($user) => ['accountId' => $user->accountId, 'displayName' => $user->displayName],
+            static fn ($user) => ['accountId' => $user->accountId, 'displayName' => $user->displayName],
             $json
         );
 
         $this->logger->debug('Users fetched', $logOptions);
 
         return array_map(
-            fn ($user) => new FieldObjectOption(
+            static fn ($user) => new FieldObjectOption(
                 $user->accountId,
                 $user->displayName,
                 'Account ID: '.$user->accountId,
@@ -267,7 +267,7 @@ class JiraCards extends BaseJiraIntegration
         $this->logger->debug('Components fetched', $components);
 
         return array_map(
-            fn ($component) => new FieldObjectOption(
+            static fn ($component) => new FieldObjectOption(
                 $component->id,
                 $component->name,
             ),
@@ -282,7 +282,7 @@ class JiraCards extends BaseJiraIntegration
         $this->logger->debug('Priorities fetched', $json);
 
         return array_map(
-            fn ($priority) => new FieldObjectOption(
+            static fn ($priority) => new FieldObjectOption(
                 $priority->id,
                 $priority->name,
             ),
@@ -303,7 +303,7 @@ class JiraCards extends BaseJiraIntegration
         $this->logger->debug('Versions fetched', $versions);
 
         return array_map(
-            fn ($priority) => new FieldObjectOption(
+            static fn ($priority) => new FieldObjectOption(
                 $priority->id,
                 $priority->name,
                 $priority->description,

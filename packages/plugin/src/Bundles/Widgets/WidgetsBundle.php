@@ -19,7 +19,7 @@ class WidgetsBundle extends FeatureBundle
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
+            static function (RegisterComponentTypesEvent $event) {
                 if (!PermissionHelper::checkPermission('accessPlugin-freeform')) {
                     return;
                 }

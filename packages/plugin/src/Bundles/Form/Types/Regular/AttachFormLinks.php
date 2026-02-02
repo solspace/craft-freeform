@@ -17,7 +17,7 @@ class AttachFormLinks extends FeatureBundle
         Event::on(
             FormTransformer::class,
             FormTransformer::EVENT_ATTACH_LINKS,
-            function (GenerateLinksEvent $event) {
+            static function (GenerateLinksEvent $event) {
                 $form = $event->getForm();
                 $data = $event->getFormData();
 

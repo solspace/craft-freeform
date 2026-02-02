@@ -13,7 +13,7 @@ class FieldDescriptorCollection extends Collection
     public function __construct(array $items = [])
     {
         parent::__construct($items);
-        $this->keySelector = fn (FieldDescriptor $item) => $item->getId();
+        $this->keySelector = static fn (FieldDescriptor $item) => $item->getId();
     }
 
     protected static function supports(): array

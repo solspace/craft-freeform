@@ -215,7 +215,7 @@ class FormMonitor extends APIIntegration
         $response = $client->get($endpoint, ['query' => $options]);
         $data = json_decode((string) $response->getBody(), true);
 
-        $formatDate = function ($dateString) {
+        $formatDate = static function ($dateString) {
             if (!$dateString) {
                 return null;
             }

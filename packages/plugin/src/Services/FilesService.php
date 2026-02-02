@@ -534,7 +534,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         $fileKinds = Assets::getAllowedFileKinds();
 
         return array_map(
-            fn ($extensions) => $extensions['extensions'],
+            static fn ($extensions) => $extensions['extensions'],
             $fileKinds
         );
     }

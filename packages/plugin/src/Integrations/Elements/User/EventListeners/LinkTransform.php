@@ -34,7 +34,7 @@ class LinkTransform extends FeatureBundle
         $allowedTypes = $craftField->types;
 
         $value = array_map(
-            function ($val) use ($allowedTypes) {
+            static function ($val) use ($allowedTypes) {
                 if (\in_array('email', $allowedTypes, true)) {
                     if (filter_var($val, \FILTER_VALIDATE_EMAIL)) {
                         return 'mailto:'.$val;

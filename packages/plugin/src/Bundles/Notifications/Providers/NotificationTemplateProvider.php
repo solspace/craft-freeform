@@ -26,8 +26,8 @@ class NotificationTemplateProvider
         ;
 
         return array_filter(
-            array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
-            fn ($notification) => $notification->isDb() && $notification->getFormId() === $formId,
+            array_map(static fn ($record) => NotificationTemplate::fromRecord($record), $records),
+            static fn ($notification) => $notification->isDb() && $notification->getFormId() === $formId,
         );
     }
 
@@ -40,8 +40,8 @@ class NotificationTemplateProvider
 
         return array_values(
             array_filter(
-                array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
-                fn ($notification) => $notification->isDb() && !$notification->getFormId(),
+                array_map(static fn ($record) => NotificationTemplate::fromRecord($record), $records),
+                static fn ($notification) => $notification->isDb() && !$notification->getFormId(),
             )
         );
     }
@@ -55,8 +55,8 @@ class NotificationTemplateProvider
 
         return array_values(
             array_filter(
-                array_map(fn ($record) => NotificationTemplate::fromRecord($record), $records),
-                fn ($notification) => $notification->isFile(),
+                array_map(static fn ($record) => NotificationTemplate::fromRecord($record), $records),
+                static fn ($notification) => $notification->isFile(),
             )
         );
     }

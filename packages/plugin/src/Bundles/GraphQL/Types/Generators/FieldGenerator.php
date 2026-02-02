@@ -71,10 +71,10 @@ class FieldGenerator extends AbstractGenerator
             new FieldType(
                 [
                     'name' => $typeName,
-                    'fields' => function () use ($fields) {
+                    'fields' => static function () use ($fields) {
                         return $fields;
                     },
-                    'resolveType' => function () use ($typeName) {
+                    'resolveType' => static function () use ($typeName) {
                         return $typeName;
                     },
                 ]
@@ -95,7 +95,7 @@ class FieldGenerator extends AbstractGenerator
             'name' => 'attributes',
             'type' => $attributesType,
             'description' => "Field's attributes",
-            'resolve' => function ($source) {
+            'resolve' => static function ($source) {
                 return $source->getAttributes();
             },
         ];
@@ -385,7 +385,7 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'legends',
                 'type' => Type::listOf(Type::string()),
                 'description' => 'Opinion field legends',
-                'resolve' => function (OpinionScaleField $source) {
+                'resolve' => static function (OpinionScaleField $source) {
                     $legends = $source->getLegends();
 
                     return array_map(static function ($item) {
@@ -548,7 +548,7 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'tableLayout',
                 'type' => Type::string(),
                 'description' => 'JSON of the table layout',
-                'resolve' => function (TableField $source, $arguments, $context, ResolveInfo $resolveInfo) {
+                'resolve' => static function (TableField $source, $arguments, $context, ResolveInfo $resolveInfo) {
                     return json_encode($source->getTableLayout());
                 },
             ];
@@ -644,7 +644,7 @@ class FieldGenerator extends AbstractGenerator
             'name' => 'value'.($isMultiple ? 's' : ''),
             'type' => ($isMultiple ? Type::listOf(Type::string()) : Type::string()),
             'description' => "Field's value",
-            'resolve' => function ($source) use ($isHtml) {
+            'resolve' => static function ($source) use ($isHtml) {
                 if ($isHtml) {
                     $value = $source->getContent();
                 } else {

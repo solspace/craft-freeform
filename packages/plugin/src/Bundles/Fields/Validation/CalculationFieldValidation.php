@@ -28,11 +28,11 @@ class CalculationFieldValidation extends FeatureBundle
         $this->expressionLanguage->register(
             'sqrt',
             // Compiler function
-            function ($value) {
+            static function ($value) {
                 return \sprintf('sqrt(%s)', $value);
             },
             // Evaluator function
-            function ($arguments, $value) {
+            static function ($arguments, $value) {
                 if (!is_numeric($value)) {
                     return $value;
                 }

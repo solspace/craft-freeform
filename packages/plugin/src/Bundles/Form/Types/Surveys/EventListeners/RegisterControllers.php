@@ -24,7 +24,7 @@ class RegisterControllers extends FeatureBundle
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
+            static function (RegisterUrlRulesEvent $event) {
                 $event->rules['freeform/surveys/<handle:.*>'] = 'freeform/app';
 
                 $event->rules[] = new UrlRule([

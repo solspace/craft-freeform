@@ -45,7 +45,7 @@ class LoggerFactory
             $logger->pushHandler(new ErrorNotificationHandler($plugin->errorNotifications, self::defaultErrorLevel()));
             $logger->pushHandler(new StreamHandler($logfilePath, $level ?? self::defaultErrorLevel()));
             $logger->pushProcessor(new RedactSensitiveInfoProcessor());
-            $logger->pushProcessor(function ($record) use ($requestId) {
+            $logger->pushProcessor(static function ($record) use ($requestId) {
                 $record['extra']['requestId'] = $requestId;
 
                 return $record;

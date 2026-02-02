@@ -399,7 +399,7 @@ class SubmissionQuery extends ElementQuery
         foreach ($this->fieldSearch as $handle => $term) {
             $columns = $this->extractMatchingColumnNames($joinedForms, $handle);
 
-            $condition = array_map(fn ($column) => Db::parseParam($column, $term), $columns);
+            $condition = array_map(static fn ($column) => Db::parseParam($column, $term), $columns);
             if (\count($condition)) {
                 $condition = array_merge(['or'], $condition);
 

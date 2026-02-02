@@ -517,7 +517,7 @@ class FreeformFormsExporter extends BaseExporter
             $formSubmissions->formUid = $form->getUid();
             $formSubmissions->submissionBatchProcessor = new ElementQueryProcessor($submissions);
             $formSubmissions->setProcessor(
-                function (FFSubmission $row) use ($form) {
+                static function (FFSubmission $row) use ($form) {
                     $exported = new Submission();
                     $exported->title = $row->title ?? 'Submission #'.$row->id;
                     $exported->status = $row->status;

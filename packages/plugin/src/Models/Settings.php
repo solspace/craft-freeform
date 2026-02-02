@@ -474,7 +474,7 @@ class Settings extends Model
         $array = preg_split('/\s+(?=([^"]*"[^"]*")*[^"]*$)|\n|,/', $value);
         $array = array_map('trim', $array);
         $array = array_map(
-            function ($value) {
+            static function ($value) {
                 return trim($value, '"');
             },
             $array

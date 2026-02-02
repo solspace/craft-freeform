@@ -10,7 +10,7 @@ class PdfController extends BaseApiController
     protected function get(): array
     {
         return array_map(
-            fn (PdfTemplateRecord $record) => [
+            static fn (PdfTemplateRecord $record) => [
                 'id' => $record->id,
                 'name' => $record->name,
                 'description' => $record->description,

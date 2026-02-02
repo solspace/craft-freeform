@@ -153,7 +153,7 @@ class FormTransformer
 
     private function decorateWithSubmissionStatistics(array $forms): array
     {
-        $formIds = array_map(fn ($form) => $form->id, $forms);
+        $formIds = array_map(static fn ($form) => $form->id, $forms);
 
         $chartData = $this->chartsService->getMinimalSubmissionChartData($formIds);
         $submissions = $this->submissionsService->getSubmissionCountByForm();
@@ -217,7 +217,7 @@ class FormTransformer
     private function attachLinks(array $forms, array $transformed): array
     {
         foreach ($transformed as $data) {
-            $form = array_filter($forms, fn (Form $form) => $form->getId() === $data->id);
+            $form = array_filter($forms, static fn (Form $form) => $form->getId() === $data->id);
             $form = reset($form) ?? new \stdClass();
 
             $event = new GenerateLinksEvent($form, $data);

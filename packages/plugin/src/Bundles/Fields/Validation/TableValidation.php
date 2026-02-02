@@ -76,7 +76,7 @@ class TableValidation extends FeatureBundle
         }
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, fn ($item) => !empty($item));
+        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => !empty($item));
         if (!$isSomeFilled) {
             $message = $field->getRequiredErrorMessage() ?: Freeform::t('This field is required');
 
@@ -106,7 +106,7 @@ class TableValidation extends FeatureBundle
         $message = Freeform::t($field->getRequiredErrorMessage() ?: 'This field is required');
 
         $value = $field->getValue();
-        $isSomeFilled = ArrayHelper::someRecursive($value, fn ($item) => !empty($item));
+        $isSomeFilled = ArrayHelper::someRecursive($value, static fn ($item) => !empty($item));
 
         if (!$isSomeFilled) {
             $field->addError($message);

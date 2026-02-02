@@ -117,7 +117,7 @@ class NameProcessor extends AbstractFieldProcessor
 
         // Filter to only include enabled subfields
         if (!empty($subfields)) {
-            $subfields = array_filter($subfields, function ($subfield) {
+            $subfields = array_filter($subfields, static function ($subfield) {
                 // Check if subfield has enabled property and it's true
                 if (property_exists($subfield, 'enabled')) {
                     return true === $subfield->enabled;

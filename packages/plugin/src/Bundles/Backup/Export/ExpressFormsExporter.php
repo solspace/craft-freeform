@@ -154,7 +154,7 @@ class ExpressFormsExporter extends BaseExporter
                 $notification->metadata = [
                     'template' => $form['adminNotification'],
                     'recipients' => array_map(
-                        fn (string $recipient) => ['email' => $recipient, 'name' => ''],
+                        static fn (string $recipient) => ['email' => $recipient, 'name' => ''],
                         $recipients,
                     ),
                 ];
@@ -367,7 +367,7 @@ class ExpressFormsExporter extends BaseExporter
             $formSubmissions->formUid = $form->getUuid();
             $formSubmissions->submissionBatchProcessor = new ElementQueryProcessor($submissions);
             $formSubmissions->setProcessor(
-                function (XFSubmission $row) use ($form) {
+                static function (XFSubmission $row) use ($form) {
                     $exported = new Submission();
                     $exported->title = $row->title;
                     $exported->status = $row->status;

@@ -14,7 +14,7 @@ class UrlParameterSubmissionDisplay extends FeatureBundle
         Event::on(
             View::class,
             View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
-            function ($event) {
+            static function ($event) {
                 $event->roots['freeform-url-parameters'] = __DIR__.'/../Templates';
             }
         );

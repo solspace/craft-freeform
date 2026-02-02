@@ -68,7 +68,7 @@ class AssetsController extends BaseApiController
         $assets = Asset::find()->id($ids)->all();
 
         return array_map(
-            fn (Asset $asset) => [
+            static fn (Asset $asset) => [
                 'id' => $asset->id,
                 'uid' => $asset->uid,
                 'title' => $asset->title,

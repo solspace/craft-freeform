@@ -17,7 +17,7 @@ class OptionalFieldJavascriptBundle extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_ATTACH_TAG_ATTRIBUTES,
-            function (AttachFormAttributesEvent $event) {
+            static function (AttachFormAttributesEvent $event) {
                 $form = $event->getForm();
 
                 foreach ($form->getLayout()->getFields() as $field) {

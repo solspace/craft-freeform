@@ -50,7 +50,7 @@ class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, 
                 'object' => implode(
                     ' ',
                     array_map(
-                        fn ($value, $key) => \sprintf('%s:%s', $value, $key),
+                        static fn ($value, $key) => \sprintf('%s:%s', $value, $key),
                         array_keys((array) $value),
                         (array) $value
                     )
@@ -122,7 +122,7 @@ class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, 
 
         if (\is_array($value)) {
             $value = array_map(
-                function ($item) {
+                static function ($item) {
                     if (\is_string($item)) {
                         $item = trim($item);
                     }
@@ -158,7 +158,7 @@ class Attributes implements \Stringable, CustomNormalizerInterface, \Countable, 
                 $removable = array_map('trim', $removable);
 
                 $attributes = explode(' ', $this->attributes[$key] ?? '');
-                $attributes = array_filter($attributes, fn ($attribute) => !\in_array($attribute, $removable, true));
+                $attributes = array_filter($attributes, static fn ($attribute) => !\in_array($attribute, $removable, true));
                 $this->attributes[$key] = implode(' ', $attributes);
 
                 if (empty($this->attributes[$key])) {

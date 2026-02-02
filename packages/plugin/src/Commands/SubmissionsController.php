@@ -148,7 +148,7 @@ class SubmissionsController extends Controller
         } else {
             $statuses = explode(',', $this->status);
             $statuses = array_map(
-                function ($status) use ($allStatuses) {
+                static function ($status) use ($allStatuses) {
                     if (is_numeric($status)) {
                         return $allStatuses[$status]?->id;
                     }

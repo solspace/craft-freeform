@@ -18,7 +18,7 @@ class JsonlEncoder implements EncoderInterface
         }
 
         $data = array_map(
-            fn ($item) => json_encode($item, \JSON_THROW_ON_ERROR),
+            static fn ($item) => json_encode($item, \JSON_THROW_ON_ERROR),
             $data
         );
 

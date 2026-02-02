@@ -45,7 +45,7 @@ class FakeDataProvider
                     }
 
                     $value = array_map(
-                        fn (Option $option) => $option->getValue(),
+                        static fn (Option $option) => $option->getValue(),
                         $faker->randomElements($field->getOptions()->getIterator(), null)
                     );
                 } else {

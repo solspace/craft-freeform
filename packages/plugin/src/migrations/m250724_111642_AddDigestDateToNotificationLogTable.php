@@ -90,7 +90,7 @@ class m250724_111642_AddDigestDateToNotificationLogTable extends Migration
 
         // Add unique index if missing
         $existingIndexes = \Craft::$app->db->schema->getTableIndexes($table);
-        $indexNames = array_map(fn ($i) => $i->name ?? null, $existingIndexes);
+        $indexNames = array_map(static fn ($i) => $i->name ?? null, $existingIndexes);
 
         if (!\in_array($indexName, $indexNames, true)) {
             $this->createIndex(
@@ -117,7 +117,7 @@ class m250724_111642_AddDigestDateToNotificationLogTable extends Migration
 
         // Drop unique index
         $existingIndexes = \Craft::$app->db->schema->getTableIndexes($table);
-        $indexNames = array_map(fn ($i) => $i->name ?? null, $existingIndexes);
+        $indexNames = array_map(static fn ($i) => $i->name ?? null, $existingIndexes);
 
         if (\in_array($indexName, $indexNames, true)) {
             $this->dropIndex($indexName, $table);

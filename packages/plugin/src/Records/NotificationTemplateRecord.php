@@ -147,7 +147,7 @@ class NotificationTemplateRecord extends ActiveRecord
             [
                 'bodyHtml',
                 'required',
-                'when' => function ($model) {
+                'when' => static function ($model) {
                     return empty($model->bodyText);
                 },
                 'message' => 'Either HTML or Text body must be present',
@@ -155,7 +155,7 @@ class NotificationTemplateRecord extends ActiveRecord
             [
                 'bodyText',
                 'required',
-                'when' => function ($model) {
+                'when' => static function ($model) {
                     return empty($model->bodyHtml);
                 },
                 'message' => 'Either HTML or Text body must be present',

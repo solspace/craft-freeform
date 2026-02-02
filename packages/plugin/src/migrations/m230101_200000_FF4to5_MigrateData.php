@@ -370,11 +370,11 @@ class m230101_200000_FF4to5_MigrateData extends Migration
     {
         return [
             'scales' => array_map(
-                fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
+                static fn ($scale) => [$scale->value ?? '', $scale->label ?? ''],
                 $data->scales ?? [],
             ),
             'legends' => array_map(
-                fn ($legend) => [$legend->legend ?? ''],
+                static fn ($legend) => [$legend->legend ?? ''],
                 $data->legends ?? [],
             ),
         ];
@@ -483,7 +483,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
         if (\is_array($selectedEmail)) {
             $selectedEmail = array_filter(
                 array_map(
-                    fn ($email) => $emailIndexes[$email] ?? null,
+                    static fn ($email) => $emailIndexes[$email] ?? null,
                     $selectedEmail,
                 )
             );
@@ -666,7 +666,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'enabled' => true,
             'template' => $notificationId,
             'recipients' => array_map(
-                fn ($recipient) => [
+                static fn ($recipient) => [
                     'name' => '',
                     'email' => $recipient,
                 ],
@@ -701,7 +701,7 @@ class m230101_200000_FF4to5_MigrateData extends Migration
             'template' => $notificationId,
             'recipients' => [],
             'recipientMapping' => array_map(
-                fn ($option) => [
+                static fn ($option) => [
                     'value' => $option->label,
                     'template' => '',
                     'recipients' => [['name' => '', 'email' => $option->value]],

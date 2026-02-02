@@ -24,7 +24,7 @@ class NotificationRuleProvider
         $rules = $this->getAllNotifications();
         $rules = array_filter(
             $rules,
-            fn (NotificationRuleRecord $record) => $record->getNotification()->one()->formId === $form->getId()
+            static fn (NotificationRuleRecord $record) => $record->getNotification()->one()->formId === $form->getId()
         );
 
         $notificationRules = [];

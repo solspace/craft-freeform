@@ -589,7 +589,7 @@ class HubSpotV3 extends BaseHubSpotIntegration
     private function getMappedProps(FieldMapping $mapping): array
     {
         return array_map(
-            fn (FieldMapItem $item) => $item->getSource(),
+            static fn (FieldMapItem $item) => $item->getSource(),
             $mapping->getMapping()
         );
     }

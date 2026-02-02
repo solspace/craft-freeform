@@ -90,7 +90,7 @@ class SubmissionProcessor
 
                     $formSubmissions->submissionBatchProcessor = new ElementQueryProcessor($submissions);
                     $formSubmissions->setProcessor(
-                        function (FormieSubmission $row) use ($form) {
+                        static function (FormieSubmission $row) use ($form) {
                             $exported = new Submission();
                             $exported->title = $row->title ?? 'Migrated submission';
                             $exported->status = $row->status ?? 'active';

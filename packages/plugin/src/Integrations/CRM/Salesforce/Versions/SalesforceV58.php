@@ -828,7 +828,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         );
 
         $versionIds = array_map(
-            fn ($item) => $item->body->id,
+            static fn ($item) => $item->body->id,
             $versionData->compositeResponse,
         );
 
@@ -840,7 +840,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         );
 
         $this->linkedContentDocumentIds = array_map(
-            fn ($item) => $item->ContentDocumentId,
+            static fn ($item) => $item->ContentDocumentId,
             $linkedDocumentData,
         );
 
@@ -859,7 +859,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         $this->logger->debug('Linking files to record', ['id' => $id, 'documentIds' => $documentIds]);
 
         $composite = array_map(
-            fn ($item, $index) => [
+            static fn ($item, $index) => [
                 'method' => 'POST',
                 'url' => '/services/data/'.self::API_VERSION.'/sobjects/ContentDocumentLink',
                 'referenceId' => 'Link'.$index,

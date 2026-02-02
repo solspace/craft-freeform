@@ -437,7 +437,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     private function parseEnvInArray(array $array): array
     {
-        return array_map(fn ($item) => trim(App::parseEnv($item)), $array);
+        return array_map(static fn ($item) => trim(App::parseEnv($item)), $array);
     }
 
     private function notifyAboutEmailSendingError(

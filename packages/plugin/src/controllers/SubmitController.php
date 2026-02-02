@@ -104,7 +104,7 @@ class SubmitController extends BaseController
         Event::on(
             Form::class,
             Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD,
-            function (PrepareAjaxResponsePayloadEvent $event) use ($record) {
+            static function (PrepareAjaxResponsePayloadEvent $event) use ($record) {
                 $event->add('storageToken', $record->token);
             }
         );

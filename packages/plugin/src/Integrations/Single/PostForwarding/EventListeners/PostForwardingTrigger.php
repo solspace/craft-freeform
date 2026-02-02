@@ -170,7 +170,7 @@ class PostForwardingTrigger extends FeatureBundle
                 $options[RequestOptions::MULTIPART] = array_merge(
                     $files,
                     array_map(
-                        fn ($key, $value) => ['name' => $key, 'contents' => $value],
+                        static fn ($key, $value) => ['name' => $key, 'contents' => $value],
                         array_keys($payload),
                         array_values($payload),
                     ),

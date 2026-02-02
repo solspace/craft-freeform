@@ -27,14 +27,14 @@ class ProfilesController extends BaseController
         $formIds = $this->getFormsService()->getAllowedReadFormIds();
 
         $forms = $this->getFormsService()->getAllForms(sites: $site?->handle);
-        $forms = array_filter($forms, fn (Form $form) => \in_array($form->getId(), $formIds));
+        $forms = array_filter($forms, static fn (Form $form) => \in_array($form->getId(), $formIds));
 
         $exportProfileService = $this->getExportProfileService();
         $exportProfiles = $exportProfileService->getAllProfiles();
 
         $exportProfiles = array_filter(
             $exportProfiles,
-            fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
+            static fn (ExportProfileModel $profile) => \in_array($profile->formId, $formIds)
         );
 
         $isCraft5 = version_compare(\Craft::$app->getVersion(), '5.0.0', '>=');

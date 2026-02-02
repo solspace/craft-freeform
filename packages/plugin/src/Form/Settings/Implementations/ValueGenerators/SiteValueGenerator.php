@@ -14,7 +14,7 @@ class SiteValueGenerator implements ValueGeneratorInterface
         $sites = $this->sites->getEditableSites();
 
         return array_map(
-            fn ($site) => $site->id,
+            static fn ($site) => $site->id,
             $sites
         );
     }

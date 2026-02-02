@@ -69,7 +69,7 @@ class FreeformVariable
             }
 
             $groupList = array_map(
-                fn ($group) => \is_string($group) ? strtolower(trim($group)) : $group,
+                static fn ($group) => \is_string($group) ? strtolower(trim($group)) : $group,
                 $groupList
             );
 
@@ -110,7 +110,7 @@ class FreeformVariable
         $siteId = \Craft::$app->getSites()->getCurrentSite()->id;
 
         return array_map(
-            fn ($row) => [
+            static fn ($row) => [
                 'id' => $row['id'] ?? null,
                 'label' => $row['label'] ?? '',
                 'order' => $row['order'] ?? 0,
@@ -169,7 +169,7 @@ class FreeformVariable
 
         return $provider->getFirstForForm(
             $form,
-            filter: fn (IntegrationInterface $integration) => $integration->getHandle() === $handle,
+            filter: static fn (IntegrationInterface $integration) => $integration->getHandle() === $handle,
         );
     }
 
@@ -326,7 +326,7 @@ class FreeformVariable
             $fieldIds = [$field->getId()];
         } else {
             $fieldIds = array_map(
-                fn (PaymentFieldInterface $field) => $field->getId(),
+                static fn (PaymentFieldInterface $field) => $field->getId(),
                 $form
                     ->getLayout()
                     ->getFields(PaymentFieldInterface::class)
@@ -343,7 +343,7 @@ class FreeformVariable
 
         $paymentService = \Craft::$container->get(StripePaymentService::class);
         $payments = array_map(
-            fn (PaymentRecord $record) => $paymentService->recordToModel($record),
+            static fn (PaymentRecord $record) => $paymentService->recordToModel($record),
             $records
         );
 

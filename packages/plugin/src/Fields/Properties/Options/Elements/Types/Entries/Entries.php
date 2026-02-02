@@ -2,7 +2,10 @@
 
 namespace Solspace\Freeform\Fields\Properties\Options\Elements\Types\Entries;
 
+use craft\base\Element;
 use craft\elements\Entry;
+use craft\models\Section;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -12,6 +15,11 @@ use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Entries extends BaseOptionProvider
 {
+    /**
+     * The "lft" field is used to order entries in a structure section.
+     */
+    private const ORDER_BY_STRUCTURE = 'lft';
+
     #[VisibilityFilter('context.config.sites.list.length > 1')]
     #[Input\Select(
         label: 'Site ID',
@@ -132,6 +140,26 @@ class Entries extends BaseOptionProvider
     public function getSort(): string
     {
         return $this->sort;
+    }
+
+    protected function prepareLabelAndValue(
+        Element $element,
+        OptionCollection $collection,
+        ?TranslationTable $translationTable = null
+    ): array {
+        /** @var Entry $element */
+        $section = $element->section;
+        [$label, $value] = parent::prepareLabelAndValue($element, $collection, $translationTable);
+
+        if (self::ORDER_BY_STRUCTURE === $this->getOrderBy()) {
+            if (Section::TYPE_STRUCTURE === $section->type) {
+                if (isset($element->level) && $element->level > 1) {
+                    $label = str_repeat('&nbsp;&nbsp;&nbsp;', $element->level - 1).$label;
+                }
+            }
+        }
+
+        return [$label, $value];
     }
 
     protected function getElements(TranslationTable $translationTable): array

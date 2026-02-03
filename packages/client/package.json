@@ -21,6 +21,7 @@
   ],
   "author": "Solspace Inc.",
   "license": "MIT",
+  "sideEffects": ["*.css", "config/**"],
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",
     "@reduxjs/toolkit": "^2.11.2",

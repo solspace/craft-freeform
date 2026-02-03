@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { Search } from '@components/search/search';
 import config from '@config/freeform/freeform.config';
 import classes from '@ff-client/utils/classes';
-import { sanitize } from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import { useIntegrationNavigation } from './sidebar.queries';
 import {
@@ -95,7 +95,7 @@ export const Sidebar: React.FC = () => {
                       {entry.type.iconSvg && (
                         <Icon
                           dangerouslySetInnerHTML={{
-                            __html: sanitize(entry.type.iconSvg),
+                            __html: DOMPurify.sanitize(entry.type.iconSvg),
                           }}
                         />
                       )}

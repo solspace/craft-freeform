@@ -13,6 +13,7 @@ import { queryClient } from '@config/react-query';
 import { PortalProvider } from '@editor/builder/contexts/portal.context';
 import { store } from '@editor/store';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import '../config';
 import './scripts';
@@ -39,11 +40,7 @@ import App from './App';
 
 import './styles.css';
 
-let Devtools: React.ComponentType<{ initialIsOpen?: boolean }> | null = null;
-if (process.env.DEBUG_MODE) {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  Devtools = require('@tanstack/react-query-devtools').ReactQueryDevtools;
-}
+const showDevtools = process.env.DEBUG_MODE;
 
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
@@ -72,7 +69,9 @@ root.render(
                     <ModalProvider>
                       <Breadcrumb id="root" label="Freeform" url="/forms" />
                       <ManualStyles />
-                      {Devtools ? <Devtools initialIsOpen={false} /> : null}
+                      {showDevtools ? (
+                        <ReactQueryDevtools initialIsOpen={false} />
+                      ) : null}
                       <CpNavigation />
                       <Routes>
                         <Route path="/" element={<App />}>

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\controllers\api\elements;
 
+use craft\models\Section;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Helpers\SectionHelper;
@@ -86,7 +87,6 @@ class EntryController extends BaseApiController
 
         if ('orderBy' === $request->get('target')) {
             $collection
-                ->add('lft', \Craft::t('freeform', 'Structure'))
                 ->add('postDate', \Craft::t('freeform', 'Post Date'))
                 ->add('dateCreated', \Craft::t('freeform', 'Date Created'))
                 ->add('dateUpdated', \Craft::t('freeform', 'Date Updated'))
@@ -96,6 +96,11 @@ class EntryController extends BaseApiController
         $sectionId = $request->get('sectionId');
         if (!$sectionId) {
             return $this->asSerializedJson($collection);
+        }
+
+        $section = SectionHelper::getSectionById($sectionId);
+        if ($section && Section::TYPE_STRUCTURE === $section->type) {
+            $collection->add('lft', \Craft::t('freeform', 'Structure'));
         }
 
         $entryTypeId = $request->get('entryTypeId');

@@ -76,6 +76,9 @@ class Entries extends BaseOptionProvider
     #[Input\DynamicSelect(
         label: 'Order By',
         source: 'api/elements/entries/fields?target=orderBy',
+        parameterFields: [
+            'properties.sectionId' => 'sectionId',
+        ],
     )]
     private string $orderBy = 'id';
 

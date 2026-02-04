@@ -15,10 +15,12 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Translatable;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Legend;
 use Solspace\Freeform\Fields\Properties\OpinionScale\Scale;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 
 #[Type(
@@ -27,8 +29,10 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
     iconPath: __DIR__.'/../Icons/opinion-scale.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/opinion-scale.ejs',
 )]
-class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface
+class OpinionScaleField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
+
     #[Translatable]
     #[ValueTransformer(ScalesTransformer::class)]
     #[Input\TabularData(

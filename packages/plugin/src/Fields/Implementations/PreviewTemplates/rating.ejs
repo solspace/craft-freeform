@@ -1,9 +1,10 @@
 <%
    var namespace = handle + '-' + Date.now();
+   var selectedValue = (defaultValue == null) ? 2 : Number(defaultValue);
 %>
 
 <div class="ff-rating">
     <% for (var i = 1; i <= maxValue; i++ ) { %>
-        <span style="color: <%= i <= 2 ? colorSelected : colorIdle %>;"></span>
+        <span style="color: <%= i <= selectedValue ? colorSelected : colorIdle %>;"></span>
     <% } %>
 </div>

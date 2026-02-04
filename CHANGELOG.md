@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 5.14.10 - 2026-02-04
+
+### Added
+- Added a `freeform/submissions/fix-table-names` console command to manually resolve submission table name issues.
+
+### Changed
+- Freeform now requires **Craft CMS 5.9.x+** and **4.17.x+** (for Craft 5 and Craft 4 respectively) to avoid compatibility issues.
+
+### Fixed
+- Fixed a submission table name compatibility issue with **Craft CMS 5.9.x** and **4.17.x**.
+- Fixed an issue where **Structure** appeared as an order-by option in the **Entries** element populator for non-structured sections.
+- Fixed several Dutch control panel translations.
+
 ## 5.14.9 - 2026-02-02
 
 ### Added

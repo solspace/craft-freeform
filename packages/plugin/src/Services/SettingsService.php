@@ -104,7 +104,10 @@ class SettingsService extends BaseService
     public function finishTutorial(): bool
     {
         $plugin = Freeform::getInstance();
-        if (\Craft::$app->plugins->savePluginSettings($plugin, ['showTutorial' => false])) {
+        $allSettings = $plugin->getSettings()->toArray();
+        $allSettings['showTutorial'] = false;
+
+        if (\Craft::$app->plugins->savePluginSettings($plugin, $allSettings)) {
             return true;
         }
 
@@ -433,7 +436,9 @@ class SettingsService extends BaseService
         $plugin = Freeform::getInstance();
         $plugin->setSettings($data);
 
-        return \Craft::$app->plugins->savePluginSettings($plugin, $data);
+        $allSettings = $plugin->getSettings()->toArray();
+
+        return \Craft::$app->plugins->savePluginSettings($plugin, $allSettings);
     }
 
     public function getPluginJsPath(): string

@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class States implements PredefinedSourceTypeInterface
@@ -15,6 +16,7 @@ class States implements PredefinedSourceTypeInterface
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
     private string $label = self::DISPLAY_FULL;
@@ -24,6 +26,7 @@ class States implements PredefinedSourceTypeInterface
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
     private string $value = self::DISPLAY_ABBREVIATED;
@@ -52,10 +55,19 @@ class States implements PredefinedSourceTypeInterface
 
         $collection = new OptionCollection();
         foreach ($list as $code => $name) {
-            $collection->add(
-                self::DISPLAY_FULL === $this->value ? $name : $code,
-                self::DISPLAY_FULL === $this->label ? $name : $code,
-            );
+            $value = match ($this->value) {
+                self::DISPLAY_FULL => $name,
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($name),
+                default => $code,
+            };
+
+            $label = match ($this->label) {
+                self::DISPLAY_FULL => $name,
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($name),
+                default => $code,
+            };
+
+            $collection->add($value, $label);
         }
 
         return $collection;

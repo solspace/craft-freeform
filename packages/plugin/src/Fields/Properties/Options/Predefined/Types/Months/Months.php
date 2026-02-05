@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Months;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Months implements PredefinedSourceTypeInterface
@@ -16,6 +17,7 @@ class Months implements PredefinedSourceTypeInterface
         label: 'Option Label',
         options: [
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
             self::DISPLAY_DOUBLE_DIGIT => '2-digit number',
@@ -27,6 +29,7 @@ class Months implements PredefinedSourceTypeInterface
         label: 'Option Value',
         options: [
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
             self::DISPLAY_DOUBLE_DIGIT => '2-digit number',
@@ -49,6 +52,14 @@ class Months implements PredefinedSourceTypeInterface
         foreach (range(0, 11) as $month) {
             $value = date($valueFormat, strtotime("january 2000 +{$month} month"));
             $label = date($labelFormat, strtotime("january 2000 +{$month} month"));
+
+            if (self::DISPLAY_FULL_TRANSLATED === $this->label) {
+                $label = Freeform::t($label);
+            }
+
+            if (self::DISPLAY_FULL_TRANSLATED === $this->value) {
+                $value = Freeform::t($value);
+            }
 
             $collection->add($value, $label);
         }

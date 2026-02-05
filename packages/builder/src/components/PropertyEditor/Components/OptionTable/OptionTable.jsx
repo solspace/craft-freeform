@@ -63,7 +63,7 @@ export default class OptionTable extends Component {
     let showCustomValueToggler = true;
     if (showCustomValues === undefined) {
       showCustomValues = true;
-      showCustomValueToggler = false;
+      showCustomValueToggler = true;
     }
 
     return (

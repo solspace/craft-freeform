@@ -6,12 +6,9 @@ import * as ExternalOptions from '../../constants/ExternalOptions';
 import PropertyHelper from '../../helpers/PropertyHelper';
 import BasePropertyEditor from './BasePropertyEditor';
 import AddNewNotification from './Components/AddNewNotification';
-import OptionTable from './Components/OptionTable/OptionTable';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
-import CustomProperty from './PropertyItems/CustomProperty';
 import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
-import RadioProperty from './PropertyItems/RadioProperty';
 import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';
@@ -33,8 +30,10 @@ export default class DynamicRecipients extends BasePropertyEditor {
       handle: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       required: PropTypes.bool,
-      value: PropTypes.node,
-      options: PropTypes.array,
+      showCustomValues: PropTypes.bool,
+      value: PropTypes.string,
+      values: PropTypes.array,
+      options: PropTypes.array.isRequired,
       notificationId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       oneLine: PropTypes.bool,
       showAsRadio: PropTypes.bool,
@@ -63,6 +62,7 @@ export default class DynamicRecipients extends BasePropertyEditor {
       showAsCheckboxes,
       notificationId,
       instructions,
+      showCustomValues,
     } = properties;
     const { source, target, configuration = {} } = properties;
 
@@ -152,9 +152,10 @@ export default class DynamicRecipients extends BasePropertyEditor {
 
         <ExternalOptionsProperty
           showEmptyOptionInput={true}
+          value={''}
           values={values}
           customOptions={options}
-          showCustomValues={true}
+          showCustomValues={showCustomValues}
           source={source}
           target={target}
           configuration={configuration}

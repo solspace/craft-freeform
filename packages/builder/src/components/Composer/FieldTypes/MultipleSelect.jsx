@@ -18,6 +18,7 @@ export default class Select extends HtmlInput {
       label: PropTypes.string.isRequired,
       required: PropTypes.bool.isRequired,
       options: PropTypes.array.isRequired,
+      value: PropTypes.string,
       values: PropTypes.array,
     }).isRequired,
     isFetchingOptions: PropTypes.bool.isRequired,

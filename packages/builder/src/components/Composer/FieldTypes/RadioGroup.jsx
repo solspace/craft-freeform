@@ -19,7 +19,8 @@ export default class RadioGroup extends HtmlInput {
       label: PropTypes.node.isRequired,
       required: PropTypes.bool.isRequired,
       options: PropTypes.array,
-      value: PropTypes.node,
+      value: PropTypes.string,
+      values: PropTypes.array,
     }).isRequired,
     isFetchingOptions: PropTypes.bool.isRequired,
   };

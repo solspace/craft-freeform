@@ -20,6 +20,7 @@ export default class CheckboxGroup extends HtmlInput {
       required: PropTypes.bool.isRequired,
       oneLine: PropTypes.bool,
       options: PropTypes.array,
+      value: PropTypes.string,
       values: PropTypes.array,
       source: PropTypes.string,
     }).isRequired,

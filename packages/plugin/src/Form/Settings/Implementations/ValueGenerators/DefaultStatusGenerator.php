@@ -15,7 +15,7 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
         $request = \Craft::$app->getRequest();
         if ($request->getIsCpRequest()) {
             $path = '/'.ltrim($request->getPathInfo(), '/');
-            if (preg_match('#(^|/)(graphiql|graphql)(/|$)#', $path)) {
+            if (preg_match('#(^|/)graphiql(/|$)#', $path)) {
                 return 0;
             }
         }

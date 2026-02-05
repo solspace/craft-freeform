@@ -196,6 +196,10 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         $checkboxValuesInclude = '';
 
         foreach ($this->getTableLayout() as $column) {
+            if (!isset($column['value'])) {
+                continue;
+            }
+
             $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
 
             if (self::COLUMN_TYPE_SELECT === $type) {

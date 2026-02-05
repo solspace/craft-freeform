@@ -787,7 +787,15 @@ export default class Freeform {
       }
 
       this.unlockSubmit();
-    });
+    }) . c a t c h ( f u n c t i o n   ( e r r o r )   { 
+       c o n s o l e . e r r o r (' E r r o r   s u b m i t t i n g   f o r m : ' ,  e r r o r ); 
+            this. u n l o c k S u b m i t ( ) ; 
+      
+      this . _ d i s p a t c h E v e n t ( events.form.ajaxError ,   { 
+          r e q u e s t , 
+          r e s p o n s e :   error, 
+       } ) ; 
+    } ) ;
   };
 
   _getMainSubmitButton = (): HTMLButtonElement | HTMLInputElement | undefined =>

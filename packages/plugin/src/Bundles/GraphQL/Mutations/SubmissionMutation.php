@@ -6,6 +6,7 @@ use craft\errors\GqlException;
 use craft\gql\base\ElementMutationResolver;
 use craft\gql\base\Mutation;
 use craft\gql\base\MutationResolver;
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CaptchaInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\FormPropertiesInputsArguments;
@@ -80,12 +81,31 @@ class SubmissionMutation extends Mutation
         foreach ($contentFields as $contentField) {
             $contentFieldType = $contentField->getContentGqlMutationArgumentType();
             $handle = $contentField->getContentGqlHandle();
-            $fieldList[$handle] = $contentFieldType;
-            $configArray = \is_array($contentFieldType) ? $contentFieldType : $contentFieldType->config;
 
-            if (\is_array($configArray) && !empty($configArray['normalizeValue'])) {
-                $resolver->setValueNormalizer($handle, $configArray['normalizeValue']);
+            // CASE 1: Field opts out (ConfirmationField, HTML, etc)
+            if (!$contentFieldType) {
+                continue;
             }
+
+            // CASE 2: Field returns a GraphQL Type
+            if ($contentFieldType instanceof Type) {
+                $fieldList[$handle] = [
+                    'type' => $contentFieldType,
+                ];
+
+                continue;
+            }
+
+            // CASE 3: Field returns a config array — only accept valid ones
+            if (\is_array($contentFieldType) && isset($contentFieldType['type'])) {
+                $fieldList[$handle] = $contentFieldType;
+
+                if (!empty($contentFieldType['normalizeValue'])) {
+                    $resolver->setValueNormalizer($handle, $contentFieldType['normalizeValue']);
+                }
+            }
+
+            // else: invalid / empty array → skip
         }
 
         $resolver->setResolutionData(ElementMutationResolver::CONTENT_FIELD_KEY, $fieldList);

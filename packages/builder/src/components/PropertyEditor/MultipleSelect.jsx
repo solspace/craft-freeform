@@ -17,6 +17,7 @@ export default class MultipleSelect extends BasePropertyEditor {
       label: PropTypes.string.isRequired,
       required: PropTypes.bool.isRequired,
       showCustomValues: PropTypes.bool.isRequired,
+      value: PropTypes.string,
       values: PropTypes.array,
       options: PropTypes.array.isRequired,
       source: PropTypes.string,
@@ -69,6 +70,8 @@ export default class MultipleSelect extends BasePropertyEditor {
         <hr />
 
         <ExternalOptionsProperty
+          showEmptyOptionInput={true}
+          value={''}
           values={values}
           customOptions={options}
           showCustomValues={showCustomValues}

@@ -7,7 +7,6 @@ import BasePropertyEditor from './BasePropertyEditor';
 import AddNewNotification from './Components/AddNewNotification';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
 import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';

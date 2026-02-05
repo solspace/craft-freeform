@@ -2,6 +2,56 @@ import * as ActionTypes from '../constants/ActionTypes';
 import * as FieldTypes from '../constants/FieldTypes';
 import camelCase from 'lodash.camelcase';
 
+const toString = (value) => (value === null || value === undefined ? '' : String(value));
+
+const isDynamicRecipients = (context) => context?.type === FieldTypes.DYNAMIC_RECIPIENTS;
+
+// Which field types store selection in "values"
+const usesValues = (context) =>
+  isDynamicRecipients(context) ||
+  context?.type === FieldTypes.CHECKBOX_GROUP ||
+  context?.type === FieldTypes.MULTIPLE_SELECT;
+
+// For Dynamic Recipients when not checkboxes, values must be single (0..1)
+const isValuesSingleSelect = (context) => isDynamicRecipients(context) && !context.showAsCheckboxes;
+
+const normalizeSelectionShape = (context) => {
+  if (!context) {
+    return;
+  }
+
+  if (usesValues(context)) {
+    context.values = Array.isArray(context.values) ? context.values.map(toString) : [];
+
+    // Dynamic Recipients select/radio => only allow 0..1 selection in values
+    if (isValuesSingleSelect(context) && context.values.length > 1) {
+      context.values = context.values.slice(0, 1);
+    }
+
+    // values-based fields should never store selection in "value"
+    context.value = '';
+  } else {
+    // single-value fields only
+    context.value = toString(context.value);
+    context.values = [];
+  }
+};
+
+const syncValuesWithOptions = (context) => {
+  if (!context?.options || !Array.isArray(context.values)) {
+    return;
+  }
+
+  const allowed = new Set(context.options.map((option) => toString(option.value)));
+
+  context.values = context.values.map(toString).filter((value) => value !== '' && allowed.has(value));
+
+  // If DR is single-select, enforce 0..1 after pruning too
+  if (isValuesSingleSelect(context) && context.values.length > 1) {
+    context.values = context.values.slice(0, 1);
+  }
+};
+
 export function properties(state = [], action) {
   switch (action.type) {
     default:
@@ -14,185 +64,244 @@ export function modifyGroupValues(state = [], action) {
   let clonedState = { ...state };
 
   switch (action.type) {
-    case ActionTypes.ADD_VALUE_SET:
-      if (state[hash]) {
-        if (!state[hash].options) {
-          state[hash].options = [];
-        }
-
-        clonedState[hash].options.push({
-          label: '',
-          value: '',
-        });
-
-        return clonedState;
+    case ActionTypes.ADD_VALUE_SET: {
+      if (!state[hash]) {
+        return state;
       }
 
-      return state;
+      const existing = state[hash];
+      const options = Array.isArray(existing.options) ? [...existing.options] : [];
 
-    case ActionTypes.CLEAN_UP_VALUES:
+      options.push({ label: '', value: '' });
+
+      clonedState[hash] = { ...existing, options };
+
+      return clonedState;
+    }
+
+    case ActionTypes.CLEAN_UP_VALUES: {
       if (state[hash] && state[hash].options) {
-        let options = [...state[hash].options];
+        clonedState[hash] = { ...state[hash] };
+
+        const options = [...state[hash].options];
 
         let hasModifications = false;
-        for (let i = 0; i < options.length; i++) {
-          const { label, value } = options[i];
 
+        for (let i = options.length - 1; i >= 0; i--) {
+          const { label, value } = options[i];
           if (!label.toString().length && !value.toString().length) {
             options.splice(i, 1);
             hasModifications = true;
           }
         }
 
-        let values = [];
-        if (state[hash].values !== undefined) {
-          values = [...state[hash].values];
-          if (values.indexOf('') !== -1) {
-            values.splice(values.indexOf(''), 1);
+        clonedState[hash].options = options;
+
+        const before = clonedState[hash].values;
+        if (Array.isArray(before)) {
+          clonedState[hash].values = [...before];
+
+          syncValuesWithOptions(clonedState[hash]);
+
+          if (clonedState[hash].values.length !== before.length) {
             hasModifications = true;
           }
         }
 
-        if (hasModifications) {
-          clonedState[hash].options = options;
-          clonedState[hash].values = values;
+        // keep value/values seperated
+        normalizeSelectionShape(clonedState[hash]);
 
+        if (hasModifications) {
           return clonedState;
         }
       }
 
       return state;
+    }
 
-    case ActionTypes.UPDATE_VALUE_SET:
+    case ActionTypes.UPDATE_VALUE_SET: {
       if (state[hash] && state[hash].options) {
-        let { label, index } = action;
+        clonedState[hash] = { ...state[hash] };
 
+        const { label, index } = action;
         const options = [...state[hash].options];
-        const previousValue = options[index].value;
 
-        options[index].value = value + '';
-        options[index].label = label + '';
+        const previousValue = toString(options[index].value);
+        const nextValue = toString(value);
+        const nextLabel = toString(label);
+
+        options[index] = {
+          ...options[index],
+          value: nextValue,
+          label: nextLabel,
+        };
 
         clonedState[hash].options = options;
 
-        if (state[hash].values !== undefined) {
-          const values = [...state[hash].values];
-          const previousValueIndex = values.indexOf(previousValue);
-          if (previousValueIndex !== -1) {
-            values[previousValueIndex] = value;
-          }
-          clonedState[hash].values = values;
+        if (Array.isArray(state[hash].values)) {
+          const allowed = new Set(options.map((option) => toString(option.value)));
+
+          const replacedAndFiltered = state[hash].values
+            .map(toString)
+            .map((value) => (value === previousValue ? nextValue : value))
+            .filter((value) => value !== '' && allowed.has(value));
+
+          const seen = new Set();
+          clonedState[hash].values = replacedAndFiltered.filter((value) => {
+            if (seen.has(value)) {
+              return false;
+            }
+
+            seen.add(value);
+
+            return true;
+          });
         }
 
-        if (clonedState[hash].value !== undefined && clonedState[hash].value === previousValue) {
-          clonedState[hash].value = value;
+        if (clonedState[hash].value !== undefined && toString(clonedState[hash].value) === previousValue) {
+          clonedState[hash].value = nextValue;
         }
+
+        // keep value/values seperate
+        normalizeSelectionShape(clonedState[hash]);
+
+        // if this field uses values, also prune against new options
+        syncValuesWithOptions(clonedState[hash]);
 
         return clonedState;
       }
 
       return state;
+    }
 
-    case ActionTypes.UPDATE_IS_CHECKED:
-      let { index } = action;
+    case ActionTypes.UPDATE_IS_CHECKED: {
+      const { index } = action;
 
-      const val = clonedState[hash].options[index].value;
-
-      switch (clonedState[hash].type) {
-        case FieldTypes.CHECKBOX_GROUP:
-        case FieldTypes.DYNAMIC_RECIPIENTS:
-        case FieldTypes.MULTIPLE_SELECT:
-          const truncateValues =
-            clonedState[hash].type === FieldTypes.DYNAMIC_RECIPIENTS && !clonedState[hash].showAsCheckboxes;
-          if (clonedState[hash].values === undefined || truncateValues) {
-            clonedState[hash].values = [];
-          }
-
-          const valueIndex = clonedState[hash].values.indexOf(val);
-          if (isChecked && valueIndex === -1) {
-            clonedState[hash].values.push(val);
-          }
-
-          if (!isChecked && valueIndex !== -1) {
-            clonedState[hash].values.splice(valueIndex, 1);
-          }
-
-          break;
-
-        default:
-          clonedState[hash].value = isChecked ? val : '';
-          break;
+      if (!state[hash]) {
+        return state;
       }
 
-      return clonedState;
+      clonedState[hash] = { ...state[hash] };
+      const ctx = clonedState[hash];
+      const value = toString(ctx.options[index].value);
 
-    case ActionTypes.INSERT_VALUE:
-      const context = clonedState[hash];
-      switch (context.type) {
-        case FieldTypes.CHECKBOX_GROUP:
-        case FieldTypes.DYNAMIC_RECIPIENTS:
-        case FieldTypes.MULTIPLE_SELECT:
-          if (clonedState[hash].values === undefined) {
-            clonedState[hash].values = [];
+      if (usesValues(ctx)) {
+        if (isValuesSingleSelect(ctx)) {
+          // Dynamic Recipients select/radio: checkbox means "set the single selected recipient"
+          ctx.values = isChecked ? [value] : [];
+        } else {
+          // true multi
+          const currentValues = Array.isArray(ctx.values) ? [...ctx.values].map(toString) : [];
+          const idx = currentValues.indexOf(value);
+
+          if (isChecked && idx === -1) {
+            currentValues.push(value);
           }
 
-          const valueIndex = clonedState[hash].values.indexOf(value);
-          if (valueIndex === -1) {
-            clonedState[hash].values.push(value);
+          if (!isChecked && idx !== -1) {
+            currentValues.splice(idx, 1);
           }
 
-          break;
+          ctx.values = currentValues;
+        }
 
-        default:
-          clonedState[hash].value = value;
-          break;
+        syncValuesWithOptions(ctx);
+      } else {
+        ctx.value = isChecked ? value : '';
       }
 
+      normalizeSelectionShape(ctx);
       return clonedState;
+    }
 
-    case ActionTypes.REMOVE_VALUE:
-      switch (clonedState[hash].type) {
-        case FieldTypes.CHECKBOX_GROUP:
-        case FieldTypes.DYNAMIC_RECIPIENTS:
-        case FieldTypes.MULTIPLE_SELECT:
-          if (clonedState[hash].values === undefined) {
-            return clonedState;
-          }
-
-          const valueIndex = clonedState[hash].values.indexOf(value);
-          if (valueIndex !== -1) {
-            clonedState[hash].values.splice(valueIndex, 1);
-          }
-
-          break;
-
-        default:
-          clonedState[hash].value = '';
-          break;
+    case ActionTypes.INSERT_VALUE: {
+      if (!state[hash]) {
+        return state;
       }
 
+      clonedState[hash] = { ...state[hash] };
+      const ctx = clonedState[hash];
+      const next = toString(value);
+
+      if (usesValues(ctx)) {
+        if (isValuesSingleSelect(ctx)) {
+          ctx.values = [next];
+        } else {
+          const valuesArr = Array.isArray(ctx.values) ? [...ctx.values].map(toString) : [];
+          if (!valuesArr.includes(next)) {
+            valuesArr.push(next);
+          }
+
+          ctx.values = valuesArr;
+        }
+
+        syncValuesWithOptions(ctx);
+      } else {
+        ctx.value = next;
+      }
+
+      normalizeSelectionShape(ctx);
       return clonedState;
+    }
 
-    case ActionTypes.TOGGLE_CUSTOM_VALUES:
-      clonedState[hash].showCustomValues = isChecked;
+    case ActionTypes.REMOVE_VALUE: {
+      if (!state[hash]) {
+        return state;
+      }
 
-      if (!isChecked) {
-        if (clonedState[hash].options) {
-          clonedState[hash].options = clonedState[hash].options.map((item) => ({
+      clonedState[hash] = { ...state[hash] };
+      const ctx = clonedState[hash];
+      const next = toString(value);
+
+      if (usesValues(ctx)) {
+        const valuesArr = Array.isArray(ctx.values) ? [...ctx.values].map(toString) : [];
+        const idx = valuesArr.indexOf(next);
+        if (idx !== -1) {
+          valuesArr.splice(idx, 1);
+        }
+
+        ctx.values = valuesArr;
+
+        syncValuesWithOptions(ctx);
+      } else {
+        ctx.value = '';
+      }
+
+      normalizeSelectionShape(ctx);
+
+      return clonedState;
+    }
+
+    case ActionTypes.TOGGLE_CUSTOM_VALUES: {
+      if (!state[hash]) {
+        return state;
+      }
+
+      const existing = state[hash];
+      const options = Array.isArray(existing.options) ? existing.options : [];
+
+      const nextOptions = !isChecked
+        ? options.map((item) => ({
             label: item.label,
             value: item.label,
-          }));
-        }
-      } else {
-        if (clonedState[hash].options) {
-          clonedState[hash].options = clonedState[hash].options.map((item) => ({
+          }))
+        : options.map((item) => ({
             label: item.label,
             value: camelCase(item.label),
           }));
-        }
-      }
+
+      clonedState[hash] = {
+        ...existing,
+        showCustomValues: !!isChecked,
+        options: nextOptions,
+      };
+
+      // if selection is values-based, prune and keep structure
+      syncValuesWithOptions(clonedState[hash]);
+      normalizeSelectionShape(clonedState[hash]);
 
       return clonedState;
+    }
 
     case ActionTypes.REORDER_VALUE_SET:
       return reorderValueSet(state, action);
@@ -207,38 +316,44 @@ export function modifyGroupValues(state = [], action) {
 
 /**
  * Reorders the rows in value sets
- *
- * @param state
- * @param action
- * @returns {*}
  */
 function reorderValueSet(state, action) {
   const { index, newIndex, hash } = action;
   const clonedState = { ...state };
+  const context = state[hash];
+  if (!context?.options) {
+    return state;
+  }
 
-  const item = clonedState[hash].options[index];
+  const options = [...context.options];
+  const [item] = options.splice(index, 1);
+  options.splice(newIndex, 0, item);
 
-  clonedState[hash].options.splice(index, 1);
-  clonedState[hash].options.splice(newIndex, 0, item);
+  clonedState[hash] = { ...context, options };
+
+  syncValuesWithOptions(clonedState[hash]);
+  normalizeSelectionShape(clonedState[hash]);
 
   return clonedState;
 }
 
 /**
  * Removes a certain value set
- *
- * @param state
- * @param action
- * @returns {Object}
  */
 function removeValueSet(state, action) {
   const { hash, index } = action;
   const clonedState = { ...state };
+  const context = state[hash];
+  if (!context?.options) {
+    return state;
+  }
 
-  clonedState[hash].options = [
-    ...clonedState[hash].options.slice(0, index),
-    ...clonedState[hash].options.slice(index + 1),
-  ];
+  const options = [...context.options.slice(0, index), ...context.options.slice(index + 1)];
+
+  clonedState[hash] = { ...context, options };
+
+  syncValuesWithOptions(clonedState[hash]);
+  normalizeSelectionShape(clonedState[hash]);
 
   return clonedState;
 }

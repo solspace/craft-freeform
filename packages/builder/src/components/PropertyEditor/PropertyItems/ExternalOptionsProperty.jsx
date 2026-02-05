@@ -47,6 +47,8 @@ export default class ExternalOptionsProperty extends BasePropertyItem {
       valueType: PropTypes.string,
       emptyOption: PropTypes.string,
     }),
+    value: PropTypes.string,
+    values: PropTypes.array,
     showCustomValues: PropTypes.bool,
     customOptions: PropTypes.arrayOf(
       PropTypes.shape({

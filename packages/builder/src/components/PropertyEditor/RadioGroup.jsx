@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { translate } from '../../app';
 import BasePropertyEditor from './BasePropertyEditor';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
@@ -20,7 +19,8 @@ export default class RadioGroup extends BasePropertyEditor {
       showCustomValues: PropTypes.bool.isRequired,
       oneLine: PropTypes.bool,
       value: PropTypes.node,
-      options: PropTypes.array,
+      values: PropTypes.array,
+      options: PropTypes.array.isRequired,
       source: PropTypes.string,
       target: PropTypes.node,
       configuration: PropTypes.object,
@@ -78,7 +78,9 @@ export default class RadioGroup extends BasePropertyEditor {
         <hr />
 
         <ExternalOptionsProperty
+          showEmptyOptionInput={true}
           value={value}
+          values={null}
           customOptions={options}
           showCustomValues={showCustomValues}
           source={source}

@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { translate } from '../../app';
 import BasePropertyEditor from './BasePropertyEditor';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
@@ -18,8 +17,9 @@ export default class Select extends BasePropertyEditor {
       label: PropTypes.string.isRequired,
       required: PropTypes.bool.isRequired,
       showCustomValues: PropTypes.bool.isRequired,
-      value: PropTypes.node,
-      options: PropTypes.array,
+      value: PropTypes.string,
+      values: PropTypes.array,
+      options: PropTypes.array.isRequired,
       source: PropTypes.string,
       target: PropTypes.node,
       configuration: PropTypes.object,
@@ -70,6 +70,7 @@ export default class Select extends BasePropertyEditor {
         <ExternalOptionsProperty
           showEmptyOptionInput={true}
           value={value}
+          values={null}
           customOptions={options}
           showCustomValues={showCustomValues}
           source={source}

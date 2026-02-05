@@ -3,7 +3,7 @@
 ## 4.1.31 - 2026-02-05
 
 ### Added
-- Verified support for **Craft 5.17.x**.
+- Verified support for **Craft 4.17.x**.
 
 ### Fixed
 - Fixed settings compatibility issues with **Craft 4.17.x**.

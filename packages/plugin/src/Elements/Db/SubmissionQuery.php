@@ -98,7 +98,7 @@ class SubmissionQuery extends ElementQuery
 
     public function skipContent(bool $value): self
     {
-        $this->skipContent = true;
+        $this->skipContent = $value;
 
         return $this;
     }
@@ -126,6 +126,20 @@ class SubmissionQuery extends ElementQuery
         static $formHandleToIdMap;
         static $formIdToHandleMap;
 
+        $request = \Craft::$app->getRequest();
+
+        $isCpRequest = $request->getIsCpRequest();
+        $isSubmissionElementType = Submission::class === $request->getBodyParam('elementType');
+
+        $path = '/'.ltrim($request->getPathInfo(), '/');
+        $isElementIndexAction = str_contains($path, 'actions/element-indexes/');
+
+        // Skip joining/selecting content tables for CP element index requests for Submissions.
+        // This prevents HY000 1117 "Too many columns" on source=*
+        if ($isCpRequest && $isElementIndexAction && $isSubmissionElementType) {
+            $this->skipContent = true;
+        }
+
         if (null === $formHandleToIdMap) {
             $forms = Freeform::getInstance()->forms->getAllForms();
             foreach ($forms as $form) {
@@ -150,7 +164,7 @@ class SubmissionQuery extends ElementQuery
             $this->form = $this->form->getHandle();
         }
 
-        if ($this->form && $formHandleToIdMap[$this->form]) {
+        if ($this->form && isset($formHandleToIdMap[$this->form])) {
             $this->formId = $formHandleToIdMap[$this->form];
         }
 
@@ -247,10 +261,7 @@ class SubmissionQuery extends ElementQuery
 
         $this->query->select($select);
 
-        $request = \Craft::$app->request;
-
         $isEmptyFormId = empty($this->formId);
-        $isCpRequest = $request->getIsCpRequest();
         $isIndex = !$request->getIsConsoleRequest() && 'index' === $request->post('context');
         if ($isEmptyFormId && $isCpRequest && $isIndex) {
             $allowedFormIds = Freeform::getInstance()->forms->getAllowedReadFormIds();

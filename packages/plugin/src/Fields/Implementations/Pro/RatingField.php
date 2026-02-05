@@ -14,8 +14,10 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\BaseOptionsField;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\DefaultValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Traits\DefaultTextValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -26,8 +28,10 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     iconPath: __DIR__.'/../Icons/rating.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rating.ejs',
 )]
-class RatingField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface
+class RatingField extends BaseOptionsField implements ExtraFieldInterface, OptionsInterface, DefaultValueInterface
 {
+    use DefaultTextValueTrait;
+
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 

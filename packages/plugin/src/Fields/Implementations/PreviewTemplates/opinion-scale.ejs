@@ -1,12 +1,20 @@
+<%
+  var selectedValue = (defaultValue == null || defaultValue === '') ? null : String(defaultValue);
+  var namespace = (handle || 'opinion') + '-' + Date.now();
+  var fieldName = (name || handle || 'opinionScale');
+%>
+
 <div class="opinion-scale">
     <ul class="opinion-scale-scales">
-        <% scales.forEach(function(scale) { %>
-            <% var value = scale[0]; %>
+        <% scales.forEach(function(scale, index) { %>
+            <% var value = String(scale[0]); %>
             <% var label = scale[1] || value; %>
+            <% var id = namespace + '-' + index; %>
+            <% var isChecked = (selectedValue !== null && value === selectedValue); %>
 
-            <li class="">
-                <input type="radio" />
-                <label><%= label %></label>
+            <li style="<%= isChecked ? 'background: rgb(230, 230, 230);' : '' %>">
+                <input id="<%= id %>" type="radio" name="<%= fieldName %>" value="<%= value %>" <%= isChecked ? 'checked' : '' %> />
+                <label for="<%= id %>"><%= label %></label>
             </li>
         <% }); %>
     </ul>

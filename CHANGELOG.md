@@ -2095,6 +2095,16 @@
 - **Stripe Payments**
     - The **Stripe Payment** feature has been removed and replaced by all-new support for the newer Stripe Payment Element.
 
+## 4.1.31 - 2026-02-05
+
+### Added
+- Verified support for **Craft 4.17.x**.
+
+### Fixed
+- Fixed settings compatibility issues with **Craft 4.17.x**.
+- Fixed the form builder's property editor not always saving option-based field values correctly.
+- Fixed a potential **Table** field issue with GraphQL.
+
 ## 4.1.30 - 2026-01-15
 
 ### Security

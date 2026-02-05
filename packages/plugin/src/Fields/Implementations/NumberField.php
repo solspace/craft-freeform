@@ -7,7 +7,9 @@ use craft\helpers\Html;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Fields\Interfaces\MinLengthInterface;
 use Solspace\Freeform\Fields\Interfaces\NumericInterface;
+use Solspace\Freeform\Fields\Traits\MinLengthTrait;
 
 #[Type(
     name: 'Number',
@@ -15,8 +17,10 @@ use Solspace\Freeform\Fields\Interfaces\NumericInterface;
     iconPath: __DIR__.'/Icons/number.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
-class NumberField extends TextField implements NumericInterface
+class NumberField extends TextField implements NumericInterface, MinLengthInterface
 {
+    use MinLengthTrait;
+
     #[Input\Boolean('Allow negative numbers')]
     protected bool $allowNegative = false;
 
@@ -114,6 +118,14 @@ class NumberField extends TextField implements NumericInterface
 
         if (!empty($this->getMaxValue())) {
             $description[] = 'Max value: '.$this->getMaxValue().'.';
+        }
+
+        if (!empty($this->getMinLength())) {
+            $description[] = 'Min length: '.$this->getMinLength().'.';
+        }
+
+        if (!empty($this->getMaxLength())) {
+            $description[] = 'Max length: '.$this->getMaxLength().'.';
         }
 
         if (!empty($this->getStep())) {

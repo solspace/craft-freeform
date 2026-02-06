@@ -520,10 +520,28 @@ class FieldGenerator extends AbstractGenerator
                 'description' => 'Should the built-in javascript for handling table rows be used',
             ];
 
+            $fieldDefinitions['limitRows'] = [
+                'name' => 'limitRows',
+                'type' => Type::string(),
+                'description' => 'Limit type: empty, min, max, range, or exact',
+            ];
+
+            $fieldDefinitions['minRows'] = [
+                'name' => 'minRows',
+                'type' => Type::int(),
+                'description' => 'Minimum number of rows this table must have',
+            ];
+
             $fieldDefinitions['maxRows'] = [
                 'name' => 'maxRows',
                 'type' => Type::int(),
                 'description' => 'Number of maximum allowed rows this table can have',
+            ];
+
+            $fieldDefinitions['exactRows'] = [
+                'name' => 'exactRows',
+                'type' => Type::int(),
+                'description' => 'Exact number of rows (no add/remove)',
             ];
 
             $fieldDefinitions['addButtonLabel'] = [

@@ -100,7 +100,6 @@ export const statePersistMiddleware: Middleware =
 
     next(action);
     if (
-      !action ||
       typeof action !== 'object' ||
       !('type' in action) ||
       action.type !== String(save)

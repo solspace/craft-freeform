@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\Countries
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Countries implements PredefinedSourceTypeInterface
@@ -14,15 +15,17 @@ class Countries implements PredefinedSourceTypeInterface
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
     private string $value = self::DISPLAY_ABBREVIATED;
@@ -41,10 +44,19 @@ class Countries implements PredefinedSourceTypeInterface
 
         $collection = new OptionCollection();
         foreach ($countries as $code => $name) {
-            $collection->add(
-                self::DISPLAY_FULL === $this->value ? $name : $code,
-                self::DISPLAY_FULL === $this->label ? $name : $code,
-            );
+            $value = match ($this->value) {
+                self::DISPLAY_FULL => $name,
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($name),
+                default => $code,
+            };
+
+            $label = match ($this->label) {
+                self::DISPLAY_FULL => $name,
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($name),
+                default => $code,
+            };
+
+            $collection->add($value, $label);
         }
 
         return $collection;

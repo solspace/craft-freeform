@@ -6,7 +6,9 @@ import {
   PreviewEditorContainer,
 } from '../../preview/previewable-component.styles';
 
-export const TableEditorWrapper = styled(PreviewEditor)``;
+export const TableEditorWrapper = styled(PreviewEditor)`
+  gap: 0;
+`;
 
 export const TableContainer = styled(PreviewEditorContainer)`
   background-color: white;

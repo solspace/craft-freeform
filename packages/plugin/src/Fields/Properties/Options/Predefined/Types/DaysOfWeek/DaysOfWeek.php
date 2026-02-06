@@ -22,7 +22,7 @@ class DaysOfWeek implements PredefinedSourceTypeInterface
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',
@@ -33,7 +33,7 @@ class DaysOfWeek implements PredefinedSourceTypeInterface
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
         ],
     )]
-    private string $value = self::DISPLAY_FULL;
+    private string $value = self::DISPLAY_FULL_TRANSLATED;
 
     public function getName(): string
     {

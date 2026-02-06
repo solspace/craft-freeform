@@ -19,7 +19,7 @@ class States implements PredefinedSourceTypeInterface
             self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',

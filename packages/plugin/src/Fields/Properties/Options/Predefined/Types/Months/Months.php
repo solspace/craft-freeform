@@ -23,7 +23,7 @@ class Months implements PredefinedSourceTypeInterface
             self::DISPLAY_DOUBLE_DIGIT => '2-digit number',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',
@@ -35,7 +35,7 @@ class Months implements PredefinedSourceTypeInterface
             self::DISPLAY_DOUBLE_DIGIT => '2-digit number',
         ],
     )]
-    private string $value = self::DISPLAY_FULL;
+    private string $value = self::DISPLAY_FULL_TRANSLATED;
 
     public function getName(): string
     {

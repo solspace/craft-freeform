@@ -6,6 +6,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\helpers\StringHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Solspace\Freeform\Freeform;
@@ -136,7 +137,8 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
                     'returnUrl' => $form->returnUrl,
                     'successMessage' => $validation->successMessage,
                     'errorMessage' => $validation->errorMessage,
-                    'duplicateCheck' => $defaults->settings->limits->duplicateCheck->getValue(),
+                    'duplicateCheck' => $this->extractDuplicateCheck($validation, $defaults),
+                    'stopSubmissionsAfter' => $this->extractStopSubmissionsAfter($data),
                 ]
             );
 
@@ -196,6 +198,39 @@ class m230101_100010_FF4to5_MigrateForms extends Migration
 
             $this->renameTable('{{%'.$tempTableName.'}}', $newName);
         }
+    }
+
+    private function extractDuplicateCheck(\stdClass $validation, Defaults $defaults): string
+    {
+        $limit = $validation->limitFormSubmissions ?? null;
+
+        if (!empty($limit)) {
+            $map = [
+                'once_per_email' => FormLimiting::LIMIT_ONCE_PER_EMAIL,
+                'auth_unlimited' => FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,
+                'auth' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY,
+                'auth_cookie' => FormLimiting::LIMIT_ONCE_PER_USER_OR_COOKIE,
+                'auth_ip_cookie' => FormLimiting::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE,
+                'cookie' => FormLimiting::LIMIT_ONCE_PER_USER_OR_COOKIE,
+                'ip_cookie' => FormLimiting::LIMIT_ONCE_PER_USER_OR_IP_OR_COOKIE,
+            ];
+
+            return $map[$limit] ?? FormLimiting::NO_LIMIT;
+        }
+
+        return $defaults->settings->limits->duplicateCheck->getValue();
+    }
+
+    private function extractStopSubmissionsAfter(array $form): ?string
+    {
+        if (isset($form['metadata'])) {
+            $metadata = json_decode($form['metadata'] ?: '[]', true);
+            if (isset($metadata['formCloseDate'])) {
+                return $metadata['formCloseDate'];
+            }
+        }
+
+        return null;
     }
 
     private function extractSuccessBehavior(array $form, Defaults $defaults): string

@@ -124,22 +124,16 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_NUMBER === $typeName) {
-            $fieldDefinitions['minLength'] = [
-                'name' => 'minLength',
-                'type' => Type::int(),
-                'description' => 'Minimum length of the number',
-            ];
-
             $fieldDefinitions['minValue'] = [
                 'name' => 'minValue',
                 'type' => Type::int(),
-                'description' => 'Minimum value of the number',
+                'description' => 'The minimum value for this field',
             ];
 
             $fieldDefinitions['maxValue'] = [
                 'name' => 'maxValue',
                 'type' => Type::int(),
-                'description' => 'Maximum value of the number',
+                'description' => 'The maximum value for this field',
             ];
 
             $fieldDefinitions['decimalCount'] = [
@@ -375,6 +369,12 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_OPINION_SCALE === $typeName) {
+            $fieldDefinitions['defaultValue'] = [
+                'name' => 'defaultValue',
+                'type' => Type::string(),
+                'description' => 'Default value',
+            ];
+
             $fieldDefinitions['scales'] = [
                 'name' => 'scales',
                 'type' => Type::listOf(OpinionScaleInterface::getType()),
@@ -424,6 +424,12 @@ class FieldGenerator extends AbstractGenerator
         }
 
         if (FreeformFieldInterface::TYPE_RATING === $typeName) {
+            $fieldDefinitions['defaultValue'] = [
+                'name' => 'defaultValue',
+                'type' => Type::string(),
+                'description' => 'Default value',
+            ];
+
             $fieldDefinitions['maxValue'] = [
                 'name' => 'maxValue',
                 'type' => Type::int(),
@@ -603,13 +609,14 @@ class FieldGenerator extends AbstractGenerator
         }
 
         $minLengthTypes = [
+            FreeformFieldInterface::TYPE_NUMBER,
             FreeformFieldInterface::TYPE_PASSWORD,
         ];
         if (\in_array($typeName, $minLengthTypes, true)) {
             $fieldDefinitions['minLength'] = [
                 'name' => 'minLength',
                 'type' => Type::int(),
-                'description' => 'The minimum length of characters for this field',
+                'description' => 'The minimum length of characters/digits for this field',
             ];
         }
 
@@ -631,7 +638,7 @@ class FieldGenerator extends AbstractGenerator
             $fieldDefinitions['maxLength'] = [
                 'name' => 'maxLength',
                 'type' => Type::int(),
-                'description' => 'The maximum length of characters for this field',
+                'description' => 'The maximum length of characters/digits for this field',
             ];
         }
 

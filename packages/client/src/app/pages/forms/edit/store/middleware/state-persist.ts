@@ -99,7 +99,12 @@ export const statePersistMiddleware: Middleware =
     }
 
     next(action);
-    if (action.type !== String(save)) {
+    if (
+      typeof action !== 'object' ||
+      action === null ||
+      !('type' in action) ||
+      action.type !== String(save)
+    ) {
       return;
     }
 

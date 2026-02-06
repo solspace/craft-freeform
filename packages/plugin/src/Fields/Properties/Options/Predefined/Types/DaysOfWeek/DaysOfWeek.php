@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Properties\Options\Predefined\Types\DaysOfWee
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class DaysOfWeek implements PredefinedSourceTypeInterface
@@ -16,21 +17,23 @@ class DaysOfWeek implements PredefinedSourceTypeInterface
         label: 'Option Label',
         options: [
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',
         options: [
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_SINGLE_DIGIT => 'Single number',
         ],
     )]
-    private string $value = self::DISPLAY_FULL;
+    private string $value = self::DISPLAY_FULL_TRANSLATED;
 
     public function getName(): string
     {
@@ -47,6 +50,14 @@ class DaysOfWeek implements PredefinedSourceTypeInterface
         foreach (range(0, 6) as $dayIndex) {
             $value = date($valueFormat, strtotime("Sunday +{$dayIndex} days"));
             $label = date($labelFormat, strtotime("Sunday +{$dayIndex} days"));
+
+            if (self::DISPLAY_FULL_TRANSLATED === $this->label) {
+                $label = Freeform::t($label);
+            }
+
+            if (self::DISPLAY_FULL_TRANSLATED === $this->value) {
+                $value = Freeform::t($value);
+            }
 
             $collection->add($value, $label);
         }

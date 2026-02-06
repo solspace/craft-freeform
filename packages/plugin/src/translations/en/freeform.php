@@ -2056,7 +2056,6 @@ return [
     'Invalid phone number' => 'Invalid phone number',
     'Rating must be positive' => 'Rating must be positive',
     'Rating must be between {{min}} and {{max}}' => 'Rating must be between {{min}} and {{max}}',
-    'The maximum number of rows is {{maxRows}}.' => 'The maximum number of rows is {{maxRows}}.',
     'The maximum number of rows is {maxRows}.' => 'The maximum number of rows is {maxRows}.',
     'This table must have exactly {exactRows} rows.' => 'This table must have exactly {exactRows} rows.',
     'All {exactRows} rows must be filled out.' => 'All {exactRows} rows must be filled out.',

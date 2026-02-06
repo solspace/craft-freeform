@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollecti
 use Solspace\Freeform\Attributes\Property\Input\Boolean;
 use Solspace\Freeform\Attributes\Property\Input\Select;
 use Solspace\Freeform\Fields\Properties\Options\Predefined\Types\PredefinedSourceTypeInterface;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Translations\TranslationTable;
 
 class Languages implements PredefinedSourceTypeInterface
@@ -15,15 +16,17 @@ class Languages implements PredefinedSourceTypeInterface
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
-    private string $label = self::DISPLAY_FULL;
+    private string $label = self::DISPLAY_FULL_TRANSLATED;
 
     #[Select(
         label: 'Option Value',
         options: [
             self::DISPLAY_ABBREVIATED => 'Abbreviated',
             self::DISPLAY_FULL => 'Full',
+            self::DISPLAY_FULL_TRANSLATED => 'Full (translated)',
         ],
     )]
     private string $value = self::DISPLAY_ABBREVIATED;
@@ -47,10 +50,19 @@ class Languages implements PredefinedSourceTypeInterface
 
         $collection = new OptionCollection();
         foreach ($languages as $code => $data) {
-            $collection->add(
-                self::DISPLAY_FULL === $this->value ? $data[$dataProperty] : $code,
-                self::DISPLAY_FULL === $this->label ? $data[$dataProperty] : $code,
-            );
+            $value = match ($this->value) {
+                self::DISPLAY_FULL => $data[$dataProperty],
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($data[$dataProperty]),
+                default => $code,
+            };
+
+            $label = match ($this->label) {
+                self::DISPLAY_FULL => $data[$dataProperty],
+                self::DISPLAY_FULL_TRANSLATED => Freeform::t($data[$dataProperty]),
+                default => $code,
+            };
+
+            $collection->add($value, $label);
         }
 
         return $collection;

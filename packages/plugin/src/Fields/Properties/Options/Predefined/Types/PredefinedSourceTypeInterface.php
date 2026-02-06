@@ -8,4 +8,5 @@ interface PredefinedSourceTypeInterface extends OptionTypeProviderInterface
 {
     public const DISPLAY_ABBREVIATED = 'abbreviated';
     public const DISPLAY_FULL = 'full';
+    public const DISPLAY_FULL_TRANSLATED = 'full-translated';
 }

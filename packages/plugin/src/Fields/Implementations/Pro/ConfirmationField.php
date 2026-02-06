@@ -60,22 +60,9 @@ class ConfirmationField extends AbstractField implements ExtraFieldInterface, Pl
 
     public function getContentGqlMutationArgumentType(): array|GQLType
     {
-        $field = $this->getForm()->getLayout()->getField($this->getTargetField()->getUid());
-
-        $description = $this->getContentGqlDescription();
-        $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
-
-        if (!empty($this->getMaxLength())) {
-            $description[] = 'Max length: '.$this->getMaxLength().'.';
-        }
-
-        $description = implode("\n", $description);
-
-        return [
-            'name' => $this->getContentGqlHandle(),
-            'type' => $this->getContentGqlType(),
-            'description' => trim($description),
-        ];
+        // Confirmation fields are validation-only and do not participate
+        // in GraphQL mutation inputs
+        return [];
     }
 
     protected function getInputHtml(): string
